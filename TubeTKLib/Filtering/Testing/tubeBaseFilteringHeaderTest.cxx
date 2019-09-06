@@ -40,7 +40,7 @@ limitations under the License.
 #include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
 #include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
 #include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
-#include "tubeImageFilters.h"
+#include "tubeImageMathFilters.h"
 
 #if defined( TubeTK_USE_ARRAYFIRE )
 

@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubeImageFilters_hxx
-#define __tubeImageFilters_hxx
+#ifndef __tubeImageMathFilters_hxx
+#define __tubeImageMathFilters_hxx
 
 #include <itkBinaryBallStructuringElement.h>
 #include <itkCastImageFilter.h>
@@ -50,7 +50,7 @@ namespace tube
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>::
+ImageMathFilters<VDimension>::
 ApplyIntensityWindowing( typename ImageType::Pointer imIn,
   float valMin, float valMax, float outMin, float outMax )
 {
@@ -78,7 +78,7 @@ ApplyIntensityWindowing( typename ImageType::Pointer imIn,
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
-ImageFilters<VDimension>::
+ImageMathFilters<VDimension>::
 ApplyIntensityMultiplicativeWithBiasCorrection(
   typename ImageType::Pointer imIn,
   const std::string & inMeanFieldFilePath )
@@ -136,8 +136,8 @@ ApplyIntensityMultiplicativeWithBiasCorrection(
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
-typename ImageFilters<VDimension>::ImageType::Pointer
-ImageFilters<VDimension>
+typename ImageMathFilters<VDimension>::ImageType::Pointer
+ImageMathFilters<VDimension>
 ::ResampleImage( typename ImageType::Pointer a,
   typename ImageType::Pointer b )
 {
@@ -177,7 +177,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>::
+ImageMathFilters<VDimension>::
 AddUniformNoise( typename ImageType::Pointer imIn,
   float valMin, float valMax, float noiseMean, float noiseRange, int seed )
 {
@@ -205,7 +205,7 @@ AddUniformNoise( typename ImageType::Pointer imIn,
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::AddGaussianNoise( typename ImageType::Pointer imIn, float valMin,
   float valMax, float noiseMean, float noiseStdDev, int seed )
 {
@@ -232,7 +232,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::AddImages( typename ImageType::Pointer imIn,
   const std::string & imIn2FilePath, float weight1, float weight2 )
 {
@@ -271,7 +271,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::MultiplyImages(
     typename ImageType::Pointer imIn,
     const std::string & imIn2FilePath )
@@ -308,7 +308,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::MirrorAndPadImage(
     typename ImageType::Pointer & imIn,
     int numPadVoxels )
@@ -327,7 +327,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 template< typename TPixel >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::NormalizeImage(
     typename ImageType::Pointer & imIn,
     int normType )
@@ -495,7 +495,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::FuseImages(
     typename ImageType::Pointer imIn,
     const std::string & imIn2FilePath,
@@ -539,7 +539,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::ThresholdImage(
     typename ImageType::Pointer imIn,
     float threshLow, float threshHigh, float valTrue, float valFalse )
@@ -565,7 +565,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::MedianImage( typename ImageType::Pointer & imIn, int filterSize )
 {
   typedef itk::MedianImageFilter< ImageType, ImageType >
@@ -585,7 +585,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 double
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::ComputeImageStdDevOrMeanWithinRangeUsingMask(
     typename ImageType::Pointer imIn,
     const std::string & maskFilePath,
@@ -643,7 +643,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::AbsoluteImage( typename ImageType::Pointer imIn )
 {
   itk::ImageRegionIterator< ImageType > it1( imIn,
@@ -659,7 +659,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::MaskImageWithValueIfNotWithinSecondImageRange(
     typename ImageType::Pointer imIn,
     const std::string & imIn2FilePath,
@@ -708,7 +708,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::MorphImage(
     typename ImageType::Pointer & imIn,
     int mode, float radius, float foregroundValue, float backgroundValue )
@@ -754,7 +754,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::OverwriteImage(
     typename ImageType::Pointer imIn,
     const std::string & maskFilePath,
@@ -786,7 +786,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::BlurImage(
     typename ImageType::Pointer & imIn,
     float sigma )
@@ -814,7 +814,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::BlurOrderImage(
     typename ImageType::Pointer & imIn,
     float sigma, int order, int direction )
@@ -849,7 +849,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::ComputeImageHistogram(
     typename ImageType::Pointer imIn,
     unsigned int nBins, const std::string & histOutputFilePath )
@@ -920,7 +920,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::ComputeImageHistogram2(
     typename ImageType::Pointer imIn,
     unsigned int nBins, double binMin, double binSize,
@@ -964,7 +964,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::CorrectIntensitySliceBySliceUsingHistogramMatching(
     typename ImageType::Pointer imIn,
     unsigned int numberOfBins, unsigned int numberOfMatchPoints )
@@ -1055,7 +1055,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::CorrectIntensityUsingHistogramMatching(
     typename ImageType::Pointer & imIn,
     unsigned int numberOfBins, unsigned int numberOfMatchPoints,
@@ -1091,7 +1091,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::Resize(
     typename ImageType::Pointer & imIn,
     double factor )
@@ -1149,7 +1149,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::Resize(
     typename ImageType::Pointer & imIn,
     const std::string & imIn2FilePath )
@@ -1175,7 +1175,7 @@ ImageFilters<VDimension>
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::ExtractSlice(
     typename ImageType::Pointer & imIn,
     unsigned int dimension,
@@ -1214,7 +1214,7 @@ ImageFilters<VDimension>
 
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::EnhanceVessels( typename ImageType::Pointer imIn,
   double scaleMin, double scaleMax, double numScales )
 {
@@ -1292,7 +1292,7 @@ ImageFilters<VDimension>
 
 template< unsigned int VDimension >
 void
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::SegmentUsingConnectedThreshold( typename ImageType::Pointer & imIn,
   float threshLow, float threshHigh, float labelValue,
   float x, float y, float z )
@@ -1322,7 +1322,7 @@ ImageFilters<VDimension>
 
 template< unsigned int VDimension >
 bool
-ImageFilters<VDimension>
+ImageMathFilters<VDimension>
 ::ComputeVoronoiTessellation( typename ImageType::Pointer & imIn,
   unsigned int numberOfCentroids, unsigned int numberOfIterations,
   unsigned int numberOfSamples, const std::string & centroidOutFilePath )
@@ -1468,4 +1468,4 @@ ImageFilters<VDimension>
 
 } // End namespace tube
 
-#endif // End !defined( __tubeImageFilters_hxx )
+#endif // End !defined( __tubeImageMathFilters_hxx )

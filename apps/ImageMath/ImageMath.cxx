@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeImageFilters.h"
+#include "tubeImageMathFilters.h"
 
 #include <itkImageFileWriter.h>
 
@@ -222,7 +222,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Intensity" )
       {
       std::cout << "Intensity windowing" << std::endl;
-      tube::ImageFilters< VDimension >::ApplyIntensityWindowing(
+      tube::ImageMathFilters< VDimension >::ApplyIntensityWindowing(
         imIn,
         command.GetValueAsFloat( *it, "inValMin" ),
         command.GetValueAsFloat( *it, "inValMax" ),
@@ -234,7 +234,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "IntensityMult" )
       {
       std::cout << "Intensity multiplicative bias correct" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::
+      bool success = tube::ImageMathFilters< VDimension >::
         ApplyIntensityMultiplicativeWithBiasCorrection( imIn,
         command.GetValueAsString( *it, "inMeanField" ) );
       if( !success )
@@ -247,7 +247,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "UniformNoise" )
       {
       std::cout << "Adding noise" << std::endl;
-      tube::ImageFilters< VDimension >::AddUniformNoise( imIn,
+      tube::ImageMathFilters< VDimension >::AddUniformNoise( imIn,
         command.GetValueAsFloat( *it, "inValMin" ),
         command.GetValueAsFloat( *it, "inValMax" ),
         command.GetValueAsFloat( *it, "noiseMean" ),
@@ -258,7 +258,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "GaussianNoise" )
       {
       std::cout << "Adding noise" << std::endl;
-      tube::ImageFilters< VDimension >::AddGaussianNoise( imIn,
+      tube::ImageMathFilters< VDimension >::AddGaussianNoise( imIn,
         command.GetValueAsFloat( *it, "inValMin" ),
         command.GetValueAsFloat( *it, "inValMax" ),
         command.GetValueAsFloat( *it, "noiseMean" ),
@@ -269,7 +269,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Add" )
       {
       std::cout << "Adding" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::AddImages( imIn,
+      bool success = tube::ImageMathFilters< VDimension >::AddImages( imIn,
         command.GetValueAsString( *it, "Infile" ),
         command.GetValueAsFloat( *it, "weight1" ),
         command.GetValueAsFloat( *it, "weight2" ) );
@@ -282,7 +282,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Multiply" )
       {
       std::cout << "Multiplying" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::MultiplyImages(
+      bool success = tube::ImageMathFilters< VDimension >::MultiplyImages(
         imIn, command.GetValueAsString( *it, "Infile" ) );
       if( !success )
         {
@@ -293,7 +293,7 @@ int DoIt( MetaCommand & command )
     // Mirror pad
     else if( ( *it ).name == "MirrorPad" )
       {
-      tube::ImageFilters< VDimension >::MirrorAndPadImage( imIn,
+      tube::ImageMathFilters< VDimension >::MirrorAndPadImage( imIn,
         command.GetValueAsInt( *it, "numPadVoxels" ) );
       }
 
@@ -305,7 +305,7 @@ int DoIt( MetaCommand & command )
         << "within -1 to 1, integral types will produce an image that "
         << "DOES NOT HAVE a unit variance" << std::endl;
 
-      tube::ImageFilters< VDimension >::template NormalizeImage<
+      tube::ImageMathFilters< VDimension >::template NormalizeImage<
         TPixel >( imIn, command.GetValueAsInt( *it, "type" ) );
       }
 
@@ -313,7 +313,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Fuse" )
       {
       std::cout << "Fusing" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::FuseImages(
+      bool success = tube::ImageMathFilters< VDimension >::FuseImages(
         imIn, command.GetValueAsString( *it, "Infile2" ),
         command.GetValueAsFloat( *it, "Offset2" ) );
       if( !success )
@@ -326,7 +326,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Median" )
       {
       std::cout << "Median filtering" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::MedianImage(
+      bool success = tube::ImageMathFilters< VDimension >::MedianImage(
         imIn, command.GetValueAsInt( *it, "Size" ) );
       if( !success )
         {
@@ -338,7 +338,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Threshold" )
       {
       std::cout << "Thresholding" << std::endl;
-      tube::ImageFilters< VDimension >::ThresholdImage( imIn,
+      tube::ImageMathFilters< VDimension >::ThresholdImage( imIn,
         command.GetValueAsFloat( *it, "threshLow" ),
         command.GetValueAsFloat( *it, "threshHigh" ),
         command.GetValueAsFloat( *it, "valTrue" ),
@@ -349,7 +349,7 @@ int DoIt( MetaCommand & command )
       std::cout << "Algorithm" << std::endl;
       bool success = false;
       int mode = command.GetValueAsInt( *it, "mode" );
-      double value = tube::ImageFilters< VDimension >::
+      double value = tube::ImageMathFilters< VDimension >::
         ComputeImageStdDevOrMeanWithinRangeUsingMask( imIn,
         command.GetValueAsString( *it, "maskFile" ),
         command.GetValueAsFloat( *it, "threshLow" ),
@@ -369,7 +369,7 @@ int DoIt( MetaCommand & command )
       if( mode == 0 )
         {
         bool success =
-          tube::ImageFilters< VDimension >::MultiplyImages( imIn,
+          tube::ImageMathFilters< VDimension >::MultiplyImages( imIn,
           command.GetValueAsString( *it, "file2" ) );
         if( !success )
           {
@@ -383,14 +383,14 @@ int DoIt( MetaCommand & command )
       int mode = command.GetValueAsInt( *it, "mode" );
       if( mode == 0 )
         {
-        tube::ImageFilters< VDimension >::AbsoluteImage( imIn );
+        tube::ImageMathFilters< VDimension >::AbsoluteImage( imIn );
         }
       }
     // Masking
     else if( ( *it ).name == "Masking" )
       {
       std::cout << "Masking" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::
+      bool success = tube::ImageMathFilters< VDimension >::
         MaskImageWithValueIfNotWithinSecondImageRange( imIn,
         command.GetValueAsString( *it, "inFile2" ),
         command.GetValueAsFloat( *it, "threshLow" ),
@@ -407,7 +407,7 @@ int DoIt( MetaCommand & command )
       {
       std::cout << "Morphology" << std::endl;
 
-      tube::ImageFilters< VDimension >::MorphImage( imIn,
+      tube::ImageMathFilters< VDimension >::MorphImage( imIn,
         command.GetValueAsInt( *it, "mode" ),
         command.GetValueAsFloat( *it, "radius" ),
         command.GetValueAsFloat( *it, "forgroundValue" ),
@@ -416,7 +416,7 @@ int DoIt( MetaCommand & command )
 
     else if( ( *it ).name == "overwrite" )
       {
-      tube::ImageFilters< VDimension >::OverwriteImage( imIn,
+      tube::ImageMathFilters< VDimension >::OverwriteImage( imIn,
         command.GetValueAsString( *it, "mask" ),
         command.GetValueAsFloat( *it, "maskKeyVal" ),
         command.GetValueAsFloat( *it, "imageKeyVal" ),
@@ -428,7 +428,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "blur" )
       {
       std::cout << "Blurring." << std::endl;
-      tube::ImageFilters< VDimension >::BlurImage( imIn,
+      tube::ImageMathFilters< VDimension >::BlurImage( imIn,
         command.GetValueAsFloat( *it, "sigma" ) );
       }
 
@@ -436,7 +436,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "blurOrder" )
       {
       std::cout << "Blurring." << std::endl;
-      tube::ImageFilters< VDimension >::BlurOrderImage( imIn,
+      tube::ImageMathFilters< VDimension >::BlurOrderImage( imIn,
         command.GetValueAsFloat( *it, "sigma" ),
         command.GetValueAsInt( *it, "order" ),
         command.GetValueAsInt( *it, "direction" ) );
@@ -446,7 +446,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "histogram" )
       {
       std::cout << "Histogram" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::
+      bool success = tube::ImageMathFilters< VDimension >::
         ComputeImageHistogram( imIn,
         static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
         command.GetValueAsString( *it, "histOutputFile" ) );
@@ -460,7 +460,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "histogram2" )
       {
       std::cout << "Histogram" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::
+      bool success = tube::ImageMathFilters< VDimension >::
         ComputeImageHistogram2( imIn,
         static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
         command.GetValueAsFloat( *it, "binMin" ),
@@ -476,7 +476,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "vessels" )
       {
       std::cout << "Vessel Enhancement" << std::endl;
-      tube::ImageFilters< VDimension >::EnhanceVessels( imIn,
+      tube::ImageMathFilters< VDimension >::EnhanceVessels( imIn,
         command.GetValueAsFloat( *it, "scaleMin" ),
         command.GetValueAsFloat( *it, "scaleMax" ),
         command.GetValueAsFloat( *it, "numScales" ) );
@@ -486,7 +486,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "CorrectionSlice" )
       {
       std::cout << "Correct intensity slice-by-slice" << std::endl;
-      tube::ImageFilters< VDimension >::
+      tube::ImageMathFilters< VDimension >::
         CorrectIntensitySliceBySliceUsingHistogramMatching( imIn,
         static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
         static_cast<unsigned int>( command.GetValueAsInt( *it,
@@ -497,7 +497,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Correction" )
       {
       std::cout << "Correct intensity in the volume" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::
+      bool success = tube::ImageMathFilters< VDimension >::
         CorrectIntensityUsingHistogramMatching( imIn,
         static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
         static_cast<unsigned int>( command.GetValueAsInt( *it,
@@ -513,7 +513,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "resize" )
       {
       std::cout << "Resampling." << std::endl;
-      tube::ImageFilters< VDimension >::Resize( imIn,
+      tube::ImageMathFilters< VDimension >::Resize( imIn,
         command.GetValueAsFloat( *it, "factor" ) );
       }
 
@@ -521,7 +521,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "resize2" )
       {
       std::cout << "Resampling" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::Resize( imIn,
+      bool success = tube::ImageMathFilters< VDimension >::Resize( imIn,
         command.GetValueAsString( *it, "inFile2" ) );
       if( !success )
         {
@@ -533,7 +533,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "segment" )
       {
       std::cout << "Segmenting" << std::endl;
-      tube::ImageFilters< VDimension >::
+      tube::ImageMathFilters< VDimension >::
         SegmentUsingConnectedThreshold( imIn,
         command.GetValueAsFloat( *it, "threshLow" ),
         command.GetValueAsFloat( *it, "threshHigh" ),
@@ -566,7 +566,7 @@ int DoIt( MetaCommand & command )
     // Voronoi
     else if( ( *it ).name == "Voronoi" )
       {
-      tube::ImageFilters< VDimension >::
+      tube::ImageMathFilters< VDimension >::
         ComputeVoronoiTessellation( imIn,
         static_cast<unsigned int>( command.GetValueAsInt( *it,
         "numCentroids" ) ),
@@ -585,7 +585,7 @@ int DoIt( MetaCommand & command )
     // ExtractSlice
     else if( ( *it ).name == "ExtractSlice" )
       {
-      tube::ImageFilters< VDimension >::ExtractSlice( imIn,
+      tube::ImageMathFilters< VDimension >::ExtractSlice( imIn,
         static_cast<unsigned int>( command.GetValueAsInt( *it,
           "dimension" ) ),
         static_cast<unsigned int>( command.GetValueAsInt( *it,

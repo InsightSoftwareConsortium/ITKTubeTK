@@ -21,15 +21,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubeImageFilters_h
-#define __tubeImageFilters_h
+#ifndef __tubeImageMathFilters_h
+#define __tubeImageMathFilters_h
 
 #include <itkImageFileReader.h>
 
 namespace tube
 {
 template< unsigned int VDimension >
-class ImageFilters
+class ImageMathFilters
 {
 public:
   typedef float                                    PixelType;
@@ -167,15 +167,15 @@ public:
     const std::string & centroidOutFilePath );
 
 private:
-  ImageFilters();
-  ~ImageFilters();
+  ImageMathFilters();
+  ~ImageMathFilters();
 
-}; // End class ImageFilters
+}; // End class ImageMathFilters
 
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeImageFilters.hxx"
+#include "tubeImageMathFilters.hxx"
 #endif
 
-#endif // End !defined( __tubeImageFilters_h )
+#endif // End !defined( __tubeImageMathFilters_h )
