@@ -109,8 +109,8 @@ int DoIt ( int argc, char * argv[] )
       }
     }
 
-  filter->SetBoxPosition( boxPositionVector );
-  filter->SetBoxSize( boxSizeVector );
+  filter->SetBoxPositionInWorldSpace( boxPositionVector );
+  filter->SetBoxSizeInWorldSpace( boxSizeVector );
   filter->SetCropTubes( CropTubes );
   //loading Volume mask if its there
   typename ImageReaderType::Pointer imReader = ImageReaderType::New();

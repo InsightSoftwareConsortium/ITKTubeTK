@@ -63,12 +63,12 @@ public:
   tubeWrapGetConstObjectMacro( Input, TubeGroupType, Filter );
 
   /** Set/Get bounding box corner */
-  tubeWrapSetMacro( BoxPosition, PointType, Filter );
-  tubeWrapGetMacro( BoxPosition, PointType, Filter );
+  tubeWrapSetMacro( BoxPositionInWorldSpace, PointType, Filter );
+  tubeWrapGetMacro( BoxPositionInWorldSpace, PointType, Filter );
 
   /** Set/Get bounding box size */
-  tubeWrapSetMacro( BoxSize, VectorType, Filter );
-  tubeWrapGetMacro( BoxSize, VectorType, Filter );
+  tubeWrapSetMacro( BoxSizeInWorldSpace, VectorType, Filter );
+  tubeWrapGetMacro( BoxSizeInWorldSpace, VectorType, Filter );
 
   /** Set/Get mask image */
   tubeWrapSetObjectMacro( MaskImage, ImageType, Filter );

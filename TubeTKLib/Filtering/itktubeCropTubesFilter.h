@@ -68,12 +68,12 @@ public:
   itkNewMacro( Self );
 
   /** Set/Get bounding box corner */
-  itkSetMacro( BoxPosition, PointType );
-  itkGetMacro( BoxPosition, PointType );
+  itkSetMacro( BoxPositionInWorldSpace, PointType );
+  itkGetMacro( BoxPositionInWorldSpace, PointType );
 
   /** Set/Get bounding box size */
-  itkSetMacro( BoxSize, VectorType );
-  itkGetMacro( BoxSize, VectorType );
+  itkSetMacro( BoxSizeInWorldSpace, VectorType );
+  itkGetMacro( BoxSizeInWorldSpace, VectorType );
 
   /** Set/Get mask image */
   itkSetObjectMacro( MaskImage, ImageType );
@@ -101,13 +101,13 @@ private:
   // purposely not implemented
   void operator=( const Self & );
 
-  PointType                   m_BoxPosition;
-  VectorType                  m_BoxSize;
+  PointType                   m_BoxPositionInWorldSpace;
+  VectorType                  m_BoxSizeInWorldSpace;
   typename ImageType::Pointer m_MaskImage;
   bool                        m_CropTubes;
   bool                        m_UseMaskImage;
 
-  bool IsInside( itk::Point< double, VDimension > pointPos,
+  bool IsInsideInWorldSpace( itk::Point< double, VDimension > pointPos,
     double tubeRadius,
     itk::Point< double, VDimension > boxPos,
     itk::Vector< double, VDimension > boxSize,
