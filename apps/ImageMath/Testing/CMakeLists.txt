@@ -30,7 +30,7 @@ set( PROJ_EXE
 
 # Test1
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test1
+            NAME ${MODULE_NAME}Test1
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -i -1 1 -100 100
@@ -38,17 +38,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test1-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test1-Compare
+            NAME ${MODULE_NAME}Test1-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test1.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}Test1-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test1 )
 
 # Test2
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test2
+            NAME ${MODULE_NAME}Test2
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -b 5
@@ -59,17 +59,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test2-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test2-Compare
+            NAME ${MODULE_NAME}Test2-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test2.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test2 )
+set_tests_properties( ${MODULE_NAME}Test2-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test2 )
 
 # Test3
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test3
+            NAME ${MODULE_NAME}Test3
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -S 1234
@@ -78,17 +78,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test3-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test3-Compare
+            NAME ${MODULE_NAME}Test3-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test3.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test3.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test3-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test3 )
+set_tests_properties( ${MODULE_NAME}Test3-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test3 )
 
 # Test4
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test4
+            NAME ${MODULE_NAME}Test4
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -S 1234
@@ -97,17 +97,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test4-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test4-Compare
+            NAME ${MODULE_NAME}Test4-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test4.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test4.mha}
                -i 0.01 )
-set_tests_properties( ${MODULE_NAME}-Test4-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test4 )
+set_tests_properties( ${MODULE_NAME}Test4-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test4 )
 
 # Test5
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test5
+            NAME ${MODULE_NAME}Test5
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -f 10
@@ -116,17 +116,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test5-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test5-Compare
+            NAME ${MODULE_NAME}Test5-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test5.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test5.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test5-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test5 )
+set_tests_properties( ${MODULE_NAME}Test5-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test5 )
 
 # Test6
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test6
+            NAME ${MODULE_NAME}Test6
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -a 0.95 0.05 DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test5.mha}
@@ -134,17 +134,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test6-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test6-Compare
+            NAME ${MODULE_NAME}Test6-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test6.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test6.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test6-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test6 )
+set_tests_properties( ${MODULE_NAME}Test6-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test6 )
 
 # Test7
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test7
+            NAME ${MODULE_NAME}Test7
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -t -1 -0.33 -1 1
@@ -152,17 +152,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test7-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test7-Compare
+            NAME ${MODULE_NAME}Test7-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test7.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test7.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test7-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test7 )
+set_tests_properties( ${MODULE_NAME}Test7-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test7 )
 
 # Test8
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test8
+            NAME ${MODULE_NAME}Test8
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -m -1 -0.33 DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha} 0
@@ -170,17 +170,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test8-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test8-Compare
+            NAME ${MODULE_NAME}Test8-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test8.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test8.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test8-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test8 )
+set_tests_properties( ${MODULE_NAME}Test8-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test8 )
 
 # Test9
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test9
+            NAME ${MODULE_NAME}Test9
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/GDS0015_1.mha}
                -M 0 10 255 0
@@ -188,17 +188,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test9-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test9-Compare
+            NAME ${MODULE_NAME}Test9-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test9.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test9.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test9-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test9 )
+set_tests_properties( ${MODULE_NAME}Test9-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test9 )
 
 # Test10
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test10
+            NAME ${MODULE_NAME}Test10
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/GDS0015_1.mha}
                -M 1 5 255 0
@@ -206,17 +206,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test10-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test10-Compare
+            NAME ${MODULE_NAME}Test10-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test10.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test10.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test10-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test10 )
+set_tests_properties( ${MODULE_NAME}Test10-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test10 )
 
 # Test11
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test11
+            NAME ${MODULE_NAME}Test11
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -b 10
@@ -224,17 +224,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test11-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test11-Compare
+            NAME ${MODULE_NAME}Test11-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test11.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test11.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test11-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test11 )
+set_tests_properties( ${MODULE_NAME}Test11-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test11 )
 
 # Test12
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test12
+            NAME ${MODULE_NAME}Test12
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -B 5 2 0
@@ -242,17 +242,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test12-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test12-Compare
+            NAME ${MODULE_NAME}Test12-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test12.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test12.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test12-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test12 )
+set_tests_properties( ${MODULE_NAME}Test12-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test12 )
 
 # Test13
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test13
+            NAME ${MODULE_NAME}Test13
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/im0001.crop2.mha}
                -z 0.7 1.4 3
@@ -260,49 +260,49 @@ ExternalData_Add_Test( TubeTKData
 
 # Test13-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test13-Compare
+            NAME ${MODULE_NAME}Test13-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test13.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test13.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test13-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test13 )
+set_tests_properties( ${MODULE_NAME}Test13-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test13 )
 
 # Test14
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test14
+            NAME ${MODULE_NAME}Test14
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -l 10 ${TEMP}/${MODULE_NAME}Test14.txt )
 
 # Test14-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test14-Compare
+            NAME ${MODULE_NAME}Test14-Compare
             COMMAND ${TubeTK_CompareTextFiles_EXE}
             -t ${TEMP}/${MODULE_NAME}Test14.txt
             -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test14.txt} )
-set_tests_properties( ${MODULE_NAME}-Test14-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test14 )
+set_tests_properties( ${MODULE_NAME}Test14-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test14 )
 
 # Test15
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test15
+            NAME ${MODULE_NAME}Test15
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -L 100 -1 0.01 ${TEMP}/${MODULE_NAME}Test15.txt )
 
 # Test15-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test15-Compare
+            NAME ${MODULE_NAME}Test15-Compare
             COMMAND ${TubeTK_CompareTextFiles_EXE}
             -t ${TEMP}/${MODULE_NAME}Test15.txt
             -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test15.txt} )
-set_tests_properties( ${MODULE_NAME}-Test15-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test15 )
+set_tests_properties( ${MODULE_NAME}Test15-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test15 )
 
 # Test16
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test16
+            NAME ${MODULE_NAME}Test16
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/CroppedWholeLungCTScan.mhd,CroppedWholeLungCTScan.raw}
                -c 100 10
@@ -310,18 +310,18 @@ ExternalData_Add_Test( TubeTKData
 
 # Test16-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test16-Compare
+            NAME ${MODULE_NAME}Test16-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test16.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test16.mha}
                -i 0.5
                -n 300 )
-set_tests_properties( ${MODULE_NAME}-Test16-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test16 )
+set_tests_properties( ${MODULE_NAME}Test16-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test16 )
 
 # Test17
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test17
+            NAME ${MODULE_NAME}Test17
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -C 100 3 DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.mha}
@@ -329,17 +329,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test17-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test17-Compare
+            NAME ${MODULE_NAME}Test17-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test17.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test17.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test17-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test17 )
+set_tests_properties( ${MODULE_NAME}Test17-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test17 )
 
 # Test18
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test18
+            NAME ${MODULE_NAME}Test18
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -r 2
@@ -347,17 +347,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test18-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test18-Compare
+            NAME ${MODULE_NAME}Test18-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test18.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test18.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test18-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test18 )
+set_tests_properties( ${MODULE_NAME}Test18-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test18 )
 
 # Test19
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test19
+            NAME ${MODULE_NAME}Test19
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -R DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test18.mha}
@@ -365,17 +365,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test19-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test19-Compare
+            NAME ${MODULE_NAME}Test19-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test19.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test19.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test19-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test19 )
+set_tests_properties( ${MODULE_NAME}Test19-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test19 )
 
 # Test20
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test20
+            NAME ${MODULE_NAME}Test20
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -s 0 -1 -0.33 1 70 50 0
@@ -383,17 +383,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test20-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test20-Compare
+            NAME ${MODULE_NAME}Test20-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test20.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test20.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test20-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test20 )
+set_tests_properties( ${MODULE_NAME}Test20-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test20 )
 
 # Test21
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test21
+            NAME ${MODULE_NAME}Test21
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -O -10 -10 0
@@ -401,17 +401,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test21-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test21-Compare
+            NAME ${MODULE_NAME}Test21-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test21.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test21.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test21-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test21 )
+set_tests_properties( ${MODULE_NAME}Test21-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test21 )
 
 # Test23
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test23
+            NAME ${MODULE_NAME}Test23
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -P 0 DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
@@ -419,17 +419,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test23-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test23-Compare
+            NAME ${MODULE_NAME}Test23-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test23.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test23.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test23-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test23 )
+set_tests_properties( ${MODULE_NAME}Test23-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test23 )
 
 # Test24
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test24
+            NAME ${MODULE_NAME}Test24
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -u DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
@@ -437,17 +437,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test24-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test24-Compare
+            NAME ${MODULE_NAME}Test24-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test24.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test24.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test24-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test24 )
+set_tests_properties( ${MODULE_NAME}Test24-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test24 )
 
 # Test25
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test25
+            NAME ${MODULE_NAME}Test25
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -p 0 DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
@@ -455,17 +455,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test25-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test25-Compare
+            NAME ${MODULE_NAME}Test25-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test25.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test25.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test25-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test25 )
+set_tests_properties( ${MODULE_NAME}Test25-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test25 )
 
 # Test26
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test26
+            NAME ${MODULE_NAME}Test26
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -d 0
@@ -473,17 +473,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test26-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test26-Compare
+            NAME ${MODULE_NAME}Test26-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test26.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test26.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test26-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test26 )
+set_tests_properties( ${MODULE_NAME}Test26-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test26 )
 
 # Test27
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test27
+            NAME ${MODULE_NAME}Test27
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -x 6
@@ -491,17 +491,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test27-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test27-Compare
+            NAME ${MODULE_NAME}Test27-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test27.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test27.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test27-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test27 )
+set_tests_properties( ${MODULE_NAME}Test27-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test27 )
 
 # Test28
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test28
+            NAME ${MODULE_NAME}Test28
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -d 1
@@ -509,17 +509,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test28-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test28-Compare
+            NAME ${MODULE_NAME}Test28-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test28.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test28.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test28-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test28 )
+set_tests_properties( ${MODULE_NAME}Test28-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test28 )
 
 # Test29
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test29
+            NAME ${MODULE_NAME}Test29
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -d 2
@@ -527,17 +527,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test29-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test29-Compare
+            NAME ${MODULE_NAME}Test29-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test29.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test29.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test29-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test29 )
+set_tests_properties( ${MODULE_NAME}Test29-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test29 )
 
 # Test30
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test30
+            NAME ${MODULE_NAME}Test30
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -g 5
@@ -545,10 +545,10 @@ ExternalData_Add_Test( TubeTKData
 
 # Test30-Compare
 ExternalData_Add_Test( TubeTKData
-            NAME ${MODULE_NAME}-Test30-Compare
+            NAME ${MODULE_NAME}Test30-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test30.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test30.mha}
                -i 0.001 )
-set_tests_properties( ${MODULE_NAME}-Test30-Compare PROPERTIES DEPENDS
-            ${MODULE_NAME}-Test30 )
+set_tests_properties( ${MODULE_NAME}Test30-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}Test30 )
