@@ -58,22 +58,14 @@ CropTubesFilter< VDimension >
 {
   const TubeGroupType* pSourceTubeGroup = this->GetInput();
   typename TubeGroupType::ChildrenListPointer pSourceTubeList =
-    pSourceTubeGroup->GetChildren();
+    pSourceTubeGroup->GetChildren( TubeGroupType::MaximumDepth, "Tube" );
 
   TubeGroupType* pTargetTubeGroup = this->GetOutput();
 
   pTargetTubeGroup->CopyInformation( pSourceTubeGroup );
-  // TODO: make CopyInformation of itk::SpatialObject do this
-  pTargetTubeGroup->GetObjectToParentTransform()->SetFixedParameters(
-    pSourceTubeGroup->GetObjectToParentTransform()->GetFixedParameters() );
-  pTargetTubeGroup->GetObjectToParentTransform()->SetParameters(
-    pSourceTubeGroup->GetObjectToParentTransform()->GetParameters() );
   pTargetTubeGroup->Update();
 
   int targetTubeId=0;
-  typename TubePointType::PointType worldBoxposition;
-  typename TubePointType::VectorType worldBoxSize;
-
   for( typename TubeGroupType::ChildrenListType::iterator
     tubeList_it = pSourceTubeList->begin();
     tubeList_it != pSourceTubeList->end(); ++tubeList_it )
@@ -95,44 +87,26 @@ CropTubesFilter< VDimension >
     typename TubeType::TubePointListType pointList =
       pCurSourceTube->GetPoints();
 
-    //Get Index to World Transformation
-    typename TubeType::TransformType * pTubeObjectPhysTransform =
-      pCurSourceTube->GetObjectToWorldTransform();
-
-    worldBoxposition =
-        pTubeObjectPhysTransform->TransformPoint( m_BoxPosition );
-    worldBoxSize =
-        pTubeObjectPhysTransform->TransformVector( m_BoxSize );
-
     for( typename TubeType::TubePointListType::const_iterator
       pointList_it = pointList.begin();
       pointList_it != pointList.end(); ++pointList_it )
       {
       TubePointType curSourcePoint = *pointList_it;
-      //Transform parameters in physical space
       typename TubePointType::PointType curSourcePos =
-        pTubeObjectPhysTransform->TransformPoint(
-          curSourcePoint.GetPositionInObjectSpace() );
+          curSourcePoint.GetPositionInWorldSpace();
       typename TubePointType::CovariantVectorType curTubeNormal1 =
-        pTubeObjectPhysTransform->TransformCovariantVector(
-          curSourcePoint.GetNormal1InObjectSpace() );
+          curSourcePoint.GetNormal1InWorldSpace();
       typename TubePointType::CovariantVectorType curTubeNormal2 =
-        pTubeObjectPhysTransform->TransformCovariantVector(
-          curSourcePoint.GetNormal2InObjectSpace() );
-      VectorType curRadius;
-      for( unsigned int i = 0; i < VDimension; i++ )
-        {
-        curRadius[i] = curSourcePoint.GetRadiusInObjectSpace();
-        }
-      typename TubePointType::VectorType curRadiusVector =
-        pTubeObjectPhysTransform->TransformVector( curRadius );
-      //Save Normals in a vector to pass it as an argument for IsIside()
+          curSourcePoint.GetNormal2InWorldSpace();
+      double curRadius = curSourcePoint.GetRadiusInWorldSpace();
+
       std::vector<typename TubePointType::CovariantVectorType> normalList;
       normalList.push_back( curTubeNormal1 );
       if( VDimension == 3 )
         {
         normalList.push_back( curTubeNormal2 );
         }
+
       bool volumeMaskFlag = false;
       if( m_UseMaskImage )
         {
@@ -149,9 +123,10 @@ CropTubesFilter< VDimension >
             }
           }
         }
+
       //Save point in target tube if it belongs to the box
-      if( volumeMaskFlag || IsInside( curSourcePos, curRadiusVector[0],
-        worldBoxposition, worldBoxSize, normalList ) )
+      if( volumeMaskFlag || IsInsideInWorldSpace( curSourcePos, curRadius,
+        m_BoxPositionInWorldSpace, m_BoxSizeInWorldSpace, normalList ) )
         {
         if( m_CropTubes )
           {
@@ -173,12 +148,6 @@ CropTubesFilter< VDimension >
           typename TubeType::Pointer pTargetTube = TubeType::New();
 
           pTargetTube->CopyInformation( pCurSourceTube );
-
-          // TODO: make CopyInformation of itk::SpatialObject do this
-          pTargetTube->GetObjectToParentTransform()->SetFixedParameters(
-            pCurSourceTube->GetObjectToParentTransform()->GetFixedParameters() );
-          pTargetTube->GetObjectToParentTransform()->SetParameters(
-            pCurSourceTube->GetObjectToParentTransform()->GetParameters() );
           pTargetTube->Update();
 
           pTargetTube->ComputeTangentAndNormals();
@@ -199,12 +168,6 @@ CropTubesFilter< VDimension >
       typename TubeType::Pointer pTargetTube = TubeType::New();
 
       pTargetTube->CopyInformation( pCurSourceTube );
-
-      // TODO: make CopyInformation of itk::SpatialObject do this
-      pTargetTube->GetObjectToParentTransform()->SetFixedParameters(
-        pCurSourceTube->GetObjectToParentTransform()->GetFixedParameters() );
-      pTargetTube->GetObjectToParentTransform()->SetParameters(
-        pCurSourceTube->GetObjectToParentTransform()->GetParameters() );
       pTargetTube->Update();
 
       pTargetTube->ComputeTangentAndNormals();
@@ -224,61 +187,30 @@ CropTubesFilter< VDimension >
 template< unsigned int VDimension >
 bool
 CropTubesFilter< VDimension >
-::IsInside( itk::Point< double, VDimension > pointPos,
+::IsInsideInWorldSpace( itk::Point< double, VDimension > pointPos,
   double tubeRadius,
   itk::Point< double, VDimension > boxPos,
   itk::Vector< double, VDimension > boxSize,
   std::vector<  typename itk::TubeSpatialObjectPoint
     < VDimension >::CovariantVectorType > normalList )
 {
-  // Return a boolean indicating if any slice of the tube
-  // is included in the box.
-  // A slice is considered as a point and an associated radius
+  // Return true if a slice of a tube is within the box.
+  //   A slice is defined as a center point and its radius in the normal
+  //     directions.
   for( unsigned int i = 0; i < normalList.size(); i++ )
     {
-    bool hasXInside = false;
-    bool hasYInside = false;
-    bool hasZInside = false;
-    if( pointPos[0] + tubeRadius * normalList[i][0] >= boxPos[0] &&
-      pointPos[0] - tubeRadius * normalList[i][0] <= boxPos[0] + boxSize[0] )
+    for( unsigned int d = 0; d < VDimension; ++d )
       {
-      hasXInside = true;
-      }
-    if( pointPos[1] + tubeRadius * normalList[i][1] >= boxPos[1] &&
-      pointPos[1] - tubeRadius * normalList[i][1] <= boxPos[1] + boxSize[1] )
-      {
-      hasYInside = true;
-      }
-    switch( VDimension )
-      {
-      case 2:
+      if( ( pointPos[d] + tubeRadius * normalList[i][d] < boxPos[d]
+          && pointPos[d] - tubeRadius * normalList[i][d] < boxPos[d] )
+        || ( pointPos[d] + tubeRadius * normalList[i][d] > boxPos[d] + boxSize[d]
+          && pointPos[d] - tubeRadius * normalList[i][d] > boxPos[d] + boxSize[d] ) )
         {
-        hasZInside = true;
-        break;
+        return false;
         }
-      case 3:
-        {
-        if( pointPos[2] + tubeRadius  * normalList[i][2] >= boxPos[2] &&
-          pointPos[2] - tubeRadius * normalList[i][2] <=
-            boxPos[2] + boxSize[2] )
-          {
-          hasZInside = true;
-          }
-        break;
-        }
-      default:
-        {
-        tubeErrorMacro(
-          << "Error: Only 2D and 3D data is currently supported." );
-        return EXIT_FAILURE;
-        }
-      }
-    if( hasXInside && hasYInside && hasZInside )
-      {
-      return true;
       }
     }
-  return false;
+  return true;
 }
 
 //----------------------------------------------------------------------------
