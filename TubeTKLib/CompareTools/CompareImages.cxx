@@ -40,13 +40,16 @@ int main( int argc, char **argv )
   if( argc < 5 )
     {
     std::cerr << "Usage:" << std::endl;
-    std::cerr
-      << "-t testImage -b baselineImage1[,baselineImage2[,baselineImage3[, ...]"
+    std::cerr << "-t testImage" << std::endl;
+    std::cerr << "-b baselineImage1[,baselineImage2[,baselineImage3[, ...]"
       << std::endl;
-    std::cerr
-      << "If you supply more than one baselineImage, this test will pass if any"
+    std::cerr << "    If more than one baselineImage, test will pass if any"
       << std::endl;
-    std::cerr << "of them match the testImage" << std::endl;
+    std::cerr << "      of them match the testImage." << std::endl;
+    std::cerr << "-i toleranceIntensity" << std::endl;
+    std::cerr << "-r toleranceRadius" << std::endl;
+    std::cerr << "-n toleranceNumberOfPixels" << std::endl;
+    std::cerr << "-c toleranceCoordinates" << std::endl;
     return -1;
     }
   int bestBaselineStatus = 2001;

@@ -30,7 +30,7 @@ set( PROJ_EXE
 
 # Test1
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test1
+  NAME ${MODULE_NAME}Test1
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
     --samplingFactor 20
@@ -38,17 +38,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test1-Compare
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test1-Compare
+  NAME ${MODULE_NAME}Test1-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.tre
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.tre}
     -d 0.01 )
-set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
-  ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}Test1-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}Test1 )
 
 # Test2
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test2
+  NAME ${MODULE_NAME}Test2
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
     --loadTransform DATA{${TubeTK_DATA_ROOT}/VascularNetwork-TestTransform.tfm}
@@ -56,17 +56,17 @@ ExternalData_Add_Test( TubeTKData
 
 # Test2-Compare
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test2-Compare
+  NAME ${MODULE_NAME}Test2-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.tre
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.tre}
     -d 0.01 )
-set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
-  ${MODULE_NAME}-Test2 )
+set_tests_properties( ${MODULE_NAME}Test2-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}Test2 )
 
 # Test3
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test3
+  NAME ${MODULE_NAME}Test3
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
     --matchImage DATA{${TubeTK_DATA_ROOT}/SyntheticSurfaceImage.mha}
@@ -74,10 +74,10 @@ ExternalData_Add_Test( TubeTKData
 
 # Test3-Compare
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test3-Compare
+  NAME ${MODULE_NAME}Test3-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test3.tre
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test3.tre}
     -d 0.01 )
-set_tests_properties( ${MODULE_NAME}-Test3-Compare PROPERTIES DEPENDS
-  ${MODULE_NAME}-Test3 )
+set_tests_properties( ${MODULE_NAME}Test3-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}Test3 )

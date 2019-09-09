@@ -181,7 +181,8 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       {
       RidgeOpType::ContinuousIndexType xRidgeContI;
       im->TransformPhysicalPointToContinuousIndex( xRidgePnt, xRidgeContI );
-      std::cout << "Local ridge test failed.  No ridge found." << std::endl;
+      std::cout << "*** FAILURE: Local ridge test failed.  No ridge found."
+        << std::endl;
       std::cout << "   Source = " << xContI << std::endl;
       std::cout << "   Result = " << xRidgeContI << std::endl;
       ++failures;
@@ -199,7 +200,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     diff = std::sqrt( diff );
     if( diff > 2*pnt->GetRadiusInObjectSpace() && diff > 4 )
       {
-      std::cout << "Local ridge test failed.  Local ridge too far."
+      std::cout << "*** FAILURE: Local ridge test failed.  Local ridge too far."
         << std::endl;
       std::cout << "   Source = " << xContI << std::endl;
       std::cout << "   Result = " << xRidgeContI << std::endl;
@@ -212,10 +213,11 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     std::cout << "***** Beginning tube extraction ***** " << std::endl;
     TubeType::Pointer xTube = ridgeOp->ExtractRidge( xRidgePnt, mcRun );
     std::cout << "***** Ending tube extraction ***** " << std::endl;
+    std::cout << "   # of points = " << xTube->GetPoints().size() << std::endl;
 
     if( xTube.IsNull() )
       {
-      std::cout << "Ridge extraction failed" << std::endl;
+      std::cout << "*** FAILURE: Ridge extraction failed" << std::endl;
       ++failures;
       continue;
       }
@@ -224,50 +226,52 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     xTube2 = ridgeOp->ExtractRidge( xRidgePnt, 101 );
     if( xTube2.IsNotNull() )
       {
-      std::cout << "Ridge extracted twice - test failed" << std::endl;
+      std::cout << "*** FAILURE: Ridge extracted twice - test failed" << std::endl;
       ++failures;
       continue;
       }
 
     if( !ridgeOp->DeleteTube( xTube ) )
       {
-      std::cout << "Delete tube failed" << std::endl;
+      std::cout << "*** FAILURE: Delete tube failed" << std::endl;
       ++failures;
       continue;
       }
 
+    std::cout << "Repeat extraction" << std::endl;
     xTube = ridgeOp->ExtractRidge( xRidgePnt, 101 );
     if( xTube.IsNull() )
       {
-      std::cout << "Ridge extraction after delete failed." << std::endl;
+      std::cout << "*** FAILURE: Ridge extraction after delete failed." << std::endl;
       ++failures;
       continue;
       }
+    std::cout << "   # of points = " << xTube->GetPoints().size() << std::endl;
 
     if( !ridgeOp->DeleteTube( xTube ) )
       {
-      std::cout << "Second delete tube failed" << std::endl;
+      std::cout << "*** FAILURE: Second delete tube failed" << std::endl;
       ++failures;
       continue;
       }
 
     if( xTube.IsNull() )
       {
-      std::cout << "Ridge extraction failed" << std::endl;
+      std::cout << "*** FAILURE: Ridge extraction failed" << std::endl;
       ++failures;
       continue;
       }
 
     if( !ridgeOp->AddTube( xTube ) )
       {
-      std::cout << "Add tube failed" << std::endl;
+      std::cout << "*** FAILURE: Add tube failed" << std::endl;
       ++failures;
       continue;
       }
 
     if( !ridgeOp->DeleteTube( xTube ) )
       {
-      std::cout << "Third delete tube failed" << std::endl;
+      std::cout << "*** FAILURE: Third delete tube failed" << std::endl;
       ++failures;
       continue;
       }

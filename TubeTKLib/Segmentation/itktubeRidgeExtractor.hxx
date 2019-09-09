@@ -1549,7 +1549,7 @@ RidgeExtractor<TInputImage>
 {
   ContinuousIndexType newXI;
   m_InputImage->TransformPhysicalPointToContinuousIndex( newX, newXI );
-  //if( this->GetDebug() )
+  if( this->GetDebug() )
     {
     std::cout << "Ridge::LocalRidge" << std::endl;
     std::cout << "  x = " << newX << std::endl;
@@ -1564,7 +1564,7 @@ RidgeExtractor<TInputImage>
         {
         m_StatusCallBack( NULL, "Exited Image", 0 );
         }
-      //if( verbose || this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "RidgeExtractor::LocalRidge() : Exited Image 2"
           << std::endl;
@@ -1582,11 +1582,6 @@ RidgeExtractor<TInputImage>
   double levelness;
   double ridgeness = Ridgeness( newX, intensity, roundness, curvature,
     levelness );
-  if( ridgeness == 0 )
-    {
-    std::cout << "Ridgeness = 0, aborting" << std::endl;
-    return RIDGE_FAIL;
-    }
 
   double     val;
   MatrixType lN( ImageDimension, ImageDimension-1 );
@@ -1608,14 +1603,14 @@ RidgeExtractor<TInputImage>
       }
 
     // Local 1D Ridge
-    //if( this->GetDebug() )
+    if( this->GetDebug() )
       {
       std::cout << "LocalRidge: Start pxIndx = " << pXIV << std::endl;
       std::cout << "  lN = " << lN << std::endl;
       std::cout << "  val = " << m_DataSpline->Value( pXIV ) << std::endl;
       }
     m_DataSpline->Extreme( pXIV, &val, ImageDimension-1, lN );
-    //if( this->GetDebug() )
+    if( this->GetDebug() )
       {
       std::cout << "...End pxIndx = " << pXIV << std::endl;
       std::cout << "  val = " << val << std::endl;
@@ -1636,7 +1631,7 @@ RidgeExtractor<TInputImage>
           {
           m_StatusCallBack( NULL, "Exited Image", 0 );
           }
-        //if( verbose || this->GetDebug() )
+        if( verbose || this->GetDebug() )
           {
           std::cout << "RidgeExtractor::LocalRidge() : Exited Image 5"
             << std::endl;
@@ -1651,7 +1646,7 @@ RidgeExtractor<TInputImage>
         {
         m_StatusCallBack( NULL, "Revisited voxel", 0 );
         }
-      //if( verbose || this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "RidgeExtractor::LocalRidge() : Revisited voxel 3"
           << m_TubeMaskImage->GetPixel( indx ) << std::endl;
@@ -1666,7 +1661,7 @@ RidgeExtractor<TInputImage>
       curvature >= m_MinCurvatureStart &&
       levelness >= m_MinLevelnessStart )
       {
-      //if( this->GetDebug() )
+      if( this->GetDebug() )
         {
         std::cout << " Success: Local norm max: " << std::endl;
         std::cout << "  X: " << newX << std::endl;
@@ -1683,7 +1678,7 @@ RidgeExtractor<TInputImage>
       return SUCCESS;
       }
 
-    //if( this->GetDebug() )
+    if( this->GetDebug() )
       {
       std::cout << " Not a ridge: Local norm max: " << std::endl;
       std::cout << "  X: " << newX << std::endl;
@@ -1699,7 +1694,7 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  //if( this->GetDebug() )
+  if( this->GetDebug() )
     {
     std::cout << " FAIL: Local norm max: " << newX << std::endl;
     std::cout << "  Ridgeness: " << ridgeness << " >= "
@@ -1718,7 +1713,7 @@ RidgeExtractor<TInputImage>
       {
       m_StatusCallBack( NULL, "Ridgeness failure", 0 );
       }
-    //if( this->GetDebug() )
+    if( this->GetDebug() )
       {
       std::cout << "LocalRidge : Ridgeness failure" << std::endl;
       }
@@ -1731,7 +1726,7 @@ RidgeExtractor<TInputImage>
       {
       m_StatusCallBack( NULL, "Roundness failure", 0 );
       }
-    //if( this->GetDebug() )
+    if( this->GetDebug() )
       {
       std::cout << "LocalRidge : Roundness failure" << std::endl;
       }
@@ -1744,7 +1739,7 @@ RidgeExtractor<TInputImage>
       {
       m_StatusCallBack( NULL, "Curvature failure", 0 );
       }
-    //if( this->GetDebug() )
+    if( this->GetDebug() )
       {
       std::cout << "LocalRidge : Curvature failure" << std::endl;
       }
@@ -1757,7 +1752,7 @@ RidgeExtractor<TInputImage>
       {
       m_StatusCallBack( NULL, "Levelness failure", 0 );
       }
-    //if( this->GetDebug() )
+    if( this->GetDebug() )
       {
       std::cout << "LocalRidge : Levelness failure" << std::endl;
       }
