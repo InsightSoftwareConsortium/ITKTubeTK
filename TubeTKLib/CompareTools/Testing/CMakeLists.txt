@@ -70,6 +70,6 @@ set_tests_properties( CompareImages-Test6 PROPERTIES WILL_FAIL true )
 ExternalData_Add_Test( TubeTKData
   NAME CompareImages-Test7
   COMMAND ${CompareImages_EXE}
-    -c 1.0e-4
+    -c 0.1
     -t DATA{${TubeTK_DATA_ROOT}/ResampleImageTest2.mha}
     -b DATA{${TubeTK_DATA_ROOT}/ResampleImageTest2SpacingOff.mha} )

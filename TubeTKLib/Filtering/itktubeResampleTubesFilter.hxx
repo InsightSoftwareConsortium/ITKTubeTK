@@ -24,6 +24,8 @@
 #ifndef __itktubeResampleTubesFilter_hxx
 #define __itktubeResampleTubesFilter_hxx
 
+#include <iterator>
+
 #include "itktubeResampleTubesFilter.h"
 
 #include "itkMath.h"
@@ -210,6 +212,31 @@ ResampleTubesFilter< VDimension >
 {
   const TubeGroupType * inputTubeGroup = this->GetInput();
   typename TubeGroupType::Pointer tmpTubeGroup = nullptr;
+  /*
+  if( true )
+    {
+    char soTypeName[80];
+    strcpy( soTypeName, "TubeSpatialObject" );
+    typename TubeSpatialObjectType::ChildrenListPointer tubeList =
+      inputTubeGroup->GetChildren( inputTubeGroup->GetMaximumDepth(),
+        soTypeName );
+    typename TubeSpatialObjectType::ChildrenListType::iterator it =
+      tubeList->begin();
+    while( it != tubeList->end() )
+      {
+      auto itP = static_cast<TubeSpatialObjectType *>(it->GetPointer())
+        ->GetPoints().rbegin();
+      std::cout << "o1   " << itP->GetPositionInObjectSpace() << std::endl;
+      ++itP;
+      std::cout << "o2   " << itP->GetPositionInObjectSpace() << std::endl;
+      ++itP;
+      std::cout << "o3   " << itP->GetPositionInObjectSpace() << std::endl;
+      ++it;
+      }
+    tubeList->clear();
+    delete tubeList;
+    }
+  */
 
   typename TubeGroupType::TransformType::Pointer outputTransform;
   if( m_MatchImage )

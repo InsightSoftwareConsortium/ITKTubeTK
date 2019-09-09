@@ -66,6 +66,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   typedef itk::tube::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
 
+  std::cout << "start" << std::endl;
   // read image
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
   imageReader->SetFileName( inputImage );
@@ -109,6 +110,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
+  std::cout << "subsample" << std::endl;
   // subsample points in vessel
   typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeTreeType, TubeType >
     SubSampleTubeTreeFilterType;
@@ -127,6 +129,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
     }
 
 
+  std::cout << "weight func" << std::endl;
   typedef itk::tube::Function::TubeExponentialResolutionWeightFunction<
     TubeType::TubePointType, double >                WeightFunctionType;
   typedef RegistrationMethodType::FeatureWeightsType PointWeightsType;
@@ -199,20 +202,20 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   std::cout << indent << translation[0] << " "
     << translation[1] << " " << translation[2] << std::endl;
 
-  double knownResult[] = { -0.0144,
-    -0.0146,
-    0.011,
-    -1.104,
-    -0.129,
-    -0.671 };
+  double knownResult[] = { 0.00819,
+    -0.003,
+    0.015,
+    -0.981,
+    -0.194,
+    -0.665 };
   std::cout << "Parameters: " << std::endl;
   for( unsigned int ii = 0; ii < 6; ++ii )
     {
     std::cout << "Obtained: " << lastParameters[ii] << std::endl;
     std::cout << "Known:    " << knownResult[ii] << std::endl;
-    if( std::abs( ( lastParameters[ii] - knownResult[ii] )/ knownResult[ii] ) > 0.1 )
+    if( std::abs( lastParameters[ii] - knownResult[ii] ) > 0.01 )
       {
-      std::cerr << "Registration did not convert to correct parameter!" << std::endl;
+      std::cerr << "Registration did not converge to correct parameter!" << std::endl;
       return EXIT_FAILURE;
       }
     }

@@ -82,6 +82,33 @@ int DoIt( int argc, char * argv[] )
   tubesGroup = reader->GetGroup();
   if( tubesGroup.IsNotNull() )
     {
+    /*
+    if( true )
+      {
+      typedef typename FilterType::TubeSpatialObjectType TubeSpatialObjectType;
+      char soTypeName[80];
+      strcpy( soTypeName, "TubeSpatialObject" );
+      typename TubeSpatialObjectType::ChildrenListPointer tubeList =
+        tubesGroup->GetChildren( tubesGroup->GetMaximumDepth(),
+          soTypeName );
+      typename TubeSpatialObjectType::ChildrenListType::iterator it =
+        tubeList->begin();
+      while( it != tubeList->end() )
+        {
+        auto itP = static_cast<TubeSpatialObjectType *>(it->GetPointer())
+          ->GetPoints().rbegin();
+        std::cout << "o1   " << itP->GetPositionInObjectSpace() << std::endl;
+        ++itP;
+        std::cout << "o2   " << itP->GetPositionInObjectSpace() << std::endl;
+        ++itP;
+        std::cout << "o3   " << itP->GetPositionInObjectSpace() << std::endl;
+        ++it;
+        }
+      tubeList->clear();
+      delete tubeList;
+      }
+    */
+
     tubesGroup->Update();
     filter->SetInput( tubesGroup );
     filter->SetInputSpatialObject( tubesGroup );
@@ -112,20 +139,21 @@ int DoIt( int argc, char * argv[] )
     }
 
   if( !loadDisplacementField.empty() )
-      {
-      typedef typename FilterType::DisplacementFieldType DisplacementFieldType;
-      typedef typename itk::ImageFileReader< DisplacementFieldType >
-        DisplacementFieldReaderType;
+    {
+    typedef typename FilterType::DisplacementFieldType DisplacementFieldType;
+    typedef typename itk::ImageFileReader< DisplacementFieldType >
+      DisplacementFieldReaderType;
 
-      // Read the displacement field
-      typename DisplacementFieldReaderType::Pointer dfReader =
-        DisplacementFieldReaderType::New();
-      dfReader->SetFileName( loadDisplacementField.c_str() );
-      dfReader->Update();
-      filter->SetDisplacementField( dfReader->GetOutput() );
-      }
+    // Read the displacement field
+    typename DisplacementFieldReaderType::Pointer dfReader =
+      DisplacementFieldReaderType::New();
+    dfReader->SetFileName( loadDisplacementField.c_str() );
+    dfReader->Update();
+    filter->SetDisplacementField( dfReader->GetOutput() );
+    }
   itk::TransformFileReader::Pointer transformReader =
-      itk::TransformFileReader::New();
+    itk::TransformFileReader::New();
+
   if( !loadTransform.empty() )
     {
      // Read transform from file
@@ -144,8 +172,8 @@ int DoIt( int argc, char * argv[] )
   filter->Update();
   timeCollector.Stop( "Run Filter" );
 
-  std::cout << "Output # of children = "
-    << filter->GetOutput()->GetNumberOfChildren() << std::endl;
+  //std::cout << "Output # of children = "
+    //<< filter->GetOutput()->GetNumberOfChildren() << std::endl;
 
   progress = 0.9;
   progressReporter.Report( progress );
