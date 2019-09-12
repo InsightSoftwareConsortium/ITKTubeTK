@@ -70,6 +70,8 @@ CheckImageAttributes( const TInputImage * input,
   return (
     inputOrigin.GetVnlVector().is_equal( maskOrigin.GetVnlVector(), 0.01 )
     && inputRegion.GetIndex() == maskRegion.GetIndex()
+    && input->GetSpacing() == mask->GetSpacing()
+    && input->GetDirection() == mask->GetDirection()
     && inputRegion.GetSize() == maskRegion.GetSize() );
 }
 
@@ -108,7 +110,9 @@ int DoIt( int argc, char * argv[] )
     LabelMapReaderType::New();
   inLabelMapReader->SetFileName( labelmap.c_str() );
   inLabelMapReader->Update();
-  pdfSegmenter->SetLabelMap( inLabelMapReader->GetOutput() );
+
+  typename LabelMapType::Pointer labelMap = inLabelMapReader->GetOutput();
+  pdfSegmenter->SetLabelMap( labelMap );
 
   unsigned int numFeatures = 0;
   if( inputVolume1.size() > 1 )
@@ -150,17 +154,18 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
     reader->Update();
-    if( !CheckImageAttributes( reader->GetOutput(),
-        inLabelMapReader->GetOutput() ) )
+    typename InputImageType::Pointer inputImage = reader->GetOutput();
+    if( !CheckImageAttributes( inputImage.GetPointer(),
+        labelMap.GetPointer() ) )
       {
       std::cout << "Image attributes of inputVolume" << i+1
         << " and label map do not match.  Please check size, spacing, "
         << "origin." << std::endl;
       return EXIT_FAILURE;
       }
-    if( i == 1 )
+    if( i == 0 )
       {
-      pdfSegmenter->SetFeatureImage( reader->GetOutput() );
+      pdfSegmenter->SetFeatureImage( inputImage );
       }
     else
       {
@@ -202,7 +207,6 @@ int DoIt( int argc, char * argv[] )
   if( loadClassPDFBase.size() > 0 )
     {
     unsigned int numClasses = pdfSegmenter->GetNumberOfClasses();
-    std::cout << "loading classes" << std::endl;
     for( unsigned int i = 0; i < numClasses; i++ )
       {
       std::string fname = loadClassPDFBase;

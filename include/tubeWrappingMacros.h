@@ -121,7 +121,7 @@ limitations under the License.
 #define tubeWrapAddMacro( name, type, wrap_filter_object_name )  \
   void Add##name( type & value )                                        \
     {                                                                   \
-    this->m_##wrap_filter_object_name->Set##name( value );              \
+    this->m_##wrap_filter_object_name->Add##name( value );              \
     this->Modified();                                                   \
     }
 

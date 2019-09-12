@@ -38,16 +38,16 @@ namespace tube
 {
 
 template< class TImage, class TLabelMap >
-class PDFSegmenterBase : public Object
+class PDFSegmenterBase : public ProcessObject
 {
 public:
 
   typedef PDFSegmenterBase                     Self;
-  typedef Object                               Superclass;
+  typedef ProcessObject                        Superclass;
   typedef SmartPointer< Self >                 Pointer;
   typedef SmartPointer< const Self >           ConstPointer;
 
-  itkTypeMacro( PDFSegmenterBase, Object );
+  itkTypeMacro( PDFSegmenterBase, ProcessObject );
 
   itkNewMacro( Self );
 
