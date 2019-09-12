@@ -34,35 +34,34 @@ SegmentConnectedComponentsUsingParzenPDFs< TInputPixel, TDimension, TMaskPixel >
 {
   m_Filter = FilterType::New();
 
-  typename FeatureVectorGeneratorType::Pointer m_FVGenerator =
-    FeatureVectorGeneratorType::New();
+  m_FVGenerator = FeatureVectorGeneratorType::New();
 }
 
 template< class TInputPixel, unsigned int TDimension, class TMaskPixel >
 void
 SegmentConnectedComponentsUsingParzenPDFs< TInputPixel, TDimension, TMaskPixel >
 ::SetFeatureImage( InputImageType * img )
-  {
+{
   m_FVGenerator->SetInput( img );
-  }
+}
 
 template< class TInputPixel, unsigned int TDimension, class TMaskPixel >
 void
 SegmentConnectedComponentsUsingParzenPDFs< TInputPixel, TDimension, TMaskPixel >
 ::AddFeatureImage( InputImageType * img )
-  {
+{
   m_FVGenerator->AddInput( img );
-  }
+}
 
 template< class TInputPixel, unsigned int TDimension, class TMaskPixel >
 void
 SegmentConnectedComponentsUsingParzenPDFs< TInputPixel, TDimension, TMaskPixel >
 ::Update( void )
-  {
+{
   m_Filter->SetFeatureVectorGenerator( m_FVGenerator );
 
   m_Filter->Update();
-  }
+}
 
 template< class TInputPixel, unsigned int TDimension, class TMaskPixel >
 void
