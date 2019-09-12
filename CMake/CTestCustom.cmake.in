@@ -116,7 +116,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   # Fake library is empty
   "itkTubeTK_fake_library_src.*empty"
   "itkTubeTK_fake_library_src.*no symbols"
-  "libitkTubeTKITK-.*empty"
+  "libitkTubeTK-.*empty"
 
   # incrTcl
   "generic.itk_(option|archetype).*warning"
