@@ -33,7 +33,7 @@ set( PROJ_EXE
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-RegularStepGradientDescent
   COMMAND ${PROJ_EXE}
-    DATA{${TubeTK_DATA_ROOT}/Synthetic-04-Speed.mha}
+    DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Synthetic-04-Speed.mha}
     ${TEMP}/${MODULE_NAME}-RegularStepGradientDescent.tre
     --startPoint 113.962,58.9872,115
     --targetPoint 66.3718,113.141,76
@@ -48,7 +48,7 @@ ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-RegularStepGradientDescent-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-RegularStepGradientDescent.tre
-    -b DATA{${TubeTK_DATA_ROOT}/MPE-RegularStepGradientDescent.tre}
+    -b DATA{${TubeTK_DATA_ROOT}/SegmentTubeUsingMinimalPath-RegularStepGradientDescent.tre}
     -d 0.01 )
 set_tests_properties( ${MODULE_NAME}-RegularStepGradientDescent-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-RegularStepGradientDescent )
@@ -57,7 +57,7 @@ set_tests_properties( ${MODULE_NAME}-RegularStepGradientDescent-Compare PROPERTI
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-GradientDescent
   COMMAND ${PROJ_EXE}
-    DATA{${TubeTK_DATA_ROOT}/Synthetic-04-Speed.mha}
+    DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Synthetic-04-Speed.mha}
     ${TEMP}/${MODULE_NAME}-GradientDescent.tre
     --startPoint 113.962,58.9872,115
     --targetPoint 66.3718,113.141,76
@@ -70,7 +70,7 @@ ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-GradientDescent-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-GradientDescent.tre
-    -b DATA{${TubeTK_DATA_ROOT}/MPE-GradientDescent.tre}
+    -b DATA{${TubeTK_DATA_ROOT}/SegmentTubeUsingMinimalPath-GradientDescent.tre}
     -d 0.01 )
 set_tests_properties( ${MODULE_NAME}-GradientDescent-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-GradientDescent )
@@ -79,7 +79,7 @@ set_tests_properties( ${MODULE_NAME}-GradientDescent-Compare PROPERTIES DEPENDS
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-IterateNeighborhood
   COMMAND ${PROJ_EXE}
-    DATA{${TubeTK_DATA_ROOT}/Synthetic-04-Speed.mha}
+    DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Synthetic-04-Speed.mha}
     ${TEMP}/${MODULE_NAME}-IterateNeighborhood.tre
     --startPoint 113.962,58.9872,115
     --targetPoint 66.3718,113.141,76
@@ -92,7 +92,7 @@ ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-IterateNeighborhood-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-IterateNeighborhood.tre
-    -b DATA{${TubeTK_DATA_ROOT}/MPE-IterateNeighborhood.tre}
+    -b DATA{${TubeTK_DATA_ROOT}/SegmentTubeUsingMinimalPath-IterateNeighborhood.tre}
     -d 0.01 )
 set_tests_properties( ${MODULE_NAME}-IterateNeighborhood-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-IterateNeighborhood )
