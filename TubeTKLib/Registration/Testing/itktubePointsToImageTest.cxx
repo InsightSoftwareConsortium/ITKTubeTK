@@ -42,6 +42,7 @@ int itktubePointsToImageTest( int argc, char * argv[] )
   typedef itk::SpatialObjectReader< Dimension >      ReaderType;
   typedef itk::SpatialObject< Dimension >::ChildrenListType
       ObjectListType;
+  typedef itk::SpatialObject< Dimension >            SpatialObjectType;
   typedef itk::GroupSpatialObject< Dimension >       GroupType;
   typedef itk::TubeSpatialObject< Dimension >        TubeType;
   typedef TubeType::TubePointListType                TubePointListType;
@@ -54,8 +55,18 @@ int itktubePointsToImageTest( int argc, char * argv[] )
   tubeReader->Update();
 
   // Get the group
-  GroupType::Pointer group = tubeReader->GetGroup();
-  const unsigned int numberOfChildren = group->GetNumberOfChildren();
+  GroupType::Pointer group;
+  SpatialObjectType::Pointer soScene = tubeReader->GetOutput();
+  if( soScene->GetTypeName() == "GroupSpatialObject" )
+    {
+    group = static_cast< GroupType * >( soScene.GetPointer() );
+    }
+  else
+    {
+    group = tubeReader->GetGroup();
+    }
+
+  const unsigned int numberOfChildren = group->GetNumberOfChildren(-1);
   std::cout << "Number of children = " << numberOfChildren
     << std::endl;
   if( numberOfChildren != 2 )
