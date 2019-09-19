@@ -58,7 +58,7 @@ set_tests_properties( ${MODULE_NAME}-Test3
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test4
   COMMAND ${PROJ_EXE}
-    DATA{${TubeTK_DATA_ROOT}/ConvertTubesToSurfaceTestFile.tre}
+    DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Input.tre}
     ${TEMP}/${MODULE_NAME}-Test4_Surface.vtk
     --centerline ${TEMP}/${MODULE_NAME}-Test4_Centerline.vtp )
 
@@ -67,7 +67,7 @@ ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test4-Compare-Surface
   COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-Test4_Surface.vtk
-    -b DATA{${TubeTK_DATA_ROOT}/ConvertTubesToSurfaceTestFile_Surface.vtk}
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test4_Surface.vtk}
     -d 0.01 )
 
 set_tests_properties( ${MODULE_NAME}-Test4-Compare-Surface PROPERTIES DEPENDS

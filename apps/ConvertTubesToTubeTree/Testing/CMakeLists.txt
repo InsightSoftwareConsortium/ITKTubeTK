@@ -30,36 +30,36 @@ set( PROJ_EXE
 
 # Test1 - I-Junction
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test1
+  NAME ${MODULE_NAME}Test1
   COMMAND ${PROJ_EXE}
-    DATA{${TubeTK_DATA_ROOT}/I_Junction_3D.tre}
-    ${TEMP}/${MODULE_NAME}Test1.tre )
+    DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Input-IJunc.tre}
+    ${TEMP}/${MODULE_NAME}Test1-Tree.tre )
 
 # Test1 - Compare - I-Junction
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test1-Compare
+  NAME ${MODULE_NAME}Test1-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test1.tre
-    -b DATA{${TubeTK_DATA_ROOT}/I_Junction_3D_tree.tre}
+    -t ${TEMP}/${MODULE_NAME}Test1-Tree.tre
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Tree.tre}
     -d 0.01 )
 
-set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
-  ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}Test1-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}Test1 )
 
 # Test2 - Y-Junction
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test2
+  NAME ${MODULE_NAME}Test2
   COMMAND ${PROJ_EXE}
-    DATA{${TubeTK_DATA_ROOT}/Y_Junction_3D.tre}
-    ${TEMP}/${MODULE_NAME}Test2.tre )
+    DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Input-YJunc.tre}
+    ${TEMP}/${MODULE_NAME}Test2-Tree.tre )
 
 # Test2 - Compare - Y-Junction
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test2-Compare
+  NAME ${MODULE_NAME}Test2-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test2.tre
-    -b DATA{${TubeTK_DATA_ROOT}/Y_Junction_3D_tree.tre}
+    -t ${TEMP}/${MODULE_NAME}Test2-Tree.tre
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Tree.tre}
     -d 0.01 )
 
-set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
-  ${MODULE_NAME}-Test2 )
+set_tests_properties( ${MODULE_NAME}Test2-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}Test2 )
