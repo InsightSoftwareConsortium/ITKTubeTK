@@ -21,6 +21,7 @@
 ##############################################################################
 
 export PATH="@TubeTK_BINARYDIR@/bin;${PATH}"
+export TubeTK_DATA_ROOT="@TubeTK_DATA_ROOT@"
 
 $*
 RET=$?

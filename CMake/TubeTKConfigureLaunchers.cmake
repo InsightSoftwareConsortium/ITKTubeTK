@@ -47,8 +47,10 @@ message( STATUS "Configuring Launcher script" )
 set( TubeTK_LAUNCHER )
 if( WIN32 )
   set( _launcher_platform "windows" )
-  configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.bat.in
-    ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat @ONLY )
+  foreach( _build_type "" Debug Release )
+    configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.bat.in
+      ${TubeTK_BINARY_DIR}/bin/${_build_type}/TubeTKLauncher.bat @ONLY )
+  endforeach()
 
   find_program( CMD_EXECUTABLE "cmd" )
   if( NOT CMD_EXECUTABLE )
@@ -57,11 +59,11 @@ if( WIN32 )
   endif()
   mark_as_advanced( CMD_EXECUTABLE )
 
-  set( TubeTK_LAUNCHER ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat )
+  set( TubeTK_LAUNCHER ${TubeTK_BINARY_DIR}/Release/TubeTKLauncher.bat )
 elseif( UNIX )
   set( _launcher_platform "unix" )
   configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.sh.in
-    ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh @ONLY )
+    ${TubeTK_BINARY_DIR}/bin/TubeTKLauncher.sh @ONLY )
 
   find_program( SH_EXECUTABLE "sh" )
   if( NOT SH_EXECUTABLE )
@@ -69,7 +71,7 @@ elseif( UNIX )
       "Could not find 'sh' executable required to test using the launcher" )
   endif()
   set( TubeTK_LAUNCHER ${SH_EXECUTABLE}
-    ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh )
+    ${TubeTK_BINARY_DIR}/bin/TubeTKLauncher.sh )
 elseif( NOT UNIX )
   message( FATAL_ERROR
     "Configuring Launcher script - failed [unknown platform]" )
