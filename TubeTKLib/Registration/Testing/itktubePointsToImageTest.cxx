@@ -56,7 +56,7 @@ int itktubePointsToImageTest( int argc, char * argv[] )
 
   // Get the group
   GroupType::Pointer group;
-  SpatialObjectType::Pointer soScene = tubeReader->GetOutput();
+  SpatialObjectType::Pointer soScene = tubeReader->GetGroup();
   if( soScene->GetTypeName() == "GroupSpatialObject" )
     {
     group = static_cast< GroupType * >( soScene.GetPointer() );

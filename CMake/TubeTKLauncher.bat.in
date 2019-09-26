@@ -22,6 +22,7 @@ REM
 REM ###########################################################################
 
 SET PATH="@TubeTK_BINARY_DIR@/bin;%PATH%"
+SET TubeTK_DATA_ROOT="@TubeTK_DATA_ROOT@"
 
 %*
 IF %ERRORLEVEL% NEQ 0 (
