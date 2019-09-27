@@ -148,7 +148,7 @@ public:
   void SetProgressProcessInformation( void * processInfo, double fraction,
     double start );
 
-  virtual void Update( void );
+  virtual void Update( void ) override;
 
   virtual void ClassifyImages( void );
 
