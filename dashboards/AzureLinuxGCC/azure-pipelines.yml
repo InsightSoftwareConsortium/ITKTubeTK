@@ -32,6 +32,9 @@ jobs:
     - bash: |
         set -x
         git clone https://github.com/Slicer/SlicerExecutionModel.git SlicerExecutionModel
+        cd SlicerExecutionModel
+        git checkout ef094e7140d71b5e75675f63910d39acd1d7221d
+        cd ..
         mkdir SlicerExecutionModel-Release
         cd SlicerExecutionModel-Release
         cmake -GNinja -DBUILD_TESTING=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DCMAKE_BUILD_TYPE=Release ../SlicerExecutionModel
