@@ -56,10 +56,26 @@ jobs:
             curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
             chmod u+x dockcross-manylinux-download-cache-and-build-module-wheels.sh
       - run:
+          name: Build Module Dependencies
+          command: |
+            cd ~
+            git clone https://github.com/InsightSoftwareConsortium/ITKSplitComponents
+            cd ITKSplitComponents
+            cp ~/ITKUltrasound/dockcross-manylinux-download-cache-and-build-module-wheels.sh .
+            ./dockcross-manylinux-download-cache-and-build-module-wheels.sh
+            cd ~
+            git clone https://github.com/InsightSoftwareConsortium/ITKMinimumPathExtraction
+            cd ITKMinimumPathExtraction
+            ln -s ~/ITKSplitComponents/ITKPythonPackage .
+            ln -s ~/ITKSplitComponents/tools .
+            ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh
+      - run:
           name: Build Python packages
           no_output_timeout: 1.0h
           command: |
-            ./dockcross-manylinux-download-cache-and-build-module-wheels.sh
+            mv ~/ITKSplitComponents/ITKPythonPackage .
+            mv ~/ITKSplitComponents/tools .
+            ./ITKPythonPackage/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh
       - store_artifacts:
           path: dist
           destination: dist
