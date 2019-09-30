@@ -25,7 +25,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 ExternalData_Add_Test_With_Env(
   NAME Python.VesselTubeToNumPyTest
-  COMMAND ${PYTHON_EXECUTABLE}
+  COMMAND ${TubeTK_LAUNCHER} ${PYTHON_EXECUTABLE}
     ${CMAKE_CURRENT_SOURCE_DIR}/test_tubetk.py
     VesselTubeToNumPyTest
       DATA{${TubeTK_DATA_ROOT}/tube.tre}

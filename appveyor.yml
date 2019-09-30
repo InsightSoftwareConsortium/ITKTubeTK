@@ -11,8 +11,8 @@ install:
   - cd ITKMinimalPathExtraction
   - curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
   - ps: .\windows-download-cache-and-build-module-wheels.ps1
-  - cd ../ITKTubeTK
-  - ps: C:\Python35-x64\python.exe C:\P\IPP\scripts\windows_build_module_wheels.py
+  - cd ..\ITKTubeTK
+  - C:\Python35-x64\python.exe C:\P\IPP\scripts\windows_build_module_wheels.py
 
 build: off
 
