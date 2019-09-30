@@ -42,7 +42,7 @@ jobs:
         set -x
         mkdir ITKTubeTK-Release
         cd ITKTubeTK-Release
-        curl -L https://data.kitware.com/api/v1/item/5c1aaf188d777f072bdc2d36/download -o ExternalData.zip
+        curl -L https://data.kitware.com/api/v1/item/5d915225d35580e6dc50feb0/download -o ExternalData.zip
         unzip ExternalData.zip
         cd ..
       displayName: Download testing data
