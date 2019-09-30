@@ -9,8 +9,8 @@ cache:
     - "$HOME/Library/Caches/Homebrew"
 script:
 - pushd ..
-- git clone https://github.com/InsightSoftwareConsortium/ITKMinimumPathExtraction
-- pushd ITKMinimumPathExtraction
+- git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
+- pushd ITKMinimalPathExtraction
 - /Users/Kitware/Dashboards/ITK/ITKPythonPackage/scripts/macpython-build-module-wheels.sh 3.6
 - popd; popd
 - /Users/Kitware/Dashboards/ITK/ITKPythonPackage/scripts/macpython-build-module-wheels.sh 3.6
