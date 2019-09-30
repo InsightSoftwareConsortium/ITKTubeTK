@@ -11,7 +11,9 @@ script:
 - pushd ..
 - git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
 - pushd ITKMinimalPathExtraction
-- /Users/Kitware/Dashboards/ITK/ITKPythonPackage/scripts/macpython-build-module-wheels.sh 3.6
+- curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/macpython-download-cache-and-build-module-wheels.sh -O
+- chmod u+x macpython-download-cache-and-build-module-wheels.sh
+- ./macpython-download-cache-and-build-module-wheels.sh 3.6
 - popd; popd
 - /Users/Kitware/Dashboards/ITK/ITKPythonPackage/scripts/macpython-build-module-wheels.sh 3.6
 - tar -zcvf dist.tar.gz dist/
