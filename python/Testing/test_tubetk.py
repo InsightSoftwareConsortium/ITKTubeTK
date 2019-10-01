@@ -39,6 +39,7 @@ if not os.path.exists(TubeTK_BUILD_DIR):
     sys.exit(1)
 
 sys.path.append( os.path.join(TubeTK_BUILD_DIR, 'lib') )
+sys.path.append( os.path.join(TubeTK_BUILD_DIR, 'Wrapping/Generators/Python') )
 sys.path.append( os.path.join(TubeTK_BUILD_DIR, 'python') )
 
 def VesselTubeToNumPyTest(tubes, baseline_array):
@@ -54,6 +55,7 @@ def VesselTubeToNumPyTest(tubes, baseline_array):
 
     all_fields_close = True
     for field in baseline.dtype.fields.keys():
+        print( "Testing field = " + field )
         if not np.allclose(array[field], baseline[field]):
             all_fields_close = False
             print('The array field: ' + field + ' does not match!')

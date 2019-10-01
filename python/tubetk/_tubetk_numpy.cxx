@@ -106,7 +106,7 @@ extern "C"
     npy_intp stride = 0;
     int retval;
 
-    PyObject * recordList = PyList_New( 14 );
+    PyObject * recordList = PyList_New( 13 );
     if( recordList == NULL )
       {
       goto fail;
@@ -119,7 +119,7 @@ extern "C"
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s,i)", "Position", "d", Dimension );
+    subDtype = Py_BuildValue( "(s,s,i)", "PositionInWorldSpace", "d", Dimension );
     retval = PyList_SetItem( recordList, 1, subDtype );
     if( retval == -1 )
       {
@@ -134,28 +134,28 @@ extern "C"
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s,i)", "Tangent", "d", Dimension );
+    subDtype = Py_BuildValue( "(s,s,i)", "TangentInWorldSpace", "d", Dimension );
     retval = PyList_SetItem( recordList, 3, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s,i)", "Normal1", "d", Dimension );
+    subDtype = Py_BuildValue( "(s,s,i)", "Normal1InWorldSpace", "d", Dimension );
     retval = PyList_SetItem( recordList, 4, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s,i)", "Normal2", "d", Dimension );
+    subDtype = Py_BuildValue( "(s,s,i)", "Normal2InWorldSpace", "d", Dimension );
     retval = PyList_SetItem( recordList, 5, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s)", "Radius", "f" );
+    subDtype = Py_BuildValue( "(s,s)", "RadiusInWorldSpace", "f" );
     retval = PyList_SetItem( recordList, 6, subDtype );
     if( retval == -1 )
       {
@@ -216,7 +216,6 @@ extern "C"
     array = PyArray_SimpleNewFromDescr( 1, dims, dtype );
 #endif
 
-
     stride = PyArray_STRIDE( array, 0 );
     data = PyArray_BYTES( array );
     dataElementStart = data;
@@ -233,7 +232,7 @@ extern "C"
       data += sizeof( int );
 
       const TubePointType::PointType & position =
-        tubePoint.GetPositionInObjectSpace();
+        tubePoint.GetPositionInWorldSpace();
       for( unsigned int j = 0; j < Dimension; ++j )
         {
         double td = position[j];
@@ -249,7 +248,7 @@ extern "C"
         data += sizeof( float );
         }
 
-      const TubePointType::VectorType & tangent = tubePoint.GetTangentInObjectSpace();
+      const TubePointType::VectorType & tangent = tubePoint.GetTangentInWorldSpace();
       for( unsigned int j = 0; j < Dimension; ++j )
         {
         double td = tangent[j];
@@ -258,7 +257,7 @@ extern "C"
         }
 
       const TubePointType::CovariantVectorType & normal1 =
-        tubePoint.GetNormal1InObjectSpace();
+        tubePoint.GetNormal1InWorldSpace();
       for( unsigned int j = 0; j < Dimension; ++j )
         {
         double td = normal1[j];
@@ -267,7 +266,7 @@ extern "C"
         }
 
       const TubePointType::CovariantVectorType & normal2 =
-        tubePoint.GetNormal2InObjectSpace();
+        tubePoint.GetNormal2InWorldSpace();
       for( unsigned int j = 0; j < Dimension; ++j )
         {
         double td = normal2[j];
@@ -275,7 +274,7 @@ extern "C"
         data += sizeof( double );
         }
 
-      const float radius = tubePoint.GetRadiusInObjectSpace();
+      const float radius = tubePoint.GetRadiusInWorldSpace();
       std::memcpy( data, &radius, sizeof( float ) );
       data += sizeof( float );
 

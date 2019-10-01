@@ -40,7 +40,7 @@ set_target_properties( _tubetk_numpy
   PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}" )
 
 target_link_libraries( _tubetk_numpy
-  TubeTK
+  ${TubeTK_LIBRARIES}
   ${ITK_LIBRARIES}
   ${PYTHON_LIBRARIES} )
 
