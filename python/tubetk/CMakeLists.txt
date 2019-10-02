@@ -45,13 +45,13 @@ target_link_libraries( _tubetk_numpy
   ${PYTHON_LIBRARIES} )
 
 add_custom_target( CopyPurePythonTubeTK ALL "${CMAKE_COMMAND}" -P
-  "${CMAKE_CURRENT_SOURCE_DIR}/CMake/CopyTubeTK.cmake"
+  "${TubeTK_SOURCE_DIR}/CMake/CopyFiles.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}"
   "*.py"
   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" )
 
 add_custom_target( CopyPythonLibTubeTK ALL "${CMAKE_COMMAND}" -P
-  "${CMAKE_CURRENT_SOURCE_DIR}/CMake/CopyTubeTK.cmake"
+  "${TubeTK_SOURCE_DIR}/CMake/CopyFiles.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/../../lib"
   "*pyd*"
   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}" )
