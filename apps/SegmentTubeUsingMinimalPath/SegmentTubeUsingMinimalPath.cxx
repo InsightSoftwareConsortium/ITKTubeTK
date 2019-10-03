@@ -30,7 +30,7 @@
 #include "itkGroupSpatialObject.h"
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
-#include "tubeSegmentTubesUsingMinimalPath.h"
+#include "tubeSegmentTubeUsingMinimalPath.h"
 #include <sstream>
 
 #include "SegmentTubeUsingMinimalPathCLP.h"
@@ -64,7 +64,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start( "Load data" );
 
-  typedef tube::SegmentTubesUsingMinimalPath< DimensionT, PixelType >
+  typedef tube::SegmentTubeUsingMinimalPath< DimensionT, PixelType >
                                                          FilterType;
   typename FilterType::Pointer filter = FilterType::New();
 

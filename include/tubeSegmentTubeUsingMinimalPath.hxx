@@ -15,24 +15,24 @@
  *  limitations under the License.
  *
 *=========================================================================*/
-#ifndef __tubeSegmentTubesUsingMinimalPath_hxx
-#define __tubeSegmentTubesUsingMinimalPath_hxx
+#ifndef __tubeSegmentTubeUsingMinimalPath_hxx
+#define __tubeSegmentTubeUsingMinimalPath_hxx
 
-#include "tubeSegmentTubesUsingMinimalPath.h"
+#include "tubeSegmentTubeUsingMinimalPath.h"
 
 namespace tube
 {
 
 template< unsigned int Dimension, class TInputPixel >
-SegmentTubesUsingMinimalPath< Dimension, TInputPixel >
-::SegmentTubesUsingMinimalPath( void )
+SegmentTubeUsingMinimalPath< Dimension, TInputPixel >
+::SegmentTubeUsingMinimalPath( void )
 {
   m_Filter = FilterType::New();
 }
 
 template< unsigned int Dimension, class TInputPixel >
 void
-SegmentTubesUsingMinimalPath< Dimension, TInputPixel >
+SegmentTubeUsingMinimalPath< Dimension, TInputPixel >
 ::SetIntermediatePoints( std::vector< PointType > v )
 {
   m_Filter->SetIntermediatePoints( v );
@@ -40,7 +40,7 @@ SegmentTubesUsingMinimalPath< Dimension, TInputPixel >
 
 template< unsigned int Dimension, class TInputPixel >
 void
-SegmentTubesUsingMinimalPath< Dimension, TInputPixel >
+SegmentTubeUsingMinimalPath< Dimension, TInputPixel >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

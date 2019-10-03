@@ -1,6 +1,6 @@
-itk_wrap_include( tubeSegmentTubesUsingMinimalPath.h )
+itk_wrap_include( tubeSegmentTubeUsingMinimalPath.h )
 
-itk_wrap_named_class("tube::SegmentTubesUsingMinimalPath" tubeSegmentTubesUsingMinimalPath POINTER)
+itk_wrap_named_class("tube::SegmentTubeUsingMinimalPath" tubeSegmentTubeUsingMinimalPath POINTER)
  foreach(d ${ITK_WRAP_IMAGE_DIMS})
     foreach(t ${WRAP_ITK_SCALAR})
       itk_wrap_template("${d}${ITKM_${t}}"  "${d}, ${ITKT_${t}}")

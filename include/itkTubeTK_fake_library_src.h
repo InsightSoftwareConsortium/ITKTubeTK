@@ -54,6 +54,7 @@ namespace tube {
 
 class EmptyClass
   {
+  int foo;
   };
 
 }
