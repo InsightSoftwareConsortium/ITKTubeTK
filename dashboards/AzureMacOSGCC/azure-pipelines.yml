@@ -20,7 +20,7 @@ jobs:
       displayName: Install dependencies
     - bash: |
         set -x
-        git clone -b release https://github.com/InsightSoftwareConsortium/ITK.git ITK
+        git clone https://github.com/InsightSoftwareConsortium/ITK.git ITK
         mkdir ITK-Release
         cd ITK-Release
         cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Release ../ITK
