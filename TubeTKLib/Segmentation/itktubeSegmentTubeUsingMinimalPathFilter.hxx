@@ -15,10 +15,10 @@
  *  limitations under the License.
  *
 *=========================================================================*/
-#ifndef __itktubeSegmentTubesUsingMinimalPathFilter_hxx
-#define __itktubeSegmentTubesUsingMinimalPathFilter_hxx
+#ifndef __itktubeSegmentTubeUsingMinimalPathFilter_hxx
+#define __itktubeSegmentTubeUsingMinimalPathFilter_hxx
 
-#include "itktubeSegmentTubesUsingMinimalPathFilter.h"
+#include "itktubeSegmentTubeUsingMinimalPathFilter.h"
 
 // MinimalPathExtraction Imports
 #include "itkSpeedFunctionToPathFilter.h"
@@ -30,8 +30,8 @@ namespace itk
 namespace tube
 {
 template< unsigned int Dimension, class TInputPixel >
-SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
-::SegmentTubesUsingMinimalPathFilter( void )
+SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
+::SegmentTubeUsingMinimalPathFilter( void )
 {
   m_SpeedImage = NULL;
   m_RadiusImage = NULL;
@@ -51,7 +51,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
 
 template< unsigned int Dimension, class TInputPixel >
 void
-SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
+SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
 ::SetIntermediatePoints( std::vector< PointType > pathPoints )
 {
   m_IntermediatePoints = pathPoints;
@@ -59,7 +59,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
 
 template< unsigned int Dimension, class TInputPixel >
 void
-SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
+SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
 ::Update( void )
 {
   typedef itk::PolyLineParametricPath< Dimension > PathType;
@@ -257,7 +257,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
 
 template< unsigned int Dimension, class TInputPixel >
 bool
-SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
+SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
 ::IsPointTooNear( const InputSpatialObjectType * sourceTubeGroup,
               PointType outsidePoint,
               PointType &nearestPoint )
@@ -321,7 +321,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
 
 template< unsigned int Dimension, class TInputPixel >
 void
-SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
+SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
@@ -331,4 +331,4 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
 } // end namespace tube
 } // end namespace itk
 
-#endif // End !defined( __itktubeSegmentTubesUsingMinimalPathFilter_hxx )
+#endif // End !defined( __itktubeSegmentTubeUsingMinimalPathFilter_hxx )

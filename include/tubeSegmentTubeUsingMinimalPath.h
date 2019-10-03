@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubeSegmentTubesUsingMinimalPath_h
-#define __tubeSegmentTubesUsingMinimalPath_h
+#ifndef __tubeSegmentTubeUsingMinimalPath_h
+#define __tubeSegmentTubeUsingMinimalPath_h
 
 // ITK includes
 #include <itkGroupSpatialObject.h>
@@ -30,28 +30,28 @@ limitations under the License.
 
 
 // TubeTK includes
-#include "itktubeSegmentTubesUsingMinimalPathFilter.h"
+#include "itktubeSegmentTubeUsingMinimalPathFilter.h"
 #include "tubeWrappingMacros.h"
 
 namespace tube
 {
-/** \class SegmentTubesUsingMinimalPath
+/** \class SegmentTubeUsingMinimalPath
  *
  *  \ingroup TubeTK
  */
 
 template< unsigned int Dimension, class TInputPixel >
-class SegmentTubesUsingMinimalPath:
+class SegmentTubeUsingMinimalPath:
   public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
-  typedef SegmentTubesUsingMinimalPath               Self;
+  typedef SegmentTubeUsingMinimalPath               Self;
   typedef itk::ProcessObject                         Superclass;
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
-  typedef itk::tube::SegmentTubesUsingMinimalPathFilter
+  typedef itk::tube::SegmentTubeUsingMinimalPathFilter
     < Dimension, TInputPixel >                       FilterType;
 
   typedef typename FilterType::InputImageType         InputImageType;
@@ -65,7 +65,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SegmentTubesUsingMinimalPath, Object );
+  itkTypeMacro( SegmentTubeUsingMinimalPath, Object );
 
   /* Set target tubes */
   tubeWrapSetMacro( TargetTubeGroup, TubeGroupPointer, Filter );
@@ -107,13 +107,13 @@ public:
   tubeWrapUpdateMacro( Filter );
 
 protected:
-  SegmentTubesUsingMinimalPath( void );
-  ~SegmentTubesUsingMinimalPath() {}
+  SegmentTubeUsingMinimalPath( void );
+  ~SegmentTubeUsingMinimalPath() {}
   void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
 
 private:
-  /** itkSegmentTubesUsingMinimalPathFilter parameters **/
-  SegmentTubesUsingMinimalPath( const Self & );
+  /** itkSegmentTubeUsingMinimalPathFilter parameters **/
+  SegmentTubeUsingMinimalPath( const Self & );
   void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
@@ -128,7 +128,7 @@ private:
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeSegmentTubesUsingMinimalPath.hxx"
+#include "tubeSegmentTubeUsingMinimalPath.hxx"
 #endif
 
-#endif // End !defined( __tubeSegmentTubesUsingMinimalPath_h )
+#endif // End !defined( __tubeSegmentTubeUsingMinimalPath_h )

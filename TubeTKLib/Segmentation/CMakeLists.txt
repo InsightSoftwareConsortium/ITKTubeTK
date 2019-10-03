@@ -29,7 +29,7 @@ set( TubeTKLib_Base_Segmentation_H_Files
   itktubeSegmentTubes.h
   itktubeSegmentBinaryImageSkeleton.h
   itktubeSegmentBinaryImageSkeleton3D.h
-  itktubeSegmentTubesUsingMinimalPathFilter.h
+  itktubeSegmentTubeUsingMinimalPathFilter.h
   itktubeTubeExtractor.h
   itktubeRidgeSeedFilter.h
   itktubeComputeTrainingMask.h)
@@ -52,7 +52,7 @@ set( TubeTKLib_Base_Segmentation_HXX_Files
   itktubeSegmentTubes.hxx
   itktubeSegmentBinaryImageSkeleton.hxx
   itktubeSegmentBinaryImageSkeleton3D.hxx
-  itktubeSegmentTubesUsingMinimalPathFilter.hxx
+  itktubeSegmentTubeUsingMinimalPathFilter.hxx
   itktubeTubeExtractor.hxx
   itktubeRidgeSeedFilter.hxx
   itktubeComputeTrainingMask.hxx)

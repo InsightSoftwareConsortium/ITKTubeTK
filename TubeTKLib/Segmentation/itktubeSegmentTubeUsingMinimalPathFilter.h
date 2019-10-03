@@ -15,8 +15,8 @@
  *  limitations under the License.
  *
 *=========================================================================*/
-#ifndef __itktubeSegmentTubesUsingMinimalPathFilter_h
-#define __itktubeSegmentTubesUsingMinimalPathFilter_h
+#ifndef __itktubeSegmentTubeUsingMinimalPathFilter_h
+#define __itktubeSegmentTubeUsingMinimalPathFilter_h
 
 #include "itkImage.h"
 
@@ -37,7 +37,7 @@ namespace itk
 {
 namespace tube
 {
-/** \class SegmentTubesUsingMinimalPathFilter
+/** \class SegmentTubeUsingMinimalPathFilter
  * \brief Segmenta a tube between the start and
  * end point using an input speed image.
  * This filter uses itk::minimumPathExtraction filter to per the minimum
@@ -46,11 +46,11 @@ namespace tube
  */
 
 template< unsigned int Dimension, class TInputPixel >
-class SegmentTubesUsingMinimalPathFilter: public Object
+class SegmentTubeUsingMinimalPathFilter: public Object
 {
 public:
   /** Standard class typedefs. */
-  typedef SegmentTubesUsingMinimalPathFilter Self;
+  typedef SegmentTubeUsingMinimalPathFilter Self;
   typedef Object                             Superclass;
   typedef SmartPointer< Self >               Pointer;
   typedef SmartPointer< const Self >         ConstPointer;
@@ -69,7 +69,7 @@ public:
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro
-    ( SegmentTubesUsingMinimalPathFilter, Object );
+    ( SegmentTubeUsingMinimalPathFilter, Object );
 
   itkSetMacro( SpeedImage, typename InputImageType::Pointer );
   itkGetMacro( SpeedImage, typename InputImageType::Pointer );
@@ -109,8 +109,8 @@ public:
   void Update( void );
 
 protected:
-  SegmentTubesUsingMinimalPathFilter( void );
-  ~SegmentTubesUsingMinimalPathFilter() {}
+  SegmentTubeUsingMinimalPathFilter( void );
+  ~SegmentTubeUsingMinimalPathFilter() {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
@@ -118,7 +118,7 @@ protected:
     PointType outsidePoint, PointType &nearestPoint );
 
 private:
-  SegmentTubesUsingMinimalPathFilter( const Self & );
+  SegmentTubeUsingMinimalPathFilter( const Self & );
   void operator=( const Self & );
 
   typename InputImageType::Pointer  m_SpeedImage;
@@ -139,12 +139,12 @@ private:
   double                            m_CostAssociatedWithExtractedTube;
   TubeGroupPointer                  m_Output;
 
-}; //End class SegmentTubesUsingMinimalPathFilter
+}; //End class SegmentTubeUsingMinimalPathFilter
 } // End namespace tube
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeSegmentTubesUsingMinimalPathFilter.hxx"
+#include "itktubeSegmentTubeUsingMinimalPathFilter.hxx"
 #endif
 
-#endif // End !defined( __itktubeSegmentTubesUsingMinimalPathFilter_h )
+#endif // End !defined( __itktubeSegmentTubeUsingMinimalPathFilter_h )
