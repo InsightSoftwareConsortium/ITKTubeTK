@@ -103,7 +103,7 @@ public:
 
   /** Mathematical morphology using a sphere. Mode: 0=erode, 1=dilate. */
   static void MorphImage( typename ImageType::Pointer & imIn, int mode,
-    float radius, float foregroundValue, float backgroundValue );
+    int radius, float foregroundValue, float backgroundValue );
 
   /** Replace values within the image, with a mask. */
   static void OverwriteImage( typename ImageType::Pointer imIn,

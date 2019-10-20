@@ -711,7 +711,7 @@ void
 ImageMathFilters<VDimension>
 ::MorphImage(
     typename ImageType::Pointer & imIn,
-    int mode, float radius, float foregroundValue, float backgroundValue )
+    int mode, int radius, float foregroundValue, float backgroundValue )
 {
   typedef itk::BinaryBallStructuringElement<PixelType, VDimension>
     BallType;

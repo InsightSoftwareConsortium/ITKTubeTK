@@ -409,7 +409,7 @@ int DoIt( MetaCommand & command )
 
       tube::ImageMathFilters< VDimension >::MorphImage( imIn,
         command.GetValueAsInt( *it, "mode" ),
-        command.GetValueAsFloat( *it, "radius" ),
+        command.GetValueAsInt( *it, "radius" ),
         command.GetValueAsFloat( *it, "forgroundValue" ),
         command.GetValueAsFloat( *it, "backgroundValue" ) );
       }
@@ -767,7 +767,7 @@ int main( int argc, char * argv[] )
   command.SetOption( "Morphology", "M", false,
     "Mathematical morphology using a sphere. Mode: 0=erode, 1=dilate." );
   command.AddOptionField( "Morphology", "mode", MetaCommand::INT, true );
-  command.AddOptionField( "Morphology", "radius", MetaCommand::FLOAT,
+  command.AddOptionField( "Morphology", "radius", MetaCommand::INT,
     true );
   command.AddOptionField( "Morphology", "forgroundValue",
     MetaCommand::FLOAT, true );
