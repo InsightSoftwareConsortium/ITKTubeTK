@@ -56,7 +56,7 @@ jobs:
         c++ --version
         cmake --version
         cd ITKTubeTK-Debug
-        cmake -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Debug -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Debug -DCMAKE_BUILD_TYPE=Debug $(Build.SourcesDirectory)
+        cmake -DBUILDNAME=Linux_Debug -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Debug -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Debug -DCMAKE_BUILD_TYPE=Debug $(Build.SourcesDirectory)
         ninja -j 4 -v
         ctest -D Experimental -V
         cd ..
