@@ -1,9 +1,9 @@
-TubeTK Shrink Image Application
-================================
+TubeTK Shrink Image With Blending Application
+=============================================
 
 #### Overview:
 
-Project an image into fewer slices. Integration uses the 'max' or `mean` function.
+Project an image into fewer slices. Integration uses the 'max', `mean`, or 'Gaussian' function.
 
 Author(s): Stephen R. Aylward (Kitware)
 

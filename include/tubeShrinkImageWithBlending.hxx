@@ -20,10 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubeShrinkWithBlendingImage_hxx
-#define __tubeShrinkWithBlendingImage_hxx
+#ifndef __tubeShrinkImageWithBlending_hxx
+#define __tubeShrinkImageWithBlending_hxx
 
-#include "tubeShrinkWithBlendingImage.h"
+#include "tubeShrinkImageWithBlending.h"
 
 namespace tube {
 
@@ -31,15 +31,15 @@ namespace tube {
  *
  */
 template< class TInputImage, class TOutputImage >
-ShrinkWithBlendingImage< TInputImage, TOutputImage >
-::ShrinkWithBlendingImage( void )
+ShrinkImageWithBlending< TInputImage, TOutputImage >
+::ShrinkImageWithBlending( void )
 {
   m_Filter = FilterType::New();
 }
 
 template< class TInputImage, class TOutputImage >
 void
-ShrinkWithBlendingImage< TInputImage, TOutputImage >
+ShrinkImageWithBlending< TInputImage, TOutputImage >
 ::SetShrinkFactor( unsigned int i, unsigned int factor )
 {
   if( m_Filter->GetShrinkFactor( i ) != factor )
@@ -54,7 +54,7 @@ ShrinkWithBlendingImage< TInputImage, TOutputImage >
  */
 template< class TInputImage, class TOutputImage >
 unsigned int
-ShrinkWithBlendingImage< TInputImage, TOutputImage >
+ShrinkImageWithBlending< TInputImage, TOutputImage >
 ::GetShrinkFactor( unsigned int i )
 {
   return m_Filter->GetShrinkFactor( i );
@@ -65,7 +65,7 @@ ShrinkWithBlendingImage< TInputImage, TOutputImage >
  */
 template< class TInputImage, class TOutputImage >
 void
-ShrinkWithBlendingImage< TInputImage, TOutputImage >
+ShrinkImageWithBlending< TInputImage, TOutputImage >
 ::PrintSelf( std::ostream & os, itk::Indent  indent ) const
 {
   os << indent << "ShrinkFactors:"

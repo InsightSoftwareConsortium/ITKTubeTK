@@ -20,7 +20,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME ShrinkImage )
+set( MODULE_NAME ShrinkImageWithBlending )
 
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
