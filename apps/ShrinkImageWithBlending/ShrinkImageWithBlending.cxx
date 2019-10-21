@@ -29,10 +29,10 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkImageFileReader.h>
 
-#include <tubeShrinkWithBlendingImage.h>
+#include <tubeShrinkImageWithBlending.h>
 
 // Must include CLP before including tubeCLIHelperFunctions
-#include "ShrinkImageCLP.h"
+#include "ShrinkImageWithBlendingCLP.h"
 
 // Must do a forward declaration of DoIt before including
 // tubeCLIHelperFunctions
@@ -69,7 +69,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter< PointImageType >   PointImageWriterType;
   typedef itk::ImageFileReader< PointImageType >   PointImageReaderType;
 
-  typedef tube::ShrinkWithBlendingImage< InputImageType,
+  typedef tube::ShrinkImageWithBlending< InputImageType,
     OutputImageType > FilterType;
 
   timeCollector.Start( "Load data" );

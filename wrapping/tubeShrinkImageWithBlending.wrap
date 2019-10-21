@@ -1,7 +1,7 @@
-itk_wrap_include( tubeShrinkWithBlendingImage.h )
+itk_wrap_include( tubeShrinkImageWithBlending.h )
 itk_wrap_include( itkImage.h )
 
-itk_wrap_named_class("tube::ShrinkWithBlendingImage" tubeShrinkWithBlendingImage POINTER)
+itk_wrap_named_class("tube::ShrinkImageWithBlending" tubeShrinkImageWithBlending POINTER)
  foreach(d ${ITK_WRAP_IMAGE_DIMS})
     foreach(t ${WRAP_ITK_SCALAR})
       itk_wrap_template("I${ITKM_${t}}${d}I${ITKM_${t}}${d}"  "itk::Image<${ITKT_${t}}, ${d}>, itk::Image<${ITKT_${t}}, ${d}>")

@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubeShrinkWithBlendingImage_h
-#define __tubeShrinkWithBlendingImage_h
+#ifndef __tubeShrinkImageWithBlending_h
+#define __tubeShrinkImageWithBlending_h
 
 #include "itkProcessObject.h"
 
@@ -31,18 +31,18 @@ limitations under the License.
 
 namespace tube
 {
-/** \class ShrinkWithBlendingImage
+/** \class ShrinkImageWithBlending
  *
  *  \ingroup TubeTK
  */
 
 template< typename TInputImage, typename TOutputImage >
-class ShrinkWithBlendingImage:
+class ShrinkImageWithBlending:
   public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
-  typedef ShrinkWithBlendingImage                         Self;
+  typedef ShrinkImageWithBlending                         Self;
   typedef itk::ProcessObject                              Superclass;
   typedef itk::SmartPointer< Self >                       Pointer;
   typedef itk::SmartPointer< const Self >                 ConstPointer;
@@ -51,7 +51,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ShrinkWithBlendingImage, ProcessObject );
+  itkTypeMacro( ShrinkImageWithBlending, ProcessObject );
 
 
   /** Typedef to images */
@@ -110,14 +110,14 @@ public:
   tubeWrapGetObjectMacro( OutputMipPointImage, PointImageType, Filter );
 
 protected:
-  ShrinkWithBlendingImage( void );
-  ~ShrinkWithBlendingImage() {}
+  ShrinkImageWithBlending( void );
+  ~ShrinkImageWithBlending() {}
 
   void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
 
 private:
-  /** itkShrinkWithBlendingImageFilter parameters **/
-  ShrinkWithBlendingImage( const Self & );
+  /** itkShrinkImageWithBlendingFilter parameters **/
+  ShrinkImageWithBlending( const Self & );
 
   void operator=( const Self & );
 
@@ -132,7 +132,7 @@ private:
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeShrinkWithBlendingImage.hxx"
+#include "tubeShrinkImageWithBlending.hxx"
 #endif
 
-#endif // End !defined( __tubeShrinkWithBlendingImage_h )
+#endif // End !defined( __tubeShrinkImageWithBlending_h )

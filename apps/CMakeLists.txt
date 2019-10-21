@@ -69,7 +69,7 @@ add_subdirectory( SegmentConnectedComponentsUsingParzenPDFs )
 add_subdirectory( SegmentTubes )
 add_subdirectory( SegmentTubeUsingMinimalPath )
 add_subdirectory( SegmentUsingOtsuThreshold )
-add_subdirectory( ShrinkImage )
+add_subdirectory( ShrinkImageWithBlending )
 add_subdirectory( SimulateAcquisitionArtifactsUsingPrior )
 add_subdirectory( TubeMath )
 
