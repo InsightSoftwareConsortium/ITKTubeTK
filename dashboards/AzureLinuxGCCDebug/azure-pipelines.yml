@@ -1,19 +1,64 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# C/C++ with GCC
+# Build your C/C++ project with GCC using make.
+# Add steps that publish test results, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/c-cpp/gcc
 
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
-
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+jobs:
+- job: LinuxGCCDebug
+  continueOnError: true
+  timeoutInMinutes: 360
+  cancelTimeoutInMinutes: 360
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps:
+    - bash: |
+        set -x
+        sudo pip3 install ninja
+        sudo apt-get update
+      displayName: Install dependencies
+    - bash: |
+        set -x
+        git clone https://github.com/InsightSoftwareConsortium/ITK.git ITK
+        mkdir ITK-Debug
+        cd ITK-Debug
+        cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Debug ../ITK
+        ninja -j 4 -v
+        cd ..
+      displayName: Download and Build ITK
+      workingDirectory: $(Agent.BuildDirectory)
+    - bash: |
+        set -x
+        git clone https://github.com/Slicer/SlicerExecutionModel.git SlicerExecutionModel
+        cd SlicerExecutionModel
+        git checkout ef094e7140d71b5e75675f63910d39acd1d7221d
+        cd ..
+        mkdir SlicerExecutionModel-Debug
+        cd SlicerExecutionModel-Debug
+        cmake -GNinja -DBUILD_TESTING=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Debug -DCMAKE_BUILD_TYPE=Debug ../SlicerExecutionModel
+        ninja -j 4 -v
+        cd ..
+      displayName: Download and Build SlicerExecutionModel
+      workingDirectory: $(Agent.BuildDirectory)
+    - bash: |
+        set -x
+        mkdir ITKTubeTK-Debug
+        cd ITKTubeTK-Debug
+        curl -L https://data.kitware.com/api/v1/item/5d915225d35580e6dc50feb0/download -o ExternalData.zip
+        unzip ExternalData.zip
+        cd ..
+      displayName: Download testing data
+      workingDirectory: $(Agent.BuildDirectory)
+    - bash: |
+        set -x
+        c++ --version
+        cmake --version
+        cd ITKTubeTK-Debug
+        cmake -DBUILDNAME=Linux-Debug -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Debug -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Debug -DCMAKE_BUILD_TYPE=Debug $(Build.SourcesDirectory)
+        ninja -j 4 -v
+        ctest -T memcheck -D Experimental -V
+        cd ..
+      displayName: CMake and CTest ITKTubeTK
+      workingDirectory: $(Agent.BuildDirectory)

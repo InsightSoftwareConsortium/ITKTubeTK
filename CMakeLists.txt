@@ -37,6 +37,11 @@ list( APPEND CMAKE_MODULE_PATH ${TubeTK_SOURCE_DIR}/CMake )
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  # if using Linux gcc in debug mode, enable gcov computation
+  set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fprofile-arcs -ftest-coverage")
+endif()
+
 ####
 # Setup External Data Cache
 ####
