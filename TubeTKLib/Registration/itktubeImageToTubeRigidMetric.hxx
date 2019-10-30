@@ -87,7 +87,7 @@ template< class TFixedImage, class TMovingSpatialObject,
 void
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
   TTubeSpatialObject >
-::Initialize( void ) throw ( ExceptionObject )
+::Initialize( void )
 {
   if( !this->m_MovingSpatialObject || !this->m_FixedImage )
     {
