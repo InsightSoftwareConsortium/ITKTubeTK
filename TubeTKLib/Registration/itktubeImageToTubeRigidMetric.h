@@ -128,7 +128,7 @@ public:
     MeasureType & Value, DerivativeType  & Derivative ) const override;
 
   /** Initialize the metric */
-  void Initialize( void ) throw ( ExceptionObject ) override;
+  void Initialize( void ) override;
 
   /** Control the radius scaling of the metric. */
   itkSetMacro( Kappa, ScalarType );
