@@ -52,12 +52,22 @@ jobs:
       displayName: Download testing data
       workingDirectory: $(Agent.BuildDirectory)
     - bash: |
+      condition: ne(variables['Build.Reason'], 'Schedule')
         set -x
         c++ --version
         cmake --version
         cd ITKTubeTK-Debug
         cmake -DBUILDNAME=Linux-Debug -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Debug -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Debug -DCMAKE_BUILD_TYPE=Debug $(Build.SourcesDirectory)
-        ctest -D ExperimentalStart -D ExperimentalUpdate -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalCoverage -D ExperimentalMemCheck -D ExperimentalSubmit -V
+        ctest -D ExperimentalStart -D ExperimentalUpdate -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalCoverage -D ExperimentalSubmit -V
         cd ..
-      displayName: CMake and CTest ITKTubeTK
-      workingDirectory: $(Agent.BuildDirectory)
+      displayName: Experimental CMake and CTest ITKTubeTK
+    - bash: |
+      condition: eq(variables['Build.Reason'], 'Schedule')
+        set -x
+        c++ --version
+        cmake --version
+        cd ITKTubeTK-Debug
+        cmake -DBUILDNAME=Linux-Debug -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Debug -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Debug -DCMAKE_BUILD_TYPE=Debug $(Build.SourcesDirectory)
+        ctest -D NightlyStart -D NightlyUpdate -D NightlyConfigure -D NightlyBuild -D NightlyCoverage -D NightlyMemCheck -D NightlySubmit -V
+        cd ..
+      displayName: Nightly CMake and CTest ITKTubeTK

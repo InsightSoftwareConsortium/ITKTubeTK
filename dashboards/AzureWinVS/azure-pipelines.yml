@@ -53,7 +53,14 @@ jobs:
       displayName: CMake ITKTubeTK
       workingDirectory: $(Agent.BuildDirectory)\ITKTubeTK-Release
     - bash: |
+      condition: ne(variables['Build.Reason'], 'Schedule')
         set -x
         ctest -D ExperimentalStart -D ExperimentalUpdate -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalSubmit -V -C Release
+      displayName: Build and Test ITKTubeTK
+      workingDirectory: $(Agent.BuildDirectory)\ITKTubeTK-Release
+    - bash: |
+      condition: eq(variables['Build.Reason'], 'Schedule')
+        set -x
+        ctest -D NightlyStart -D NightlyUpdate -D NightlyConfigure -D NightlyBuild -D NightlyTest -D NightlySubmit -V -C Release
       displayName: Build and Test ITKTubeTK
       workingDirectory: $(Agent.BuildDirectory)\ITKTubeTK-Release
