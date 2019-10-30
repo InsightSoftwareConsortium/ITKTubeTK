@@ -54,6 +54,6 @@ jobs:
       workingDirectory: $(Agent.BuildDirectory)\ITKTubeTK-Release
     - bash: |
         set -x
-        ctest -D Experimental -V -C Release
+        ctest -D ExperimentalStart -D ExperimentalUpdate -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalSubmit -V -C Release
       displayName: Build and Test ITKTubeTK
       workingDirectory: $(Agent.BuildDirectory)\ITKTubeTK-Release
