@@ -318,6 +318,7 @@ TubeXIO< TDimension >
         {
         tmpReadStream >> x[d];
         tmpReadStream.get();
+        x[d] *= voxelSize[d];
         }
       pnt.SetPositionInObjectSpace( x );
 

@@ -530,7 +530,7 @@ RidgeExtractor<TInputImage>
       count += 1;
       }
 
-    int k=0;
+    unsigned int k=0;
     ++offset[k];
     if( offset[k] > 1 )
       {

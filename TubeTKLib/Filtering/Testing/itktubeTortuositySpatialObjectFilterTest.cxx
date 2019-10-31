@@ -38,7 +38,6 @@ GenerateStraightTube( itk::TubeSpatialObject<3>::PointType
   int numberOfPoints, itk::TubeSpatialObject<3>::Pointer & vessel )
 {
   typedef itk::TubeSpatialObject<3>        VesselTubeType;
-  typedef VesselTubeType::VectorType       VectorType;
   typedef VesselTubeType::PointType        PointType;
 
   vessel = VesselTubeType::New();
@@ -74,7 +73,6 @@ GenerateCosTube( double length, double amplitude, double frequency,
   itk::TubeSpatialObject<3>::Pointer & vessel )
 {
   typedef itk::TubeSpatialObject<3>   VesselTubeType;
-  typedef VesselTubeType::VectorType  VectorType;
   typedef VesselTubeType::PointType   PointType;
 
   vessel = VesselTubeType::New();
