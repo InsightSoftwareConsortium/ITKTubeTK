@@ -119,7 +119,7 @@ public:
   void StartRegistration( void );
 
   /** Initialize the registration */
-  void Initialize( void ) throw ( ExceptionObject );
+  void Initialize( void );
 
   /** Set/Get the scalar weights associated with every point in the tube.
    * The index of the point weights should correspond to "standard tube tree

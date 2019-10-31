@@ -114,7 +114,7 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 void
 ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
-::Initialize() throw ( ExceptionObject )
+::Initialize()
 {
   typename TransformType::Pointer transform = TransformType::New();
   this->SetTransform( transform );
