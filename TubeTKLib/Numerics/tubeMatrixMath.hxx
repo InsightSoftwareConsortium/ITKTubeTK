@@ -177,8 +177,14 @@ ComputeRidgeness( const vnl_matrix<T> & H,
       }
     if( closestV != ImageDimension-1 )
       {
-      std::cout << "***********Mixing things up: Chosen t=evect#"
-        << closestV << " dotProd = " << closestVDProd << std::endl;
+      std::cout << "***********Mixing things up: Chosen evect = "
+        << closestV << std::endl;
+      for( unsigned int i=0; i<ImageDimension; i++ )
+        {
+        std::cout << "   dotProd(" << i << ") = "
+          << std::fabs( dot_product( prevTangent, HEVect.get_column( i ) ) )
+          << std::endl;
+        }
       double tf = HEVal[closestV];
       HEVal[closestV] = HEVal[ImageDimension-1];
       HEVal[ImageDimension-1] = tf;
