@@ -116,12 +116,12 @@ public:
   itkSetObjectMacro( LabelMap, LabelMapType );
   itkGetObjectMacro( LabelMap, LabelMapType );
 
-  itkSetMacro( ErodeDilateRadius, int );
-  itkGetMacro( ErodeDilateRadius, int );
+  itkSetMacro( ErodeDilateRadius, unsigned int );
+  itkGetMacro( ErodeDilateRadius, unsigned int );
   itkSetMacro( DilateFirst, bool );
   itkGetMacro( DilateFirst, bool );
-  itkSetMacro( HoleFillIterations, int );
-  itkGetMacro( HoleFillIterations, int );
+  itkSetMacro( HoleFillIterations, unsigned int );
+  itkGetMacro( HoleFillIterations, unsigned int );
   itkSetMacro( ProbabilityImageSmoothingStandardDeviation, double );
   itkGetMacro( ProbabilityImageSmoothingStandardDeviation, double );
 
@@ -213,9 +213,9 @@ private:
 
   VectorDoubleType    m_PDFWeightList;
 
-  int                 m_ErodeDilateRadius;
+  unsigned int        m_ErodeDilateRadius;
   bool                m_DilateFirst;
-  int                 m_HoleFillIterations;
+  unsigned int        m_HoleFillIterations;
   double              m_ProbabilityImageSmoothingStandardDeviation;
   bool                m_ReclassifyObjectLabels;
   bool                m_ReclassifyNotObjectLabels;

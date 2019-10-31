@@ -398,8 +398,8 @@ PDFSegmenterBase< TImage, TLabelMap >
     }
   m_ClassProbabilityImagesUpToDate = true;
 
-  int erodeRadius = m_ErodeDilateRadius;
-  int holeFillIterations = m_HoleFillIterations;
+  unsigned int erodeRadius = m_ErodeDilateRadius;
+  unsigned int holeFillIterations = m_HoleFillIterations;
 
   unsigned int numClasses = m_ObjectIdList.size();
 
