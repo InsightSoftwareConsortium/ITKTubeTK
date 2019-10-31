@@ -3,7 +3,13 @@ ITKTubeTK: Tubular Object Extraction, Registration, and Analysis
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/KitwareMedical/ITKTubeTK/blob/master/LICENSE.md)
 
-[![Build Status](https://dev.azure.com/InsightSoftwareConsortium/ITKModules/_apis/build/status/KitwareMedical.ITKTubeTK?branchName=master)](https://dev.azure.com/InsightSoftwareConsortium/ITKModules/_build/latest?definitionId=19&branchName=master)
+Linux Debug: [![Build Status](https://dev.azure.com/KitwareMedical/ITKTubeTK/_apis/build/status/KitwareMedical.ITKTubeTK.LinuxGCCDebug?branchName=master)](https://dev.azure.com/KitwareMedical/ITKTubeTK/_build/latest?definitionId=4&branchName=master)
+
+Linux Release: [![Build Status](https://dev.azure.com/KitwareMedical/ITKTubeTK/_apis/build/status/dashboards/AzureLinuxGCC/KitwareMedical.ITKTubeTK.Linux.GCC?branchName=master)](https://dev.azure.com/KitwareMedical/ITKTubeTK/_build/latest?definitionId=1&branchName=master)
+
+Mac Release: [![Build Status](https://dev.azure.com/KitwareMedical/ITKTubeTK/_apis/build/status/dashboards/AzureMacOSGCC/KitwareMedical.ITKTubeTK.MacOS.GCC?branchName=master)](https://dev.azure.com/KitwareMedical/ITKTubeTK/_build/latest?definitionId=2&branchName=master)
+
+Windows Release: [![Build Status](https://dev.azure.com/KitwareMedical/ITKTubeTK/_apis/build/status/dashboards/AxureWinVS/KitwareMedical.ITKTubeTK.WinVS2017?branchName=master)](https://dev.azure.com/KitwareMedical/ITKTubeTK/_build/latest?definitionId=3&branchName=master)
 
 Overview
 --------
