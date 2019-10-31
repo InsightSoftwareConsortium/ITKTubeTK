@@ -24,6 +24,8 @@ limitations under the License.
 #ifndef __tubeCLIHelperFunctions_h
 #define __tubeCLIHelperFunctions_h
 
+#include <exception>
+
 #include "tubeMacro.h"
 
 #include <itkImage.h>
@@ -143,12 +145,16 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
     tubeErrorMacro( << "ITK exception caught. " << ex );
     return EXIT_FAILURE;
     }
-  catch( ... )
+  catch( std::exception & e )
     {
-    tubeErrorMacro( << "Exception caught." );
+    tubeErrorMacro( << "Exception caught." << e.what() );
     return EXIT_FAILURE;
     }
-
+  catch( ... )
+    {
+    tubeErrorMacro( << "Unhandled exception caught." );
+    return EXIT_FAILURE;
+    }
   return EXIT_SUCCESS;
 }
 
