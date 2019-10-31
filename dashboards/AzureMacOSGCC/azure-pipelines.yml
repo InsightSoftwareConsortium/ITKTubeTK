@@ -48,7 +48,6 @@ jobs:
       displayName: Download testing data
       workingDirectory: $(Agent.BuildDirectory)
     - bash: |
-      condition: ne(variables['Build.Reason'], 'Schedule')
         set -x
         c++ --version
         cmake --version
@@ -56,10 +55,10 @@ jobs:
         cmake -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
         ctest -D ExperimentalStart -D ExperimentalUpdate -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalSubmit -V
         cd ..
+      condition: ne(variables['Build.Reason'], 'Schedule')
       displayName: CMake and CTest ITKTubeTK
       workingDirectory: $(Agent.BuildDirectory)
     - bash: |
-      condition: eq(variables['Build.Reason'], 'Schedule')
         set -x
         c++ --version
         cmake --version
@@ -67,5 +66,6 @@ jobs:
         cmake -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
         ctest -D NightlyStart -D NightlyUpdate -D NightlyConfigure -D NightlyBuild -D NightlyTest -D NightlySubmit -V
         cd ..
+      condition: eq(variables['Build.Reason'], 'Schedule')
       displayName: CMake and CTest ITKTubeTK
       workingDirectory: $(Agent.BuildDirectory)
