@@ -479,7 +479,7 @@ RidgeExtractor<TInputImage>
     {
     std::cout << "  Scale = " << m_DataFunc->GetScale() << std::endl;
     std::cout << "  X = " << m_X << std::endl;
-    std::cout << "  XIV = " << m_XIV << std::endl;
+    std::cout << "  XI = " << m_XIV << std::endl;
     std::cout << "  XD = " << m_XD << std::endl;
     std::cout << "  XH = " << m_XH << std::endl;
     }
@@ -1795,7 +1795,8 @@ RidgeExtractor<TInputImage>
   m_InputImage->TransformPhysicalPointToContinuousIndex( lX, lXI );
   if( verbose || this->GetDebug() )
     {
-    std::cout << "*** Ridge found at " << lXI << std::endl;
+    std::cout << "*** Ridge found at index = " << lXI << std::endl;
+    std::cout << "*** Ridge found at x = " << lX << std::endl;
     }
 
   IndexType indx;

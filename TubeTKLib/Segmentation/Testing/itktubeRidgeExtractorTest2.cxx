@@ -82,11 +82,11 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
   RandGenType::Pointer rndGen = RandGenType::New();
   rndGen->Initialize(); // set seed here
 
-  RidgeOpType::IndexType imMinX = ridgeOp->GetExtractBoundMinInIndexSpace();
-  RidgeOpType::IndexType imMaxX = ridgeOp->GetExtractBoundMaxInIndexSpace();
+  RidgeOpType::IndexType imMinI = ridgeOp->GetExtractBoundMinInIndexSpace();
+  RidgeOpType::IndexType imMaxI = ridgeOp->GetExtractBoundMaxInIndexSpace();
   int margin = 3;
-  std::cout << "Bound min = " << imMinX << std::endl;
-  std::cout << "Bound max = " << imMaxX << std::endl;
+  std::cout << "Bound min = " << imMinI << std::endl;
+  std::cout << "Bound max = " << imMaxI << std::endl;
 
   int failures = 0;
   for( int mcRun=0; mcRun<2; mcRun++ )
@@ -130,12 +130,13 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     std::cout << "Test position = " << pntX << std::endl;
 
     RidgeOpType::ContinuousIndexType xContI;
-    bool inMargin = im->TransformPhysicalPointToContinuousIndex( pntX, xContI );
+    bool inMargin = im->TransformPhysicalPointToContinuousIndex( pntX,
+      xContI );
     if( inMargin )
       {
       for( unsigned int i=0; i<ImageType::ImageDimension; i++ )
         {
-        if( xContI[i] < imMinX[i]+margin || xContI[i] > imMaxX[i]-margin )
+        if( xContI[i] < imMinI[i]+margin || xContI[i] > imMaxI[i]-margin )
           {
           inMargin = false;
           break;
@@ -147,23 +148,28 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       --mcRun;
       std::cout << "Warning: Tube point outside of image, repicking..."
         << std::endl;
+      std::cout << "   Point Index = " << xContI << std::endl;
+      std::cout << "   Min Index = " << imMinI << std::endl;
+      std::cout << "   Max Index = " << imMaxI << std::endl;
+      std::cout << "   Margin = " << margin << std::endl;
       continue;
       }
-    std::cout << "Test index = " << xContI << std::endl;
 
+    RidgeOpType::IndexType minI = imMinI;
+    RidgeOpType::IndexType maxI = imMaxI;
+    if( xContI[2] - margin > minI[2] )
+      {
+      minI[2] = xContI[2] - margin;
+      }
+    if( xContI[2] + margin < maxI[2] )
+      {
+      maxI[2] = xContI[2] + margin;
+      }
     std::cout << "Setting min and max z to save time." << std::endl;
-    RidgeOpType::IndexType minX = imMinX;
-    RidgeOpType::IndexType maxX = imMaxX;
-    if( xContI[2] - margin > minX[2] )
-      {
-      minX[2] = xContI[2] - margin;
-      }
-    if( xContI[2] + margin < maxX[2] )
-      {
-      maxX[2] = xContI[2] + margin;
-      }
-    ridgeOp->SetExtractBoundMinInIndexSpace( minX );
-    ridgeOp->SetExtractBoundMaxInIndexSpace( maxX );
+    std::cout << "   Min index = " << minI << std::endl;
+    std::cout << "   Max index = " << maxI << std::endl;
+    ridgeOp->SetExtractBoundMinInIndexSpace( minI );
+    ridgeOp->SetExtractBoundMaxInIndexSpace( maxI );
 
     if( pnt->GetRadiusInObjectSpace() > 1 )
       {
@@ -173,6 +179,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       {
       ridgeOp->SetScale( 0.5 );
       }
+    std::cout << "Initial scale = " << ridgeOp->GetScale() << std::endl;
 
 
     RidgeOpType::PointType xRidgePnt;
@@ -213,14 +220,15 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     std::cout << "***** Beginning tube extraction ***** " << std::endl;
     TubeType::Pointer xTube = ridgeOp->ExtractRidge( xRidgePnt, mcRun );
     std::cout << "***** Ending tube extraction ***** " << std::endl;
-    std::cout << "   # of points = " << xTube->GetPoints().size() << std::endl;
-
     if( xTube.IsNull() )
       {
       std::cout << "*** FAILURE: Ridge extraction failed" << std::endl;
       ++failures;
       continue;
       }
+
+    std::cout << "   # of points = " << xTube->GetPoints().size()
+      << std::endl;
 
     TubeType::Pointer xTube2;
     xTube2 = ridgeOp->ExtractRidge( xRidgePnt, 101 );
@@ -246,7 +254,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       ++failures;
       continue;
       }
-    std::cout << "   # of points = " << xTube->GetPoints().size() << std::endl;
+    std::cout << "   Repeat # of points = " << xTube->GetPoints().size() << std::endl;
 
     if( !ridgeOp->DeleteTube( xTube ) )
       {
