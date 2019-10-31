@@ -25,7 +25,7 @@ jobs:
         mkdir ITK-Release
         cd ITK-Release
         cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Release ../ITK
-        ninja -j 4 -v
+        ninja -v
         cd ..
       displayName: Download and Build ITK
       workingDirectory: $(Agent.BuildDirectory)
@@ -38,7 +38,7 @@ jobs:
         mkdir SlicerExecutionModel-Release
         cd SlicerExecutionModel-Release
         cmake -GNinja -DBUILD_TESTING=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DCMAKE_BUILD_TYPE=Release ../SlicerExecutionModel
-        ninja -j 4 -v
+        ninja -v
         cd ..
       displayName: Download and Build SlicerExecutionModel
       workingDirectory: $(Agent.BuildDirectory)
@@ -57,8 +57,19 @@ jobs:
         cmake --version
         cd ITKTubeTK-Release
         cmake -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
-        ninja -j 2 -v
-        ctest -D Experimental -V
+        ctest -D ExperimentalStart -D ExperimentalUpdate -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalSubmit -V
         cd ..
+      condition: ne(variables['Build.Reason'], 'Schedule')
       displayName: CMake and CTest ITKTubeTK
+      workingDirectory: $(Agent.BuildDirectory)
+    - bash: |
+        set -x
+        c++ --version
+        cmake --version
+        cd ITKTubeTK-Release
+        cmake -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
+        ctest -D NightlyStart -D NightlyUpdate -D NightlyConfigure -D NightlyBuild -D NightlyTest -D NightlySubmit -V
+        cd ..
+      condition: eq(variables['Build.Reason'], 'Schedule')
+      displayName: Nightly CMake and CTest ITKTubeTK
       workingDirectory: $(Agent.BuildDirectory)
