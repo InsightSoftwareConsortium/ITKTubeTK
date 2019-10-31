@@ -67,5 +67,5 @@ jobs:
         ctest -D NightlyStart -D NightlyUpdate -D NightlyConfigure -D NightlyBuild -D NightlyTest -D NightlySubmit -V
         cd ..
       condition: eq(variables['Build.Reason'], 'Schedule')
-      displayName: CMake and CTest ITKTubeTK
+      displayName: Nightly CMake and CTest ITKTubeTK
       workingDirectory: $(Agent.BuildDirectory)
