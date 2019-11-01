@@ -164,11 +164,13 @@ ImageMathFilters<VDimension>
       ImageType> ResampleFilterType;
     typename ResampleFilterType::Pointer filter =
       ResampleFilterType::New();
+    typename ImageType::Pointer imTemp;
     filter->SetInput( a );
     filter->SetUseReferenceImage( true );
     filter->SetReferenceImage( b );
+    imTemp = filter->GetOutput();
     filter->Update();
-    output = filter->GetOutput();
+    output = imTemp;
     }
 
   return output;
@@ -729,23 +731,27 @@ ImageMathFilters<VDimension>
       {
       typename ErodeFilterType::Pointer filter =
         ErodeFilterType::New();
+      typename ImageType::Pointer imTemp;
       filter->SetBackgroundValue( backgroundValue );
       filter->SetKernel( ball );
       filter->SetObjectValue( foregroundValue );
       filter->SetInput( imIn );
+      imTemp = filter->GetOutput();
       filter->Update();
-      imIn = filter->GetOutput();
+      imIn = imTemp;
       break;
       }
     case 1:
       {
       typename DilateFilterType::Pointer filter =
         DilateFilterType::New();
+      typename ImageType::Pointer imTemp;
       filter->SetKernel( ball );
       filter->SetObjectValue( foregroundValue );
       filter->SetInput( imIn );
+      imTemp = filter->GetOutput();
       filter->Update();
-      imIn = filter->GetOutput();
+      imIn = imTemp;
       break;
       }
     }
