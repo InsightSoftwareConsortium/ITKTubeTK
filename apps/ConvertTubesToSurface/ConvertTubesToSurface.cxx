@@ -90,7 +90,7 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   GroupSpatialObjectType::Pointer groupSpatialObject = reader->GetGroup();
-  groupSpatialObject->ComputeObjectToWorldTransform();
+  groupSpatialObject->Update();
   std::ostringstream ostrm;
   ostrm << "Number of children = "
     << groupSpatialObject->GetNumberOfChildren();
