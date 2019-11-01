@@ -32,7 +32,7 @@ ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-VesselMask
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1.mha}
-    ${TEMP}/${MODULE_NAME}Test1.mha
+    ${TEMP}/${MODULE_NAME}-Test1.mha
     --gap 0.5
     --notVesselWidth 2 )
 
@@ -40,36 +40,37 @@ ExternalData_Add_Test( TubeTKData
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-VesselMask-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test1.mha
+    -t ${TEMP}/${MODULE_NAME}-Test1.mha
     -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1_VesselMask.mha}
     -i 0.01 )
-
-set_tests_properties( ${MODULE_NAME}-Test1-VesselMask-Compare PROPERTIES DEPENDS
-  ${MODULE_NAME}-Test1-VesselMask )
+set_tests_properties( ${MODULE_NAME}-Test1-VesselMask-Compare
+  PROPERTIES DEPENDS ${MODULE_NAME}-Test1-VesselMask )
 
 # Test2 - NotVesselMask
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test2-NotVesselMask
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2.mha}
-    ${TEMP}/${MODULE_NAME}Test2.mha
+    ${TEMP}/${MODULE_NAME}-Test2.mha
     --gap 0.5
     --notVesselWidth 2
-    --notVesselMask ${TEMP}/${MODULE_NAME}Test2_NotVesselMask.mha )
+    --notVesselMask ${TEMP}/${MODULE_NAME}-Test2_NotVesselMask.mha )
 
 # Test2 - Compare - NotVesselMask
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test2-NotVesselMask-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test2.mha
+    -t ${TEMP}/${MODULE_NAME}-Test2.mha
     -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2_NotVesselMask.mha}
     -i 0.01 )
+set_tests_properties( ${MODULE_NAME}-Test2-NotVesselMask-Compare
+  PROPERTIES DEPENDS ${MODULE_NAME}-Test2-NotVesselMask )
+
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test2-NotVesselMask1-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test2_NotVesselMask.mha
+    -t ${TEMP}/${MODULE_NAME}-Test2_NotVesselMask.mha
     -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2_NotVesselMask1.mha}
     -i 0.01 )
-
-set_tests_properties( ${MODULE_NAME}-Test2-NotVesselMask-Compare PROPERTIES DEPENDS
-  ${MODULE_NAME}-Test2-NotVesselMask )
+set_tests_properties( ${MODULE_NAME}-Test2-NotVesselMask1-Compare
+  PROPERTIES DEPENDS ${MODULE_NAME}-Test2-NotVesselMask )
