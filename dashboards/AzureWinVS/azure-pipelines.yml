@@ -54,13 +54,13 @@ jobs:
       workingDirectory: $(Agent.BuildDirectory)\ITKTubeTK-Release
     - bash: |
         set -x
-        ctest -D ExperimentalStart -D ExperimentalUpdate -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalSubmit -V -C Release
+        ctest -D ExperimentalStart -D ExperimentalUpdate -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalSubmit -V -C Release -j 20
       condition: ne(variables['Build.Reason'], 'Schedule')
       displayName: Build and Test ITKTubeTK
       workingDirectory: $(Agent.BuildDirectory)\ITKTubeTK-Release
     - bash: |
         set -x
-        ctest -D NightlyStart -D NightlyUpdate -D NightlyConfigure -D NightlyBuild -D NightlyTest -D NightlySubmit -V -C Release
+        ctest -D NightlyStart -D NightlyUpdate -D NightlyConfigure -D NightlyBuild -D NightlyTest -D NightlySubmit -V -C Release -j 20
       condition: eq(variables['Build.Reason'], 'Schedule')
       displayName: Build and Test ITKTubeTK
       workingDirectory: $(Agent.BuildDirectory)\ITKTubeTK-Release

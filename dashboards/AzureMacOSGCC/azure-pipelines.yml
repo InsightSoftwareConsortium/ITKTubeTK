@@ -53,7 +53,7 @@ jobs:
         cmake --version
         cd ITKTubeTK-Release
         cmake -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
-        ctest -D ExperimentalStart -D ExperimentalUpdate -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalSubmit -V
+        ctest -D ExperimentalStart -D ExperimentalUpdate -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalTest -D ExperimentalSubmit -V -j 20
         cd ..
       condition: ne(variables['Build.Reason'], 'Schedule')
       displayName: CMake and CTest ITKTubeTK
@@ -64,7 +64,7 @@ jobs:
         cmake --version
         cd ITKTubeTK-Release
         cmake -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
-        ctest -D NightlyStart -D NightlyUpdate -D NightlyConfigure -D NightlyBuild -D NightlyTest -D NightlySubmit -V
+        ctest -D NightlyStart -D NightlyUpdate -D NightlyConfigure -D NightlyBuild -D NightlyTest -D NightlySubmit -V -j 20
         cd ..
       condition: eq(variables['Build.Reason'], 'Schedule')
       displayName: Nightly CMake and CTest ITKTubeTK
