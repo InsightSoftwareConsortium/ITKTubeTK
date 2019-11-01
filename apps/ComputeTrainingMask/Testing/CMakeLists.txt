@@ -60,7 +60,7 @@ ExternalData_Add_Test( TubeTKData
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test2-NotVesselMask-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test2.mha
+    -t ${TEMP}/${MODULE_NAME}-Test2.mha
     -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2_NotVesselMask.mha}
     -i 0.01 )
 set_tests_properties( ${MODULE_NAME}-Test2-NotVesselMask-Compare
