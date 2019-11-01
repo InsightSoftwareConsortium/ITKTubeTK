@@ -24,6 +24,8 @@ limitations under the License.
 #ifndef __itktubeTubeXIO_hxx
 #define __itktubeTubeXIO_hxx
 
+#include <cmath>
+
 #include "itktubeTubeXIO.h"
 
 #include "tubeStringUtilities.h"
@@ -161,6 +163,13 @@ TubeXIO< TDimension >
     for( unsigned int i=0; i<TDimension; ++i )
       {
       voxelSize[i] = ( float )( mF->value[i] );
+      }
+    }
+  else
+    {
+    for( unsigned int i=0; i<TDimension; ++i )
+      {
+      voxelSize[i] = 1;
       }
     }
 
@@ -309,6 +318,15 @@ TubeXIO< TDimension >
 
     typename TubeType::Pointer tube = TubeType::New();
 
+    bool useVoxelSize = true;
+    for( unsigned int d=0; d<TDimension; ++d )
+      {
+      if( std::isnan(voxelSize[d]) || voxelSize[d] == 0 )
+        {
+        useVoxelSize = false;
+        break;
+        }
+      }
     for( unsigned int j=0; j<nPoints; ++j )
       {
       typename TubeType::TubePointType pnt;
@@ -318,7 +336,10 @@ TubeXIO< TDimension >
         {
         tmpReadStream >> x[d];
         tmpReadStream.get();
-        x[d] *= voxelSize[d];
+        if( useVoxelSize )
+          {
+          x[d] *= voxelSize[d];
+          }
         }
       pnt.SetPositionInObjectSpace( x );
 
