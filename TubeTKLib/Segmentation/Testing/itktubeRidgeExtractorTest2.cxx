@@ -192,6 +192,14 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
         << std::endl;
       std::cout << "   Source = " << xContI << std::endl;
       std::cout << "   Result = " << xRidgeContI << std::endl;
+      double ridgeness, intensity, roundness, curvature, levelness;
+      ridgeness = ridgeOp->Ridgeness( xRidgePnt, intensity, roundness,
+        curvature, levelness );
+      std::cout << "       ridgness = " << ridgeness << std::endl;
+      std::cout << "       intensity = " << intensity << std::endl;
+      std::cout << "       roundness = " << roundness << std::endl;
+      std::cout << "       curvature = " << curvature << std::endl;
+      std::cout << "       levelness = " << levelness << std::endl;
       ++failures;
       continue;
       }
