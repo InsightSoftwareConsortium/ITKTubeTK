@@ -38,19 +38,19 @@ set( METRIC_SAMPLER ComputeImageToTubeRigidMetricImage )
 set( METRIC_SAMPLER_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${METRIC_SAMPLER}> )
 
 ExternalData_Add_Test( TubeTKData
-  NAME ${METRIC_SAMPLER}-Test1
+  NAME ${MODULE_NAME}-MetricSampler-Test1
   COMMAND ${METRIC_SAMPLER_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
     DATA{${TubeTK_DATA_ROOT}/tube.tre}
-    ${TEMP}/${METRIC_SAMPLER}Test1.nrrd )
+    ${TEMP}/${MODULE_NAME}-MetricSampler-Test1.nrrd )
 
 set( METRIC_EXTRACTOR ExtractMetricImageSlice )
 set( METRIC_EXTRACTOR_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${METRIC_EXTRACTOR}> )
 
 ExternalData_Add_Test( TubeTKData
-  NAME ${METRIC_EXTRACTOR}-Test1
+  NAME ${MODULE_NAME}-MetricExtractor-Test1
   COMMAND ${METRIC_EXTRACTOR_EXE}
-    ${TEMP}/${METRIC_SAMPLER}Test1.nrrd
-    ${TEMP}/${METRIC_EXTRACTOR}Test1.mha )
-set_property( TEST ${METRIC_EXTRACTOR}-Test1
-  APPEND PROPERTY REQUIRED_FILES ${TEMP}/${METRIC_SAMPLER}Test1.nrrd )
+    ${TEMP}/${MODULE_NAME}-MetricSampler-Test1.nrrd
+    ${TEMP}/${MODULE_NAME}-MetricExtractor-Test1.mha )
+set_tests_properties( ${MODULE_NAME}-MetricExtractor-Test1
+  PROPERTIES DEPENDS ${MODULE_NAME}-MetricSampler-Test1 )
