@@ -400,15 +400,12 @@ RidgeSeedFilter< TImage, TLabelMap >
   //itk::TimeProbesCollectorBase timeCollector;
 
   //timeCollector.Start( "RidgeSeedFilter Update" );
-  std::cout << "RidgeSeedFilter::GenerateData" << std::endl;
 
   if( m_PDFSegmenter.IsNull() )
     {
+    m_PDFSegmenter = PDFSegmenterParzenType::New();
     typename PDFSegmenterParzenType::Pointer tmpPDF =
-      PDFSegmenterParzenType::New();
-    //tmpPDF->SetReferenceCount( 2 );
-    m_PDFSegmenter = tmpPDF.GetPointer();
-
+      static_cast< PDFSegmenterParzenType  * >( m_PDFSegmenter.GetPointer() );
     tmpPDF->SetHistogramSmoothingStandardDeviation( 2 );
     tmpPDF->SetOutlierRejectPortion( 0.001 );
     }
@@ -497,8 +494,8 @@ RidgeSeedFilter< TImage, TLabelMap >
 
     filter = FilterType::New();
     filter->SetInput( m_LabelMap );
-    filter->Update();
     m_LabelMap = filter->GetOutput();
+    filter->Update();
     }
 }
 
