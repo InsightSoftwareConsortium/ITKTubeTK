@@ -26,8 +26,8 @@ limitations under the License.
 
 #include <itkBinaryBallStructuringElement.h>
 #include <itkCastImageFilter.h>
-#include <itkDilateObjectMorphologyImageFilter.h>
-#include <itkErodeObjectMorphologyImageFilter.h>
+#include <itkBinaryDilateImageFilter.h>
+#include <itkBinaryErodeImageFilter.h>
 #include <itkExtractImageFilter.h>
 #include <itkHistogramMatchingImageFilter.h>
 #include <itkImageFileWriter.h>
@@ -721,10 +721,10 @@ ImageMathFilters<VDimension>
   ball.SetRadius( radius );
   ball.CreateStructuringElement();
 
-  typedef itk::ErodeObjectMorphologyImageFilter
-               <ImageType, ImageType, BallType>       ErodeFilterType;
-  typedef itk::DilateObjectMorphologyImageFilter
-               <ImageType, ImageType, BallType>       DilateFilterType;
+  typedef itk::BinaryErodeImageFilter<ImageType, ImageType, BallType>
+    ErodeFilterType;
+  typedef itk::BinaryDilateImageFilter<ImageType, ImageType, BallType>
+    DilateFilterType;
   switch( mode )
     {
     case 0:
@@ -734,7 +734,7 @@ ImageMathFilters<VDimension>
       typename ImageType::Pointer imTemp;
       filter->SetBackgroundValue( backgroundValue );
       filter->SetKernel( ball );
-      filter->SetObjectValue( foregroundValue );
+      filter->SetErodeValue( foregroundValue );
       filter->SetInput( imIn );
       imTemp = filter->GetOutput();
       filter->Update();
@@ -747,7 +747,7 @@ ImageMathFilters<VDimension>
         DilateFilterType::New();
       typename ImageType::Pointer imTemp;
       filter->SetKernel( ball );
-      filter->SetObjectValue( foregroundValue );
+      filter->SetDilateValue( foregroundValue );
       filter->SetInput( imIn );
       imTemp = filter->GetOutput();
       filter->Update();
