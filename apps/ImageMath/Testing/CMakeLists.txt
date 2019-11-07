@@ -183,7 +183,7 @@ ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}Test9
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/GDS0015_1.mha}
-               -M 0 10 255 0
+               -M 0 11 255 0
                -W 2 ${TEMP}/${MODULE_NAME}Test9.mha )
 
 # Test9-Compare
