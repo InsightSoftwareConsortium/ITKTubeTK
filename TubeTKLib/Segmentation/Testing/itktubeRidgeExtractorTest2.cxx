@@ -54,6 +54,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
   ridgeOp->SetInputImage( im );
   ridgeOp->SetStepX( 0.5 );
   ridgeOp->SetDynamicScale( true );
+  ridgeOp->ResetFailureCodeCounts();
 
   typedef itk::SpatialObjectReader<>                   ReaderType;
   typedef itk::SpatialObject<>::ChildrenListType       ObjectListType;
@@ -80,7 +81,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
   typedef itk::Statistics::MersenneTwisterRandomVariateGenerator
     RandGenType;
   RandGenType::Pointer rndGen = RandGenType::New();
-  rndGen->Initialize(); // set seed here
+  rndGen->Initialize(7); // set seed here
 
   RidgeOpType::IndexType imMinI = ridgeOp->GetExtractBoundMinInIndexSpace();
   RidgeOpType::IndexType imMaxI = ridgeOp->GetExtractBoundMaxInIndexSpace();
@@ -106,6 +107,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       }
     TubeType::Pointer tube = static_cast< TubeType * >(
       tubeIter->GetPointer() );
+    tube->Update();
     std::cout << "Test tube = " << rndTubeNum << std::endl;
 
     TubePointListType tubePointList = tube->GetPoints();
@@ -123,8 +125,6 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       }
     TubePointType * pnt = static_cast< TubePointType * >( &( *pntIter ) );
     std::cout << "Test point = " << rndPointNum << std::endl;
-
-    tube->Update();
 
     ImageType::PointType pntX = pnt->GetPositionInWorldSpace();
     std::cout << "Test position = " << pntX << std::endl;
@@ -230,7 +230,8 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     std::cout << "***** Ending tube extraction ***** " << std::endl;
     if( xTube.IsNull() )
       {
-      std::cout << "*** FAILURE: Ridge extraction failed" << std::endl;
+      std::cout << "*** FAILURE: Ridge extraction failed...repicking"
+        << std::endl;
       ++failures;
       continue;
       }
