@@ -64,7 +64,10 @@ set( CTEST_CUSTOM_COVERAGE_EXCLUDE
     ".*/qrc_.*"
 
     # Exclude files from the Testing directories
-    ".*/Testing/.*"
+    ".*/CoverageInfo/.*/Testing/.*"
+
+    # Exclude files from the Testing directories
+    ".*/KWStyle/.*"
 
     # Exclude generated python files
     ".*Python.cxx"
