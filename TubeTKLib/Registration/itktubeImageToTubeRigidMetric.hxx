@@ -409,7 +409,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
   transformCopy->SetParameters( parameters );
 
   itkDebugMacro( << "**** Get Derivative ****" );
-  itkDebugMacro( << "parameters = "<< parameters )
+  itkDebugMacro( << "parameters = "<< parameters );
 
   VnlMatrixType biasV( TubeDimension, TubeDimension,
     NumericTraits< ScalarType >::Zero );
