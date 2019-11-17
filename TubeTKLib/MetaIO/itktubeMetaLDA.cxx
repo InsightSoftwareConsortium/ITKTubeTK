@@ -644,7 +644,7 @@ void MetaLDA
   MET_InitWriteField( mF, "NDims", MET_INT, m_LDAValues.size() );
   m_Fields.push_back( mF );
 
-  const int nDims = m_LDAValues.size();
+  const unsigned int nDims = m_LDAValues.size();
 
   mF = new MET_FieldRecordType();
   MET_InitWriteField( mF, "NPCABasis", MET_INT,
