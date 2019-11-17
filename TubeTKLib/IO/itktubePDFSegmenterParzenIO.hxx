@@ -474,7 +474,7 @@ Read( const char * _headerName )
       size[j] = pdfClassReader.GetNumberOfBinsPerFeature()[j];
       if( size[j] != m_PDFSegmenter->GetNumberOfBinsPerFeature()[j] )
         {
-        std::cout << "ERROR: N mismatch" << std::endl;
+        std::cout << "ERROR: Number of bins mismatch" << std::endl;
         for( unsigned int f=0; f<metaFields.size(); ++f )
           {
           delete metaFields[f];

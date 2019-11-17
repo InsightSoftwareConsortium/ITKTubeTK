@@ -56,7 +56,7 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_SeedFeatureGenerator->SetNumberOfLDABasisToUseAsFeatures( 1 );
   m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures( 3 );
 
-  m_PDFSegmenter = NULL;
+  m_PDFSegmenter = nullptr;
 
   m_RidgeId = 255;
   m_BackgroundId = 127;
@@ -64,7 +64,7 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   m_SeedTolerance = 1.0;
 
-  m_LabelMap = NULL;
+  m_LabelMap = nullptr;
 
   m_Skeletonize = true;
 
@@ -462,7 +462,7 @@ RidgeSeedFilter< TImage, TLabelMap >
 {
   typename LabelMapType::Pointer tmpLabelMap =
     m_SeedFeatureGenerator->GetLabelMap();
-  m_SeedFeatureGenerator->SetLabelMap( NULL );
+  m_SeedFeatureGenerator->SetLabelMap( nullptr );
 
   m_PDFSegmenter->ClassifyImages();
 

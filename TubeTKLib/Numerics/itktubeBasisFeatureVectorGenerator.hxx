@@ -48,7 +48,7 @@ template< class TImage, class TLabelMap >
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::BasisFeatureVectorGenerator( void )
 {
-  m_LabelMap = NULL;
+  m_LabelMap = nullptr;
 
   m_ObjectIdList.clear();
   m_ObjectMeanList.clear();
@@ -60,7 +60,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   m_NumberOfPCABasisToUseAsFeatures = 1;
   m_NumberOfLDABasisToUseAsFeatures = 1;
 
-  m_InputFeatureVectorGenerator = NULL;
+  m_InputFeatureVectorGenerator = nullptr;
 
   m_BasisValues.set_size( 0 );
   m_BasisMatrix.set_size( 0, 0 );
@@ -70,6 +70,9 @@ template< class TImage, class TLabelMap >
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::~BasisFeatureVectorGenerator( void )
 {
+  m_ObjectIdList.clear();
+  m_ObjectMeanList.clear();
+  m_ObjectCovarianceList.clear();
 }
 
 template< class TImage, class TLabelMap >
@@ -853,7 +856,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     }
   else
     {
-    os << indent << "LabelMap = NULL" << std::endl;
+    os << indent << "LabelMap = nullptr" << std::endl;
     }
   os << indent << "ObjectIdList.size = " << m_ObjectIdList.size()
     << std::endl;

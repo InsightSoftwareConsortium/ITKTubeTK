@@ -144,6 +144,7 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
 
   itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO2(
     filter2 );
+  std::cout << "FilterIO2 Init." << std::endl;
   filterIO2.Read( argv[4] );
   std::cout << "FilterIO2 Read." << std::endl;
   filter2->ClassifyImages();

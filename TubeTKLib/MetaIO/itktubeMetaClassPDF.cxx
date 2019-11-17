@@ -40,7 +40,7 @@ MetaClassPDF( void )
     std::cout << "MetaClassPDF()" << std::endl;
     }
 
-  Clear();
+  MetaClassPDF::Clear();
 }
 
 MetaClassPDF::
@@ -51,7 +51,7 @@ MetaClassPDF( const char * _headerName )
     std::cout << "MetaClassPDF()" << std::endl;
     }
 
-  Clear();
+  MetaClassPDF::Clear();
 
   MetaClassPDF::Read( _headerName );
 }
@@ -65,7 +65,7 @@ MetaClassPDF( const MetaClassPDF & _metaPDF )
    std::cout << "MetaClassPDF()" << std::endl;
    }
 
-  Clear();
+  MetaClassPDF::Clear();
 
   CopyInfo( & _metaPDF );
 }
@@ -83,7 +83,7 @@ MetaClassPDF(
    std::cout << "MetaClassPDF()" << std::endl;
    }
 
-  Clear();
+  MetaClassPDF::Clear();
 
   InitializeEssential( _nFeatures, _nBinsPerFeature, _binMin, _binSize,
     _elementData );
@@ -113,7 +113,7 @@ MetaClassPDF( unsigned int _x,
   binSize[0] = _binSizeX;
   binSize[1] = _binSizeY;
 
-  Clear();
+  MetaClassPDF::Clear();
 
   InitializeEssential( 2, nBinsPerFeature, binMin, binSize, _elementData );
 }
@@ -149,7 +149,7 @@ MetaClassPDF( unsigned int _x,
   binSize[1] = _binSizeY;
   binSize[2] = _binSizeZ;
 
-  Clear();
+  MetaClassPDF::Clear();
 
   InitializeEssential( 3, nBinsPerFeature, binMin, binSize, _elementData );
 }
@@ -266,7 +266,7 @@ PrintInfo( void ) const
 void MetaClassPDF::
 CopyInfo( const MetaObject * _obj )
 {
-  Clear();
+  MetaClassPDF::Clear();
 
   MetaImage::CopyInfo( _obj );
 
@@ -320,8 +320,12 @@ Clear( void )
 
   MetaImage::Clear();
 
-  m_BinMin.clear();
-  m_BinSize.clear();
+  for( int i=0; i<MetaImage::NDims(); ++i )
+    {
+    m_NumberOfBinsPerFeature[i] = 100;
+    m_BinMin[i] = 0;
+    m_BinSize[i] = 2.56;
+    }
 
   m_ObjectId.resize( 2 );
   m_ObjectId[0] = 255;
@@ -373,7 +377,7 @@ InitializeEssential( unsigned int _nFeatures,
     MET_FLOAT, 1, ( void * )_elementData, true );
   MetaImage::Origin( minD );
 
-  MetaImage::CompressedData( true );
+  MetaImage::CompressedData( false );
 
   return true;
 }
@@ -390,7 +394,7 @@ SetNumberOfBinsPerFeature( const VectorUIntType & _nBinsPerFeature )
   m_NumberOfBinsPerFeature = _nBinsPerFeature;
 
   int nBins[10];
-  for( unsigned int i = 0; i < _nBinsPerFeature.size(); ++i )
+  for( int i = 0; i < MetaImage::NDims(); ++i )
     {
     nBins[i] = _nBinsPerFeature[i];
     }
@@ -645,8 +649,7 @@ ReadStream( std::ifstream * _stream )
 {
   if( META_DEBUG )
     {
-    std::cout << "MetaClassPDF: ReadStream"
-      << std::endl;
+    std::cout << "MetaClassPDF: ReadStream" << std::endl;
     }
 
   M_Destroy();
@@ -657,8 +660,7 @@ ReadStream( std::ifstream * _stream )
 
   if( m_ReadStream )
     {
-    std::cout << "MetaClassPDF: ReadStream: two files open?"
-                        << std::endl;
+    std::cout << "MetaClassPDF: ReadStream: two files open?" << std::endl;
     delete m_ReadStream;
     }
 
@@ -666,8 +668,7 @@ ReadStream( std::ifstream * _stream )
 
   if( !M_Read() )
     {
-    std::cout << "MetaClassPDF: Read: Cannot parse file"
-                        << std::endl;
+    std::cout << "MetaClassPDF: Read: Cannot parse file" << std::endl;
     m_ReadStream = NULL;
     return false;
     }
@@ -768,8 +769,6 @@ M_SetupReadFields( void )
 void MetaClassPDF::
 M_SetupWriteFields( void )
 {
-  MetaImage::M_SetupWriteFields();
-
   double binMinTemp[10];
   for( int i = 0; i < MetaImage::NDims(); i++ )
     {
@@ -783,6 +782,8 @@ M_SetupWriteFields( void )
     binSizeTemp[i] = static_cast<float>(m_BinSize[i]);
     }
   MetaImage::ElementSpacing( binSizeTemp );
+
+  MetaImage::M_SetupWriteFields();
 
   MET_FieldRecordType * mF_LastField; // ElementDataFileName
   mF_LastField = m_Fields.back();
@@ -901,20 +902,17 @@ M_Read( void )
 {
   if( META_DEBUG )
     {
-    std::cout << "MetaClassPDF: M_Read: Loading Header"
-                        << std::endl;
+    std::cout << "MetaClassPDF: M_Read: Loading Header" << std::endl;
     }
   if( !MetaImage::M_Read() )
     {
-    std::cout << "MetaClassPDF: M_Read: Error parsing file"
-                        << std::endl;
+    std::cout << "MetaClassPDF: M_Read: Error parsing file" << std::endl;
     return false;
     }
 
   if( META_DEBUG )
     {
-    std::cout << "MetaClassPDF: M_Read: Parsing Header"
-                        << std::endl;
+    std::cout << "MetaClassPDF: M_Read: Parsing Header" << std::endl;
     }
 
   if( META_DEBUG )
@@ -923,8 +921,7 @@ M_Read( void )
       << m_Fields.size() << std::endl;
     for( unsigned int i = 0; i < m_Fields.size(); i++ )
       {
-      std::cout << "  Field " << i << " = "
-        << m_Fields[i]->name << std::endl;
+      std::cout << "  Field " << i << " = " << m_Fields[i]->name << std::endl;
       }
     }
 

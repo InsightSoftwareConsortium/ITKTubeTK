@@ -656,15 +656,19 @@ void MetaLDA
     m_NumberOfLDABasisToUseAsFeatures );
   m_Fields.push_back( mF );
 
-  mF = new MET_FieldRecordType();
-  ::tube::MET_InitWriteField_Temp( mF, "Values", MET_FLOAT_ARRAY, nDims,
-                      m_LDAValues.data_block() );
-  m_Fields.push_back( mF );
+  if( nDims > 0 && m_LDAValues.size() == nDims
+    && m_LDAMatrix.rows() == nDims && m_LDAMatrix.columns() == nDims )
+    {
+    mF = new MET_FieldRecordType();
+    ::tube::MET_InitWriteField_Temp( mF, "Values", MET_FLOAT_ARRAY, nDims,
+                        m_LDAValues.data_block() );
+    m_Fields.push_back( mF );
 
-  mF = new MET_FieldRecordType();
-  ::tube::MET_InitWriteField_Temp( mF, "Matrix", MET_FLOAT_MATRIX, nDims,
-                      m_LDAMatrix.data_block() );
-  m_Fields.push_back( mF );
+    mF = new MET_FieldRecordType();
+    ::tube::MET_InitWriteField_Temp( mF, "Matrix", MET_FLOAT_MATRIX, nDims,
+                        m_LDAMatrix.data_block() );
+    m_Fields.push_back( mF );
+    }
 
   int tfCount = m_InputWhitenMeans.size();
 

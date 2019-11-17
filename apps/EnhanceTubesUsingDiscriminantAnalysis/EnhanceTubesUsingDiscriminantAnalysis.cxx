@@ -151,7 +151,6 @@ int DoIt( int argc, char * argv[] )
 
   tubeFilter->SetSkeletonize( false );
 
-  std::cout << "** Computing probability images." << std::endl;
   timeCollector.Start( "Update" );
   tubeFilter->Update();
   timeCollector.Stop( "Update" );
@@ -162,7 +161,6 @@ int DoIt( int argc, char * argv[] )
       ->SetProbabilityImageSmoothingStandardDeviation( tubeScales[0] );
     }
 
-  std::cout << "** Performing classification." << std::endl;
   timeCollector.Start( "Classify" );
   tubeFilter->ClassifyImages();
   timeCollector.Stop( "Classify" );

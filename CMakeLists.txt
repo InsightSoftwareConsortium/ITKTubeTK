@@ -312,3 +312,9 @@ endif()
 ####
 include( ${CMAKE_ROOT}/Modules/ExternalData.cmake )
 ExternalData_Add_Target( TubeTKData )
+
+####
+# Valgrind / MemCheck Options
+####
+set( MEMORYCHECK_SUPPRESSIONS_FILE
+ "${TubeTK_SOURCE_DIR}/CMake/TubeTKValgrind.supp" )

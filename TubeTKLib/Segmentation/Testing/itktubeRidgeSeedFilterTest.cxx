@@ -147,11 +147,32 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   try
     {
     filter->Update();
-    filter->ClassifyImages();
+    }
+  catch( itk::ExceptionObject & e )
+    {
+    std::cout << "Error in RidgeSeedFilter update." << std::endl;
+    std::cout << e << std::endl;
+    return EXIT_FAILURE;
     }
   catch( ... )
     {
     std::cout << "Error in RidgeSeedFilter update." << std::endl;
+    return EXIT_FAILURE;
+    }
+  try
+    {
+    filter->ClassifyImages();
+    }
+  catch( itk::ExceptionObject & e )
+    {
+    std::cout << "Error in RidgeSeedFilter ClassifyImages." << std::endl;
+    std::cout << e << std::endl;
+    return EXIT_FAILURE;
+    }
+  catch( ... )
+    {
+    std::cout << "Error in RidgeSeedFilter ClassifyImages." << std::endl;
+    return EXIT_FAILURE;
     }
   std::cout << "Update & Classification done." << std::endl;
 
@@ -167,7 +188,13 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     }
   catch ( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during write:" << std::endl << e;
+    std::cout << "Exception caught during write:" << std::endl;
+    std::cout << e << std::endl;
+    return EXIT_FAILURE;
+    }
+  catch( ... )
+    {
+    std::cout << "Error in write." << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -181,7 +208,13 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     }
   catch ( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during write:" << std::endl << e;
+    std::cout << "Exception caught during write:" << std::endl;
+    std::cout << e << std::endl;
+    return EXIT_FAILURE;
+    }
+  catch( ... )
+    {
+    std::cout << "Error in labelmap write." << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -196,10 +229,15 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     }
   catch ( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during write:" << std::endl << e;
+    std::cout << "Exception caught during write:" << std::endl;
+    std::cout << e << std::endl;
     return EXIT_FAILURE;
     }
-
+  catch( ... )
+    {
+    std::cout << "Error in labelmap write." << std::endl;
+    return EXIT_FAILURE;
+    }
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;

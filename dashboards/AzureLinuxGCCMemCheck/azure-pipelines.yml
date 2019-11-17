@@ -58,7 +58,7 @@ jobs:
         cmake --version
         cd ITKTubeTK-Debug
         cmake -DBUILDNAME=Linux-Memcheck -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Debug -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Debug -DCMAKE_BUILD_TYPE=Debug $(Build.SourcesDirectory)
-        ctest -D ExperimentalStart -D ExperimentalUpdate -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalMemCheck -D ExperimentalSubmit -V -j 20 --timeout 3000
+        ctest -D ExperimentalStart -D ExperimentalUpdate -D ExperimentalConfigure -D ExperimentalBuild -D ExperimentalMemCheck -D ExperimentalSubmit -V -j 20 --timeout 4500
         cd ..
       condition: ne(variables['Build.Reason'], 'Schedule')
       displayName: Experimental CMake and CTest ITKTubeTK
@@ -69,7 +69,7 @@ jobs:
         cmake --version
         cd ITKTubeTK-Debug
         cmake -DBUILDNAME=Linux-MemCheck -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Debug -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Debug -DCMAKE_BUILD_TYPE=Debug $(Build.SourcesDirectory)
-        ctest -D NightlyStart -D NightlyUpdate -D NightlyConfigure -D NightlyBuild -D NightlyMemCheck -D NightlySubmit -V -j 20 --timeout 3000
+        ctest -D NightlyStart -D NightlyUpdate -D NightlyConfigure -D NightlyBuild -D NightlyMemCheck -D NightlySubmit -V -j 20 --timeout 4500
         cd ..
       condition: eq(variables['Build.Reason'], 'Schedule')
       displayName: Nightly CMake and CTest ITKTubeTK
