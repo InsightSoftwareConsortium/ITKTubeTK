@@ -43,16 +43,16 @@ template< class TInputImage >
 TubeExtractor<TInputImage>
 ::TubeExtractor( void )
 {
-  m_RidgeOp = NULL;
-  m_RadiusOp = NULL;
+  m_RidgeOp = nullptr;
+  m_RadiusOp = nullptr;
 
-  m_IdleCallBack = NULL;
-  m_StatusCallBack = NULL;
-  m_NewTubeCallBack = NULL;
-  m_AbortProcess = NULL;
+  m_IdleCallBack = nullptr;
+  m_StatusCallBack = nullptr;
+  m_NewTubeCallBack = nullptr;
+  m_AbortProcess = nullptr;
 
-  m_InputImage = NULL;
-  m_RadiusInputImage = NULL;
+  m_InputImage = nullptr;
+  m_RadiusInputImage = nullptr;
 
   m_TubeColor.set_size( 4 );
   m_TubeColor[0] = 1.0f;

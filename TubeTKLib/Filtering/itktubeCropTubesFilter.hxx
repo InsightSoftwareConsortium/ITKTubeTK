@@ -41,6 +41,8 @@ CropTubesFilter< VDimension >
   m_CropTubes = false;
   m_UseMaskImage = false;
   m_MaskImage = NULL;
+  m_BoxPositionInWorldSpace = 0;
+  m_BoxSizeInWorldSpace = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -181,6 +183,7 @@ CropTubesFilter< VDimension >
       targetPointList.clear();
       }
     }
+  delete pSourceTubeList; 
 }
 
 //----------------------------------------------------------------------------

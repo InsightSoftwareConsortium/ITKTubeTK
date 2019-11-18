@@ -170,7 +170,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
 
   m_HistogramBinMin.resize( numFeatures, 0 );
   m_HistogramBinSize.resize( numFeatures, 0 );
-  m_HistogramNumberOfBin.resize( numFeatures, 100 );
+  m_HistogramNumberOfBin.resize( numFeatures, 50 );
 
   //
   // Convert lists to histograms that have the same span ( using range
