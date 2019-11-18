@@ -44,15 +44,23 @@ template< class TInputImage >
 SegmentTubes<TInputImage>
 ::SegmentTubes( void )
 {
-  m_InputImage = NULL;
-  m_RadiusInputImage = NULL;
+  m_InputImage = nullptr;
+  m_RadiusInputImage = nullptr;
   m_TubeExtractorFilter = TubeExtractorFilterType::New();
-  m_SeedMask = NULL;
-  m_ScaleMask = NULL;
-  m_ExistingTubesMask = NULL;
-  m_ExistingTubes = NULL;
+  m_SeedMask = nullptr;
+  m_ScaleMask = nullptr;
+  m_ExistingTubesMask = nullptr;
+  m_ExistingTubes = nullptr;
 
+  m_Scale = 1.0;
+  m_SeedIndexList.clear();
+  m_SeedRadiusList.clear();
+  m_SeedPhysicalCoordinatesList.clear();
+  m_SeedIndexFromFileList.clear();
+  m_SeedScaleFromFileList.clear();
+  m_SeedMaskStride = 1;
   m_UseExistingTubes = false;
+  m_ParameterFile = "";
   m_Border = 5.0;
   m_TubeGroup = TubeGroupType::New();
 }
@@ -63,6 +71,11 @@ template< class TInputImage >
 SegmentTubes<TInputImage>
 ::~SegmentTubes( void )
 {
+  m_SeedIndexList.clear();
+  m_SeedRadiusList.clear();
+  m_SeedPhysicalCoordinatesList.clear();
+  m_SeedIndexFromFileList.clear();
+  m_SeedScaleFromFileList.clear();
 }
 
 /**

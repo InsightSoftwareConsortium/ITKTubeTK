@@ -1816,7 +1816,6 @@
    fun:ioctl
    fun:_ZN6itksysL16CloneFileContentERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES7_
 }
-# Offending line contains comment that the array may contain garbage
 {
    zlib_uninitialized
    Memcheck:Cond
@@ -1824,4 +1823,16 @@
    fun:fill_window
    fun:deflate_fast
    fun:itkzlib_deflate
+}
+{
+   itk_H5MM_malloc
+   Memcheck:malloc
+   fun:itk_H5MM_malloc
+}
+{
+   TCLAP
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:operator
+   fun:TCLAP::CmdLine::constructor
 }
