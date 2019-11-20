@@ -670,17 +670,17 @@ void MetaLDA
     m_Fields.push_back( mF );
     }
 
-  int tfCount = m_InputWhitenMeans.size();
+  unsigned int tfCount = m_InputWhitenMeans.size();
 
   if( tfCount > 0 )
     {
     double tf[4096];
     mF = new MET_FieldRecordType();
-    for( int i = 0; i < tfCount; i++ )
+    for( unsigned int i = 0; i < tfCount; i++ )
       {
       tf[i] = m_InputWhitenMeans[i];
       }
-    for( int i = tfCount; i < nDims; i++ )
+    for( unsigned int i = tfCount; i < nDims; i++ )
       {
       tf[i] = 0;
       }
@@ -690,7 +690,7 @@ void MetaLDA
     m_Fields.push_back( mF );
 
     mF = new MET_FieldRecordType();
-    for( int i = 0; i < tfCount; i++ )
+    for( unsigned int i = 0; i < tfCount; i++ )
       {
       tf[i] = m_InputWhitenStdDevs[i];
       }
@@ -706,11 +706,11 @@ void MetaLDA
     {
     double tf[4096];
     mF = new MET_FieldRecordType();
-    for( int i = 0; i < tfCount; i++ )
+    for( unsigned int i = 0; i < tfCount; i++ )
       {
       tf[i] = m_OutputWhitenMeans[i];
       }
-    for( int i = tfCount; i < nDims; i++ )
+    for( unsigned int i = tfCount; i < nDims; i++ )
       {
       tf[i] = 0;
       }
@@ -720,7 +720,7 @@ void MetaLDA
     m_Fields.push_back( mF );
 
     mF = new MET_FieldRecordType();
-    for( int i = 0; i < tfCount; i++ )
+    for( unsigned int i = 0; i < tfCount; i++ )
       {
       tf[i] = m_OutputWhitenStdDevs[i];
       }
