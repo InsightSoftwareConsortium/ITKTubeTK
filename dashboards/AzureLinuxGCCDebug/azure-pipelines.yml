@@ -23,6 +23,9 @@ jobs:
     - bash: |
         set -x
         git clone https://github.com/InsightSoftwareConsortium/ITK.git ITK
+        cd ITK
+        git checkout f426a2a27b
+        cd ..
         mkdir ITK-Debug
         cd ITK-Debug
         cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Debug ../ITK

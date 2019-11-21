@@ -18,6 +18,9 @@ jobs:
         pwd -W > buildpath
         set -x 
         git clone https://github.com/InsightSoftwareConsortium/ITK.git ITK
+        cd ITK
+        git checkout f426a2a27b
+        cd ..
         mkdir ITK-Release
       displayName: Clone ITK
       workingDirectory: $(Agent.BuildDirectory)
