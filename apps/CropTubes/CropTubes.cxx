@@ -67,7 +67,6 @@ int DoIt ( int argc, char * argv[] )
   typedef tube::CropTubes< DimensionT > FilterType;
   typename FilterType::Pointer filter = FilterType::New();
 
-
   typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
 
   try
