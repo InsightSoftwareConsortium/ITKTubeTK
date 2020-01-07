@@ -102,7 +102,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     = EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( 3 );
   eigenVectorAnalysisFilter->OrderEigenValuesBy(
-    EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
+    EigenVectorAnalysisFilterType::EigenValueOrderType::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( structureTensorFilter->GetOutput() );
   eigenVectorAnalysisFilter->Modified();
@@ -117,7 +117,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     = EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( 3 );
   eigenAnalysisFilter->OrderEigenValuesBy(
-    EigenAnalysisFilterType::FunctorType::OrderByValue );
+    EigenAnalysisFilterType::EigenValueOrderType::OrderByValue );
 
   eigenAnalysisFilter->SetInput( structureTensorFilter->GetOutput() );
   eigenAnalysisFilter->Update();

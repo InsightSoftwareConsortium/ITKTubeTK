@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeTubeMath.h"
+#include "tubeTubeMathFilters.h"
 
 #include <itkImageFileWriter.h>
 #include <itkSpatialObjectReader.h>

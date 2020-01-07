@@ -432,8 +432,7 @@ CompareImageWithPrior< TPixel, TDimension>
       filter->SetInput( m_OutputMaskImage );
       filter->SetSigma( m_GaussianBlur );
 
-      filter->SetOrder(
-               itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
+      filter->SetOrder( itk::GaussianOrderEnum::ZeroOrder );
       filter->SetDirection( i );
 
       filter->Update();

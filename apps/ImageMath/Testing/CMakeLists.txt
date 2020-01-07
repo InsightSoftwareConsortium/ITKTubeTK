@@ -92,7 +92,7 @@ ExternalData_Add_Test( TubeTKData
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -S 1234
-               -N -1 1 10 0.2
+               -N -1 1 9.8 10.2
                -w ${TEMP}/${MODULE_NAME}Test4.mha )
 
 # Test4-Compare
@@ -432,7 +432,7 @@ ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}Test24
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
-               -u DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
+               -P 0 DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
                -w ${TEMP}/${MODULE_NAME}Test24.mha )
 
 # Test24-Compare

@@ -21,11 +21,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubeTubeMath_hxx
-#define __tubeTubeMath_hxx
+#ifndef __tubeTubeMathFilters_hxx
+#define __tubeTubeMathFilters_hxx
 
 #include "tubeMatrixMath.h"
-#include "tubeTubeMath.h"
+#include "tubeTubeMathFilters.h"
 
 namespace tube
 {
@@ -189,7 +189,7 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
     l = std::sqrt( l );
     if( l < 0.0001 )
       {
-      std::cerr << "tubeTubeMath::ComputeVectorTangentsAndNormals() : ";
+      std::cerr << "tubeTubeMathFilters::ComputeVectorTangentsAndNormals() : ";
       std::cerr << "length between two consecutive points is 0";
       std::cerr << " ( use RemoveDuplicatePoints() )" << std::endl;
       std::cerr << "   p1 = " << x1 << std::endl;
@@ -487,4 +487,4 @@ ComputeTubeLength( const typename TTube::Pointer & tube )
 
 } // End namespace tube
 
-#endif // End !defined( __tubeTubeMath_hxx )
+#endif // End !defined( __tubeTubeMathFilters_hxx )

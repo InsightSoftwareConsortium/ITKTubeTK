@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubeTubeMath_h
-#define __tubeTubeMath_h
+#ifndef __tubeTubeMathFilters_h
+#define __tubeTubeMathFilters_h
 
 #include "tubeMacro.h"
 
@@ -76,6 +76,6 @@ ComputeTubeLength( const typename TTube::Pointer & tube );
 
 } // End namespace tube
 
-#include "tubeTubeMath.hxx"
+#include "tubeTubeMathFilters.hxx"
 
-#endif // End !defined( __tubeTubeMath_h )
+#endif // End !defined( __tubeTubeMathFilters_h )

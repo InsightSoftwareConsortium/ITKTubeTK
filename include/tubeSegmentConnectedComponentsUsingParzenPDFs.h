@@ -56,7 +56,6 @@ public:
   typedef itk::Image< InputImagePixelType, TDimension > InputImageType;
   typedef TLabelMapPixel                                LabelMapPixelType;
   typedef itk::Image< LabelMapPixelType, TDimension >   LabelMapType;
-  typedef LabelMapType                                  OutputImageType;
 
   typedef itk::tube::PDFSegmenterParzen< InputImageType,
     LabelMapType >                                  FilterType;
@@ -64,6 +63,7 @@ public:
   typedef typename FilterType::PDFImageType         PDFImageType;
   typedef typename FilterType::ProbabilityImageType ProbabilityImageType;
   typedef typename FilterType::VectorDoubleType     VectorDoubleType;
+  typedef typename FilterType::ObjectIdListType     ObjectIdListType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -72,19 +72,17 @@ public:
   itkTypeMacro( SegmentConnectedComponentsUsingParzenPDFs, ProcessObject );
 
   /** Set/Get input image */
-  tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
-  tubeWrapGetConstObjectMacro( Input, InputImageType, Filter );
-
   void SetFeatureImage( InputImageType * img );
   void AddFeatureImage( InputImageType * img );
 
   /** Set/Get mask image */
-  tubeWrapSetObjectMacro( LabelMap, LabelMapType, Filter );
-  tubeWrapGetObjectMacro( LabelMap, LabelMapType, Filter );
+  tubeWrapSetObjectMacro( InputLabelMap, LabelMapType, Filter );
+  tubeWrapGetObjectMacro( InputLabelMap, LabelMapType, Filter );
 
   tubeWrapForceSetMacro( ObjectId, LabelMapPixelType, Filter );
-  tubeWrapGetMacro( ObjectId, LabelMapPixelType, Filter );
   tubeWrapAddMacro( ObjectId, LabelMapPixelType, Filter );
+  tubeWrapGetMacro( ObjectId, ObjectIdListType, Filter );
+  tubeWrapGetNthMacro( ObjectId, LabelMapPixelType, Filter );
 
   tubeWrapSetMacro( VoidId, LabelMapPixelType, Filter );
   tubeWrapGetMacro( VoidId, LabelMapPixelType, Filter );
@@ -100,6 +98,8 @@ public:
 
   tubeWrapSetNthMacro( ObjectPDFWeight, double, Filter );
   tubeWrapGetNthMacro( ObjectPDFWeight, double, Filter );
+  tubeWrapSetMacro( ObjectPDFWeight, VectorDoubleType, Filter );
+  tubeWrapGetMacro( ObjectPDFWeight, VectorDoubleType, Filter );
 
   tubeWrapSetMacro( ProbabilityImageSmoothingStandardDeviation, double, Filter );
   tubeWrapGetMacro( ProbabilityImageSmoothingStandardDeviation, double, Filter );
@@ -134,7 +134,7 @@ public:
   void Update( void ) override;
 
   /** Get output segmentation mask */
-  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
+  tubeWrapGetObjectMacro( OutputLabelMap, LabelMapType, Filter );
 
 protected:
   SegmentConnectedComponentsUsingParzenPDFs( void );

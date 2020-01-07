@@ -28,7 +28,7 @@ limitations under the License.
 #include "itktubeAnisotropicDiffusiveSparseRegistrationFilter.h"
 
 #include "itktubeDiffusiveRegistrationFilterUtils.h"
-#include "tubeTubeMath.h"
+#include "tubeTubeMathFilters.h"
 
 #include <itkImageRegionSplitter.h>
 #include <itktubeSmoothingRecursiveGaussianImageFilter.h>

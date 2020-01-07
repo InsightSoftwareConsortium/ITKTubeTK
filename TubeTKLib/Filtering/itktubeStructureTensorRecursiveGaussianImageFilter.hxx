@@ -52,7 +52,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage>
   for( unsigned int i = 0; i < imageDimensionMinus1; i++ )
     {
     m_SmoothingFilters[ i ] = GaussianFilterType::New();
-    m_SmoothingFilters[ i ]->SetOrder( GaussianFilterType::ZeroOrder );
+    m_SmoothingFilters[ i ]->SetOrder( GaussianOrderEnum::ZeroOrder );
     m_SmoothingFilters[ i ]->SetNormalizeAcrossScale( m_NormalizeAcrossScale );
     m_SmoothingFilters[ i ]->ReleaseDataFlagOn();
     }
@@ -60,13 +60,13 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage>
   // Outer Gaussian smoothing filter
   m_TensorComponentSmoothingFilter = GaussianFilterType::New();
   m_TensorComponentSmoothingFilter->SetOrder(
-    GaussianFilterType::ZeroOrder );
+    GaussianOrderEnum::ZeroOrder );
   m_TensorComponentSmoothingFilter->SetNormalizeAcrossScale(
     m_NormalizeAcrossScale );
   //m_TensorComponentSmoothingFilter->ReleaseDataFlagOn();
 
   m_DerivativeFilter = DerivativeFilterType::New();
-  m_DerivativeFilter->SetOrder( DerivativeFilterType::FirstOrder );
+  m_DerivativeFilter->SetOrder( GaussianOrderEnum::FirstOrder );
   m_DerivativeFilter->SetNormalizeAcrossScale( m_NormalizeAcrossScale );
   m_DerivativeFilter->SetInput( this->GetInput() );
 

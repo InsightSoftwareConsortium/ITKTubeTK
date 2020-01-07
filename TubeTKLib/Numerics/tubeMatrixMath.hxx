@@ -267,11 +267,12 @@ ComputeEigenOfMatrixInvertedTimesMatrix(
   vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
   bool orderByAbs, bool minToMax )
 {
-  vnl_matrix<T> l, u, a;
+  vnl_matrix<T> l, u, a, li, ui;
   l = vnl_cholesky( matToInvert, vnl_cholesky::quiet ).lower_triangle();
   u = l.transpose();
-  a = vnl_matrix_inverse<double>( l ) * mat
-    * vnl_matrix_inverse<double>( u );
+  li = vnl_matrix_inverse<double>( l ).as_matrix();
+  ui = vnl_matrix_inverse<double>( u ).as_matrix();
+  a = li * mat * ui;
   ::tube::FixMatrixSymmetry( a );
   ::tube::ComputeEigen( a, eVects, eVals, orderByAbs, minToMax );
   eVects = vnl_matrix_inverse<double>( u ) * eVects;

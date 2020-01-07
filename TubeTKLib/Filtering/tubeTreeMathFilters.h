@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubeTreeFilters_h
-#define __tubeTreeFilters_h
+#ifndef __tubeTreeMathFilters_h
+#define __tubeTreeMathFilters_h
 
 #include <itkImageFileReader.h>
 #include "itkGroupSpatialObject.h"
@@ -31,7 +31,7 @@ limitations under the License.
 namespace tube
 {
 template< unsigned int VDimension >
-class TreeFilters
+class TreeMathFilters
 {
 public:
   //typedefs
@@ -55,15 +55,15 @@ public:
     char InterpolationMethod );
 
 private:
-  TreeFilters();
-  ~TreeFilters();
+  TreeMathFilters();
+  ~TreeMathFilters();
 
 }; // End class ImageFilters
 
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeTreeFilters.hxx"
+#include "tubeTreeMathFilters.hxx"
 #endif
 
-#endif // End !defined( __tubeTreeFilters_h )
+#endif // End !defined( __tubeTreeMathFilters_h )

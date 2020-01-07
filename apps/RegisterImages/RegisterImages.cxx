@@ -463,7 +463,7 @@ int DoIt( int argc, char * argv[] )
       << std::endl;
     }
 
-  reger->SetExpectedOffsetPixelMagnitude( expectedOffset );
+  reger->SetExpectedOffsetMagnitude( expectedOffset );
   if( verbosity >= STANDARD )
     {
     std::cout << "###ExpectedOffsetPixelMagnitude: " << expectedOffset

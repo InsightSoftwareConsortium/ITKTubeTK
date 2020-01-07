@@ -66,15 +66,15 @@ ImageToImageRegistrationHelper<TImage>
   m_EnableLoadedRegistration = true;
   m_EnableInitialRegistration = true;
   m_EnableRigidRegistration = true;
-  m_EnableAffineRegistration = true;
-  m_EnableBSplineRegistration = true;
+  m_EnableAffineRegistration = false;
+  m_EnableBSplineRegistration = false;
 
   // Expected transform magnitude
-  m_ExpectedOffsetPixelMagnitude = 10;
-  m_ExpectedRotationMagnitude = 0.1;
-  m_ExpectedScaleMagnitude = 0.05;
-  m_ExpectedSkewMagnitude = 0.01;
-  m_ExpectedDeformationMagnitude = 10;
+  m_ExpectedOffsetMagnitude = 5;
+  m_ExpectedRotationMagnitude = 0.01;
+  m_ExpectedScaleMagnitude = 0.01;
+  m_ExpectedSkewMagnitude = 0.0001;
+  m_ExpectedDeformationMagnitude = 5;
 
   // Current state of the registration pipeline
   m_CompletedInitialization = false;
@@ -117,9 +117,9 @@ ImageToImageRegistrationHelper<TImage>
   m_InitialTransform = NULL;
 
   // Rigid
-  m_RigidSamplingRatio = 0.01;
+  m_RigidSamplingRatio = 0.05;
   m_RigidTargetError = 0.0001;
-  m_RigidMaxIterations = 100;
+  m_RigidMaxIterations = 1000;
   m_RigidTransform = NULL;
   m_RigidMetricMethodEnum =
     OptimizedRegistrationMethodType::MATTES_MI_METRIC;
@@ -128,9 +128,9 @@ ImageToImageRegistrationHelper<TImage>
   m_RigidMetricValue = 0.0;
 
   // Affine
-  m_AffineSamplingRatio = 0.02;
+  m_AffineSamplingRatio = 0.1;
   m_AffineTargetError = 0.0001;
-  m_AffineMaxIterations = 50;
+  m_AffineMaxIterations = 500;
   m_AffineTransform = NULL;
   m_AffineMetricMethodEnum =
     OptimizedRegistrationMethodType::MATTES_MI_METRIC;
@@ -139,9 +139,9 @@ ImageToImageRegistrationHelper<TImage>
   m_AffineMetricValue = 0.0;
 
   // BSpline
-  m_BSplineSamplingRatio = 0.10;
+  m_BSplineSamplingRatio = 0.20;
   m_BSplineTargetError = 0.0001;
-  m_BSplineMaxIterations = 20;
+  m_BSplineMaxIterations = 200;
   m_BSplineControlPointPixelSpacing = 40;
   m_BSplineTransform = NULL;
   m_BSplineMetricMethodEnum =
@@ -261,6 +261,101 @@ ImageToImageRegistrationHelper<TImage>
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
+::SetRegistration( RegistrationMethodEnumType reg )
+{
+  switch(reg)
+    {
+    default:
+    case NONE:
+      {
+      this->SetEnableInitialRegistration(false);
+      this->SetEnableRigidRegistration(false);
+      this->SetEnableAffineRegistration(false);
+      this->SetEnableBSplineRegistration(false);
+      break;
+      }
+    case INITIAL:
+      {
+      this->SetEnableInitialRegistration(true);
+      this->SetEnableRigidRegistration(false);
+      this->SetEnableAffineRegistration(false);
+      this->SetEnableBSplineRegistration(false);
+      break;
+      }
+    case RIGID:
+      {
+      this->SetEnableInitialRegistration(false);
+      this->SetEnableRigidRegistration(true);
+      this->SetEnableAffineRegistration(false);
+      this->SetEnableBSplineRegistration(false);
+      break;
+      }
+    case AFFINE:
+      {
+      this->SetEnableInitialRegistration(false);
+      this->SetEnableRigidRegistration(false);
+      this->SetEnableAffineRegistration(true);
+      this->SetEnableBSplineRegistration(false);
+      break;
+      }
+    case BSPLINE:
+      {
+      this->SetEnableInitialRegistration(false);
+      this->SetEnableRigidRegistration(false);
+      this->SetEnableAffineRegistration(false);
+      this->SetEnableBSplineRegistration(true);
+      break;
+      }
+    case PIPELINE_RIGID:
+      {
+      this->SetEnableInitialRegistration(true);
+      this->SetEnableRigidRegistration(true);
+      this->SetEnableAffineRegistration(false);
+      this->SetEnableBSplineRegistration(false);
+      break;
+      }
+    case PIPELINE_AFFINE:
+      {
+      this->SetEnableInitialRegistration(true);
+      this->SetEnableRigidRegistration(true);
+      this->SetEnableAffineRegistration(true);
+      this->SetEnableBSplineRegistration(false);
+      break;
+      }
+    case PIPELINE_BSPLINE:
+      {
+      this->SetEnableInitialRegistration(true);
+      this->SetEnableRigidRegistration(true);
+      this->SetEnableAffineRegistration(true);
+      this->SetEnableBSplineRegistration(true);
+      break;
+      }
+    }
+}
+
+template <class TImage>
+void
+ImageToImageRegistrationHelper<TImage>
+::SetInterpolation( InterpolationMethodEnumType interp )
+{
+  this->SetRigidInterpolationMethodEnum( interp );
+  this->SetAffineInterpolationMethodEnum( interp );
+  this->SetBSplineInterpolationMethodEnum( interp );
+}
+
+template <class TImage>
+void
+ImageToImageRegistrationHelper<TImage>
+::SetMetric( MetricMethodEnumType metric )
+{
+  this->SetRigidMetricMethodEnum( metric );
+  this->SetAffineMetricMethodEnum( metric );
+  this->SetBSplineMetricMethodEnum( metric );
+}
+
+template <class TImage>
+void
+ImageToImageRegistrationHelper<TImage>
 ::Initialize( void )
 {
   // m_LoadedTransform = 0;  Not Initialized - since it is a user parameter
@@ -309,6 +404,7 @@ ImageToImageRegistrationHelper<TImage>
     std::cout << "*** AFFINE REGISTRATION ***" << std::endl;
     }
 
+  std::cout << "Start affine" << std::endl;
   unsigned long fixedImageNumPixels = m_FixedImage->GetLargestPossibleRegion()
     .GetNumberOfPixels();
 
@@ -367,8 +463,8 @@ ImageToImageRegistrationHelper<TImage>
   scales.set_size( 7 );
   unsigned int scaleNum = 0;
   scales[scaleNum++] = 1.0 / ( m_ExpectedRotationMagnitude );
-  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetPixelMagnitude);
-  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetPixelMagnitude);
+  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
@@ -379,8 +475,8 @@ ImageToImageRegistrationHelper<TImage>
     {
     regAff->GetTypedTransform()->SetCenter(
       m_CurrentMatrixTransform->GetCenter() );
-    regAff->GetTypedTransform()->SetMatrix(
-      m_CurrentMatrixTransform->GetMatrix() );
+    //regAff->GetTypedTransform()->SetMatrix(
+      //m_CurrentMatrixTransform->GetMatrix() );
     regAff->GetTypedTransform()->SetOffset(
       m_CurrentMatrixTransform->GetOffset() );
     regAff->SetInitialTransformParameters(
@@ -473,9 +569,9 @@ ImageToImageRegistrationHelper<TImage>
   scales[scaleNum++] = 1.0 / ( m_ExpectedRotationMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedRotationMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedRotationMagnitude );
-  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetPixelMagnitude);
-  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetPixelMagnitude);
-  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetPixelMagnitude);
+  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
@@ -708,10 +804,8 @@ ImageToImageRegistrationHelper<TImage>
       {
       scales.set_size( 3 );
       scales[0] = 1.0 / m_ExpectedRotationMagnitude;
-      scales[1] = 1.0 / ( m_ExpectedOffsetPixelMagnitude *
-        m_FixedImage->GetSpacing()[0]);
-      scales[2] = 1.0 / ( m_ExpectedOffsetPixelMagnitude *
-        m_FixedImage->GetSpacing()[0]);
+      scales[1] = 1.0 / m_ExpectedOffsetMagnitude;
+      scales[2] = 1.0 / m_ExpectedOffsetMagnitude;
       }
     else if( ImageDimension == 3 )
       {
@@ -719,12 +813,9 @@ ImageToImageRegistrationHelper<TImage>
       scales[0] = 1.0 / m_ExpectedRotationMagnitude;
       scales[1] = 1.0 / m_ExpectedRotationMagnitude;
       scales[2] = 1.0 / m_ExpectedRotationMagnitude;
-      scales[3] = 1.0 / ( m_ExpectedOffsetPixelMagnitude *
-        m_FixedImage->GetSpacing()[0]);
-      scales[4] = 1.0 / ( m_ExpectedOffsetPixelMagnitude *
-        m_FixedImage->GetSpacing()[0]);
-      scales[5] = 1.0 / ( m_ExpectedOffsetPixelMagnitude *
-        m_FixedImage->GetSpacing()[0]);
+      scales[3] = 1.0 / m_ExpectedOffsetMagnitude;
+      scales[4] = 1.0 / m_ExpectedOffsetMagnitude;
+      scales[5] = 1.0 / m_ExpectedOffsetMagnitude;
       }
     else
       {
@@ -1522,7 +1613,7 @@ ImageToImageRegistrationHelper<TImage>
       break;
     case OptimizedRegistrationMethodType::NORMALIZED_CORRELATION_METRIC:
       os << indent << basename
-        << " Metric Method = CROSS_CORRELATION_METRIC" << std::endl;
+        << " Metric Method = NORMALIZED_CORRELATION_METRIC" << std::endl;
       break;
     case OptimizedRegistrationMethodType::MEAN_SQUARED_ERROR_METRIC:
       os << indent << basename
@@ -1615,7 +1706,7 @@ ImageToImageRegistrationHelper<TImage>
     << m_EnableBSplineRegistration << std::endl;
   os << indent << std::endl;
   os << indent << "Expected Offset (in Pixels) Magnitude = "
-    << m_ExpectedOffsetPixelMagnitude << std::endl;
+    << m_ExpectedOffsetMagnitude << std::endl;
   os << indent << "Expected Rotation Magnitude = "
     << m_ExpectedRotationMagnitude << std::endl;
   os << indent << "Expected Scale Magnitude = " << m_ExpectedScaleMagnitude

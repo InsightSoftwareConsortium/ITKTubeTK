@@ -32,6 +32,17 @@ limitations under the License.
 #ifndef __tubeWrappingMacros_h
 #define __tubeWrappingMacros_h
 
+/** Boolean macro */
+#define tubeWrapBooleanMacro( name, wrap_filter_object_name )   \
+  void name##On( void ) const                            \
+    {                                                    \
+    this->m_##wrap_filter_object_name->name##On();       \
+    }                                                    \
+  void name##Off( void ) const                           \
+    {                                                    \
+    this->m_##wrap_filter_object_name->name##Off();      \
+    }
+
 /** Get input of fundamental type */
 #define tubeWrapGetMacro( name, type, wrap_filter_object_name )   \
   type Get##name( void ) const                            \
@@ -229,6 +240,13 @@ limitations under the License.
   void name()                                                \
     {                                                        \
     this->m_##wrap_filter_object_name->name();               \
+    }
+
+/** Redirect call to a function of the same named in the wrapped filter */
+#define tubeWrapCallWithConstReferenceArgMacro( name, type, wrap_filter_object_name )   \
+  void name( type & value )                                        \
+    {                                                              \
+    this->m_##wrap_filter_object_name->name( value );              \
     }
 
 /** Redirect call to a function of the same named in the wrapped filter */

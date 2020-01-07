@@ -64,6 +64,7 @@ InverseIntensityImageFilter<TInputImage>
   OutputImage->SetRequestedRegion( region );       //
   OutputImage->SetSpacing( InputImage->GetSpacing() );  // set spacing
   OutputImage->SetOrigin( InputImage->GetOrigin() );   //   and origin
+  OutputImage->SetDirection( InputImage->GetDirection() );   //   and origin
   OutputImage->Allocate();                          // allocate the image
 
   InputPixelType myMin;        //

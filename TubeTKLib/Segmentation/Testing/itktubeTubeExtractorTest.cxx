@@ -23,7 +23,7 @@ limitations under the License.
 
 #include "itktubeTubeExtractor.h"
 
-#include "tubeTubeMath.h"
+#include "tubeTubeMathFilters.h"
 
 #include <itkImageFileReader.h>
 #include <itkMersenneTwisterRandomVariateGenerator.h>

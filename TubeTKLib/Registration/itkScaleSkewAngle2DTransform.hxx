@@ -222,7 +222,7 @@ ScaleSkewAngle2DTransform<TParametersValueType>
 ::ComputeMatrixParameters(void)
 {
   vnl_matrix<TParametersValueType> matrix(2, 2);
-  matrix = this->GetMatrix().GetVnlMatrix();
+  matrix = this->GetMatrix().GetVnlMatrix().as_ref();
   vnl_svd<TParametersValueType>    svd(matrix);
   vnl_matrix<TParametersValueType> ortho(2, 2);
   ortho = svd.U() * svd.V().transpose();

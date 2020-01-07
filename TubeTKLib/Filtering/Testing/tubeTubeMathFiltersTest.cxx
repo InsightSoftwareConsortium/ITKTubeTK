@@ -20,7 +20,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeTubeMath.h"
+#include "tubeTubeMathFilters.h"
 
 #include "itkTubeSpatialObject.h"
 #include "itkMersenneTwisterRandomVariateGenerator.h"
@@ -56,7 +56,7 @@ double tubeLength( itk::TubeSpatialObject<3> * tube )
 }
 
 
-int tubeTubeMathTest( int tubeNotUsed( argc ),
+int tubeTubeMathFiltersTest( int tubeNotUsed( argc ),
   char * tubeNotUsed( argv )[] )
 {
   bool returnStatus = EXIT_SUCCESS;

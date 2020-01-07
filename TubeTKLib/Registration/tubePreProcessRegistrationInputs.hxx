@@ -133,8 +133,7 @@ PreProcessRegistrationInputs( int argc,
       gaussianFilter->SetInput( currentImage );
       gaussianFilter->SetSigma( gaussianBlurStdDev );
 
-      gaussianFilter->SetOrder(
-               itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
+      gaussianFilter->SetOrder( itk::GaussianOrderEnum::ZeroOrder );
       gaussianFilter->SetDirection( ii );
 
       gaussianFilter->Update();

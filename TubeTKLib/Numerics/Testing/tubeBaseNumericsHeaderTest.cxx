@@ -42,7 +42,6 @@ limitations under the License.
 #include "tubeSpline1D.h"
 #include "tubeSplineApproximation1D.h"
 #include "tubeSplineND.h"
-#include "tubeTubeMath.h"
 #include "tubeUserFunction.h"
 
 #include <iostream>

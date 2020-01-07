@@ -91,7 +91,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
     EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( Dimension );
   eigenAnalysisFilter->OrderEigenValuesBy(
-    EigenAnalysisFilterType::FunctorType::OrderByValue );
+    EigenAnalysisFilterType::EigenValueOrderType::OrderByValue );
 
   eigenAnalysisFilter->SetInput( filter->GetOutput() );
   eigenAnalysisFilter->Update();
@@ -110,7 +110,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
     EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( Dimension );
   eigenVectorAnalysisFilter->OrderEigenValuesBy(
-    EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
+    EigenVectorAnalysisFilterType::EigenValueOrderType::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( filter->GetOutput() );
   eigenVectorAnalysisFilter->Update();

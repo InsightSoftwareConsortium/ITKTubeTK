@@ -28,7 +28,7 @@
 #include "tubeMatrixMath.h"
 #include "itkMath.h"
 #include "tubeMacro.h"
-#include "tubeTubeMath.h"
+#include "tubeTubeMathFilters.h"
 
 #include <utility>
 #include <algorithm>

@@ -160,7 +160,7 @@ void GetImageInformation( const std::string & fileName,
 
   ImageIOType::Pointer imageIO =
     ImageIOFactoryType::CreateImageIO( fileName.c_str(),
-                                       ImageIOFactoryType::ReadMode );
+      ImageIOFactoryType::FileModeEnum::ReadMode );
 
   if( imageIO )
     {

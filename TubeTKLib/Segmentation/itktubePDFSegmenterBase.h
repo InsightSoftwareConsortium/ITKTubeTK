@@ -98,6 +98,7 @@ public:
   void AddObjectId( ObjectIdType objectId );
   void SetObjectId( ObjectIdListType _objectId );
   const ObjectIdListType & GetObjectId( void ) const;
+  ObjectIdType * GetObjectId( int i );
 
   unsigned int GetNumberOfClasses( void ) const;
   unsigned int GetNumberOfObjectIds( void ) const;
@@ -108,13 +109,14 @@ public:
 
   void   SetObjectPDFWeight( unsigned int num, double weight );
   void   SetObjectPDFWeight( const VectorDoubleType & weight );
+  double * GetObjectPDFWeight( int i );
   const VectorDoubleType & GetObjectPDFWeight( void ) const;
 
   itkSetMacro( VoidId, ObjectIdType );
   itkGetMacro( VoidId, ObjectIdType );
 
-  itkSetObjectMacro( LabelMap, LabelMapType );
-  itkGetObjectMacro( LabelMap, LabelMapType );
+  itkSetObjectMacro( InputLabelMap, LabelMapType );
+  itkGetObjectMacro( InputLabelMap, LabelMapType );
 
   itkSetMacro( ErodeDilateRadius, unsigned int );
   itkGetMacro( ErodeDilateRadius, unsigned int );
@@ -149,6 +151,8 @@ public:
     double start );
 
   virtual void Update( void ) override;
+
+  itkGetObjectMacro( OutputLabelMap, LabelMapType );
 
   virtual void ClassifyImages( void );
 
@@ -191,7 +195,8 @@ protected:
 
   typename FeatureVectorGeneratorType::Pointer  m_FeatureVectorGenerator;
 
-  typename LabelMapType::Pointer                m_LabelMap;
+  typename LabelMapType::Pointer                m_InputLabelMap;
+  typename LabelMapType::Pointer                m_OutputLabelMap;
 
   ProbabilityImageVectorType                    m_ProbabilityImageVector;
 

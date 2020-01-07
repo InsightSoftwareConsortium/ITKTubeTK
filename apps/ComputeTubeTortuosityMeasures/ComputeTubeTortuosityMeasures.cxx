@@ -26,7 +26,7 @@
 #include "tubeMessage.h"
 #include "../CLI/tubeCLIProgressReporter.h"
 #include "itktubeTortuositySpatialObjectFilter.h"
-#include "tubeTubeMath.h"
+#include "tubeTubeMathFilters.h"
 
 // ITK INCLUDES
 #include "itkTimeProbesCollectorBase.h"

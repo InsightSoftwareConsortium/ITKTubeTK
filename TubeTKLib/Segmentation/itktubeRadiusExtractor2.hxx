@@ -32,7 +32,7 @@ limitations under the License.
 
 #include "tubeMessage.h"
 #include "tubeMatrixMath.h"
-#include "tubeTubeMath.h"
+#include "tubeTubeMathFilters.h"
 #include "tubeUserFunction.h"
 #include "tubeGoldenMeanOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"

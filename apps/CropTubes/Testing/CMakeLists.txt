@@ -33,8 +33,8 @@ ExternalData_Add_Test( TubeTKData
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/CropTubes-TestInput.tre}
     ${TEMP}/${MODULE_NAME}-Test1_NotCropped.tre
-    --boxCorner 350,280,145
-    --boxSize 100,100,100 )
+    --boxCorner 17.5,14,7.25
+    --boxSize 5,5,5 )
 
 # Test1 - Compare - NotCropped
 ExternalData_Add_Test( TubeTKData
@@ -52,8 +52,8 @@ ExternalData_Add_Test( TubeTKData
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/CropTubes-TestInput.tre}
     ${TEMP}/${MODULE_NAME}-Test2_Cropped.tre
-    --boxCorner 350,280,145
-    --boxSize 100,100,100
+    --boxCorner 17.5,14,7.25
+    --boxSize 5,5,5
     --CropTubes )
 
 # Test2 - Compare - Cropped

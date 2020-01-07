@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubeTreeFilters_hxx
-#define __tubeTreeFilters_hxx
+#ifndef __tubeTreeMathFilters_hxx
+#define __tubeTreeMathFilters_hxx
 
 #include "itkNumericTraits.h"
 
@@ -31,7 +31,7 @@ namespace tube
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-TreeFilters< VDimension >::
+TreeMathFilters< VDimension >::
 FillGap( typename TubeGroupType::Pointer & pTubeGroup,
 char InterpolationMethod )
 {
@@ -127,7 +127,7 @@ char InterpolationMethod )
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-TreeFilters< VDimension >::
+TreeMathFilters< VDimension >::
 InterpolatePath(
   typename TubeType::TubePointType * parentNearestPoint,
   typename TubeType::TubePointType * itkNotUsed( childEndPoint ),
@@ -143,4 +143,4 @@ InterpolatePath(
 }
 } // End namespace tube
 
-#endif // End !defined( __tubeTreeFilters_hxx )
+#endif // End !defined( __tubeTreeMathFilters_hxx )

@@ -51,7 +51,7 @@ SheetnessMeasureImageFilter< TPixel >
   m_SymmetricEigenValueFilter = EigenAnalysisFilterType::New();
   m_SymmetricEigenValueFilter->SetDimension( ImageDimension );
   m_SymmetricEigenValueFilter->OrderEigenValuesBy(
-    EigenAnalysisFilterType::FunctorType::OrderByValue );
+    EigenAnalysisFilterType::EigenValueOrderType::OrderByValue );
 }
 
 template< class TPixel >

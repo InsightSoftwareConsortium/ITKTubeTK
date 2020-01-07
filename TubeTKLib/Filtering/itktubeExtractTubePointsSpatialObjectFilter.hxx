@@ -26,7 +26,7 @@ limitations under the License.
 
 #include "itktubeExtractTubePointsSpatialObjectFilter.h"
 
-#include "tubeTubeMath.h"
+#include "tubeTubeMathFilters.h"
 
 namespace itk
 {

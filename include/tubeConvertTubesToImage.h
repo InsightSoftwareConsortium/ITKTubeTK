@@ -53,8 +53,10 @@ public:
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
   typedef itk::Image< TOutputPixel, Dimension >      OutputImageType;
-  typedef itk::tube::TubeSpatialObjectToImageFilter< Dimension,
-    OutputImageType >                                FilterType;
+
+  typedef itk::tube::TubeSpatialObjectToImageFilter<
+    Dimension, OutputImageType >                     FilterType;
+
   typedef typename FilterType::SpatialObjectType     TubesType;
 
   /** Method for creation through the object factory. */

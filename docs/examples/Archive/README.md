@@ -56,9 +56,6 @@ virtualenv ~/TubeTK-virtualenv --system-site-packages
 ~/TubeTK-virtualenv/bin/pip install pyzmq
 ~/TubeTK-virtualenv/bin/pip install jinja2
 ~/TubeTK-virtualenv/bin/pip install tables
-~/TubeTK-virtualenv/bin/pip install PyOpengl
-~/TubeTK-virtualenv/bin/pip install PySide
-~/TubeTK-virtualenv/bin/pip install pyqtgraph
 ```
 
 **Note**: On Linux platforms you may be able to obtain many of these packages

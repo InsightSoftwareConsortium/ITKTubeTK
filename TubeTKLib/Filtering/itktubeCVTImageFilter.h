@@ -31,6 +31,7 @@ limitations under the License.
 #include <itkIndex.h>
 #include <itkMersenneTwisterRandomVariateGenerator.h>
 #include <itkProcessObject.h>
+#include <itkVariableSizeMatrix.h>
 
 #include <vector>
 
@@ -106,14 +107,14 @@ public:
   itkSetMacro( BatchSamplingMethod, SamplingMethodEnum );
 
   /** */
-  PointArrayType * GetCentroids( void )
-    { return & m_Centroids; }
-  void SetCentroids( const PointArrayType * centroids );
+  itkGetMacro( Centroids, PointArrayType );
+  void SetCentroids( const PointArrayType & centroids );
 
   /** */
   itkGetMacro( Seed, long int );
   itkSetMacro( Seed, long int );
 
+  itkGetMacro( AdjacencyMatrix, VariableSizeMatrix< double > );
 
 protected:
   CVTImageFilter( void );
@@ -131,6 +132,8 @@ protected:
   void ComputeClosest( const PointArrayType & sample,
                       const PointArrayType & centroids,
                       unsigned int * nearest );
+
+  void ComputeAdjacencyMatrix( void );
 
 private:
   CVTImageFilter( const Self& );
@@ -158,6 +161,8 @@ private:
   SamplingMethodEnum    m_BatchSamplingMethod;
   unsigned int          m_NumberOfIterationsPerBatch;
   unsigned int          m_NumberOfSamplesPerBatch;
+
+  VariableSizeMatrix< double >  m_AdjacencyMatrix;
 
 }; // End class CVTImageFilter
 

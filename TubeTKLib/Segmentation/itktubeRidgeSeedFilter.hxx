@@ -418,7 +418,7 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_PDFSegmenter->SetErodeDilateRadius( 0 );
   m_PDFSegmenter->SetHoleFillIterations( 5 );
 
-  m_PDFSegmenter->SetLabelMap( m_SeedFeatureGenerator->GetLabelMap() );
+  m_PDFSegmenter->SetInputLabelMap( m_SeedFeatureGenerator->GetLabelMap() );
 
   m_RidgeFeatureGenerator->SetUseIntensityOnly( m_UseIntensityOnly );
 
@@ -468,7 +468,7 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   m_SeedFeatureGenerator->SetLabelMap( tmpLabelMap );
 
-  m_LabelMap = m_PDFSegmenter->GetLabelMap();
+  m_LabelMap = m_PDFSegmenter->GetOutputLabelMap();
 
   itk::ImageRegionIterator< LabelMapType > resultIter(
     m_LabelMap, m_LabelMap->GetLargestPossibleRegion() );

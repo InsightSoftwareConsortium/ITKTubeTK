@@ -21,12 +21,109 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeImageMathFilters.h"
+#include "tubeImageMath.h"
 
 #include <itkImageFileWriter.h>
 
 #include <metaCommand.h>
 #include "ImageMathCLP.h"
+
+void
+WriteHistogram( unsigned int nBins, float binMin, float binSize,
+  const std::vector< double > & histo, std::string filename )
+{
+  std::ofstream writeStream;
+  writeStream.open( filename.c_str(), std::ios::binary | std::ios::out );
+  if( !writeStream.rdbuf()->is_open() )
+    {
+    std::cerr << "Cannot write to file : " << filename << std::endl;
+    }
+  else
+    {
+    for( unsigned int i=0; i<nBins; i++ )
+      {
+      writeStream << ( binMin + i * binSize ) << " " << histo[i] << std::endl;
+      }
+    writeStream.close();
+    }
+}
+
+template< unsigned int VDimension >
+void
+WriteCentroids(
+  const std::vector< itk::ContinuousIndex< double, VDimension > > & centroids,
+  const itk::VariableSizeMatrix< double > & adjacency, std::string filename )
+{
+  std::ofstream writeStream;
+  writeStream.open( filename.c_str(), std::ios::binary | std::ios::out );
+  if( !writeStream.rdbuf()->is_open() )
+    {
+    std::cerr << "Cannot write to file : " << filename << std::endl;
+    return;
+    }
+  unsigned int numberOfCentroids = centroids.size();
+  for( unsigned int i=0; i<numberOfCentroids; i++ )
+    {
+    for( unsigned int j = 0; j<VDimension; j++ )
+      {
+      writeStream << centroids[i][j];
+      if( (int)j<(int)numberOfCentroids-1 )
+        {
+        writeStream << " ";
+        }
+      }
+    writeStream << std::endl;
+    }
+  writeStream.close();
+
+  filename = filename + ".mat";
+  writeStream.open( filename.c_str(), std::ios::binary | std::ios::out );
+  if( !writeStream.rdbuf()->is_open() )
+    {
+    std::cerr << "Cannot write to file : " << filename << std::endl;
+    return;
+    }
+
+  for( unsigned int i=0; i<numberOfCentroids; i++ )
+    {
+    for( unsigned int j = 0; j<numberOfCentroids; j++ )
+      {
+      writeStream << adjacency( i, j );
+      if( (int)j<(int)numberOfCentroids-1 )
+        {
+        writeStream << " ";
+        }
+      }
+    writeStream << std::endl;
+    }
+  writeStream.close();
+}
+
+template< class TPixel=float, int VDimension=3 >
+itk::Image< TPixel, VDimension > *
+ReadImage( std::string filename )
+{
+  typedef itk::Image< TPixel, VDimension >      ImageType;
+  typedef itk::ImageFileReader< ImageType >     VolumeReaderType;
+
+  typename VolumeReaderType::Pointer reader = VolumeReaderType::New();
+
+  reader->SetFileName( filename );
+  std::cout << "Reading file: " << filename << std::endl;
+  try
+    {
+    reader->Update();
+    }
+  catch( ... )
+    {
+    std::cout << "Problems reading file format" << std::endl;
+    return nullptr;
+    }
+  typename ImageType::Pointer output = reader->GetOutput();
+  output->Register();
+
+  return output;
+}
 
 /** Main command */
 template< class TPixel, unsigned int VDimension >
@@ -40,31 +137,13 @@ int DoIt( MetaCommand & command )
 
   MetaCommand::OptionVector parsed = command.GetParsedOptions();
 
-
   int CurrentSeed = 42;
 
-  typedef itk::ImageFileReader< ImageType >       VolumeReaderType;
+  typename ImageType::Pointer imIn = ReadImage<float, VDimension>(
+    command.GetValueAsString( "infile" ) );
 
-  // Declare a reader
-  typename VolumeReaderType::Pointer reader = VolumeReaderType::New();
-  reader->SetFileName( command.GetValueAsString( "infile" ).c_str() );
-  typename ImageType::Pointer imIn;
-  imIn = reader->GetOutput();
-
-  // See if the file can be read - "try" otherwise program will
-  //   mysteriously exit on failure in the Object factory
-  std::cout << "Reading file ( "
-            << command.GetValueAsString( "infile" ).c_str()
-            <<" )"<< std::endl;
-  try
-    {
-    reader->Update();
-    }
-  catch( ... )
-    {
-    std::cout << "Problems reading file format" << std::endl;
-    return EXIT_FAILURE;
-    }
+  tube::ImageMathFilters<VDimension> imFilters;
+  imFilters.SetInput( imIn );
 
   MetaCommand::OptionVector::const_iterator it = parsed.begin();
   while( it != parsed.end() )
@@ -78,7 +157,7 @@ int DoIt( MetaCommand & command )
       typedef itk::ImageFileWriter< ImageType > VolumeWriterType;
       typename VolumeWriterType::Pointer writer = VolumeWriterType::New();
       writer->SetFileName( outFilename.c_str() );
-      writer->SetInput( imIn );
+      writer->SetInput( imFilters.GetOutput() );
       writer->SetUseCompression( true );
       try
         {
@@ -107,7 +186,7 @@ int DoIt( MetaCommand & command )
             CastFilterType;
           typename CastFilterType::Pointer castFilter =
             CastFilterType::New();
-          castFilter->SetInput( imIn );
+          castFilter->SetInput( imFilters.GetOutput() );
 
           typedef itk::ImageFileWriter< ImageTypeUChar >
             VolumeWriterType;
@@ -129,7 +208,7 @@ int DoIt( MetaCommand & command )
             CastFilterType;
           typename CastFilterType::Pointer castFilter =
             CastFilterType::New();
-          castFilter->SetInput( imIn );
+          castFilter->SetInput( imFilters.GetOutput() );
 
           typedef itk::ImageFileWriter< ImageTypeUShort >
             VolumeWriterType;
@@ -151,7 +230,7 @@ int DoIt( MetaCommand & command )
             CastFilterType;
           typename CastFilterType::Pointer castFilter =
             CastFilterType::New();
-          castFilter->SetInput( imIn );
+          castFilter->SetInput( imFilters.GetOutput() );
 
           typedef itk::ImageFileWriter< ImageTypeShort >
             VolumeWriterType;
@@ -172,7 +251,7 @@ int DoIt( MetaCommand & command )
             CastFilterType;
           typename CastFilterType::Pointer castFilter =
             CastFilterType::New();
-          castFilter->SetInput( imIn );
+          castFilter->SetInput( imFilters.GetOutput() );
 
           typedef itk::ImageFileWriter< ImageTypeShort >
             VolumeWriterType;
@@ -190,7 +269,7 @@ int DoIt( MetaCommand & command )
 
           for( unsigned int d=0; d<ImageType::ImageDimension; ++d )
             {
-            metaImage->ElementSize( d, imIn->GetSpacing()[d] );
+            metaImage->ElementSize( d, imFilters.GetOutput()->GetSpacing()[d] );
             }
 
           metaImage->AddUserField( "ElementByteOrderMSB",
@@ -205,7 +284,7 @@ int DoIt( MetaCommand & command )
           typename VolumeWriterType::Pointer writer =
             VolumeWriterType::New();
           writer->SetFileName( outFilename.c_str() );
-          writer->SetInput( imIn );
+          writer->SetInput( imFilters.GetOutput() );
           try
             {
             writer->Write();
@@ -222,8 +301,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Intensity" )
       {
       std::cout << "Intensity windowing" << std::endl;
-      tube::ImageMathFilters< VDimension >::ApplyIntensityWindowing(
-        imIn,
+      imFilters.ApplyIntensityWindowing(
         command.GetValueAsFloat( *it, "inValMin" ),
         command.GetValueAsFloat( *it, "inValMax" ),
         command.GetValueAsFloat( *it, "outMin" ),
@@ -234,31 +312,27 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "IntensityMult" )
       {
       std::cout << "Intensity multiplicative bias correct" << std::endl;
-      bool success = tube::ImageMathFilters< VDimension >::
-        ApplyIntensityMultiplicativeWithBiasCorrection( imIn,
+      typename ImageType::Pointer imTmp = ReadImage<float, VDimension>(
         command.GetValueAsString( *it, "inMeanField" ) );
-      if( !success )
-        {
-        return EXIT_FAILURE;
-        }
+      imFilters.ApplyIntensityMultiplicativeBiasCorrection( imTmp );
       } // end -I
 
     // UniformNoise
     else if( ( *it ).name == "UniformNoise" )
       {
       std::cout << "Adding noise" << std::endl;
-      tube::ImageMathFilters< VDimension >::AddUniformNoise( imIn,
+      imFilters.AddUniformNoise(
         command.GetValueAsFloat( *it, "inValMin" ),
         command.GetValueAsFloat( *it, "inValMax" ),
-        command.GetValueAsFloat( *it, "noiseMean" ),
-        command.GetValueAsFloat( *it, "noiseRange" ), CurrentSeed );
+        command.GetValueAsFloat( *it, "noiseMin" ),
+        command.GetValueAsFloat( *it, "noiseMax" ), CurrentSeed );
       } // -N
 
     // GaussianNoise
     else if( ( *it ).name == "GaussianNoise" )
       {
       std::cout << "Adding noise" << std::endl;
-      tube::ImageMathFilters< VDimension >::AddGaussianNoise( imIn,
+      imFilters.AddGaussianNoise( 
         command.GetValueAsFloat( *it, "inValMin" ),
         command.GetValueAsFloat( *it, "inValMax" ),
         command.GetValueAsFloat( *it, "noiseMean" ),
@@ -269,31 +343,16 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Add" )
       {
       std::cout << "Adding" << std::endl;
-      bool success = tube::ImageMathFilters< VDimension >::AddImages( imIn,
-        command.GetValueAsString( *it, "Infile" ),
-        command.GetValueAsFloat( *it, "weight1" ),
+      typename ImageType::Pointer imTmp = ReadImage<float,VDimension>(
+        command.GetValueAsString(*it,"Infile") );
+      imFilters.AddImages( imTmp, command.GetValueAsFloat( *it, "weight1" ),
         command.GetValueAsFloat( *it, "weight2" ) );
-      if( !success )
-        {
-        return EXIT_FAILURE;
-        }
-      }
-
-    else if( ( *it ).name == "Multiply" )
-      {
-      std::cout << "Multiplying" << std::endl;
-      bool success = tube::ImageMathFilters< VDimension >::MultiplyImages(
-        imIn, command.GetValueAsString( *it, "Infile" ) );
-      if( !success )
-        {
-        return EXIT_FAILURE;
-        }
       }
 
     // Mirror pad
     else if( ( *it ).name == "MirrorPad" )
       {
-      tube::ImageMathFilters< VDimension >::MirrorAndPadImage( imIn,
+      imFilters.MirrorAndPadImage( 
         command.GetValueAsInt( *it, "numPadVoxels" ) );
       }
 
@@ -305,60 +364,46 @@ int DoIt( MetaCommand & command )
         << "within -1 to 1, integral types will produce an image that "
         << "DOES NOT HAVE a unit variance" << std::endl;
 
-      tube::ImageMathFilters< VDimension >::template NormalizeImage<
-        TPixel >( imIn, command.GetValueAsInt( *it, "type" ) );
+      imFilters.NormalizeImage( command.GetValueAsInt( *it, "type" ) );
       }
 
     // I( x )
     else if( ( *it ).name == "Fuse" )
       {
       std::cout << "Fusing" << std::endl;
-      bool success = tube::ImageMathFilters< VDimension >::FuseImages(
-        imIn, command.GetValueAsString( *it, "Infile2" ),
+      typename ImageType::Pointer imTmp = ReadImage<float,VDimension>(
+        command.GetValueAsString(*it,"Infile2") );
+      imFilters.FuseImages( imTmp,
         command.GetValueAsFloat( *it, "Offset2" ) );
-      if( !success )
-        {
-        return EXIT_FAILURE;
-        }
       } // end -a
 
     // Median
     else if( ( *it ).name == "Median" )
       {
       std::cout << "Median filtering" << std::endl;
-      bool success = tube::ImageMathFilters< VDimension >::MedianImage(
-        imIn, command.GetValueAsInt( *it, "Size" ) );
-      if( !success )
-        {
-        return EXIT_FAILURE;
-        }
+      imFilters.MedianImage( command.GetValueAsInt( *it, "Size" ) );
       } // end -g
 
     // Threshold
     else if( ( *it ).name == "Threshold" )
       {
       std::cout << "Thresholding" << std::endl;
-      tube::ImageMathFilters< VDimension >::ThresholdImage( imIn,
+      imFilters.ThresholdImage( 
         command.GetValueAsFloat( *it, "threshLow" ),
         command.GetValueAsFloat( *it, "threshHigh" ),
         command.GetValueAsFloat( *it, "valTrue" ),
         command.GetValueAsFloat( *it, "valFalse" ) );
       }
-    else if( ( *it ).name == "Algorithm" )
+    else if( ( *it ).name == "AlgorithmMeanStd" )
       {
       std::cout << "Algorithm" << std::endl;
-      bool success = false;
       int mode = command.GetValueAsInt( *it, "mode" );
-      double value = tube::ImageMathFilters< VDimension >::
-        ComputeImageStdDevOrMeanWithinRangeUsingMask( imIn,
-        command.GetValueAsString( *it, "maskFile" ),
-        command.GetValueAsFloat( *it, "threshLow" ),
-        command.GetValueAsFloat( *it, "threshHigh" ),
-        mode, success );
-      if( !success )
-        {
-        return EXIT_FAILURE;
-        }
+      typename ImageType::Pointer imTmp = ReadImage<float,VDimension>(
+        command.GetValueAsString(*it,"maskFile") );
+      double value = imFilters.ComputeImageStatisticsWithinMaskRange( imTmp,
+        command.GetValueAsFloat( *it, "maskThreshLow" ),
+        command.GetValueAsFloat( *it, "maskThreshHigh" ),
+        mode );
       std::cout << ( mode == 0 ? "Mean " : "StdDev " ) << value
         << std::endl;
       }
@@ -368,13 +413,9 @@ int DoIt( MetaCommand & command )
       int mode = command.GetValueAsInt( *it, "mode" );
       if( mode == 0 )
         {
-        bool success =
-          tube::ImageMathFilters< VDimension >::MultiplyImages( imIn,
-          command.GetValueAsString( *it, "file2" ) );
-        if( !success )
-          {
-          return EXIT_FAILURE;
-          }
+        typename ImageType::Pointer imTmp = ReadImage<float,VDimension>(
+          command.GetValueAsString(*it,"file2") );
+        imFilters.MultiplyImages( imTmp );
         }
       }
     else if( ( *it ).name == "process" )
@@ -383,23 +424,19 @@ int DoIt( MetaCommand & command )
       int mode = command.GetValueAsInt( *it, "mode" );
       if( mode == 0 )
         {
-        tube::ImageMathFilters< VDimension >::AbsoluteImage( imIn );
+        imFilters.AbsoluteImage();
         }
       }
     // Masking
     else if( ( *it ).name == "Masking" )
       {
       std::cout << "Masking" << std::endl;
-      bool success = tube::ImageMathFilters< VDimension >::
-        MaskImageWithValueIfNotWithinSecondImageRange( imIn,
-        command.GetValueAsString( *it, "inFile2" ),
-        command.GetValueAsFloat( *it, "threshLow" ),
-        command.GetValueAsFloat( *it, "threshHigh" ),
+      typename ImageType::Pointer imTmp = ReadImage<float,VDimension>(
+        command.GetValueAsString(*it, "mask") );
+      imFilters.ReplaceValuesOutsideMaskRange( imTmp,
+        command.GetValueAsFloat( *it, "maskThreshLow" ),
+        command.GetValueAsFloat( *it, "maskThreshHigh" ),
         command.GetValueAsFloat( *it, "valFalse" ) );
-      if( !success )
-        {
-        return EXIT_FAILURE;
-        }
       }
 
     // Morphology
@@ -407,8 +444,7 @@ int DoIt( MetaCommand & command )
       {
       std::cout << "Morphology" << std::endl;
 
-      tube::ImageMathFilters< VDimension >::MorphImage( imIn,
-        command.GetValueAsInt( *it, "mode" ),
+      imFilters.MorphImage( command.GetValueAsInt( *it, "mode" ),
         command.GetValueAsInt( *it, "radius" ),
         command.GetValueAsFloat( *it, "forgroundValue" ),
         command.GetValueAsFloat( *it, "backgroundValue" ) );
@@ -416,19 +452,20 @@ int DoIt( MetaCommand & command )
 
     else if( ( *it ).name == "overwrite" )
       {
-      tube::ImageMathFilters< VDimension >::OverwriteImage( imIn,
-        command.GetValueAsString( *it, "mask" ),
-        command.GetValueAsFloat( *it, "maskKeyVal" ),
-        command.GetValueAsFloat( *it, "imageKeyVal" ),
+      typename ImageType::Pointer imTmp = ReadImage<float,VDimension>(
+        command.GetValueAsString(*it,"mask") );
+      imFilters.ReplaceValueWithinMaskRange( imTmp,
+        command.GetValueAsFloat( *it, "maskThreshLow" ),
+        command.GetValueAsFloat( *it, "maskThreshHigh" ),
+        command.GetValueAsFloat( *it, "imageVal" ),
         command.GetValueAsFloat( *it, "newImageVal" ) );
-      std::cout << "Overwrite" << std::endl;
       }
 
     // blur
     else if( ( *it ).name == "blur" )
       {
       std::cout << "Blurring." << std::endl;
-      tube::ImageMathFilters< VDimension >::BlurImage( imIn,
+      imFilters.BlurImage(
         command.GetValueAsFloat( *it, "sigma" ) );
       }
 
@@ -436,7 +473,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "blurOrder" )
       {
       std::cout << "Blurring." << std::endl;
-      tube::ImageMathFilters< VDimension >::BlurOrderImage( imIn,
+      imFilters.BlurOrderImage(
         command.GetValueAsFloat( *it, "sigma" ),
         command.GetValueAsInt( *it, "order" ),
         command.GetValueAsInt( *it, "direction" ) );
@@ -446,38 +483,35 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "histogram" )
       {
       std::cout << "Histogram" << std::endl;
-      bool success = tube::ImageMathFilters< VDimension >::
-        ComputeImageHistogram( imIn,
-        static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
+      unsigned int nBins = static_cast<unsigned int>(
+        command.GetValueAsInt( *it, "nBins" ) );
+      float binMin = 0;
+      float binSize = 0;
+      std::vector< double> histo = imFilters.ComputeImageHistogram(
+        nBins, binMin, binSize );
+      WriteHistogram( nBins, binMin, binSize, histo,
         command.GetValueAsString( *it, "histOutputFile" ) );
-      if( !success )
-        {
-        return EXIT_FAILURE;
-        }
       }
 
     // histogram2
     else if( ( *it ).name == "histogram2" )
       {
       std::cout << "Histogram" << std::endl;
-      bool success = tube::ImageMathFilters< VDimension >::
-        ComputeImageHistogram2( imIn,
-        static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
-        command.GetValueAsFloat( *it, "binMin" ),
-        command.GetValueAsFloat( *it, "binSIZE" ),
+      unsigned int nBins = static_cast<unsigned int>(
+        command.GetValueAsInt( *it, "nBins" ) );
+      float binMin = command.GetValueAsFloat( *it, "binMin" );
+      float binSize = command.GetValueAsFloat( *it, "binSize" );
+      std::vector< double> histo = imFilters.ComputeImageHistogram(
+        nBins, binMin, binSize );
+      WriteHistogram( nBins, binMin, binSize, histo,
         command.GetValueAsString( *it, "histOutputFile" ) );
-      if( !success )
-        {
-        return EXIT_FAILURE;
-        }
       }
 
     // vessels
     else if( ( *it ).name == "vessels" )
       {
       std::cout << "Vessel Enhancement" << std::endl;
-      tube::ImageMathFilters< VDimension >::EnhanceVessels( imIn,
-        command.GetValueAsFloat( *it, "scaleMin" ),
+      imFilters.EnhanceVessels( command.GetValueAsFloat( *it, "scaleMin" ),
         command.GetValueAsFloat( *it, "scaleMax" ),
         command.GetValueAsFloat( *it, "numScales" ) );
       }
@@ -486,55 +520,45 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "CorrectionSlice" )
       {
       std::cout << "Correct intensity slice-by-slice" << std::endl;
-      tube::ImageMathFilters< VDimension >::
-        CorrectIntensitySliceBySliceUsingHistogramMatching( imIn,
+      imFilters.CorrectIntensitySliceBySliceUsingHistogramMatching(
         static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
         static_cast<unsigned int>( command.GetValueAsInt( *it,
-        "nMatchPoints" ) ) );
+            "nMatchPoints" ) ) );
       }
 
     // Correction
     else if( ( *it ).name == "Correction" )
       {
       std::cout << "Correct intensity in the volume" << std::endl;
-      bool success = tube::ImageMathFilters< VDimension >::
-        CorrectIntensityUsingHistogramMatching( imIn,
+      typename ImageType::Pointer imTmp = ReadImage<float,VDimension>(
+        command.GetValueAsString(*it,"referenceVolume") );
+      imFilters.CorrectIntensityUsingHistogramMatching(
         static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
         static_cast<unsigned int>( command.GetValueAsInt( *it,
-        "nMatchPoints" ) ), command.GetValueAsString( *it,
-        "referenceVolume" ) );
-      if( !success )
-        {
-        return EXIT_FAILURE;
-        }
+            "nMatchPoints" ) ), imTmp );
       }
 
     // resize
     else if( ( *it ).name == "resize" )
       {
       std::cout << "Resampling." << std::endl;
-      tube::ImageMathFilters< VDimension >::Resize( imIn,
-        command.GetValueAsFloat( *it, "factor" ) );
+      imFilters.Resize( command.GetValueAsFloat( *it, "factor" ) );
       }
 
     // resize2
     else if( ( *it ).name == "resize2" )
       {
       std::cout << "Resampling" << std::endl;
-      bool success = tube::ImageMathFilters< VDimension >::Resize( imIn,
-        command.GetValueAsString( *it, "inFile2" ) );
-      if( !success )
-        {
-        return EXIT_FAILURE;
-        }
+      typename ImageType::Pointer imTmp = ReadImage<float,VDimension>(
+        command.GetValueAsString(*it,"inFile2") );
+      imFilters.Resize( imTmp );
       }
 
     // segment
     else if( ( *it ).name == "segment" )
       {
       std::cout << "Segmenting" << std::endl;
-      tube::ImageMathFilters< VDimension >::
-        SegmentUsingConnectedThreshold( imIn,
+      imFilters.SegmentUsingConnectedThreshold(
         command.GetValueAsFloat( *it, "threshLow" ),
         command.GetValueAsFloat( *it, "threshHigh" ),
         command.GetValueAsFloat( *it, "labelValue" ),
@@ -553,7 +577,7 @@ int DoIt( MetaCommand & command )
         {
         offset[VDimension-1] = command.GetValueAsFloat( *it, "offsetZ" );
         }
-      imIn->SetOrigin( offset );
+      imFilters.GetOutput()->SetOrigin( offset );
       }
 
     // SetRandom
@@ -566,30 +590,24 @@ int DoIt( MetaCommand & command )
     // Voronoi
     else if( ( *it ).name == "Voronoi" )
       {
-      tube::ImageMathFilters< VDimension >::
-        ComputeVoronoiTessellation( imIn,
-        static_cast<unsigned int>( command.GetValueAsInt( *it,
-        "numCentroids" ) ),
-        static_cast<unsigned int>( command.GetValueAsInt( *it,
-        "numIters" ) ),
-        static_cast<unsigned int>( command.GetValueAsInt( *it,
-        "numSamples" ) ),
-        command.GetValueAsString( *it,
-        "centroidOutFile" ) );
-      if( !imIn )
-        {
-        return EXIT_FAILURE;
-        }
+      std::vector< itk::ContinuousIndex< double, VDimension > > centroids = 
+        imFilters.ComputeVoronoiTessellation(
+          static_cast<unsigned int>( command.GetValueAsInt( *it,
+            "numCentroids" ) ),
+          static_cast<unsigned int>( command.GetValueAsInt( *it, "numIters" ) ),
+          static_cast<unsigned int>( command.GetValueAsInt( *it,
+              "numSamples" ) ) );
+      WriteCentroids( centroids,
+        imFilters.GetVoronoiTessellationAdjacencyMatrix(),
+        command.GetValueAsString( *it, "centroidOutFile" ) );
       } // end -S
 
     // ExtractSlice
     else if( ( *it ).name == "ExtractSlice" )
       {
-      tube::ImageMathFilters< VDimension >::ExtractSlice( imIn,
-        static_cast<unsigned int>( command.GetValueAsInt( *it,
-          "dimension" ) ),
-        static_cast<unsigned int>( command.GetValueAsInt( *it,
-          "slice" ) ) );
+      imFilters.ExtractSlice(
+        static_cast<unsigned int>( command.GetValueAsInt( *it, "dimension" ) ),
+        static_cast<unsigned int>( command.GetValueAsInt( *it, "slice" ) ) );
       } // end -e
 
     ++it;
@@ -606,7 +624,7 @@ void GetImageInformation( std::string fileName,
 {
   itk::ImageIOBase::Pointer imageIO =
     itk::ImageIOFactory::CreateImageIO( fileName.c_str(),
-                                        itk::ImageIOFactory::ReadMode );
+      itk::ImageIOFactory::FileModeEnum::ReadMode );
   if( !imageIO )
     {
     std::cerr << "NO IMAGEIO WAS FOUND" << std::endl;
@@ -677,9 +695,9 @@ int main( int argc, char * argv[] )
     true );
   command.AddOptionField( "UniformNoise", "inValMax", MetaCommand::FLOAT,
     true );
-  command.AddOptionField( "UniformNoise", "noiseMean", MetaCommand::FLOAT,
+  command.AddOptionField( "UniformNoise", "noiseMin", MetaCommand::FLOAT,
     true );
-  command.AddOptionField( "UniformNoise", "noiseRange",
+  command.AddOptionField( "UniformNoise", "noiseMax",
     MetaCommand::FLOAT, true );
 
   command.SetOption( "Add", "a", false,
@@ -688,12 +706,12 @@ int main( int argc, char * argv[] )
   command.AddOptionField( "Add", "weight2", MetaCommand::FLOAT, true );
   command.AddOptionField( "Add", "Infile", MetaCommand::STRING, true );
 
-  command.SetOption( "Algorithm", "A", false,
+  command.SetOption( "AlgorithmMeanStd", "A", false,
     "Return image value within masked region ( mode: 0=mean, 1=stdDev )" );
   command.AddOptionField( "Algorithm", "mode", MetaCommand::INT, true );
-  command.AddOptionField( "Algorithm", "threshLow", MetaCommand::FLOAT,
+  command.AddOptionField( "Algorithm", "maskThreshLow", MetaCommand::FLOAT,
     true );
-  command.AddOptionField( "Algorithm", "threshHigh", MetaCommand::FLOAT,
+  command.AddOptionField( "Algorithm", "maskThreshHigh", MetaCommand::FLOAT,
     true );
   command.AddOptionField( "Algorithm", "maskFile", MetaCommand::STRING,
     true );
@@ -748,18 +766,18 @@ int main( int argc, char * argv[] )
   command.AddOptionField( "histogram2", "nBins", MetaCommand::INT, true );
   command.AddOptionField( "histogram2", "binMin", MetaCommand::FLOAT,
     true );
-  command.AddOptionField( "histogram2", "binSIZE", MetaCommand::FLOAT,
+  command.AddOptionField( "histogram2", "binSize", MetaCommand::FLOAT,
     true );
   command.AddOptionField( "histogram2", "histOutputFile",
     MetaCommand::STRING, true );
 
   command.SetOption( "Masking", "m", false,
     "if inFile( x ) in [tLow, tHigh] then I( x )=I( x ) else I( x )=vFalse" );
-  command.AddOptionField( "Masking", "threshLow", MetaCommand::FLOAT,
+  command.AddOptionField( "Masking", "maskThreshLow", MetaCommand::FLOAT,
     true );
-  command.AddOptionField( "Masking", "threshHigh", MetaCommand::FLOAT,
+  command.AddOptionField( "Masking", "maskThreshHigh", MetaCommand::FLOAT,
     true );
-  command.AddOptionField( "Masking", "inFile2", MetaCommand::STRING,
+  command.AddOptionField( "Masking", "mask", MetaCommand::STRING,
     true );
   command.AddOptionField( "Masking", "valFalse", MetaCommand::FLOAT,
     true );
@@ -777,9 +795,11 @@ int main( int argc, char * argv[] )
   command.SetOption( "overwrite", "o", false,
     "Replace values within the image, with a mask" );
   command.AddOptionField( "overwrite", "mask", MetaCommand::STRING, true );
-  command.AddOptionField( "overwrite", "maskKeyVal", MetaCommand::FLOAT,
+  command.AddOptionField( "overwrite", "maskThreshLow", MetaCommand::FLOAT,
     true );
-  command.AddOptionField( "overwrite", "imageKeyVal", MetaCommand::FLOAT,
+  command.AddOptionField( "overwrite", "maskThreshHigh", MetaCommand::FLOAT,
+    true );
+  command.AddOptionField( "overwrite", "imageVal", MetaCommand::FLOAT,
     true );
   command.AddOptionField( "overwrite", "newImageVal", MetaCommand::FLOAT,
     true );
@@ -834,11 +854,6 @@ int main( int argc, char * argv[] )
   command.AddOptionField( "Threshold", "valTrue", MetaCommand::FLOAT,
     true );
   command.AddOptionField( "Threshold", "valFalse", MetaCommand::FLOAT,
-    true );
-
-  command.SetOption( "Multiply", "u", false,
-    "I( x ) = I( x ) * inFile2( x )" );
-  command.AddOptionField( "Multiply", "Infile", MetaCommand::STRING,
     true );
 
   command.SetOption( "MirrorPad", "x", false,

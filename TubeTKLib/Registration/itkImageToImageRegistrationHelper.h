@@ -111,6 +111,15 @@ public:
                                    AFFINE_STAGE,
                                    BSPLINE_STAGE };
 
+  enum RegistrationMethodEnumType { NONE,
+                                    INITIAL,
+                                    RIGID,
+                                    AFFINE,
+                                    BSPLINE,
+                                    PIPELINE_RIGID,
+                                    PIPELINE_AFFINE,
+                                    PIPELINE_BSPLINE };
+
   typedef typename InitialRegistrationMethodType::TransformType
   InitialTransformType;
 
@@ -246,11 +255,15 @@ public:
   void LoadBaselineImage( const std::string & filename );
 
   itkSetConstObjectMacro( BaselineImage, TImage );
+  itkGetConstObjectMacro( BaselineImage, TImage );
 
   // Bound the required accuracy for the registration test to "pass"
   itkSetMacro( BaselineNumberOfFailedPixelsTolerance, unsigned int );
+  itkGetMacro( BaselineNumberOfFailedPixelsTolerance, unsigned int );
   itkSetMacro( BaselineIntensityTolerance, PixelType );
+  itkGetMacro( BaselineIntensityTolerance, PixelType );
   itkSetMacro( BaselineRadiusTolerance, unsigned int );
+  itkGetMacro( BaselineRadiusTolerance, unsigned int );
 
   // Must be called after setting the BaselineImage in order to resample
   //   the moving image into the BaselineImage space, compute differences,
@@ -291,6 +304,10 @@ public:
   itkGetConstMacro( EnableBSplineRegistration, bool );
   itkBooleanMacro( EnableBSplineRegistration );
 
+  void SetRegistration( RegistrationMethodEnumType reg );
+  void SetInterpolation( InterpolationMethodEnumType interp );
+  void SetMetric( MetricMethodEnumType metric );
+
   // **************
   // Specify the optimizer
   // **************
@@ -300,8 +317,8 @@ public:
   // Specify the expected magnitudes within the transform.  Used to
   //   guide the operating space of the optimizers
   // **************
-  itkSetMacro( ExpectedOffsetPixelMagnitude, double );
-  itkGetConstMacro( ExpectedOffsetPixelMagnitude, double );
+  itkSetMacro( ExpectedOffsetMagnitude, double );
+  itkGetConstMacro( ExpectedOffsetMagnitude, double );
 
   itkSetMacro( ExpectedRotationMagnitude, double );
   itkGetConstMacro( ExpectedRotationMagnitude, double );
@@ -378,8 +395,8 @@ public:
   //
   itkSetMacro( InitialMethodEnum, InitialMethodEnumType );
   itkGetConstMacro( InitialMethodEnum, InitialMethodEnumType );
-  void SetFixedLandmarks( const LandmarkVectorType & fixedLandmarks );
 
+  void SetFixedLandmarks( const LandmarkVectorType & fixedLandmarks );
   void SetMovingLandmarks( const LandmarkVectorType & movingLandmarks );
 
   //
@@ -508,7 +525,7 @@ private:
   bool m_EnableAffineRegistration;
   bool m_EnableBSplineRegistration;
 
-  double m_ExpectedOffsetPixelMagnitude;
+  double m_ExpectedOffsetMagnitude;
   double m_ExpectedRotationMagnitude;
   double m_ExpectedScaleMagnitude;
   double m_ExpectedSkewMagnitude;

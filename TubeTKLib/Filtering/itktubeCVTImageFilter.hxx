@@ -67,15 +67,11 @@ CVTImageFilter( void )
 template< class TInputImage, class TOutputImage >
 void
 CVTImageFilter< TInputImage, TOutputImage >::
-SetCentroids( const PointArrayType * centroids )
+SetCentroids( const PointArrayType & centroids )
 {
   m_InitialSamplingMethod = CVT_USER;
   m_NumberOfCentroids = centroids->size();
-  m_Centroids.reserve( m_NumberOfCentroids );
-  for( int i = 0; i < m_NumberOfCentroids; ++i )
-    {
-    m_Centroids[i] = centroids[i];
-    }
+  m_Centroids = centroids;
 }
 
 
@@ -204,6 +200,7 @@ GenerateData( void )
       }
     }
 
+
   // Generate output image
   IndexType iIndx;
   for( int j = 0; j < ( int )m_NumberOfCentroids; j++ )
@@ -254,6 +251,8 @@ GenerateData( void )
     ++outputImageIt;
     ++tmpImageIt;
     }
+
+  this->ComputeAdjacencyMatrix();
 }
 
 
@@ -510,6 +509,88 @@ ComputeClosest( const PointArrayType & sample,
   if( this->GetDebug() )
     {
     std::cout << "    computing closest done" << std::endl;
+    }
+}
+
+template< class TInputImage, class TOutputImage >
+void
+CVTImageFilter< TInputImage, TOutputImage >::
+ComputeAdjacencyMatrix( void )
+{
+  m_AdjacencyMatrix.SetSize( m_NumberOfCentroids, m_NumberOfCentroids );
+  m_AdjacencyMatrix.Fill( 0 );
+
+  typename OutputImageType::SizeType size =
+    m_OutputImage->GetLargestPossibleRegion().GetSize();
+  Index<ImageDimension> indx;
+  Index<ImageDimension> indx2;
+  Index<ImageDimension> indx3;
+  indx.Fill( 0 );
+  bool done = false;
+  int n;
+  while( !done )
+    {
+    int c = ( int )( m_OutputImage->GetPixel( indx )-1 );
+    indx2.Fill( 0 );
+    indx2[0] = 1;
+    bool done2 = false;
+    while( !done2 )
+      {
+      bool invalid = false;
+      for( unsigned int d=0; d<ImageDimension; d++ )
+        {
+        indx3[d] = indx[d] + indx2[d];
+        if( indx3[d] >= ( int )size[d] )
+          {
+          invalid = true;
+          break;
+          }
+        }
+      if( !invalid )
+        {
+        n = ( int )( m_OutputImage->GetPixel( indx3 )-1 );
+        if( c != n )
+          {
+          m_AdjacencyMatrix( c, n ) = 1;
+          m_AdjacencyMatrix( n, c ) = 1;
+          }
+        }
+      int i=0;
+      indx2[i]++;
+      while( !done2 && indx2[i]>=2 )
+        {
+        indx2[i] = 0;
+        i++;
+        if( i > ( int )( ImageDimension )-1 )
+          {
+          done2 = true;
+          }
+        else
+          {
+          indx2[i]++;
+          }
+        }
+      }
+    int i = 0;
+    indx[i]++;
+    while( !done && indx[i]>=( int )size[i] )
+      {
+      indx[i] = 0;
+      i++;
+      if( i>( int )( ImageDimension )-1 )
+        {
+        done = true;
+        }
+      else
+        {
+        if( i == ( int )( ImageDimension )-1 )
+          {
+          std::cout << "Computing adjacency of slice : "
+                    << indx[ImageDimension-1] << std::endl;
+          }
+        indx[i]++;
+        }
+      }
     }
 }
 

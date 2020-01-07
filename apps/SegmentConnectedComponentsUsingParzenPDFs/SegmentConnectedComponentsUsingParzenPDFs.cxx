@@ -37,7 +37,7 @@ void GetImageInformation( const std::string & fileName,
 
   ImageIOType::Pointer imageIO =
     ImageIOFactoryType::CreateImageIO( fileName.c_str(),
-                                       ImageIOFactoryType::ReadMode );
+      itk::ImageIOFactory::FileModeEnum::ReadMode );
 
   if( imageIO )
     {
@@ -112,7 +112,7 @@ int DoIt( int argc, char * argv[] )
   inLabelMapReader->Update();
 
   typename LabelMapType::Pointer labelMap = inLabelMapReader->GetOutput();
-  pdfSegmenter->SetLabelMap( labelMap );
+  pdfSegmenter->SetInputLabelMap( labelMap );
 
   unsigned int numFeatures = 0;
   if( inputVolume1.size() > 1 )
@@ -266,7 +266,7 @@ int DoIt( int argc, char * argv[] )
 
   typename LabelMapWriterType::Pointer writer = LabelMapWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( pdfSegmenter->GetLabelMap() );
+  writer->SetInput( pdfSegmenter->GetOutputLabelMap() );
   writer->Update();
 
   if( saveClassPDFBase.size() > 0 )

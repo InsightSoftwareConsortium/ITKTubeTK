@@ -41,6 +41,7 @@ limitations under the License.
 #include <itkJoinImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>
 #include <itkVotingBinaryIterativeHoleFillingImageFilter.h>
+#include <itkImageDuplicator.h>
 
 #include <vnl/vnl_matrix.h>
 
@@ -65,7 +66,8 @@ PDFSegmenterBase< TImage, TLabelMap >
 
   m_FeatureVectorGenerator = NULL;
 
-  m_LabelMap = NULL;
+  m_InputLabelMap = NULL;
+  m_OutputLabelMap = NULL;
 
   m_ObjectIdList.clear();
   m_VoidId = std::numeric_limits< LabelMapPixelType >::max();
@@ -154,6 +156,14 @@ PDFSegmenterBase< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
+typename PDFSegmenterBase< TImage, TLabelMap >::ObjectIdType *
+PDFSegmenterBase< TImage, TLabelMap >
+::GetObjectId( int i ) 
+{
+  return & m_ObjectIdList[i];
+}
+
+template< class TImage, class TLabelMap >
 unsigned int
 PDFSegmenterBase< TImage, TLabelMap >
 ::GetNumberOfObjectIds( void ) const
@@ -206,6 +216,14 @@ PDFSegmenterBase< TImage, TLabelMap >
 ::SetObjectPDFWeight( const VectorDoubleType & weight )
 {
   m_PDFWeightList = weight;
+}
+
+template< class TImage, class TLabelMap >
+double *
+PDFSegmenterBase< TImage, TLabelMap >
+::GetObjectPDFWeight( int i ) 
+{
+  return & m_PDFWeightList[i];
 }
 
 template< class TImage, class TLabelMap >
@@ -272,8 +290,8 @@ PDFSegmenterBase< TImage, TLabelMap >
 
   typedef itk::ImageRegionConstIteratorWithIndex< LabelMapType >
     ConstLabelMapIteratorType;
-  ConstLabelMapIteratorType itInLabelMap( m_LabelMap,
-    m_LabelMap->GetLargestPossibleRegion() );
+  ConstLabelMapIteratorType itInLabelMap( m_InputLabelMap,
+    m_InputLabelMap->GetLargestPossibleRegion() );
   itInLabelMap.GoToBegin();
 
   ListVectorType v;
@@ -384,7 +402,7 @@ void
 PDFSegmenterBase< TImage, TLabelMap >
 ::ApplyPDFs( void )
 {
-  if( m_LabelMap.IsNotNull() && !m_SampleUpToDate )
+  if( m_InputLabelMap.IsNotNull() && !m_SampleUpToDate )
     {
     this->GenerateSample();
     if( m_BalanceClassSampleSize )
@@ -392,7 +410,7 @@ PDFSegmenterBase< TImage, TLabelMap >
       BalanceClassSampleSize();
       }
     }
-  if( m_LabelMap.IsNotNull() && !m_PDFsUpToDate )
+  if( m_InputLabelMap.IsNotNull() && !m_PDFsUpToDate )
     {
     this->GeneratePDFs();
     }
@@ -430,21 +448,21 @@ PDFSegmenterBase< TImage, TLabelMap >
     probIt[c]->GoToBegin();
     }
 
-  if( m_LabelMap.IsNull() )
+  if( m_InputLabelMap.IsNull() )
     {
-    m_LabelMap = LabelMapType::New();
-    m_LabelMap->SetRegions( m_FeatureVectorGenerator->GetInput( 0 )
+    m_InputLabelMap = LabelMapType::New();
+    m_InputLabelMap->SetRegions( m_FeatureVectorGenerator->GetInput( 0 )
       ->GetLargestPossibleRegion() );
-    m_LabelMap->CopyInformation( m_FeatureVectorGenerator->GetInput( 0 ) );
-    m_LabelMap->Allocate();
-    m_LabelMap->FillBuffer( m_VoidId );
+    m_InputLabelMap->CopyInformation( m_FeatureVectorGenerator->GetInput( 0 ) );
+    m_InputLabelMap->Allocate();
+    m_InputLabelMap->FillBuffer( m_VoidId );
     m_ForceClassification = true;
     }
 
   typedef itk::ImageRegionConstIteratorWithIndex< LabelMapType >
     ConstLabelMapIteratorType;
-  ConstLabelMapIteratorType itInLabelMap( m_LabelMap,
-    m_LabelMap->GetLargestPossibleRegion() );
+  ConstLabelMapIteratorType itInLabelMap( m_InputLabelMap,
+    m_InputLabelMap->GetLargestPossibleRegion() );
   itInLabelMap.GoToBegin();
 
   FeatureVectorType fv;
@@ -506,10 +524,16 @@ PDFSegmenterBase< TImage, TLabelMap >
   typename LabelMapType::IndexType labelImageIndex;
 
   typename LabelMapType::Pointer tmpLabelImage = LabelMapType::New();
-  tmpLabelImage->SetRegions( m_LabelMap->GetLargestPossibleRegion() );
-  tmpLabelImage->CopyInformation( m_LabelMap );
+  tmpLabelImage->SetRegions( m_InputLabelMap->GetLargestPossibleRegion() );
+  tmpLabelImage->CopyInformation( m_InputLabelMap );
   tmpLabelImage->Allocate();
   tmpLabelImage->FillBuffer( m_VoidId );
+
+  using DuplicatorType = ImageDuplicator<LabelMapType>;
+  typename DuplicatorType::Pointer duplicator = DuplicatorType::New();
+  duplicator->SetInputImage(m_InputLabelMap);
+  duplicator->Update();
+  m_OutputLabelMap = duplicator->GetOutput();
 
   if( !m_ForceClassification )
     {
@@ -761,22 +785,23 @@ PDFSegmenterBase< TImage, TLabelMap >
       // Merge with input mask
       typedef itk::ImageRegionIterator< LabelMapType >
         LabelMapIteratorType;
-      LabelMapIteratorType itInLM( m_LabelMap,
-        m_LabelMap->GetLargestPossibleRegion() );
-      itInLM.GoToBegin();
+      LabelMapIteratorType itOutLM( m_OutputLabelMap,
+        m_OutputLabelMap->GetLargestPossibleRegion() );
+      itOutLM.GoToBegin();
 
       LabelMapIteratorType itLabel( tmpLabelImage,
         tmpLabelImage->GetLargestPossibleRegion() );
       itLabel.GoToBegin();
 
-      while( !itInLM.IsAtEnd() )
+      while( !itOutLM.IsAtEnd() )
         {
+        //itOutLM.Set( itOutLM.Get() );
         if( itLabel.Get() == 255 )
           {
-          if( itInLM.Get() == m_VoidId
+          if( itOutLM.Get() == m_VoidId
             || ( m_ReclassifyObjectLabels && m_ReclassifyNotObjectLabels ) )
             {
-            itInLM.Set( m_ObjectIdList[c] );
+            itOutLM.Set( m_ObjectIdList[c] );
             }
           else
             {
@@ -785,7 +810,7 @@ PDFSegmenterBase< TImage, TLabelMap >
               bool isObjectId = false;
               for( unsigned int oc = 0; oc < numClasses; oc++ )
                 {
-                if( itInLM.Get() == m_ObjectIdList[oc] )
+                if( itOutLM.Get() == m_ObjectIdList[oc] )
                   {
                   isObjectId = true;
                   break;
@@ -794,22 +819,22 @@ PDFSegmenterBase< TImage, TLabelMap >
               if( ( isObjectId && m_ReclassifyObjectLabels ) ||
                   ( !isObjectId && m_ReclassifyNotObjectLabels ) )
                 {
-                itInLM.Set( m_ObjectIdList[c] );
+                itOutLM.Set( m_ObjectIdList[c] );
                 }
               }
             }
           }
         else
           {
-          if( itInLM.Get() == m_ObjectIdList[c] )
+          if( itOutLM.Get() == m_ObjectIdList[c] )
             {
             if( m_ReclassifyObjectLabels )
               {
-              itInLM.Set( m_VoidId );
+              itOutLM.Set( m_VoidId );
               }
             }
           }
-        ++itInLM;
+        ++itOutLM;
         ++itLabel;
         }
       }
@@ -819,13 +844,14 @@ PDFSegmenterBase< TImage, TLabelMap >
     // Merge with input mask
     typedef itk::ImageRegionIteratorWithIndex< LabelMapType >
       LabelMapIteratorType;
-    LabelMapIteratorType itInLM( m_LabelMap,
-      m_LabelMap->GetLargestPossibleRegion() );
-    itInLM.GoToBegin();
+    LabelMapIteratorType itOutLM( m_OutputLabelMap,
+      m_OutputLabelMap->GetLargestPossibleRegion() );
+    itOutLM.GoToBegin();
 
-    while( !itInLM.IsAtEnd() )
+    while( !itOutLM.IsAtEnd() )
       {
-      labelImageIndex = itInLM.GetIndex();
+      //itOutLM.Set( itOutLM.Get() );
+      labelImageIndex = itOutLM.GetIndex();
       unsigned int maxPC = 0;
       double maxP = m_ProbabilityImageVector[0]->GetPixel(
         labelImageIndex );
@@ -839,10 +865,10 @@ PDFSegmenterBase< TImage, TLabelMap >
           maxPC = c;
           }
         }
-      if( itInLM.Get() == m_VoidId
+      if( itOutLM.Get() == m_VoidId
         || ( m_ReclassifyObjectLabels && m_ReclassifyNotObjectLabels ) )
         {
-        itInLM.Set( m_ObjectIdList[maxPC] );
+        itOutLM.Set( m_ObjectIdList[maxPC] );
         }
       else
         {
@@ -851,7 +877,7 @@ PDFSegmenterBase< TImage, TLabelMap >
           bool isObjectId = false;
           for( unsigned int oc = 0; oc < numClasses; oc++ )
             {
-            if( itInLM.Get() == m_ObjectIdList[oc] )
+            if( itOutLM.Get() == m_ObjectIdList[oc] )
               {
               isObjectId = true;
               break;
@@ -860,14 +886,15 @@ PDFSegmenterBase< TImage, TLabelMap >
           if( ( isObjectId && m_ReclassifyObjectLabels ) ||
               ( !isObjectId && m_ReclassifyNotObjectLabels ) )
             {
-            itInLM.Set( m_ObjectIdList[maxPC] );
+            itOutLM.Set( m_ObjectIdList[maxPC] );
             }
           }
         }
-      ++itInLM;
+      ++itOutLM;
       }
     }
 
+  std::cout << "done" << std::endl;
   m_ClassProbabilityImagesUpToDate = true;
 }
 
@@ -936,9 +963,9 @@ PDFSegmenterBase< TImage, TLabelMap >
   os << indent << "Feature vector generator = " << m_FeatureVectorGenerator
     << std::endl;
 
-  if( m_LabelMap.IsNotNull() )
+  if( m_InputLabelMap.IsNotNull() )
     {
-    os << indent << "LabelMap = " << m_LabelMap << std::endl;
+    os << indent << "LabelMap = " << m_InputLabelMap << std::endl;
     }
   else
     {

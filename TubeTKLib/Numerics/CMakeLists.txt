@@ -46,7 +46,6 @@ set( TubeTKLib_Base_Numerics_H_Files
   tubeSpline1D.h
   tubeSplineApproximation1D.h
   tubeSplineND.h
-  tubeTubeMath.h
   tubeUserFunction.h )
 
 set( TubeTKLib_Base_Numerics_HXX_Files
@@ -63,8 +62,7 @@ set( TubeTKLib_Base_Numerics_HXX_Files
   itktubeRidgeFFTFeatureVectorGenerator.hxx
   itktubeVectorImageToListGenerator.hxx
   itktubeVotingResampleImageFunction.hxx
-  tubeMatrixMath.hxx
-  tubeTubeMath.hxx )
+  tubeMatrixMath.hxx )
 
 set( TubeTKLib_Base_Numerics_SRCS
   tubeBrentOptimizer1D.cxx

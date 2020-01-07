@@ -47,15 +47,29 @@ limitations under the License.
 namespace tube
 {
 
+template< unsigned int VDimension >
+ImageMathFilters<VDimension>::
+ImageMathFilters()
+{
+  m_Input = nullptr;
+}
+
+template< unsigned int VDimension >
+ImageMathFilters<VDimension>::
+~ImageMathFilters()
+{
+  m_Input = nullptr;
+}
+
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageMathFilters<VDimension>::
-ApplyIntensityWindowing( typename ImageType::Pointer imIn,
+ApplyIntensityWindowing( 
   float valMin, float valMax, float outMin, float outMax )
 {
-  itk::ImageRegionIterator< ImageType > it2( imIn,
-    imIn->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it2( m_Input,
+    m_Input->GetLargestPossibleRegion() );
   it2.GoToBegin();
   while( !it2.IsAtEnd() )
     {
@@ -77,29 +91,13 @@ ApplyIntensityWindowing( typename ImageType::Pointer imIn,
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
-bool
+void
 ImageMathFilters<VDimension>::
-ApplyIntensityMultiplicativeWithBiasCorrection(
-  typename ImageType::Pointer imIn,
-  const std::string & inMeanFieldFilePath )
+ApplyIntensityMultiplicativeBiasCorrection(
+  ImageType * inMeanFieldImage )
 {
-  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-  reader2->SetFileName( inMeanFieldFilePath.c_str() );
-  typename ImageType::Pointer imIn2;
-  imIn2 = reader2->GetOutput();
-  try
-    {
-    reader2->Update();
-    }
-  catch( ... )
-    {
-    std::cout << "Problems reading file format of inFile2."
-      << std::endl;
-    return false;
-    }
-  imIn2 = ResampleImage( imIn2, imIn );
-  itk::ImageRegionIterator< ImageType > it2( imIn2,
-    imIn2->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it2( inMeanFieldImage,
+    inMeanFieldImage->GetLargestPossibleRegion() );
   int count = 0;
   double mean = 0;
   it2.GoToBegin();
@@ -114,8 +112,8 @@ ApplyIntensityMultiplicativeWithBiasCorrection(
     ++it2;
     }
   mean /= count;
-  itk::ImageRegionIterator< ImageType > it3( imIn,
-    imIn->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it3( m_Input,
+    m_Input->GetLargestPossibleRegion() );
   it3.GoToBegin();
   it2.GoToBegin();
   while( !it3.IsAtEnd() )
@@ -131,27 +129,23 @@ ApplyIntensityMultiplicativeWithBiasCorrection(
     ++it3;
     ++it2;
     }
-  return true;
 }
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
-typename ImageMathFilters<VDimension>::ImageType::Pointer
-ImageMathFilters<VDimension>
-::ResampleImage( typename ImageType::Pointer a,
-  typename ImageType::Pointer b )
+void
+ImageMathFilters<VDimension>::
+ResampleImage( ImageType * ref )
 {
-  typename ImageType::Pointer output = a;
-
   bool doResample = false;
   for( unsigned int i = 0; i < VDimension; i++ )
     {
-    if( a->GetLargestPossibleRegion().GetSize()[i]
-      != b->GetLargestPossibleRegion().GetSize()[i]
-      || a->GetLargestPossibleRegion().GetIndex()[i]
-      != b->GetLargestPossibleRegion().GetIndex()[i]
-      || a->GetSpacing()[i] != b->GetSpacing()[i]
-      || a->GetOrigin()[i] != b->GetOrigin()[i] )
+    if( m_Input->GetLargestPossibleRegion().GetSize()[i]
+      != ref->GetLargestPossibleRegion().GetSize()[i]
+      || m_Input->GetLargestPossibleRegion().GetIndex()[i]
+      != ref->GetLargestPossibleRegion().GetIndex()[i]
+      || m_Input->GetSpacing()[i] != ref->GetSpacing()[i]
+      || m_Input->GetOrigin()[i] != ref->GetOrigin()[i] )
       {
       doResample = true;
       break;
@@ -165,39 +159,36 @@ ImageMathFilters<VDimension>
     typename ResampleFilterType::Pointer filter =
       ResampleFilterType::New();
     typename ImageType::Pointer imTemp;
-    filter->SetInput( a );
+    filter->SetInput( m_Input );
     filter->SetUseReferenceImage( true );
-    filter->SetReferenceImage( b );
+    filter->SetReferenceImage( ref );
     imTemp = filter->GetOutput();
     filter->Update();
-    output = imTemp;
+    m_Input = imTemp;
     }
-
-  return output;
 }
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageMathFilters<VDimension>::
-AddUniformNoise( typename ImageType::Pointer imIn,
-  float valMin, float valMax, float noiseMean, float noiseRange, int seed )
+AddUniformNoise( float valMin, float valMax, float noiseMin,
+  float noiseMax, int seed )
 {
   typedef itk::Statistics::MersenneTwisterRandomVariateGenerator UniformGenType;
   typename UniformGenType::Pointer uniformGen = UniformGenType::New();
   std::srand( seed );
   uniformGen->Initialize( ( int )seed );
 
-  itk::ImageRegionIterator< ImageType > it2( imIn,
-        imIn->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it2( m_Input,
+        m_Input->GetLargestPossibleRegion() );
   it2.GoToBegin();
   while( !it2.IsAtEnd() )
     {
     double tf = it2.Get();
     if( tf >= valMin && tf <= valMax )
       {
-      tf += ( ( 2.0 * uniformGen->GetVariate() ) - 1 ) * noiseRange
-        + noiseMean;
+      tf += noiseMin + uniformGen->GetVariate() * (noiseMax-noiseMin);
       it2.Set( ( PixelType )tf );
       }
     ++it2;
@@ -207,17 +198,17 @@ AddUniformNoise( typename ImageType::Pointer imIn,
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageMathFilters<VDimension>
-::AddGaussianNoise( typename ImageType::Pointer imIn, float valMin,
-  float valMax, float noiseMean, float noiseStdDev, int seed )
+ImageMathFilters<VDimension>::
+AddGaussianNoise( float valMin, float valMax, float noiseMean,
+  float noiseStdDev, int seed )
 {
   typedef itk::Statistics::NormalVariateGenerator GaussGenType;
   typename GaussGenType::Pointer gaussGen = GaussGenType::New();
   std::srand( seed );
   gaussGen->Initialize( ( int )seed );
 
-  itk::ImageRegionIterator< ImageType > it2( imIn,
-        imIn->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it2( m_Input,
+        m_Input->GetLargestPossibleRegion() );
   it2.GoToBegin();
   while( !it2.IsAtEnd() )
     {
@@ -233,29 +224,15 @@ ImageMathFilters<VDimension>
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
-bool
-ImageMathFilters<VDimension>
-::AddImages( typename ImageType::Pointer imIn,
-  const std::string & imIn2FilePath, float weight1, float weight2 )
+void
+ImageMathFilters<VDimension>::
+AddImages( ImageType * input2,
+  float weight1, float weight2 )
 {
-  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-  reader2->SetFileName( imIn2FilePath.c_str() );
-  typename ImageType::Pointer imIn2;
-  imIn2 = reader2->GetOutput();
-  try
-    {
-    reader2->Update();
-    }
-  catch( ... )
-    {
-    std::cout << "Problems reading file format of inFile2."
-              << std::endl;
-    return false;
-    }
-  itk::ImageRegionIterator< ImageType > it1( imIn,
-        imIn->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< ImageType > it2( imIn2,
-        imIn2->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it1( m_Input,
+        m_Input->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it2( input2,
+        input2->GetLargestPossibleRegion() );
   it1.GoToBegin();
   it2.GoToBegin();
   while( !it1.IsAtEnd() )
@@ -267,35 +244,18 @@ ImageMathFilters<VDimension>
     ++it1;
     ++it2;
     }
-  return true;
 }
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
-bool
-ImageMathFilters<VDimension>
-::MultiplyImages(
-    typename ImageType::Pointer imIn,
-    const std::string & imIn2FilePath )
+void
+ImageMathFilters<VDimension>::
+MultiplyImages( ImageType * input2 )
 {
-  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-  reader2->SetFileName( imIn2FilePath.c_str() );
-  typename ImageType::Pointer imIn2;
-  imIn2 = reader2->GetOutput();
-  try
-    {
-    reader2->Update();
-    }
-  catch( ... )
-    {
-    std::cout << "Problems reading file format of inFile2."
-              << std::endl;
-    return false;
-    }
-  itk::ImageRegionIterator< ImageType > it1( imIn,
-        imIn->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< ImageType > it2( imIn2,
-        imIn2->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it1( m_Input,
+        m_Input->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it2( input2,
+        input2->GetLargestPossibleRegion() );
   it1.GoToBegin();
   it2.GoToBegin();
   while( !it1.IsAtEnd() && !it2.IsAtEnd() )
@@ -304,51 +264,45 @@ ImageMathFilters<VDimension>
     ++it1;
     ++it2;
     }
-  return true;
 }
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageMathFilters<VDimension>
-::MirrorAndPadImage(
-    typename ImageType::Pointer & imIn,
-    int numPadVoxels )
+ImageMathFilters<VDimension>::
+MirrorAndPadImage( int numPadVoxels )
 {
   typedef itk::MirrorPadImageFilter< ImageType, ImageType > PadFilterType;
   typename PadFilterType::Pointer padFilter = PadFilterType::New();
-  padFilter->SetInput( imIn );
+  padFilter->SetInput( m_Input );
   typename PadFilterType::InputImageSizeType bounds;
   bounds.Fill( numPadVoxels );
   padFilter->SetPadBound( bounds );
   padFilter->Update();
-  imIn = padFilter->GetOutput();
+  m_Input = padFilter->GetOutput();
 }
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
-template< typename TPixel >
 void
-ImageMathFilters<VDimension>
-::NormalizeImage(
-    typename ImageType::Pointer & imIn,
-    int normType )
+ImageMathFilters<VDimension>::
+NormalizeImage( int normType )
 {
   if( normType == 0 )
     {
     typedef itk::NormalizeImageFilter< ImageType, ImageType >
                                                   NormFilterType;
     typename NormFilterType::Pointer normFilter = NormFilterType::New();
-    normFilter->SetInput( imIn );
+    normFilter->SetInput( m_Input );
     normFilter->Update();
-    imIn = normFilter->GetOutput();
+    m_Input = normFilter->GetOutput();
     }
   else
     {
     unsigned int nBins = 50;
 
-    itk::ImageRegionIteratorWithIndex< ImageType > it1( imIn,
-          imIn->GetLargestPossibleRegion() );
+    itk::ImageRegionIteratorWithIndex< ImageType > it1( m_Input,
+          m_Input->GetLargestPossibleRegion() );
     it1.GoToBegin();
     double binMin = it1.Get();
     double binMax = it1.Get();
@@ -380,16 +334,6 @@ ImageMathFilters<VDimension>
         << std::endl;
       std::cout << "  Mean = " << meanV << " : StdDev = " << stdDevV
         << std::endl;
-
-      if( ( binMax - binMin ) < nBins
-        && 1 == static_cast< TPixel >( 1.1 ) )
-        {
-        std::cout << "Stretching represent int values" << std::endl;
-        int binMid = ( binMax + binMin ) / 2.0;
-        int binStep = ( nBins - 1 ) / 2;
-        binMin = binMid - binStep;
-        binMax = binMin + nBins;
-        }
 
       it1.GoToBegin();
       bin.Fill( 0 );
@@ -496,31 +440,14 @@ ImageMathFilters<VDimension>
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
-bool
-ImageMathFilters<VDimension>
-::FuseImages(
-    typename ImageType::Pointer imIn,
-    const std::string & imIn2FilePath,
-    float offset2 )
+void
+ImageMathFilters<VDimension>::
+FuseImages( ImageType * input2, float offset2 )
 {
-  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-  reader2->SetFileName( imIn2FilePath.c_str() );
-  typename ImageType::Pointer imIn2;
-  imIn2 = reader2->GetOutput();
-  try
-    {
-    reader2->Update();
-    }
-  catch( ... )
-    {
-    std::cout << "Problems reading file format of inFile2."
-              << std::endl;
-    return false;
-    }
-  itk::ImageRegionIterator< ImageType > it1( imIn,
-        imIn->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< ImageType > it2( imIn2,
-        imIn2->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it1( m_Input,
+        m_Input->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it2( input2,
+        input2->GetLargestPossibleRegion() );
   it1.GoToBegin();
   it2.GoToBegin();
   while( !it1.IsAtEnd() )
@@ -535,19 +462,36 @@ ImageMathFilters<VDimension>
     ++it1;
     ++it2;
     }
-  return true;
 }
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
-ImageMathFilters<VDimension>
-::ThresholdImage(
-    typename ImageType::Pointer imIn,
-    float threshLow, float threshHigh, float valTrue, float valFalse )
+ImageMathFilters<VDimension>::
+MedianImage( int filterSize )
 {
-  itk::ImageRegionIterator< ImageType > it1( imIn,
-        imIn->GetLargestPossibleRegion() );
+  typedef itk::MedianImageFilter< ImageType, ImageType >
+    FilterType;
+  typename ImageType::Pointer imTemp;
+  typename FilterType::Pointer filter = FilterType::New();
+  filter->SetInput( m_Input );
+  typename ImageType::SizeType radius;
+  radius.Fill( filterSize );
+  filter->SetRadius( radius );
+  imTemp = filter->GetOutput();
+  filter->Update();
+  m_Input = imTemp;
+}
+
+//------------------------------------------------------------------------
+template< unsigned int VDimension >
+void
+ImageMathFilters<VDimension>::
+ThresholdImage( float threshLow, float threshHigh, float valTrue,
+  float valFalse )
+{
+  itk::ImageRegionIterator< ImageType > it1( m_Input,
+        m_Input->GetLargestPossibleRegion() );
   it1.GoToBegin();
   while( !it1.IsAtEnd() )
     {
@@ -566,53 +510,16 @@ ImageMathFilters<VDimension>
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
-bool
-ImageMathFilters<VDimension>
-::MedianImage( typename ImageType::Pointer & imIn, int filterSize )
-{
-  typedef itk::MedianImageFilter< ImageType, ImageType >
-    FilterType;
-  typename ImageType::Pointer imTemp;
-  typename FilterType::Pointer filter = FilterType::New();
-  filter->SetInput( imIn );
-  typename ImageType::SizeType radius;
-  radius.Fill( filterSize );
-  filter->SetRadius( radius );
-  imTemp = filter->GetOutput();
-  filter->Update();
-  imIn = imTemp;
-  return true;
-}
-
-//------------------------------------------------------------------------
-template< unsigned int VDimension >
 double
 ImageMathFilters<VDimension>
-::ComputeImageStdDevOrMeanWithinRangeUsingMask(
-    typename ImageType::Pointer imIn,
-    const std::string & maskFilePath,
-    float threshLow, float threshHigh, int mode, bool & success )
+::ComputeImageStatisticsWithinMaskRange(
+    ImageType * mask, float maskThreshLow, float maskThreshHigh,
+    int mode )
 {
-  success = true;
-  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-  reader2->SetFileName( maskFilePath.c_str() );
-  typename ImageType::Pointer imIn2 = reader2->GetOutput();
-  try
-    {
-    reader2->Update();
-    }
-  catch( ... )
-    {
-    std::cout << "Problems reading file format of inFile2."
-              << std::endl;
-    success = false;
-    return 0.0;
-    }
-
-  itk::ImageRegionIterator< ImageType > it1( imIn,
-        imIn->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< ImageType > it2( imIn2,
-        imIn2->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it1( m_Input,
+        m_Input->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it2( mask,
+        mask->GetLargestPossibleRegion() );
   it1.GoToBegin();
   it2.GoToBegin();
   double sum = 0;
@@ -621,7 +528,7 @@ ImageMathFilters<VDimension>
   while( !it1.IsAtEnd() && !it2.IsAtEnd() )
     {
     double maskV = it2.Get();
-    if( maskV >= threshLow && maskV <= threshHigh )
+    if( maskV >= maskThreshLow && maskV <= maskThreshHigh )
       {
       sum += it1.Get();
       sumS += it1.Get() * it1.Get();
@@ -646,10 +553,10 @@ ImageMathFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageMathFilters<VDimension>
-::AbsoluteImage( typename ImageType::Pointer imIn )
+::AbsoluteImage( void )
 {
-  itk::ImageRegionIterator< ImageType > it1( imIn,
-        imIn->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it1( m_Input,
+        m_Input->GetLargestPossibleRegion() );
   it1.GoToBegin();
   while( !it1.IsAtEnd() )
     {
@@ -660,60 +567,39 @@ ImageMathFilters<VDimension>
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
-bool
+void
 ImageMathFilters<VDimension>
-::MaskImageWithValueIfNotWithinSecondImageRange(
-    typename ImageType::Pointer imIn,
-    const std::string & imIn2FilePath,
-    float threshLow, float threshHigh, float valFalse )
+::ReplaceValuesOutsideMaskRange(
+    ImageType * mask,
+    float maskThreshLow, float maskThreshHigh, float valFalse )
 {
-
-  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-  reader2->SetFileName( imIn2FilePath.c_str() );
-
-  typename ImageType::Pointer imIn2 = reader2->GetOutput();
-  try
-    {
-    reader2->Update();
-    }
-  catch( ... )
-    {
-    std::cout << "Problems reading file format of inFile2."
-              << std::endl;
-    return false;
-    }
-  imIn2 = ResampleImage( imIn2, imIn );
-  itk::ImageRegionIterator< ImageType > it1( imIn,
-        imIn->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< ImageType > it2( imIn2,
-        imIn2->GetLargestPossibleRegion() );
+  ImageMathFilters<VDimension> imf2 = ImageMathFilters<VDimension>();
+  imf2.SetInput( mask );
+  imf2.ResampleImage( m_Input );
+  itk::ImageRegionIterator< ImageType > it1( m_Input,
+        m_Input->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it2( imf2.GetOutput(),
+        imf2.GetOutput()->GetLargestPossibleRegion() );
   it1.GoToBegin();
   it2.GoToBegin();
   while( !it1.IsAtEnd() )
     {
     double tf2 = it2.Get();
-    if( tf2 >= threshLow && tf2 <= threshHigh )
-      {
-      //double tf1 = it1.Get();
-      //it1.Set( ( PixelType )tf1 );
-      }
-    else
+    if( ! ( tf2 >= maskThreshLow && tf2 <= maskThreshHigh ) )
       {
       it1.Set( ( PixelType )valFalse );
       }
     ++it1;
     ++it2;
     }
-  return true;
 }
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageMathFilters<VDimension>
-::MorphImage(
-    typename ImageType::Pointer & imIn,
-    int mode, int radius, float foregroundValue, float backgroundValue )
+::MorphImage( int mode, int radius, float foregroundValue,
+  float backgroundValue )
 {
   typedef itk::BinaryBallStructuringElement<PixelType, VDimension>
     BallType;
@@ -735,10 +621,10 @@ ImageMathFilters<VDimension>
       filter->SetBackgroundValue( backgroundValue );
       filter->SetKernel( ball );
       filter->SetErodeValue( foregroundValue );
-      filter->SetInput( imIn );
+      filter->SetInput( m_Input );
       imTemp = filter->GetOutput();
       filter->Update();
-      imIn = imTemp;
+      m_Input = imTemp;
       break;
       }
     case 1:
@@ -748,10 +634,10 @@ ImageMathFilters<VDimension>
       typename ImageType::Pointer imTemp;
       filter->SetKernel( ball );
       filter->SetDilateValue( foregroundValue );
-      filter->SetInput( imIn );
+      filter->SetInput( m_Input );
       imTemp = filter->GetOutput();
       filter->Update();
-      imIn = imTemp;
+      m_Input = imTemp;
       break;
       }
     }
@@ -761,28 +647,19 @@ ImageMathFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageMathFilters<VDimension>
-::OverwriteImage(
-    typename ImageType::Pointer imIn,
-    const std::string & maskFilePath,
-    float maskKeyVal, float imageKeyVal, float newImageVal )
+::ReplaceValueWithinMaskRange( ImageType * mask, float maskThreshLow,
+  float maskThreshHigh, float imageVal, float newImageVal )
 {
-  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-  reader2->SetFileName( maskFilePath.c_str() );
-  reader2->Update();
-  typename ImageType::Pointer maskIm = reader2->GetOutput();
-
-  itk::ImageRegionIterator< ImageType > itIm( imIn,
-        imIn->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< ImageType > itMask( maskIm,
-        maskIm->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > itIm( m_Input,
+        m_Input->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > itMask( mask,
+        mask->GetLargestPossibleRegion() );
   while( !itIm.IsAtEnd() )
     {
-    if( itMask.Get() == maskKeyVal )
+    if( itMask.Get() >= maskThreshLow && itMask.Get() <= maskThreshHigh
+      && itIm.Get() == imageVal )
       {
-      if( itIm.Get() == imageKeyVal )
-        {
-        itIm.Set( newImageVal );
-        }
+      itIm.Set( newImageVal );
       }
     ++itIm;
     ++itMask;
@@ -793,9 +670,7 @@ ImageMathFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageMathFilters<VDimension>
-::BlurImage(
-    typename ImageType::Pointer & imIn,
-    float sigma )
+::BlurImage( float sigma )
 {
   typename itk::RecursiveGaussianImageFilter< ImageType >::Pointer
     filter;
@@ -803,17 +678,17 @@ ImageMathFilters<VDimension>
   for( unsigned int i=0; i<VDimension; i++ )
     {
     filter = itk::RecursiveGaussianImageFilter< ImageType >::New();
-    filter->SetInput( imIn );
-    //filter->SetNormalizeAcrossScale( true );
+    filter->SetInput( m_Input );
+    filter->SetNormalizeAcrossScale( true );
     filter->SetSigma( sigma );
 
     filter->SetOrder(
-             itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
+             itk::GaussianOrderEnum::ZeroOrder );
     filter->SetDirection( i );
 
     imTemp = filter->GetOutput();
     filter->Update();
-    imIn = imTemp;
+    m_Input = imTemp;
     }
 }
 
@@ -821,150 +696,80 @@ ImageMathFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageMathFilters<VDimension>
-::BlurOrderImage(
-    typename ImageType::Pointer & imIn,
-    float sigma, int order, int direction )
+::BlurOrderImage( float sigma, int order, int direction )
 {
   typename itk::RecursiveGaussianImageFilter< ImageType >::Pointer
     filter;
   filter = itk::RecursiveGaussianImageFilter< ImageType >::New();
-  filter->SetInput( imIn );
-  //filter->SetNormalizeAcrossScale( true );
+  filter->SetInput( m_Input );
+  filter->SetNormalizeAcrossScale( true );
   filter->SetSigma( sigma );
   filter->SetDirection( direction );
   switch( order )
     {
     case 0:
-      filter->SetOrder(
-        itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
+      filter->SetOrder( itk::GaussianOrderEnum::ZeroOrder );
       break;
     case 1:
-      filter->SetOrder(
-        itk::RecursiveGaussianImageFilter<ImageType>::FirstOrder );
+      filter->SetOrder( itk::GaussianOrderEnum::FirstOrder );
       break;
     case 2:
-      filter->SetOrder(
-        itk::RecursiveGaussianImageFilter<ImageType>::SecondOrder );
+      filter->SetOrder( itk::GaussianOrderEnum::SecondOrder );
       break;
     }
   typename ImageType::Pointer imTemp = filter->GetOutput();
   filter->Update();
-  imIn = imTemp;
+  m_Input = imTemp;
 }
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
-bool
+std::vector<double>
 ImageMathFilters<VDimension>
-::ComputeImageHistogram(
-    typename ImageType::Pointer imIn,
-    unsigned int nBins, const std::string & histOutputFilePath )
+::ComputeImageHistogram( unsigned int nBins, float & binMin, float & binSize )
 {
-  itk::ImageRegionIteratorWithIndex< ImageType > it1( imIn,
-        imIn->GetLargestPossibleRegion() );
+  itk::ImageRegionIteratorWithIndex< ImageType > it1( m_Input,
+        m_Input->GetLargestPossibleRegion() );
   it1.GoToBegin();
-  double binMin = it1.Get();
-  double binMax = it1.Get();
-  while( !it1.IsAtEnd() )
+  std::vector<double> bin( nBins, 0 );
+
+  double binMax = binMin + binSize*nBins;
+  if( binMin == 0 && binSize == 0 )
     {
-    double tf = it1.Get();
-    if( tf < binMin )
+    binMin = it1.Get();
+    binMax = it1.Get();
+    while( !it1.IsAtEnd() )
       {
-      binMin = tf;
-      }
-    else
-      {
-      if( tf > binMax )
+      double tf = it1.Get();
+      if( tf < binMin )
         {
-        binMax = tf;
+        binMin = tf;
         }
+      else
+        {
+        if( tf > binMax )
+          {
+          binMax = tf;
+          }
+        }
+      ++it1;
       }
-    ++it1;
     }
+  binSize = (binMax - binMin) / nBins;
   std::cout << "  binMin = " << binMin << std::endl;
   std::cout << "  binMax = " << binMax << std::endl;
-  it1.GoToBegin();
-  itk::Array<double> bin;
-  bin.set_size( nBins );
-  bin.Fill( 0 );
+  std::cout << "  binSize = " << binSize << std::endl;
   while( !it1.IsAtEnd() )
     {
     double tf = it1.Get();
     tf = ( tf-binMin )/( binMax-binMin ) * nBins;
-    if( tf>nBins-1 )
-      {
-      tf = nBins-1;
-      }
-    else
-      {
-      if( tf<0 )
-        {
-        tf = 0;
-        }
-      }
-    bin[( int )tf]++;
-    ++it1;
-    }
-  std::ofstream writeStream;
-  writeStream.open( histOutputFilePath.c_str(),
-    std::ios::binary | std::ios::out );
-  if( !writeStream.rdbuf()->is_open() )
-    {
-    std::cerr << "Cannot write to file : " << histOutputFilePath
-      << std::endl;
-    return false;
-    }
-  for( unsigned int i=0; i<nBins; i++ )
-    {
-    writeStream << ( i/( double )nBins )*( binMax-binMin )+binMin
-                << " " << bin[i] << std::endl;
-    }
-  writeStream.close();
-  return true;
-}
-
-//------------------------------------------------------------------------
-template< unsigned int VDimension >
-bool
-ImageMathFilters<VDimension>
-::ComputeImageHistogram2(
-    typename ImageType::Pointer imIn,
-    unsigned int nBins, double binMin, double binSize,
-    const std::string & histOutputFilePath )
-{
-  double binMax = binMin + binSize*nBins;
-  itk::ImageRegionIteratorWithIndex< ImageType > it1( imIn,
-        imIn->GetLargestPossibleRegion() );
-  it1.GoToBegin();
-  itk::Array<double> bin;
-  bin.set_size( nBins );
-  bin.Fill( 0 );
-  while( !it1.IsAtEnd() )
-    {
-    double tf = it1.Get();
-    tf = ( tf-binMin )/( binMax-binMin ) * nBins;
-    if( tf<nBins && tf>0 )
+    if( (int)tf<(int)nBins && (int)tf>=0 )
       {
       bin[( int )tf]++;
       }
     ++it1;
     }
-  std::ofstream writeStream;
-  writeStream.open( histOutputFilePath.c_str(),
-    std::ios::binary | std::ios::out );
-  if( !writeStream.rdbuf()->is_open() )
-    {
-    std::cerr << "Cannot write to file : " << histOutputFilePath
-      << std::endl;
-    return false;
-    }
-  for( unsigned int i=0; i<nBins; i++ )
-    {
-    writeStream << ( i/( double )nBins )*( binMax-binMin )+binMin
-                << " " << bin[i] << std::endl;
-    }
-  writeStream.close();
-  return true;
+  return bin;
 }
 
 //------------------------------------------------------------------------
@@ -972,7 +777,6 @@ template< unsigned int VDimension >
 void
 ImageMathFilters<VDimension>
 ::CorrectIntensitySliceBySliceUsingHistogramMatching(
-    typename ImageType::Pointer imIn,
     unsigned int numberOfBins, unsigned int numberOfMatchPoints )
 {
   typedef itk::Image<PixelType, 2> ImageType2D;
@@ -982,16 +786,16 @@ ImageMathFilters<VDimension>
   typename ImageType2D::Pointer im2DRef = ImageType2D::New();
   typename ImageType2D::Pointer im2DIn = ImageType2D::New();
   typename ImageType2D::SizeType size2D;
-  size2D[0] = imIn->GetLargestPossibleRegion().GetSize()[0];
-  size2D[1] = imIn->GetLargestPossibleRegion().GetSize()[1];
+  size2D[0] = m_Input->GetLargestPossibleRegion().GetSize()[0];
+  size2D[1] = m_Input->GetLargestPossibleRegion().GetSize()[1];
   im2DRef->SetRegions( size2D );
   im2DRef->Allocate();
   im2DIn->SetRegions( size2D );
   im2DIn->Allocate();
-  itk::ImageRegionIterator< ImageType > it3D( imIn,
-        imIn->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< ImageType > it3DSliceStart( imIn,
-        imIn->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it3D( m_Input,
+        m_Input->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it3DSliceStart( m_Input,
+        m_Input->GetLargestPossibleRegion() );
   itk::ImageRegionIterator< ImageType2D > it2DRef( im2DRef,
         im2DRef->GetLargestPossibleRegion() );
   itk::ImageRegionIterator< ImageType2D > it2DIn( im2DIn,
@@ -1003,14 +807,14 @@ ImageMathFilters<VDimension>
   unsigned int zMax = 1;
   if( VDimension == 3 )
     {
-    zMax = imIn->GetLargestPossibleRegion().GetSize()[VDimension-1];
+    zMax = m_Input->GetLargestPossibleRegion().GetSize()[VDimension-1];
     }
   for( z=0; z<VDimension && z<zMax; z++ )
     {
     it2DRef.GoToBegin();
-    for( y=0; y<imIn->GetLargestPossibleRegion().GetSize()[1]; y++ )
+    for( y=0; y<m_Input->GetLargestPossibleRegion().GetSize()[1]; y++ )
       {
-      for( x=0; x<imIn->GetLargestPossibleRegion().GetSize()[0]; x++ )
+      for( x=0; x<m_Input->GetLargestPossibleRegion().GetSize()[0]; x++ )
         {
         it2DRef.Set( it3D.Get() );
         ++it2DRef;
@@ -1022,9 +826,9 @@ ImageMathFilters<VDimension>
     {
     it2DIn.GoToBegin();
     it3DSliceStart = it3D;
-    for( y=0; y<imIn->GetLargestPossibleRegion().GetSize()[1]; y++ )
+    for( y=0; y<m_Input->GetLargestPossibleRegion().GetSize()[1]; y++ )
       {
-      for( x=0; x<imIn->GetLargestPossibleRegion().GetSize()[0]; x++ )
+      for( x=0; x<m_Input->GetLargestPossibleRegion().GetSize()[0]; x++ )
         {
         it2DIn.Set( it3D.Get() );
         ++it2DIn;
@@ -1043,9 +847,9 @@ ImageMathFilters<VDimension>
     it2DRef.GoToBegin();
     it2DOut.GoToBegin();
     it3D = it3DSliceStart;
-    for( y=0; y<imIn->GetLargestPossibleRegion().GetSize()[1]; y++ )
+    for( y=0; y<m_Input->GetLargestPossibleRegion().GetSize()[1]; y++ )
       {
-      for( x=0; x<imIn->GetLargestPossibleRegion().GetSize()[0]; x++ )
+      for( x=0; x<m_Input->GetLargestPossibleRegion().GetSize()[0]; x++ )
         {
         it2DRef.Set( it2DOut.Get() );
         it3D.Set( it2DOut.Get() );
@@ -1060,50 +864,31 @@ ImageMathFilters<VDimension>
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
-bool
+void
 ImageMathFilters<VDimension>
-::CorrectIntensityUsingHistogramMatching(
-    typename ImageType::Pointer & imIn,
-    unsigned int numberOfBins, unsigned int numberOfMatchPoints,
-    const std::string & referenceVolumeFilePath )
+::CorrectIntensityUsingHistogramMatching( unsigned int numberOfBins,
+  unsigned int numberOfMatchPoints, ImageType * ref )
 {
   typedef itk::HistogramMatchingImageFilter< ImageType, ImageType >
       HistogramMatchFilterType;
-  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-  reader2->SetFileName( referenceVolumeFilePath.c_str() );
-  typename ImageType::Pointer imIn2;
-  imIn2 = reader2->GetOutput();
-  try
-    {
-    reader2->Update();
-    }
-  catch( ... )
-    {
-    std::cout << "Problems reading file format of inFile2."
-              << std::endl;
-    return false;
-    }
   typename HistogramMatchFilterType::Pointer matchFilter;
   matchFilter = HistogramMatchFilterType::New();
-  matchFilter->SetReferenceImage( imIn2 );
-  matchFilter->SetInput( imIn );
+  matchFilter->SetReferenceImage( ref );
+  matchFilter->SetInput( m_Input );
   matchFilter->SetNumberOfHistogramLevels( numberOfBins );
   matchFilter->SetNumberOfMatchPoints( numberOfMatchPoints );
   matchFilter->Update();
-  imIn = matchFilter->GetOutput();
-  return true;
+  m_Input = matchFilter->GetOutput();
 }
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageMathFilters<VDimension>
-::Resize(
-    typename ImageType::Pointer & imIn,
-    double factor )
+::Resize( double factor )
 {
   typename ImageType::Pointer imSub2 = ImageType::New();
-  imSub2->CopyInformation( imIn );
+  imSub2->CopyInformation( m_Input );
   typename ImageType::SizeType size;
   typename ImageType::SpacingType spacing;
   if( factor != 0 )
@@ -1111,16 +896,16 @@ ImageMathFilters<VDimension>
     for( unsigned int i=0; i<VDimension; i++ )
       {
       size[i] = ( long unsigned int )
-                ( imIn->GetLargestPossibleRegion().GetSize()[i]
+                ( m_Input->GetLargestPossibleRegion().GetSize()[i]
                   / factor );
-      spacing[i] = imIn->GetSpacing()[i]*factor;
+      spacing[i] = m_Input->GetSpacing()[i]*factor;
       }
     }
   else
     {
     for( unsigned int i=0; i<VDimension; i++ )
       {
-      spacing[i] = imIn->GetSpacing()[i];
+      spacing[i] = m_Input->GetSpacing()[i];
       }
 
     double meanSpacing = ( spacing[0] + spacing[1] ) / 2;
@@ -1130,17 +915,17 @@ ImageMathFilters<VDimension>
       }
     factor = meanSpacing/spacing[0];
     size[0] = ( long unsigned int )
-              ( imIn->GetLargestPossibleRegion().GetSize()[0]/factor );
+              ( m_Input->GetLargestPossibleRegion().GetSize()[0]/factor );
     factor = meanSpacing/spacing[1];
     size[1] = ( long unsigned int )
-              ( imIn->GetLargestPossibleRegion().GetSize()[1]/factor );
+              ( m_Input->GetLargestPossibleRegion().GetSize()[1]/factor );
     spacing[0] = meanSpacing;
     spacing[1] = meanSpacing;
     if( VDimension == 3 )
       {
       factor = meanSpacing/spacing[VDimension-1];
       size[VDimension-1] = ( long unsigned int )
-                ( imIn->GetLargestPossibleRegion().GetSize()[VDimension-1]
+                ( m_Input->GetLargestPossibleRegion().GetSize()[VDimension-1]
                   / factor );
       spacing[VDimension-1] = meanSpacing;
       }
@@ -1149,43 +934,23 @@ ImageMathFilters<VDimension>
   imSub2->SetSpacing( spacing );
   imSub2->Allocate();
 
-  imIn = ResampleImage( imIn, imSub2 );
-}
-
-//------------------------------------------------------------------------
-template< unsigned int VDimension >
-bool
-ImageMathFilters<VDimension>
-::Resize(
-    typename ImageType::Pointer & imIn,
-    const std::string & imIn2FilePath )
-{
-  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-  reader2->SetFileName( imIn2FilePath.c_str() );
-  typename ImageType::Pointer imIn2;
-  imIn2 = reader2->GetOutput();
-  try
-    {
-    reader2->Update();
-    }
-  catch( ... )
-    {
-    std::cout << "Problems reading file format of inFile2."
-              << std::endl;
-    return false;
-    }
-  imIn = ResampleImage( imIn, imIn2 );
-  return true;
+  this->ResampleImage( imSub2 );
 }
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageMathFilters<VDimension>
-::ExtractSlice(
-    typename ImageType::Pointer & imIn,
-    unsigned int dimension,
-    unsigned int slice )
+::Resize( ImageType * ref )
+{
+  this->ResampleImage( ref );
+}
+
+//------------------------------------------------------------------------
+template< unsigned int VDimension >
+void
+ImageMathFilters<VDimension>
+::ExtractSlice( unsigned int dimension, unsigned int slice )
 {
   typedef itk::ExtractImageFilter<ImageType, ImageType>
     ExtractSliceFilterType;
@@ -1194,7 +959,7 @@ ImageMathFilters<VDimension>
     ExtractSliceFilterType::New();
 
   typename ImageType::SizeType size =
-    imIn->GetLargestPossibleRegion().GetSize();
+    m_Input->GetLargestPossibleRegion().GetSize();
 
   typename ImageType::IndexType  extractIndex;
   typename ImageType::SizeType   extractSize;
@@ -1210,38 +975,37 @@ ImageMathFilters<VDimension>
   typename ImageType::RegionType desiredRegion( extractIndex,
     extractSize );
 
-  filter->SetInput( imIn );
+  filter->SetInput( m_Input );
   filter->SetExtractionRegion( desiredRegion );
   filter->UpdateLargestPossibleRegion();
   filter->Update();
 
-  imIn = filter->GetOutput();
+  m_Input = filter->GetOutput();
 }
 
 template< unsigned int VDimension >
 void
 ImageMathFilters<VDimension>
-::EnhanceVessels( typename ImageType::Pointer imIn,
-  double scaleMin, double scaleMax, double numScales )
+::EnhanceVessels( double scaleMin, double scaleMax, double numScales )
 {
   double logScaleStep = ( std::log( scaleMax ) - std::log( scaleMin ) )
     / ( numScales-1 );
 
   typedef itk::tube::NJetImageFunction< ImageType > ImageFunctionType;
   typename ImageFunctionType::Pointer imFunc = ImageFunctionType::New();
-  imFunc->SetInputImage( imIn );
+  imFunc->SetInputImage( m_Input );
 
-  typename ImageType::Pointer imIn2 = ImageType::New();
-  imIn2->SetRegions( imIn->GetLargestPossibleRegion() );
-  imIn2->SetOrigin( imIn->GetOrigin() );
-  imIn2->SetSpacing( imIn->GetSpacing() );
-  imIn2->CopyInformation( imIn );
-  imIn2->Allocate();
+  typename ImageType::Pointer input2 = ImageType::New();
+  input2->SetRegions( m_Input->GetLargestPossibleRegion() );
+  input2->SetOrigin( m_Input->GetOrigin() );
+  input2->SetSpacing( m_Input->GetSpacing() );
+  input2->CopyInformation( m_Input );
+  input2->Allocate();
 
-  itk::ImageRegionIteratorWithIndex< ImageType > it1( imIn,
-        imIn->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< ImageType > it2( imIn2,
-        imIn2->GetLargestPossibleRegion() );
+  itk::ImageRegionIteratorWithIndex< ImageType > it1( m_Input,
+        m_Input->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it2( input2,
+        input2->GetLargestPossibleRegion() );
 
   double ridgeness = 0;
   double intensity = 0;
@@ -1299,9 +1063,8 @@ ImageMathFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageMathFilters<VDimension>
-::SegmentUsingConnectedThreshold( typename ImageType::Pointer & imIn,
-  float threshLow, float threshHigh, float labelValue,
-  float x, float y, float z )
+::SegmentUsingConnectedThreshold( float threshLow, float threshHigh,
+  float labelValue, float x, float y, float z )
 {
   typedef itk::ConnectedThresholdImageFilter<ImageType, ImageType>
              FilterType;
@@ -1316,160 +1079,37 @@ ImageMathFilters<VDimension>
     seed[VDimension-1] = ( long int )z;
     }
 
-  filter->SetInput( imIn );
+  filter->SetInput( m_Input );
   filter->SetLower( threshLow );
   filter->SetUpper( threshHigh );
   filter->AddSeed( seed );
   filter->SetReplaceValue( labelValue );
   filter->Update();
 
-  imIn = filter->GetOutput();
+  m_Input = filter->GetOutput();
 }
 
 template< unsigned int VDimension >
-bool
+std::vector< itk::ContinuousIndex< double, VDimension > >
 ImageMathFilters<VDimension>
-::ComputeVoronoiTessellation( typename ImageType::Pointer & imIn,
-  unsigned int numberOfCentroids, unsigned int numberOfIterations,
-  unsigned int numberOfSamples, const std::string & centroidOutFilePath )
+::ComputeVoronoiTessellation( unsigned int numberOfCentroids,
+  unsigned int numberOfIterations, unsigned int numberOfSamples )
 {
-  std::string filename = centroidOutFilePath;
-
   typedef itk::tube::CVTImageFilter<ImageType, ImageType> FilterType;
   typename FilterType::Pointer filter = FilterType::New();
-  filter->SetInput( imIn );
+  filter->SetInput( m_Input );
   filter->SetNumberOfSamples( numberOfSamples );
   filter->SetNumberOfCentroids( numberOfCentroids );
   filter->SetNumberOfIterations( numberOfIterations );
   filter->SetNumberOfSamplesPerBatch( numberOfIterations );
   filter->Update();
 
-  std::ofstream writeStream;
-  writeStream.open( filename.c_str(),
-    std::ios::binary | std::ios::out );
-  if( !writeStream.rdbuf()->is_open() )
-    {
-    std::cerr << "Cannot write to file : " << filename << std::endl;
-    return false;
-    }
-  writeStream << numberOfCentroids << std::endl;
-  for( unsigned int i=0; i<numberOfCentroids; i++ )
-    {
-    for( unsigned int j = 0; j<VDimension; j++ )
-      {
-      writeStream << ( *( filter->GetCentroids() ) )[i][j];
-      if( j<2 )
-        {
-        writeStream << " ";
-        }
-      }
-    writeStream << std::endl;
-    }
-  writeStream.close();
+  std::vector< itk::ContinuousIndex< double, VDimension > > centroids;
+  centroids = filter->GetCentroids();
 
-  imIn = filter->GetOutput();
-  typename ImageType::SizeType size =
-    imIn->GetLargestPossibleRegion().GetSize();
+  m_VoronoiTessellationAdjacencyMatrix = filter->GetAdjacencyMatrix();
 
-  filename = filename + ".mat";
-
-  vnl_matrix<int> aMat( numberOfCentroids, numberOfCentroids );
-  aMat.fill( 0 );
-
-  itk::Index<VDimension> indx;
-  itk::Index<VDimension> indx2;
-  itk::Index<VDimension> indx3;
-  indx.Fill( 0 );
-  bool done = false;
-  int n;
-  while( !done )
-    {
-    int c = ( int )( imIn->GetPixel( indx )-1 );
-    indx2.Fill( 0 );
-    indx2[0] = 1;
-    bool done2 = false;
-    while( !done2 )
-      {
-      bool invalid = false;
-      for( unsigned int d=0; d<VDimension; d++ )
-        {
-        indx3[d] = indx[d] + indx2[d];
-        if( indx3[d] >= ( int )size[d] )
-          {
-          invalid = true;
-          break;
-          }
-        }
-      if( !invalid )
-        {
-        n = ( int )( imIn->GetPixel( indx3 )-1 );
-        if( c != n )
-          {
-          aMat( c, n ) = 1;
-          aMat( n, c ) = 1;
-          }
-        }
-      int i=0;
-      indx2[i]++;
-      while( !done2 && indx2[i]>=2 )
-        {
-        indx2[i] = 0;
-        i++;
-        if( i > ( int )( VDimension )-1 )
-          {
-          done2 = true;
-          }
-        else
-          {
-          indx2[i]++;
-          }
-        }
-      }
-    int i = 0;
-    indx[i]++;
-    while( !done && indx[i]>=( int )size[i] )
-      {
-      indx[i] = 0;
-      i++;
-      if( i>( int )( VDimension )-1 )
-        {
-        done = true;
-        }
-      else
-        {
-        if( i == ( int )( VDimension )-1 )
-          {
-          std::cout << "Computing adjacency of slice : "
-                    << indx[VDimension-1] << std::endl;
-          }
-        indx[i]++;
-        }
-      }
-    }
-
-  writeStream.open( filename.c_str(),
-    std::ios::binary | std::ios::out );
-  if( !writeStream.rdbuf()->is_open() )
-    {
-    std::cerr << "Cannot write to file : " << filename << std::endl;
-    return 0;
-    }
-  writeStream << numberOfCentroids << std::endl;
-  for( unsigned int i=0; i<numberOfCentroids; i++ )
-    {
-    for( unsigned int j = 0; j<numberOfCentroids; j++ )
-      {
-      writeStream << aMat( i, j );
-      if( j<numberOfCentroids-1 )
-        {
-        writeStream << " ";
-        }
-      }
-    writeStream << std::endl;
-    }
-  writeStream.close();
-
-  return true;
+  return centroids;
 }
 
 } // End namespace tube

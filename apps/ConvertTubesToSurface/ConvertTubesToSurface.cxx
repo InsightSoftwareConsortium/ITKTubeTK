@@ -199,29 +199,26 @@ int DoIt( int argc, char * argv[] )
       ++pointIt, ++pointId, ++index )
       {
       TubeSpatialObjectType::PointType point =
-        pointIt->GetPositionInObjectSpace();
-      TubeSpatialObjectType::PointType curSourcePosIndexSpace =
-        tube->GetObjectToWorldTransform()->TransformPoint(
-        point );
+        pointIt->GetPositionInWorldSpace();
       pointIds[index] = pointId;
 
       // Insert points using the element spacing information.
-      tubeSpatialPoints->SetPoint( pointId, -1 * curSourcePosIndexSpace[0],
-        -1 * curSourcePosIndexSpace[1], curSourcePosIndexSpace[2] );
+      tubeSpatialPoints->SetPoint( pointId, -1 * point[0],
+        -1 * point[1], point[2] );
       // TubeId
       tubeIds->SetTuple1( pointId, tube->GetId() );
 
       // Radius
-      tubeRadius->SetTuple1( pointId, pointIt->GetRadiusInObjectSpace() );
+      tubeRadius->SetTuple1( pointId, pointIt->GetRadiusInWorldSpace() );
 
       // Tangeantes
-      tan1->SetTuple3( pointId, pointIt->GetNormal1InObjectSpace()[0],
-        pointIt->GetNormal1InObjectSpace()[1],
-        pointIt->GetNormal1InObjectSpace()[2] );
+      tan1->SetTuple3( pointId, pointIt->GetNormal1InWorldSpace()[0],
+        pointIt->GetNormal1InWorldSpace()[1],
+        pointIt->GetNormal1InWorldSpace()[2] );
 
-      tan2->SetTuple3( pointId, pointIt->GetNormal2InObjectSpace()[0],
-        pointIt->GetNormal2InObjectSpace()[1],
-        pointIt->GetNormal2InObjectSpace()[2] );
+      tan2->SetTuple3( pointId, pointIt->GetNormal2InWorldSpace()[0],
+        pointIt->GetNormal2InWorldSpace()[1],
+        pointIt->GetNormal2InWorldSpace()[2] );
 
       // Medialness & Ridgness
       if( pointIt->GetMedialness() != 0.0 )

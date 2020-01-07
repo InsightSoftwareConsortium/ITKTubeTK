@@ -31,7 +31,7 @@
 #include "itkMath.h"
 
 #include "tubeMacro.h"
-#include "tubeTubeMath.h"
+#include "tubeTubeMathFilters.h"
 #include "tubeMatrixMath.h"
 
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"

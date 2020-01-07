@@ -123,7 +123,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
     EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( Dimension );
   eigenAnalysisFilter->OrderEigenValuesBy(
-      EigenAnalysisFilterType::FunctorType::OrderByValue );
+      EigenAnalysisFilterType::EigenValueOrderType::OrderByValue );
 
   eigenAnalysisFilter->SetInput( filterHessian->GetOutput() );
   eigenAnalysisFilter->Update();
@@ -143,7 +143,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
     EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( Dimension );
   eigenVectorAnalysisFilter->OrderEigenValuesBy(
-    EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
+    EigenVectorAnalysisFilterType::EigenValueOrderType::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( filterHessian->GetOutput() );
   eigenVectorAnalysisFilter->Update();

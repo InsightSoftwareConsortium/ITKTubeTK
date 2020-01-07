@@ -78,6 +78,7 @@ int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage = reader->GetOutput();
+  std::cout << "Read: " << argv[1] << std::endl;
 
   ReaderType::Pointer reader2 = ReaderType::New();
   reader2->SetFileName( argv[2] );
@@ -92,6 +93,7 @@ int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage2 = reader2->GetOutput();
+  std::cout << "Read: " << argv[2] << std::endl;
 
   // Create the reader and writer
   ReaderType::Pointer labelmapReader = ReaderType::New();
@@ -107,6 +109,7 @@ int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   ImageType::Pointer labelmapImage = labelmapReader->GetOutput();
+  std::cout << "Read: " << argv[5] << std::endl;
 
   FeatureVectorGeneratorType::Pointer fvGen =
     FeatureVectorGeneratorType::New();
@@ -115,7 +118,7 @@ int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetFeatureVectorGenerator( fvGen );
-  filter->SetLabelMap( labelmapImage );
+  filter->SetInputLabelMap( labelmapImage );
   filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );
   filter->SetVoidId( 0 );
@@ -205,7 +208,7 @@ int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
   WriterType::Pointer labelmapWriter = WriterType::New();
   labelmapWriter->SetFileName( argv[10] );
   labelmapWriter->SetUseCompression( true );
-  labelmapWriter->SetInput( filter->GetLabelMap() );
+  labelmapWriter->SetInput( filter->GetOutputLabelMap() );
   try
     {
     labelmapWriter->Update();

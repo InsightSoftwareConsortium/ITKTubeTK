@@ -1304,7 +1304,7 @@ HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
   if( m_UseProjection )
     {
     HessianAtContinuousIndex( cIndex, scale, m );
-    vnl_symmetric_eigensystem< double > eigSys( m.GetVnlMatrix() );
+    vnl_symmetric_eigensystem< double > eigSys( m.GetVnlMatrix().as_ref() );
 
     double dp = 0;
     for( unsigned int i = 0; i < ImageDimension; i++ )
@@ -1353,7 +1353,7 @@ HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
   if( m_UseProjection )
     {
     HessianAtContinuousIndex( cIndex, scale, m );
-    vnl_symmetric_eigensystem< double > eigSys( m.GetVnlMatrix() );
+    vnl_symmetric_eigensystem< double > eigSys( m.GetVnlMatrix().as_ref() );
 
     double dp0 = 0;
     double dp1 = 0;
@@ -1824,7 +1824,7 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
   vnl_matrix<double> eVect( ImageDimension, ImageDimension );
   vnl_vector<double> eVal( ImageDimension );
   vnl_vector<double> prevTangent;
-  ::tube::ComputeRidgeness<double>( h.GetVnlMatrix(), d.GetVnlVector(),
+  ::tube::ComputeRidgeness<double>( h.GetVnlMatrix().as_ref(), d.GetVnlVector(),
     prevTangent, ridgeness, roundness, curvature, levelness, eVect, eVal );
 
   m_MostRecentIntensity = intensity;
@@ -1854,7 +1854,7 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
 
   val = JetAtContinuousIndex( cIndex, d, h, scale );
 
-  vnl_symmetric_eigensystem< double > eigSys( h.GetVnlMatrix() );
+  vnl_symmetric_eigensystem< double > eigSys( h.GetVnlMatrix().as_ref() );
 
   assert( eigSys.get_eigenvalue( 0 ) <= eigSys.get_eigenvalue( 1 ) );
 
@@ -1924,7 +1924,7 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
 
   val = JetAtContinuousIndex( cIndex, d, h, scale );
 
-  vnl_symmetric_eigensystem< double > eigSys( h.GetVnlMatrix() );
+  vnl_symmetric_eigensystem< double > eigSys( h.GetVnlMatrix().as_ref() );
 
   assert( eigSys.get_eigenvalue( 0 ) <= eigSys.get_eigenvalue( 1 ) );
 

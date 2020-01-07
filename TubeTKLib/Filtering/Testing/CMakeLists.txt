@@ -54,7 +54,8 @@ set( tubeBaseFilteringTests_SRCS
   itktubeSubSampleTubeSpatialObjectFilterTest.cxx
   itktubeSubSampleTubeTreeSpatialObjectFilterTest.cxx
   itktubeTortuositySpatialObjectFilterTest.cxx
-  itktubeTubeEnhancingDiffusion2DImageFilterTest.cxx )
+  itktubeTubeEnhancingDiffusion2DImageFilterTest.cxx
+  tubeTubeMathFiltersTest.cxx )
 
 # Add tests of filters based on the ArrayFire Library
 if( TubeTK_USE_ARRAYFIRE )
@@ -312,3 +313,7 @@ ExternalData_Add_Test( TubeTKData
 add_test( NAME itktubeTortuositySpatialObjectFilterTest
   COMMAND ${BASE_FILTERING_TESTS}
     itktubeTortuositySpatialObjectFilterTest )
+
+add_test( NAME tubeTubeMathFiltersTest
+  COMMAND ${BASE_FILTERING_TESTS}
+  tubeTubeMathFiltersTest )

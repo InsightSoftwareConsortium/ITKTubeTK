@@ -45,6 +45,7 @@ void RegisterTests( void )
   REGISTER_TEST( itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest );
   REGISTER_TEST( itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest );
   REGISTER_TEST( itktubeTortuositySpatialObjectFilterTest );
+  REGISTER_TEST( tubeTubeMathFiltersTest );
 
   #if defined( TubeTK_USE_ARRAYFIRE )
     REGISTER_TEST( itktubeGPUArrayFireGaussianDerivativeFilterTest );

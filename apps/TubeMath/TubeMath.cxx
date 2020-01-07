@@ -22,8 +22,8 @@ limitations under the License.
 =========================================================================*/
 #include "tubeMessage.h"
 
-#include "tubeTubeMath.h"
-#include "tubeTreeFilters.h"
+#include "tubeTubeMathFilters.h"
+#include "tubeTreeMathFilters.h"
 
 #include <itkGroupSpatialObject.h>
 #include <itkSpatialObjectReader.h>
@@ -298,7 +298,7 @@ int DoIt( MetaCommand & command )
     else if( it->name == "FillGapsInTree" )
       {
       ::tube::Message( "Fill gapes in tree" );
-      ::tube::TreeFilters< DimensionT >::FillGap( inputTubes,
+      ::tube::TreeMathFilters< DimensionT >::FillGap( inputTubes,
         command.GetValueAsString( *it, "InterpolationMethod" ).c_str()[0] );
       }
     else if( it->name == "ComputeTangentsAndNormals" )

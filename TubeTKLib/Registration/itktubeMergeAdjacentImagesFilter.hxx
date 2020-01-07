@@ -321,7 +321,7 @@ MergeAdjacentImagesFilter< TImage >
   regOp->SetRigidMaxIterations( m_MaxIterations );
   regOp->SetEnableAffineRegistration( false );
   regOp->SetEnableBSplineRegistration( false );
-  regOp->SetExpectedOffsetPixelMagnitude( m_ExpectedOffset );
+  regOp->SetExpectedOffsetMagnitude( m_ExpectedOffset );
   regOp->SetExpectedRotationMagnitude( m_ExpectedRotation );
 
   if( useInitialTransform )

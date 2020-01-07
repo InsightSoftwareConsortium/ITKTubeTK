@@ -104,7 +104,7 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetFeatureVectorGenerator( fvGen );
-  filter->SetLabelMap( labelmapImage );
+  filter->SetInputLabelMap( labelmapImage );
   filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );
   filter->SetVoidId( 0 );
@@ -124,7 +124,7 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
   WriterType::Pointer labelmapWriter = WriterType::New();
   labelmapWriter->SetFileName( argv[4] );
   labelmapWriter->SetUseCompression( true );
-  labelmapWriter->SetInput( filter->GetLabelMap() );
+  labelmapWriter->SetInput( filter->GetOutputLabelMap() );
   try
     {
     labelmapWriter->Update();
@@ -183,7 +183,7 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
   WriterType::Pointer labelmapWriter2 = WriterType::New();
   labelmapWriter2->SetFileName( argv[6] );
   labelmapWriter2->SetUseCompression( true );
-  labelmapWriter2->SetInput( filter2->GetLabelMap() );
+  labelmapWriter2->SetInput( filter2->GetOutputLabelMap() );
   try
     {
     labelmapWriter2->Update();

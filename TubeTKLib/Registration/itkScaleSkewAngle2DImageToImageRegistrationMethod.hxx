@@ -38,7 +38,7 @@ ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
 
   typename Superclass::TransformParametersScalesType scales;
   scales.set_size( this->GetTypedTransform()->GetNumberOfParameters() );
-  if( scales.size() != 7 )
+  if( scales.size() != 6 )
     {
     std::cerr << "ERROR: number of parameters not standard for transform"
               << std::endl;
@@ -53,7 +53,6 @@ ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
   scales[scaleNum++] = 100;
   scales[scaleNum++] = 100;
   // Skew
-  scales[scaleNum++] = 1000;
   scales[scaleNum++] = 1000;
   this->SetTransformParametersScales( scales );
 

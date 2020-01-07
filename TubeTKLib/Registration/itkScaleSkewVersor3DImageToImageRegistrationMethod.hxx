@@ -37,7 +37,7 @@ ScaleSkewVersor3DImageToImageRegistrationMethod<TImage>
 
   typename Superclass::TransformParametersScalesType scales;
   scales.set_size( this->GetTypedTransform()->GetNumberOfParameters() );
-  if( scales.size() != 15 )
+  if( scales.size() != 12 )
     {
     std::cerr << "ERROR: number of parameters not standard for transform"
               << std::endl;
@@ -62,7 +62,7 @@ ScaleSkewVersor3DImageToImageRegistrationMethod<TImage>
     ++scaleNum;
     }
   // Skew
-  for( unsigned int d1 = 0; d1 < 2 * ImageDimension; d1++ )
+  for( unsigned int d1 = 0; d1 < ImageDimension; d1++ )
     {
     scales[scaleNum] = 1000;
     ++scaleNum;
