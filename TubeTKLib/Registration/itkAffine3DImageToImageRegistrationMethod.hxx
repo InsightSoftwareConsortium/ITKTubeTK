@@ -41,6 +41,7 @@ AffineImageToImageRegistrationMethod<TImage>
     {
     std::cerr << "ERROR: number of parameters not standard for affine transform"
               << std::endl;
+    std::cout << "   # = " << scales.size() << ", expecting 12" << std::endl;
     }
   unsigned int scaleNum = 0;
   for( unsigned int d1 = 0; d1 < ImageDimension; d1++ )

@@ -41,6 +41,7 @@ ScaleSkewVersor3DImageToImageRegistrationMethod<TImage>
     {
     std::cerr << "ERROR: number of parameters not standard for transform"
               << std::endl;
+    std::cout << "   # = " << scales.size() << ", expecting 12" << std::endl;
     }
   unsigned int scaleNum = 0;
   // Versor

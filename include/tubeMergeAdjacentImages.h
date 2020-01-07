@@ -59,6 +59,7 @@ public:
 
   typedef itk::tube::MergeAdjacentImagesFilter< ImageType >    FilterType;
   typedef typename FilterType::PaddingType                     PaddingType;
+  typedef typename FilterType::TransformType                   TransformType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -132,11 +133,16 @@ public:
   /** Get use of experimental method for fast blending */
   tubeWrapGetMacro( UseFastBlending, bool, Filter );
 
-  /** Set filename to load the transform from */
-  void LoadTransform( const std::string & filename );
+  /** Set initial transform */
+  tubeWrapSetConstObjectMacro( InitialTransform, TransformType, Filter );
+  tubeWrapGetConstObjectMacro( InitialTransform, TransformType, Filter );
+  tubeWrapCallWithConstReferenceArgMacro( LoadInitialTransform, std::string,
+    Filter );
 
-  /** Set filename to save the transform to */
-  void SaveTransform( const std::string & filename );
+  /** Get output transform */
+  tubeWrapGetConstObjectMacro( OutputTransform, TransformType, Filter );
+  tubeWrapCallWithConstReferenceArgMacro( SaveOutputTransform, std::string,
+    Filter );
 
   /** Run algorithm */
   tubeWrapUpdateMacro( Filter );

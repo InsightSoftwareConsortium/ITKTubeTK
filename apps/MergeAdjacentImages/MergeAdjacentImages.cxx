@@ -128,8 +128,11 @@ int DoIt( int argc, char * argv[] )
   filter->SetExpectedOffset( expectedOffset );
   filter->SetExpectedRotation( expectedRotation );
   filter->SetSamplingRatio( samplingRatio );
-  filter->LoadTransform( loadTransform );
-  filter->SaveTransform( saveTransform );
+
+  if( !loadTransform.empty() )
+    {
+    filter->LoadInitialTransform( loadTransform );
+    }
   filter->SetBlendUsingAverage( averagePixels );
   filter->SetUseFastBlending( useFastBlending );
 
@@ -139,6 +142,11 @@ int DoIt( int argc, char * argv[] )
     }
 
   filter->Update();
+
+  if( !saveTransform.empty() )
+    {
+    filter->SaveOutputTransform( saveTransform );
+    }
 
   timeCollector.Stop( "Merging images" );
   progress = 0.9;
