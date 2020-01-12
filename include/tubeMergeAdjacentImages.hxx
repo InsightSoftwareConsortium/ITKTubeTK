@@ -39,22 +39,6 @@ MergeAdjacentImages< TImage >
 template< class TImage >
 void
 MergeAdjacentImages< TImage >
-::LoadTransform( const std::string & filename )
-{
-  m_Filter->LoadTransform( filename );
-}
-
-template< class TImage >
-void
-MergeAdjacentImages< TImage >
-::SaveTransform( const std::string & filename )
-{
-  m_Filter->SaveTransform( filename );
-}
-
-template< class TImage >
-void
-MergeAdjacentImages< TImage >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

@@ -37,7 +37,7 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< typename TInputImage, typename TOutputImage >
+template< typename TInputImage, typename TOutputImage=TInputImage >
 class CropImage:
   public itk::ProcessObject
 {

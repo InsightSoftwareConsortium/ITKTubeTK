@@ -44,8 +44,6 @@ template< class TImage >
 MergeAdjacentImagesFilter< TImage >
 ::MergeAdjacentImagesFilter( void )
 {
-  this->SetNumberOfRequiredInputs( 2 );
-
   m_Background = 0;
   m_MaskZero = false;
   m_MaxIterations = 300;
@@ -54,6 +52,13 @@ MergeAdjacentImagesFilter< TImage >
   m_SamplingRatio = 0.01;
   m_BlendUsingAverage = false;
   m_UseFastBlending = false;
+
+  m_InitialTransform = nullptr;
+  m_OutputTransform = nullptr;
+
+  m_Input1 = nullptr;
+  m_Input2 = nullptr;
+  m_Output = ImageType::New();
 }
 
 template< class TImage >
@@ -64,8 +69,6 @@ MergeAdjacentImagesFilter< TImage >
   if( this->m_Input1.GetPointer() != image )
     {
     this->m_Input1 = image;
-    this->ProcessObject::SetNthInput( 0, const_cast<ImageType *>( image ) );
-    this->Modified();
     }
 }
 
@@ -77,8 +80,6 @@ MergeAdjacentImagesFilter< TImage >
   if( this->m_Input2.GetPointer() != image )
     {
     this->m_Input2 = image;
-    this->ProcessObject::SetNthInput( 1, const_cast<ImageType *>( image ) );
-    this->Modified();
     }
 }
 
@@ -88,14 +89,6 @@ MergeAdjacentImagesFilter< TImage >
 ::SetPadding( const PaddingType & padding )
 {
   m_Padding = padding;
-}
-
-template< class TImage >
-void
-MergeAdjacentImagesFilter< TImage >
-::LoadTransform( const std::string & filename )
-{
-  m_InitialTransformFile = filename;
 }
 
 template< class TImage >
@@ -118,15 +111,52 @@ MergeAdjacentImagesFilter< TImage >
 template< class TImage >
 void
 MergeAdjacentImagesFilter< TImage >
-::SaveTransform( const std::string & filename )
+::LoadInitialTransform( const std::string & filename )
 {
-  m_OutputTransformFile = filename;
+  typedef TransformFileReader                    TransformReaderType;
+  typedef TransformReaderType::TransformListType TransformListType;
+
+  TransformReaderType::Pointer transformReader = TransformReaderType::New();
+  transformReader->SetFileName( filename );
+  transformReader->Update();
+
+  const TransformListType *transforms = transformReader->GetTransformList();
+  TransformListType::const_iterator transformIt = transforms->begin();
+  while( transformIt != transforms->end() )
+    {
+    if( !strcmp( (*transformIt)->GetNameOfClass(), "AffineTransform") )
+      {
+      typename TransformType::Pointer affine_read =
+        static_cast<TransformType *>( (*transformIt).GetPointer() );
+      typename TransformType::ConstPointer affine =
+        affine_read.GetPointer();
+      SetInitialTransform( affine.GetPointer() );
+      break;
+      }
+    ++transformIt;
+    }
 }
 
 template< class TImage >
 void
 MergeAdjacentImagesFilter< TImage >
-::GenerateData()
+::SaveOutputTransform( const std::string & filename )
+{
+  if( m_OutputTransform.IsNotNull() )
+    {
+    typedef TransformFileWriter TransformWriterType;
+  
+    TransformWriterType::Pointer transformWriter = TransformWriterType::New();
+    transformWriter->SetFileName( filename );
+    transformWriter->SetInput( m_OutputTransform );
+    transformWriter->Update();
+    }
+}
+
+template< class TImage >
+void
+MergeAdjacentImagesFilter< TImage >
+::Update()
 {
   // The timeCollector is used to perform basic profiling algorithm components
   // itk::TimeProbesCollectorBase timeCollector;
@@ -171,37 +201,6 @@ MergeAdjacentImagesFilter< TImage >
     sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
     }
 
-  // read initial transform from file if specified
-  bool useInitialTransform = false;
-  typedef itk::AffineTransform< double, ImageDimension >
-    AffineTransformType;
-  typename AffineTransformType::ConstPointer initialTransform;
-
-  if( ! m_InitialTransformFile.empty() )
-    {
-    useInitialTransform = true;
-    typedef itk::TransformFileReader                    TransformReaderType;
-    typedef TransformReaderType::TransformListType      TransformListType;
-
-    TransformReaderType::Pointer transformReader = TransformReaderType::New();
-    transformReader->SetFileName( m_InitialTransformFile );
-    transformReader->Update();
-
-    const TransformListType * transforms = transformReader->GetTransformList();
-    TransformListType::const_iterator transformIt = transforms->begin();
-    while( transformIt != transforms->end() )
-      {
-      if( !strcmp( ( *transformIt )->GetNameOfClass(), "AffineTransform" ) )
-        {
-        typename AffineTransformType::Pointer affine_read =
-          static_cast<AffineTransformType *>( ( *transformIt ).GetPointer() );
-        initialTransform = affine_read.GetPointer();
-        break;
-        }
-      ++transformIt;
-      }
-    }
-
   // compute min-max coord and size of input2 in input1's space with padding
   typename ImageType::IndexType minX2;
   typename ImageType::IndexType minX2Org;
@@ -218,9 +217,9 @@ MergeAdjacentImagesFilter< TImage >
   typename ImageType::PointType pointX;
   m_Input2->TransformIndexToPhysicalPoint( minX2Org, pointX );
 
-  if( useInitialTransform )
+  if( m_InitialTransform.IsNotNull() )
     {
-    pointX = initialTransform->GetInverseTransform()->TransformPoint( pointX );
+    pointX = m_InitialTransform->GetInverseTransform()->TransformPoint( pointX );
     }
 
   m_Input1->TransformPhysicalPointToIndex( pointX, minX2 );
@@ -242,9 +241,9 @@ MergeAdjacentImagesFilter< TImage >
       }
     }
   m_Input2->TransformIndexToPhysicalPoint( maxX2Org, pointX );
-  if( useInitialTransform )
+  if( m_InitialTransform.IsNotNull() )
     {
-    pointX = initialTransform->GetInverseTransform()->TransformPoint( pointX );
+    pointX = m_InitialTransform->GetInverseTransform()->TransformPoint( pointX );
     }
   m_Input1->TransformPhysicalPointToIndex( pointX, maxX2 );
 
@@ -281,16 +280,15 @@ MergeAdjacentImagesFilter< TImage >
   // Allocate output image
   // timeCollector.Start( "Allocate output image" );
 
-  typename TImage::Pointer output = this->GetOutput();
-
   typename ImageType::RegionType regionOut;
   regionOut.SetSize( sizeOut );
   regionOut.SetIndex( minXOut );
 
-  output->CopyInformation( m_Input1 );
-  output->SetRegions( regionOut );
-  output->Allocate();
-  output->FillBuffer( m_Background );
+  m_Output = ImageType::New();
+  m_Output->CopyInformation( m_Input1 );
+  m_Output->SetRegions( regionOut );
+  m_Output->Allocate();
+  m_Output->FillBuffer( m_Background );
 
   itk::ImageRegionConstIteratorWithIndex< ImageType > iter( m_Input1,
     m_Input1->GetLargestPossibleRegion() );
@@ -300,7 +298,7 @@ MergeAdjacentImagesFilter< TImage >
     double tf = iter.Get();
     if( !m_MaskZero || tf != 0 )
       {
-      output->SetPixel( indexX, tf );
+      m_Output->SetPixel( indexX, tf );
       }
     ++iter;
     }
@@ -324,9 +322,9 @@ MergeAdjacentImagesFilter< TImage >
   regOp->SetExpectedOffsetMagnitude( m_ExpectedOffset );
   regOp->SetExpectedRotationMagnitude( m_ExpectedRotation );
 
-  if( useInitialTransform )
+  if( m_InitialTransform.IsNotNull() )
     {
-    regOp->SetLoadedMatrixTransform( *initialTransform );
+    regOp->SetLoadedMatrixTransform( *(m_InitialTransform.GetPointer()) );
     }
 
   regOp->Initialize();
@@ -341,17 +339,14 @@ MergeAdjacentImagesFilter< TImage >
     // timeCollector.Stop( "Register images" );
     }
 
-  if( ! m_OutputTransformFile.empty() )
-    {
-    regOp->SaveTransform( m_OutputTransformFile );
-    }
+  m_OutputTransform = regOp->GetCurrentMatrixTransform();
 
   // Resample image
   typename ImageType::ConstPointer tmpImage;
 
   // timeCollector.Start( "Resample Image" );
 
-  regOp->SetFixedImage( output );
+  regOp->SetFixedImage( m_Output );
 
   tmpImage = regOp->ResampleImage(
     RegFilterType::OptimizedRegistrationMethodType::LINEAR_INTERPOLATION,
@@ -364,8 +359,8 @@ MergeAdjacentImagesFilter< TImage >
     itk::ImageRegionConstIteratorWithIndex< ImageType > iter2( tmpImage,
       tmpImage->GetLargestPossibleRegion() );
 
-    itk::ImageRegionIteratorWithIndex< ImageType > iterOut( output,
-      output->GetLargestPossibleRegion() );
+    itk::ImageRegionIteratorWithIndex< ImageType > iterOut( m_Output,
+      m_Output->GetLargestPossibleRegion() );
 
     while( !iter2.IsAtEnd() )
       {
@@ -422,8 +417,8 @@ MergeAdjacentImagesFilter< TImage >
     itk::ImageRegionIteratorWithIndex< ImageType > iter2( input2Reg,
       input2Reg->GetLargestPossibleRegion() );
 
-    itk::ImageRegionIteratorWithIndex< ImageType > iterOut( output,
-      output->GetLargestPossibleRegion() );
+    itk::ImageRegionIteratorWithIndex< ImageType > iterOut( m_Output,
+      m_Output->GetLargestPossibleRegion() );
 
     itk::ImageRegionIteratorWithIndex< ImageType > iterOutMap( outputMap,
       outputMap->GetLargestPossibleRegion() );
@@ -509,8 +504,8 @@ MergeAdjacentImagesFilter< TImage >
     // timeCollector.Start( "Distance Map Selection" );
 
     typename ImageType::Pointer vorImageMap = ImageType::New();
-    vorImageMap->CopyInformation( output );
-    vorImageMap->SetRegions( output->GetLargestPossibleRegion() );
+    vorImageMap->CopyInformation( m_Output );
+    vorImageMap->SetRegions( m_Output->GetLargestPossibleRegion() );
     vorImageMap->Allocate();
     vorImageMap->FillBuffer( 1 );
     itk::ImageRegionConstIteratorWithIndex< ImageType > iterOutVor(
@@ -641,7 +636,6 @@ MergeAdjacentImagesFilter< TImage >
     // timeCollector.Stop( "Voronoi Distance Selection" );
     }
 }
-
 
 } // End namespace tube
 

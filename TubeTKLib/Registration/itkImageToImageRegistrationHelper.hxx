@@ -564,7 +564,7 @@ ImageToImageRegistrationHelper<TImage>
   regAff->SetInterpolationMethodEnum( m_AffineInterpolationMethodEnum );
   typename AffineTransformType::ParametersType scales;
 
-  scales.set_size( 15 );
+  scales.set_size( 12 );
   unsigned int scaleNum = 0;
   scales[scaleNum++] = 1.0 / ( m_ExpectedRotationMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedRotationMagnitude );
@@ -575,9 +575,6 @@ ImageToImageRegistrationHelper<TImage>
   scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
-  scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
-  scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
-  scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
   scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
@@ -952,7 +949,7 @@ ImageToImageRegistrationHelper<TImage>
 }
 
 template <class TImage>
-typename TImage::ConstPointer
+const TImage *
 ImageToImageRegistrationHelper<TImage>
 ::ResampleImage( InterpolationMethodEnumType interpolationMethod,
                  const ImageType * movingImage,
@@ -1039,10 +1036,9 @@ ImageToImageRegistrationHelper<TImage>
     {
     mImage = movingImage;
 
-    passedImage = true;
-    doLoaded = true;
-    doMatrix = true;
-    doBSpline = true;
+    //doLoaded = true;
+    //doMatrix = true;
+    //doBSpline = true;
     }
 
   typename AffineTransformType::ConstPointer aTrans =
@@ -1052,7 +1048,6 @@ ImageToImageRegistrationHelper<TImage>
   if( matrixTransform != NULL
       || bsplineTransform != NULL )
     {
-    passedImage = true;
     doLoaded = false;
     doMatrix = false;
     doBSpline = false;
@@ -1089,17 +1084,16 @@ ImageToImageRegistrationHelper<TImage>
       // SetOutputParametersFromImage
       // Does not change the image.  This is needed to workaround fixes to
       // ITK
-      typename ImageType::Pointer tmp = const_cast<ImageType *>(
-        m_FixedImage.GetPointer() );
-      resampler->SetOutputParametersFromImage( tmp );
+      //typename ImageType::Pointer tmp = const_cast<ImageType *>(
+        //m_FixedImage.GetPointer() );
+      //resampler->SetOutputParametersFromImage( tmp );
+      resampler->SetReferenceImage( m_FixedImage );
+      resampler->UseReferenceImageOn();
       resampler->SetTransform( m_LoadedMatrixTransform );
       resampler->SetDefaultPixelValue( defaultPixelValue );
       resampler->Update();
-      if( !passedImage )
-        {
-        m_CurrentMovingImage = resampler->GetOutput();
-        m_LoadedTransformResampledImage = m_CurrentMovingImage;
-        }
+      m_CurrentMovingImage = resampler->GetOutput();
+      m_LoadedTransformResampledImage = m_CurrentMovingImage;
 
       resampled = true;
       mImage = resampler->GetOutput();
@@ -1121,17 +1115,16 @@ ImageToImageRegistrationHelper<TImage>
       // SetOutputParametersFromImage
       // Does not change the image.  This is needed to workaround fixes to
       // ITK
-      typename ImageType::Pointer tmp = const_cast<ImageType *>(
-        m_FixedImage.GetPointer() );
-      resampler->SetOutputParametersFromImage( tmp );
+      //typename ImageType::Pointer tmp = const_cast<ImageType *>(
+        //m_FixedImage.GetPointer() );
+      //resampler->SetOutputParametersFromImage( tmp );
+      resampler->SetReferenceImage( m_FixedImage );
+      resampler->UseReferenceImageOn();
       resampler->SetTransform( m_LoadedBSplineTransform );
       resampler->SetDefaultPixelValue( defaultPixelValue );
       resampler->Update();
-      if( !passedImage )
-        {
-        m_CurrentMovingImage = resampler->GetOutput();
-        m_LoadedTransformResampledImage = m_CurrentMovingImage;
-        }
+      m_CurrentMovingImage = resampler->GetOutput();
+      m_LoadedTransformResampledImage = m_CurrentMovingImage;
 
       resampled = true;
       mImage = resampler->GetOutput();
@@ -1154,14 +1147,16 @@ ImageToImageRegistrationHelper<TImage>
     // SetOutputParametersFromImage
     // Does not change the image.  This is needed to workaround fixes to
     // ITK
-    typename ImageType::Pointer tmp = const_cast<ImageType *>(
-      m_FixedImage.GetPointer() );
-    resampler->SetOutputParametersFromImage( tmp );
+    //typename ImageType::Pointer tmp = const_cast<ImageType *>(
+      //m_FixedImage.GetPointer() );
+    //resampler->SetOutputParametersFromImage( tmp );
+    resampler->SetReferenceImage( m_FixedImage );
+    resampler->UseReferenceImageOn();
     typename MatrixTransformType::Pointer tmpTrans = MatrixTransformType::New();
+    tmpTrans->SetFixedParameters( aTrans->GetFixedParameters() );
+    tmpTrans->SetIdentity();
     if( portion != 1.0 )
       {
-      tmpTrans->SetIdentity();
-      tmpTrans->SetFixedParameters( aTrans->GetFixedParameters() );
       typename MatrixTransformType::ParametersType aTransParams =
         aTrans->GetParameters();
       typename MatrixTransformType::ParametersType tmpParams =
@@ -1173,16 +1168,16 @@ ImageToImageRegistrationHelper<TImage>
         }
       tmpTrans->SetParameters( tmpParams );
       std::cout << "portion params = " << tmpParams << std::endl;
-      aTrans = tmpTrans.GetPointer();
       }
-    resampler->SetTransform( aTrans );
+    else
+      {
+      tmpTrans->SetParameters( aTrans->GetParameters() );
+      }
+    resampler->SetTransform( tmpTrans );
     resampler->SetDefaultPixelValue( defaultPixelValue );
     resampler->Update();
-    if( !passedImage )
-      {
-      m_CurrentMovingImage = resampler->GetOutput();
-      m_MatrixTransformResampledImage = m_CurrentMovingImage;
-      }
+    m_CurrentMovingImage = resampler->GetOutput();
+    m_MatrixTransformResampledImage = m_CurrentMovingImage;
 
     resampled = true;
     mImage = resampler->GetOutput();
@@ -1204,16 +1199,18 @@ ImageToImageRegistrationHelper<TImage>
     // SetOutputParametersFromImage
     // Does not change the image.  This is needed to workaround fixes to
     // ITK
-    typename ImageType::Pointer tmp = const_cast<ImageType *>(
-      m_FixedImage.GetPointer() );
-    resampler->SetOutputParametersFromImage( tmp );
+    //typename ImageType::Pointer tmp = const_cast<ImageType *>(
+      //m_FixedImage.GetPointer() );
+    //resampler->SetOutputParametersFromImage( tmp );
+    resampler->SetReferenceImage( m_FixedImage );
+    resampler->UseReferenceImageOn();
     typename BSplineTransformType::Pointer tmpTrans =
       BSplineTransformType::New();
+    tmpTrans->SetTransformDomainMeshSize(
+      bTrans->GetTransformDomainMeshSize() );
+    tmpTrans->SetFixedParameters( bTrans->GetFixedParameters() );
     if( portion != 1.0 )
       {
-      tmpTrans->SetTransformDomainMeshSize(
-        bTrans->GetTransformDomainMeshSize() );
-      tmpTrans->SetFixedParameters( bTrans->GetFixedParameters() );
       typename BSplineTransformType::ParametersType bTransParams =
         bTrans->GetParameters();
       typename BSplineTransformType::ParametersType tmpParams =
@@ -1223,17 +1220,16 @@ ImageToImageRegistrationHelper<TImage>
         tmpParams[p] = tmpParams[p] + portion * (bTransParams[p]-tmpParams[p]);
         }
       tmpTrans->SetParameters( tmpParams );
-      bTrans = tmpTrans.GetPointer();
       }
-    std::cout << "using params = " << bTrans->GetParameters() << std::endl;
-    resampler->SetTransform( bTrans );
+    else
+      {
+      tmpTrans->SetParameters( bTrans->GetParameters() );
+      }
+    resampler->SetTransform( tmpTrans );
     resampler->SetDefaultPixelValue( defaultPixelValue );
     resampler->Update();
-    if( !passedImage )
-      {
-      m_CurrentMovingImage = resampler->GetOutput();
-      m_BSplineTransformResampledImage = m_CurrentMovingImage;
-      }
+    m_CurrentMovingImage = resampler->GetOutput();
+    m_BSplineTransformResampledImage = m_CurrentMovingImage;
 
     resampled = true;
     mImage = resampler->GetOutput();
@@ -1260,22 +1256,24 @@ ImageToImageRegistrationHelper<TImage>
     // SetOutputParametersFromImage
     // Does not change the image.  This is needed to workaround fixes
     // to ITK
-    typename ImageType::Pointer tmp = const_cast<ImageType *>(
-      m_FixedImage.GetPointer() );
-    resampler->SetOutputParametersFromImage( tmp );
+    //typename ImageType::Pointer tmp = const_cast<ImageType *>(
+      //m_FixedImage.GetPointer() );
+    //resampler->SetOutputParametersFromImage( tmp );
+    resampler->SetReferenceImage( m_FixedImage );
+    resampler->UseReferenceImageOn();
     resampler->SetTransform( tmpTransform );
     resampler->SetDefaultPixelValue( defaultPixelValue );
     resampler->Update();
 
     mImage = resampler->GetOutput();
-    interpolator->SetInputImage( mImage );
     }
   else if( !passedImage )
     {
     m_CompletedResampling = true;
     }
 
-  return mImage;
+  mImage->Register();
+  return mImage.GetPointer();
 }
 
 template <class TImage>

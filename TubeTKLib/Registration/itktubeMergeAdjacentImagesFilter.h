@@ -29,7 +29,8 @@ limitations under the License.
 
 // ITK includes
 #include <itkMacro.h>
-#include <itkImageSource.h>
+#include <itkObject.h>
+#include <itkAffineTransform.h>
 
 namespace itk
 {
@@ -39,12 +40,12 @@ namespace tube
 
 template< typename TImage >
 class MergeAdjacentImagesFilter :
-  public ImageSource< TImage >
+  public Object
 {
 public:
 
   typedef MergeAdjacentImagesFilter                          Self;
-  typedef ImageSource< TImage >                              Superclass;
+  typedef Object                                             Superclass;
   typedef SmartPointer< Self >                               Pointer;
   typedef SmartPointer< const Self >                         ConstPointer;
 
@@ -52,13 +53,16 @@ public:
   typedef typename TImage::PixelType                         PixelType;
   typedef std::vector< int >                                 PaddingType;
 
+
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( MergeAdjacentImagesFilter, ImageSource );
+  itkTypeMacro( MergeAdjacentImagesFilter, Object );
 
   itkStaticConstMacro( ImageDimension, unsigned int, TImage::ImageDimension );
+
+  typedef AffineTransform< double, ImageDimension >          TransformType;
 
   /** Set input image 1 */
   virtual void SetInput1( const ImageType * image );
@@ -96,6 +100,13 @@ public:
   /** Get padding for second image */
   itkGetConstReferenceMacro( Padding, PaddingType );
 
+  itkSetConstObjectMacro( InitialTransform, TransformType );
+  itkGetConstObjectMacro( InitialTransform, TransformType );
+  void LoadInitialTransform( const std::string & filename );
+  
+  itkGetConstObjectMacro( OutputTransform, TransformType );
+  void SaveOutputTransform( const std::string & filename );
+
   /** Set expected initial misalignment offset */
   itkSetMacro( ExpectedOffset, double );
 
@@ -129,14 +140,14 @@ public:
   /** Set filename to load the transform from */
   void LoadTransform( const std::string & filename );
 
-  /** Set filename to save the transform to */
-  void SaveTransform( const std::string & filename );
+  virtual void Update();
+
+  /** Get output image */
+  itkGetObjectMacro( Output, ImageType );
 
 protected:
   MergeAdjacentImagesFilter( void );
   virtual ~MergeAdjacentImagesFilter( void ) {}
-
-  virtual void GenerateData() override;
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
@@ -154,11 +165,14 @@ private:
   double                                 m_SamplingRatio;
   bool                                   m_BlendUsingAverage;
   bool                                   m_UseFastBlending;
-  std::string                            m_InitialTransformFile;
-  std::string                            m_OutputTransformFile;
+
+  typename TransformType::ConstPointer   m_InitialTransform;
+  typename TransformType::ConstPointer   m_OutputTransform;
 
   typename ImageType::ConstPointer       m_Input1;
   typename ImageType::ConstPointer       m_Input2;
+
+  typename ImageType::Pointer            m_Output;
 
 };  // End class MergeAdjacentImagesFilter
 

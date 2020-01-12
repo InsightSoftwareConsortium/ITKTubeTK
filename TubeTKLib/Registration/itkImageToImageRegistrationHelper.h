@@ -231,7 +231,7 @@ public:
   //  Resample
   // **************
   // **************
-  typename TImage::ConstPointer  ResampleImage(
+  const TImage * ResampleImage(
     InterpolationMethodEnumType interp
       = OptimizedRegistrationMethodType
         ::LINEAR_INTERPOLATION, const TImage * movingImage = NULL,
