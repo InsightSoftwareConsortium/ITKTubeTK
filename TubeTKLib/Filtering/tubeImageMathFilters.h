@@ -27,6 +27,8 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkContinuousIndex.h>
 
+#include <itkImageDuplicator.h>
+
 namespace tube
 {
 
@@ -42,7 +44,13 @@ public:
 
   void SetInput( ImageType * input )
     {
-    m_Input = input;
+    typename ImageType::Pointer tmpImage = ImageType::New();
+    tmpImage = input;
+    typename itk::ImageDuplicator< ImageType >::Pointer dupFilter =
+      itk::ImageDuplicator< ImageType >::New();
+    dupFilter->SetInputImage( tmpImage );
+    dupFilter->Update();
+    m_Input = dupFilter->GetOutput();
     }
 
   ImageType * GetInput( void )
