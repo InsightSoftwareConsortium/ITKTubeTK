@@ -22,7 +22,7 @@ jobs:
         set -x
         git clone https://github.com/InsightSoftwareConsortium/ITK.git ITK
         cd ITK
-        git checkout 7fd3e4082b13a580f64
+        git checkout 534c2719d0f9572c808717
         cd ..
         mkdir ITK-Release
         cd ITK-Release
