@@ -73,7 +73,7 @@ limitations under the License.
 
 /** Set input of fundamental type */
 #define tubeWrapSetMacro( name, type, wrap_filter_object_name )   \
-  void Set##name( const type value )                              \
+  void Set##name( type value )                              \
     {                                                             \
     if( this->m_##wrap_filter_object_name->Get##name() != value ) \
       {                                                           \
@@ -84,7 +84,7 @@ limitations under the License.
 
 /** Set input of fundamental type */
 #define tubeWrapForceSetMacro( name, type, wrap_filter_object_name )   \
-  void Set##name( const type value )                              \
+  void Set##name( type value )                              \
     {                                                             \
     this->m_##wrap_filter_object_name->Set##name( value );      \
     this->Modified();                                           \
@@ -122,7 +122,7 @@ limitations under the License.
 
 /** Set input using reference to object type */
 #define tubeWrapForceSetReferenceMacro( name, type, wrap_filter_object_name )  \
-  void Set##name( type & value )                                        \
+  void Set##name( const type & value )                                        \
     {                                                                   \
     this->m_##wrap_filter_object_name->Set##name( value );              \
     this->Modified();                                                   \
@@ -130,7 +130,7 @@ limitations under the License.
 
 /** Add input using reference to object type */
 #define tubeWrapAddMacro( name, type, wrap_filter_object_name )  \
-  void Add##name( type & value )                                        \
+  void Add##name( type value )                                        \
     {                                                                   \
     this->m_##wrap_filter_object_name->Add##name( value );              \
     this->Modified();                                                   \
@@ -138,7 +138,7 @@ limitations under the License.
 
 /** Set Nth in an object list */
 #define tubeWrapSetNthMacro( name, type, wrap_filter_object_name )  \
-  void Set##name( unsigned int i, type & value )                        \
+  void Set##name( unsigned int i, type value )                        \
     {                                                                   \
     this->m_##wrap_filter_object_name->Set##name( i, value );           \
     this->Modified();                                                   \
@@ -187,7 +187,7 @@ limitations under the License.
 
 /** Get Nth in an object list */
 #define tubeWrapGetNthObjectMacro( name, type, wrap_filter_object_name )  \
-  const type * Get##name( unsigned int i )                        \
+  type * Get##name( unsigned int i )                        \
     {                                                                   \
     return this->m_##wrap_filter_object_name->Get##name( i );           \
     }
@@ -244,7 +244,7 @@ limitations under the License.
 
 /** Redirect call to a function of the same named in the wrapped filter */
 #define tubeWrapCallWithConstReferenceArgMacro( name, type, wrap_filter_object_name )   \
-  void name( type & value )                                        \
+  void name( const type & value )                                        \
     {                                                              \
     this->m_##wrap_filter_object_name->name( value );              \
     }
