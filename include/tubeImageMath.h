@@ -54,6 +54,9 @@ public:
 
   typedef typename FilterType::ImageType             ImageType;
 
+  typedef itk::Image< unsigned char, VDimension>     ImageTypeUChar;
+  typedef itk::Image< short, VDimension>             ImageTypeShort;
+
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
@@ -72,6 +75,26 @@ public:
   /** Get current result */
   ImageType * GetOutput( void )
   { return m_Filter.GetOutput(); }
+
+  /** Get current result */
+  ImageTypeUChar * GetOutputUChar( void )
+  { typedef itk::CastImageFilter< ImageType, ImageTypeUChar > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( m_Filter.GetOutput() );
+    castFilter->Update();
+    typename ImageTypeUChar::Pointer output = castFilter->GetOutput();
+    output->Register();
+    return output; }
+
+  /** Get current result */
+  ImageTypeShort * GetOutputShort( void )
+  { typedef itk::CastImageFilter< ImageType, ImageTypeShort > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( m_Filter.GetOutput() );
+    castFilter->Update();
+    typename ImageTypeShort::Pointer output = castFilter->GetOutput();
+    output->Register();
+    return output; }
 
   void IntensityWindow( float inValMin, float inValMax,
     float outMin, float outMax )
