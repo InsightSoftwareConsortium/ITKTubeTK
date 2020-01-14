@@ -158,6 +158,7 @@ void
 PDFSegmenterParzen< TImage, TLabelMap >
 ::GeneratePDFs( void )
 {
+  //std::cout << "GeneratePDFs" << std::endl;
   if( !this->m_SampleUpToDate )
     {
     this->GenerateSample();
@@ -181,6 +182,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
 
   VectorDoubleType histogramBinMax;
 
+  //std::cout << "Init" << std::endl;
   histogramBinMax.resize( numFeatures );
   for( unsigned int i = 0; i < numFeatures; i++ )
     {
