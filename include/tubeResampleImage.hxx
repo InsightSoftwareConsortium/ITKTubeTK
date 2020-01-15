@@ -32,46 +32,6 @@ ResampleImage< TPixel, VDimension >
 template< class TPixel, unsigned int VDimension >
 void
 ResampleImage< TPixel, VDimension >
-::SetTransform( TransformType* t )
-{
-  m_Filter->SetTransform( t );
-}
-
-template< class TPixel, unsigned int VDimension >
-void
-ResampleImage< TPixel, VDimension >
-::SetSpacing( std::vector<double> s )
-{
-  m_Filter->SetSpacing( s );
-}
-
-template< class TPixel, unsigned int VDimension >
-void
-ResampleImage< TPixel, VDimension >
-::SetOrigin( std::vector<double> o )
-{
-  m_Filter->SetOrigin( o );
-}
-
-template< class TPixel, unsigned int VDimension >
-void
-ResampleImage< TPixel, VDimension >
-::SetIndex( std::vector<int> i )
-{
-  m_Filter->SetIndex( i );
-}
-
-template< class TPixel, unsigned int VDimension >
-void
-ResampleImage< TPixel, VDimension >
-::SetResampleFactor( std::vector<double> rf )
-{
-  m_Filter->SetResampleFactor( rf );
-}
-
-template< class TPixel, unsigned int VDimension >
-void
-ResampleImage< TPixel, VDimension >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
