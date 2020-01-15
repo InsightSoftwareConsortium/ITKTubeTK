@@ -89,19 +89,19 @@ public:
   tubeWrapGetObjectMacro( Output, ImageType, Filter );
 
   /** Set Output Transform */
-  void SetTransform( TransformType* t );
+  tubeWrapForceSetObjectMacro( Transform, TransformType, Filter );
 
   /** Set Output Spacing */
-  void SetSpacing( std::vector<double> s );
+  tubeWrapForceSetMacro( Spacing, std::vector<double>, Filter );
 
   /** Set Output Origin */
-  void SetOrigin( std::vector<double> o );
+  tubeWrapForceSetMacro( Origin, std::vector<double>, Filter );
 
   /** Set Output Index */
-  void SetIndex( std::vector<int> i );
+  tubeWrapForceSetMacro( Index, std::vector<int>, Filter );
 
   /** Set Output Resample Factor */
-  void SetResampleFactor( std::vector<double> rf );
+  tubeWrapForceSetMacro( ResampleFactor, std::vector<double>, Filter );
 
   /* Runs tubes to image conversion */
   tubeWrapUpdateMacro( Filter );
