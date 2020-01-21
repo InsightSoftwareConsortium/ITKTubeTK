@@ -223,8 +223,8 @@ public:
 
   /** Set Seed Index List */
   void SetSeedsInIndexSpaceList( const ContinuousIndexListType & iList );
-  itkSetMacro( SeedsInObjectSpaceList, PointListType );
-  itkSetMacro( SeedRadiiInObjectSpaceList, RadiusListType );
+  void SetSeedsInObjectSpaceList( const PointListType & oList );
+  void SetSeedRadiiInObjectSpaceList( const RadiusListType & rList );
 
   /** Process seed list or seed mask */
   void ProcessSeeds( void );
