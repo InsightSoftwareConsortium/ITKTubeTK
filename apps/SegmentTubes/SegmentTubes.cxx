@@ -98,7 +98,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  ImageType::Pointer inputImage = reader->GetOutput();
+  typename ImageType::Pointer inputImage = reader->GetOutput();
   typename SegmentTubesFilterType::Pointer segmentTubesFilter
     = SegmentTubesFilterType::New();
   segmentTubesFilter->SetInputImage( inputImage );

@@ -30,7 +30,6 @@ limitations under the License.
 #define __itktubeTubeExtractor_hxx
 
 #include "itktubeTubeExtractor.h"
-#include "itktubeTubeExtractorIO.h"
 
 #include <itkImageRegionConstIterator.h>
 #include <itkImageRegionConstIteratorWithIndex.h>
@@ -550,18 +549,6 @@ TubeExtractor<TInputImage>
         typename RidgeExtractorType::FailureCodeEnum( code ) )
       << std::endl;
     }
-}
-
-/**
- * Get list of extracted tubes */
-template< class TInputImage >
-void
-TubeExtractor<TInputImage>
-::LoadParameterFile( const std::string & filename )
-{
-  TubeExtractorIO< ImageType > teReader;
-  teReader.SetTubeExtractor( this );
-  teReader.Read( filename.c_str() );
 }
 
 /**

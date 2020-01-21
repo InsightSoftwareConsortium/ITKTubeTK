@@ -71,6 +71,7 @@ target_include_directories( TubeTKLibSegmentation INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
 target_link_libraries( TubeTKLibSegmentation INTERFACE
+   TubeTKLibIO
    TubeTKLibMetaIO
    TubeTKLibFiltering
    TubeTKLibNumerics
