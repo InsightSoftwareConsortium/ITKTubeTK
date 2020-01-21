@@ -31,7 +31,10 @@ TubeTK offers various interface layers:
 Compiling ITKTubeTK's requirements
 ----------------------------------
 
-Compling ITKTubeTK requires that you have CMake 3.11 or later.
+Compling ITKTubeTK requires that you have CMake 3.13 or later.
+
+* FOR THE MOST UP-TO-DATE REQUIREMENTS, please consult the dashboard build scripts in ITKTubeTK/Dashboards, such as
+https://github.com/KitwareMedical/ITKTubeTK/blob/master/dashboards/AzureLinuxGCC/azure-pipelines.yml
 
 There are two dependencies that must be compiled first
 
@@ -42,19 +45,21 @@ Additionally, you may want to compile
 
 3) VTK
 
-to enable the "sliding organ
-registration" (anisotropic diffusion regularization and registration)
-methods in ITKTubeTK.
+to enable the "sliding organ registration" (anisotropic diffusion regularization and registration) methods in ITKTubeTK.
 
 *1) ITK*
 
-For ITK, we want to compile ITK v5.0 or later.   Begin by checking out ITK's source
+For ITK, we want to compile ITK v5.1 rc01 or later.   Begin by checking out ITK's source
 
     $ cd /                               (To keep paths short, start at a top-level dir)
     $ mkdir src
     $ cd src
-    $ git clone https://github.com:/InsightSoftwareConsortium/ITK.git -b Release
+    $ git clone https://github.com:/InsightSoftwareConsortium/ITK.git
+    $ cd ITK
+    $ git checkout 534c2719d0f9572c808717
+    $ cd ..
     $ mkdir ITK-Release
+    $ cd ITK-Release
     $ cmake-gui ../ITK
 
 Using CMake, you should configure ITK with the following options
@@ -77,6 +82,9 @@ After compiling ITK, we repeat the build process for SlicerExecutionModel (used 
 
     $ cd /src
     $ git clone https://github.com:/Slicer/SlicerExecutionModel.git
+    $ cd SlicerExecutionModel
+    $ git checkout ef094e7140d71b5e75675f63910d39acd1d7221d
+    $ cd ..
     $ mkdir SlicerExecutionModel-Release
     $ cd SlicerExecutionModel-Release
     $ cmake-gui ../SlicerExecutionModel
