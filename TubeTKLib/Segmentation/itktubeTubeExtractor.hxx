@@ -452,6 +452,33 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 void
 TubeExtractor<TInputImage>
+::SetSeedsInObjectSpaceList( const PointListType & oList )
+{
+  m_SeedsInObjectSpaceList.clear();
+  m_SeedRadiiInObjectSpaceList.clear();
+  double radiusInObjectSpace = this->m_RadiusExtractor->GetRadiusStart();
+  for( size_t seedNum = 0; seedNum < oList.size(); ++seedNum )
+    {
+    m_SeedsInObjectSpaceList.push_back( oList[seedNum] );
+    m_SeedRadiiInObjectSpaceList.push_back( radiusInObjectSpace );
+    }
+}
+
+template< class TInputImage >
+void
+TubeExtractor<TInputImage>
+::SetSeedRadiiInObjectSpaceList( const RadiusListType & rList )
+{
+  m_SeedRadiiInObjectSpaceList.clear();
+  for( size_t seedNum = 0; seedNum < rList.size(); ++seedNum )
+    {
+    m_SeedRadiiInObjectSpaceList.push_back( rList[seedNum] );
+    }
+}
+
+template< class TInputImage >
+void
+TubeExtractor<TInputImage>
 ::ProcessSeeds( void )
 {
   if( this->m_SeedMask )

@@ -163,16 +163,19 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
             imOut->SetPixel( indx, 0.5 );
             imOut->TransformPhysicalPointToContinuousIndex( pntOut, contIndx );
             std::cout << "   leads to: " << contIndx << std::endl;
-            imOut->TransformPhysicalPointToIndex( pntOut, indx );
-            imOut->SetPixel( indx, imOut->GetPixel( indx ) + 1 );
-            std::cout << "      ridgeness = " <<
-              ridgeOp->GetCurrentRidgeness() << std::endl;
-            std::cout << "      roundness = " <<
-              ridgeOp->GetCurrentRoundness() << std::endl;
-            std::cout << "      curvature = " <<
-              ridgeOp->GetCurrentCurvature() << std::endl;
-            std::cout << "      levelness = " <<
-              ridgeOp->GetCurrentLevelness() << std::endl;
+            bool inside = imOut->TransformPhysicalPointToIndex( pntOut, indx );
+            if( inside )
+              {
+              imOut->SetPixel( indx, imOut->GetPixel( indx ) + 1 );
+              std::cout << "      ridgeness = " <<
+                ridgeOp->GetCurrentRidgeness() << std::endl;
+              std::cout << "      roundness = " <<
+                ridgeOp->GetCurrentRoundness() << std::endl;
+              std::cout << "      curvature = " <<
+                ridgeOp->GetCurrentCurvature() << std::endl;
+              std::cout << "      levelness = " <<
+                ridgeOp->GetCurrentLevelness() << std::endl;
+              }
             }
           else
             {
