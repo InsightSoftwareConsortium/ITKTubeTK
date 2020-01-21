@@ -106,8 +106,7 @@ InitializeEssential( const typename
 
 template< class TImage >
 void TubeExtractorIO< TImage >::
-SetTubeExtractor( const typename
-  TubeExtractorType::Pointer & _filter )
+SetTubeExtractor( TubeExtractorType * _filter )
 {
   m_TubeExtractor = _filter;
 }
@@ -141,10 +140,10 @@ Read( const char * _headerName )
     return false;
     }
 
-  typename TubeExtractorType::RidgeOpType::Pointer ridgeOp =
-    m_TubeExtractor->GetRidgeOp();
-  typename TubeExtractorType::RadiusOpType::Pointer radiusOp =
-    m_TubeExtractor->GetRadiusOp();
+  typename TubeExtractorType::RidgeExtractorType::Pointer ridgeOp =
+    m_TubeExtractor->GetRidgeExtractor();
+  typename TubeExtractorType::RadiusExtractorType::Pointer radiusOp =
+    m_TubeExtractor->GetRadiusExtractor();
 
   if( ridgeOp.IsNull() || radiusOp.IsNull() )
     {
@@ -210,10 +209,10 @@ Write( const char * _headerName )
 
   MetaTubeExtractor teWriter;
 
-  typename TubeExtractorType::RidgeOpType::Pointer ridgeOp =
-    m_TubeExtractor->GetRidgeOp();
-  typename TubeExtractorType::RadiusOpType::Pointer radiusOp =
-    m_TubeExtractor->GetRadiusOp();
+  typename TubeExtractorType::RidgeExtractorType::Pointer ridgeOp =
+    m_TubeExtractor->GetRidgeExtractor();
+  typename TubeExtractorType::RadiusExtractorType::Pointer radiusOp =
+    m_TubeExtractor->GetRadiusExtractor();
 
   teWriter.SetGeneralProperties( m_TubeExtractor->GetDataMin(),
     m_TubeExtractor->GetDataMax(),

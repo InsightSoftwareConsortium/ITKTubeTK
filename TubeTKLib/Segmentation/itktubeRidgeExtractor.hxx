@@ -235,8 +235,8 @@ RidgeExtractor<TInputImage>
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       m_ExtractBoundMinInIndexSpace[i] = region.GetIndex()[i];
-      m_ExtractBoundMaxInIndexSpace[i] = m_ExtractBoundMinInIndexSpace[i]
-        + region.GetSize()[i]-1;
+      m_ExtractBoundMaxInIndexSpace[i] = (int)(region.GetIndex()[i]
+        + region.GetSize()[i]) - 1;
       vMin[i] = m_ExtractBoundMinInIndexSpace[i];
       vMax[i] = m_ExtractBoundMaxInIndexSpace[i];
       }
@@ -815,8 +815,8 @@ RidgeExtractor<TInputImage>
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     indx[i] = ( int )( lXIV[i]+0.5 );
-    if( lXIV[i] < ( double )m_ExtractBoundMinInIndexSpace[i]
-      || lXIV[i]+0.5 > ( double )m_ExtractBoundMaxInIndexSpace[i] )
+    if( (int)(lXIV[i]) < m_ExtractBoundMinInIndexSpace[i]
+      || indx[i] > m_ExtractBoundMaxInIndexSpace[i] )
       {
       if( verbose || this->GetDebug() )
         {
@@ -1068,8 +1068,8 @@ RidgeExtractor<TInputImage>
     bool inbounds = true;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      if( lXIV[i] < ( double )m_ExtractBoundMinInIndexSpace[i]
-        || lXIV[i] + 0.5 > ( double )m_ExtractBoundMaxInIndexSpace[i] )
+      if( (int)(lXIV[i]) < m_ExtractBoundMinInIndexSpace[i]
+        || (int)(lXIV[i] + 0.5) > m_ExtractBoundMaxInIndexSpace[i] )
         {
         inbounds = false;
         if( verbose || this->GetDebug() )
@@ -1557,8 +1557,8 @@ RidgeExtractor<TInputImage>
     }
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
-    if( newXI[i] < ( double )m_ExtractBoundMinInIndexSpace[i]
-      || newXI[i] + 0.5 > ( double )m_ExtractBoundMaxInIndexSpace[i] )
+    if( (int)(newXI[i]) < m_ExtractBoundMinInIndexSpace[i]
+      || (int)(newXI[i] + 0.5) > m_ExtractBoundMaxInIndexSpace[i] )
       {
       if( m_StatusCallBack )
         {
@@ -1624,8 +1624,8 @@ RidgeExtractor<TInputImage>
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       indx[i]=( int )( newXI[i] + 0.5 ); // rounding
-      if( newXI[i] < ( double )m_ExtractBoundMinInIndexSpace[i]
-        || newXI[i] + 0.5 > ( double )m_ExtractBoundMaxInIndexSpace[i] )
+      if( (int)(newXI[i]) < m_ExtractBoundMinInIndexSpace[i]
+        || indx[i] > ( double )m_ExtractBoundMaxInIndexSpace[i] )
         {
         if( m_StatusCallBack )
           {
@@ -1963,6 +1963,7 @@ RidgeExtractor<TInputImage>
       {
       std::cout << "Calculating tangents." << std::endl;
       }
+    m_Tube->RemoveDuplicatePointsInObjectSpace();
     ::tube::ComputeTubeTangentsAndNormals< TubeType >( m_Tube );
     }
 
@@ -2016,8 +2017,8 @@ RidgeExtractor<TInputImage>
     for( unsigned int i=0; i<ImageDimension; ++i )
       {
       indx[i] = (int)(xI[i] + 0.5);
-      if( indx[i] < ( double )m_ExtractBoundMinInIndexSpace[i]
-        || indx[i] > ( double )m_ExtractBoundMaxInIndexSpace[i] )
+      if( (int)(xI[i]) < m_ExtractBoundMinInIndexSpace[i]
+        || indx[i] > m_ExtractBoundMaxInIndexSpace[i] )
         {
         inside = false;
         break;
@@ -2128,6 +2129,7 @@ RidgeExtractor<TInputImage>
 
   typename std::vector< TubePointType >::const_iterator pnt;
 
+  std::cout << "HERE" << std::endl;
   for( pnt = tube->GetPoints().begin(); pnt != tube->GetPoints().end();
     pnt++ )
     {
@@ -2137,13 +2139,12 @@ RidgeExtractor<TInputImage>
       }
     x = ( *pnt ).GetPositionInObjectSpace();
     m_TubeMaskImage->TransformPhysicalPointToContinuousIndex( x, xI );
-
     bool inside = true;
     for( unsigned int i=0; i<ImageDimension; ++i )
       {
       indx[i] = (int)(xI[i] + 0.5);
-      if( indx[i] < ( double )m_ExtractBoundMinInIndexSpace[i]
-        || indx[i] > ( double )m_ExtractBoundMaxInIndexSpace[i] )
+      if( (int)(xI[i]) < m_ExtractBoundMinInIndexSpace[i]
+        || indx[i] > m_ExtractBoundMaxInIndexSpace[i] )
         {
         inside = false;
         break;
@@ -2188,7 +2189,7 @@ RidgeExtractor<TInputImage>
             if( dist <= rr )
               {
               it.SetPixel( i, ( PixelType )( tubeId +
-                  ( tubePointCount/10000.0 ) ) );
+                  ( tubePointCount/10000.0 ) ), inside );
               }
             }
           }

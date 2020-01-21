@@ -26,7 +26,6 @@ set( TubeTKLib_Base_Segmentation_H_Files
   itktubePDFSegmenterParzen.h
   itktubeRadiusExtractor2.h
   itktubeRidgeExtractor.h
-  itktubeSegmentTubes.h
   itktubeSegmentBinaryImageSkeleton.h
   itktubeSegmentBinaryImageSkeleton3D.h
   itktubeSegmentTubeUsingMinimalPathFilter.h
@@ -49,7 +48,6 @@ set( TubeTKLib_Base_Segmentation_HXX_Files
   itktubePDFSegmenterRandomForest.hxx
   itktubeRadiusExtractor2.hxx
   itktubeRidgeExtractor.hxx
-  itktubeSegmentTubes.hxx
   itktubeSegmentBinaryImageSkeleton.hxx
   itktubeSegmentBinaryImageSkeleton3D.hxx
   itktubeSegmentTubeUsingMinimalPathFilter.hxx

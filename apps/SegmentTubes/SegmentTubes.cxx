@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeSegmentTubes.h"
+#include "tubeSegmentTubes.h"
 
 #include "../CLI/tubeCLIFilterWatcher.h"
 #include "../CLI/tubeCLIProgressReporter.h"
@@ -36,6 +36,8 @@ limitations under the License.
 #include "SegmentTubesCLP.h"
 
 #include <sstream>
+
+#define PARSE_ARGS_FLOAT_ONLY
 
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
@@ -62,9 +64,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< PixelType, VDimension >        ImageType;
   typedef itk::ImageFileReader< ImageType >          ReaderType;
 
-  typedef itk::tube::SegmentTubes< ImageType >       SegmentTubesFilterType;
-  typename SegmentTubesFilterType::Pointer segmentTubesFilter
-    = SegmentTubesFilterType::New();
+  typedef tube::SegmentTubes< ImageType >            SegmentTubesFilterType;
 
   typedef typename SegmentTubesFilterType::TubeMaskImageType
     MaskImageType;
@@ -72,18 +72,13 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileReader< MaskImageType >      MaskReaderType;
   typedef itk::ImageFileWriter< MaskImageType >      MaskWriterType;
 
-  typedef typename SegmentTubesFilterType::ScaleType
-    ScaleType;
-
   typedef typename ImageType::PointType              PointType;
-  typedef itk::Image< ScaleType, VDimension >        ScaleImageType;
-  typedef itk::ImageFileReader< ScaleImageType >     ScaleReaderType;
 
   typedef typename SegmentTubesFilterType::ContinuousIndexType
     IndexType;
 
   typedef std::vector< IndexType >                   IndexListType;
-  typedef std::vector< ScaleType >                   ScaleListType;
+  typedef std::vector< double >                      RadiusListType;
   typedef std::vector< PointType >                   PointListType;
 
   typedef itk::SpatialObjectWriter< VDimension >     TubesWriterType;
@@ -103,7 +98,10 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  segmentTubesFilter->SetInputImage( reader->GetOutput() );
+  ImageType::Pointer inputImage = reader->GetOutput();
+  typename SegmentTubesFilterType::Pointer segmentTubesFilter
+    = SegmentTubesFilterType::New();
+  segmentTubesFilter->SetInputImage( inputImage );
 
   if( !radiusInputVolume.empty() )
     {
@@ -126,11 +124,10 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  segmentTubesFilter->SetScale( scale );
+  segmentTubesFilter->SetRadiusInObjectSpace( radiusInObjectSpace );
 
   IndexType seedIndex;
   IndexListType seedIndexList;
-
   if( !seedI.empty() )
     {
     seedIndexList.clear();
@@ -142,15 +139,16 @@ int DoIt( int argc, char * argv[] )
         }
       seedIndexList.push_back( seedIndex );
       }
-    segmentTubesFilter->SetSeedIndexList( seedIndexList );
+    segmentTubesFilter->SetSeedsInIndexSpaceList( seedIndexList );
     }
 
   PointType point;
   PointListType pointList;
-
+  RadiusListType radiusList;
   if( !seedP.empty() )
     {
     pointList.clear();
+    radiusList.clear();
     for( size_t seedNum = 0; seedNum < seedP.size(); ++seedNum )
       {
       for( unsigned int i = 0; i < VDimension; i++ )
@@ -159,19 +157,20 @@ int DoIt( int argc, char * argv[] )
         }
 
       pointList.push_back( point );
+      radiusList.push_back( radiusInObjectSpace );
       }
-    segmentTubesFilter->SetSeedPointList( pointList );
+    segmentTubesFilter->SetSeedsInObjectSpaceList( pointList );
+    segmentTubesFilter->SetSeedRadiiInObjectSpaceList( radiusList );
     }
 
-  ScaleListType scaleList;
-  if( !seedListFile.empty() )
+  if( !seedsInIndexSpaceListFile.empty() )
     {
     seedIndexList.clear();
     std::ifstream readStream;
-    readStream.open( seedListFile.c_str(), std::ios::binary |
+    readStream.open( seedsInIndexSpaceListFile.c_str(), std::ios::binary |
       std::ios::in );
     std::string line;
-    double seedScale;
+    double seedRadius;
     while( std::getline( readStream, line ) )
       {
       std::istringstream iss( line );
@@ -179,18 +178,21 @@ int DoIt( int argc, char * argv[] )
         {
         iss >> seedIndex[i];
         }
-      iss >> seedScale;
+      iss >> seedRadius;
       seedIndexList.push_back( seedIndex );
-      scaleList.push_back( seedScale );
+      radiusList.push_back( seedRadius );
       }
-    segmentTubesFilter->SetSeedIndexAndScaleList( seedIndexList, scaleList );
+    segmentTubesFilter->SetSeedsInIndexSpaceList( seedIndexList );
+    segmentTubesFilter->SetSeedRadiiInObjectSpaceList( radiusList );
     }
 
-  if( !seedListFilePhysicalNoScale.empty() )
+  if( !seedsInObjectSpaceListFile.empty() )
     {
+    double seedRadius;
     pointList.clear();
+    radiusList.clear();
     std::ifstream readStream;
-    readStream.open( seedListFilePhysicalNoScale.c_str(), std::ios::binary |
+    readStream.open( seedsInObjectSpaceListFile.c_str(), std::ios::binary |
       std::ios::in );
     std::string line;
     while( std::getline( readStream, line ) )
@@ -200,9 +202,12 @@ int DoIt( int argc, char * argv[] )
         {
         iss >> point[i];
         }
+      iss >> seedRadius;
       pointList.push_back( point );
+      radiusList.push_back( seedRadius );
       }
-    segmentTubesFilter->SetSeedPointList( pointList );
+    segmentTubesFilter->SetSeedsInObjectSpaceList( pointList );
+    segmentTubesFilter->SetSeedRadiiInObjectSpaceList( radiusList );
     }
 
   if( !seedMask.empty() )
@@ -222,14 +227,13 @@ int DoIt( int argc, char * argv[] )
       }
     segmentTubesFilter->SetSeedMask( maskReader->GetOutput() );
 
-    if( !scaleMask.empty() )
+    if( !radiusMask.empty() )
       {
-      typename ScaleReaderType::Pointer scaleReader =
-        ScaleReaderType::New();
-      scaleReader->SetFileName( scaleMask.c_str() );
+      typename ReaderType::Pointer radiusReader = ReaderType::New();
+      radiusReader->SetFileName( radiusMask.c_str() );
       try
         {
-        scaleReader->Update();
+        radiusReader->Update();
         }
       catch( itk::ExceptionObject & err )
         {
@@ -238,7 +242,7 @@ int DoIt( int argc, char * argv[] )
         timeCollector.Report();
         return EXIT_FAILURE;
         }
-      segmentTubesFilter->SetScaleMask( scaleReader->GetOutput() );
+      segmentTubesFilter->SetSeedRadiusMask( radiusReader->GetOutput() );
       }
     segmentTubesFilter->SetSeedMaskStride( seedMaskStride );
     }
@@ -258,7 +262,7 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    segmentTubesFilter->SetExistingTubesMask( maskReader->GetOutput() );
+    segmentTubesFilter->SetTubeMaskImage( maskReader->GetOutput() );
     }
 
   unsigned int numberOfPriorChildren = 0;
@@ -281,14 +285,14 @@ int DoIt( int argc, char * argv[] )
 
   if( !parametersFile.empty() )
     {
-    segmentTubesFilter->SetParameterFile( parametersFile.c_str() );
+    segmentTubesFilter->LoadParameterFile( parametersFile.c_str() );
     }
 
-  segmentTubesFilter->SetBorder( border );
+  segmentTubesFilter->SetBorderInIndexSpace( border );
 
   timeCollector.Start( "Ridge Extractor" );
 
-  segmentTubesFilter->Update();
+  segmentTubesFilter->ProcessSeeds();
 
   timeCollector.Stop( "Ridge Extractor" );
 
@@ -307,7 +311,7 @@ int DoIt( int argc, char * argv[] )
   // Save Tubes
   typename TubesWriterType::Pointer soWriter = TubesWriterType::New();
   soWriter->SetFileName( outputTubeFile );
-  soWriter->SetInput( segmentTubesFilter->GetTubeGroup().GetPointer() );
+  soWriter->SetInput( segmentTubesFilter->GetTubeGroup() );
   soWriter->Update();
 
   // Save Tube Mask Image

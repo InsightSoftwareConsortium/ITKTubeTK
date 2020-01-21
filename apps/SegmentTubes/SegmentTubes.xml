@@ -32,27 +32,27 @@
     <label>Ridges</label>
     <description>Ridges</description>
     <file>
-      <name>seedListFile</name>
-      <label>Seed List</label>
+      <name>seedsInIndexSpaceListFile</name>
+      <label>Seed list file</label>
       <channel>input</channel>
       <flag>f</flag>
       <longflag>seedList</longflag>
-      <description>List seed points stored in a file.  The format is lines of the form I1 ... ID S, where Ij is the jth component of the seed point, as an index, and S the seed point's scale.</description>
+      <description>List seed points in image's index space stored in a file.  The format is lines of the form I1 ... ID S, where Ij is the jth component of the seed index and S the seed point's initial radius estimate (and scale) in physical space.</description>
       <default></default>
     </file>
     <file>
-      <name>seedListFilePhysicalNoScale</name>
-      <label>Physical Point Seed List, No Scale</label>
-      <longflag>seedListPhysicalNoScale</longflag>
-      <description>List seed points stored in a file.  The format is lines of the form I1 ... ID, where Ij is the jth component of the seed point, as a physical point.</description>
+      <name>seedsInObjectSpaceListFile</name>
+      <label>Seeds file</label>
+      <longflag>seedInObjectSpaceListFile</longflag>
       <channel>input</channel>
+      <description>List seed points in image's index space stored in a file.  The format is lines of the form I1 ... ID S, where Ij is the jth component of the seed in physical space  and S the seed point's initial radius estimate (and scale) in physical space.</description>
       <default></default>
     </file>
     <double>
-      <name>scale</name>
-      <label>Scale of Ridge</label>
-      <description>Scale used for ridge measures</description>
-      <longflag>scale</longflag>
+      <name>radiusInObjectSpace</name>
+      <label>Radius of Ridge</label>
+      <description>Radius (and scale) used for ridge measures</description>
+      <longflag>radius</longflag>
       <flag>s</flag>
       <default>2.0</default>
     </double>
@@ -82,9 +82,9 @@
       <default></default>
     </image>
     <image>
-      <name>scaleMask</name>
-      <label>Scale mask file</label>
-      <longflag>scaleMask</longflag>
+      <name>radiusMask</name>
+      <label>Radius mask file</label>
+      <longflag>radiusMask</longflag>
       <flag>S</flag>
       <description>Intensity is initial extraction scale for that point</description>
       <channel>input</channel>
@@ -92,7 +92,7 @@
     </image>
     <integer>
       <name>seedMaskStride</name>
-      <label>Scale mask stride</label>
+      <label>Radius mask stride</label>
       <longflag>seedMaskStride</longflag>
       <flag>T</flag>
       <description>Only use 1/stride seed points</description>
