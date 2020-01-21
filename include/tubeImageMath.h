@@ -25,6 +25,7 @@ limitations under the License.
 
 // ITK includes
 #include "itkProcessObject.h"
+#include "itkCastImageFilter.h"
 
 // TubeTK includes
 #include "tubeWrappingMacros.h"

@@ -142,7 +142,9 @@ public:
 
   /** Load parameters of tube extraction from a file */
   void LoadParameterFile( const std::string & filename )
-  { this->m_Filter->LoadParameterFile( filename ); }
+  { ::itk::tube::TubeExtractorIO< ImageType > teReader;
+    teReader.SetTubeExtractor( this->m_Filter );
+    teReader.Read( filename.c_str() ); }
 
   /** Get the list of tubes that have been extracted */
   tubeWrapSetObjectMacro( TubeGroup, TubeGroupType, Filter );
