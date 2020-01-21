@@ -68,8 +68,7 @@ public:
   virtual bool InitializeEssential( const typename
     TubeExtractorType::Pointer & _filter );
 
-  void SetTubeExtractor( const typename
-    TubeExtractorType::Pointer & _filter );
+  void SetTubeExtractor( TubeExtractorType * _filter );
 
   const typename TubeExtractorType::Pointer GetTubeExtractor( void ) const;
 

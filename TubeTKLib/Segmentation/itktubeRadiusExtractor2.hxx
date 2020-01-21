@@ -813,7 +813,8 @@ RadiusExtractor2<TInputImage>
     }
   else if( this->GetDebug() )
     {
-    ::tube::DebugMessage( "Found point " + std::to_string( ( *pntIter ).GetId() ) );
+    ::tube::DebugMessage( "Found point " +
+      std::to_string( ( *pntIter ).GetId() ) );
     }
 
   double rStart0 = this->GetRadiusStart();

@@ -64,7 +64,7 @@ ExternalData_Add_Test( TubeTKData
             COMMAND ${TubeTK_CompareImages_EXE}
                -r 1
                -t ${TEMP}/${MODULE_NAME}Test2.mha
-               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mha} )
+               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.mha} )
 set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
     ${MODULE_NAME}-Test2 )
 

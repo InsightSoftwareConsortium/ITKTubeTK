@@ -30,6 +30,10 @@ limitations under the License.
 #define __itktubeTubeExtractor_hxx
 
 #include "itktubeTubeExtractor.h"
+#include "itktubeTubeExtractorIO.h"
+
+#include <itkImageRegionConstIterator.h>
+#include <itkImageRegionConstIteratorWithIndex.h>
 
 namespace itk
 {
@@ -43,16 +47,15 @@ template< class TInputImage >
 TubeExtractor<TInputImage>
 ::TubeExtractor( void )
 {
-  m_RidgeOp = nullptr;
-  m_RadiusOp = nullptr;
+  m_RidgeExtractor = RidgeExtractorType::New();
+  m_RadiusExtractor = RadiusExtractorType::New();
 
   m_IdleCallBack = nullptr;
   m_StatusCallBack = nullptr;
   m_NewTubeCallBack = nullptr;
   m_AbortProcess = nullptr;
 
-  m_InputImage = nullptr;
-  m_RadiusInputImage = nullptr;
+  m_TubeGroup = TubeGroupType::New();
 
   m_TubeColor.set_size( 4 );
   m_TubeColor[0] = 1.0f;
@@ -60,7 +63,13 @@ TubeExtractor<TInputImage>
   m_TubeColor[2] = 0.0f;
   m_TubeColor[3] = 1.0f;
 
-  m_TubeGroup = TubeGroupType::New();
+  m_SeedMask = TubeMaskImageType::New();
+  m_SeedRadiusMask = ImageType::New();
+  m_SeedMaskStride = 1;
+
+  m_SeedsInObjectSpaceList.clear();
+  m_SeedRadiiInObjectSpaceList.clear();
+
 }
 
 /**
@@ -69,6 +78,8 @@ template< class TInputImage >
 TubeExtractor<TInputImage>
 ::~TubeExtractor( void )
 {
+  m_SeedsInObjectSpaceList.clear();
+  m_SeedRadiiInObjectSpaceList.clear();
 }
 
 /**
@@ -78,15 +89,21 @@ void
 TubeExtractor<TInputImage>
 ::SetInputImage( ImageType * inputImage )
 {
-  this->m_InputImage = inputImage;
-  this->m_RidgeOp = RidgeExtractor<ImageType>::New();
-  this->m_RidgeOp->SetInputImage( this->m_InputImage );
+  this->m_RidgeExtractor = RidgeExtractor<ImageType>::New();
+  this->m_RidgeExtractor->SetInputImage( inputImage );
 
-  this->m_RadiusInputImage = inputImage;
-  this->m_RadiusOp = RadiusExtractor2<ImageType>::New();
-  this->m_RadiusOp->SetInputImage( this->m_InputImage );
+  this->m_RadiusExtractor = RadiusExtractor2<ImageType>::New();
+  this->m_RadiusExtractor->SetInputImage( inputImage );
 
-  this->m_RidgeOp->SetRadiusExtractor( this->m_RadiusOp );
+  this->m_RidgeExtractor->SetRadiusExtractor( this->m_RadiusExtractor );
+}
+
+template< class TInputImage >
+const TInputImage *
+TubeExtractor<TInputImage>
+::GetInputImage( void ) const
+{
+  return this->m_RidgeExtractor->GetInputImage();
 }
 
 /**
@@ -96,15 +113,19 @@ void
 TubeExtractor<TInputImage>
 ::SetRadiusInputImage( ImageType * inputImage )
 {
-  if( m_RadiusOp.IsNull() )
-    {
-    throw( "Input data must be set first in TubeExtractor" );
-    }
-  this->m_RadiusInputImage = inputImage;
-  this->m_RadiusOp->SetInputImage( this->m_RadiusInputImage );
+  this->m_RadiusExtractor->SetInputImage( inputImage );
 
-  this->m_RidgeOp->SetRadiusExtractor( this->m_RadiusOp );
+  this->m_RidgeExtractor->SetRadiusExtractor( this->m_RadiusExtractor );
 }
+
+template< class TInputImage >
+const TInputImage *
+TubeExtractor<TInputImage>
+::GetRadiusInputImage( void ) const
+{
+  return this->m_RadiusExtractor->GetInputImage();
+}
+
 
 /**
  * Set the tube mask image */
@@ -114,23 +135,17 @@ TubeExtractor<TInputImage>
 ::SetTubeMaskImage( typename
   TubeExtractor<TInputImage>::TubeMaskImageType * mask )
 {
-  m_RidgeOp->SetTubeMaskImage( mask );
+  m_RidgeExtractor->SetTubeMaskImage( mask );
 }
 
-/**
- * Get the tube mask image */
 template< class TInputImage >
 typename TubeExtractor<TInputImage>::TubeMaskImageType *
 TubeExtractor<TInputImage>
 ::GetTubeMaskImage( void )
 {
-  if( this->m_RidgeOp.IsNull() )
-    {
-    throw( "Input data must be set first in TubeExtractor" );
-    }
-
-  return m_RidgeOp->GetTubeMaskImage();
+  return this->m_RidgeExtractor->GetTubeMaskImage();
 }
+
 
 /**
  * Set Data Min value */
@@ -139,13 +154,13 @@ void
 TubeExtractor<TInputImage>
 ::SetDataMin( double dataMin )
 {
-  if( this->m_RidgeOp.IsNull() || this->m_RadiusOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() || this->m_RadiusExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  this->m_RidgeOp->SetDataMin( dataMin );
-  this->m_RadiusOp->SetDataMin( dataMin );
+  this->m_RidgeExtractor->SetDataMin( dataMin );
+  this->m_RadiusExtractor->SetDataMin( dataMin );
 }
 
 /**
@@ -155,12 +170,12 @@ double
 TubeExtractor<TInputImage>
 ::GetDataMin( void )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  return this->m_RidgeOp->GetDataMin();
+  return this->m_RidgeExtractor->GetDataMin();
 }
 
 /**
@@ -170,13 +185,13 @@ void
 TubeExtractor<TInputImage>
 ::SetDataMax( double dataMax )
 {
-  if( this->m_RidgeOp.IsNull() || this->m_RadiusOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() || this->m_RadiusExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  this->m_RidgeOp->SetDataMax( dataMax );
-  this->m_RadiusOp->SetDataMax( dataMax );
+  this->m_RidgeExtractor->SetDataMax( dataMax );
+  this->m_RadiusExtractor->SetDataMax( dataMax );
 }
 
 
@@ -187,27 +202,47 @@ double
 TubeExtractor<TInputImage>
 ::GetDataMax( void )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  return this->m_RidgeOp->GetDataMax();
+  return this->m_RidgeExtractor->GetDataMax();
 }
 
 /**
- * Set Data Min value */
+ * Set border value */
+template< class TInputImage >
+void
+TubeExtractor<TInputImage>
+::SetBorderInIndexSpace( int border )
+{
+  typename ImageType::IndexType minIndx = this->GetInputImage()->
+    GetLargestPossibleRegion().GetIndex();
+  typename ImageType::SizeType size = this->GetInputImage()->
+    GetLargestPossibleRegion().GetSize();
+  typename ImageType::IndexType maxIndx;
+  for( unsigned int i = 0; i < ImageDimension; ++i )
+    {
+    maxIndx[i] = minIndx[i] + size[i] - 1 - border;
+    minIndx[i] += border;
+    }
+  this->SetExtractBoundMinInIndexSpace( minIndx );
+  this->SetExtractBoundMaxInIndexSpace( maxIndx );
+}
+
+
 template< class TInputImage >
 void
 TubeExtractor<TInputImage>
 ::SetExtractBoundMinInIndexSpace( const typename TInputImage::IndexType & dataMin )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  this->m_RidgeOp->SetExtractBoundMinInIndexSpace( dataMin );
+  this->m_RidgeExtractor->SetExtractBoundMinInIndexSpace( dataMin );
 }
 
 /**
@@ -217,12 +252,12 @@ typename TInputImage::IndexType
 TubeExtractor<TInputImage>
 ::GetExtractBoundMinInIndexSpace( void ) const
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  return this->m_RidgeOp->GetExtractBoundMinInIndexSpace();
+  return this->m_RidgeExtractor->GetExtractBoundMinInIndexSpace();
 }
 
 /**
@@ -230,14 +265,14 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 void
 TubeExtractor<TInputImage>
-::SetExtractBoundMaxInIndexSpace( const typename TInputImage::IndexType & dataMax )
+::SetExtractBoundMaxInIndexSpace( const typename TInputImage::IndexType & boundMax )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  this->m_RidgeOp->SetExtractBoundMaxInIndexSpace( dataMax );
+  this->m_RidgeExtractor->SetExtractBoundMaxInIndexSpace( boundMax );
 }
 
 
@@ -248,12 +283,12 @@ typename TInputImage::IndexType
 TubeExtractor<TInputImage>
 ::GetExtractBoundMaxInIndexSpace( void ) const
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  return this->m_RidgeOp->GetExtractBoundMaxInIndexSpace();
+  return this->m_RidgeExtractor->GetExtractBoundMaxInIndexSpace();
 }
 
 /**
@@ -261,15 +296,15 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 void
 TubeExtractor<TInputImage>
-::SetRadius( double radius )
+::SetRadiusInObjectSpace( double radius )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  this->m_RidgeOp->SetScale( radius );
-  this->m_RadiusOp->SetRadiusStart( radius );
+  this->m_RidgeExtractor->SetScale( radius );
+  this->m_RadiusExtractor->SetRadiusStart( radius );
 }
 
 /**
@@ -277,14 +312,14 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 double
 TubeExtractor<TInputImage>
-::GetRadius( void )
+::GetRadiusInObjectSpace( void )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  return this->m_RidgeOp->GetScale();
+  return this->m_RidgeExtractor->GetScale();
 }
 
 /**
@@ -292,9 +327,9 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 typename RidgeExtractor<TInputImage>::Pointer
 TubeExtractor<TInputImage>
-::GetRidgeOp( void )
+::GetRidgeExtractor( void )
 {
-  return this->m_RidgeOp;
+  return this->m_RidgeExtractor;
 }
 
 /**
@@ -302,9 +337,9 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 typename RadiusExtractor2<TInputImage>::Pointer
 TubeExtractor<TInputImage>
-::GetRadiusOp( void )
+::GetRadiusExtractor( void )
 {
-  return this->m_RadiusOp;
+  return this->m_RadiusExtractor;
 }
 
 /**
@@ -313,14 +348,14 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 bool
 TubeExtractor<TInputImage>
-::LocalTube( PointType & x )
+::FindLocalTubeInObjectSpace( PointType & x )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  return this->m_RidgeOp->LocalRidge( x );
+  return this->m_RidgeExtractor->LocalRidge( x );
 }
 
 /**
@@ -329,18 +364,18 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 typename TubeExtractor< TInputImage >::TubeType *
 TubeExtractor<TInputImage>
-::ExtractTube( const PointType & x, unsigned int tubeID,
+::ExtractTubeInObjectSpace( const PointType & x, unsigned int tubeID,
   bool verbose )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
   IndexType xi;
-  this->m_RidgeOp->GetTubeMaskImage()->TransformPhysicalPointToIndex( x,
+  this->m_RidgeExtractor->GetTubeMaskImage()->TransformPhysicalPointToIndex( x,
     xi );
-  if( this->m_RidgeOp->GetTubeMaskImage()->GetPixel( xi ) != 0 )
+  if( this->m_RidgeExtractor->GetTubeMaskImage()->GetPixel( xi ) != 0 )
     {
     if( this->GetDebug() )
       {
@@ -351,14 +386,14 @@ TubeExtractor<TInputImage>
     return nullptr;
     }
 
-  typename TubeType::Pointer tube = this->m_RidgeOp->ExtractRidge( x,
+  typename TubeType::Pointer tube = this->m_RidgeExtractor->ExtractRidge( x,
     tubeID, verbose );
 
   if( tube.IsNull() )
     {
     if( this->GetDebug() )
       {
-      std::cout << "m_RidgeOp->Extract() fails!" << std::endl;
+      std::cout << "m_RidgeExtractor->Extract() fails!" << std::endl;
       std::cout << "  x = " << x << std::endl;
       }
     return tube;
@@ -376,7 +411,7 @@ TubeExtractor<TInputImage>
       }
     }
 
-  if( !this->m_RadiusOp->ExtractRadii( tube ) )
+  if( !this->m_RadiusExtractor->ExtractRadii( tube ) )
     {
     return nullptr;
     }
@@ -393,8 +428,140 @@ TubeExtractor<TInputImage>
     this->m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
 
+  tube->Register();
   return tube;
+}
 
+template< class TInputImage >
+void
+TubeExtractor<TInputImage>
+::SetSeedsInIndexSpaceList( const ContinuousIndexListType & iList )
+{
+  m_SeedsInObjectSpaceList.clear();
+  m_SeedRadiiInObjectSpaceList.clear();
+  double radiusInObjectSpace = this->m_RadiusExtractor->GetRadiusStart();
+  PointType pnt;
+  for( size_t seedNum = 0; seedNum < iList.size(); ++seedNum )
+    {
+    this->GetInputImage()->TransformContinuousIndexToPhysicalPoint(
+      iList[seedNum], pnt );
+    m_SeedsInObjectSpaceList.push_back( pnt );
+    m_SeedRadiiInObjectSpaceList.push_back( radiusInObjectSpace );
+    }
+}
+
+template< class TInputImage >
+void
+TubeExtractor<TInputImage>
+::ProcessSeeds( void )
+{
+  if( this->m_SeedMask )
+    {
+    ImageRegionConstIteratorWithIndex< TubeMaskImageType > iter(
+      this->GetSeedMask(), this->GetSeedMask()->GetLargestPossibleRegion() );
+    ImageRegionConstIterator< ImageType > iterR;
+    if( this->m_SeedRadiusMask )
+      {
+      iterR = ImageRegionConstIterator< ImageType >(
+        this->m_SeedRadiusMask,
+        this->m_SeedRadiusMask->GetLargestPossibleRegion() );
+      }
+
+    int count = 0;
+    double radiusInObjectSpace = this->m_RadiusExtractor->GetRadiusStart();
+    while( !iter.IsAtEnd() )
+      {
+      if( iter.Get() )
+        {
+        if( ++count == this->m_SeedMaskStride )
+          {
+          count = 0;
+          PointType pnt;
+          this->GetInputImage()->TransformIndexToPhysicalPoint(
+            iter.GetIndex(), pnt );
+          m_SeedsInObjectSpaceList.push_back( pnt );
+          if( this->m_SeedRadiusMask )
+            {
+            m_SeedRadiiInObjectSpaceList.push_back( iterR.Get() );
+            ++iterR;
+            }
+          else
+            {
+            m_SeedRadiiInObjectSpaceList.push_back(
+              this->GetRadiusInObjectSpace() );
+            }
+          }
+        }
+      ++iter;
+      }
+    }
+
+  typename std::vector< PointType >::iterator seedIter =
+    this->m_SeedsInObjectSpaceList.begin();
+  typename std::vector< double >::iterator seedRadiusIter =
+    this->m_SeedRadiiInObjectSpaceList.begin();
+  bool useRadiiList = true;
+  if( m_SeedRadiiInObjectSpaceList.empty() )
+    {
+    useRadiiList = false;
+    }
+  unsigned int count = 1;
+  bool foundOneTube = false;
+  while( seedIter != this->m_SeedsInObjectSpaceList.end() )
+    {
+    if( useRadiiList )
+      {
+      this->SetRadiusInObjectSpace( *seedRadiusIter );
+      }
+
+    PointType x = *seedIter;
+    std::cout << "Extracting from index point " << *seedIter
+      << " at radius " << *seedRadiusIter << std::endl;
+    typename TubeType::Pointer xTube =
+      this->ExtractTubeInObjectSpace( x, count, true );
+    if( !xTube.IsNull() )
+      {
+      this->AddTube( xTube );
+      foundOneTube = true;
+      }
+    else
+      {
+      std::cout << " Error: Ridge not found for seed # " << count;
+      }
+    ++seedIter;
+    ++seedRadiusIter;
+    ++count;
+    }
+  if( !foundOneTube )
+    {
+    std::cout << "No Ridge found at all";
+    return;
+    }
+
+  std::cout << "Ridge termination code counts:" << std::endl;
+  for( unsigned int code = 0; code <
+    this->GetRidgeExtractor()->GetNumberOfFailureCodes();
+    ++code )
+    {
+    std::cout << "   "
+      << this->m_RidgeExtractor->GetFailureCodeName(
+        typename RidgeExtractorType::FailureCodeEnum( code ) ) << " : "
+      << this->m_RidgeExtractor->GetFailureCodeCount(
+        typename RidgeExtractorType::FailureCodeEnum( code ) )
+      << std::endl;
+    }
+}
+
+/**
+ * Get list of extracted tubes */
+template< class TInputImage >
+void
+TubeExtractor<TInputImage>
+::LoadParameterFile( const std::string & filename )
+{
+  TubeExtractorIO< ImageType > teReader;
+  teReader.SetTubeExtractor( this );
+  teReader.Read( filename.c_str() );
 }
 
 /**
@@ -420,7 +587,7 @@ TubeExtractor<TInputImage>
   typename TubeGroupType::ChildrenListType::iterator iter = cList->begin();
   while( iter != cList->end() )
     {
-    this->AddTube( *iter );
+    this->AddTube( static_cast<TubeType *>(iter->GetPointer()) );
     ++iter;
     }
 }
@@ -432,7 +599,7 @@ void
 TubeExtractor<TInputImage>
 ::SmoothTube( TubeType * tube, int h )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
@@ -447,12 +614,12 @@ bool
 TubeExtractor<TInputImage>
 ::AddTube( TubeType * tube )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  bool result = this->m_RidgeOp->AddTube( tube );
+  bool result = this->m_RidgeExtractor->AddTube( tube );
   if( result )
     {
     m_TubeGroup->AddChild( tube );
@@ -468,12 +635,12 @@ bool
 TubeExtractor<TInputImage>
 ::DeleteTube( TubeType * tube )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  bool result = this->m_RidgeOp->DeleteTube( tube );
+  bool result = this->m_RidgeExtractor->DeleteTube( tube );
   if( result )
     {
     m_TubeGroup->RemoveChild( tube );
@@ -530,14 +697,14 @@ TubeExtractor<TInputImage>
 ::StatusCallBack( void ( *statusCallBack )( const char *, const char *,
     int ) )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
   this->m_StatusCallBack = statusCallBack;
-  this->m_RidgeOp->StatusCallBack( statusCallBack );
-  this->m_RadiusOp->StatusCallBack( statusCallBack );
+  this->m_RidgeExtractor->StatusCallBack( statusCallBack );
+  this->m_RadiusExtractor->StatusCallBack( statusCallBack );
 }
 
 /**
@@ -567,25 +734,6 @@ void TubeExtractor<TInputImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
-
-  if( this->m_InputImage.IsNotNull() )
-    {
-    os << indent << "Input Image = " << this->m_InputImage << std::endl;
-    }
-  else
-    {
-    os << indent << "Input Image = NULL" << std::endl;
-    }
-
-  if( this->m_RadiusInputImage.IsNotNull() )
-    {
-    os << indent << "Radius Input Image = " << this->m_RadiusInputImage
-      << std::endl;
-    }
-  else
-    {
-    os << indent << "Radius Input Image = NULL" << std::endl;
-    }
 
   os << indent << "TubeColor.r = " << this->m_TubeColor[0] << std::endl;
   os << indent << "TubeColor.g = " << this->m_TubeColor[1] << std::endl;

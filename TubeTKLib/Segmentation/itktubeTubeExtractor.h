@@ -68,10 +68,13 @@ public:
 
   /**
    * Type definition for the input image. */
-  typedef TInputImage                                   ImageType;
+  typedef TInputImage                               ImageType;
 
-  typedef typename RidgeExtractor<ImageType>::TubeMaskImageType
-                                                        TubeMaskImageType;
+  typedef RidgeExtractor<ImageType>                 RidgeExtractorType;
+  typedef RadiusExtractor2<ImageType>               RadiusExtractorType;
+
+  typedef typename RidgeExtractorType::TubeMaskImageType
+                                                    TubeMaskImageType;
 
   /**
    * Standard for the number of dimension
@@ -83,20 +86,20 @@ public:
    * Type definition for the input image pixel type. */
   typedef typename ImageType::PixelType                 PixelType;
 
-  typedef typename ImageType::PointType                 PointType;
-
   /**  Type definition for VesselTubeSpatialObject */
   typedef TubeSpatialObject< ImageDimension >           TubeType;
   typedef typename TubeType::TubePointType              TubePointType;
 
   typedef itk::GroupSpatialObject< ImageDimension >     TubeGroupType;
 
-  typedef RidgeExtractor<ImageType>                     RidgeOpType;
-  typedef RadiusExtractor2<ImageType>                   RadiusOpType;
-
   /**
    * Type definition for the input image pixel type. */
   typedef ContinuousIndex<double, ImageDimension >      ContinuousIndexType;
+  typedef std::vector< ContinuousIndexType >            ContinuousIndexListType;
+  typedef Point<double, ImageDimension >                PointType;
+  typedef std::vector< PointType >                      PointListType;
+  typedef double                                        RadiusType;
+  typedef std::vector< RadiusType >                     RadiusListType;
 
   typedef typename ImageType::IndexType                 IndexType;
 
@@ -105,25 +108,30 @@ public:
   typedef itk::Vector< double, ImageDimension >         VectorType;
 
 
+  /***********/
+  /***********/
+  /***********/
+
+
   /**
    * Set the input image */
   void SetInputImage( ImageType * inputImage );
+  const ImageType * GetInputImage( void ) const;
 
   /**
    * Optionally set a different input image to use for radius estimation */
   void SetRadiusInputImage( ImageType * radiusInputImage );
+  const ImageType * GetRadiusInputImage( void ) const;
 
-  /**
-   * Get the input image */
-  itkGetConstObjectMacro( InputImage, ImageType );
-  itkGetConstObjectMacro( RadiusInputImage, ImageType );
   /**
    * Set the tube mask image */
   void SetTubeMaskImage( TubeMaskImageType * mask );
-
-  /**
-   * Get the tube mask image */
   TubeMaskImageType * GetTubeMaskImage( void );
+
+
+  /***********/
+  /***********/
+  /***********/
 
   /**
    * Set Data Minimum */
@@ -142,6 +150,9 @@ public:
   double GetDataMax( void );
 
   /**
+   * Set the border within the image edges that vessels cannot enter */
+  void SetBorderInIndexSpace( int border );
+  /**
    * Set ExtractBound Minimum */
   void SetExtractBoundMinInIndexSpace( const IndexType & dataMin );
 
@@ -159,29 +170,77 @@ public:
 
   /**
    * Set the radius */
-  void SetRadius( double radius );
+  void SetRadiusInObjectSpace( double radius );
 
   /**
    * Get the radius */
-  double GetRadius( void );
+  double GetRadiusInObjectSpace( void );
+
+
+  /***********/
+  /***********/
+  /***********/
 
   /**
    * Get the ridge extractor */
-  typename RidgeExtractor<ImageType>::Pointer GetRidgeOp( void );
+  typename RidgeExtractorType::Pointer GetRidgeExtractor( void );
 
   /**
    * Get the radius extractor */
-  typename RadiusExtractor2<ImageType>::Pointer GetRadiusOp( void );
+  typename RadiusExtractorType::Pointer GetRadiusExtractor( void );
+
+
+  /***********/
+  /***********/
+  /***********/
 
   /**
    * Return true if a tube is found from the given seed point */
-  bool LocalTube( PointType & x );
+  bool FindLocalTubeInObjectSpace( PointType & x );
 
   /**
    * Extract the ND tube given the position of the first point
    * and the tube ID */
-  TubeType * ExtractTube( const PointType & x,
+  TubeType * ExtractTubeInObjectSpace( const PointType & x,
     unsigned int tubeID, bool verbose = false );
+
+
+  /***********/
+  /***********/
+  /***********/
+
+  /** Set Seed Mask Image */
+  itkSetConstObjectMacro( SeedMask, TubeMaskImageType );
+  itkGetConstObjectMacro( SeedMask, TubeMaskImageType );
+
+  /** Set Seed Scale Image */
+  itkSetConstObjectMacro( SeedRadiusMask, ImageType );
+  itkGetConstObjectMacro( SeedRadiusMask, ImageType );
+
+  /** Set Seed Mask Stride */
+  itkSetMacro( SeedMaskStride, int );
+  itkGetMacro( SeedMaskStride, int );
+
+  /** Set Seed Index List */
+  void SetSeedsInIndexSpaceList( const ContinuousIndexListType & iList );
+  itkSetMacro( SeedsInObjectSpaceList, PointListType );
+  itkSetMacro( SeedRadiiInObjectSpaceList, RadiusListType );
+
+  /** Process seed list or seed mask */
+  void ProcessSeeds( void );
+
+
+  /***********/
+  /***********/
+  /***********/
+
+  /** Get parameter file */
+  void LoadParameterFile( const std::string & filename );
+
+
+  /***********/
+  /***********/
+  /***********/
 
   /**
    * Get the list of tubes that have been extracted */
@@ -211,6 +270,12 @@ public:
    * Get the tube color */
   vnl_vector<double> & GetTubeColor( void );
 
+
+  /***********/
+  /***********/
+  /***********/
+
+
   /**
    * Set the idle callback */
   void   IdleCallBack( bool ( *idleCallBack )( void ) );
@@ -235,8 +300,8 @@ protected:
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
-  typename RidgeExtractor<ImageType>::Pointer   m_RidgeOp;
-  typename RadiusExtractor2<ImageType>::Pointer m_RadiusOp;
+  typename RidgeExtractorType::Pointer   m_RidgeExtractor;
+  typename RadiusExtractorType::Pointer  m_RadiusExtractor;
 
   bool ( *m_IdleCallBack )( void );
   void ( *m_StatusCallBack )( const char *, const char *, int );
@@ -248,13 +313,17 @@ private:
   TubeExtractor( const Self& );
   void operator=( const Self& );
 
-  typename ImageType::Pointer       m_InputImage;
+  typename TubeGroupType::Pointer     m_TubeGroup;
 
-  typename ImageType::Pointer       m_RadiusInputImage;
+  vnl_vector<double>                  m_TubeColor;
 
-  vnl_vector<double>                m_TubeColor;
+  PointListType                       m_SeedsInObjectSpaceList;
+  RadiusListType                      m_SeedRadiiInObjectSpaceList;
 
-  typename TubeGroupType::Pointer   m_TubeGroup;
+  typename TubeMaskImageType::ConstPointer m_SeedMask;
+  typename ImageType::ConstPointer         m_SeedRadiusMask;
+  int                                      m_SeedMaskStride;
+
 
 
 }; // End class TubeExtractor
