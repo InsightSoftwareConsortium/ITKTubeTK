@@ -494,7 +494,7 @@ TubeExtractor<TInputImage>
       }
 
     int count = 0;
-    double radiusInObjectSpace = this->m_RadiusExtractor->GetRadiusStart();
+    double radiusInObjectSpace = this->GetRadiusInObjectSpace();
     while( !iter.IsAtEnd() )
       {
       if( iter.Get() )
@@ -513,8 +513,7 @@ TubeExtractor<TInputImage>
             }
           else
             {
-            m_SeedRadiiInObjectSpaceList.push_back(
-              this->GetRadiusInObjectSpace() );
+            m_SeedRadiiInObjectSpaceList.push_back( radiusInObjectSpace );
             }
           }
         }
