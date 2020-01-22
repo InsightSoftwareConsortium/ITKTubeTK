@@ -28,6 +28,15 @@ SegmentTubes< TInputImage >
 ::SegmentTubes( void )
 {
   m_Filter = FilterType::New();
+  m_RidgeFilter = m_Filter->GetRidgeExtractor();
+  m_RadiusFilter = m_Filter->GetRadiusExtractor();
+
+  m_Verbose = false;
+  m_Ridgeness = 0;
+  m_Intensity = 0;
+  m_Roundness = 0;
+  m_Curvature = 0;
+  m_Levelness = 0;
 }
 
 template< class TInputImage >

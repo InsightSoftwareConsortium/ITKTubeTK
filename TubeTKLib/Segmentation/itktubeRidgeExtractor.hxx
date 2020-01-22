@@ -1766,7 +1766,7 @@ RidgeExtractor<TInputImage>
  * Extract a tube
  */
 template< class TInputImage >
-typename RidgeExtractor<TInputImage>::TubeType::Pointer
+typename RidgeExtractor<TInputImage>::TubeType *
 RidgeExtractor<TInputImage>
 ::ExtractRidge( const PointType & newX, int tubeId, bool verbose )
 {
@@ -1945,7 +1945,7 @@ RidgeExtractor<TInputImage>
     DeleteTube( m_Tube );
     m_Tube = NULL;
     std::cout << "Ridge returning null." << std::endl;
-    return m_Tube;
+    return nullptr;
     }
 
   if( verbose || this->GetDebug() )
@@ -1974,7 +1974,7 @@ RidgeExtractor<TInputImage>
     m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
 
-  return m_Tube;
+  return m_Tube.GetPointer();
 }
 
 template< class TInputImage >

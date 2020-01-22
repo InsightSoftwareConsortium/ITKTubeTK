@@ -327,7 +327,7 @@ public:
   FailureCodeEnum LocalRidge( PointType & x, bool verbose=false );
 
   /** Extract */
-  typename TubeType::Pointer ExtractRidge( const PointType & x, int tubeID,
+  TubeType * ExtractRidge( const PointType & x, int tubeID,
     bool verbose=false );
 
   itkGetMacro( CurrentFailureCode, FailureCodeEnum );
