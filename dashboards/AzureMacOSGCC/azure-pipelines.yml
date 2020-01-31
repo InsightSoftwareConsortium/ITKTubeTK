@@ -12,7 +12,7 @@ jobs:
   timeoutInMinutes: 360
   cancelTimeoutInMinutes: 360
   pool:
-    vmImage: 'macOS-10.13'
+    vmImage: 'macOS-10.14'
   steps:
     - bash: |
         set -x
