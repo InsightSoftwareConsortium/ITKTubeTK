@@ -94,6 +94,9 @@ public:
   /***/
   /***/
 
+  itkSetMacro( Verbose, bool );
+  itkGetMacro( Verbose, bool );
+
   tubeWrapSetMacro( DataMin, double, Filter );
   tubeWrapGetMacro( DataMin, double, Filter );
 

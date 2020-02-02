@@ -28,6 +28,7 @@ set( TubeTKLib_Base_Filtering_H_Files
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h
   itktubeAnisotropicHybridDiffusionImageFilter.h
   itktubeBinaryThinningImageFilter3D.h
+  itktubeCastSpatialObjectFilter.h
   itktubeComputeTubeFlyThroughImageFilter.h
   itktubeComputeTubeMeasuresFilter.h
   itktubeContrastCostFunction.h

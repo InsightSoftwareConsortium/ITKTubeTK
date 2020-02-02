@@ -20,7 +20,6 @@
 #
 ##############################################################################
 
-add_subdirectory( Utilities )
 add_subdirectory( Common )
 add_subdirectory( CompareTools )
 add_subdirectory( MetaIO )

@@ -192,7 +192,7 @@ public:
   itkGetMacro( KernelOptimalRadiusBranchness, double );
 
   /** Calculate Radii */
-  bool ExtractRadii( TubeType * tube );
+  bool ExtractRadii( TubeType * tube, bool verbose=false );
 
   void SetIdleCallBack( bool ( *idleCallBack )( void ) );
   void SetStatusCallBack( void ( *statusCallBack )( const char *,

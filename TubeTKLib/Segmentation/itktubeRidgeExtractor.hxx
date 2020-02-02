@@ -923,6 +923,7 @@ RidgeExtractor<TInputImage>
       if( verbose || this->GetDebug() )
         {
         std::cout << "Ridge: Added initial tube point." << std::endl;
+        std::cout << "  x = " << tubeX << std::endl;
         }
       }
     }
@@ -941,9 +942,9 @@ RidgeExtractor<TInputImage>
       {
       if( verbose || this->GetDebug() )
         {
-        std::cout << "Attempting recovery : " << recovery;
-        std::cout << " : Scale = " << GetScale() << std::endl;
-        std::cout << "   x = " << pXIV << std::endl;
+        std::cout << "   Attempting recovery : " << recovery << std::endl;;
+        std::cout << "      x = " << pXIV << std::endl;
+        std::cout << "      Scale = " << GetScale() << std::endl;
         }
       switch( recovery )
         {
@@ -960,7 +961,7 @@ RidgeExtractor<TInputImage>
           SetScale( GetScale() * 1.25 );
           break;
         }
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "   Point = " << tubePointCount
           << ": Recovery: new scale = " << GetScale() << std::endl;
@@ -987,7 +988,7 @@ RidgeExtractor<TInputImage>
         {
         if( verbose || this->GetDebug() )
           {
-          std::cout << "Curving" << std::endl;
+          std::cout << "Curving : reducing stepsize." << std::endl;
           }
         stepFactor *= ( double )0.75;
         }
@@ -995,6 +996,10 @@ RidgeExtractor<TInputImage>
         {
         if( stepFactor<stepFactor0 )
           {
+          if( verbose || this->GetDebug() )
+            {
+            std::cout << "Straight : restoring stepsize." << std::endl;
+            }
           stepFactor *= 1.25;
           }
         }
@@ -1060,11 +1065,6 @@ RidgeExtractor<TInputImage>
       continue;
       }
 
-    if( this->GetDebug() )
-      {
-      std::cout << "Ridge: TraverseOW: lXExtreme = " << lXIV << std::endl;
-      }
-
     bool inbounds = true;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
@@ -1098,6 +1098,16 @@ RidgeExtractor<TInputImage>
 
     ridgeness = Ridgeness( tmpX, intensity, roundness, curvature,
       levelness, lStepDir );
+
+    if( (verbose && tubePointCount % 10 == 0) || this->GetDebug() )
+      {
+      std::cout << "Point " << tubePointCount << " : x = " << tmpX << std::endl;
+      std::cout << "   idx = " << lXIV << std::endl;
+      std::cout << "   scl = " << GetScale() << std::endl;
+      std::cout << "   stp = " << currentStepX << std::endl;
+      std::cout << "   rdg = " << ridgeness << std::endl;
+      std::cout << "   int = " << intensity << std::endl;
+      }
 
     for( unsigned int i=0; i<ImageDimension-1; i++ )
       {
@@ -1148,7 +1158,7 @@ RidgeExtractor<TInputImage>
 
     double diffX = std::sqrt(
       ::tube::ComputeEuclideanDistanceVector( lXIV, pXIV ) );
-    if( diffX > m_MaxXChange * GetScale() / m_Spacing * stepFactor )
+    if( diffX > m_MaxXChange * (GetScale() / m_Spacing) * stepFactor )
       {
       if( verbose || this->GetDebug() )
         {
@@ -1159,8 +1169,8 @@ RidgeExtractor<TInputImage>
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
         std::cout << "       Levelness = " << levelness << std::endl;
-        std::cout << "       maxDiffX = " << m_MaxXChange * GetScale()
-          / m_Spacing * stepFactor << std::endl;
+        std::cout << "       maxDiffX = " << m_MaxXChange * (GetScale()
+          / m_Spacing) * stepFactor << std::endl;
         }
       m_CurrentFailureCode = DISTANCE_FAIL;
       ++m_FailureCodeCount[ m_CurrentFailureCode ];
@@ -2028,7 +2038,7 @@ RidgeExtractor<TInputImage>
     if( inside )
       {
       drawMask->SetPixel( indx, zero );
-      r = ( *pnt ).GetRadiusInObjectSpace() / m_Spacing;
+      r = ((*pnt).GetRadiusInObjectSpace() / m_Spacing);
       rI = (int)(r + 0.5);
       if( rI >= 1 )
         {
@@ -2129,7 +2139,6 @@ RidgeExtractor<TInputImage>
 
   typename std::vector< TubePointType >::const_iterator pnt;
 
-  std::cout << "HERE" << std::endl;
   for( pnt = tube->GetPoints().begin(); pnt != tube->GetPoints().end();
     pnt++ )
     {
@@ -2154,7 +2163,7 @@ RidgeExtractor<TInputImage>
       {
       drawMask->SetPixel( indx, ( PixelType )( tubeId +
           ( tubePointCount/10000.0 ) ) );
-      r = ( *pnt ).GetRadiusInObjectSpace() / m_Spacing;
+      r = (( *pnt ).GetRadiusInObjectSpace() / m_Spacing);
       rI = (int)( r + 0.5);
       if( r >= 1 )
         {

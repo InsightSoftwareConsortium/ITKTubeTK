@@ -104,7 +104,7 @@ RadiusExtractor2<TInputImage>
 
   m_KernelPointStep = 14;
   m_KernelStep = 30;
-  m_KernelExtent = 1.6;
+  m_KernelExtent = 1.25;
 
   m_KernelValues.clear();
   m_KernelDistances.clear();
@@ -379,10 +379,8 @@ RadiusExtractor2<TInputImage>
     else
       {
       m_KernelValues[ count ] = 0;
-      m_KernelDistances[ count ] = this->GetKernelExtent() *
-        this->GetRadiusMax() / m_Spacing + 1;
-      m_KernelTangentDistances[ count ] = this->GetKernelExtent() *
-        this->GetRadiusMax() / m_Spacing + 1;
+      m_KernelDistances[ count ] = this->GetRadiusMax() + 1;
+      m_KernelTangentDistances[ count ] = this->GetRadiusMax() + 1;
       }
     ++count;
     unsigned int d = 0;
@@ -470,7 +468,7 @@ RadiusExtractor2<TInputImage>
     }
   double areaMin = distMin * distMin * vnl_math::pi;
   double areaPos = areaR - areaMin;
-  if( this->GetDebug() )
+  //if( this->GetDebug() )
     {
     ::tube::InformationMessage( "R = " + std::to_string(r)  );
     ::tube::InformationMessage( "   Dist = " + std::to_string(distMin) + " - "
@@ -770,7 +768,7 @@ RadiusExtractor2<TInputImage>
 template< class TInputImage >
 bool
 RadiusExtractor2<TInputImage>
-::ExtractRadii( TubeType * tube )
+::ExtractRadii( TubeType * tube, bool verbose )
 {
   if( tube->GetPoints().size() == 0 )
     {
@@ -817,6 +815,7 @@ RadiusExtractor2<TInputImage>
       std::to_string( ( *pntIter ).GetId() ) );
     }
 
+  unsigned int count = 0;
   double rStart0 = this->GetRadiusStart();
   double rStart = rStart0;
   for( int p = static_cast< int >( pntCount );
@@ -829,6 +828,10 @@ RadiusExtractor2<TInputImage>
     this->UpdateKernelOptimalRadius();
     this->RecordOptimaAtTubePoints( p, tube );
     rStart = this->GetKernelOptimalRadius();
+    if( verbose )
+      {
+      std::cout << p << " : r = " << rStart << std::endl;
+      }
     }
 
   rStart = rStart0;
@@ -842,6 +845,10 @@ RadiusExtractor2<TInputImage>
     this->UpdateKernelOptimalRadius();
     this->RecordOptimaAtTubePoints( p, tube );
     rStart = this->GetKernelOptimalRadius();
+    if( verbose )
+      {
+      std::cout << p << " : r = " << rStart << std::endl;
+      }
     }
 
   if( this->GetDebug() )

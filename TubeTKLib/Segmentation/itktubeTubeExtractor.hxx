@@ -390,7 +390,7 @@ TubeExtractor<TInputImage>
 
   if( tube.IsNull() )
     {
-    if( this->GetDebug() )
+    if( verbose || this->GetDebug() )
       {
       std::cout << "m_RidgeExtractor->Extract() fails!" << std::endl;
       std::cout << "  x = " << x << std::endl;
@@ -410,7 +410,7 @@ TubeExtractor<TInputImage>
       }
     }
 
-  if( !this->m_RadiusExtractor->ExtractRadii( tube ) )
+  if( !this->m_RadiusExtractor->ExtractRadii( tube, verbose ) )
     {
     return nullptr;
     }
@@ -426,6 +426,12 @@ TubeExtractor<TInputImage>
     std::snprintf( s, 80, "%zd points", tube->GetPoints().size() );
     this->m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
+
+  if( verbose )
+    {
+    std::cout << "Adding tube to group." << std::endl;
+    }
+  this->AddTube( tube );
 
   tube->Register();
   return tube;
@@ -546,7 +552,6 @@ TubeExtractor<TInputImage>
       this->ExtractTubeInObjectSpace( x, count, true );
     if( !xTube.IsNull() )
       {
-      this->AddTube( xTube );
       foundOneTube = true;
       }
     else
