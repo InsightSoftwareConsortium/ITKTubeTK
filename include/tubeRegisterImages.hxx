@@ -23,16 +23,16 @@
 namespace tube
 {
 
-template< class TPixel, unsigned int VDimension >
-RegisterImages< TPixel, VDimension >
+template< class TImage >
+RegisterImages< TImage >
 ::RegisterImages( void )
 {
   m_Filter = FilterType::New();
 }
 
-template< class TPixel, unsigned int VDimension >
-const typename RegisterImages<TPixel, VDimension>::ImageType *
-RegisterImages< TPixel, VDimension >
+template< class TImage >
+const typename RegisterImages<TImage>::ImageType *
+RegisterImages< TImage >
 ::ResampleImage( std::string inter,
   const ImageType * movingImage,
   const MatrixTransformType * matrixTransform,
@@ -72,9 +72,9 @@ RegisterImages< TPixel, VDimension >
     }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::SetRegistration( const std::string & reg )
 {
   if( !strcmp(reg.c_str(), "NONE") )
@@ -118,9 +118,9 @@ RegisterImages< TPixel, VDimension >
     }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::SetInterpolation( const std::string & interp )
 {
   if( !strcmp(interp.c_str(), "LINEAR_INTERPOLATIONS") )
@@ -145,9 +145,9 @@ RegisterImages< TPixel, VDimension >
     }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::SetMetric( const std::string & metric )
 {
   if( !strcmp(metric.c_str(), "MATTES_MI_METRIC") )
@@ -167,9 +167,9 @@ RegisterImages< TPixel, VDimension >
     }
 }
 
-template< class TPixel, unsigned int VDimension >
-const typename RegisterImages<TPixel, VDimension>::ImageType *
-RegisterImages< TPixel, VDimension >
+template< class TImage >
+const typename RegisterImages<TImage>::ImageType *
+RegisterImages< TImage >
 ::GetFinalMovingImage( std::string inter )
 {
   if( !strcmp(inter.c_str(), "LINEAR_INTERPOLATION" ) )
@@ -195,25 +195,25 @@ RegisterImages< TPixel, VDimension >
 }
 
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::LoadTransform( const std::string & t, bool invertLoadedTransform )
 {
   m_Filter->LoadTransform( t, invertLoadedTransform );
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::SetLoadedMatrixTransform( const MatrixTransformType & tfm, bool invert )
 {
   m_Filter->SetLoadedMatrixTransform( tfm, invert );
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::SetInitialMethodEnum( const std::string & initialMethod )
 {
   if( !strcmp(initialMethod.c_str(), "INIT_WITH_CURRENT_RESULTS" ) )
@@ -242,9 +242,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 const std::string
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::GetInitialMethodEnum( void )
 {
   if( m_Filter->GetInitialMethodEnum() ==
@@ -278,9 +278,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::SetRigidMetricMethodEnum( const std::string & rigidMetricMethod )
 {
   if( !strcmp(rigidMetricMethod.c_str(), "NORMALIZED_CORRELATION_METRIC" ) )
@@ -300,9 +300,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 const std::string
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::GetRigidMetricMethodEnum( void )
 {
   if( m_Filter->GetRigidMetricMethodEnum() == 
@@ -321,9 +321,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::SetRigidInterpolationMethodEnum( const std::string & rigidInterpolationMethod )
 {
   if( !strcmp(rigidInterpolationMethod.c_str(), "LINEAR_INTERPOLATION" ) )
@@ -349,9 +349,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 const std::string
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::GetRigidInterpolationMethodEnum( void )
 {
   if( m_Filter->GetRigidInterpolationMethodEnum() == 
@@ -375,9 +375,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::SetAffineMetricMethodEnum( const std::string & affineMetricMethod )
 {
   if( !strcmp(affineMetricMethod.c_str(), "NORMALIZED_CORRELATION_METRIC" ) )
@@ -398,9 +398,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 const std::string
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::GetAffineMetricMethodEnum( void )
 {
   if( m_Filter->GetAffineMetricMethodEnum() == 
@@ -419,9 +419,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void 
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::SetAffineInterpolationMethodEnum(
   const std::string & affineInterpolationMethod )
 {
@@ -448,9 +448,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 const std::string
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::GetAffineInterpolationMethodEnum( void )
 {
   if( m_Filter->GetAffineInterpolationMethodEnum() == 
@@ -474,9 +474,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::SetBSplineMetricMethodEnum( const std::string & bSplineMetricMethod )
 {
   if( !strcmp(bSplineMetricMethod.c_str(), "NORMALIZED_CORRELATION_METRIC" ) )
@@ -497,9 +497,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 const std::string
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::GetBSplineMetricMethodEnum( void )
 {
   if( m_Filter->GetBSplineMetricMethodEnum() == 
@@ -518,9 +518,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void 
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::SetBSplineInterpolationMethodEnum(
   const std::string & bSplineInterpolationMethod )
 {
@@ -547,9 +547,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 const std::string
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::GetBSplineInterpolationMethodEnum( void )
 {
   if( m_Filter->GetBSplineInterpolationMethodEnum() == 
@@ -573,9 +573,9 @@ RegisterImages< TPixel, VDimension >
   }
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void
-RegisterImages< TPixel, VDimension >
+RegisterImages< TImage >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

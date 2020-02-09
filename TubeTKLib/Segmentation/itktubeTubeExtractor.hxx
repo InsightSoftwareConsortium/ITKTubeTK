@@ -48,6 +48,7 @@ TubeExtractor<TInputImage>
 {
   m_RidgeExtractor = RidgeExtractorType::New();
   m_RadiusExtractor = RadiusExtractorType::New();
+  this->m_RidgeExtractor->SetRadiusExtractor( this->m_RadiusExtractor );
 
   m_IdleCallBack = nullptr;
   m_StatusCallBack = nullptr;
@@ -88,13 +89,11 @@ void
 TubeExtractor<TInputImage>
 ::SetInputImage( ImageType * inputImage )
 {
-  this->m_RidgeExtractor = RidgeExtractor<ImageType>::New();
+  //this->m_RidgeExtractor = RidgeExtractor<ImageType>::New();
   this->m_RidgeExtractor->SetInputImage( inputImage );
 
-  this->m_RadiusExtractor = RadiusExtractor2<ImageType>::New();
+  //this->m_RadiusExtractor = RadiusExtractor2<ImageType>::New();
   this->m_RadiusExtractor->SetInputImage( inputImage );
-
-  this->m_RidgeExtractor->SetRadiusExtractor( this->m_RadiusExtractor );
 }
 
 template< class TInputImage >
@@ -324,21 +323,21 @@ TubeExtractor<TInputImage>
 /**
  * Get the ridge extractor */
 template< class TInputImage >
-typename RidgeExtractor<TInputImage>::Pointer
+RidgeExtractor<TInputImage> *
 TubeExtractor<TInputImage>
 ::GetRidgeExtractor( void )
 {
-  return this->m_RidgeExtractor;
+  return this->m_RidgeExtractor.GetPointer();
 }
 
 /**
  * Get the radius extractor */
 template< class TInputImage >
-typename RadiusExtractor2<TInputImage>::Pointer
+RadiusExtractor2<TInputImage> *
 TubeExtractor<TInputImage>
 ::GetRadiusExtractor( void )
 {
-  return this->m_RadiusExtractor;
+  return this->m_RadiusExtractor.GetPointer();
 }
 
 /**
@@ -385,6 +384,8 @@ TubeExtractor<TInputImage>
     return nullptr;
     }
 
+  std::cout << "MinRoundness = " << this->m_RidgeExtractor->GetMinRoundness()
+    << std::endl;
   typename TubeType::Pointer tube = this->m_RidgeExtractor->ExtractRidge( x,
     tubeID, verbose );
 

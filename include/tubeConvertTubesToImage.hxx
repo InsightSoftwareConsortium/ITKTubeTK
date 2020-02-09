@@ -28,8 +28,8 @@ limitations under the License.
 namespace tube
 {
 
-template< unsigned int Dimension, class TOutputPixel >
-ConvertTubesToImage< Dimension, TOutputPixel >
+template< class TImage >
+ConvertTubesToImage< TImage >
 ::ConvertTubesToImage( void )
 {
   m_Filter = FilterType::New();
@@ -39,11 +39,11 @@ ConvertTubesToImage< Dimension, TOutputPixel >
   m_TemplateImage = NULL;
 }
 
-template< unsigned int Dimension, class TOutputPixel >
+template< class TImage >
 void
-ConvertTubesToImage< Dimension, TOutputPixel >
-::SetTemplateImage( const typename ConvertTubesToImage< Dimension,
-  TOutputPixel >::OutputImageType * pTemplateImage )
+ConvertTubesToImage< TImage >
+::SetTemplateImage( const typename ConvertTubesToImage< TImage >::
+  OutputImageType * pTemplateImage )
 {
   if( this->m_TemplateImage != pTemplateImage )
     {
@@ -58,9 +58,9 @@ ConvertTubesToImage< Dimension, TOutputPixel >
     }
 }
 
-template< unsigned int Dimension, class TOutputPixel >
+template< class TImage >
 void
-ConvertTubesToImage< Dimension, TOutputPixel >
+ConvertTubesToImage< TImage >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

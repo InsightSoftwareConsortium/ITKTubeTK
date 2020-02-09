@@ -88,8 +88,8 @@ int DoIt( int argc, char * argv[] )
   typedef unsigned short                               LabelMapPixelType;
   typedef itk::Image< unsigned short, dimension >      LabelMapType;
 
-  typedef tube::SegmentConnectedComponentsUsingParzenPDFs< InputImagePixelType,
-    dimension, LabelMapPixelType >                 PDFSegmenterType;
+  typedef tube::SegmentConnectedComponentsUsingParzenPDFs< InputImageType,
+    LabelMapType >                                     PDFSegmenterType;
 
   typedef itk::Image< float, PARZEN_MAX_NUMBER_OF_FEATURES >
                                                    PDFImageType;

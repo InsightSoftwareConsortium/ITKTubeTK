@@ -30,26 +30,26 @@ namespace tube {
 /**
  *
  */
-template< class TImage >
-ComputeTrainingMask< TImage >
+template< class TImage, class TLabelMap >
+ComputeTrainingMask< TImage, TLabelMap >
 ::ComputeTrainingMask( void )
 {
-  m_ComputeTrainingMaskFilter = FilterType::New();
+  m_Filter = FilterType::New();
 }
 
 
 /**
  *
  */
-template< class TImage >
+template< class TImage, class TLabelMap >
 void
-ComputeTrainingMask< TImage >
+ComputeTrainingMask< TImage, TLabelMap >
 ::PrintSelf( std::ostream & os, itk::Indent  indent ) const
 {
   os << indent << "Gap:"
-     << m_ComputeTrainingMaskFilter->GetGap() << std::endl;
-  os << indent << "NotVesselWidth:"
-     << m_ComputeTrainingMaskFilter->GetNotVesselWidth() << std::endl;
+     << m_Filter->GetGap() << std::endl;
+  os << indent << "NotObjectWidth:"
+     << m_Filter->GetNotObjectWidth() << std::endl;
 }
 
 

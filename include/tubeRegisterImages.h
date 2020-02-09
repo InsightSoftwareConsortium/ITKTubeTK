@@ -38,7 +38,7 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 class RegisterImages:
   public itk::ProcessObject
 {
@@ -49,7 +49,7 @@ public:
   typedef itk::SmartPointer< Self >       Pointer;
   typedef itk::SmartPointer< const Self > ConstPointer;
 
-  typedef itk::Image< TPixel, VDimension >                   ImageType;
+  typedef TImage                                             ImageType;
 
   typedef itk::ImageToImageRegistrationHelper< ImageType >   FilterType;
 

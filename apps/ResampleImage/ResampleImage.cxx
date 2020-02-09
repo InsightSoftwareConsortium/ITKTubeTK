@@ -44,11 +44,11 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef typename tube::ResampleImage< TPixel, DimensionI >
-                                                 FilterType;
+  typedef itk::Image< TPixel, DimensionI >            ImageType;
+
+  typedef typename tube::ResampleImage< ImageType >   FilterType;
   typename FilterType::Pointer filter = FilterType::New();
 
-  typedef typename FilterType::ImageType         ImageType;
   typedef typename FilterType::TransformType     TransformType;
 
   typedef  itk::ImageFileReader< ImageType >     InputReaderType;

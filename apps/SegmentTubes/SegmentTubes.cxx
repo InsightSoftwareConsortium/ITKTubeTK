@@ -101,7 +101,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer inputImage = reader->GetOutput();
   typename SegmentTubesFilterType::Pointer segmentTubesFilter
     = SegmentTubesFilterType::New();
-  segmentTubesFilter->SetInputImage( inputImage );
+  segmentTubesFilter->SetInput( inputImage );
 
   if( !radiusInputVolume.empty() )
     {

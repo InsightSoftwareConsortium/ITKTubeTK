@@ -183,11 +183,11 @@ public:
 
   /**
    * Get the ridge extractor */
-  typename RidgeExtractorType::Pointer GetRidgeExtractor( void );
+  RidgeExtractorType * GetRidgeExtractor( void );
 
   /**
    * Get the radius extractor */
-  typename RadiusExtractorType::Pointer GetRadiusExtractor( void );
+  RadiusExtractorType * GetRadiusExtractor( void );
 
 
   /***********/

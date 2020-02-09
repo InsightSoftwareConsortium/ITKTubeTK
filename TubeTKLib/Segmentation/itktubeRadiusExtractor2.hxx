@@ -468,7 +468,7 @@ RadiusExtractor2<TInputImage>
     }
   double areaMin = distMin * distMin * vnl_math::pi;
   double areaPos = areaR - areaMin;
-  //if( this->GetDebug() )
+  if( this->GetDebug() )
     {
     ::tube::InformationMessage( "R = " + std::to_string(r)  );
     ::tube::InformationMessage( "   Dist = " + std::to_string(distMin) + " - "

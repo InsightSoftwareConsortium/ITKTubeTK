@@ -28,17 +28,17 @@ limitations under the License.
 namespace tube
 {
 
-template< unsigned int VDimension >
-ImageMath< VDimension >
+template< class TInputImage, class TOutputImage >
+ImageMath< TInputImage, TOutputImage >
 ::ImageMath( void )
 {
   m_HistogramBinMin = 0;
   m_HistogramBinSize = 0;
 }
 
-template< unsigned int VDimension >
+template< class TInputImage, class TOutputImage >
 void
-ImageMath< VDimension >
+ImageMath< TInputImage, TOutputImage >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

@@ -106,8 +106,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // call TubesToImageFilter
-  typedef tube::ConvertTubesToImage< Dimension, TPixel >
-    TubesToImageFilterType;
+  typedef tube::ConvertTubesToImage< TemplateImageType > TubesToImageFilterType;
 
   timeCollector.Start( "Converting Tubes To Image" );
 

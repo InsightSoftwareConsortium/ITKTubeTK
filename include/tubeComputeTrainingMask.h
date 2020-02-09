@@ -38,7 +38,8 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< typename TImage >
+template< class TImage, class TLabelMap=itk::Image< typename TImage::PixelType,
+  TImage::ImageDimension> >
 class ComputeTrainingMask : public itk::ProcessObject
 {
 public:
@@ -57,28 +58,26 @@ public:
 
   /** Typedef to images */
   typedef TImage                                          ImageType;
+  typedef TLabelMap                                       LabelMapType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageType::ImageDimension );
 
-  typedef typename itk::tube::ComputeTrainingMaskFilter< ImageType >
+  typedef typename itk::tube::ComputeTrainingMaskFilter< ImageType, LabelMapType >
                                                           FilterType;
-  typedef typename FilterType::ImageTypeShort             ImageTypeShort;
 
-  tubeWrapSetMacro( Gap, double, ComputeTrainingMaskFilter );
-  tubeWrapGetMacro( Gap, double, ComputeTrainingMaskFilter );
-  tubeWrapSetMacro( NotVesselWidth, double, ComputeTrainingMaskFilter );
-  tubeWrapGetMacro( NotVesselWidth, double, ComputeTrainingMaskFilter );
-  tubeWrapGetConstObjectMacro( NotVesselMask, ImageTypeShort,
-    ComputeTrainingMaskFilter );
+  tubeWrapSetMacro( Gap, double, Filter );
+  tubeWrapGetMacro( Gap, double, Filter );
+  tubeWrapSetMacro( NotObjectWidth, double, Filter );
+  tubeWrapGetMacro( NotObjectWidth, double, Filter );
+  tubeWrapGetConstObjectMacro( ObjectMask, LabelMapType, Filter );
+  tubeWrapGetConstObjectMacro( NotObjectMask, LabelMapType, Filter );
 
-  tubeWrapSetObjectMacro( Input, ImageType,
-    ComputeTrainingMaskFilter );
+  tubeWrapSetObjectMacro( Input, ImageType, Filter );
 
-  tubeWrapUpdateMacro( ComputeTrainingMaskFilter );
+  tubeWrapUpdateMacro( Filter );
 
-  tubeWrapGetObjectMacro( Output, ImageTypeShort,
-    ComputeTrainingMaskFilter );
+  tubeWrapGetObjectMacro( Output, LabelMapType, Filter );
 
 protected:
   ComputeTrainingMask( void );
@@ -96,7 +95,7 @@ private:
   void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
     {};
 
-  typename FilterType::Pointer m_ComputeTrainingMaskFilter;
+  typename FilterType::Pointer m_Filter;
 
 };
 

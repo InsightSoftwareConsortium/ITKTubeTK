@@ -22,16 +22,16 @@
 
 namespace tube
 {
-template< class TPixel, unsigned int VDimension >
-ResampleImage< TPixel, VDimension >
+template< class TImage >
+ResampleImage< TImage >
 ::ResampleImage( void )
 {
   m_Filter = FilterType::New();
 }
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 void
-ResampleImage< TPixel, VDimension >
+ResampleImage< TImage >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

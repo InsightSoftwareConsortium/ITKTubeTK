@@ -27,50 +27,50 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-# Test1 - VesselMask
+# Test1 - ObjectMask
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test1-VesselMask
+  NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1.mha}
+    DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1-Input.mha}
     ${TEMP}/${MODULE_NAME}-Test1.mha
     --gap 0.5
-    --notVesselWidth 2 )
+    --notObjectWidth 2 )
 
-# Test1 - Compare - VesselMask
+# Test1 - Compare - ObjectMask
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test1-VesselMask-Compare
+  NAME ${MODULE_NAME}-Test1-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}-Test1.mha
-    -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1_VesselMask.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1.mha}
     -i 0.01 )
-set_tests_properties( ${MODULE_NAME}-Test1-VesselMask-Compare
-  PROPERTIES DEPENDS ${MODULE_NAME}-Test1-VesselMask )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare
+  PROPERTIES DEPENDS ${MODULE_NAME}-Test1 )
 
-# Test2 - NotVesselMask
+# Test2
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test2-NotVesselMask
+  NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
-    DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2.mha}
+    DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2-Input.mha}
     ${TEMP}/${MODULE_NAME}-Test2.mha
-    --gap 0.5
-    --notVesselWidth 2
-    --notVesselMask ${TEMP}/${MODULE_NAME}-Test2_NotVesselMask.mha )
+    --gap 5
+    --notObjectWidth 2
+    --notObjectMask ${TEMP}/${MODULE_NAME}-Test2-NotObjectMask.mha )
 
-# Test2 - Compare - NotVesselMask
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test2-NotVesselMask-Compare
+  NAME ${MODULE_NAME}-Test2-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}-Test2.mha
-    -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2_NotVesselMask.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2.mha}
     -i 0.01 )
-set_tests_properties( ${MODULE_NAME}-Test2-NotVesselMask-Compare
-  PROPERTIES DEPENDS ${MODULE_NAME}-Test2-NotVesselMask )
+set_tests_properties( ${MODULE_NAME}-Test2-Compare
+  PROPERTIES DEPENDS ${MODULE_NAME}-Test2 )
 
+# Test2 - Compare - NotObjectMask
 ExternalData_Add_Test( TubeTKData
-  NAME ${MODULE_NAME}-Test2-NotVesselMask1-Compare
+  NAME ${MODULE_NAME}-Test2-NotObjectMask-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}-Test2_NotVesselMask.mha
-    -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2_NotVesselMask1.mha}
+    -t ${TEMP}/${MODULE_NAME}-Test2-NotObjectMask.mha
+    -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2-NotObjectMask.mha}
     -i 0.01 )
-set_tests_properties( ${MODULE_NAME}-Test2-NotVesselMask1-Compare
-  PROPERTIES DEPENDS ${MODULE_NAME}-Test2-NotVesselMask )
+set_tests_properties( ${MODULE_NAME}-Test2-NotObjectMask-Compare
+  PROPERTIES DEPENDS ${MODULE_NAME}-Test2 )

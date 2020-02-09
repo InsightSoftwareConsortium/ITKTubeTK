@@ -95,30 +95,39 @@ int DoIt( int argc, char * argv[] )
     ComputeTrainingMaskType::New();
   filter->SetInput( imReader->GetOutput() );
   filter->SetGap( gap );
-  filter->SetNotVesselWidth( notVesselWidth );
+  filter->SetNotObjectWidth( notObjectWidth );
   filter->Update();
   progress = 0.65;
   progressReporter.Report( progress );
   timeCollector.Stop( "Compute training mask" );
-  typedef typename ComputeTrainingMaskType::ImageTypeShort ImageTypeShort;
-  typedef itk::ImageFileWriter<ImageTypeShort>             VolumeWriterType;
+  typedef typename ComputeTrainingMaskType::LabelMapType   LabelMapType;
+  typedef itk::ImageFileWriter<LabelMapType>               VolumeWriterType;
 
   typename VolumeWriterType::Pointer writer = VolumeWriterType::New();
-  if( !notVesselMask.empty() )
+  if( !objectMask.empty() )
     {
-    timeCollector.Start( "Creating not-Vessel Mask" );
-    tube::InfoMessage( "Creating not-Vessel Mask..." );
-    writer->SetFileName( notVesselMask );
-    writer->SetInput( filter->GetNotVesselMask() );
+    timeCollector.Start( "Creating Object Mask" );
+    tube::InfoMessage( "Creating Object Mask..." );
+    writer->SetFileName( objectMask );
+    writer->SetInput( filter->GetObjectMask() );
     writer->Update();
-    timeCollector.Stop( "Creating not-Vessel Mask" );
+    timeCollector.Stop( "Creating Object Mask" );
     }
-  timeCollector.Start( "Creating Vessel Mask" );
-  tube::InfoMessage( "Creating Vessel Mask..." );
+  if( !notObjectMask.empty() )
+    {
+    timeCollector.Start( "Creating not-Object Mask" );
+    tube::InfoMessage( "Creating not-Object Mask..." );
+    writer->SetFileName( notObjectMask );
+    writer->SetInput( filter->GetNotObjectMask() );
+    writer->Update();
+    timeCollector.Stop( "Creating not-Object Mask" );
+    }
+  timeCollector.Start( "Creating Training Mask" );
+  tube::InfoMessage( "Creating Training Mask..." );
   writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( filter->GetOutput() );
   writer->Update();
-  timeCollector.Stop( "Creating Vessel Mask" );
+  timeCollector.Stop( "Creating Training Mask" );
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End();
