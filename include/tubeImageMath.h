@@ -40,7 +40,7 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< unsigned int VDimension >
+template< class TInputImage, class TOutputImage=TInputImage >
 class ImageMath:
   public itk::ProcessObject
 {
@@ -51,12 +51,14 @@ public:
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
-  typedef tube::ImageMathFilters< VDimension >       FilterType;
+  typedef tube::ImageMathFilters< TInputImage::ImageDimension >  FilterType;
 
+  typedef TInputImage                                InputImageType;
   typedef typename FilterType::ImageType             ImageType;
+  typedef TOutputImage                               OutputImageType;
 
-  typedef itk::Image< unsigned char, VDimension>     ImageTypeUChar;
-  typedef itk::Image< short, VDimension>             ImageTypeShort;
+  typedef itk::Image< unsigned char, TInputImage::ImageDimension> ImageTypeUChar;
+  typedef itk::Image< short, TInputImage::ImageDimension>         ImageTypeShort;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -67,14 +69,33 @@ public:
   /** Set/Get input image.
    *  This is an in-place filter, so Input will change
    *  with each function call */
-  void SetInput( ImageType * input )
-  { m_Filter.SetInput( input ); this->Modified(); }
+  void SetInput( InputImageType * input )
+  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( input );
+    castFilter->Update();
+    typename ImageType::Pointer output = castFilter->GetOutput();
+    output->Register();
+    m_Filter.SetInput( output );
+    this->Modified(); }
+
+  /** Get current result */
 
   ImageType * GetInput( void )
   { return m_Filter.GetInput(); }
 
   /** Get current result */
-  ImageType * GetOutput( void )
+  OutputImageType * GetOutput( void )
+  { typedef itk::CastImageFilter< ImageType,OutputImageType > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( m_Filter.GetOutput() );
+    castFilter->Update();
+    typename OutputImageType::Pointer output = castFilter->GetOutput();
+    output->Register();
+    return output; }
+
+  /** Get current result */
+  ImageType * GetOutputFloat( void )
   { return m_Filter.GetOutput(); }
 
   /** Get current result */
@@ -120,11 +141,21 @@ public:
   { m_Filter.AddGaussianNoise( valMin, valMax, noiseMean, noiseRange, seed );
     this->Modified(); };
 
-  void AddImages( ImageType * input2, float weight1, float weight2 )
-  { m_Filter.AddImages( input2, weight1, weight2 ); this->Modified(); };
+  void AddImages( InputImageType * input2, float weight1, float weight2 )
+  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( input2 );
+    castFilter->Update();
+    m_Filter.AddImages( castFilter->GetOutput(), weight1, weight2 );
+    this->Modified(); };
 
-  void MultiplyImages( ImageType * input2 )
-  { m_Filter.MultiplyImages( input2 ); this->Modified(); };
+  void MultiplyImages( InputImageType * input2 )
+  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( input2 );
+    castFilter->Update();
+    m_Filter.MultiplyImages( castFilter->GetOutput() );
+    this->Modified(); };
 
   void PadUsingMirroring( int numPadVoxels )
   { m_Filter.MirrorAndPadImage( numPadVoxels ); this->Modified(); };
@@ -138,8 +169,13 @@ public:
   void NormalizeMeanShift()
   { m_Filter.NormalizeImage( 2 ); this->Modified(); };
 
-  void FuseUsingMax( ImageType * input2, float offset2 )
-  { m_Filter.FuseImages( input2, offset2 ); this->Modified(); };
+  void FuseUsingMax( InputImageType * input2, float offset2 )
+  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( input2 );
+    castFilter->Update();
+    m_Filter.FuseImages( castFilter->GetOutput(), offset2 );
+    this->Modified(); };
 
   void MedianFilter( int size )
   { m_Filter.MedianImage( size ); this->Modified(); };
@@ -149,23 +185,35 @@ public:
   { m_Filter.ThresholdImage( threshLow, threshHigh, valTrue, valFalse);
   this->Modified(); };
 
-  double MeanWithinMaskRange( ImageType * mask, float maskThreshLow,
+  double MeanWithinMaskRange( InputImageType * mask, float maskThreshLow,
     float maskThreshHigh )
-  { return m_Filter.ComputeImageStatisticsWithinMaskRange( mask, maskThreshLow,
-  maskThreshHigh, 0 ); };
+  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( mask );
+    castFilter->Update();
+    return m_Filter.ComputeImageStatisticsWithinMaskRange( castFilter->GetOutput(),
+      maskThreshLow, maskThreshHigh, 0 ); };
 
-  double StdDevWithinMaskRange( ImageType * mask, float maskThreshLow,
+  double StdDevWithinMaskRange( InputImageType * mask, float maskThreshLow,
     float maskThreshHigh )
-  { return m_Filter.ComputeImageStatisticsWithinMaskRange( mask, maskThreshLow,
-  maskThreshHigh, 1 ); };
+  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( mask );
+    castFilter->Update();
+    return m_Filter.ComputeImageStatisticsWithinMaskRange( castFilter->GetOutput(),
+      maskThreshLow, maskThreshHigh, 1 ); };
 
   void AbsoluteValue()
   { m_Filter.AbsoluteImage(); this->Modified(); };
 
-  void ReplaceValuesOutsideMaskRange( ImageType * mask, float maskThreshLow,
+  void ReplaceValuesOutsideMaskRange( InputImageType * mask, float maskThreshLow,
     float maskThreshHigh, float valFalse )
-  { m_Filter.ReplaceValuesOutsideMaskRange( mask, maskThreshLow,
-  maskThreshHigh, valFalse ); this->Modified(); };
+  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( mask );
+    castFilter->Update();
+    m_Filter.ReplaceValuesOutsideMaskRange( castFilter->GetOutput(),
+      maskThreshLow, maskThreshHigh, valFalse ); this->Modified(); };
 
   void Erode( int radius, float fgVal, float bkgVal )
   { m_Filter.MorphImage( 0, radius, fgVal, bkgVal ); this->Modified(); };
@@ -173,10 +221,14 @@ public:
   void Dilate( int radius, float fgVal, float bkgVal )
   { m_Filter.MorphImage( 1, radius, fgVal, bkgVal ); this->Modified(); };
 
-  void ReplaceValueWithinMaskRange( ImageType * mask, float maskThreshLow,
+  void ReplaceValueWithinMaskRange( InputImageType * mask, float maskThreshLow,
     float maskThreshHigh, float imageVal, float newImageVal )
-  { m_Filter.ReplaceValueWithinMaskRange( mask, maskThreshLow, maskThreshHigh,
-  imageVal, newImageVal ); this->Modified(); };
+  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( mask );
+    castFilter->Update();
+    m_Filter.ReplaceValueWithinMaskRange( castFilter->GetOutput(),
+      maskThreshLow, maskThreshHigh, imageVal, newImageVal ); this->Modified(); };
 
   void Blur( float sigma )
   { m_Filter.BlurImage( sigma ); this->Modified(); };
@@ -215,15 +267,23 @@ public:
   nBins, nMatchPoints ); this->Modified(); };
 
   void IntensityCorrection( unsigned int nBins, unsigned int nMatchPoints,
-    ImageType * referenceImage )
-  { m_Filter.CorrectIntensityUsingHistogramMatching( nBins, nMatchPoints,
-  referenceImage ); this->Modified(); };
+    InputImageType * referenceImage )
+  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( referenceImage );
+    castFilter->Update();
+    m_Filter.CorrectIntensityUsingHistogramMatching( nBins, nMatchPoints,
+      castFilter->GetOutput() ); this->Modified(); };
 
   void Resize( double factor )
   { m_Filter.Resize( factor ); this->Modified(); };
 
-  void Resize( ImageType * referenceImage )
-  { m_Filter.Resize( referenceImage ); this->Modified(); };
+  void Resize( InputImageType * referenceImage )
+  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+    typename CastFilterType::Pointer castFilter = CastFilterType::New();
+    castFilter->SetInput( referenceImage );
+    castFilter->Update();
+    m_Filter.Resize( castFilter->GetOutput() ); this->Modified(); };
 
   void ExtractSlice( unsigned int dimension, unsigned int slice )
   { m_Filter.ExtractSlice( dimension, slice ); this->Modified(); };
@@ -237,7 +297,7 @@ public:
   { m_Filter.SegmentUsingConnectedThreshold( threshLow, threshHigh, labelVal,
   x, y, z ); this->Modified(); };
 
-  std::vector< itk::ContinuousIndex< double, VDimension > >
+  std::vector< itk::ContinuousIndex< double, TInputImage::ImageDimension > >
   VoronoiTessellation( unsigned int nCentroids, unsigned int nIters,
     unsigned int nSamples )
   { this->Modified();

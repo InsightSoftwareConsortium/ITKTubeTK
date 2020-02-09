@@ -131,8 +131,8 @@ RidgeExtractor<TInputImage>
   m_MaxXChange = 3.0;
   m_MinRidgeness = 0.8;    // near 1 = harder
   m_MinRidgenessStart = 0.7;
-  m_MinRoundness = 0.4;    // near 1 = harder
-  m_MinRoundnessStart = 0.3;
+  m_MinRoundness = 0.3;    // near 1 = harder
+  m_MinRoundnessStart = 0.2;
   m_MinCurvature = 0.1;
   m_MinCurvatureStart = 0.0;
   m_MinLevelness = 0.4;

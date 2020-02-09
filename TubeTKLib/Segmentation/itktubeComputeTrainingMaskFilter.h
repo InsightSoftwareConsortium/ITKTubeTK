@@ -47,28 +47,30 @@ namespace tube
  * \sa ComputeTrainingMaskFilter
  */
 
-template< class TInputImage >
+template< class TInputImage, class TLabelMap=Image<
+  typename TInputImage::PixelType, TInputImage::ImageDimension> >
 class ComputeTrainingMaskFilter:
   public ImageToImageFilter< TInputImage,
-    itk::Image<short, TInputImage::ImageDimension> >
+    TLabelMap >
 {
 public:
   typedef ComputeTrainingMaskFilter                       Self;
-  typedef ImageToImageFilter<TInputImage, TInputImage>    Superclass;
+  typedef ImageToImageFilter<TInputImage, TLabelMap>      Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
   typedef TInputImage                                     ImageType;
-  typedef itk::Image< short, ImageType::ImageDimension >  ImageTypeShort;
+  typedef TLabelMap                                       LabelMapType;
 
   itkStaticConstMacro( InputImageDimension, unsigned int,
                       TInputImage::ImageDimension );
 
   itkNewMacro( Self );
-  const ImageTypeShort* GetNotVesselMask();
+  const LabelMapType * GetObjectMask();
+  const LabelMapType * GetNotObjectMask();
   itkSetMacro( Gap, double );
-  itkSetMacro( NotVesselWidth, double );
+  itkSetMacro( NotObjectWidth, double );
   itkGetMacro( Gap, double );
-  itkGetMacro( NotVesselWidth, double );
+  itkGetMacro( NotObjectWidth, double );
 
 protected:
   ComputeTrainingMaskFilter();
@@ -95,12 +97,13 @@ private:
                                 DivideFilterType;
   typedef itk::AddImageFilter<ImageType, ImageType, ImageType>
                                 AddFilterType;
-  typedef itk::CastImageFilter< ImageType, ImageTypeShort >
+  typedef itk::CastImageFilter< ImageType, LabelMapType >
                                 CastFilterType;
 
   ComputeTrainingMaskFilter( const Self& );
   void operator=( const Self& );
-  void ApplyDilateMorphologyFilter( typename ImageType::Pointer &input );
+  void ApplyDilateMorphologyFilter( typename ImageType::Pointer &input,
+    int size=1 );
 
   typename AddFilterType::Pointer             m_Add;
   typename ThresholdFilterType::Pointer       m_Threshold;
@@ -110,11 +113,12 @@ private:
   typename MultiplyFilterType::Pointer        m_MultiplyCenterLine;
   typename DivideFilterType::Pointer          m_DivideImage;
   typename CastFilterType::Pointer            m_Cast;
-  typename CastFilterType::Pointer            m_CastNotVessel;
+  typename CastFilterType::Pointer            m_CastObject;
+  typename CastFilterType::Pointer            m_CastNotObject;
 
   BallType m_Ball;
   double   m_Gap;
-  double   m_NotVesselWidth;
+  double   m_NotObjectWidth;
 };
 
 }//end of tube namespace

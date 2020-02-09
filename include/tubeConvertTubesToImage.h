@@ -41,7 +41,7 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< unsigned int Dimension, class TOutputPixel >
+template< class TImage >
 class ConvertTubesToImage:
   public itk::ProcessObject
 {
@@ -52,10 +52,10 @@ public:
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
-  typedef itk::Image< TOutputPixel, Dimension >      OutputImageType;
+  typedef TImage                                     OutputImageType;
 
   typedef itk::tube::TubeSpatialObjectToImageFilter<
-    Dimension, OutputImageType >                     FilterType;
+    TImage::ImageDimension, OutputImageType >        FilterType;
 
   typedef typename FilterType::SpatialObjectType     TubesType;
 

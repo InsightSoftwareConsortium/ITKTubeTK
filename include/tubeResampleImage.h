@@ -38,7 +38,7 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TPixel, unsigned int VDimension >
+template< class TImage >
 class ResampleImage:
   public itk::ProcessObject
 {
@@ -49,7 +49,7 @@ public:
   typedef itk::SmartPointer< Self >       Pointer;
   typedef itk::SmartPointer< const Self > ConstPointer;
 
-  typedef itk::tube::ResampleImageFilter< TPixel, VDimension >
+  typedef itk::tube::ResampleImageFilter< typename TImage::PixelType, TImage::ImageDimension >
     FilterType;
 
   typedef typename FilterType::ImageType      ImageType;

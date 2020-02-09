@@ -79,8 +79,11 @@ public:
   /***/
 
   /** Set the source image. */
-  tubeWrapSetObjectMacro( InputImage, ImageType, Filter );
-  tubeWrapGetConstObjectMacro( InputImage, ImageType, Filter );
+  void SetInput( ImageType * img )
+  { m_Filter->SetInputImage( img ); };
+
+  const ImageType * GetInput( void )
+  { return m_Filter->GetInputImage(); };
 
   /** Set the radius image. */
   tubeWrapSetObjectMacro( RadiusInputImage, ImageType, Filter );

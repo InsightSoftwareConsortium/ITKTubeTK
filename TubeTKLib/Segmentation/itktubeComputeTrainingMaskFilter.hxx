@@ -30,17 +30,18 @@ namespace itk
 namespace tube
 {
 
-template< class TInputImage >
-ComputeTrainingMaskFilter< TInputImage >
+template< class TInputImage, class TLabelMap >
+ComputeTrainingMaskFilter< TInputImage, TLabelMap >
 ::ComputeTrainingMaskFilter()
 {
   m_Gap = 0;
-  m_NotVesselWidth = 1.0;
+  m_NotObjectWidth = 1.0;
   m_BinaryThinning = BinaryThinningFilterType::New();
 
   m_Threshold = ThresholdFilterType::New();
 
   m_Threshold->SetLowerThreshold( 0 );
+  m_Threshold->SetUpperThreshold( 0 );
   m_Threshold->SetInsideValue( 0 );
   m_Threshold->SetOutsideValue( 255 );
 
@@ -60,22 +61,29 @@ ComputeTrainingMaskFilter< TInputImage >
 
   m_Add = AddFilterType::New();
   m_Cast = CastFilterType::New();
-  m_CastNotVessel = CastFilterType::New();
+  m_CastObject = CastFilterType::New();
+  m_CastNotObject = CastFilterType::New();
 
   this->SetNumberOfRequiredInputs( 1 );
-  this->SetNumberOfRequiredOutputs( 2 );
+  this->SetNumberOfRequiredOutputs( 3 );
 
-  typename ImageTypeShort::Pointer output1 =
-    static_cast< ImageTypeShort * >( this->MakeOutput( 1 ).GetPointer() );
+  // Object mask
+  typename LabelMapType::Pointer output1 =
+    static_cast< LabelMapType * >( this->MakeOutput( 1 ).GetPointer() );
   this->ProcessObject::SetNthOutput( 1, output1 );
+
+  // Not Object mask
+  typename LabelMapType::Pointer output2 =
+    static_cast< LabelMapType * >( this->MakeOutput( 2 ).GetPointer() );
+  this->ProcessObject::SetNthOutput( 2, output2 );
 }
 
-template< class TInputImage >
+template< class TInputImage, class TLabelMap >
 void
-ComputeTrainingMaskFilter< TInputImage >
-::ApplyDilateMorphologyFilter( typename ImageType::Pointer &input )
+ComputeTrainingMaskFilter< TInputImage, TLabelMap >
+::ApplyDilateMorphologyFilter( typename ImageType::Pointer &input, int size )
 {
-  for( int r = 0; r<m_NotVesselWidth; r++ )
+  for( int r = 0; r<size; r++ )
     {
     m_Dilate->SetInput( input );
     m_Dilate->Update();
@@ -85,35 +93,46 @@ ComputeTrainingMaskFilter< TInputImage >
   return;
 }
 
-template< class TInputImage >
+template< class TInputImage, class TLabelMap >
 void
-ComputeTrainingMaskFilter< TInputImage >
+ComputeTrainingMaskFilter< TInputImage, TLabelMap >
 ::GenerateData()
 {
   typename ImageType::Pointer input = ImageType::New();
   input->Graft( const_cast< ImageType * >( this->GetInput() ) );
-  m_BinaryThinning->SetInput( input );
+
   m_Threshold->SetInput( input );
-  m_Threshold->SetUpperThreshold( m_Gap );
   m_Threshold->Update();
   typename ImageType::Pointer image = m_Threshold->GetOutput();
 
-  ApplyDilateMorphologyFilter( image );
+  m_BinaryThinning->SetInput( image );
+
+  ApplyDilateMorphologyFilter( image, m_Gap );
   typename ImageType::Pointer dilatedImage = image;
-  ApplyDilateMorphologyFilter( image );
+
+  ApplyDilateMorphologyFilter( image, m_NotObjectWidth );
+
   m_Substract->SetInput1( image );
   m_Substract->SetInput2( dilatedImage );
 
   m_MultiplyCenterLine->SetInput( m_BinaryThinning->GetOutput() );
+
   m_DivideImage->SetInput( m_Substract->GetOutput() );
+
   m_Add->SetInput1( m_MultiplyCenterLine->GetOutput() );
   m_Add->SetInput2( m_DivideImage->GetOutput() );
 
-  m_CastNotVessel->SetInput( m_Substract->GetOutput() );
-  m_CastNotVessel->GraftOutput( const_cast< ImageTypeShort * >(
+  m_CastObject->SetInput( m_BinaryThinning->GetOutput() );
+  m_CastObject->GraftOutput( const_cast< LabelMapType * >(
       this->GetOutput( 1 ) ) );
-  m_CastNotVessel->Update();
-  this->GraftNthOutput( 1, m_CastNotVessel->GetOutput() );
+  m_CastObject->Update();
+  this->GraftNthOutput( 1, m_CastObject->GetOutput() );
+
+  m_CastNotObject->SetInput( m_Substract->GetOutput() );
+  m_CastNotObject->GraftOutput( const_cast< LabelMapType * >(
+      this->GetOutput( 2 ) ) );
+  m_CastNotObject->Update();
+  this->GraftNthOutput( 2, m_CastNotObject->GetOutput() );
 
   m_Cast->SetInput( m_Add->GetOutput() );
   m_Cast->GraftOutput( this->GetOutput() );
@@ -121,27 +140,35 @@ ComputeTrainingMaskFilter< TInputImage >
   this->GraftOutput( m_Cast->GetOutput() );
 }
 
-template< class TInputImage >
-const typename ComputeTrainingMaskFilter< TInputImage >::ImageTypeShort*
-ComputeTrainingMaskFilter< TInputImage >
-::GetNotVesselMask()
+template< class TInputImage, class TLabelMap >
+const typename ComputeTrainingMaskFilter< TInputImage, TLabelMap >::LabelMapType *
+ComputeTrainingMaskFilter< TInputImage, TLabelMap >
+::GetObjectMask()
 {
-  return itkDynamicCastInDebugMode< ImageTypeShort * >( this->GetOutput( 1 ) );
+  return itkDynamicCastInDebugMode< LabelMapType * >( this->GetOutput( 1 ) );
 }
 
-template< class TInputImage >
-ComputeTrainingMaskFilter< TInputImage >
+template< class TInputImage, class TLabelMap >
+const typename ComputeTrainingMaskFilter< TInputImage, TLabelMap >::LabelMapType *
+ComputeTrainingMaskFilter< TInputImage, TLabelMap >
+::GetNotObjectMask()
+{
+  return itkDynamicCastInDebugMode< LabelMapType * >( this->GetOutput( 2 ) );
+}
+
+template< class TInputImage, class TLabelMap >
+ComputeTrainingMaskFilter< TInputImage, TLabelMap >
 ::~ComputeTrainingMaskFilter()
 {
 }
 
-template< class TInputImage >
+template< class TInputImage, class TLabelMap >
 void
-ComputeTrainingMaskFilter< TInputImage >
+ComputeTrainingMaskFilter< TInputImage, TLabelMap >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   os << indent << "Gap = " << m_Gap << std::endl;
-  os << indent << "NotVesselWidth = " << m_NotVesselWidth << std::endl;
+  os << indent << "NotObjectWidth = " << m_NotObjectWidth << std::endl;
   ImageType* inputPtr = const_cast< ImageType * >( this->GetInput() );
   if( inputPtr )
     {

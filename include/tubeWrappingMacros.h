@@ -180,7 +180,7 @@ limitations under the License.
 
 /** Get Nth in an object list */
 #define tubeWrapGetNthMacro( name, type, wrap_filter_object_name )  \
-  type * Get##name( unsigned int i )                        \
+  type Get##name( unsigned int i )                        \
     {                                                                   \
     return this->m_##wrap_filter_object_name->Get##name( i );           \
     }

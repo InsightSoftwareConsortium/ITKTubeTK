@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Vessel Train Mask</title>
-  <description>Return expert vessel and not vessel mask.</description>
+  <title>Object Train Mask</title>
+  <description>Return expert object and not object mask.</description>
   <version>1.0</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
@@ -16,33 +16,40 @@
       <label>Input Expert Mask</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input image file containing the expert marked vessel.</description>
+      <description>Input image file containing the expert marked object.</description>
     </image>
     <image>
       <name>outputVolume</name>
-      <label>Output Vessel Mask</label>
+      <label>Output Object Mask</label>
       <channel>output</channel>
       <index>1</index>
-      <description>Output image file containing vessel mask.</description>
+      <description>Output image file containing object mask.</description>
     </image>
     <image>
-      <name>notVesselMask</name>
-      <label>Output Not-Vessel Mask</label>
+      <name>objectMask</name>
+      <label>Output Object Mask</label>
       <channel>output</channel>
-      <longflag>notVesselMask</longflag>
-      <description>The not-vessel expert mask is saved as an image in the location specified by the string "notVesselMask".</description>
+      <longflag>objectMask</longflag>
+      <description>The object expert mask is saved as an image in the location specified by the string "objectMask".</description>
+    </image>
+    <image>
+      <name>notObjectMask</name>
+      <label>Output Not-Object Mask</label>
+      <channel>output</channel>
+      <longflag>notObjectMask</longflag>
+      <description>The not-object expert mask is saved as an image in the location specified by the string "notObjectMask".</description>
     </image>
     <double>
       <name>gap</name>
       <label>Gap</label>
-      <description>A double value specifying the gap between the vessel region marked by an expert and the not-vessel region.</description>
+      <description>A double value specifying the gap between the object region marked by an expert and the not-object region.</description>
       <longflag>gap</longflag>
     </double>
     <double>
-      <name>notVesselWidth</name>
-      <label>Not Vessel Width</label>
-      <description>A double value specifying the width around the region marked as vessel by an expert, that would be regarded as not-vessel expert mask.</description>
-      <longflag>notVesselWidth</longflag>
+      <name>notObjectWidth</name>
+      <label>Not Object Width</label>
+      <description>A double value specifying the width around the region marked as object by an expert, that would be regarded as not-object expert mask.</description>
+      <longflag>notObjectWidth</longflag>
     </double>
   </parameters>
 </executable>

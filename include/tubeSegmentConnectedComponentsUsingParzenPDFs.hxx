@@ -28,8 +28,8 @@ limitations under the License.
 namespace tube
 {
 
-template< class TInputPixel, unsigned int TDimension, class TMaskPixel >
-SegmentConnectedComponentsUsingParzenPDFs< TInputPixel, TDimension, TMaskPixel >
+template< class TImage, class TLabelMap >
+SegmentConnectedComponentsUsingParzenPDFs< TImage, TLabelMap >
 ::SegmentConnectedComponentsUsingParzenPDFs( void )
 {
   m_Filter = FilterType::New();
@@ -37,25 +37,25 @@ SegmentConnectedComponentsUsingParzenPDFs< TInputPixel, TDimension, TMaskPixel >
   m_FVGenerator = FeatureVectorGeneratorType::New();
 }
 
-template< class TInputPixel, unsigned int TDimension, class TMaskPixel >
+template< class TImage, class TLabelMap >
 void
-SegmentConnectedComponentsUsingParzenPDFs< TInputPixel, TDimension, TMaskPixel >
+SegmentConnectedComponentsUsingParzenPDFs< TImage, TLabelMap >
 ::SetFeatureImage( InputImageType * img )
 {
   m_FVGenerator->SetInput( img );
 }
 
-template< class TInputPixel, unsigned int TDimension, class TMaskPixel >
+template< class TImage, class TLabelMap >
 void
-SegmentConnectedComponentsUsingParzenPDFs< TInputPixel, TDimension, TMaskPixel >
+SegmentConnectedComponentsUsingParzenPDFs< TImage, TLabelMap >
 ::AddFeatureImage( InputImageType * img )
 {
   m_FVGenerator->AddInput( img );
 }
 
-template< class TInputPixel, unsigned int TDimension, class TMaskPixel >
+template< class TImage, class TLabelMap >
 void
-SegmentConnectedComponentsUsingParzenPDFs< TInputPixel, TDimension, TMaskPixel >
+SegmentConnectedComponentsUsingParzenPDFs< TImage, TLabelMap >
 ::Update( void )
 {
   m_Filter->SetFeatureVectorGenerator( m_FVGenerator );
@@ -63,9 +63,9 @@ SegmentConnectedComponentsUsingParzenPDFs< TInputPixel, TDimension, TMaskPixel >
   m_Filter->Update();
 }
 
-template< class TInputPixel, unsigned int TDimension, class TMaskPixel >
+template< class TImage, class TLabelMap >
 void
-SegmentConnectedComponentsUsingParzenPDFs< TInputPixel, TDimension, TMaskPixel >
+SegmentConnectedComponentsUsingParzenPDFs< TImage, TLabelMap >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

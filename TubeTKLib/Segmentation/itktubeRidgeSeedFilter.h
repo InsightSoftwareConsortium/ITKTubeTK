@@ -30,6 +30,7 @@ limitations under the License.
 #include "itktubeRidgeFFTFeatureVectorGenerator.h"
 
 #include <itkImage.h>
+#include <itkImageToImageFilter.h>
 
 #include <vnl/vnl_matrix.h>
 #include <vnl/vnl_vector.h>
@@ -107,6 +108,8 @@ public:
   virtual void AddInput( const InputImageType * img );
 
   void SetLabelMap( LabelMapType * img );
+  typename LabelMapType::Pointer GetLabelMap( void )
+  { return this->GetOutput(); };
 
   typename SeedFeatureGeneratorType::Pointer
     GetSeedFeatureGenerator( void );
@@ -121,28 +124,31 @@ public:
 
   // Basis
   void         SetInputWhitenMeans( const WhitenMeansType & means );
-  void         SetInputWhitenStdDevs( const WhitenStdDevsType & stdDevs );
   const WhitenMeansType &   GetInputWhitenMeans( void ) const;
+
+  void         SetInputWhitenStdDevs( const WhitenStdDevsType & stdDevs );
   const WhitenStdDevsType & GetInputWhitenStdDevs( void ) const;
+
   void         SetOutputWhitenMeans( const WhitenMeansType & means );
-  void         SetOutputWhitenStdDevs( const WhitenStdDevsType & stdDevs );
   const WhitenMeansType &   GetOutputWhitenMeans( void ) const;
+
+  void         SetOutputWhitenStdDevs( const WhitenStdDevsType & stdDevs );
   const WhitenStdDevsType & GetOutputWhitenStdDevs( void ) const;
 
   unsigned int GetNumberOfBasis( void ) const;
 
+  void         SetBasisValue( unsigned int basisNum, double value );
   double       GetBasisValue( unsigned int basisNum ) const;
+  void         SetBasisVector( unsigned int basisNum, const VectorType & vec );
   VectorType   GetBasisVector( unsigned int basisNum ) const;
+  void         SetBasisMatrix( const MatrixType & mat );
   MatrixType   GetBasisMatrix( void ) const;
+  void         SetBasisValues( const VectorType & values );
   VectorType   GetBasisValues( void ) const;
 
   typename FeatureImageType::Pointer GetBasisImage( unsigned int num = 0 )
     const;
 
-  void   SetBasisValue( unsigned int basisNum, double value );
-  void   SetBasisVector( unsigned int basisNum, const VectorType & vec );
-  void   SetBasisMatrix( const MatrixType & mat );
-  void   SetBasisValues( const VectorType & values );
 
   // PDFSegmenter
   typename ProbabilityImageType::Pointer
