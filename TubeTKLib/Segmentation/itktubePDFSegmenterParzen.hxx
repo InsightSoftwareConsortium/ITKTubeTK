@@ -433,6 +433,10 @@ PDFSegmenterParzen< TImage, TLabelMap >
   for( unsigned int i = 0; i < numFeatures; i++ )
     {
     spacing[i] = m_HistogramBinSize[i];
+    if(spacing[i] == 0)
+      {
+      spacing[i] = 1;
+      }
     origin[i] = m_HistogramBinMin[i];
     size[i] = m_HistogramNumberOfBin[i];
     }
@@ -550,6 +554,10 @@ PDFSegmenterParzen< TImage, TLabelMap >
   for( unsigned int i = 0; i < numFeatures; i++ )
     {
     spacing[i] = m_HistogramBinSize[i];
+    if( spacing[i] == 0 )
+      {
+      spacing[i] = 1;
+      }
     origin[i] = m_HistogramBinMin[i];
     size[i] = m_HistogramNumberOfBin[i];
     }
