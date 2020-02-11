@@ -815,7 +815,6 @@ RadiusExtractor2<TInputImage>
       std::to_string( ( *pntIter ).GetId() ) );
     }
 
-  unsigned int count = 0;
   double rStart0 = this->GetRadiusStart();
   double rStart = rStart0;
   for( int p = static_cast< int >( pntCount );
