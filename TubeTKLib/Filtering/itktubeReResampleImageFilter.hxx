@@ -21,10 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeResampleImageFilter_hxx
-#define __itktubeResampleImageFilter_hxx
+#ifndef __itktubeReResampleImageFilter_hxx
+#define __itktubeReResampleImageFilter_hxx
 
-#include "itktubeResampleImageFilter.h"
+#include "itktubeReResampleImageFilter.h"
 
 namespace itk
 {
@@ -34,10 +34,10 @@ namespace tube
 
 /** Constructor */
 template< class TPixel, unsigned int VDimension >
-ResampleImageFilter< TPixel, VDimension >::
-ResampleImageFilter( void )
+ReResampleImageFilter< TPixel, VDimension >::
+ReResampleImageFilter( void )
 {
-  m_MatchImage = NULL;
+  m_MatchImage = nullptr;
   m_Spacing.clear();
   m_Origin.clear();
   m_Index.clear();
@@ -46,25 +46,30 @@ ResampleImageFilter( void )
   m_MakeHighResIso = false;
   m_Interpolator = "Linear";
   m_LoadTransform = false;
-  m_Transform = NULL;
+  m_Transform = nullptr;
+
+  m_Input = nullptr;
+  m_Output = nullptr;
 }
 
 /** GenerateData */
 template< class TPixel, unsigned int VDimension >
 void
-ResampleImageFilter< TPixel, VDimension >::
-GenerateData( void )
+ReResampleImageFilter< TPixel, VDimension >::
+Update( void )
 {
-  const ImageType *inputImage = this->GetInput();
+  m_Filter = ResampleFilterType::New();
 
-  typename ImageType::SpacingType     inSpacing = inputImage->GetSpacing();
-  typename ImageType::PointType       inOrigin = inputImage->GetOrigin();
+  m_Filter->SetInput( m_Input );
+  
+  typename ImageType::SpacingType     inSpacing = m_Input->GetSpacing();
+  typename ImageType::PointType       inOrigin = m_Input->GetOrigin();
   typename ImageType::SizeType        inSize =
-    inputImage->GetLargestPossibleRegion().GetSize();
+    m_Input->GetLargestPossibleRegion().GetSize();
   typename ImageType::IndexType       inIndex =
-    inputImage->GetLargestPossibleRegion().GetIndex();
+    m_Input->GetLargestPossibleRegion().GetIndex();
   typename ImageType::DirectionType   inDirection =
-    inputImage->GetDirection();
+    m_Input->GetDirection();
 
   typename ImageType::SizeType       outSize;
   typename ImageType::SpacingType    outSpacing;
@@ -171,13 +176,6 @@ GenerateData( void )
       }
     }
 
-  typedef typename itk::ResampleImageFilter< ImageType, ImageType >
-    ResampleFilterType;
-  typename ResampleFilterType::Pointer filter =
-    ResampleFilterType::New();
-
-  filter->SetInput( inputImage );
-
   typedef typename itk::InterpolateImageFunction< ImageType, double >
     InterpType;
   typename InterpType::Pointer interp;
@@ -205,28 +203,28 @@ GenerateData( void )
       ImageType, double >    LinearInterpType;
     interp = LinearInterpType::New();
     }
-  filter->SetInterpolator( interp );
+  m_Filter->SetInterpolator( interp );
 
   if( m_LoadTransform )
     {
-    filter->SetTransform( m_Transform );
+    m_Filter->SetTransform( m_Transform );
     }
 
-  filter->SetSize( outSize );
-  filter->SetOutputStartIndex( outIndex );
-  filter->SetOutputOrigin( outOrigin );
-  filter->SetOutputSpacing( outSpacing );
-  filter->SetOutputDirection( outDirection );
-  filter->SetDefaultPixelValue( 0 );
+  m_Filter->SetSize( outSize );
+  m_Filter->SetOutputStartIndex( outIndex );
+  m_Filter->SetOutputOrigin( outOrigin );
+  m_Filter->SetOutputSpacing( outSpacing );
+  m_Filter->SetOutputDirection( outDirection );
+  m_Filter->SetDefaultPixelValue( 0 );
 
-  filter->Update();
+  m_Filter->Update();
 
-  this->GraftOutput( filter->GetOutput() );
+  m_Output = m_Filter->GetOutput();
 }
 
 template< class TPixel, unsigned int VDimension >
 void
-ResampleImageFilter< TPixel, VDimension >::
+ReResampleImageFilter< TPixel, VDimension >::
 SetTransform( TransformType* t )
 {
   m_Transform = t;
@@ -234,7 +232,7 @@ SetTransform( TransformType* t )
 
 template< class TPixel, unsigned int VDimension >
 void
-ResampleImageFilter< TPixel, VDimension >::
+ReResampleImageFilter< TPixel, VDimension >::
 SetSpacing( std::vector<double> s )
 {
   m_Spacing = s;
@@ -242,7 +240,7 @@ SetSpacing( std::vector<double> s )
 
 template< class TPixel, unsigned int VDimension >
 void
-ResampleImageFilter< TPixel, VDimension >::
+ReResampleImageFilter< TPixel, VDimension >::
 SetOrigin( std::vector<double> o )
 {
   m_Origin = o;
@@ -250,7 +248,7 @@ SetOrigin( std::vector<double> o )
 
 template< class TPixel, unsigned int VDimension >
 void
-ResampleImageFilter< TPixel, VDimension >::
+ReResampleImageFilter< TPixel, VDimension >::
 SetIndex( std::vector<int> i )
 {
   m_Index = i;
@@ -258,7 +256,7 @@ SetIndex( std::vector<int> i )
 
 template< class TPixel, unsigned int VDimension >
 void
-ResampleImageFilter< TPixel, VDimension >::
+ReResampleImageFilter< TPixel, VDimension >::
 SetResampleFactor( std::vector<double> rf )
 {
   m_ResampleFactor = rf;
@@ -267,7 +265,7 @@ SetResampleFactor( std::vector<double> rf )
 /** PrintSelf */
 template< class TPixel, unsigned int VDimension >
 void
-ResampleImageFilter< TPixel, VDimension >::
+ReResampleImageFilter< TPixel, VDimension >::
 PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
@@ -327,4 +325,4 @@ PrintSelf( std::ostream & os, Indent indent ) const
 } // End namespace tube
 
 } // End namespace itk
-#endif // End !defined( __itktubeResampleImageFilter_hxx )
+#endif // End !defined( __itktubeReResampleImageFilter_hxx )

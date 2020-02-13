@@ -29,7 +29,7 @@ limitations under the License.
 // TubeTK Includes
 #include "tubeWrappingMacros.h"
 
-#include "itktubeResampleImageFilter.h"
+#include "itktubeReResampleImageFilter.h"
 
 namespace tube
 {
@@ -49,8 +49,8 @@ public:
   typedef itk::SmartPointer< Self >       Pointer;
   typedef itk::SmartPointer< const Self > ConstPointer;
 
-  typedef itk::tube::ResampleImageFilter< typename TImage::PixelType, TImage::ImageDimension >
-    FilterType;
+  typedef itk::tube::ReResampleImageFilter< typename TImage::PixelType,
+          TImage::ImageDimension >            FilterType;
 
   typedef typename FilterType::ImageType      ImageType;
   typedef typename ImageType::ConstPointer    ConstImagePointer;
@@ -64,7 +64,8 @@ public:
   itkTypeMacro( ResampleImage, ProcessObject );
 
   /* Set input image */
-  tubeWrapSetConstObjectMacro( Input, ImageType, Filter );
+  tubeWrapSetObjectMacro( Input, ImageType, Filter );
+  tubeWrapGetObjectMacro( Input, ImageType, Filter );
 
   /** Set/Get input Match Image */
   tubeWrapSetObjectMacro( MatchImage, ImageType, Filter );
@@ -118,8 +119,7 @@ private:
   void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
 
   typename FilterType::Pointer  m_Filter;
 };

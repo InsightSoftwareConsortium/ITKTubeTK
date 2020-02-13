@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeResampleImageFilter_h
-#define __itktubeResampleImageFilter_h
+#ifndef __itktubeReResampleImageFilter_h
+#define __itktubeReResampleImageFilter_h
 
 #include <itkBSplineInterpolateImageFunction.h>
 #include <itkCompensatedSummation.h>
@@ -43,23 +43,22 @@ namespace tube
 {
 
 template< class TPixel, unsigned int VDimension >
-class ResampleImageFilter
-  : public  ImageToImageFilter< Image< TPixel, VDimension >,
-  Image< TPixel, VDimension > >
+class ReResampleImageFilter
+  : public itk::ProcessObject
 {
 public:
 
   /** Standard class typedefs. */
   typedef Image< TPixel, VDimension >                     ImageType;
-  typedef ResampleImageFilter                             Self;
-  typedef ImageToImageFilter< ImageType, ImageType>       Superclass;
+  typedef ReResampleImageFilter                           Self;
+  typedef itk::ProcessObject                              Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  itkTypeMacro( ResampleImageFilter, ImageToImageFilter );
+  itkTypeMacro( ReResampleImageFilter, ProcessObject );
 
   typedef typename ImageType::Pointer                     ImagePointer;
   typedef itk::Transform< double, VDimension, VDimension> TransformType;
@@ -100,17 +99,26 @@ public:
   /** Set Output Resample Factor */
   void SetResampleFactor( std::vector<double> rf );
 
+  itkGetObjectMacro( Output, ImageType );
+
+  itkSetObjectMacro( Input, ImageType );
+  itkGetObjectMacro( Input, ImageType );
+
+  virtual void Update( void ) override;
+
 protected:
-  ResampleImageFilter( void );
-  ~ResampleImageFilter( void ) {}
+  ReResampleImageFilter( void );
+  ~ReResampleImageFilter( void ) {}
 
   void PrintSelf( std::ostream& os, Indent indent ) const override;
 
-  virtual void GenerateData( void ) override;
-
 private:
-  ResampleImageFilter( const Self& );
+  ReResampleImageFilter( const Self& );
   void operator=( const Self& );
+
+  typedef typename itk::ResampleImageFilter< ImageType, ImageType >
+    ResampleFilterType;
+  typename ResampleFilterType::Pointer   m_Filter;
 
   typename ImageType::Pointer            m_MatchImage;
   std::vector<double>                    m_Spacing;
@@ -122,14 +130,17 @@ private:
   std::string                            m_Interpolator;
   bool                                   m_LoadTransform;
   typename TransformType::Pointer        m_Transform;
-}; // End class ResampleImageFilter
+
+  typename ImageType::Pointer            m_Input;
+  typename ImageType::Pointer            m_Output;
+}; // End class ReResampleImageFilter
 
 } // End namespace tube
 
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeResampleImageFilter.hxx"
+#include "itktubeReResampleImageFilter.hxx"
 #endif
 
-#endif // End !defined( _itktubeResampleImageFilter_h )
+#endif // End !defined( _itktubeReResampleImageFilter_h )
