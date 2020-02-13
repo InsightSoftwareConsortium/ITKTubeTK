@@ -384,8 +384,6 @@ TubeExtractor<TInputImage>
     return nullptr;
     }
 
-  std::cout << "MinRoundness = " << this->m_RidgeExtractor->GetMinRoundness()
-    << std::endl;
   typename TubeType::Pointer tube = this->m_RidgeExtractor->ExtractRidge( x,
     tubeID, verbose );
 

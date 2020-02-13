@@ -59,18 +59,33 @@ public:
     {
     m_Value = 0;
 
+    m_Spacing = 1;
+
     m_RadiusExtractor = _radiusExtractor;
+    }
+
+  void SetSpacing( double spacing )
+    {
+    m_Spacing = spacing;
+    }
+
+  double GetVariableMultiplier( void )
+    {
+    return 0.708 * m_Spacing;   // srt(2) / 2 = max distance within a voxel to
+                                //              a corner.
     }
 
   const double & Value( const int & x )
     {
-    m_Value = m_RadiusExtractor->GetKernelMedialness( x );
+    m_Value = m_RadiusExtractor->GetKernelMedialness(
+      x * this->GetVariableMultiplier() );
 
     return m_Value;
     }
 
 private:
 
+  double   m_Spacing;
   double   m_Value;
 
   typename RadiusExtractor2< TInputImage >::Pointer   m_RadiusExtractor;
@@ -148,6 +163,7 @@ RadiusExtractor2<TInputImage>
         {
         ::tube::WarningMessage(
           "Image is not isotropic. Using x-dim spacing as the spacing." );
+        std::cout << "  Spacing = " << m_InputImage->GetSpacing() << std::endl;
         break;
         }
       }
@@ -449,7 +465,6 @@ RadiusExtractor2<TInputImage>
 
   double areaR = r * r * vnl_math::pi;
 
-  // TO DO: distMax should be proportional to r, not a constant offset from r
   double distMax = ( r + 1.0 );           
   if( r * this->GetKernelExtent() > distMax )
     {
@@ -478,10 +493,10 @@ RadiusExtractor2<TInputImage>
     }
 
   const int histoBins = 500;
-  unsigned int histoPos[histoBins];
-  unsigned int histoNeg[histoBins];
-  unsigned int histoPosCount = 0;
-  unsigned int histoNegCount = 0;
+  double histoPos[histoBins];
+  double histoNeg[histoBins];
+  double histoPosCount = 0;
+  double histoNegCount = 0;
   for( int i=0; i<histoBins; ++i )
     {
     histoPos[i] = 0;
@@ -493,7 +508,7 @@ RadiusExtractor2<TInputImage>
   iterValue = m_KernelValues.begin();
   while( iterDist != m_KernelDistances.end() )
     {
-    if( ( ( *iterTanDist ) < r || ( *iterTanDist ) < 1 )
+    if( ( ( *iterTanDist ) < r * m_KernelExtent || ( *iterTanDist ) < 1 )
       && ( *iterDist ) >= distMin && ( *iterDist ) <= distMax )
       {
       bin = ( *iterValue ) * histoBins;
@@ -507,13 +522,15 @@ RadiusExtractor2<TInputImage>
         }
       if( ( *iterDist ) <= r )
         {
-        ++histoPos[bin];
-        ++histoPosCount;
+        double distFromR = ((r - (*iterDist))/(r - distMin)) / 0.5 + 0.5;
+        histoPos[bin] += distFromR;
+        histoPosCount += distFromR;
         }
       else
         {
-        ++histoNeg[bin];
-        ++histoNegCount;
+        double distFromR = (((*iterDist) - r)/(distMax - r)) / 0.5 + 0.5;
+        histoNeg[bin] += distFromR;
+        histoNegCount += distFromR;
         }
       }
     ++iterValue;
@@ -521,37 +538,47 @@ RadiusExtractor2<TInputImage>
     ++iterTanDist;
     }
 
-  int binCount = 0;
   pVal = 0;
-  if( histoPosCount > 2 )
+  //std::cout << "HistoCount = " << histoPosCount << " - " << histoNegCount
+    //<< std::endl;
+  if( histoPosCount > 0 )
     {
     bin = histoBins - 1;
-    while( binCount < 0.5 * histoPosCount && bin > 0 )
+    double binCount = 0;
+    double binSum = 0;
+    while( binCount < 0.75 * histoPosCount && bin > 0 )
       {
       binCount += histoPos[bin];
+      binSum += histoPos[bin] * (bin / (double)histoBins);
       --bin;
       }
-    pVal = ( bin + 0.5 ) / histoBins;
+    //std::cout << "Pos binSum = " << binSum << "  binCount = " << binCount
+      //<< std::endl;
+    pVal = binSum / binCount; // ( bin + 0.5 ) / histoBins;
     }
   nVal = 1;
-  if( histoNegCount > 2 )
+  if( histoNegCount > 0 )
     {
-    binCount = 0;
     bin = 0;
-    while( binCount < 0.5 * histoNegCount && bin < histoBins )
+    double binCount = 0;
+    double binSum = 0;
+    while( binCount < 0.75 * histoNegCount && bin < histoBins )
       {
       binCount += histoNeg[bin];
+      binSum += histoNeg[bin] * (bin / (double)histoBins);
       ++bin;
       }
-    nVal = ( bin - 0.5 ) / histoBins;
+    //std::cout << "Neg binSum = " << binSum << "  binCount = " << binCount
+      //<< std::endl;
+    nVal = binSum / binCount; //( bin - 0.5 ) / histoBins;
     }
 
   if( this->GetDebug() )
     {
-    ::tube::DebugMessage( "   Count = " + std::to_string(histoPosCount) + " - "
-      + std::to_string(histoNegCount) );
-    ::tube::DebugMessage( "   Val = " + std::to_string(pVal) + " - "
-      + std::to_string(nVal) + " = " + std::to_string(pVal-nVal) );
+    std::cout <<  "   Count = " << histoPosCount << " - " << histoNegCount
+      << std::endl;
+    std::cout << "   Val = " << pVal << " - " << nVal << " = " << pVal-nVal
+      << std::endl;
     }
   double medialness = pVal - nVal;
 
@@ -672,8 +699,9 @@ bool
 RadiusExtractor2<TInputImage>
 ::UpdateKernelOptimalRadius( void )
 {
-  ::tube::UserFunction< int, double > * myFunc = new
+  LocalMedialnessSplineValueFunction< TInputImage > * myFunc = new
     LocalMedialnessSplineValueFunction< TInputImage >( this );
+  ::tube::UserFunction< int, double > * myUserFunc = myFunc;
 
   ::tube::GoldenMeanOptimizer1D * opt = new
     ::tube::GoldenMeanOptimizer1D();
@@ -721,15 +749,19 @@ RadiusExtractor2<TInputImage>
   opt->SetXMin( xMin );
   opt->SetXMax( xMax );
 
+  myFunc->SetSpacing( m_Spacing );
+
   ::tube::SplineApproximation1D * spline = new
-  ::tube::SplineApproximation1D( myFunc, opt );
+  ::tube::SplineApproximation1D( myUserFunc, opt );
 
   //spline->SetClip( true );
   spline->SetXMin( xMin );
   spline->SetXMax( xMax );
 
+  x = x / myFunc->GetVariableMultiplier();
   double xVal = myFunc->Value( x );
   bool result = spline->Extreme( &x, &xVal );
+  x = x * myFunc->GetVariableMultiplier();
 
   switch( m_RadiusCorrectionFunction )
     {
@@ -829,7 +861,8 @@ RadiusExtractor2<TInputImage>
     rStart = this->GetKernelOptimalRadius();
     if( verbose )
       {
-      std::cout << p << " : r = " << rStart << std::endl;
+      std::cout << p << " : r = " << rStart << " -> "
+        << tube->GetPoint(p)->GetRadiusInObjectSpace() << std::endl;
       }
     }
 
@@ -846,7 +879,8 @@ RadiusExtractor2<TInputImage>
     rStart = this->GetKernelOptimalRadius();
     if( verbose )
       {
-      std::cout << p << " : r = " << rStart << std::endl;
+      std::cout << p << " : r = " << rStart << " -> "
+        << tube->GetPoint(p)->GetRadiusInObjectSpace() << std::endl;
       }
     }
 

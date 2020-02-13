@@ -33,6 +33,7 @@ limitations under the License.
 #include "itktubeFFTGaussianDerivativeIFFTFilter.h"
 #include "itktubeMinimumSpanningTreeVesselConnectivityFilter.h"
 #include "itktubeRidgeFFTFilter.h"
+#include "itktubeReResampleImageFilter.h"
 #include "itktubeSheetnessMeasureImageFilter.h"
 #include "itktubeShrinkWithBlendingImageFilter.h"
 #include "itktubeTubeSpatialObjectToImageFilter.h"

@@ -31,6 +31,7 @@ limitations under the License.
 #include "itktubeFFTGaussianDerivativeIFFTFilter.h"
 #include "itktubeMinimumSpanningTreeVesselConnectivityFilter.h"
 #include "itktubeRidgeFFTFilter.h"
+#include "itktubeReResampleImageFilter.h"
 #include "itktubeSheetnessMeasureImageFilter.h"
 #include "itktubeShrinkWithBlendingImageFilter.h"
 #include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
@@ -101,6 +102,10 @@ int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed(
   typedef itk::tube::RidgeFFTFilter< ImageType > RidgeFFTFilterType;
   RidgeFFTFilterType::Pointer rfif = RidgeFFTFilterType::New();
   std::cout << "-------------rfif " << rfif << std::endl;
+
+  typedef itk::tube::ReResampleImageFilter< float, 3 > ReResampleImageFilterType;
+  ReResampleImageFilterType::Pointer rrif = ReResampleImageFilterType::New();
+  std::cout << "-------------rrif " << rrif << std::endl;
 
   itk::tube::StructureTensorRecursiveGaussianImageFilter< ImageType >
     ::Pointer strgif =
