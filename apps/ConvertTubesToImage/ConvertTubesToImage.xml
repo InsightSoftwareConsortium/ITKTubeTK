@@ -20,6 +20,7 @@
     </image>
     <file>
       <name>inputTubeFile</name>
+      <label>Tube file</label>
       <description>File containing the input tubes.</description>
       <channel>input</channel>
       <index>1</index>
