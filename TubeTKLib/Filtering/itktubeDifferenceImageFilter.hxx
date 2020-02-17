@@ -189,6 +189,10 @@ DifferenceImageFilter<TInputImage, TOutputImage>
         //  Assume a good match - so test center pixel first, for speed
         RealType difference = static_cast<RealType>( t )
           - test.GetCenterPixel();
+        if( isnan(difference) )
+          {
+          difference = m_DifferenceThreshold * 2;
+          }
         RealType absDifference = difference;
         if( NumericTraits<RealType>::IsNegative( difference ) )
           {
@@ -203,7 +207,10 @@ DifferenceImageFilter<TInputImage, TOutputImage>
           // Use the RealType for the difference to make sure we get the
           // sign.
           difference = static_cast<RealType>( t ) - test.GetPixel( i );
-
+          if( isnan(difference) )
+            {
+            difference = m_DifferenceThreshold * 2;
+            }
           absDifference = difference;
           if( NumericTraits<RealType>::IsNegative( difference ) )
             {
