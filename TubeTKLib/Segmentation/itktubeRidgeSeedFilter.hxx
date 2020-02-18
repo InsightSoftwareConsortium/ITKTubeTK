@@ -71,6 +71,8 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_UseIntensityOnly = false;
 
   m_TrainClassifier = true;
+
+  m_RatioImageVector.resize(0);
 }
 
 template< class TImage, class TLabelMap >
@@ -320,25 +322,28 @@ RidgeSeedFilter< TImage, TLabelMap >
 template < class TImage, class TLabelMap >
 typename RidgeSeedFilter< TImage, TLabelMap >::ProbabilityImageType::Pointer
 RidgeSeedFilter< TImage, TLabelMap >
-::GetClassLikelihoodRatioImage( unsigned int objectNum ) const
+::GetClassLikelihoodRatioImage( unsigned int objectNum )
 {
+  unsigned int numClasses = m_PDFSegmenter->GetNumberOfClasses();
+  if( m_RatioImageVector.size() != numClasses )
+    {
+    m_RatioImageVector.resize(numClasses);
+    }
+
   typename ProbabilityImageType::Pointer classImage = m_PDFSegmenter->
     GetClassProbabilityImage( objectNum );
 
   typename ProbabilityImageType::RegionType region = classImage->
     GetLargestPossibleRegion();
 
-  typename ProbabilityImageType::Pointer resultImage =
-    ProbabilityImageType::New();
-  resultImage->SetRegions( region );
-  resultImage->CopyInformation( classImage );
-  resultImage->Allocate();
-  resultImage->FillBuffer( 0 );
-
-  unsigned int numClasses = m_PDFSegmenter->GetNumberOfClasses();
+  m_RatioImageVector[objectNum] = ProbabilityImageType::New();
+  m_RatioImageVector[objectNum]->SetRegions( region );
+  m_RatioImageVector[objectNum]->CopyInformation( classImage );
+  m_RatioImageVector[objectNum]->Allocate();
+  m_RatioImageVector[objectNum]->FillBuffer( 0 );
 
   itk::ImageRegionIterator< ProbabilityImageType > resultIter(
-    resultImage, region );
+    m_RatioImageVector[objectNum], region );
   double backgroundMax = 0;
   for( unsigned int c = 0; c < numClasses; c++ )
     {
@@ -388,7 +393,7 @@ RidgeSeedFilter< TImage, TLabelMap >
     ++classIter;
     }
 
-  return resultImage;
+  return m_RatioImageVector[objectNum];
 }
 
 
