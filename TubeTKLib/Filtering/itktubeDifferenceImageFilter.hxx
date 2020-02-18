@@ -31,6 +31,8 @@ limitations under the License.
 #include <itkProgressReporter.h>
 #include <itkZeroFluxNeumannBoundaryCondition.h>
 
+#include <cmath>
+
 namespace itk
 {
 
