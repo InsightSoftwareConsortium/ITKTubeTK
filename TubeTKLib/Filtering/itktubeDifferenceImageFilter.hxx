@@ -32,6 +32,7 @@ limitations under the License.
 #include <itkZeroFluxNeumannBoundaryCondition.h>
 
 #include <cmath>
+#include <math.h>
 
 namespace itk
 {
@@ -191,7 +192,7 @@ DifferenceImageFilter<TInputImage, TOutputImage>
         //  Assume a good match - so test center pixel first, for speed
         RealType difference = static_cast<RealType>( t )
           - test.GetCenterPixel();
-        if( isnan(difference) )
+        if( std::isnan(difference) )
           {
           difference = m_DifferenceThreshold * 2;
           }
@@ -209,7 +210,7 @@ DifferenceImageFilter<TInputImage, TOutputImage>
           // Use the RealType for the difference to make sure we get the
           // sign.
           difference = static_cast<RealType>( t ) - test.GetPixel( i );
-          if( isnan(difference) )
+          if( std::isnan(difference) )
             {
             difference = m_DifferenceThreshold * 2;
             }
