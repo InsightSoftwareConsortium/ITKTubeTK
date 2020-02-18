@@ -333,4 +333,4 @@ private:
 #include "tubeImageMath.hxx"
 #endif
 
-#endif // End !defined( __tubeSegmentBinaryImageSkeleton_h )
+#endif // End !defined( __tubeImageMath_h )

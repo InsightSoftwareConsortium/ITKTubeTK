@@ -155,7 +155,7 @@ public:
     GetClassProbabilityImage( unsigned int objectNum ) const;
 
   typename ProbabilityImageType::Pointer
-    GetClassLikelihoodRatioImage( unsigned int objectNum ) const;
+    GetClassLikelihoodRatioImage( unsigned int objectNum );
 
   // Ridge, Basis, and PDFSegmenter
   itkSetMacro( RidgeId, ObjectIdType );
@@ -218,7 +218,9 @@ private:
 
   bool           m_TrainClassifier;
 
-  typename LabelMapType::Pointer m_LabelMap;
+  mutable typename LabelMapType::Pointer m_LabelMap;
+
+  std::vector< typename ProbabilityImageType::Pointer > m_RatioImageVector;
 
 }; // End class RidgeSeedFilter
 
