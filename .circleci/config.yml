@@ -37,6 +37,7 @@ jobs:
             set(CTEST_SOURCE_DIRECTORY /ITKTubeTK)
             set(CTEST_BINARY_DIRECTORY /ITKTubeTK-build)
             set(dashboard_model Experimental)
+            set(dashboard_git_branch follow/master/nightly )
             set(dashboard_no_clean 1)
             set(dashboard_cache "
             ITK_DIR:PATH=/ITK-build
