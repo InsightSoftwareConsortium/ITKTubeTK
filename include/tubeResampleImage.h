@@ -119,7 +119,7 @@ private:
   void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override {};
 
   typename FilterType::Pointer  m_Filter;
 };
