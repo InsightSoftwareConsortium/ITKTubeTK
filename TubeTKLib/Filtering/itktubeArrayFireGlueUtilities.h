@@ -20,7 +20,6 @@
 #define __itktubeArrayFireGlueUtilities_h
 
 #include "itkImportImageFilter.h"
-#include "itkExceptionObject.h"
 
 #include <arrayfire.h>
 

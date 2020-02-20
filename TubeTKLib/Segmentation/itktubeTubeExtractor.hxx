@@ -63,8 +63,8 @@ TubeExtractor<TInputImage>
   m_TubeColor[2] = 0.0f;
   m_TubeColor[3] = 1.0f;
 
-  m_SeedMask = TubeMaskImageType::New();
-  m_SeedRadiusMask = ImageType::New();
+  m_SeedMask = nullptr;
+  m_SeedRadiusMask = nullptr;
   m_SeedMaskStride = 1;
 
   m_SeedsInObjectSpaceList.clear();
@@ -486,7 +486,7 @@ void
 TubeExtractor<TInputImage>
 ::ProcessSeeds( void )
 {
-  if( this->m_SeedMask )
+  if( this->m_SeedMask.IsNotNull() )
     {
     ImageRegionConstIteratorWithIndex< TubeMaskImageType > iter(
       this->GetSeedMask(), this->GetSeedMask()->GetLargestPossibleRegion() );
@@ -511,7 +511,7 @@ TubeExtractor<TInputImage>
           this->GetInputImage()->TransformIndexToPhysicalPoint(
             iter.GetIndex(), pnt );
           m_SeedsInObjectSpaceList.push_back( pnt );
-          if( this->m_SeedRadiusMask )
+          if( this->m_SeedRadiusMask.IsNotNull() )
             {
             m_SeedRadiiInObjectSpaceList.push_back( iterR.Get() );
             ++iterR;
@@ -530,40 +530,47 @@ TubeExtractor<TInputImage>
     this->m_SeedsInObjectSpaceList.begin();
   typename std::vector< double >::iterator seedRadiusIter =
     this->m_SeedRadiiInObjectSpaceList.begin();
-  bool useRadiiList = true;
-  if( m_SeedRadiiInObjectSpaceList.empty() )
+  bool useRadiiList = false;
+  if( m_SeedRadiiInObjectSpaceList.size() == m_SeedsInObjectSpaceList.size() )
     {
-    useRadiiList = false;
+    useRadiiList = true;
     }
   unsigned int count = 1;
+  unsigned int maxCount = m_SeedsInObjectSpaceList.size();
   bool foundOneTube = false;
   while( seedIter != this->m_SeedsInObjectSpaceList.end() )
     {
+    PointType x = *seedIter;
+
+    std::cout << "Extracting from index point " << x
+      << " (" << (count/(double)maxCount)*100 << "%)" << std::endl;
+
     if( useRadiiList )
       {
       this->SetRadiusInObjectSpace( *seedRadiusIter );
+      std::cout << "   Radius = " << *seedRadiusIter << std::endl;
+      ++seedRadiusIter;
       }
 
-    PointType x = *seedIter;
-    std::cout << "Extracting from index point " << *seedIter
-      << " at radius " << *seedRadiusIter << std::endl;
     typename TubeType::Pointer xTube =
       this->ExtractTubeInObjectSpace( x, count, true );
     if( !xTube.IsNull() )
       {
       foundOneTube = true;
+      std::cout << "   Ridge size = " << xTube->GetNumberOfPoints()
+        << std::endl;
       }
     else
       {
-      std::cout << " Error: Ridge not found for seed # " << count;
+      std::cout << "   Ridge not found" << std::endl;
       }
+
     ++seedIter;
-    ++seedRadiusIter;
     ++count;
     }
   if( !foundOneTube )
     {
-    std::cout << "No Ridge found at all";
+    std::cout << "*** No Ridges found! ***" << std::endl;
     return;
     }
 
