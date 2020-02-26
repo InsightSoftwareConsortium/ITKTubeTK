@@ -129,11 +129,11 @@ RidgeExtractor<TInputImage>
 
   m_MaxTangentChange = 0.5;
   m_MaxXChange = 3.0;
-  m_MinRidgeness = 0.8;    // near 1 = harder
+  m_MinRidgeness = 0.85;       // 2020.02.23-2 was 0.8
   m_MinRidgenessStart = 0.7;
-  m_MinRoundness = 0.3;    // near 1 = harder
-  m_MinRoundnessStart = 0.2;
-  m_MinCurvature = 0.1;
+  m_MinRoundness = 0.25;       // 2020.02.23-2 was 0.2; 2020.02.23 was 0.3
+  m_MinRoundnessStart = 0.1;  // 2020.02.23 was 0.2
+  m_MinCurvature = 0.025;     // 2020.02.23-3 was 0.025; 2020.02.23 was 0.1;
   m_MinCurvatureStart = 0.0;
   m_MinLevelness = 0.4;
   m_MinLevelnessStart = 0.3;

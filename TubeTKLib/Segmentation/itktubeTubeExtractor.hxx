@@ -484,7 +484,7 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 void
 TubeExtractor<TInputImage>
-::ProcessSeeds( void )
+::ProcessSeeds( bool verbose )
 {
   if( this->m_SeedMask.IsNotNull() )
     {
@@ -553,7 +553,7 @@ TubeExtractor<TInputImage>
       }
 
     typename TubeType::Pointer xTube =
-      this->ExtractTubeInObjectSpace( x, count, true );
+      this->ExtractTubeInObjectSpace( x, count, verbose );
     if( !xTube.IsNull() )
       {
       foundOneTube = true;
@@ -758,6 +758,16 @@ void TubeExtractor<TInputImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
+
+  os << indent << "RidgeExtractor = " << this->m_RidgeExtractor << std::endl;
+  os << indent << "RadiusExtractor = " << this->m_RadiusExtractor << std::endl;
+
+  os << indent << "TubeGroup = " << this->m_TubeGroup << std::endl;
+  os << indent << "SeedsInObjectSpaceList.size = " << this->m_SeedsInObjectSpaceList.size() << std::endl;
+  os << indent << "SeedRadiiInObjectSpaceList.size = " << this->m_SeedRadiiInObjectSpaceList.size() << std::endl;
+  os << indent << "SeedMask = " << this->m_SeedMask << std::endl;
+  os << indent << "SeedRadiusMask = " << this->m_SeedRadiusMask << std::endl;
+  os << indent << "SeedMaskStride = " << this->m_SeedMaskStride << std::endl;
 
   os << indent << "TubeColor.r = " << this->m_TubeColor[0] << std::endl;
   os << indent << "TubeColor.g = " << this->m_TubeColor[1] << std::endl;

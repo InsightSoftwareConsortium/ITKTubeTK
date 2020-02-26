@@ -146,7 +146,7 @@ public:
   tubeWrapGetMacro( SeedMaskStride, int, Filter );
 
   void ProcessSeeds( void )
-  { this->m_Filter->ProcessSeeds(); };
+  { this->m_Filter->ProcessSeeds( m_Verbose ); };
 
   /** Load parameters of tube extraction from a file */
   void LoadParameterFile( const std::string & filename )
