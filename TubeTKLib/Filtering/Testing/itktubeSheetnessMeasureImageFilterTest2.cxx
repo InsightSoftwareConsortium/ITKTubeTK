@@ -22,6 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeSheetnessMeasureImageFilter.h"
+#include "itkSymmetricEigenAnalysis.h"
+#include "itkSymmetricEigenAnalysisImageFilter.h"
 #include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
 
 #include <itkHessianRecursiveGaussianImageFilter.h>
@@ -123,7 +125,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
     EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( Dimension );
   eigenAnalysisFilter->OrderEigenValuesBy(
-      EigenAnalysisFilterType::EigenValueOrderType::OrderByValue );
+    itk::EigenValueOrderEnum::OrderByValue );
 
   eigenAnalysisFilter->SetInput( filterHessian->GetOutput() );
   eigenAnalysisFilter->Update();
@@ -143,7 +145,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
     EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( Dimension );
   eigenVectorAnalysisFilter->OrderEigenValuesBy(
-    EigenVectorAnalysisFilterType::EigenValueOrderType::OrderByValue );
+    itk::EigenValueOrderEnum::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( filterHessian->GetOutput() );
   eigenVectorAnalysisFilter->Update();

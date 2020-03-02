@@ -129,11 +129,11 @@ RidgeExtractor<TInputImage>
 
   m_MaxTangentChange = 0.5;
   m_MaxXChange = 3.0;
-  m_MinRidgeness = 0.8;    // near 1 = harder
+  m_MinRidgeness = 0.85;       // 2020.02.23-2 was 0.8
   m_MinRidgenessStart = 0.7;
-  m_MinRoundness = 0.3;    // near 1 = harder
-  m_MinRoundnessStart = 0.2;
-  m_MinCurvature = 0.1;
+  m_MinRoundness = 0.25;       // 2020.02.23-2 was 0.2; 2020.02.23 was 0.3
+  m_MinRoundnessStart = 0.1;  // 2020.02.23 was 0.2
+  m_MinCurvature = 0.025;     // 2020.02.23-3 was 0.025; 2020.02.23 was 0.1;
   m_MinCurvatureStart = 0.0;
   m_MinLevelness = 0.4;
   m_MinLevelnessStart = 0.3;
@@ -515,7 +515,7 @@ RidgeExtractor<TInputImage>
       for( unsigned int j=0; j<ImageDimension; ++j )
         {
         xiOffset[j] += sign * ( m_XHEVect.get_column(i)[j]
-          * outsideScaleFactor * GetScale() / m_Spacing );
+          * outsideScaleFactor * this->GetScale() / m_Spacing );
         }
       }
     for( unsigned int j=0; j<ImageDimension; ++j )
@@ -909,14 +909,14 @@ RidgeExtractor<TInputImage>
             }
           }
         }
-      if( m_XHEVal[0] != 0 )
-        {
-        pnt.SetRidgeness( ridgeness );
-        }
-      else
-        {
-        pnt.SetRidgeness( 0.0 );
-        }
+      pnt.SetRidgeness( ridgeness );
+      pnt.SetRoundness( roundness );
+      pnt.SetCurvature( curvature );
+      pnt.SetIntensity( intensity );
+      pnt.SetLevelness( levelness );
+      pnt.SetRadiusInObjectSpace( this->GetScale() );
+      pnt.SetMedialness( 0 );
+      pnt.SetBranchness( 0 );
       pnts.push_back( pnt );
       tubePointCount++;
 
@@ -928,7 +928,7 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  double iScale0 = GetScale();
+  double iScale0 = this->GetScale();
 
   double stepFactor0 = 1;
   double stepFactor = stepFactor0;
@@ -944,7 +944,7 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "   Attempting recovery : " << recovery << std::endl;;
         std::cout << "      x = " << pXIV << std::endl;
-        std::cout << "      Scale = " << GetScale() << std::endl;
+        std::cout << "      Scale = " << this->GetScale() << std::endl;
         }
       switch( recovery )
         {
@@ -958,13 +958,13 @@ RidgeExtractor<TInputImage>
           break;
         case 3:
           stepFactor = 2.0 * stepFactor0;
-          SetScale( GetScale() * 1.25 );
+          SetScale( this->GetScale() * 1.25 );
           break;
         }
       if( verbose || this->GetDebug() )
         {
         std::cout << "   Point = " << tubePointCount
-          << ": Recovery: new scale = " << GetScale() << std::endl;
+          << ": Recovery: new scale = " << this->GetScale() << std::endl;
         }
       lXIV = pXIV;
       lT = pT;
@@ -978,9 +978,9 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "Ridge: No recovery needed" << std::endl;
         }
-      if( !m_DynamicScale && GetScale() != iScale0 )
+      if( !m_DynamicScale && this->GetScale() != iScale0 )
         {
-        SetScale( iScale0 + 0.5 * ( GetScale() - iScale0 ) );
+        SetScale( iScale0 + 0.5 * ( this->GetScale() - iScale0 ) );
         }
 
       if( dot_product( lStepDir, pStepDir ) <
@@ -1017,7 +1017,7 @@ RidgeExtractor<TInputImage>
     double currentStepX = m_StepX * stepFactor;
     if( m_DynamicStepSize )
       {
-      currentStepX *= GetScale() / m_Spacing;
+      currentStepX *= this->GetScale() / m_Spacing;
       }
     if( currentStepX < 0.5 * m_StepX )
       {
@@ -1103,7 +1103,7 @@ RidgeExtractor<TInputImage>
       {
       std::cout << "Point " << tubePointCount << " : x = " << tmpX << std::endl;
       std::cout << "   idx = " << lXIV << std::endl;
-      std::cout << "   scl = " << GetScale() << std::endl;
+      std::cout << "   scl = " << this->GetScale() << std::endl;
       std::cout << "   stp = " << currentStepX << std::endl;
       std::cout << "   rdg = " << ridgeness << std::endl;
       std::cout << "   int = " << intensity << std::endl;
@@ -1158,7 +1158,7 @@ RidgeExtractor<TInputImage>
 
     double diffX = std::sqrt(
       ::tube::ComputeEuclideanDistanceVector( lXIV, pXIV ) );
-    if( diffX > m_MaxXChange * (GetScale() / m_Spacing) * stepFactor )
+    if( diffX > m_MaxXChange * (this->GetScale() / m_Spacing) * stepFactor )
       {
       if( verbose || this->GetDebug() )
         {
@@ -1169,7 +1169,7 @@ RidgeExtractor<TInputImage>
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
         std::cout << "       Levelness = " << levelness << std::endl;
-        std::cout << "       maxDiffX = " << m_MaxXChange * (GetScale()
+        std::cout << "       maxDiffX = " << m_MaxXChange * (this->GetScale()
           / m_Spacing) * stepFactor << std::endl;
         }
       m_CurrentFailureCode = DISTANCE_FAIL;
@@ -1780,7 +1780,7 @@ typename RidgeExtractor<TInputImage>::TubeType *
 RidgeExtractor<TInputImage>
 ::ExtractRidge( const PointType & newX, int tubeId, bool verbose )
 {
-  double scaleOriginal = GetScale();
+  double scaleOriginal = this->GetScale();
   double scale0 = scaleOriginal;
   double radiusOriginal = scaleOriginal;
   if( m_RadiusExtractor )
@@ -1858,14 +1858,14 @@ RidgeExtractor<TInputImage>
       }
     else
       {
-      m_DynamicScaleUsed = ( tmpPoint.GetRadiusInObjectSpace() + GetScale() ) / 2;
+      m_DynamicScaleUsed = ( tmpPoint.GetRadiusInObjectSpace() + this->GetScale() ) / 2;
       }
 
     SetScale( m_DynamicScaleUsed );
     m_RadiusExtractor->SetRadiusStart( m_DynamicScaleUsed );
     if( verbose || this->GetDebug() )
       {
-      std::cout << "DynamicScale = " << GetScale() << std::endl;
+      std::cout << "DynamicScale = " << this->GetScale() << std::endl;
       std::cout << "  x =  " << lX << std::endl;
       std::cout << "  newX =  " << newX << std::endl;
       }

@@ -41,7 +41,16 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   m_Cumulative = false;
   m_BuildRadiusImage = false;
   m_BuildTangentImage = false;
-  m_FallOff = 0.0;
+
+  m_ColorByTubeID = false;
+  m_ColorByRadius = false;
+  m_ColorByRidgeness = false;
+  m_ColorByMedialness = false;
+  m_ColorByBranchness = false;
+  m_ColorByCurvature = false;
+  m_ColorByLevelness = false;
+  m_ColorByRoundness = false;
+  m_ColorByIntensity = false;
 
   // This is a little bit tricky since the 2nd an 3rd outputs are
   //   not always computed
@@ -149,6 +158,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   OutputImage->SetDirection( this->m_Direction );
   OutputImage->Allocate();
   OutputImage->FillBuffer( 0 );
+  typedef typename OutputImageType::PixelType PixelType;
 
   typedef itk::ContinuousIndex<double, ObjectDimension> ContinuousIndexType;
   ContinuousIndexType pointI;
@@ -220,14 +230,50 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
 
       if( IsInside )
         {
-        // Density Image
+        double val = 1;
+        if( m_ColorByTubeID )
+          {
+          val = tube->GetId();
+          }
+        else if( m_ColorByRadius )
+          {
+          val = tubePoint->GetRadiusInWorldSpace();
+          }
+        else if( m_ColorByRidgeness )
+          {
+          val = tubePoint->GetRidgeness();
+          }
+        else if( m_ColorByMedialness )
+          {
+          val = tubePoint->GetMedialness();
+          }
+        else if( m_ColorByBranchness )
+          {
+          val = tubePoint->GetBranchness();
+          }
+        else if( m_ColorByCurvature )
+          {
+          val = tubePoint->GetCurvature();
+          }
+        else if( m_ColorByLevelness )
+          {
+          val = tubePoint->GetLevelness();
+          }
+        else if( m_ColorByRoundness )
+          {
+          val = tubePoint->GetRoundness();
+          }
+        else if( m_ColorByIntensity )
+          {
+          val = tubePoint->GetIntensity();
+          }
         if( m_Cumulative )
           {
-          OutputImage->SetPixel( index, OutputImage->GetPixel( index )+1 );
+          OutputImage->SetPixel( index, OutputImage->GetPixel( index )+val );
           }
         else
           {
-          OutputImage->SetPixel( index, 1 );
+          OutputImage->SetPixel( index, val );
           }
 
         // Tangent Image
@@ -306,17 +352,14 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                   if( OutputImage->GetLargestPossibleRegion().IsInside(
                     index2 ) )
                     {
-                    typedef typename OutputImageType::PixelType PixelType;
                     if( m_Cumulative )
                       {
-                      OutputImage->SetPixel( index2,
-                                            ( PixelType )( OutputImage
-                                                        ->GetPixel( index2 )
-                                            + 0.5 ) );
+                      OutputImage->SetPixel( index2, ( PixelType )(
+                          OutputImage->GetPixel( index2 ) + val ) );
                       }
                     else
                       {
-                      OutputImage->SetPixel( index2, 1 );
+                      OutputImage->SetPixel( index2, val );
                       }
                     if( m_BuildRadiusImage )
                       {
@@ -365,7 +408,15 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                     if( OutputImage->GetLargestPossibleRegion().IsInside(
                       index2 ) )
                       {
-                      OutputImage->SetPixel( index2, 1 );
+                      if( m_Cumulative )
+                        {
+                        OutputImage->SetPixel( index2, ( PixelType )(
+                            OutputImage->GetPixel( index2 ) + val ) );
+                        }
+                      else
+                        {
+                        OutputImage->SetPixel( index2, val );
+                        }
                       if( m_BuildRadiusImage )
                         {
                         m_RadiusImage->SetPixel( index2, radius[0] );

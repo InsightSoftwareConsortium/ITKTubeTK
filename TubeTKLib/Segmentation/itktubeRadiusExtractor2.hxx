@@ -103,11 +103,11 @@ RadiusExtractor2<TInputImage>
   m_DataMin = 0;
   m_DataMax = -1;
 
-  m_RadiusStart = 1.5;  // All values are in physical space (e.g., mm).
-  m_RadiusMin = 0.33;
+  m_RadiusStart = 0.708;  // All values are in physical space (e.g., mm).
+  m_RadiusMin = 0.708/2;
   m_RadiusMax = 15.0;
-  m_RadiusStep = 0.25;
-  m_RadiusTolerance = 0.125;
+  m_RadiusStep = 0.708/2;
+  m_RadiusTolerance = 0.708/4;
 
   m_RadiusCorrectionFunction = RADIUS_CORRECTION_NONE;
 
@@ -333,9 +333,11 @@ RadiusExtractor2<TInputImage>
   unsigned int count = 0;
   IndexType xI = minXI;
   bool done = false;
+  double thresh = m_DataMin + 0.05 * ( m_DataMax - m_DataMin );
   while( !done )
     {
-    if( m_InputImage->GetLargestPossibleRegion().IsInside( xI ) )
+    if( m_InputImage->GetLargestPossibleRegion().IsInside( xI ) &&
+      m_InputImage->GetPixel( xI ) > thresh )
       {
       m_KernelValues[ count ] = ( m_InputImage->GetPixel( xI ) - m_DataMin )
         / ( m_DataMax - m_DataMin );

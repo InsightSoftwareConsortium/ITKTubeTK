@@ -100,7 +100,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     = EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( 3 );
   eigenVectorAnalysisFilter->OrderEigenValuesBy(
-    EigenVectorAnalysisFilterType::EigenValueOrderType::OrderByValue );
+    EigenValueOrderEnum::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );
   eigenVectorAnalysisFilter->Modified();
@@ -115,7 +115,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( 3 );
   eigenAnalysisFilter->OrderEigenValuesBy(
-    EigenAnalysisFilterType::EigenValueOrderType::OrderByValue );
+    EigenValueOrderEnum::OrderByValue );
 
   eigenAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );
   eigenAnalysisFilter->Update();

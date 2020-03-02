@@ -44,6 +44,10 @@ namespace tube
 namespace Functor
 {
 
+#if !defined(ITK_LEGACY_REMOVE)
+using OrderTypeOfEigenValue = itk::EigenValueOrderEnum;
+#endif
+
 template< class TInput, class TOutput, class TMatrix >
 class SymmetricEigenVectorAnalysisFunction
 {
@@ -75,27 +79,32 @@ public:
     m_Calculator.SetDimension( n );
     }
 
-  /** Typedefs to order eigenvalues.
-   * OrderByValue:      lambda_1 < lambda_2 < ....
-   * OrderByMagnitude:  |lambda_1| < |lambda_2| < .....
-   * DoNotOrder:        Default order of eigenvalues obtained after QL
-   *                      method
-   */
-  typedef enum {
-    OrderByValue=1,
-    OrderByMagnitude,
-    DoNotOrder
-  } EigenValueOrderType;
+  unsigned int GetDimension() const
+  {
+    return m_Calculator.GetDimension();
+  }
+
+#if !defined(ITK_LEGACY_REMOVE)
+  /** Enables reverse compatibility for enumeration values */
+  using EigenValueOrderType = itk::EigenValueOrderEnum;
+#endif
+#if !defined(ITK_LEGACY_REMOVE)
+  // We need to expose the enum values at the class level
+  // for backwards compatibility
+  static constexpr EigenValueOrderEnum OrderByValue = EigenValueOrderEnum::OrderByValue;
+  static constexpr EigenValueOrderEnum OrderByMagnitude = EigenValueOrderEnum::OrderByMagnitude;
+  static constexpr EigenValueOrderEnum DoNotOrder = EigenValueOrderEnum::DoNotOrder;
+#endif
 
   /** Order eigenvalues. Default is to OrderByValue:  lambda_1 < lambda_2
    * < .... */
-  void OrderEigenValuesBy( EigenValueOrderType order )
+  void OrderEigenValuesBy( EigenValueOrderEnum order )
     {
-    if( order == OrderByMagnitude )
+    if( order == EigenValueOrderEnum::OrderByMagnitude )
       {
       m_Calculator.SetOrderEigenMagnitudes( true );
       }
-    else if( order == DoNotOrder )
+    else if( order == EigenValueOrderEnum::DoNotOrder )
       {
       m_Calculator.SetOrderEigenValues( false );
       }
@@ -141,11 +150,11 @@ public:
    * DoNotOrder:        Default order of eigenvalues obtained after QL
    *                    method
    */
-  typedef typename FunctorType::EigenValueOrderType EigenValueOrderType;
+  //typedef typename FunctorType::EigenValueOrderEnum EigenValueOrderEnum;
 
   /** Order eigenvalues. Default is to OrderByValue:
    * lambda_1 < lambda_2 < .... */
-  void OrderEigenValuesBy( EigenValueOrderType order )
+  void OrderEigenValuesBy( EigenValueOrderEnum order )
     {
     this->GetFunctor().OrderEigenValuesBy( order );
     }

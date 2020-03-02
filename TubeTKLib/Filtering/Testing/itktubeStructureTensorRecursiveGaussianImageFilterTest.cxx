@@ -25,7 +25,9 @@ limitations under the License.
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
+#include <itkSymmetricEigenAnalysis.h>
 #include <itkSymmetricEigenAnalysisImageFilter.h>
+#include <itktubeSymmetricEigenVectorAnalysisImageFilter.h>
 
 int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
   char * argv[] )
@@ -91,7 +93,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
     EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( Dimension );
   eigenAnalysisFilter->OrderEigenValuesBy(
-    EigenAnalysisFilterType::EigenValueOrderType::OrderByValue );
+    itk::EigenValueOrderEnum::OrderByValue );
 
   eigenAnalysisFilter->SetInput( filter->GetOutput() );
   eigenAnalysisFilter->Update();
@@ -110,7 +112,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
     EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( Dimension );
   eigenVectorAnalysisFilter->OrderEigenValuesBy(
-    EigenVectorAnalysisFilterType::EigenValueOrderType::OrderByValue );
+    itk::EigenValueOrderEnum::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( filter->GetOutput() );
   eigenVectorAnalysisFilter->Update();

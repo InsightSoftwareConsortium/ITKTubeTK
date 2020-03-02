@@ -124,7 +124,7 @@ int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  itk::ImageIOBase::IOComponentType componentType;
+  itk::ImageIOBase::IOComponentEnum componentType;
 
   try
     {

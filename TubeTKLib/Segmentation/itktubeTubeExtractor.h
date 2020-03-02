@@ -227,7 +227,7 @@ public:
   void SetSeedRadiiInObjectSpaceList( const RadiusListType & rList );
 
   /** Process seed list or seed mask */
-  void ProcessSeeds( void );
+  void ProcessSeeds( bool verbose = false );
 
 
   /***********/
