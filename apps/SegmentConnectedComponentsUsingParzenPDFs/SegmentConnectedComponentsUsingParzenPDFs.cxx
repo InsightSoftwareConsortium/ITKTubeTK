@@ -29,7 +29,7 @@ limitations under the License.
 
 // Get the component type and dimension of the image.
 void GetImageInformation( const std::string & fileName,
-                          itk::ImageIOBase::IOComponentType & componentType,
+                          itk::ImageIOBase::IOComponentEnum & componentType,
                           unsigned int & dimension )
 {
   typedef itk::ImageIOBase     ImageIOType;
@@ -37,7 +37,7 @@ void GetImageInformation( const std::string & fileName,
 
   ImageIOType::Pointer imageIO =
     ImageIOFactoryType::CreateImageIO( fileName.c_str(),
-      itk::ImageIOFactory::FileModeEnum::ReadMode );
+      itk::ImageIOFactory::IOFileModeEnum::ReadMode );
 
   if( imageIO )
     {
@@ -307,7 +307,7 @@ int main( int argc, char * argv[] )
   try
     {
     unsigned int imageDimension = 3;
-    itk::ImageIOBase::IOComponentType imageType;
+    itk::ImageIOBase::IOComponentEnum imageType;
 
     GetImageInformation( inputVolume1, imageType, imageDimension );
 
@@ -315,25 +315,25 @@ int main( int argc, char * argv[] )
       {
       switch( imageType )
         {
-        case itk::ImageIOBase::UCHAR:
+      case itk::ImageIOBase::IOComponentEnum::UCHAR:
           return DoIt<unsigned char, 2>( argc, argv );
           break;
-        case itk::ImageIOBase::USHORT:
+      case itk::ImageIOBase::IOComponentEnum::USHORT:
           return DoIt<unsigned short, 2>( argc, argv );
           break;
-        case itk::ImageIOBase::CHAR:
-        case itk::ImageIOBase::SHORT:
+      case itk::ImageIOBase::IOComponentEnum::CHAR:
+      case itk::ImageIOBase::IOComponentEnum::SHORT:
           return DoIt<short, 2>( argc, argv );
           break;
-        case itk::ImageIOBase::UINT:
-        case itk::ImageIOBase::INT:
-        case itk::ImageIOBase::ULONG:
-        case itk::ImageIOBase::LONG:
-        case itk::ImageIOBase::FLOAT:
-        case itk::ImageIOBase::DOUBLE:
+      case itk::ImageIOBase::IOComponentEnum::UINT:
+      case itk::ImageIOBase::IOComponentEnum::INT:
+      case itk::ImageIOBase::IOComponentEnum::ULONG:
+      case itk::ImageIOBase::IOComponentEnum::LONG:
+      case itk::ImageIOBase::IOComponentEnum::FLOAT:
+      case itk::ImageIOBase::IOComponentEnum::DOUBLE:
           return DoIt<float, 2>( argc, argv );
           break;
-        case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
+      case itk::ImageIOBase::IOComponentEnum::UNKNOWNCOMPONENTTYPE:
         default:
           std::cout << "unknown image type" << std::endl;
           break;
@@ -343,25 +343,25 @@ int main( int argc, char * argv[] )
       {
       switch( imageType )
         {
-        case itk::ImageIOBase::UCHAR:
+      case itk::ImageIOBase::IOComponentEnum::UCHAR:
           return DoIt<unsigned char, 3>( argc, argv );
           break;
-        case itk::ImageIOBase::USHORT:
+      case itk::ImageIOBase::IOComponentEnum::USHORT:
           return DoIt<unsigned short, 3>( argc, argv );
           break;
-        case itk::ImageIOBase::CHAR:
-        case itk::ImageIOBase::SHORT:
+      case itk::ImageIOBase::IOComponentEnum::CHAR:
+      case itk::ImageIOBase::IOComponentEnum::SHORT:
           return DoIt<short, 3>( argc, argv );
           break;
-        case itk::ImageIOBase::UINT:
-        case itk::ImageIOBase::INT:
-        case itk::ImageIOBase::ULONG:
-        case itk::ImageIOBase::LONG:
-        case itk::ImageIOBase::FLOAT:
-        case itk::ImageIOBase::DOUBLE:
+      case itk::ImageIOBase::IOComponentEnum::UINT:
+      case itk::ImageIOBase::IOComponentEnum::INT:
+      case itk::ImageIOBase::IOComponentEnum::ULONG:
+      case itk::ImageIOBase::IOComponentEnum::LONG:
+      case itk::ImageIOBase::IOComponentEnum::FLOAT:
+      case itk::ImageIOBase::IOComponentEnum::DOUBLE:
           return DoIt<float, 3>( argc, argv );
           break;
-        case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
+      case itk::ImageIOBase::IOComponentEnum::UNKNOWNCOMPONENTTYPE:
         default:
           std::cout << "unknown image type" << std::endl;
           return EXIT_FAILURE;

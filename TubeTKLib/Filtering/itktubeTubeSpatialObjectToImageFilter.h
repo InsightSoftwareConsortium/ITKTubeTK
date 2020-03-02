@@ -98,14 +98,30 @@ public:
   /**Image Pointer Definition and GetRadius return method */
   TangentImagePointer GetTangentImage( void );
 
-  /** Set the FallOff value */
-  itkSetMacro( FallOff, double );
-  itkGetMacro( FallOff, double );
-
   /** Set if the value of tubes that are crossing should accumulate
    *  their values to produce the image */
   itkSetMacro( Cumulative, bool );
   itkGetMacro( Cumulative, bool );
+
+  itkSetMacro( ColorByTubeID, bool );
+  itkSetMacro( ColorByRadius, bool );
+  itkSetMacro( ColorByRidgeness, bool );
+  itkSetMacro( ColorByMedialness, bool );
+  itkSetMacro( ColorByBranchness, bool );
+  itkSetMacro( ColorByCurvature, bool );
+  itkSetMacro( ColorByLevelness, bool );
+  itkSetMacro( ColorByRoundness, bool );
+  itkSetMacro( ColorByIntensity, bool );
+
+  itkGetMacro( ColorByTubeID, bool );
+  itkGetMacro( ColorByRadius, bool );
+  itkGetMacro( ColorByRidgeness, bool );
+  itkGetMacro( ColorByMedialness, bool );
+  itkGetMacro( ColorByBranchness, bool );
+  itkGetMacro( ColorByCurvature, bool );
+  itkGetMacro( ColorByLevelness, bool );
+  itkGetMacro( ColorByRoundness, bool );
+  itkGetMacro( ColorByIntensity, bool );
 
 protected:
 
@@ -118,9 +134,19 @@ protected:
   void PrintSelf( std::ostream& os, Indent indent ) const override
     {
     SuperClass::PrintSelf( os, indent );
+    os << indent << "m_BuildRadiusImage: " << m_UseRadius << std::endl;
+    os << indent << "m_BuildTangentImage: " << m_UseRadius << std::endl;
     os << indent << "m_UseRadius: " << m_UseRadius << std::endl;
-    os << indent << "m_FallOff: " << m_FallOff << std::endl;
     os << indent << "m_Cumulative: " << m_Cumulative << std::endl;
+    os << indent << "m_ColorByTubeID: " << m_ColorByTubeID << std::endl;
+    os << indent << "m_ColorByRadius: " << m_ColorByRadius << std::endl;
+    os << indent << "m_ColorByRidgeness: " << m_ColorByRidgeness << std::endl;
+    os << indent << "m_ColorByMedialness: " << m_ColorByMedialness << std::endl;
+    os << indent << "m_ColorByBranchness: " << m_ColorByBranchness << std::endl;
+    os << indent << "m_ColorByCurvature: " << m_ColorByCurvature << std::endl;
+    os << indent << "m_ColorByLevelness: " << m_ColorByLevelness << std::endl;
+    os << indent << "m_ColorByRoundness: " << m_ColorByRoundness << std::endl;
+    os << indent << "m_ColorByIntensity: " << m_ColorByIntensity << std::endl;
     }
 
 private:
@@ -128,8 +154,17 @@ private:
   bool        m_BuildRadiusImage;
   bool        m_BuildTangentImage;
   bool        m_UseRadius;
-  double      m_FallOff;
   bool        m_Cumulative;
+
+  bool        m_ColorByTubeID;
+  bool        m_ColorByRadius;
+  bool        m_ColorByRidgeness;
+  bool        m_ColorByMedialness;
+  bool        m_ColorByBranchness;
+  bool        m_ColorByCurvature;
+  bool        m_ColorByLevelness;
+  bool        m_ColorByRoundness;
+  bool        m_ColorByIntensity;
 
   typename RadiusImage::Pointer     m_RadiusImage;
   typename TangentImage::Pointer    m_TangentImage;

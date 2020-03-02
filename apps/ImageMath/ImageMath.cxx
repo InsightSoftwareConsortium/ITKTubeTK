@@ -619,12 +619,12 @@ int DoIt( MetaCommand & command )
 // Description:
 // Get the ComponentType and dimension of the image
 void GetImageInformation( std::string fileName,
-  itk::ImageIOBase::IOComponentType &componentType,
+  itk::ImageIOBase::IOComponentEnum &componentType,
   unsigned int & dimension )
 {
   itk::ImageIOBase::Pointer imageIO =
     itk::ImageIOFactory::CreateImageIO( fileName.c_str(),
-      itk::ImageIOFactory::FileModeEnum::ReadMode );
+      itk::IOFileModeEnum::ReadMode );
   if( !imageIO )
     {
     std::cerr << "NO IMAGEIO WAS FOUND" << std::endl;
@@ -893,7 +893,7 @@ int main( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  itk::ImageIOBase::IOComponentType componentType;
+  itk::ImageIOBase::IOComponentEnum componentType;
 
 
   try
@@ -905,27 +905,27 @@ int main( int argc, char * argv[] )
       {
       switch( componentType )
         {
-        case itk::ImageIOBase::UCHAR:
+      case itk::ImageIOBase::IOComponentEnum::UCHAR:
           return DoIt<unsigned char, 2>( command );
-        case itk::ImageIOBase::CHAR:
+      case itk::ImageIOBase::IOComponentEnum::CHAR:
           return DoIt<char, 2>( command );
-        case itk::ImageIOBase::USHORT:
+      case itk::ImageIOBase::IOComponentEnum::USHORT:
           return DoIt<unsigned short, 2>( command );
-        case itk::ImageIOBase::SHORT:
+      case itk::ImageIOBase::IOComponentEnum::SHORT:
           return DoIt<short, 2>( command );
-        case itk::ImageIOBase::UINT:
+      case itk::ImageIOBase::IOComponentEnum::UINT:
           return DoIt<unsigned int, 2>( command );
-        case itk::ImageIOBase::INT:
+      case itk::ImageIOBase::IOComponentEnum::INT:
           return DoIt<int, 2>( command );
-        case itk::ImageIOBase::ULONG:
+      case itk::ImageIOBase::IOComponentEnum::ULONG:
           return DoIt<unsigned long, 2>( command );
-        case itk::ImageIOBase::LONG:
+      case itk::ImageIOBase::IOComponentEnum::LONG:
           return DoIt<long, 2>( command );
-        case itk::ImageIOBase::FLOAT:
+      case itk::ImageIOBase::IOComponentEnum::FLOAT:
           return DoIt<float, 2>( command );
-        case itk::ImageIOBase::DOUBLE:
+      case itk::ImageIOBase::IOComponentEnum::DOUBLE:
           return DoIt<double, 2>( command );
-        case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
+      case itk::ImageIOBase::IOComponentEnum::UNKNOWNCOMPONENTTYPE:
         default:
           std::cout << "unknown component type" << std::endl;
           return EXIT_FAILURE;
@@ -935,27 +935,27 @@ int main( int argc, char * argv[] )
       {
       switch( componentType )
         {
-        case itk::ImageIOBase::UCHAR:
+      case itk::ImageIOBase::IOComponentEnum::UCHAR:
           return DoIt<unsigned char, 3>( command );
-        case itk::ImageIOBase::CHAR:
+      case itk::ImageIOBase::IOComponentEnum::CHAR:
           return DoIt<char, 3>( command );
-        case itk::ImageIOBase::USHORT:
+      case itk::ImageIOBase::IOComponentEnum::USHORT:
           return DoIt<unsigned short, 3>( command );
-        case itk::ImageIOBase::SHORT:
+      case itk::ImageIOBase::IOComponentEnum::SHORT:
           return DoIt<short, 3>( command );
-        case itk::ImageIOBase::UINT:
+      case itk::ImageIOBase::IOComponentEnum::UINT:
           return DoIt<unsigned int, 3>( command );
-        case itk::ImageIOBase::INT:
+      case itk::ImageIOBase::IOComponentEnum::INT:
           return DoIt<int, 3>( command );
-        case itk::ImageIOBase::ULONG:
+      case itk::ImageIOBase::IOComponentEnum::ULONG:
           return DoIt<unsigned long, 3>( command );
-        case itk::ImageIOBase::LONG:
+      case itk::ImageIOBase::IOComponentEnum::LONG:
           return DoIt<long, 3>( command );
-        case itk::ImageIOBase::FLOAT:
+      case itk::ImageIOBase::IOComponentEnum::FLOAT:
           return DoIt<float, 3>( command );
-        case itk::ImageIOBase::DOUBLE:
+      case itk::ImageIOBase::IOComponentEnum::DOUBLE:
           return DoIt<double, 3>( command );
-        case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
+      case itk::ImageIOBase::IOComponentEnum::UNKNOWNCOMPONENTTYPE:
         default:
           std::cout << "unknown component type" << std::endl;
           return EXIT_FAILURE;

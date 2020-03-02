@@ -36,7 +36,7 @@ namespace tube
 
 // Get the component type and dimension of the image.
 void GetImageInformation( const std::string & fileName,
-                          itk::ImageIOBase::IOComponentType & componentType,
+                          itk::ImageIOBase::IOComponentEnum & componentType,
                           unsigned int & dimension )
 {
   typedef itk::ImageIOBase     ImageIOType;
@@ -44,7 +44,7 @@ void GetImageInformation( const std::string & fileName,
 
   ImageIOType::Pointer imageIO =
     ImageIOFactoryType::CreateImageIO( fileName.c_str(),
-      ImageIOFactoryType::FileModeEnum::ReadMode );
+      itk::IOFileModeEnum::ReadMode );
 
   if( imageIO )
     {
@@ -64,10 +64,8 @@ void GetImageInformation( const std::string & fileName,
 int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
                           char * argv[] )
 {
-  typedef itk::ImageIOBase              ImageIOType;
-  typedef ImageIOType::IOComponentType  IOComponentType;
-
-  IOComponentType componentType = ImageIOType::UNKNOWNCOMPONENTTYPE;
+  itk::ImageIOBase::IOComponentEnum componentType =
+    itk::ImageIOBase::IOComponentEnum::UNKNOWNCOMPONENTTYPE;
   unsigned int dimension = 0;
   try
     {
@@ -80,19 +78,19 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
       {
       switch( componentType )
         {
-        case ImageIOType::UCHAR:
+        case itk::ImageIOBase::IOComponentEnum::UCHAR:
           return DoIt< unsigned char, 2 >( argc, argv );
-        case ImageIOType::USHORT:
+        case itk::ImageIOBase::IOComponentEnum::USHORT:
           return DoIt< unsigned short, 2 >( argc, argv );
-        case ImageIOType::SHORT:
+        case itk::ImageIOBase::IOComponentEnum::SHORT:
           return DoIt< short, 2 >( argc, argv );
 #ifndef PARSE_ARGS_INT_ONLY
-        case ImageIOType::FLOAT:
+        case itk::ImageIOBase::IOComponentEnum::FLOAT:
           return DoIt< float, 2 >( argc, argv );
 #endif
-        case ImageIOType::INT:
+        case itk::ImageIOBase::IOComponentEnum::INT:
           return DoIt< int, 2 >( argc, argv );
-        case ImageIOType::UNKNOWNCOMPONENTTYPE:
+        case itk::ImageIOBase::IOComponentEnum::UNKNOWNCOMPONENTTYPE:
         default:
           tubeErrorMacro( << "Unknown component type." );
           return EXIT_FAILURE;
@@ -104,19 +102,19 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
       {
       switch( componentType )
         {
-        case ImageIOType::UCHAR:
+        case itk::ImageIOBase::IOComponentEnum::UCHAR:
           return DoIt < unsigned char, 3 >( argc, argv );
-        case ImageIOType::USHORT:
+        case itk::ImageIOBase::IOComponentEnum::USHORT:
           return DoIt < unsigned short, 3 >( argc, argv );
-        case ImageIOType::SHORT:
+        case itk::ImageIOBase::IOComponentEnum::SHORT:
           return DoIt< short, 3 >( argc, argv );
 #ifndef PARSE_ARGS_INT_ONLY
-        case ImageIOType::FLOAT:
+        case itk::ImageIOBase::IOComponentEnum::FLOAT:
           return DoIt < float, 3 >( argc, argv );
 #endif
-        case ImageIOType::INT:
+        case itk::ImageIOBase::IOComponentEnum::INT:
           return DoIt< int, 3 >( argc, argv );
-        case ImageIOType::UNKNOWNCOMPONENTTYPE:
+        case itk::ImageIOBase::IOComponentEnum::UNKNOWNCOMPONENTTYPE:
         default:
           tubeErrorMacro( << "Unknown component type." );
           return EXIT_FAILURE;

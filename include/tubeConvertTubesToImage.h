@@ -69,6 +69,26 @@ public:
   tubeWrapSetMacro( UseRadius, bool, Filter );
   tubeWrapGetMacro( UseRadius, bool, Filter );
 
+  tubeWrapSetMacro( ColorByTubeID, bool, Filter );
+  tubeWrapSetMacro( ColorByRadius, bool, Filter );
+  tubeWrapSetMacro( ColorByRidgeness, bool, Filter );
+  tubeWrapSetMacro( ColorByMedialness, bool, Filter );
+  tubeWrapSetMacro( ColorByBranchness, bool, Filter );
+  tubeWrapSetMacro( ColorByCurvature, bool, Filter );
+  tubeWrapSetMacro( ColorByLevelness, bool, Filter );
+  tubeWrapSetMacro( ColorByRoundness, bool, Filter );
+  tubeWrapSetMacro( ColorByIntensity, bool, Filter );
+
+  tubeWrapGetMacro( ColorByTubeID, bool, Filter );
+  tubeWrapGetMacro( ColorByRadius, bool, Filter );
+  tubeWrapGetMacro( ColorByRidgeness, bool, Filter );
+  tubeWrapGetMacro( ColorByMedialness, bool, Filter );
+  tubeWrapGetMacro( ColorByBranchness, bool, Filter );
+  tubeWrapGetMacro( ColorByCurvature, bool, Filter );
+  tubeWrapGetMacro( ColorByLevelness, bool, Filter );
+  tubeWrapGetMacro( ColorByRoundness, bool, Filter );
+  tubeWrapGetMacro( ColorByIntensity, bool, Filter );
+
   /* Set template image */
   void SetTemplateImage( const OutputImageType * pTemplateImage );
   itkGetConstObjectMacro( TemplateImage, OutputImageType );

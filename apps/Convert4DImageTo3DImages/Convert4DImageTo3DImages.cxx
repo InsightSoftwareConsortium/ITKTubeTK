@@ -152,7 +152,7 @@ namespace tube
 
 // Get the component type and dimension of the image.
 void GetImageInformation( const std::string & fileName,
-                          itk::ImageIOBase::IOComponentType & componentType,
+                          itk::ImageIOBase::IOComponentEnum & componentType,
                           unsigned int & dimension )
 {
   typedef itk::ImageIOBase     ImageIOType;
@@ -160,7 +160,7 @@ void GetImageInformation( const std::string & fileName,
 
   ImageIOType::Pointer imageIO =
     ImageIOFactoryType::CreateImageIO( fileName.c_str(),
-      ImageIOFactoryType::FileModeEnum::ReadMode );
+      itk::IOFileModeEnum::ReadMode );
 
   if( imageIO )
     {
@@ -185,9 +185,9 @@ int main( int argc, char * argv[] )
   PARSE_ARGS;
 
   typedef itk::ImageIOBase              ImageIOType;
-  typedef ImageIOType::IOComponentType  IOComponentType;
+  typedef ImageIOType::IOComponentEnum  IOComponentType;
 
-  IOComponentType componentType = ImageIOType::UNKNOWNCOMPONENTTYPE;
+  IOComponentType componentType = IOComponentType::UNKNOWNCOMPONENTTYPE;
   unsigned int dimension = 0;
   try
     {
@@ -197,23 +197,23 @@ int main( int argc, char * argv[] )
       {
       switch( componentType )
         {
-        case ImageIOType::UCHAR:
+        case IOComponentType::UCHAR:
           return DoIt< unsigned char, 4 >( argc, argv );
-        case ImageIOType::CHAR:
+        case IOComponentType::CHAR:
           return DoIt< char, 4 >( argc, argv );
-        case ImageIOType::USHORT:
+        case IOComponentType::USHORT:
           return DoIt< unsigned short, 4 >( argc, argv );
-        case ImageIOType::SHORT:
+        case IOComponentType::SHORT:
           return DoIt< short, 4 >( argc, argv );
-        case ImageIOType::FLOAT:
+        case IOComponentType::FLOAT:
           return DoIt< float, 4 >( argc, argv );
-        case ImageIOType::DOUBLE:
+        case IOComponentType::DOUBLE:
           return DoIt< double, 4 >( argc, argv );
-        case ImageIOType::INT:
+        case IOComponentType::INT:
           return DoIt< int, 4 >( argc, argv );
-        case ImageIOType::UINT:
+        case IOComponentType::UINT:
           return DoIt< unsigned int, 4 >( argc, argv );
-        case ImageIOType::UNKNOWNCOMPONENTTYPE:
+        case IOComponentType::UNKNOWNCOMPONENTTYPE:
         default:
           tubeErrorMacro( << "Unknown component type." );
           return EXIT_FAILURE;
