@@ -31,7 +31,7 @@ TubeTK offers various interface layers:
 Compiling ITKTubeTK's requirements
 ----------------------------------
 
-Compling ITKTubeTK requires that you have CMake 3.13 or later.
+Compling ITKTubeTK requires that you have *CMake 3.16 or later*. (required by ITK for remote modules)
 
 * FOR THE MOST UP-TO-DATE REQUIREMENTS, please consult the dashboard build scripts in ITKTubeTK/Dashboards, such as
 https://github.com/KitwareMedical/ITKTubeTK/blob/master/dashboards/AzureLinuxGCC/azure-pipelines.yml
@@ -56,7 +56,7 @@ For ITK, we want to compile ITK v5.1 rc01 or later.   Begin by checking out ITK'
     $ cd src
     $ git clone https://github.com:/InsightSoftwareConsortium/ITK.git
     $ cd ITK
-    $ git checkout 534c2719d0f9572c808717
+    $ git checkout 1554b66a55300c7177b5d73967d02ad8b8c97159
     $ cd ..
     $ mkdir ITK-Release
     $ cd ITK-Release
