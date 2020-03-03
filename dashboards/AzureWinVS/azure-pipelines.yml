@@ -25,7 +25,7 @@ jobs:
       displayName: Clone ITK
       workingDirectory: $(Agent.BuildDirectory)
     - script: |
-        cmake -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Release ..\ITK
+        cmake -DITK_MINIMUM_COMPLIANCE_LEVEL=1 -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Release ..\ITK
         cmake --build . --config Release
       displayName: CMake ITK
       workingDirectory: $(Agent.BuildDirectory)\ITK-Release

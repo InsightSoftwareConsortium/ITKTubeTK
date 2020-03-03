@@ -28,7 +28,7 @@ jobs:
         cd ..
         mkdir ITK-Debug
         cd ITK-Debug
-        cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Debug ../ITK
+        cmake -GNinja -DITK_MINIMUM_COMPLIANCE_LEVEL=1 -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Debug ../ITK
         ninja -v
         cd ..
       displayName: Download and Build ITK

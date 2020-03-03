@@ -27,7 +27,7 @@ jobs:
         cd ..
         mkdir ITK-Release
         cd ITK-Release
-        cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Release ../ITK
+        cmake -GNinja -DITK_MINIMUM_COMPLIANCE_LEVEL=1 -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Release ../ITK
         ninja -v
         cd ..
       displayName: Download and Build ITK
