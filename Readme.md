@@ -67,6 +67,7 @@ Using CMake, you should configure ITK with the following options
 * ITK_LEGACY_SILENT = On               (This is an advanced option)
 * ITK_WRAP_PYTHON = On                 (Note: Only Python3 is supported at this time)
 * Module_MinimalPathExtraction = On    (This is an advanced option)
+* ITK_MINIMUM_COMPLIANCE_LEVEL = 1     (THIS IS IMPORTANT! MinimalPathExtraction requires it!)
 * You may also want to turn off building Tests and Examples
 
 Once you have configured and generated your build files (e.g., for make or ninja or whatever):
