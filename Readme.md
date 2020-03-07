@@ -28,84 +28,43 @@ TubeTK offers various interface layers:
 
 * [TubeTK/apps](TubeTK/apps): These are the command-line interface (CLI) equivalents to the methods available via `TubeTK/include`.  This is intended for bash, bat, and other system-call scripts.  The level of modularization and intended users are similar to those of `TubeTK/include`.  C++ and python-based CLIs are provided.  Continuous, unit-level testing of `TubeTK/include` is provided via these applications.
 
-Compiling ITKTubeTK's requirements
-----------------------------------
+Compiling ITKTubeTK: an ITK remote module!!!
+--------------------------------------------
 
-Compling ITKTubeTK requires that you have *CMake 3.16 or later*. (required by ITK for remote modules)
-
-* FOR THE MOST UP-TO-DATE REQUIREMENTS, please consult the dashboard build scripts in ITKTubeTK/Dashboards, such as
-https://github.com/KitwareMedical/ITKTubeTK/blob/master/dashboards/AzureLinuxGCC/azure-pipelines.yml
-
-There are two dependencies that must be compiled first
-
-1) ITK
-2) SlicerExecutionModel
-
-Additionally, you may want to compile 
-
-3) VTK
-
-to enable the "sliding organ registration" (anisotropic diffusion regularization and registration) methods in ITKTubeTK.
-
-*1) ITK*
-
-For ITK, we want to compile ITK v5.1 rc01 or later.   Begin by checking out ITK's source
-
-    $ cd /                               (To keep paths short, start at a top-level dir)
-    $ mkdir src
-    $ cd src
-    $ git clone https://github.com:/InsightSoftwareConsortium/ITK.git
-    $ cd ITK
-    $ git checkout 1554b66a55300c7177b5d73967d02ad8b8c97159
-    $ cd ..
-    $ mkdir ITK-Release
-    $ cd ITK-Release
-    $ cmake-gui ../ITK
-
-Using CMake, you should configure ITK with the following options
-* CMAKE_BUILD_TYPE = Release           (This is an advanced option)
-* ITK_LEGACY_SILENT = On               (This is an advanced option)
-* ITK_WRAP_PYTHON = On                 (Note: Only Python3 is supported at this time)
-* Module_MinimalPathExtraction = On    (This is an advanced option)
+ITKTubeTK is available as a official ITK Remote Module, starting with [ITKv5.1rc02](https://github.com/InsightSoftwareConsortium/ITK/releases/tag/v5.1rc02).   When you configure ITK using CMake, set the options 
+* CMAKE_BUILD_TYPE = Release           (This and most of the other cmake options are "advanced" options)
+* ITK_LEGACY_SILENT = On
+* ITK_WRAP_PYTHON = On
+* Module_TubeTK = On
+* Module_MinimalPathExtraction = On
 * ITK_MINIMUM_COMPLIANCE_LEVEL = 1     (THIS IS IMPORTANT! MinimalPathExtraction requires it!)
-* You may also want to turn off building Tests and Examples
+and then when you build ITK, TubeTK will be automatically built as well.  Additionally, if you enable Python wrapping for ITK, that wrapping will include TubeTK.
 
-Once you have configured and generated your build files (e.g., for make or ninja or whatever):
+Roadmap
+-------
 
-    $ ninja  (or make, or nmake, or whatever is appropriate for your system)
+Our roadmap includes:
+* Configuration options in the ITK build process to enable building ITKTubeTK applications
+* Adding more Jupyter Notebook examples in ITKTubeTK/examples:
++ Sliding organ registration
++ Tomosynthesis simulation
++ Additional vessel extraction demonstrations involving lungs, livers, and brains imaged via MRA, CT, and ultrasound.
++ Updating example/data directory to a wider variety of cases and enable its synchronization/download during cmake configuration.
 
-This build process can take many hours on a Windows PC, because it is generating the files needed
-to use ITK with Python, as well as the standard C++ libraries, applications, examples, and tests.
+For advanced developers
+-----------------------
 
-*2) SlicerExecutionModel*
+As mentioned in the roadmap, we are working to updating TubeTK's remote module to include options for building its applications and VTK-dependent functionality.   At this time those options are not working as expected.   Once they do work, you will have the option to build SlicerExecutionModel and VTK as described below:
 
-After compiling ITK, we repeat the build process for SlicerExecutionModel (used by ITKTubeTK applications):
+*1) SlicerExecutionModel: needed for TubeTK's applications*
 
-    $ cd /src
-    $ git clone https://github.com:/Slicer/SlicerExecutionModel.git
-    $ cd SlicerExecutionModel
-    $ git checkout ef094e7140d71b5e75675f63910d39acd1d7221d
-    $ cd ..
-    $ mkdir SlicerExecutionModel-Release
-    $ cd SlicerExecutionModel-Release
-    $ cmake-gui ../SlicerExecutionModel
+After compiling ITK with TubeTK enabled, you can build SlicerExecutionModel and then re-configure ITK's TubeTK to build applications using SlicerExecutionModel.   We hope to soon resolve this circular dependency.   More details will be given soon.
 
-Using CMake, you should configure SlicerExecutionModel as follows:
-* CMAKE_BUILD_TYPE = Release
-* ITK_DIR = /src/ITK-Release
-
-Once SlicerExecutionModel's cmake files are configured and build files are
-generated, you should build the application:
-
-    $ ninja  (or make, or nmake, or whatever is appropriate for your system)
-
-This build should be relatively quick.
-
-*3) VTK*
+*2) VTK: needed for Sliding organ registration*
 
 Optionally, you may also want to build VTK.   This is used by the Sliding
 Organ Registration algorithm (anisotropic diffusion regularization and
-registration).
+registration).   Note that VTK must be build BEFORE building ITK's TubeTK.   To build VTK, do the following:
 
     $ cd /src
     $ git clone https://github.com:/Kitware/VTK.git
@@ -124,35 +83,7 @@ VTK:
 
     $ ninja  (or make, or nmake, or whatever is appropriate for your system)
 
-...And now you are ready to compile ITKTubeTK
-
-Compiling ITKTubeTK
--------------------
-
-Once ITK and SlicerExecutionModel have been compiled as described above, you can compile ITKTubeTK:
-
-    $ cd /src
-    $ git clone https://github.com:/KitwareMedical/ITKTubeTK
-    $ mkdir ITKTubeTK-Release
-    $ cd ITKTubeTK-Release
-    $ cmake-gui ../ITKTubeTK
-
-Then we configure the CMake variables for ITKTubeTK
-* CMAKE_BUILD_TYPE = Release
-* ITK_DIR = /src/ITK-Release
-* TubeTK_BUILD_APPLICATIONS = On
-* SlicerExecutionModel_DIR = /src/SlicerExecutionModel-Release
-* TubeTK_WRAP_PYTHON = On
-* Optionally, if you have built VTK, you can enable the use of VTK and point VTK_DIR to your VTK-Release directory.
-
-Then configure and generate you build files using cmake, and compile
-
-    $ ninja
-
-Now you will want to add ITKTubeTK's applications to your command-line PATH.
-The directory to include in that path is:
-
-    /src/ITKTubeTK/bin
+...And now you are ready to compile ITK with TubeTK as described above.
 
 Using a Compiled and Python-Wrapped ITk and ITKTubeTK from Python
 -----------------------------------------------------------------
@@ -167,9 +98,6 @@ First, to be able to run all the python tests and examples, the following packag
 * jinja2
 * tables
 * matplotlib
-* pyqtgraph
-* PyOpengl
-* PySide
 
 Installing most required packages can be done with the following command line:
 
