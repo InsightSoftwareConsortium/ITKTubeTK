@@ -29,7 +29,6 @@ SEMMacroBuildCLI(
     ${ITK_LIBRARIES}
     ITKIOMeta
     ITKSpatialObjects
-    TubeTK
     TubeTKLibCommon
   )
 

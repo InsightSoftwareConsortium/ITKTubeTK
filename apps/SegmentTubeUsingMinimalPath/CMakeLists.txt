@@ -30,7 +30,6 @@ SEMMacroBuildCLI(
     ITKIOMeta
     ITKIOSpatialObjects
     ITKIOImageBase
-    TubeTK
     TubeTKLibCommon
     TubeTKLibNumerics
   )

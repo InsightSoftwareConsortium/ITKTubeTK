@@ -28,11 +28,9 @@ SEMMacroBuildCLI(
   LOGO_HEADER
     ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h
   TARGET_LIBRARIES
-    TubeTK
     ${ITK_LIBRARIES}
     ITKIOMeta
     ITKIOSpatialObjects
-    TubeTK
   )
 
 if( BUILD_TESTING )

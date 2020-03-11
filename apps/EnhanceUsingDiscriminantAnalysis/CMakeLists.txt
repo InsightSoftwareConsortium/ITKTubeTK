@@ -28,9 +28,9 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}
     ITKMetaIO
-    TubeTK
     TubeTKLibCommon
     TubeTKLibNumerics
+    TubeTKLibMetaIO
   )
 
 if( BUILD_TESTING )
