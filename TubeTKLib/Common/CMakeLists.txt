@@ -38,12 +38,16 @@ add_library( TubeTKLibCommon
   ${TubeTKLib_Base_Common_H_Files}
   ${TubeTKLib_Base_Common_HXX_Files}
   ${TubeTKLib_Base_Common_CXX_Files} )
+
 target_link_libraries( TubeTKLibCommon
   ${ITK_LIBRARIES} )
 target_include_directories( TubeTKLibCommon PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
-include_directories(
-  ${ITK_INCLUDE_DIRS} )
+
+include_directories( ${ITK_INCLUDE_DIRS} )
+
+install( TARGETS TubeTKLibCommon EXPORT TubeTKLib-targets
+  ARCHIVE DESTINATION lib )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

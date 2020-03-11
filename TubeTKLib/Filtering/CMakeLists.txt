@@ -115,12 +115,17 @@ if( TubeTK_USE_ARRAYFIRE )
 endif()
 
 add_library( TubeTKLibFiltering INTERFACE )
+
 target_include_directories( TubeTKLibFiltering INTERFACE
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" )
 target_link_libraries( TubeTKLibFiltering INTERFACE
-  TubeTKLibNumerics )
-include_directories(
- ${ITK_INCLUDE_DIRS} )
+  TubeTKLibNumerics
+  ${ITK_LIBRARIES} )
+
+include_directories( ${ITK_INCLUDE_DIRS} )
+
+install( TARGETS TubeTKLibFiltering EXPORT TubeTKLib-targets
+  ARCHIVE DESTINATION lib )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

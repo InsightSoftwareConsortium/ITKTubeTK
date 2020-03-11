@@ -42,12 +42,16 @@ add_library( TubeTKLibMetaIO STATIC
   ${TubeTKLib_Base_MetaIO_SRCS} )
 
 target_link_libraries( TubeTKLibMetaIO PUBLIC
-  TubeTKLibCommon )
+  TubeTKLibCommon
+  ${ITK_LIBRARIES} )
 
 target_include_directories( TubeTKLibMetaIO PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
-include_directories(
-  ${ITK_INCLUDE_DIRS} )
+
+include_directories( ${ITK_INCLUDE_DIRS} )
+
+install( TARGETS TubeTKLibMetaIO EXPORT TubeTKLib-targets
+  ARCHIVE DESTINATION lib )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

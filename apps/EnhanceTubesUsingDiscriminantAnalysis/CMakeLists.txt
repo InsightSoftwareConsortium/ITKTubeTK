@@ -39,8 +39,6 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}
-    ITKIOMeta
-    ITKOptimizers
     TubeTKLibCommon
     TubeTKLibMetaIO
     ${${MODULE_NAME}_EXTERNAL_LIBS}

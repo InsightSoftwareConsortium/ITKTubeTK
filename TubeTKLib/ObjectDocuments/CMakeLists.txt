@@ -48,15 +48,15 @@ add_library( TubeTKLibObjectDocuments STATIC
 
 target_link_libraries( TubeTKLibObjectDocuments PUBLIC
   TubeTKLibCommon
-  ${ITK_LIBRARIES}
-  ITKIOMeta
-  ITKIOSpatialObjects )
+  ${ITK_LIBRARIES} )
 
 target_include_directories( TubeTKLibObjectDocuments PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
 
-include_directories(
-  ${ITK_INCLUDE_DIRS} )
+include_directories( ${ITK_INCLUDE_DIRS} )
+
+install( TARGETS TubeTKLibObjectDocuments EXPORT TubeTKLib-targets
+  ARCHIVE DESTINATION lib )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

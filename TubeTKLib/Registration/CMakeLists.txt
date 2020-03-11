@@ -59,14 +59,15 @@ add_library( TubeTKLibRegistration INTERFACE )
 
 target_include_directories( TubeTKLibRegistration INTERFACE
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" )
-
 target_link_libraries( TubeTKLibRegistration INTERFACE
   TubeTKLibFiltering
   TubeTKLibNumerics
-  )
+  ${ITK_LIBRARIES} )
 
-include_directories(
-  ${ITK_INCLUDE_DIRS} )
+include_directories( ${ITK_INCLUDE_DIRS} )
+
+install( TARGETS TubeTKLibRegistration EXPORT TubeTKLib-targets
+  ARCHIVE DESTINATION lib )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

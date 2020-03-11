@@ -30,7 +30,6 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}
     TubeTKLibCommon
-    ITKIOSpatialObjects
   )
 
 if( BUILD_TESTING )

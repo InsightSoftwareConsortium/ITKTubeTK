@@ -41,8 +41,6 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}
     ${VTK_LIBRARIES}
-    ITKIOMeta
-    ITKSpatialObjects
     TubeTKLibCommon
   )
 

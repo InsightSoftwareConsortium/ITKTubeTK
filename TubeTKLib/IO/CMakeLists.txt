@@ -58,11 +58,16 @@ target_link_libraries( TubeTKLibIO INTERFACE
   TubeTKLibMetaIO
   TubeTKLibCommon
   TubeTKLibNumerics
-  TubeTKLibSegmentation )
+  TubeTKLibSegmentation
+  ${ITK_LIBRARIES} )
 
 target_include_directories( TubeTKLibIO INTERFACE
-  ${ITK_INCLUDE_DIRS}
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" )
+
+include_directories( ${ITK_INCLUDE_DIRS} )
+
+install( TARGETS TubeTKLibIO EXPORT TubeTKLib-targets
+  ARCHIVE DESTINATION lib )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
