@@ -263,10 +263,6 @@ set( TubeTKLib_INCLUDE_DIRS
   $<INSTALL_INTERFACE:include/TubeTKLib/Registration>
   $<INSTALL_INTERFACE:include/TubeTKLib/Segmentation> )
 
-#set( TubeTKLib_LIBRARY_DIRS
-  #${TubeTK_BINARY_DIR}/bin
-  #${TubeTK_BINARY_DIR}/lib )
-
 ####
 # TubeTK includes TubeTKLib's libraries and include directories
 ####
@@ -277,18 +273,11 @@ set( TubeTK_INCLUDE_DIRS
   $<INSTALL_INTERFACE:include>
   ${TubeTKLib_INCLUDE_DIRS} )
 
-#set( TubeTK_LIBRARY_DIRS
-  #${TubeTK_BINARY_DIR}/bin 
-  #${TubeTK_BINARY_DIR}/lib
-  #${TubeTK_EXECUTABLE_DIRS} )
-
-set( TubeTK_SYSTEM_INCLUDE_DIRS ${TubeTK_INCLUDE_DIRS} )
-#set( TubeTK_SYSTEM_LIBRARY_DIRS ${TubeTK_LIBRARY_DIRS} )
-
 ####
 # Build base library and optional components
 ####
-include_directories(
+set( TubeTK_SYSTEM_INCLUDE_DIRS
+  ${TubeTK_BINARY_DIR}
   ${TubeTK_SOURCE_DIR}/TubeTKLib
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Common
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Filtering
@@ -299,6 +288,8 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Registration
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Segmentation )
 
+include_directories( ${TubeTK_SYSTEM_INCLUDE_DIRS} )
+
 add_subdirectory( TubeTKLib )
 
 install( TARGETS ${TubeTKLib_LIBRARIES} EXPORT TubeTKLib-targets
@@ -307,7 +298,7 @@ install( TARGETS ${TubeTKLib_LIBRARIES} EXPORT TubeTKLib-targets
 install( EXPORT TubeTKLib-targets DESTINATION lib/cmake )
 
 ####
-# Build ITK module
+# Build TubeTK module
 ####
 if( NOT ITK_SOURCE_DIR )
   list( APPEND CMAKE_MODULE_PATH ${ITK_CMAKE_DIR} )
