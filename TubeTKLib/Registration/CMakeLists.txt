@@ -58,13 +58,15 @@ endif()
 add_library( TubeTKLibRegistration INTERFACE )
 
 target_include_directories( TubeTKLibRegistration INTERFACE
-  ${ITK_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR} )
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" )
 
 target_link_libraries( TubeTKLibRegistration INTERFACE
   TubeTKLibFiltering
   TubeTKLibNumerics
   )
+
+include_directories(
+  ${ITK_INCLUDE_DIRS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

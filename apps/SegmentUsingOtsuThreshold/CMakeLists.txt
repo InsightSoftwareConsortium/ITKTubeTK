@@ -28,7 +28,6 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}
     ITKStatistics
-    TubeTK
     TubeTKLibCommon
   )
 

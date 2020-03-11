@@ -135,8 +135,12 @@ set( TubeTK_ITK_COMPONENTS
   ITKStatistics
   ITKTransform
   )
+
+####
+# Find ITK
+####
+find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )
 if( NOT ITK_SOURCE_DIR )
-  find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )
   mark_as_advanced( CLEAR ITK_DIR )
   if( NOT ITK_FOUND )
     find_package( ITK )
@@ -147,8 +151,8 @@ if( NOT ITK_SOURCE_DIR )
     set( ITK_DIR "NOT_FOUND" CACHE PATH
 	    "Path to ITK installation/build directory." FORCE )
   endif()
-  include( ${ITK_USE_FILE} )
 endif()
+include( ${ITK_USE_FILE} )
 
 ####
 # Find Python
@@ -259,48 +263,44 @@ set( TubeTKLib_INCLUDE_DIRS
   $<INSTALL_INTERFACE:include/TubeTKLib/Registration>
   $<INSTALL_INTERFACE:include/TubeTKLib/Segmentation> )
 
-set( TubeTKLib_LIBRARY_DIRS
-  ${TubeTK_BINARY_DIR}/bin
-  ${TubeTK_BINARY_DIR}/lib )
-
 ####
 # TubeTK includes TubeTKLib's libraries and include directories
 ####
 set( TubeTK_LIBRARIES
-  TubeTK
   ${TubeTKLib_LIBRARIES} )
 
 set( TubeTK_INCLUDE_DIRS
-  ${TubeTK_SOURCE_DIR}/include
+  $<INSTALL_INTERFACE:include>
   ${TubeTKLib_INCLUDE_DIRS} )
-
-set( TubeTK_LIBRARY_DIRS
-  ${TubeTK_BINARY_DIR}/bin 
-  ${TubeTK_BINARY_DIR}/lib
-  ${TubeTK_EXECUTABLE_DIRS} )
-
-set( TubeTK_SYSTEM_INCLUDE_DIRS ${TubeTK_INCLUDE_DIRS} )
-set( TubeTK_SYSTEM_LIBRARY_DIRS ${TubeTK_LIBRARY_DIRS} )
 
 ####
 # Build base library and optional components
 ####
-find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )
-include( ${ITK_USE_FILE} )
+set( TubeTK_SYSTEM_INCLUDE_DIRS
+  ${TubeTK_BINARY_DIR}
+  ${TubeTK_SOURCE_DIR}/TubeTKLib
+  ${TubeTK_SOURCE_DIR}/TubeTKLib/Common
+  ${TubeTK_SOURCE_DIR}/TubeTKLib/Filtering
+  ${TubeTK_SOURCE_DIR}/TubeTKLib/IO
+  ${TubeTK_SOURCE_DIR}/TubeTKLib/MetaIO
+  ${TubeTK_SOURCE_DIR}/TubeTKLib/Numerics
+  ${TubeTK_SOURCE_DIR}/TubeTKLib/ObjectDocuments
+  ${TubeTK_SOURCE_DIR}/TubeTKLib/Registration
+  ${TubeTK_SOURCE_DIR}/TubeTKLib/Segmentation )
+
+include_directories( ${TubeTK_SYSTEM_INCLUDE_DIRS} )
+
 add_subdirectory( TubeTKLib )
 
-install( TARGETS ${TubeTKLib_LIBRARIES} EXPORT TubeTK-targets
+install( TARGETS ${TubeTKLib_LIBRARIES} EXPORT TubeTKLib-targets
   ARCHIVE DESTINATION lib )
 
-install( EXPORT TubeTK-targets DESTINATION lib/cmake )
+install( EXPORT TubeTKLib-targets DESTINATION lib/cmake )
 
 ####
-# Build ITK module
+# Build TubeTK module
 ####
 if( NOT ITK_SOURCE_DIR )
-  # ITK has already been found (see above), so skip these two lines...
-  #   find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )
-  #   include( ${ITK_USE_FILE} )
   list( APPEND CMAKE_MODULE_PATH ${ITK_CMAKE_DIR} )
   include( ITKModuleExternal )
 else()

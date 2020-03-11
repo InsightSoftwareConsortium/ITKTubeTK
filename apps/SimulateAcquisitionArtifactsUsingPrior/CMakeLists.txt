@@ -40,7 +40,6 @@ SEMMacroBuildCLI(
     ITKStatistics
     ITKOptimizers
     ITKIOTransformBase
-    TubeTK
     TubeTKLibCommon
     TubeTKLibNumerics
   )

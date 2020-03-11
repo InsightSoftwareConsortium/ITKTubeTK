@@ -29,7 +29,6 @@ SEMMacroBuildCLI(
     ${ITK_LIBRARIES}
     ITKMetaIO
     ITKOptimizers
-    TubeTK
     TubeTKLibCommon
   )
 

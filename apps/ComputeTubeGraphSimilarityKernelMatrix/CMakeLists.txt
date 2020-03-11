@@ -37,7 +37,6 @@ SEMMacroBuildCLI(
   LOGO_HEADER
     ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h
   TARGET_LIBRARIES
-    TubeTK
     ${ITK_LIBRARIES}
     TubeTKLibCommon
   ADDITIONAL_SRCS

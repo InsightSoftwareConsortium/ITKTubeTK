@@ -29,5 +29,4 @@ SEMMacroBuildCLI(
     ${ITK_LIBRARIES}
     ITKOptimizers
     ITKIOTransformBase
-    TubeTK
   )
