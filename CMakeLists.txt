@@ -289,6 +289,11 @@ find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )
 include( ${ITK_USE_FILE} )
 add_subdirectory( TubeTKLib )
 
+install( TARGETS ${TubeTKLib_LIBRARIES} EXPORT TubeTK-targets
+  ARCHIVE DESTINATION lib )
+
+install( EXPORT TubeTK-targets DESTINATION lib/cmake )
+
 ####
 # Build ITK module
 ####
