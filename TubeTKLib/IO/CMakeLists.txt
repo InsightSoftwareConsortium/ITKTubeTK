@@ -61,6 +61,7 @@ target_link_libraries( TubeTKLibIO INTERFACE
   TubeTKLibSegmentation )
 
 target_include_directories( TubeTKLibIO INTERFACE
+  ${ITK_INCLUDE_DIRS}
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" )
 
 if( BUILD_TESTING )

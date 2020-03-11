@@ -42,6 +42,7 @@ set( tubeBaseCommonTests_SRCS
   tubeObjectTest.cxx )
 
 include_directories(
+  ${ITK_INCLUDE_DIRS}
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Common
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Filtering )
 

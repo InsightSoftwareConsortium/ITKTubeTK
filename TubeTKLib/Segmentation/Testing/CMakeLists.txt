@@ -62,6 +62,7 @@ if( TubeTK_USE_RANDOMFOREST )
 endif()
 
 include_directories(
+  ${ITK_INCLUDE_DIRS}
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Common
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Numerics
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Filtering

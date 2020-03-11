@@ -116,6 +116,7 @@ endif()
 
 add_library( TubeTKLibFiltering INTERFACE )
 target_include_directories( TubeTKLibFiltering INTERFACE
+  ${ITK_INCLUDE_DIRS}
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
   )
 target_link_libraries( TubeTKLibFiltering INTERFACE

@@ -66,6 +66,8 @@ target_link_libraries( tubeBaseIOHeaderTest
 if( TubeTK_USE_LIBSVM )
   target_link_libraries( tubeBaseIOHeaderTest ${LIBSVM_LIBRARIES} )
 endif()
+include_directories(
+  ${ITK_INCLUDE_DIRS} )
 
 set( tubeBaseIO_External_Libraries )
 if( TubeTK_USE_ARRAYFIRE )

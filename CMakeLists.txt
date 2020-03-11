@@ -116,6 +116,10 @@ set( TubeTK_ITK_COMPONENTS
   ITKCommon
   ITKHDF5
   ITKIOCSV
+  ITKIOMeta
+  ITKIOSpatialObjects
+  ITKIOSpatialObjects
+  ITKOptimizers
   ITKRegionGrowing
   ITKAnisotropicSmoothing
   ITKLabelVoting
@@ -245,15 +249,15 @@ set( TubeTKLib_LIBRARIES
   TubeTKLibObjectDocuments )
 
 set( TubeTKLib_INCLUDE_DIRS
-  ${TubeTK_BINARY_DIR}/TubeTKLib
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/Common
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/Filtering
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/IO
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/MetaIO
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/Numerics
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/ObjectDocuments
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/Registration
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/Segmentation )
+  $<INSTALL_INTERFACE:include/TubeTKLib>
+  $<INSTALL_INTERFACE:include/TubeTKLib/Common>
+  $<INSTALL_INTERFACE:include/TubeTKLib/Filtering>
+  $<INSTALL_INTERFACE:include/TubeTKLib/IO>
+  $<INSTALL_INTERFACE:include/TubeTKLib/MetaIO>
+  $<INSTALL_INTERFACE:include/TubeTKLib/Numerics>
+  $<INSTALL_INTERFACE:include/TubeTKLib/ObjectDocuments>
+  $<INSTALL_INTERFACE:include/TubeTKLib/Registration>
+  $<INSTALL_INTERFACE:include/TubeTKLib/Segmentation> )
 
 set( TubeTKLib_LIBRARY_DIRS
   ${TubeTK_BINARY_DIR}/bin
@@ -281,7 +285,14 @@ set( TubeTK_SYSTEM_LIBRARY_DIRS ${TubeTK_LIBRARY_DIRS} )
 ####
 # Build base library and optional components
 ####
+find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )
+include( ${ITK_USE_FILE} )
 add_subdirectory( TubeTKLib )
+
+install( TARGETS ${TubeTKLib_LIBRARIES} EXPORT TubeTK-targets
+  ARCHIVE DESTINATION lib )
+
+install( EXPORT TubeTK-targets DESTINATION lib/cmake )
 
 ####
 # Build ITK module
@@ -293,7 +304,6 @@ if( NOT ITK_SOURCE_DIR )
   list( APPEND CMAKE_MODULE_PATH ${ITK_CMAKE_DIR} )
   include( ITKModuleExternal )
 else()
-  set( ITK_DIR ${CMAKE_BINARY_DIR} )
   itk_module_impl()
 endif()
 

@@ -34,7 +34,7 @@ set( TubeTKLib_Base_Common_CXX_Files
   tubeIndent.cxx
   tubeObject.cxx )
 
-add_library( TubeTKLibCommon STATIC
+add_library( TubeTKLibCommon
   ${TubeTKLib_Base_Common_H_Files}
   ${TubeTKLib_Base_Common_HXX_Files}
   ${TubeTKLib_Base_Common_CXX_Files} )
@@ -42,6 +42,8 @@ target_link_libraries( TubeTKLibCommon
   ${ITK_LIBRARIES} )
 target_include_directories( TubeTKLibCommon PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
+include_directories(
+  ${ITK_INCLUDE_DIRS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
