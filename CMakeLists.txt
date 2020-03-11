@@ -292,8 +292,8 @@ include_directories( ${TubeTK_SYSTEM_INCLUDE_DIRS} )
 
 add_subdirectory( TubeTKLib )
 
-install( TARGETS ${TubeTKLib_LIBRARIES} EXPORT TubeTKLib-targets
-  ARCHIVE DESTINATION lib )
+#install( TARGETS ${TubeTKLib_LIBRARIES} EXPORT TubeTKLib-targets
+  #ARCHIVE DESTINATION lib )
 
 install( EXPORT TubeTKLib-targets DESTINATION lib/cmake )
 
