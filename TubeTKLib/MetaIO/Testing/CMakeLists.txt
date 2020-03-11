@@ -52,6 +52,9 @@ set( tubeBaseMetaIOTests_SRCS
   itktubeMetaTubeExtractorTest.cxx )
 
 
+include_directories(
+  ${ITK_INCLUDE_DIRECTORIES} )
+
 add_executable( tubeBaseMetaIOHeaderTest
   tubeBaseMetaIOHeaderTest.cxx )
 target_link_libraries( tubeBaseMetaIOHeaderTest

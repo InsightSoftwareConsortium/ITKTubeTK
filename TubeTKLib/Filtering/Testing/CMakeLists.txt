@@ -64,6 +64,7 @@ if( TubeTK_USE_ARRAYFIRE )
 endif( TubeTK_USE_ARRAYFIRE )
 
 include_directories(
+  ${ITK_INCLUDE_DIRS}
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Common
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Numerics
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Filtering )

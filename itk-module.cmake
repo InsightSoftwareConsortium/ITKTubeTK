@@ -29,13 +29,12 @@ itk_module( TubeTK
     ITKSpatialObjects
   COMPILE_DEPENDS
     MinimalPathExtraction
-    ITKImageIO
-    ITKTransformIO
     ITKIOSpatialObjects
     ITKRegistrationCommon
     ITKBinaryMathematicalMorphology
     ITKFFT
     ITKCommon
+    ITKMetaIO
     ITKHDF5
     ITKIOCSV
     ITKRegionGrowing
@@ -55,7 +54,6 @@ itk_module( TubeTK
     ITKImageSources
   TEST_DEPENDS
     ITKTestKernel
-    ITKMetaIO
   DESCRIPTION
     "${DOCUMENTATION}"
   EXCLUDE_FROM_DEFAULT

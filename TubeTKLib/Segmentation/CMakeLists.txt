@@ -68,6 +68,7 @@ endif()
 add_library( TubeTKLibSegmentation INTERFACE )
 
 target_include_directories( TubeTKLibSegmentation INTERFACE
+  ${ITK_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
 target_link_libraries( TubeTKLibSegmentation INTERFACE

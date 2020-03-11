@@ -65,6 +65,9 @@ if( TubeTK_USE_VTK )
     ${VTK_LIBRARIES} )
 endif( TubeTK_USE_VTK )
 
+include_directories(
+  ${ITK_INCLUDE_DIRS} )
+
 add_executable( tubeBaseRegistrationTests
   ${tubeBaseRegistrationTests_SRCS} )
 target_link_libraries( tubeBaseRegistrationTests

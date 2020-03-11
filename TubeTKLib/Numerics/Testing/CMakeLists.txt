@@ -59,6 +59,9 @@ set( tubeBaseNumericsTests_SRCS
   tubeSplineNDTest.cxx
   tubeUserFunctionTest.cxx )
 
+include_directories(
+  ${ITK_INCLUDE_DIRS})
+
 add_executable( tubeBaseNumericsHeaderTest
   tubeBaseNumericsHeaderTest.cxx )
 target_link_libraries( tubeBaseNumericsHeaderTest

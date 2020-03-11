@@ -53,7 +53,10 @@ target_link_libraries( TubeTKLibObjectDocuments PUBLIC
   ITKIOSpatialObjects )
 
 target_include_directories( TubeTKLibObjectDocuments PUBLIC
-  ${CMAKE_CURRENT_SOURCE_DIR} )
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
+
+include_directories(
+  ${ITK_INCLUDE_DIRS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

@@ -58,6 +58,7 @@ endif()
 add_library( TubeTKLibRegistration INTERFACE )
 
 target_include_directories( TubeTKLibRegistration INTERFACE
+  ${ITK_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
 target_link_libraries( TubeTKLibRegistration INTERFACE
