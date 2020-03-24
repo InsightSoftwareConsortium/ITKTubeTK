@@ -30,6 +30,7 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}
     TubeTKLibCommon
+    TubeTKLibFiltering
   )
 
 #if( BUILD_TESTING )

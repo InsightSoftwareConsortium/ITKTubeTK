@@ -29,10 +29,6 @@ limitations under the License.
 #ifndef __itktubeRidgeExtractor_hxx
 #define __itktubeRidgeExtractor_hxx
 
-#ifdef WIN32
-#define _CRT_SECURE_NO_DEPRECATE
-#endif
-
 #include "tubeMessage.h"
 #include "tubeMatrixMath.h"
 #include "itktubeRidgeExtractor.h"

@@ -40,6 +40,7 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}
     TubeTKLibCommon
+    TubeTKLibFiltering
     TubeTKLibMetaIO
     ${${MODULE_NAME}_EXTERNAL_LIBS}
   )

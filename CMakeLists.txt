@@ -248,6 +248,7 @@ set( TubeTKLib_CompareTextFiles_EXE
 ####
 set( TubeTKLib_LIBRARIES
   TubeTKLibCommon
+  TubeTKLibFiltering
   TubeTKLibMetaIO
   TubeTKLibNumerics
   TubeTKLibObjectDocuments )
@@ -262,6 +263,11 @@ set( TubeTKLib_INCLUDE_DIRS
   $<INSTALL_INTERFACE:include/TubeTKLib/ObjectDocuments>
   $<INSTALL_INTERFACE:include/TubeTKLib/Registration>
   $<INSTALL_INTERFACE:include/TubeTKLib/Segmentation> )
+
+if( TubeTK_USE_ARRAYFIRE )
+  list( APPEND TubeTKLib_INCLUDE_DIRS
+    ${ArrayFire_INCLUDE_DIRS} )
+endif()
 
 ####
 # TubeTK includes TubeTKLib's libraries and include directories
