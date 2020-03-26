@@ -22,9 +22,6 @@
 
 include_regular_expression( "^.*$" )
 
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
-
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-TubeTKLibSegmentation ${PYTHON_EXECUTABLE}

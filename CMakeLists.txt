@@ -139,8 +139,8 @@ set( TubeTK_ITK_COMPONENTS
 ####
 # Find ITK
 ####
-find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )
 if( NOT ITK_SOURCE_DIR )
+  find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )
   mark_as_advanced( CLEAR ITK_DIR )
   if( NOT ITK_FOUND )
     find_package( ITK )
