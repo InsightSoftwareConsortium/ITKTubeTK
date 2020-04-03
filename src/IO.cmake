@@ -26,31 +26,11 @@ set( TubeTK_IO_H_Files
   IO/itktubeTubeExtractorIO.h
   IO/itktubeTubeXIO.h )
 
-if( TubeTK_USE_LIBSVM )
-  list( APPEND TubeTK_IO_H_Files
-    IO/itktubePDFSegmenterSVMIO.h )
-endif()
-
-if( TubeTK_USE_RANDOMFOREST )
-  list( APPEND TubeTK_IO_H_Files
-    IO/itktubePDFSegmenterRandomForestIO.h )
-endif()
-
 set( TubeTK_IO_HXX_Files
   IO/itktubePDFSegmenterParzenIO.hxx
   IO/itktubeRidgeSeedFilterIO.hxx
   IO/itktubeTubeExtractorIO.hxx
   IO/itktubeTubeXIO.hxx )
-
-if( TubeTK_USE_LIBSVM )
-  list( APPEND TubeTK_IO_HXX_Files
-    IO/itktubePDFSegmenterSVMIO.hxx )
-endif()
-
-if( TubeTK_USE_RANDOMFOREST )
-  list( APPEND TubeTK_IO_HXX_Files
-    IO/itktubePDFSegmenterRandomForestIO.hxx )
-endif()
 
 set( TubeTK_IO_CXX_Files )
 

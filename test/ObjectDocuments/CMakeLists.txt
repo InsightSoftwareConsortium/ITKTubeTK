@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Library:   TubeTKLib
+# Library:   TubeTK
 #
 # Copyright Kitware Inc.
 #
@@ -20,46 +20,26 @@
 #
 ##############################################################################
 
-include( ${ITK_USE_FILE} )
-include_directories( ${ITK_BINARY_DIR}/Wrapping/ITKFactoryRegistration )
-
 if( PYTHON_EXECUTABLE )
-  add_test( PrintSelf-BaseObjectDocuments ${PYTHON_EXECUTABLE}
+  itk_add_test( PrintSelf-ObjectDocuments ${PYTHON_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
-    ${TubeTK_SOURCE_DIR}/TubeTKLib/ObjectDocuments )
+    ${TubeTK_SOURCE_DIR}/src/ObjectDocuments )
 endif( PYTHON_EXECUTABLE )
 
-set( BASE_OBJECT_DOCUMENTS_TESTS
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseObjectDocumentsTests> )
+set( tubeObjectDocumentsTests_SRCS
+  tubeObjectDocumentsPrintTest.cxx )
 
-set( BASE_OBJECT_DOCUMENTS_HEADER_TEST
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseObjectDocumentsHeaderTest> )
+CreateTestDriver( tubeObjectDocumentsHeader
+  "${TubeTK-Test_LIBRARIES}"
+  "tubeObjectDocumentsHeaderTest.cxx" )
+itk_add_test( NAME tubeObjectDocumentsHeaderTest
+  COMMAND tubeObjectDocumentsHeaderTestDriver
+    tubeObjectdocumentsHeaderTest )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
+CreateTestDriver( tubeObjectDocuments
+  "${TubeTK-Test_LIBRARIES}"
+  "${tubeObjectDocumentsTests_SRCS}" )
 
-set( tubeBaseObjectDocumentsTests_SRCS
-  tubeBaseObjectDocumentsTests.cxx
-  tubeBaseObjectDocumentsPrintTest.cxx )
-
-include_directories(
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/Common
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/Filtering
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/ObjectDocuments )
-
-add_executable( tubeBaseObjectDocumentsHeaderTest
-  tubeBaseObjectDocumentsHeaderTest.cxx )
-target_link_libraries( tubeBaseObjectDocumentsHeaderTest
-  ${ITK_LIBRARIES} )
-
-add_executable( tubeBaseObjectDocumentsTests 
-  ${tubeBaseObjectDocumentsTests_SRCS} )
-target_link_libraries( tubeBaseObjectDocumentsTests 
-  ${ITK_LIBRARIES}
-  TubeTKLibObjectDocuments )
-
-add_test( NAME tubeBaseObjectDocumentsHeaderTest
-  COMMAND ${BASE_OBJECT_DOCUMENTS_HEADER_TEST} )
-
-add_test( NAME tubeBaseObjectDocumentsPrintTest
-  COMMAND ${BASE_OBJECT_DOCUMENTS_TESTS}
-  tubeBaseObjectDocumentsPrintTest )
+itk_add_test( NAME tubeObjectDocumentsPrintTest
+  COMMAND tubeObjectDocumentsTestDriver
+    tubeObjectDocumentsPrintTest )

@@ -23,12 +23,6 @@ limitations under the License.
 #include "tubetkConfigure.h"
 
 #include "itktubePDFSegmenterParzen.h"
-#ifdef TubeTK_USE_RANDOMFOREST
-#  include "itktubePDFSegmenterRandomForest.h"
-#endif
-#ifdef TubeTK_USE_LIBSVM
-#  include "itktubePDFSegmenterSVM.h"
-#endif
 #include "itktubeRadiusExtractor2.h"
 #include "itktubeRidgeExtractor.h"
 #include "itktubeRidgeSeedFilter.h"
@@ -47,22 +41,6 @@ int tubeSegmentationPrintTest( int itkNotUsed( argc ),
       ImageType >::New();
   std::cout << "-------------itktubePDFSegmenterParzen" << pdfSegmenterParzen
     << std::endl;
-
-#ifdef TubeTK_USE_RANDOMFOREST
-  itk::tube::PDFSegmenterRandomForest< ImageType, ImageType >::Pointer
-    pdfSegmenterRandomForest = itk::tube::PDFSegmenterRandomForest<
-      ImageType, ImageType >::New();
-  std::cout << "-------------itktubePDFSegmenterRandomForest"
-    << pdfSegmenterRandomForest << std::endl;
-#endif
-
-#ifdef TubeTK_USE_LIBSVM
-  itk::tube::PDFSegmenterSVM< ImageType, ImageType >::Pointer
-    pdfSegmenterSVM = itk::tube::PDFSegmenterSVM< ImageType,
-      ImageType >::New();
-  std::cout << "-------------itktubePDFSegmenterSVM" << pdfSegmenterSVM
-    << std::endl;
-#endif
 
   itk::tube::RadiusExtractor2< ImageType >::Pointer
     radius2Object = itk::tube::RadiusExtractor2< ImageType >::New();

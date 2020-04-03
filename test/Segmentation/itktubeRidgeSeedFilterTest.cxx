@@ -24,14 +24,6 @@ limitations under the License.
 
 #include "itktubeRidgeSeedFilter.h"
 
-#ifdef TubeTK_USE_LIBSVM
-#include "itktubePDFSegmenterSVM.h"
-#endif
-
-#ifdef TubeTK_USE_RANDOMFOREST
-#include "itktubePDFSegmenterRandomForest.h"
-#endif
-
 int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 {
   if( argc != 9 )
@@ -110,34 +102,13 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   int bkgId = atoi( argv[4] );
   if( argv[5][0] == '1' )
     {
-#ifdef TubeTK_USE_LIBSVM
-    typedef itk::tube::PDFSegmenterSVM< ImageType, LabelMapType > PDFType;
-    PDFType::Pointer pdf = PDFType::New();
-    pdf->SetTrainingDataStride( 100 );
-    filter->SetPDFSegmenter( pdf.GetPointer() );
-    pdf->SetReferenceCount( 2 );
-#else
     std::cerr << "LIBSVM not enabled." << std::endl;
     return EXIT_FAILURE;
-#endif
     }
   else if( argv[5][0] == '2' )
     {
-#ifdef TubeTK_USE_RANDOMFOREST
-    typedef itk::tube::PDFSegmenterRandomForest< ImageType, LabelMapType >
-      PDFType;
-    PDFType::Pointer pdf = PDFType::New();
-    pdf->SetTrainingDataStride( 100 );
-    pdf->SetNumberOfDecisionTrees( 10 );
-    filter->GetSeedFeatureGenerator()->SetNumberOfPCABasisToUseAsFeatures(
-      10 );
-    filter->SetPDFSegmenter( pdf.GetPointer() );
-    filter->SetSeedTolerance( 0.95 );
-    pdf->SetReferenceCount( 2 );
-#else
-    std::cerr << "LIBSVM not enabled." << std::endl;
+    std::cerr << "LIBRandomForest not enabled." << std::endl;
     return EXIT_FAILURE;
-#endif
     }
   filter->SetRidgeId( objId );
   filter->SetBackgroundId( bkgId );

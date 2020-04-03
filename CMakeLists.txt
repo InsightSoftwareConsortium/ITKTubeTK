@@ -110,30 +110,6 @@ if( TubeTK_USE_ARRAYFIRE )
 endif()
 
 ####
-# LIBSVM setup.
-####
-option( TubeTK_USE_LIBSVM "Use LIBSVM for additional functionality."
-  OFF )
-mark_as_advanced( TubeTK_USE_LIBSVM )
-if( TubeTK_USE_LIBSVM )
-  find_package( LIBSVM REQUIRED )
-  mark_as_advanced( CLEAR LIBSVM_DIR )
-  include_directories( ${LIBSVM_INCLUDE_DIRS} )
-endif()
-
-####
-# RandomForest setup.
-####
-option( TubeTK_USE_RANDOMFOREST
-  "Use RandomForest to enable additional functionality." OFF )
-mark_as_advanced( TubeTK_USE_RANDOMFOREST )
-if( TubeTK_USE_RANDOMFOREST )
-  find_package( RandomForest REQUIRED )
-  mark_as_advanced( CLEAR RandomForest_DIR )
-  include_directories( ${RandomForest_INCLUDE_DIRS} )
-endif()
-
-####
 # Find ITK and pre-built modules
 ####
 set( TubeTK_ITK_COMPONENTS

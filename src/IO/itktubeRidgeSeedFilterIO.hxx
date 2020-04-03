@@ -25,14 +25,6 @@ limitations under the License.
 #include "itktubeRidgeSeedFilterIO.h"
 #include "itktubePDFSegmenterParzenIO.h"
 
-#ifdef TubeTK_USE_LIBSVM
-#  include "itktubePDFSegmenterSVMIO.h"
-#endif
-
-#ifdef TubeTK_USE_RANDOMFOREST
-#  include "itktubePDFSegmenterRandomForestIO.h"
-#endif
-
 namespace itk
 {
 
@@ -219,57 +211,10 @@ Read( const char * _headerName )
       return false;
       }
     }
-#ifdef TubeTK_USE_LIBSVM
-  else
+   else
     {
-    typedef PDFSegmenterSVM< TImage, TLabelMap > PDFSegmenterSVMType;
-    typename PDFSegmenterSVMType::Pointer pdfSVM = dynamic_cast<
-      PDFSegmenterSVMType * >( m_RidgeSeedFilter->GetPDFSegmenter().
-        GetPointer() );
-    if( pdfSVM.IsNotNull() )
-      {
-      PDFSegmenterSVMIO< TImage, TLabelMap > pdfReader(
-        pdfSVM.GetPointer() );
-      if( !pdfReader.Read( pdfFileName.c_str() ) )
-        {
-        std::cerr << "Cannot read SVM file: " << pdfFileName << std::endl;
-        m_RidgeSeedFilter = NULL;
-        return false;
-        }
-      }
-#endif
-#ifdef TubeTK_USE_RANDOMFOREST
-    else
-      {
-      typedef PDFSegmenterRandomForest< TImage, TLabelMap >
-        PDFSegmenterRandomForestType;
-      typename PDFSegmenterRandomForestType::Pointer pdfRandomForest =
-        dynamic_cast< PDFSegmenterRandomForestType * >(
-          m_RidgeSeedFilter->GetPDFSegmenter().GetPointer() );
-      if( pdfRandomForest.IsNotNull() )
-        {
-        PDFSegmenterRandomForestIO< TImage, TLabelMap > pdfReader(
-          pdfRandomForest.GetPointer() );
-        if( !pdfReader.Read( pdfFileName.c_str() ) )
-          {
-          std::cerr << "Cannot read RandomForest file: " << pdfFileName
-            << std::endl;
-          m_RidgeSeedFilter = NULL;
-          return false;
-          }
-        }
-#endif
-      else
-        {
-        std::cerr << "PDFSegmenter type not known." << std::endl;
-        std::cerr << "  May require LibSVM or RandomForest." << std::endl;
-        }
-#ifdef TubeTK_USE_RANDOMFOREST
-      }
-#endif
-#ifdef TubeTK_USE_LIBSVM
-      }
-#endif
+    std::cerr << "PDFSegmenter type not known." << std::endl;
+    }
   return true;
 }
 
@@ -337,52 +282,10 @@ Write( const char * _headerName )
       result = false;
       }
     }
-#ifdef TubeTK_USE_LIBSVM
   else
     {
-    typedef PDFSegmenterSVM< TImage, TLabelMap >    PDFSegmenterSVMType;
-    typename PDFSegmenterSVMType::Pointer pdfSVM = dynamic_cast<
-      PDFSegmenterSVMType * >( m_RidgeSeedFilter->
-        GetPDFSegmenter().GetPointer() );
-    if( pdfSVM.IsNotNull() )
-      {
-      PDFSegmenterSVMIO< TImage, TLabelMap > pdfWriter(
-        pdfSVM.GetPointer() );
-      if( !pdfWriter.Write( pdfWriteName.c_str() ) )
-        {
-        result = false;
-        }
-      }
-#endif
-#ifdef TubeTK_USE_RANDOMFOREST
-    else
-      {
-      typedef PDFSegmenterRandomForest< TImage, TLabelMap >
-        PDFSegmenterRandomForestType;
-      typename PDFSegmenterRandomForestType::Pointer pdfRandomForest =
-        dynamic_cast< PDFSegmenterRandomForestType * >( m_RidgeSeedFilter->
-          GetPDFSegmenter().GetPointer() );
-      if( pdfRandomForest.IsNotNull() )
-        {
-        PDFSegmenterRandomForestIO< TImage, TLabelMap > pdfWriter(
-          pdfRandomForest.GetPointer() );
-        if( !pdfWriter.Write( pdfWriteName.c_str() ) )
-          {
-          result = false;
-          }
-        }
-#endif
-      else
-        {
-        std::cerr << "PDFSegmenter type not known." << std::endl;
-        std::cerr << "  May require LibSVM or RandomForest." << std::endl;
-        }
-#ifdef TubeTK_USE_RANDOMFOREST
-      }
-#endif
-#ifdef TubeTK_USE_LIBSVM
+    std::cerr << "PDFSegmenter type not known." << std::endl;
     }
-#endif
   result = seedWriter.Write( _headerName );
 
   return result;
