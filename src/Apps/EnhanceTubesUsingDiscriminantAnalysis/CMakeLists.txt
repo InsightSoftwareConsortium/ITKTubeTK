@@ -22,18 +22,6 @@
 
 set( MODULE_NAME EnhanceTubesUsingDiscriminantAnalysis )
 
-set( ${MODULE_NAME}_EXTERNAL_LIBS )
-if( TubeTK_USE_LIBSVM )
-  find_package( LIBSVM REQUIRED )
-  include_directories( ${LIBSVM_INCLUDE_DIRS} )
-  set( ${MODULE_NAME}_EXTERNAL_LIBS ${LIBSVM_LIBRARIES} )
-endif( TubeTK_USE_LIBSVM )
-
-if( TubeTK_USE_RANDOMFOREST )
-  find_package( RandomForest REQUIRED )
-  include_directories( ${RandomForest_INCLUDE_DIR} )
-endif( TubeTK_USE_RANDOMFOREST )
-
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h
@@ -42,7 +30,6 @@ SEMMacroBuildCLI(
     TubeTKLibCommon
     TubeTKLibFiltering
     TubeTKLibMetaIO
-    ${${MODULE_NAME}_EXTERNAL_LIBS}
   )
 
 if( BUILD_TESTING )

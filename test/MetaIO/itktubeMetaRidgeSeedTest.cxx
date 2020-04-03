@@ -123,7 +123,7 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  itk::tube::MetaRidgeSeed mrs3( scales, true, true, v, m, wm, ws, ws, wm,
+  itk::tube::MetaRidgeSeed mrs3( scales, true, v, m, wm, ws, ws, wm,
     "test.pdf" );
   if( mrs3.GetLDAValues() != mrs1.GetLDAValues()
     || mrs3.GetLDAMatrix() != mrs1.GetLDAMatrix()
@@ -157,11 +157,10 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
     }
 
   itk::tube::MetaRidgeSeed mrs5;
-  mrs5.InitializeEssential( scales, true, false, v, m, wm, ws, ws, wm,
+  mrs5.InitializeEssential( scales, true, v, m, wm, ws, ws, wm,
     "test.pdf" );
   if( mrs5.GetLDAValues() != mrs1.GetLDAValues()
     || mrs5.GetLDAMatrix() != mrs1.GetLDAMatrix()
-    || mrs5.GetUseSVM() != mrs1.GetUseSVM()
     || mrs5.GetInputWhitenMeans() != mrs1.GetInputWhitenMeans()
     || mrs5.GetInputWhitenStdDevs() != mrs1.GetInputWhitenStdDevs()
     || mrs5.GetOutputWhitenMeans() != mrs1.GetOutputWhitenMeans()
@@ -184,7 +183,6 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
   mrs5.Read( argv[1] );
   if( mrs5.GetLDAValues() != mrs1.GetLDAValues()
     || mrs5.GetLDAMatrix() != mrs1.GetLDAMatrix()
-    || mrs5.GetUseSVM() != mrs1.GetUseSVM()
     || mrs5.GetInputWhitenMeans() != mrs1.GetInputWhitenMeans()
     || mrs5.GetInputWhitenStdDevs() != mrs1.GetInputWhitenStdDevs()
     || mrs5.GetOutputWhitenMeans() != mrs1.GetOutputWhitenMeans()

@@ -40,14 +40,6 @@ set( tubeIOTests_SRCS
   itktubeTubeExtractorIOTest.cxx
   itktubeRidgeSeedFilterIOTest.cxx
   itktubeTubeXIOTest.cxx )
-if( TubeTK_USE_LIBSVM )
-  list( APPEND tubeIOTests_SRCS
-    itktubePDFSegmenterSVMIOTest.cxx )
-endif()
-if( TubeTK_USE_RANDOMFOREST )
-  list( APPEND tubeIOTests_SRCS
-    itktubePDFSegmenterRandomForestIOTest.cxx )
-endif()
 
 CreateTestDriver( tubeIO
   "${TubeTK-Test_LIBRARIES}"
@@ -70,40 +62,6 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterParzenIOTest.mpd
       ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterParzenIOTest2.mha
       ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterParzenIOTest2.mpd )
-
-if( TubeTK_USE_LIBSVM )
-  itk_add_test( 
-    NAME itktubePDFSegmenterSVMIOTest
-    COMMAND tubeIOTestDriver
-      --compareNumberOfPixelsTolerance 20
-      --compare ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterSVMIOTest.mha
-        ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterSVMIOTest2.mha
-      itktubePDFSegmenterSVMIOTest
-        DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
-        DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
-        DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask.mha}
-        ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterSVMIOTest.mha
-        ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterSVMIOTest.msvm
-        ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterSVMIOTest2.mha
-        ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterSVMIOTest2.msvm )
-endif()
-
-if( TubeTK_USE_RANDOMFOREST )
-  itk_add_test( 
-    NAME itktubePDFSegmenterRandomForestIOTest
-    COMMAND tubeIOTestDriver
-      --compareNumberOfPixelsTolerance 20
-      --compare ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterRandomForestIOTest.mha
-        ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterRandomForestIOTest2.mha
-      itktubePDFSegmenterRandomForestIOTest
-        DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
-        DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
-        DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask.mha}
-        ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterRandomForestIOTest.mha
-        ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterRandomForestIOTest.mrf
-        ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterRandomForestIOTest2.mha
-        ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterRandomForestIOTest2.mrf )
-    endif()
 
 itk_add_test( 
   NAME itktubeRidgeSeedFilterIOTest

@@ -32,16 +32,16 @@ set( TubeTK_ObjectDocuments_H_Files
   ObjectDocuments/tubeMetaObjectDocument.h
   ObjectDocuments/tubeOptionList.h )
 
-set( TubeTk_ObjectDocuments_HXX_Files
+set( TubeTK_ObjectDocuments_HXX_Files
   ObjectDocuments/itktubeObjectDocumentToImageFilter.hxx
   ObjectDocuments/itktubeObjectDocumentToObjectSource.hxx )
 
-set( TubeTk_ObjectDocuments_CXX_Files
+set( TubeTK_ObjectDocuments_CXX_Files
   ObjectDocuments/tubeMetaDocument.cxx
   ObjectDocuments/tubeMetaObjectDocument.cxx
   ObjectDocuments/tubeOptionList.cxx )
 
 list( APPEND TubeTK_SRCS
-  ${TubeTK_Objectdocuments_H_Files}
-  ${TubeTK_Objectdocuments_HXX_Files}
-  ${TubeTK_Objectdocuments_CXX_Files} )
+  ${TubeTK_ObjectDocuments_H_Files}
+  ${TubeTK_ObjectDocuments_HXX_Files}
+  ${TubeTK_ObjectDocuments_CXX_Files} )

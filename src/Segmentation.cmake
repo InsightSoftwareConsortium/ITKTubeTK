@@ -32,14 +32,6 @@ set( TubeTK_Segmentation_H_Files
   Segmentation/itktubeTubeExtractor.h
   Segmentation/itktubeRidgeSeedFilter.h
   Segmentation/itktubeComputeTrainingMask.h)
-if( TubeTK_USE_LIBSVM )
-  list( APPEND TubeTK_Segmentation_H_Files
-    Segmentation/itktubePDFSegmenterSVM.h )
-endif()
-if( TubeTK_USE_RANDOMFOREST )
-  list( APPEND TubeTK_Segmentation_H_Files
-    Segmentation/itktubePDFSegmenterRandomForest.h )
-endif()
 
 set( TubeTK_Segmentation_HXX_Files
   Segmentation/itktubeComputeSegmentTubesParameters.hxx
@@ -54,16 +46,6 @@ set( TubeTK_Segmentation_HXX_Files
   Segmentation/itktubeTubeExtractor.hxx
   Segmentation/itktubeRidgeSeedFilter.hxx
   Segmentation/itktubeComputeTrainingMask.hxx)
-
-if( TubeTK_USE_LIBSVM )
-  list( APPEND TubeTK_Segmentation_HXX_Files
-    Segmentation/itktubePDFSegmenterSVM.hxx )
-endif()
-
-if( TubeTK_USE_RANDOMFOREST )
-  list( APPEND TubeTK_Segmentation_HXX_Files
-    Segmentation/itktubePDFSegmenterRandomForest.hxx )
-endif()
 
 set( TubeTK_Segmentation_CXX_Files )
 
