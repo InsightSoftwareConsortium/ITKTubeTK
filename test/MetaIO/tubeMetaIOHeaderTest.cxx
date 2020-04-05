@@ -2,11 +2,12 @@
 
 Library:   TubeTK
 
-Copyright Kitware Inc.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,10 +21,17 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubetkConfigure_h
-#define __tubetkConfigure_h
+#include "tubetkConfigure.h"
 
-// this gets defined if use set TUBETK_USE_ARRAYFIRE to ON
-#cmakedefine TubeTK_USE_ARRAYFIRE
+#include "tubeMacro.h"
 
-#endif // __tubetkConfigure_h
+#include "itktubeMetaClassPDF.h"
+#include "itktubeMetaLDA.h"
+#include "itktubeMetaNJetLDA.h"
+#include "itktubeMetaRidgeSeed.h"
+#include "itktubeMetaTubeExtractor.h"
+
+int tubeMetaIOHeaderTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
+{
+  return EXIT_SUCCESS;
+}

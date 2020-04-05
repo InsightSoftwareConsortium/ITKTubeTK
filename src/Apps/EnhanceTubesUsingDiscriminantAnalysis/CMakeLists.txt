@@ -20,9 +20,18 @@
 #
 ##############################################################################
 
-set( CTEST_PROJECT_NAME "TubeTK" )
-set( CTEST_NIGHTLY_START_TIME "23:59:00 EDT" )
-set( CTEST_DROP_METHOD "http" )
-set( CTEST_DROP_SITE "open.cdash.org" )
-set( CTEST_DROP_LOCATION "/submit.php?project=TubeTK" )
-set( CTEST_DROP_SITE_CDASH TRUE )
+set( MODULE_NAME EnhanceTubesUsingDiscriminantAnalysis )
+
+SEMMacroBuildCLI(
+  NAME ${MODULE_NAME}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES}
+    TubeTKLibCommon
+    TubeTKLibFiltering
+    TubeTKLibMetaIO
+  )
+
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )

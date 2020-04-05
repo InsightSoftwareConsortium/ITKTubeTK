@@ -20,9 +20,23 @@
 #
 ##############################################################################
 
-set( CTEST_PROJECT_NAME "TubeTK" )
-set( CTEST_NIGHTLY_START_TIME "23:59:00 EDT" )
-set( CTEST_DROP_METHOD "http" )
-set( CTEST_DROP_SITE "open.cdash.org" )
-set( CTEST_DROP_LOCATION "/submit.php?project=TubeTK" )
-set( CTEST_DROP_SITE_CDASH TRUE )
+set( TubeTK_MetaIO_H_Files
+  MetaIO/itktubeMetaLDA.h
+  MetaIO/itktubeMetaNJetLDA.h
+  MetaIO/itktubeMetaClassPDF.h
+  MetaIO/itktubeMetaRidgeSeed.h
+  MetaIO/itktubeMetaTubeExtractor.h )
+
+set( TubeTK_MetaIO_HXX_Files )
+
+set( TubeTK_MetaIO_CXX_Files
+  MetaIO/itktubeMetaClassPDF.cxx
+  MetaIO/itktubeMetaLDA.cxx
+  MetaIO/itktubeMetaNJetLDA.cxx
+  MetaIO/itktubeMetaRidgeSeed.cxx
+  MetaIO/itktubeMetaTubeExtractor.cxx )
+
+list( APPEND TubeTK_SRCS
+  ${TubeTK_MetaIO_H_Files}
+  ${TubeTK_MetaIO_HXX_Files}
+  ${TubeTK_MetaIO_CXX_Files} )

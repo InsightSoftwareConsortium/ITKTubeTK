@@ -6,7 +6,7 @@ Copyright Kitware Inc.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,10 +20,18 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubetkConfigure_h
-#define __tubetkConfigure_h
+#include "tubetkConfigure.h"
 
-// this gets defined if use set TUBETK_USE_ARRAYFIRE to ON
-#cmakedefine TubeTK_USE_ARRAYFIRE
+#include "itktubePDFSegmenterBase.h"
+#include "itktubePDFSegmenterParzen.h"
+#include "itktubeRadiusExtractor2.h"
+#include "itktubeRidgeExtractor.h"
+#include "itktubeRidgeSeedFilter.h"
+#include "itktubeTubeExtractor.h"
 
-#endif // __tubetkConfigure_h
+#include <iostream>
+
+int tubeSegmentationHeaderTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+{
+  return EXIT_SUCCESS;
+}

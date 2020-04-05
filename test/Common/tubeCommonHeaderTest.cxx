@@ -6,7 +6,7 @@ Copyright Kitware Inc.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,10 +20,17 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubetkConfigure_h
-#define __tubetkConfigure_h
+#include "tubeIndent.h"
+#include "tubeMacro.h"
+#include "tubeMessage.h"
+#include "tubeObject.h"
+#include "tubeStringUtilities.h"
 
-// this gets defined if use set TUBETK_USE_ARRAYFIRE to ON
-#cmakedefine TubeTK_USE_ARRAYFIRE
+#include "itkMacro.h"
 
-#endif // __tubetkConfigure_h
+#include <cstdlib>
+
+int tubeCommonHeaderTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+{
+  return EXIT_SUCCESS;
+}

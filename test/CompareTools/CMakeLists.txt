@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Library:   TubeTK
+# Library:   TubeTKLib
 #
 # Copyright Kitware Inc.
 #
@@ -20,9 +20,14 @@
 #
 ##############################################################################
 
-set( CTEST_PROJECT_NAME "TubeTK" )
-set( CTEST_NIGHTLY_START_TIME "23:59:00 EDT" )
-set( CTEST_DROP_METHOD "http" )
-set( CTEST_DROP_SITE "open.cdash.org" )
-set( CTEST_DROP_LOCATION "/submit.php?project=TubeTK" )
-set( CTEST_DROP_SITE_CDASH TRUE )
+add_executable( tubeCompareTextFiles
+  CompareTextFiles.cxx )
+target_link_libraries( tubeCompareTextFiles
+  ITKCommon
+  ITKMetaIO )
+
+add_executable( tubeCompareImages
+  CompareImages.cxx )
+target_link_libraries( tubeCompareImages
+  ${TubeTK-Test_LIBRARIES}
+  ITKMetaIO )

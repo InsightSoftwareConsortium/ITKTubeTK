@@ -20,9 +20,21 @@
 #
 ##############################################################################
 
-set( CTEST_PROJECT_NAME "TubeTK" )
-set( CTEST_NIGHTLY_START_TIME "23:59:00 EDT" )
-set( CTEST_DROP_METHOD "http" )
-set( CTEST_DROP_SITE "open.cdash.org" )
-set( CTEST_DROP_LOCATION "/submit.php?project=TubeTK" )
-set( CTEST_DROP_SITE_CDASH TRUE )
+set( TubeTK_Common_H_Files
+  Common/tubeIndent.h
+  Common/tubeMacro.h
+  Common/tubeMessage.h
+  Common/tubeObject.h
+  Common/tubeStringUtilities.h
+  Common/tubeTestMain.h )
+
+set( TubeTK_Common_HXX_Files )
+
+set( TubeTK_Common_CXX_Files
+  Common/tubeIndent.cxx
+  Common/tubeObject.cxx )
+
+list( APPEND TubeTK_SRCS
+  ${TubeTK_Common_H_Files}
+  ${TubeTK_Common_HXX_Files}
+  ${TubeTK_Common_CXX_Files} )

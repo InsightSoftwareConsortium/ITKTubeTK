@@ -20,9 +20,26 @@
 #
 ##############################################################################
 
-set( CTEST_PROJECT_NAME "TubeTK" )
-set( CTEST_NIGHTLY_START_TIME "23:59:00 EDT" )
-set( CTEST_DROP_METHOD "http" )
-set( CTEST_DROP_SITE "open.cdash.org" )
-set( CTEST_DROP_LOCATION "/submit.php?project=TubeTK" )
-set( CTEST_DROP_SITE_CDASH TRUE )
+if( PYTHON_EXECUTABLE )
+  itk_add_test( PrintSelf-ObjectDocuments ${PYTHON_EXECUTABLE}
+    ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
+    ${TubeTK_SOURCE_DIR}/src/ObjectDocuments )
+endif( PYTHON_EXECUTABLE )
+
+set( tubeObjectDocumentsTests_SRCS
+  tubeObjectDocumentsPrintTest.cxx )
+
+CreateTestDriver( tubeObjectDocumentsHeader
+  "${TubeTK-Test_LIBRARIES}"
+  "tubeObjectDocumentsHeaderTest.cxx" )
+itk_add_test( NAME tubeObjectDocumentsHeaderTest
+  COMMAND tubeObjectDocumentsHeaderTestDriver
+    tubeObjectdocumentsHeaderTest )
+
+CreateTestDriver( tubeObjectDocuments
+  "${TubeTK-Test_LIBRARIES}"
+  "${tubeObjectDocumentsTests_SRCS}" )
+
+itk_add_test( NAME tubeObjectDocumentsPrintTest
+  COMMAND tubeObjectDocumentsTestDriver
+    tubeObjectDocumentsPrintTest )

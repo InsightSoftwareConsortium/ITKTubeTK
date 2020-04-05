@@ -6,7 +6,7 @@ Copyright Kitware Inc.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,10 +20,32 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubetkConfigure_h
-#define __tubetkConfigure_h
+#include "tubeObject.h"
 
-// this gets defined if use set TUBETK_USE_ARRAYFIRE to ON
-#cmakedefine TubeTK_USE_ARRAYFIRE
+#include <sstream>
 
-#endif // __tubetkConfigure_h
+int tubeObjectTest( int argc, char * argv[] )
+{
+  if( argc > 1 )
+    {
+    tubeStandardErrorMacro( << "Usage: " << argv[0] );
+
+    return EXIT_FAILURE;
+    }
+
+  typedef tube::Object ObjectType;
+
+  ObjectType::Pointer object = new ObjectType();
+  std::ostringstream oss;
+
+  object->Print( oss );
+
+  tubeStandardOutputMacro( << "Object print method test:" << std::endl
+                           << oss.str() );
+  tubeStandardOutputMacro( << "Object stream operator test:" << std::endl
+                           << *object );
+
+  delete object;
+
+  return EXIT_SUCCESS;
+}

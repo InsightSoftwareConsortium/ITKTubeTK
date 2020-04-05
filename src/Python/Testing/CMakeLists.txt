@@ -2,7 +2,8 @@
 #
 # Library:   TubeTK
 #
-# Copyright Kitware Inc.
+# Copyright 2010 Kitware Inc. 28 Corporate Drive,
+# Clifton Park, NY, 12065, USA.
 #
 # All rights reserved.
 #
@@ -20,9 +21,14 @@
 #
 ##############################################################################
 
-set( CTEST_PROJECT_NAME "TubeTK" )
-set( CTEST_NIGHTLY_START_TIME "23:59:00 EDT" )
-set( CTEST_DROP_METHOD "http" )
-set( CTEST_DROP_SITE "open.cdash.org" )
-set( CTEST_DROP_LOCATION "/submit.php?project=TubeTK" )
-set( CTEST_DROP_SITE_CDASH TRUE )
+set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
+
+#ExternalData_Add_Test_With_Env(
+  #NAME Python.VesselTubeToNumPyTest
+  #COMMAND ${TubeTK_LAUNCHER} ${PYTHON_EXECUTABLE}
+    #${CMAKE_CURRENT_SOURCE_DIR}/test_tubetk.py
+    #VesselTubeToNumPyTest
+      #DATA{${TubeTK_DATA_ROOT}/tube.tre}
+      #DATA{${TubeTK_DATA_ROOT}/tube.tre.npy}
+  #ENVIRONMENT TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR}
+  #)

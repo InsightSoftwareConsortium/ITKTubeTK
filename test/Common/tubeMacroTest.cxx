@@ -6,7 +6,7 @@ Copyright Kitware Inc.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,10 +20,23 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubetkConfigure_h
-#define __tubetkConfigure_h
+#include "tubeMacro.h"
 
-// this gets defined if use set TUBETK_USE_ARRAYFIRE to ON
-#cmakedefine TubeTK_USE_ARRAYFIRE
+int tubeMacroTest( int argc, char * argv[] )
+{
+  if( argc > 1 )
+    {
+    tubeStandardErrorMacro( << "Usage: " << argv[0] );
 
-#endif // __tubetkConfigure_h
+    return EXIT_FAILURE;
+    }
+
+  tubeDebugMacro( << "tubeDebugMacro test." );
+  tubeWarningMacro( << "tubeWarningMacro test." );
+  tubeErrorMacro( << "tubeErrorMacro test." );
+
+  tubeStandardErrorMacro( << "tubeStandardErrorMacro test." );
+  tubeStandardOutputMacro( << "tubeStandardOutputMacro test." );
+
+  return EXIT_SUCCESS;
+}

@@ -25,35 +25,35 @@ set( DOCUMENTATION
 itk_module( TubeTK
   DEPENDS
     ITKCommon
+    ITKHDF5
+    ITKIOImageBase
+    ITKOptimizers
+    ITKRegionGrowing
+    ITKSmoothing
     ITKStatistics
     ITKSpatialObjects
   COMPILE_DEPENDS
-    MinimalPathExtraction
-    ITKIOSpatialObjects
-    ITKRegistrationCommon
-    ITKBinaryMathematicalMorphology
-    ITKFFT
-    ITKCommon
-    ITKMetaIO
-    ITKHDF5
-    ITKIOCSV
-    ITKRegionGrowing
     ITKAnisotropicSmoothing
-    ITKLabelVoting
-    ITKPDEDeformableRegistration
-    ITKIOImageBase
-    ITKImageFunction
-    ITKImageIntensity
+    ITKBinaryMathematicalMorphology
     ITKDistanceMap
-    ITKTestKernel
-    ITKOptimizers
-    ITKSmoothing
-    ITKSpatialObjects
-    ITKStatistics
-    ITKTransform
+    ITKFFT
+    ITKRegistrationCommon
+    ITKImageFilterBase
+    ITKImageFunction
+    ITKImageFeature
+    ITKImageGradient
+    ITKImageIntensity
     ITKImageSources
-  TEST_DEPENDS
+    ITKIOMeta
+    ITKIOSpatialObjects
+    ITKIOTransformBase
+    ITKIOCSV
+    ITKLabelVoting
+    ITKMetaIO
+    ITKPDEDeformableRegistration
+    ITKTransform
     ITKTestKernel
+    MinimalPathExtraction
   DESCRIPTION
     "${DOCUMENTATION}"
   EXCLUDE_FROM_DEFAULT

@@ -1,6 +1,8 @@
+#!/usr/bin/env bash
+
 ##############################################################################
 #
-# Library:   TubeTK
+# Library:   TubeTKLib
 #
 # Copyright Kitware Inc.
 #
@@ -20,9 +22,12 @@
 #
 ##############################################################################
 
-set( CTEST_PROJECT_NAME "TubeTK" )
-set( CTEST_NIGHTLY_START_TIME "23:59:00 EDT" )
-set( CTEST_DROP_METHOD "http" )
-set( CTEST_DROP_SITE "open.cdash.org" )
-set( CTEST_DROP_LOCATION "/submit.php?project=TubeTK" )
-set( CTEST_DROP_SITE_CDASH TRUE )
+src_dir="${BASH_SOURCE%/*}/.."
+cd "${src_dir}" &&
+CMake/setup-user && echo &&
+CMake/setup-hooks && echo &&
+CMake/tips
+
+# Rebase master by default
+git config rebase.stat true
+git config branch.master.rebase true

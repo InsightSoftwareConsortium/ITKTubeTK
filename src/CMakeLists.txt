@@ -20,9 +20,23 @@
 #
 ##############################################################################
 
-set( CTEST_PROJECT_NAME "TubeTK" )
-set( CTEST_NIGHTLY_START_TIME "23:59:00 EDT" )
-set( CTEST_DROP_METHOD "http" )
-set( CTEST_DROP_SITE "open.cdash.org" )
-set( CTEST_DROP_LOCATION "/submit.php?project=TubeTK" )
-set( CTEST_DROP_SITE_CDASH TRUE )
+set( TubeTK_SRCS "" )
+
+include( Common.cmake )
+include( Filtering.cmake )
+include( IO.cmake )
+include( MetaIO.cmake )
+include( Numerics.cmake )
+include( ObjectDocuments.cmake )
+include( Registration.cmake )
+include( Segmentation.cmake )
+
+itk_module_add_library( TubeTK ${TubeTK_SRCS} )
+
+if( TubeTK_BUILD_APPLICATIONS AND SlicerExecutionModel_FOUND )
+  add_subdirectory( Apps )
+endif()
+
+if( Python3_EXECUTABLE )
+  add_subdirectory( Python )
+endif()
