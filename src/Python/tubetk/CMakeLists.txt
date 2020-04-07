@@ -40,9 +40,13 @@ set_target_properties( _tubetk_numpy
   PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}" )
 
 target_link_libraries( _tubetk_numpy
+  PUBLIC
   ${TubeTKLib_LIBRARIES}
   ${ITK_LIBRARIES}
-  ${PYTHON_LIBRARIES} )
+  )
+# Note: we can / must use "weak linking" on Unix for Python packages
+include(itkTargetLinkLibrariesWithDynamicLookup)
+itk_target_link_libraries_with_dynamic_lookup(_tubetk_numpy LINK_PUBLIC ${PYTHON_LIBRARIES})
 
 add_custom_target( CopyPurePythonTubeTK ALL "${CMAKE_COMMAND}" -P
   "${TubeTK_SOURCE_DIR}/CMake/CopyFiles.cmake"
