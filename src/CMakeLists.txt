@@ -33,7 +33,7 @@ include( Segmentation.cmake )
 
 itk_module_add_library( TubeTK ${TubeTK_SRCS} )
 
-if( TubeTK_BUILD_APPLICATIONS AND SlicerExecutionModel_FOUND )
+if( TubeTK_BUILD_APPLICATIONS AND SlicerExecutionModel_FOUND AND NOT SKBUILD )
   add_subdirectory( Apps )
 endif()
 
