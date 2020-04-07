@@ -15,13 +15,13 @@ except ImportError:
 
 setup(
     name='itk-tubetk',
-    version='0.1.0',
+    version='1.0rc1',
     author='Stephen R. Aylward',
     author_email='stephen.aylward@kitware.com',
     include_dirs=[np.get_include()],
     packages=['itk'],
     package_dir={'itk': 'itk'},
-    download_url=r'https://github.com/KitwareMedical/ITKTubeTK',
+    download_url=r'https://github.com/InsightSoftwareConsortium/ITKTubeTK',
     description=r'An open-source toolkit, led by Kitware, Inc., for the segmentation, registration, and analysis of tubes and surfaces in images.',
     long_description='TubeTK is an open-source toolkit for the segmentation, registration, and analysis of tubes and surfaces in images.',
     classifiers=[
@@ -47,7 +47,7 @@ setup(
     keywords='ITK InsightToolkit',
     url=r'https://itk.org/',
     install_requires=[
-        r'itk>=5.1b01',
+        r'itk>=5.1rc3',
         r'itk-minimalpathextraction'
     ]
     )
