@@ -32,6 +32,7 @@ itk_module( TubeTK
     ITKSmoothing
     ITKStatistics
     ITKSpatialObjects
+    MinimalPathExtraction
   COMPILE_DEPENDS
     ITKAnisotropicSmoothing
     ITKBinaryMathematicalMorphology
@@ -53,7 +54,6 @@ itk_module( TubeTK
     ITKPDEDeformableRegistration
     ITKTransform
     ITKTestKernel
-    MinimalPathExtraction
   DESCRIPTION
     "${DOCUMENTATION}"
   EXCLUDE_FROM_DEFAULT
