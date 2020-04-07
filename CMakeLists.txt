@@ -123,7 +123,6 @@ set( TubeTK_ITK_COMPONENTS
   ITKImageFunction
   ITKImageIntensity
   ITKImageIO
-  ITKIO
   ITKIOCSV
   ITKIOImageBase
   ITKIOMeta
