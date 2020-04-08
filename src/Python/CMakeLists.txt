@@ -31,7 +31,3 @@
 configure_file( tubetk.pth.in tubetk.pth )
 
 add_subdirectory( tubetk )
-
-if( BUILD_TESTING )
-  add_subdirectory( Testing )
-endif( BUILD_TESTING )
