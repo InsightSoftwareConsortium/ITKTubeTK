@@ -21,6 +21,10 @@
 ##############################################################################
 cmake_minimum_required(VERSION 3.16.0)
 
+if(NOT ITK_SOURCE_DIR)
+  include(itk-module-init.cmake)
+endif()
+
 project( TubeTK )
 
 ####
@@ -96,10 +100,10 @@ endif()
 option( TubeTK_USE_ARRAYFIRE
   "Use the ArrayFire library to speedup filtering opertions using the GPU."
   OFF)
-if( TubeTK_USE_ARRAYFIRE )
-  find_package( ArrayFire REQUIRED )
-  mark_as_advanced( CLEAR ArrayFire_DIR )
-endif()
+#if( TubeTK_USE_ARRAYFIRE )
+  #find_package( ArrayFire REQUIRED )
+  #mark_as_advanced( CLEAR ArrayFire_DIR )
+#endif()
 
 ####
 # Find ITK and pre-built modules
@@ -171,8 +175,8 @@ set( TubeTK_INCLUDE_DIRS
 set( TubeTK_LIBRARIES TubeTK )
 
 if( TubeTK_USE_ARRAYFIRE )
-  list( APPEND TubeTKLib_INCLUDE_DIRS
-    ${ArrayFire_INCLUDE_DIRS} )
+  list( APPEND TubeTK_LIBRARIES
+    ${ArrayFire_LIBRARIES} )
 endif()
 
 ####
@@ -189,6 +193,13 @@ set( TubeTK_SYSTEM_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/src/ObjectDocuments
   ${TubeTK_SOURCE_DIR}/src/Registration
   ${TubeTK_SOURCE_DIR}/src/Segmentation )
+
+if( TubeTK_USE_ARRAYFIRE )
+  list( APPEND TubeTK_SYSTEM_INCLUDE_DIRS
+    ${ArrayFire_INCLUDE_DIRS} )
+  set( TubeTK_SYSTEM_LIB_DIRS
+    ${ArrayFire_LIB_DIR} )
+endif()
 
 include_directories( ${TubeTK_SYSTEM_INCLUDE_DIRS} )
 
