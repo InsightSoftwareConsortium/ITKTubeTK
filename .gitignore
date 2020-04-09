@@ -20,6 +20,7 @@
 .LSOverride
 ._*
 Baselines
+data
 Data
 _build
 *.kws

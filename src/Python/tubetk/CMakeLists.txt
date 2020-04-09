@@ -20,34 +20,6 @@
 #
 ##############################################################################
 
-find_package( PythonInterp )
-execute_process(
-  COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; print(numpy.get_include())"
-  OUTPUT_VARIABLE _numpy_include
-  OUTPUT_STRIP_TRAILING_WHITESPACE )
-find_path( NUMPY_INCLUDE_DIR numpy/arrayobject.h
-  HINTS ${_numpy_include} )
-
-find_package( PythonLibs REQUIRED )
-include_directories( ${NUMPY_INCLUDE_DIR} ${PYTHON_INCLUDE_DIRS} )
-
-if( PYTHON_VERSION_STRING VERSION_GREATER 3.0 )
-  add_definitions( "-DPYTHON3")
-endif()
-
-python_add_module( _tubetk_numpy _tubetk_numpy.cxx )
-set_target_properties( _tubetk_numpy
-  PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}" )
-
-target_link_libraries( _tubetk_numpy
-  PUBLIC
-  ${TubeTKLib_LIBRARIES}
-  ${ITK_LIBRARIES}
-  )
-# Note: we can / must use "weak linking" on Unix for Python packages
-include(itkTargetLinkLibrariesWithDynamicLookup)
-itk_target_link_libraries_with_dynamic_lookup(_tubetk_numpy LINK_PUBLIC ${PYTHON_LIBRARIES})
-
 add_custom_target( CopyPurePythonTubeTK ALL "${CMAKE_COMMAND}" -P
   "${TubeTK_SOURCE_DIR}/CMake/CopyFiles.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}"
@@ -59,4 +31,3 @@ add_custom_target( CopyPythonLibTubeTK ALL "${CMAKE_COMMAND}" -P
   "${CMAKE_CURRENT_BINARY_DIR}/../../lib"
   "*pyd*"
   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}" )
-add_dependencies( CopyPythonLibTubeTK _tubetk_numpy )

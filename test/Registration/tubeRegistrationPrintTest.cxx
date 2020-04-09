@@ -58,9 +58,9 @@ limitations under the License.
 int tubeRegistrationPrintTest( int itkNotUsed( argc ), char * itkNotUsed(
   argv )[] )
 {
-  const unsigned int Dimension = 3;
-  typedef itk::Image< float, Dimension >      ImageType;
-  typedef itk::TubeSpatialObject< Dimension > TubeSpatialObjectType;
+  //const unsigned int Dimension = 3;
+  //typedef itk::Image< float, Dimension >      ImageType;
+  //typedef itk::TubeSpatialObject< Dimension > TubeSpatialObjectType;
 
   /*
   itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType,

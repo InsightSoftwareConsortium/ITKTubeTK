@@ -2,6 +2,11 @@ itk_module_test()
 
 set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/test/Baseline )
 
+#Waiting for SlicerExecutionModel to support ITKv5.1
+#if( TubeTK_BUILD_APPLICATIONS )
+  #add_subdirectory( Apps )
+#endif()
+
 add_subdirectory(CompareTools)
 add_subdirectory(Common)
 add_subdirectory(Filtering)
