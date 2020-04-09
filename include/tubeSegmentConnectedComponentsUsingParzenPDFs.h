@@ -62,8 +62,8 @@ public:
   typedef itk::tube::PDFSegmenterParzen< InputImageType,
     LabelMapType >                                  FilterType;
 
-  typedef typename FilterType::PDFImageType            PDFImageType;
-  typedef typename FilterType::LabeledFeatureSpaceType LabeledFeatureSpaceType;
+  //typedef typename FilterType::PDFImageType            PDFImageType;
+  //typedef typename FilterType::LabeledFeatureSpaceType LabeledFeatureSpaceType;
 
   typedef typename FilterType::ProbabilityImageType  ProbabilityImageType;
   typedef typename FilterType::ProbabilityVectorType ProbabilityVectorType;
@@ -135,13 +135,13 @@ public:
   tubeWrapSetMacro( BinSize, VectorDoubleType, Filter );
   tubeWrapGetMacro( BinSize, VectorDoubleType, Filter );
 
-  tubeWrapSetNthObjectMacro( ClassPDFImage, PDFImageType, Filter );
-  tubeWrapGetNthObjectMacro( ClassPDFImage, PDFImageType, Filter );
+  //tubeWrapSetNthObjectMacro( ClassPDFImage, PDFImageType, Filter );
+  //tubeWrapGetNthObjectMacro( ClassPDFImage, PDFImageType, Filter );
   
   tubeWrapCallMacro( GenerateLabeledFeatureSpace, Filter );
   
-  tubeWrapSetObjectMacro( LabeledFeatureSpace, LabeledFeatureSpaceType, Filter );
-  tubeWrapGetObjectMacro( LabeledFeatureSpace, LabeledFeatureSpaceType, Filter );
+  //tubeWrapSetObjectMacro( LabeledFeatureSpace, LabeledFeatureSpaceType, Filter );
+  //tubeWrapGetObjectMacro( LabeledFeatureSpace, LabeledFeatureSpaceType, Filter );
   
   ProbabilityVectorType GetProbabilityVector( const FeatureVectorType & fv )
     const 
