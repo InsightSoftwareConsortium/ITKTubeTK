@@ -21,6 +21,10 @@
 ##############################################################################
 cmake_minimum_required(VERSION 3.13.2)
 
+if(NOT ITK_SOURCE_DIR)
+  include(itk-module-init.cmake)
+endif()
+
 project( TubeTK )
 
 ####
@@ -42,13 +46,6 @@ include( TubeTKExternalData )
 if( DEFINED "ENV{ExternalData_OBJECT_STORES}" )
   set( ExternalData_OBJECT_STORES $ENV{ExternalData_OBJECT_STORES} )
 endif()
-
-set( SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY
-  "${ITK_BINARY_DIR}/bin" )
-set( SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY
-  "${ITK_BINARY_DIR}/lib" )
-set( SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY
-  "${ITK_BINARY_DIR}/lib" )
 
 ####
 # CDash dashboard setup.
@@ -103,11 +100,10 @@ endif()
 option( TubeTK_USE_ARRAYFIRE
   "Use the ArrayFire library to speedup filtering opertions using the GPU."
   OFF)
-if( TubeTK_USE_ARRAYFIRE )
-  find_package( ArrayFire REQUIRED )
-  mark_as_advanced( CLEAR ArrayFire_DIR )
-  include_directories( ${ArrayFire_INCLUDE_DIRS} )
-endif()
+#if( TubeTK_USE_ARRAYFIRE )
+  #find_package( ArrayFire REQUIRED )
+  #mark_as_advanced( CLEAR ArrayFire_DIR )
+#endif()
 
 ####
 # Find ITK and pre-built modules
@@ -156,17 +152,6 @@ if( NOT ITK_SOURCE_DIR )
 endif()
 
 ####
-# Ask to build apps
-####
-option( TubeTK_BUILD_APPLICATIONS 
-  "Build the optional apps that come with TubeTK." OFF )
-if( TubeTK_BUILD_APPLICATIONS )
-  find_package( SlicerExecutionModel REQUIRED )
-  include( ${SlicerExecutionModel_USE_FILE} )
-  mark_as_advanced( GENERATECLP_EXE )
-endif()
-
-####
 # Create TubeTK Configuration file (to pass ArrayFire and other flags)
 ####
 configure_file( "${TubeTK_SOURCE_DIR}/CMake/tubetkConfigure.h.in"
@@ -189,8 +174,8 @@ set( TubeTK_INCLUDE_DIRS
 set( TubeTK_LIBRARIES TubeTK )
 
 if( TubeTK_USE_ARRAYFIRE )
-  list( APPEND TubeTKLib_INCLUDE_DIRS
-    ${ArrayFire_INCLUDE_DIRS} )
+  list( APPEND TubeTK_LIBRARIES
+    ${ArrayFire_LIBRARIES} )
 endif()
 
 ####
@@ -207,6 +192,13 @@ set( TubeTK_SYSTEM_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/src/ObjectDocuments
   ${TubeTK_SOURCE_DIR}/src/Registration
   ${TubeTK_SOURCE_DIR}/src/Segmentation )
+
+if( TubeTK_USE_ARRAYFIRE )
+  list( APPEND TubeTK_SYSTEM_INCLUDE_DIRS
+    ${ArrayFire_INCLUDE_DIRS} )
+  set( TubeTK_SYSTEM_LIB_DIRS
+    ${ArrayFire_LIB_DIR} )
+endif()
 
 include_directories( ${TubeTK_SYSTEM_INCLUDE_DIRS} )
 
@@ -226,3 +218,8 @@ endif()
 ####
 set( MEMORYCHECK_SUPPRESSIONS_FILE
  "${TubeTK_SOURCE_DIR}/CMake/TubeTKValgrind.supp" )
+
+####
+# Build Examples?
+####
+itk_module_examples()

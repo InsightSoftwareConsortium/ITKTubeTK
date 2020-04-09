@@ -2,10 +2,18 @@ itk_module_test()
 
 set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/test/Baseline )
 
-#Waiting for SlicerExecutionModel to support ITKv5.1
-#if( TubeTK_BUILD_APPLICATIONS )
-  #add_subdirectory( Apps )
-#endif()
+if( TubeTK_USE_ARRAYFIRE )
+  find_package( ArrayFire REQUIRED )
+  mark_as_advanced( CLEAR ArrayFire_DIR )
+endif()
+
+if( TubeTK_USE_VTK )
+  find_package( VTK REQUIRED )
+  mark_as_advanced( CLEAR VTK_DIR )
+  if( VTK_USE_FILE )
+    include( ${VTK_USE_FILE} )
+  endif()
+endif()
 
 add_subdirectory(CompareTools)
 add_subdirectory(Common)
@@ -14,6 +22,9 @@ add_subdirectory(IO)
 add_subdirectory(MetaIO)
 add_subdirectory(Numerics)
 add_subdirectory(ObjectDocuments)
-#add_subdirectory(Python)
 add_subdirectory(Registration)
 add_subdirectory(Segmentation)
+
+#if( ITK_WRAP_PYTHON )
+  #add_subdirectory(Python)
+#endif()

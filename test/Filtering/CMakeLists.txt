@@ -32,6 +32,12 @@ CreateTestDriver( tubeFilteringHeader
 itk_add_test( NAME tubeFilteringHeaderTest
   COMMAND tubeFilteringHeaderTestDriver
     tubeFilteringHeaderTest )
+if( TubeTK_USE_ARRAYFIRE )
+  target_include_directories( tubeFilteringHeaderTestDriver PUBLIC
+    ${ArrayFire_INCLUDE_DIRS} )
+  target_link_libraries( tubeFilteringHeaderTestDriver LINK_PUBLIC
+    ${ArrayFire_LIBRARIES} )
+endif()
 
 set( tubeFilteringTests_SRCS
   tubeFilteringPrintTest.cxx
@@ -60,6 +66,12 @@ endif( TubeTK_USE_ARRAYFIRE )
 CreateTestDriver( tubeFiltering
   "${TubeTK-Test_LIBRARIES}"
   "${tubeFilteringTests_SRCS}" )
+if( TubeTK_USE_ARRAYFIRE )
+  target_include_directories( tubeFilteringTestDriver PUBLIC
+    ${ArrayFire_INCLUDE_DIRS} )
+  target_link_libraries( tubeFilteringTestDriver LINK_PUBLIC
+    ${ArrayFire_LIBRARIES} )
+endif()
 
 itk_add_test( NAME tubeFilteringPrintTest
   COMMAND tubeFilteringTestDriver
