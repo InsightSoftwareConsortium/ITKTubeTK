@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 ##############################################################################
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.13.2)
 
 project( TubeTK )
 
@@ -123,7 +123,6 @@ set( TubeTK_ITK_COMPONENTS
   ITKImageFunction
   ITKImageIntensity
   ITKImageIO
-  ITKIO
   ITKIOCSV
   ITKIOImageBase
   ITKIOMeta

@@ -48,6 +48,6 @@ setup(
     url=r'https://itk.org/',
     install_requires=[
         r'itk>=5.1rc3',
-        r'itk-minimalpathextraction'
+        r'itk-minimalpathextraction>=1.1rc1'
     ]
     )
