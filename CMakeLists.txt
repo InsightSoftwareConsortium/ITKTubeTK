@@ -43,13 +43,6 @@ if( DEFINED "ENV{ExternalData_OBJECT_STORES}" )
   set( ExternalData_OBJECT_STORES $ENV{ExternalData_OBJECT_STORES} )
 endif()
 
-set( SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY
-  "${ITK_BINARY_DIR}/bin" )
-set( SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY
-  "${ITK_BINARY_DIR}/lib" )
-set( SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY
-  "${ITK_BINARY_DIR}/lib" )
-
 ####
 # CDash dashboard setup.
 ####
@@ -106,7 +99,6 @@ option( TubeTK_USE_ARRAYFIRE
 if( TubeTK_USE_ARRAYFIRE )
   find_package( ArrayFire REQUIRED )
   mark_as_advanced( CLEAR ArrayFire_DIR )
-  include_directories( ${ArrayFire_INCLUDE_DIRS} )
 endif()
 
 ####
@@ -154,17 +146,6 @@ if( NOT ITK_SOURCE_DIR )
 	    "Path to ITK installation/build directory." FORCE )
   endif()
   include( ${ITK_USE_FILE} )
-endif()
-
-####
-# Ask to build apps
-####
-option( TubeTK_BUILD_APPLICATIONS 
-  "Build the optional apps that come with TubeTK." OFF )
-if( TubeTK_BUILD_APPLICATIONS )
-  find_package( SlicerExecutionModel REQUIRED )
-  include( ${SlicerExecutionModel_USE_FILE} )
-  mark_as_advanced( GENERATECLP_EXE )
 endif()
 
 ####
@@ -227,3 +208,8 @@ endif()
 ####
 set( MEMORYCHECK_SUPPRESSIONS_FILE
  "${TubeTK_SOURCE_DIR}/CMake/TubeTKValgrind.supp" )
+
+####
+# Build Examples?
+####
+itk_module_examples()

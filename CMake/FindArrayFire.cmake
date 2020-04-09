@@ -39,6 +39,7 @@ find_path( ArrayFire_INCLUDE_DIR NAMES arrayfire.h
     "C:/Program Files/ArrayFire/v3/include"
     /usr/local/include
     /usr/include
+    /opt/arrayfire/include
     /opt/local/include )
 
 find_library( ArrayFire_LIBRARY
@@ -47,6 +48,7 @@ find_library( ArrayFire_LIBRARY
     ${_arrayfire_library_dir}
     "C:/Program Files/ArrayFire/v3"
     "C:/Program Files/ArrayFire/v3/lib"
+    /opt/arrayfire/lib64
     /usr/local/lib )
 
 set( ArrayFire_INCLUDE_DIRS ${ArrayFire_INCLUDE_DIR} )

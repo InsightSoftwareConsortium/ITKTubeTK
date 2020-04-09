@@ -110,7 +110,6 @@ if( TubeTK_USE_ARRAYFIRE )
   list( APPEND TubeTK_Filtering_H_Files
     Filtering/itktubeArrayFireGlueUtilities.h
     Filtering/itktubeGPUArrayFireGaussianDerivativeFilter.h )
-
   list( APPEND TubeTK_Filtering_HXX_Files
     Filtering/itktubeGPUArrayFireGaussianDerivativeFilter.hxx )
 endif()

@@ -368,7 +368,7 @@ template< class TInputImage, class TOutputImage >
 template <typename ArrayType>
 bool
 ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
-::NotValue( ArrayType array, double val, double tolerance )
+::NotValue( ArrayType array, double val, double tolerance ) ITKv5_CONST
 {
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
@@ -383,7 +383,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 template< class TInputImage, class TOutputImage >
 void
 ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
-::VerifyInputInformation()
+::VerifyInputInformation() ITKv5_CONST
 {
   bool useNewSize;
   bool useShrinkFactors;
