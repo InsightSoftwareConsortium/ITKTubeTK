@@ -4,20 +4,9 @@ itk_wrap_include( itkImage.h )
 itk_wrap_named_class("tube::SegmentConnectedComponentsUsingParzenPDFs" tubeSegmentConnectedComponentsUsingParzenPDFs POINTER)
   foreach(t ${WRAP_ITK_SCALAR})
     foreach(t2 ${WRAP_ITK_SCALAR})
-      # disabled for warnings:
-      #tubeSegmentConnectedComponentsUsingParzenPDFs: warning(4): ITK type not
-      #wrapped, or currently not known: itk::Image< float, 4 >
-      #tubeSegmentConnectedComponentsUsingParzenPDFs: warning(4): ITK type not
-      #wrapped, or currently not known: itk::Image< double, 4 >
-      #tubeSegmentConnectedComponentsUsingParzenPDFs: warning(4): ITK type not
-      #wrapped, or currently not known: itk::Image< short, 4 >
-      #tubeSegmentConnectedComponentsUsingParzenPDFs: warning(4): ITK type not
-      #wrapped, or currently not known: itk::Image< unsigned char, 4 >
-      #tubeSegmentConnectedComponentsUsingParzenPDFs: warning(4): ITK type not
-      #wrapped, or currently not known: itk::Image< unsigned short, 4 >
-      #foreach(d 2 3)
-        #itk_wrap_template("${ITKM_${t}}${ITKM_${t2}}${d}"  "itk::Image<${ITKT_${t}},${d}>,itk::Image<${ITKT_${t2}},${d}>")
-      #endforeach()
+      foreach(d 2 3)
+        itk_wrap_template("${ITKM_${t}}${ITKM_${t2}}${d}"  "itk::Image<${ITKT_${t}},${d}>,itk::Image<${ITKT_${t2}},${d}>")
+      endforeach()
     endforeach()
  endforeach()
 itk_end_wrap_class()
