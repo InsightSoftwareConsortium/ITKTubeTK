@@ -29,7 +29,7 @@ set( PROJ_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 configure_file(
-  ${TubeTK_SOURCE_DIR}/apps/${MODULE_NAME}/Testing/ListTemplate.txt.in
+  ${TubeTK_SOURCE_DIR}/src/Apps/${MODULE_NAME}/Testing/ListTemplate.txt.in
   ${TEMP}/${MODULE_NAME}-List.txt IMMEDIATE @ONLY 
   )
 
