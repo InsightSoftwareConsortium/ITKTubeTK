@@ -26,7 +26,12 @@
 #include "itktubeGaussianDerivativeFilter.h"
 #include "itkFFTShiftImageFilter.h"
 
-#include <arrayfire.h>
+// includes, project
+#include <cuda_runtime.h>
+#include <cufft.h>
+#include <cufftXt.h>
+#include <helper_cuda.h>
+#include <helper_functions.h>
 
 namespace itk
 {
@@ -56,7 +61,8 @@ public:
 
   typedef TInputImage                      InputImageType;
   typedef TOutputImage                     OutputImageType;
-  typedef Image< double, ImageDimension >  RealImageType;
+  typedef float                            RealImagePixelType;
+  typedef Image< float, ImageDimension >   RealImageType;
   typedef typename RealImageType::Pointer  RealImagePointerType;
   typedef GaussianDerivativeImageSource< RealImageType >
                                            GaussianDerivativeImageSourceType;
@@ -76,9 +82,11 @@ protected:
   virtual ~GPUArrayFireGaussianDerivativeFilter( void ) {}
 
   void ComputeInputImageFFT();
+  void RestoreInputImageFFT();
   void ComputeKernelImageFFT();
   void ComputeConvolvedImageFFT();
   void ComputeConvolvedImage();
+
 
   void GenerateData() override;
 
@@ -89,22 +97,69 @@ private:
   GPUArrayFireGaussianDerivativeFilter( const Self & );
   void operator =( const Self & );
 
-  typename RealImageType::Pointer                     m_PaddedInputImage;
+  typename RealImageType::Pointer     m_PaddedInputImage;
+  Complex                           * m_ComplexPaddedInputImage;
+  Complex                           * m_OnGPUPaddedInputImage;
 
-  af::array                                           m_InputImageFFTAfArr;
+  typename RealImageType::Pointer     m_PaddedKernelImage;
+  Complex                           * m_ComplexPaddedKernelImage;
+  Complex                           * m_OnGPUPaddedKernelImage;
 
-  af::array                                           m_GaussianFFTAfArr;
+  typename TOutputImage::Pointer      m_ConvolvedImage;
 
-  af::array                                           m_KernelImageFFTAfArr;
+  unsigned int                        m_PaddedTotalSize;
+  cufftHandle                         m_Plan;
 
-  af::array                                           m_ConvolvedImageFFTAfArr;
+  typename GaussianDerivativeImageSourceType::Pointer
+                                      m_GaussSource;
 
-  typename TOutputImage::Pointer                      m_ConvolvedImage;
 
-  const InputImageType *                              m_LastInputImage;
+  const InputImageType              * m_LastInputImage;
 };
 
+// Complex addition
+static __device__ __host__ inline Complex
+GPUFFTComplexAdd( Complex a, Complex b )
+{
+  Complex c;
+  c.x = a.x + b.x;
+  c.y = a.y + b.y;
+  return c;
+}
 
+// Complex scale
+static __device__ __host__ inline Complex
+GPUFFTComplexScale( Complex a, float s )
+{
+  Complex c;
+  c.x = s * a.x;
+  c.y = s * a.y;
+  return c;
+}
+
+// Complex multiplication
+static __device__ __host__ inline Complex
+GPUFFTComplexMul( Complex a, Complex b )
+{
+  Complex c;
+  c.x = a.x * b.x - a.y * b.y;
+  c.y = a.x * b.y + a.y * b.x;
+  return c;
+}
+
+// Complex pointwise multiplication
+static __global__ void GPUFFTComplexPointwiseMulAndScale(
+  Complex *a, const Complex *b, const Complex *c,
+  int size, float scale)
+{
+  const int numThreads = blockDim.x * gridDim.x;
+  const int threadID = blockIdx.x * blockDim.x + threadIdx.x;
+
+  for (int i = threadID; i < size; i += numThreads)
+  {
+    a[i] = GPUFFTComplexScale(GPUFFTComplexMul(b[i], c[i]), scale);
+  }
+}
 // End class GPUArrayFireGaussianDerivativeFilter
 
 } // End namespace tube
@@ -112,7 +167,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeGPUArrayFireGaussianDerivativeFilter.hxx"
+#include "itktubeGPUArrayFireGaussianDerivativeFilter.cu"
 #endif
 
 #endif

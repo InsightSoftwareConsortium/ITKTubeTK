@@ -31,12 +31,20 @@ include( ObjectDocuments.cmake )
 include( Registration.cmake )
 include( Segmentation.cmake )
 
-itk_module_add_library( TubeTK ${TubeTK_SRCS} )
 if( TubeTK_USE_ARRAYFIRE )
-  target_include_directories( TubeTK PUBLIC ${ArrayFire_INCLUDE_DIRS})
-  target_link_libraries( TubeTK
-    LINK_PUBLIC ${ArrayFire_LIBRARIES} )
+  include(CheckLanguage)
+  check_language(CUDA)
+  enable_language(CUDA)
 endif()
+
+itk_module_add_library( TubeTK ${TubeTK_SRCS} )
+target_compile_features( TubeTK PUBLIC cxx_std_11 )
+set_target_properties( TubeTK PROPERTIES POSITION_INDEPENDENT_CODE ON )
+
+if( TubeTK_USE_ARRAYFIRE )
+  set_target_properties( TubeTK PROPERTIES CUDA_SEPERABLE_COMPILATION ON )
+  install( TARGETS TubeTK OBJECTS DESTINATION bin/ptx )
+endif( TubeTK_USE_ARRAYFIRE )
 
 if( ITK_WRAP_PYTHON )
   add_subdirectory( Python )

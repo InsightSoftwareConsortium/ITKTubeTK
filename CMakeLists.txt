@@ -86,24 +86,13 @@ endif()
 # VTK setup.
 ####
 option( TubeTK_USE_VTK "Use VTK to enable additional functionality." OFF )
-if( TubeTK_USE_VTK )
-  find_package( VTK REQUIRED )
-  mark_as_advanced( CLEAR VTK_DIR )
-  if( VTK_USE_FILE )
-    include( ${VTK_USE_FILE} )
-  endif()
-endif()
+# find_package happens in itk-module-init.cmake
 
 ####
 # ArrayFire setup
 ####
-option( TubeTK_USE_ARRAYFIRE
-  "Use the ArrayFire library to speedup filtering opertions using the GPU."
-  OFF)
-#if( TubeTK_USE_ARRAYFIRE )
-  #find_package( ArrayFire REQUIRED )
-  #mark_as_advanced( CLEAR ArrayFire_DIR )
-#endif()
+option( TubeTK_USE_ARRAYFIRE "Use ArrayFire for GPU acceleration." OFF)
+# find_package happens in itk-module-init.cmake
 
 ####
 # Find ITK and pre-built modules
@@ -174,8 +163,11 @@ set( TubeTK_INCLUDE_DIRS
 set( TubeTK_LIBRARIES TubeTK )
 
 if( TubeTK_USE_ARRAYFIRE )
-  list( APPEND TubeTK_LIBRARIES
-    ${ArrayFire_LIBRARIES} )
+  list( APPEND TubeTK_LIBRARIES ${ArrayFire_LIBRARIES} )
+endif()
+
+if( TubeTK_USE_VTK )
+  list( APPEND TubeTK_LIBRARIES ${VTK_LIBRARIES} )
 endif()
 
 ####
@@ -194,10 +186,11 @@ set( TubeTK_SYSTEM_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/src/Segmentation )
 
 if( TubeTK_USE_ARRAYFIRE )
-  list( APPEND TubeTK_SYSTEM_INCLUDE_DIRS
-    ${ArrayFire_INCLUDE_DIRS} )
-  set( TubeTK_SYSTEM_LIB_DIRS
-    ${ArrayFire_LIB_DIR} )
+  list( APPEND TubeTK_SYSTEM_INCLUDE_DIRS ${ArrayFire_INCLUDE_DIRS} )
+endif()
+
+if( TubeTK_USE_VTK )
+  list( APPEND TubeTK_SYSTEM_INCLUDE_DIRS ${VTK_INCLUDE_DIRS} )
 endif()
 
 include_directories( ${TubeTK_SYSTEM_INCLUDE_DIRS} )
