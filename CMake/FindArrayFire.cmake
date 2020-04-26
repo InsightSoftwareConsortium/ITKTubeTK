@@ -21,42 +21,9 @@
 #
 ##############################################################################
 
-if( ArrayFire_DIR )
-  set( _arrayfire_include_dir
-    "${ArrayFire_DIR}/include" )
-  set( _arrayfire_library_dir
-    "${ArrayFire_DIR}/lib"
-    "${ArrayFire_DIR}/lib/Release"
-    "${ArrayFire_DIR}/lib/MinSizeRel"
-    "${ArrayFire_DIR}/lib/RelWithDebInfo"
-    "${ArrayFire_DIR}/lib/Debug" )
-endif( ArrayFire_DIR )
-
-find_path( ArrayFire_INCLUDE_DIR NAMES arrayfire.h
-  HINTS
-    ${_arrayfire_include_dir}
-    "C:/Program Files/ArrayFire/v3"
-    "C:/Program Files/ArrayFire/v3/include"
-    /usr/local/include
-    /usr/include
-    /opt/arrayfire/include
-    /opt/local/include )
-
-find_library( ArrayFire_LIBRARY
-  NAMES af afcpu libaf libafcpu libafcuda libafopencl
-  HINTS
-    ${_arrayfire_library_dir}
-    "C:/Program Files/ArrayFire/v3"
-    "C:/Program Files/ArrayFire/v3/lib"
-    /opt/arrayfire/lib64
-    /usr/local/lib )
-
-set( ArrayFire_INCLUDE_DIRS ${ArrayFire_INCLUDE_DIR} )
-set( ArrayFire_LIBRARIES ${ArrayFire_LIBRARY} )
-
 include( FindPackageHandleStandardArgs )
 
 find_package_handle_standard_args( ArrayFire DEFAULT_MSG ArrayFire_LIBRARIES
-  ArrayFire_INCLUDE_DIRS )
+  ArrayFire_INCLUDE_DIRS ArrayFire_LIB_DIR )
 
 mark_as_advanced( ArrayFire_INCLUDE_DIR ArrayFire_LIBRARY )
