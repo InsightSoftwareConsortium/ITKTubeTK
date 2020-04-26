@@ -25,6 +25,7 @@ set( DOCUMENTATION
 itk_module( TubeTK
   DEPENDS
     ITKCommon
+    ITKFFT
     ITKHDF5
     ITKIOImageBase
     ITKOptimizers
@@ -37,8 +38,6 @@ itk_module( TubeTK
     ITKAnisotropicSmoothing
     ITKBinaryMathematicalMorphology
     ITKDistanceMap
-    ITKFFT
-    ITKRegistrationCommon
     ITKImageFilterBase
     ITKImageFunction
     ITKImageFeature
@@ -52,6 +51,7 @@ itk_module( TubeTK
     ITKLabelVoting
     ITKMetaIO
     ITKPDEDeformableRegistration
+    ITKRegistrationCommon
     ITKTransform
     ITKTestKernel
   DESCRIPTION
