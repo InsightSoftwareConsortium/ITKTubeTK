@@ -32,12 +32,11 @@ include( Registration.cmake )
 include( Segmentation.cmake )
 
 itk_module_add_library( TubeTK ${TubeTK_SRCS} )
-if( TubeTK_USE_ARRAYFIRE )
-  target_include_directories( TubeTK PUBLIC ${ArrayFire_INCLUDE_DIRS})
-  target_link_libraries( TubeTK
-    LINK_PUBLIC ${ArrayFire_LIBRARIES} )
-endif()
 
 if( ITK_WRAP_PYTHON )
   add_subdirectory( Python )
+endif()
+
+if( TubeTK_BUILD_APPLICATIONS )
+  add_subdirectory( Applications )
 endif()
