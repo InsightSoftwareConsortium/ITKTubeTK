@@ -2,10 +2,6 @@ itk_module_test()
 
 set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/test/Baseline )
 
-if( TubeTK_USE_ARRAYFIRE )
-  find_package( ArrayFire REQUIRED )
-endif()
-
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
 endif()

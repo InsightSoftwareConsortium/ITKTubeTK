@@ -51,12 +51,6 @@ set( tubeNumericsTests_SRCS
 CreateTestDriver( tubeNumericsHeader
   "${TubeTK-Test_LIBRARIES}"
   "tubeNumericsHeaderTest.cxx" )
-if( TubeTK_USE_ARRAYFIRE )
-  target_include_directories( tubeNumericsHeaderTestDriver PUBLIC
-    ${ArrayFire_INCLUDE_DIRS} )
-  target_link_libraries( tubeNumericsHeaderTestDriver LINK_PUBLIC
-    ${ArrayFire_LIBRARIES} )
-endif()
 itk_add_test( NAME tubeNumericsHeaderTest
   COMMAND tubeNumericsHeaderTestDriver
     tubeNumericsHeaderTest )
@@ -64,12 +58,6 @@ itk_add_test( NAME tubeNumericsHeaderTest
 CreateTestDriver( tubeNumerics
   "${TubeTK-Test_LIBRARIES}"
   "${tubeNumericsTests_SRCS}" )
-if( TubeTK_USE_ARRAYFIRE )
-  target_include_directories( tubeNumericsTestDriver PUBLIC
-    ${ArrayFire_INCLUDE_DIRS} )
-  target_link_libraries( tubeNumericsTestDriver LINK_PUBLIC
-    ${ArrayFire_LIBRARIES} )
-endif()
 
 itk_add_test( NAME tubeNumericsPrintTest
   COMMAND tubeNumericsTestDriver
