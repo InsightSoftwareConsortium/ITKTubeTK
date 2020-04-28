@@ -2,17 +2,8 @@ itk_module_test()
 
 set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/test/Baseline )
 
-if( TubeTK_USE_ARRAYFIRE )
-  find_package( ArrayFire REQUIRED )
-  mark_as_advanced( CLEAR ArrayFire_DIR )
-endif()
-
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
-  mark_as_advanced( CLEAR VTK_DIR )
-  if( VTK_USE_FILE )
-    include( ${VTK_USE_FILE} )
-  endif()
 endif()
 
 add_subdirectory(CompareTools)
