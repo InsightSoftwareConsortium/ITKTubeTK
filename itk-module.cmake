@@ -28,14 +28,11 @@ itk_module( TubeTK
     ITKFFT
     ITKHDF5
     ITKIOImageBase
-    ITKIOTransformBase
-    ITKMetaIO
     ITKOptimizers
     ITKRegionGrowing
     ITKSmoothing
     ITKStatistics
     ITKSpatialObjects
-    ITKTransform
     MinimalPathExtraction
   COMPILE_DEPENDS
     ITKAnisotropicSmoothing
@@ -49,10 +46,13 @@ itk_module( TubeTK
     ITKImageSources
     ITKIOMeta
     ITKIOSpatialObjects
+    ITKIOTransformBase
     ITKIOCSV
     ITKLabelVoting
+    ITKMetaIO
     ITKPDEDeformableRegistration
     ITKRegistrationCommon
+    ITKTransform
     ITKTestKernel
   DESCRIPTION
     "${DOCUMENTATION}"

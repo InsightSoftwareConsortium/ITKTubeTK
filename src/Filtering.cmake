@@ -105,6 +105,15 @@ set( TubeTK_Filtering_HXX_Files
   Filtering/tubeTubeMathFilters.hxx
   Filtering/tubeTreeMathFilters.hxx )
 
+# Add GPU Array Fire based filter source files here
+if( TubeTK_USE_ARRAYFIRE )
+  list( APPEND TubeTK_Filtering_H_Files
+    Filtering/itktubeArrayFireGlueUtilities.h
+    Filtering/itktubeGPUArrayFireGaussianDerivativeFilter.h )
+  list( APPEND TubeTK_Filtering_HXX_Files
+    Filtering/itktubeGPUArrayFireGaussianDerivativeFilter.hxx )
+endif()
+
 set( TubeTK_Filtering_CXX_Files )
 
 list( APPEND TubeTK_SRCS

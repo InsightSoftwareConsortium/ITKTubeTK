@@ -23,6 +23,7 @@ limitations under the License.
 #ifndef __tubetkConfigure_h
 #define __tubetkConfigure_h
 
-#cmakedefine TubeTK_USE_VTK
+// this gets defined if use set TUBETK_USE_ARRAYFIRE to ON
+#cmakedefine TubeTK_USE_ARRAYFIRE
 
 #endif // __tubetkConfigure_h

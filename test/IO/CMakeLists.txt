@@ -30,6 +30,12 @@ endif( PYTHON_EXECUTABLE )
 CreateTestDriver( tubeIOHeader
   "${TubeTK-Test_LIBRARIES}"
   "tubeIOHeaderTest.cxx" )
+if( TubeTK_USE_ARRAYFIRE )
+  target_include_directories( tubeIOHeaderTestDriver PUBLIC
+    ${ArrayFire_INCLUDE_DIRS} )
+  target_link_libraries( tubeIOHeaderTestDriver LINK_PUBLIC
+    ${ArrayFire_LIBRARIES} )
+endif()
 
 itk_add_test( NAME tubeIOHeaderTest
   COMMAND tubeIOHeaderTestDriver
@@ -45,6 +51,12 @@ set( tubeIOTests_SRCS
 CreateTestDriver( tubeIO
   "${TubeTK-Test_LIBRARIES}"
   "${tubeIOTests_SRCS}" )
+if( TubeTK_USE_ARRAYFIRE )
+  target_include_directories( tubeIOTestDriver PUBLIC
+    ${ArrayFire_INCLUDE_DIRS} )
+  target_link_libraries( tubeIOTestDriver LINK_PUBLIC
+    ${ArrayFire_LIBRARIES} )
+endif()
 
 itk_add_test( NAME tubeIOPrintTest
   COMMAND tubeIOTestDriver

@@ -30,6 +30,12 @@ endif()
 CreateTestDriver( tubeSegmentationHeader
   "${TubeTK-Test_LIBRARIES}"
   "tubeSegmentationHeaderTest.cxx" )
+if( TubeTK_USE_ARRAYFIRE )
+  target_include_directories( tubeSegmentationHeaderTestDriver PUBLIC
+    ${ArrayFire_INCLUDE_DIRS} )
+  target_link_libraries( tubeSegmentationHeaderTestDriver LINK_PUBLIC
+    ${ArrayFire_LIBRARIES} )
+endif()
 
 itk_add_test( NAME tubeSegmentationHeaderTest
   COMMAND tubeSegmentationHeaderTestDriver
@@ -48,6 +54,12 @@ set( tubeSegmentationTest_SRCS
 CreateTestDriver( tubeSegmentation
   "${TubeTK-Test_LIBRARIES}"
   "${tubeSegmentationTest_SRCS}" )
+if( TubeTK_USE_ARRAYFIRE )
+  target_include_directories( tubeSegmentationTestDriver PUBLIC
+    ${ArrayFire_INCLUDE_DIRS} )
+  target_link_libraries( tubeSegmentationTestDriver LINK_PUBLIC
+    ${ArrayFire_LIBRARIES} )
+endif()
 
 itk_add_test( NAME tubeSegmentationPrintTest
   COMMAND tubeSegmentationTestDriver
