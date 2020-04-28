@@ -32,12 +32,6 @@ CreateTestDriver( tubeFilteringHeader
 itk_add_test( NAME tubeFilteringHeaderTest
   COMMAND tubeFilteringHeaderTestDriver
     tubeFilteringHeaderTest )
-if( TubeTK_USE_ARRAYFIRE )
-  target_include_directories( tubeFilteringHeaderTestDriver PUBLIC
-    ${ArrayFire_INCLUDE_DIRS} )
-  target_link_libraries( tubeFilteringHeaderTestDriver LINK_PUBLIC
-    ${ArrayFire_LIBRARIES} )
-endif()
 
 set( tubeFilteringTests_SRCS
   tubeFilteringPrintTest.cxx
@@ -58,20 +52,10 @@ set( tubeFilteringTests_SRCS
   itktubeTortuositySpatialObjectFilterTest.cxx
   itktubeTubeEnhancingDiffusion2DImageFilterTest.cxx
   tubeTubeMathFiltersTest.cxx )
-if( TubeTK_USE_ARRAYFIRE )
-  list( APPEND tubeFilteringTests_SRCS
-    itktubeGPUArrayFireGaussianDerivativeFilterTest.cxx )
-endif( TubeTK_USE_ARRAYFIRE )
 
 CreateTestDriver( tubeFiltering
   "${TubeTK-Test_LIBRARIES}"
   "${tubeFilteringTests_SRCS}" )
-if( TubeTK_USE_ARRAYFIRE )
-  target_include_directories( tubeFilteringTestDriver PUBLIC
-    ${ArrayFire_INCLUDE_DIRS} )
-  target_link_libraries( tubeFilteringTestDriver LINK_PUBLIC
-    ${ArrayFire_LIBRARIES} )
-endif()
 
 itk_add_test( NAME tubeFilteringPrintTest
   COMMAND tubeFilteringTestDriver
@@ -122,44 +106,6 @@ itk_add_test(
       2 2 2 2
       DATA{${TubeTK_DATA_ROOT}/im0001.mha}
       ${ITK_TEST_OUTPUT_DIR}/itktubeFFTGaussianDerivativeIFFTFilterTest3.mha )
-
-# GPU ArrayFire Gaussian Derivative Tests - begin
-if( TubeTK_USE_ARRAYFIRE )
-  itk_add_test(
-    NAME itktubeGPUArrayFireGaussianDerivativeFilterTest1
-    COMMAND tubeFilteringTestDriver
-      --compareIntensityTolerance 0.01
-      --compare DATA{${TubeTK_DATA_ROOT}/itktubeGPUArrayFireGaussianDerivativeFilterTest1.mha}
-        ${ITK_TEST_OUTPUT_DIR}/itktubeGPUArrayFireGaussianDerivativeFilterTest1.mha
-      itktubeGPUArrayFireGaussianDerivativeFilterTest
-        0 0 0.1 0.1
-        DATA{${TubeTK_DATA_ROOT}/im0001.mha}
-        ${ITK_TEST_OUTPUT_DIR}/itktubeGPUArrayFireGaussianDerivativeFilterTest1.mha )
-
-  itk_add_test(
-    NAME itktubeGPUArrayFireGaussianDerivativeFilterTest2
-    COMMAND tubeFilteringTestDriver
-      --compareIntensityTolerance 0.01
-      --compare DATA{${TubeTK_DATA_ROOT}/itktubeGPUArrayFireGaussianDerivativeFilterTest2.mha}
-        ${ITK_TEST_OUTPUT_DIR}/itktubeGPUArrayFireGaussianDerivativeFilterTest2.mha
-      itktubeGPUArrayFireGaussianDerivativeFilterTest
-        0 1 0.1 1
-        DATA{${TubeTK_DATA_ROOT}/im0001.mha}
-        ${ITK_TEST_OUTPUT_DIR}/itktubeGPUArrayFireGaussianDerivativeFilterTest2.mha )
-
-  itk_add_test(
-    NAME itktubeGPUArrayFireGaussianDerivativeFilterTest3
-    COMMAND tubeFilteringTestDriver
-      --compareIntensityTolerance 0.01
-      --compare DATA{${TubeTK_DATA_ROOT}/itktubeGPUArrayFireGaussianDerivativeFilterTest3.mha}
-        ${ITK_TEST_OUTPUT_DIR}/itktubeGPUArrayFireGaussianDerivativeFilterTest3.mha
-      itktubeGPUArrayFireGaussianDerivativeFilterTest
-        2 2 2 2
-        DATA{${TubeTK_DATA_ROOT}/im0001.mha}
-        ${ITK_TEST_OUTPUT_DIR}/itktubeGPUArrayFireGaussianDerivativeFilterTest3.mha )
-
-endif( TubeTK_USE_ARRAYFIRE )
-# GPU ArrayFire Gaussian Derivative Tests - end
 
 #--compare DATA{${TubeTK_DATA_ROOT}/itktubeRidgeFFTFilterTest1.mha}
 #${ITK_TEST_OUTPUT_DIR}/itktubeRidgeFFTFilterTest1.mha

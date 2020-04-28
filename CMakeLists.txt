@@ -89,12 +89,6 @@ option( TubeTK_USE_VTK "Use VTK to enable additional functionality." OFF )
 # find_package happens in itk-module-init.cmake
 
 ####
-# ArrayFire setup
-####
-option( TubeTK_USE_ARRAYFIRE "Use ArrayFire for GPU acceleration." OFF)
-# find_package happens in itk-module-init.cmake
-
-####
 # Find ITK and pre-built modules
 ####
 set( TubeTK_ITK_COMPONENTS
@@ -141,7 +135,7 @@ if( NOT ITK_SOURCE_DIR )
 endif()
 
 ####
-# Create TubeTK Configuration file (to pass ArrayFire and other flags)
+# Create TubeTK Configuration file (to pass flags)
 ####
 configure_file( "${TubeTK_SOURCE_DIR}/CMake/tubetkConfigure.h.in"
   ${TubeTK_BINARY_DIR}/include/tubetkConfigure.h @ONLY )
@@ -162,10 +156,6 @@ set( TubeTK_INCLUDE_DIRS
 
 set( TubeTK_LIBRARIES TubeTK )
 
-if( TubeTK_USE_ARRAYFIRE )
-  list( APPEND TubeTK_LIBRARIES ${ArrayFire_LIBRARIES} )
-endif()
-
 if( TubeTK_USE_VTK )
   list( APPEND TubeTK_LIBRARIES ${VTK_LIBRARIES} )
 endif()
@@ -184,10 +174,6 @@ set( TubeTK_SYSTEM_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/src/ObjectDocuments
   ${TubeTK_SOURCE_DIR}/src/Registration
   ${TubeTK_SOURCE_DIR}/src/Segmentation )
-
-if( TubeTK_USE_ARRAYFIRE )
-  list( APPEND TubeTK_SYSTEM_INCLUDE_DIRS ${ArrayFire_INCLUDE_DIRS} )
-endif()
 
 if( TubeTK_USE_VTK )
   list( APPEND TubeTK_SYSTEM_INCLUDE_DIRS ${VTK_INCLUDE_DIRS} )
@@ -213,6 +199,6 @@ set( MEMORYCHECK_SUPPRESSIONS_FILE
  "${TubeTK_SOURCE_DIR}/CMake/TubeTKValgrind.supp" )
 
 ####
-# Build Examples?
+# Build Applications?
 ####
-itk_module_examples()
+option( TubeTK_BUILD_APPLICATIONS "Build applications based on TubeTK." OFF )
