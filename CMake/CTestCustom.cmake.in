@@ -32,7 +32,6 @@ set( CTEST_CUSTOM_WARNING_MATCH
 
 set( CTEST_CUSTOM_TESTS_IGNORE
 ${CTEST_CUSTOM_TESTS_IGNORE}
-itkHexahedronCell
 MinimalPathExtraction_Noise_01_NeighborhoodIterate
 MinimalPathExtraction_Noise_01_GradientDescent
 MinimalPathExtraction_Noise_01_RegularStepGradientDescent
@@ -117,6 +116,10 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   ${CTEST_CUSTOM_WARNING_EXCEPTION}
   "Microsoft SDKs."
   "VC.include."
+
+  # ITK
+  "itkHexahedronCell.*iteration 2"
+  "itkHexahedronCell.*within this loop"
 
   # MacOS
   "CoreFoundation are out of sync"
