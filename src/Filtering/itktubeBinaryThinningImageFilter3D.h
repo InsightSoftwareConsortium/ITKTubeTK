@@ -123,6 +123,9 @@ public:
   /** Get Skelenton by thinning image. */
   OutputImageType * GetThinning(void);
 
+  const std::vector< IndexType > & GetEndPoints(void) const
+  { return & m_EndPoints; };
+
   /** ImageDimension enumeration   */
   itkStaticConstMacro(InputImageDimension, unsigned int,
                       TInputImage::ImageDimension );
@@ -173,6 +176,8 @@ protected:
 private:   
   BinaryThinningImageFilter3D(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
+
+  std::vector< IndexType > m_EndPoints;
 
 }; // end of BinaryThinningImageFilter3D class
 

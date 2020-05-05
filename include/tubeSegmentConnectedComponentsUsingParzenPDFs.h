@@ -52,11 +52,10 @@ public:
   typedef typename TLabelMap::PixelType         LabelMapPixelType;
 
   /** Standard class typedefs. */
-  typedef SegmentConnectedComponentsUsingParzenPDFs< TImage,
-          TLabelMap>                            Self;
-  typedef itk::ProcessObject                    Superclass;
-  typedef itk::SmartPointer< Self >             Pointer;
-  typedef itk::SmartPointer< const Self >       ConstPointer;
+  typedef SegmentConnectedComponentsUsingParzenPDFs  Self;
+  typedef itk::ProcessObject                         Superclass;
+  typedef itk::SmartPointer< Self >                  Pointer;
+  typedef itk::SmartPointer< const Self >            ConstPointer;
 
 
   typedef itk::tube::PDFSegmenterParzen< InputImageType,

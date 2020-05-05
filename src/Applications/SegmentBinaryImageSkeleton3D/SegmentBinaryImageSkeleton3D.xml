@@ -26,15 +26,4 @@
       <description>Output volume.</description>
     </image>
   </parameters>
-  <parameters>
-    <label>Post-Dilation</label>
-    <integer>
-      <name>radius</name>
-      <label>Radius</label>
-      <description>The radius used for dilation of the skeleton.</description>
-      <longflag>radius</longflag>
-      <flag>r</flag>
-      <default>0</default>
-    </integer>
-  </parameters>
 </executable>

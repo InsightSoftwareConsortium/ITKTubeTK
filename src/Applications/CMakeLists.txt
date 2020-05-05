@@ -81,7 +81,7 @@ add_subdirectory( ResampleTubes )
 add_subdirectory( RegisterImages )
 add_subdirectory( RegisterImageToTubesUsingRigidTransform )
 add_subdirectory( SampleCLIApplication )
-add_subdirectory( SegmentBinaryImageSkeleton )
+add_subdirectory( SegmentBinaryImageSkeleton3D )
 add_subdirectory( SegmentConnectedComponents )
 add_subdirectory( SegmentConnectedComponentsUsingParzenPDFs )
 add_subdirectory( SegmentTubes )
@@ -101,7 +101,6 @@ endif()
 ####
 # NOT CONVERTED YET
 ####
-#add_subdirectory( SegmentBinaryImageSkeleton3D )
 #add_subdirectory( ComputeRegionSignatures )
 #add_subdirectory( SegmentUsingQuantileThreshold )
 #add_subdirectory( TransferLabelsToRegions )
