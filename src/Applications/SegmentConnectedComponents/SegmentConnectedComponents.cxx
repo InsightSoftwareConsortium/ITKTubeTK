@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -24,11 +23,12 @@ limitations under the License.
 #include "../CLI/tubeCLIFilterWatcher.h"
 #include "../CLI/tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
+#include "tubeSegmentConnectedComponents.h"
 
-#include <itkConnectedComponentImageFilter.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>
+
 
 #include "SegmentConnectedComponentsCLP.h"
 
@@ -36,6 +36,7 @@ template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
+#define PARSE_ARGS_INT_ONLY
 #include "../CLI/tubeCLIHelperFunctions.h"
 
 template< class TPixel, unsigned int VDimension >
@@ -54,8 +55,6 @@ int DoIt( int argc, char * argv[] )
 
   typedef itk::Image< TPixel, VDimension >         MaskType;
   typedef itk::ImageFileReader< MaskType >         MaskReaderType;
-
-  typedef itk::Image< unsigned int, VDimension >   ConnCompType;
 
   //
   //
@@ -85,88 +84,15 @@ int DoIt( int argc, char * argv[] )
   //
   timeCollector.Start( "Connected Components" );
 
-  typedef itk::ConnectedComponentImageFilter< MaskType, ConnCompType >
+  typedef tube::SegmentConnectedComponents< MaskType, MaskType >
     FilterType;
   typename FilterType::Pointer filter;
 
   filter = FilterType::New();
   filter->SetInput( curMask );
 
-  tube::CLIFilterWatcher watcher( filter,
-                                  "Connected Component Filter",
-                                  CLPProcessInformation,
-                                  0.6,
-                                  progress,
-                                  true );
+  filter->SetMinimumVolume( minSize );
 
-  filter->Update();
-
-  typename ConnCompType::Pointer curConnComp = filter->GetOutput();
-
-  itk::ImageRegionIterator< MaskType > maskIter( curMask,
-    curMask->GetLargestPossibleRegion() );
-  maskIter.GoToBegin();
-
-  itk::ImageRegionIterator< ConnCompType > iter( curConnComp,
-    curConnComp->GetLargestPossibleRegion() );
-  iter.GoToBegin();
-
-  while( !iter.IsAtEnd() )
-    {
-    if( maskIter.Get() == 0 )
-      {
-      iter.Set( 0 );
-      }
-    else
-      {
-      unsigned int c = iter.Get();
-      iter.Set( c+1 );
-      }
-    ++maskIter;
-    ++iter;
-    }
-
-  if( minSize > 0 )
-    {
-    
-    // compute the size ( number of pixels ) of each connected component
-    iter.GoToBegin();
-    unsigned int numObjects = filter->GetObjectCount()+1;
-    std::vector< unsigned int > cPixelCount( numObjects, 0 );
-    while( !iter.IsAtEnd() )
-      {
-      unsigned int c = iter.Get();
-      if( c > 0 && c < numObjects )
-        {
-        cPixelCount[c]++;
-        }
-      ++iter;
-      }
-
-    // compute voxelVolume
-    double voxelVolume = 1;
-    for( unsigned int i = 0; i < VDimension; i++ )
-    {
-      voxelVolume *= curMask->GetSpacing()[i];
-    }
-     
-    // drop connected components of size ( physp ) below a user-specified cutoff
-    iter.GoToBegin();
-    while( !iter.IsAtEnd() )
-      {
-      unsigned int c = iter.Get();
-      if( c > 0 && c < numObjects )
-        {
-        if( cPixelCount[c] * voxelVolume < minSize )
-          {
-          iter.Set( 0 );
-          }
-        }
-      ++iter;
-      }
-    }
-
-  //
   if( seedMask.size() > 0 )
     {
     timeCollector.Start( "Load seed mask" );
@@ -185,59 +111,17 @@ int DoIt( int argc, char * argv[] )
       }
     timeCollector.Stop( "Load seed mask" );
 
-    typename MaskType::Pointer curSeedMask = seedMaskReader->GetOutput();
-
-    itk::ImageRegionIterator< MaskType > seedIter( curSeedMask,
-      curSeedMask->GetLargestPossibleRegion() );
-    seedIter.GoToBegin();
-
-    iter.GoToBegin();
-
-    unsigned int numObjects = filter->GetObjectCount()+1;
-    std::vector< bool > cSeeded( numObjects, false );
-    while( !iter.IsAtEnd() )
-      {
-      unsigned int c = iter.Get();
-      if( c > 0 && c < numObjects )
-        {
-        if( !cSeeded[c] )
-          {
-          if( seedIter.Get() != 0 )
-            {
-            cSeeded[ c ] = true;
-            }
-          }
-        }
-      ++iter;
-      ++seedIter;
-      }
-    iter.GoToBegin();
-    while( !iter.IsAtEnd() )
-      {
-      unsigned int c = iter.Get();
-      if( c > 0 && c < numObjects+1 )
-        {
-        if( cSeeded[c] )
-          {
-          iter.Set( c );
-          }
-        else
-          {
-          iter.Set( 0 );
-          }
-        }
-      ++iter;
-      }
+    filter->SetSeedMask( seedMaskReader->GetOutput() );
     }
 
-  timeCollector.Stop( "Connected Components" );
+  filter->Update();
 
-  typedef itk::ImageFileWriter< ConnCompType  >   ImageWriterType;
+  typedef itk::ImageFileWriter< MaskType  >   ImageWriterType;
 
   timeCollector.Start( "Save data" );
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputMask.c_str() );
-  writer->SetInput( curConnComp );
+  writer->SetInput( filter->GetOutput() );
   writer->SetUseCompression( true );
   try
     {

@@ -66,9 +66,6 @@ public:
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ImageMath, ProcessObject );
 
-  /** Set/Get input image.
-   *  This is an in-place filter, so Input will change
-   *  with each function call */
   void SetInput( InputImageType * input )
   { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();

@@ -28,21 +28,20 @@ limitations under the License.
 namespace tube
 {
 
-template< class TPixel >
-SegmentBinaryImageSkeleton3D< TPixel >
+template< class TImageType >
+SegmentBinaryImageSkeleton3D< TImageType >
 ::SegmentBinaryImageSkeleton3D( void )
 {
   m_Filter = FilterType::New();
 }
 
 
-template< class TPixel >
+template< class TImageType >
 void
-SegmentBinaryImageSkeleton3D< TPixel >
+SegmentBinaryImageSkeleton3D< TImageType >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
-  os << "Structuring element radius: " << this->GetRadius() << std::endl;
 }
 
 } // End namespace tubetk

@@ -47,6 +47,8 @@ BinaryThinningImageFilter3D<TInputImage,TOutputImage>
   OutputImagePointer thinImage = OutputImageType::New();
   this->SetNthOutput( 0, thinImage.GetPointer() );
 
+  m_EndPoints.clear();
+
 }
 
 /**
@@ -153,6 +155,7 @@ BinaryThinningImageFilter3D<TInputImage,TOutputImage>
   while( unchangedBorders < 6 )  // loop until no change for all the six border types
   {
     unchangedBorders = 0;
+    m_EndPoints.clear();
     for( int currentBorder = 1; currentBorder <= 6; currentBorder++)
     {
       // Loop through the image.
@@ -189,6 +192,7 @@ BinaryThinningImageFilter3D<TInputImage,TOutputImage>
 
         if( numberOfNeighbors == 1 )
         {
+          m_EndPoints.push_back(ot.GetIndex());
           continue;         // current point is not deletable
         }
 
