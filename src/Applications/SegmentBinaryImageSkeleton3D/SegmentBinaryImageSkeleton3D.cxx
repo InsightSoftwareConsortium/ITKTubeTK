@@ -26,7 +26,7 @@ limitations under the License.
 #include "tubeMessage.h"
 
 //TubeTKITK include
-#include "tubeSegmentBinaryImageSkeleton3D.h"
+#include "itktubeBinaryThinningImageFilter3D.h"
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -83,11 +83,10 @@ int DoIt( int argc, char * argv[] )
   // Progress per iteration
   double progressFraction = 0.8/3;
 
-  typedef itk::tube::SegmentBinaryImageSkeleton3D<PixelType>
+  typedef itk::tube::BinaryThinningImageFilter3D<ImageType,ImageType>
     FilterType;
   typename FilterType::Pointer filter = FilterType::New();
   filter->SetInput( reader->GetOutput() );
-  filter->SetRadius( radius );
   tube::CLIFilterWatcher watcher( filter,
                                   "Binary Thinning",
                                   CLPProcessInformation,

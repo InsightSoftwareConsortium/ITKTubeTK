@@ -1,0 +1,12 @@
+itk_wrap_include( tubeSegmentConnectedComponents.h )
+itk_wrap_include( itkImage.h )
+
+itk_wrap_named_class("tube::SegmentConnectedComponents" tubeSegmentConnectedComponents POINTER)
+  foreach(t ${WRAP_ITK_INT})
+    foreach(t2 ${WRAP_ITK_INT})
+      foreach(d 2 3)
+        itk_wrap_template("${ITKM_${t}}${ITKM_${t2}}${d}"  "itk::Image<${ITKT_${t}},${d}>,itk::Image<${ITKT_${t2}},${d}>")
+      endforeach()
+    endforeach()
+ endforeach()
+itk_end_wrap_class()

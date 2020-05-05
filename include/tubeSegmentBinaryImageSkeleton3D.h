@@ -29,7 +29,7 @@ limitations under the License.
 // TubeTK includes
 #include "tubeWrappingMacros.h"
 
-#include "itktubeSegmentBinaryImageSkeleton3D.h"
+#include "itktubeBinaryThinningImageFilter3D.h"
 
 namespace tube
 {
@@ -41,7 +41,7 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TPixel >
+template< class TImageType >
 class SegmentBinaryImageSkeleton3D:
   public itk::ProcessObject
 {
@@ -52,20 +52,16 @@ public:
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
-  typedef itk::tube::SegmentBinaryImageSkeleton3D<
-    TPixel >                                         FilterType;
+  typedef TImageType                                 ImageType;
 
-  typedef typename FilterType::ImageType             ImageType;
+  typedef itk::tube::BinaryThinningImageFilter3D<
+    TImageType >                                     FilterType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( SegmentBinaryImageSkeleton3D, ProcessObject );
-
-  /** Set/Get radius for post-dilatation */
-  tubeWrapSetMacro( Radius, unsigned int, Filter );
-  tubeWrapGetMacro( Radius, unsigned int, Filter );
 
   /** Set/Get input image */
   tubeWrapSetConstObjectMacro( Input, ImageType, Filter );
