@@ -157,6 +157,7 @@ jobs:
         pushd ITKMinimalPathExtraction
         ./dockcross-manylinux-download-cache-and-build-module-wheels.sh cp${{ matrix.python-version }}
         popd
+        cp ITKMinimalPathExtraction/include/* include/
         ln -s $(pwd)/ITKMinimalPathExtraction/ITKPythonPackage .
         ln -s $(pwd)/ITKMinimalPathExtraction/tools .
         ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
@@ -192,6 +193,7 @@ jobs:
         pushd ITKMinimalPathExtraction
         ./macpython-download-cache-and-build-module-wheels.sh
         popd
+        cp ITKMinimalPathExtraction/include/* include/
         /Users/Kitware/Dashboards/ITK/ITKPythonPackage/scripts/macpython-build-module-wheels.sh
 
     - name: Publish Python package as GitHub Artifact
@@ -239,6 +241,7 @@ jobs:
         cd ITKMinimalPathExtraction
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe C:\P\IPP\scripts\windows_build_module_wheels.py --py-envs "3${{ matrix.python-version-minor }}-x64"
         cd ..
+        copy ITKMinimalPathExtraction/include/* include/
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe C:\P\IPP\scripts\windows_build_module_wheels.py --py-envs "3${{ matrix.python-version-minor }}-x64"
 
     - name: Publish Python package as GitHub Artifact
