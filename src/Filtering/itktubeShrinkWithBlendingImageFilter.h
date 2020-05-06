@@ -147,7 +147,7 @@ protected:
 
   void UpdateInternalShrinkFactors();
 
-  void VerifyInputInformation() ITKv5_CONST;
+  void VerifyInputInformation() ITKv5_CONST override;
 
   template<class ArrayType>
   bool NotValue( ArrayType array, double val, double tolerance=0.00001 ) ITKv5_CONST;
