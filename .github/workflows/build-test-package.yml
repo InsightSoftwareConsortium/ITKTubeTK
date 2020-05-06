@@ -76,9 +76,9 @@ jobs:
         operating_system="${{ matrix.os }}"
         cat > dashboard.cmake << EOF
         set(CTEST_SITE "GitHubActions")
-        file(TO_CMAKE_PATH "${GITHUB_WORKSPACE}/.." CTEST_DASHBOARD_ROOT)
-        file(TO_CMAKE_PATH "${GITHUB_WORKSPACE}/" CTEST_SOURCE_DIRECTORY)
-        file(TO_CMAKE_PATH "${GITHUB_WORKSPACE}/../build" CTEST_BINARY_DIRECTORY)
+        file(TO_CMAKE_PATH "${PWD}/.." CTEST_DASHBOARD_ROOT)
+        file(TO_CMAKE_PATH "${PWD}/" CTEST_SOURCE_DIRECTORY)
+        file(TO_CMAKE_PATH "${PWD}/../build" CTEST_BINARY_DIRECTORY)
         set(dashboard_source_name "${GITHUB_REPOSITORY}")
         if(ENV{GITHUB_REF} MATCHES "master")
           set(branch "-master")
@@ -122,6 +122,13 @@ jobs:
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         ctest -j 2 -V -S dashboard.cmake
       shell: cmd
+
+    - name: WIP Debug build output
+      if: matrix.os == 'windows-2019'
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+        find .
 
   build-linux-python-packages:
     runs-on: ubuntu-18.04
