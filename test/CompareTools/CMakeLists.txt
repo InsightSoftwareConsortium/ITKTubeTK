@@ -20,6 +20,7 @@
 #
 ##############################################################################
 
+find_package(ITK COMPONENTS ITKMetaIO ITKImageIO REQUIRED )
 add_executable( tubeCompareTextFiles
   CompareTextFiles.cxx )
 target_link_libraries( tubeCompareTextFiles
@@ -29,5 +30,5 @@ target_link_libraries( tubeCompareTextFiles
 add_executable( tubeCompareImages
   CompareImages.cxx )
 target_link_libraries( tubeCompareImages
-  ${TubeTK-Test_LIBRARIES}
-  ITKMetaIO )
+  ${ITK_LIBRARIES}
+  )
