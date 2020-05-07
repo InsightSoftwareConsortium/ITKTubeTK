@@ -52,7 +52,7 @@ jobs:
         cd ..
         mkdir ITK-build
         cd ITK-build
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
         ninja
 
     - name: Build ITK
@@ -62,7 +62,7 @@ jobs:
         mkdir ITK-build
         cd ITK-build
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
         ninja
       shell: cmd
 
@@ -76,9 +76,9 @@ jobs:
         operating_system="${{ matrix.os }}"
         cat > dashboard.cmake << EOF
         set(CTEST_SITE "GitHubActions")
-        file(TO_CMAKE_PATH "${GITHUB_WORKSPACE}/.." CTEST_DASHBOARD_ROOT)
-        file(TO_CMAKE_PATH "${GITHUB_WORKSPACE}/" CTEST_SOURCE_DIRECTORY)
-        file(TO_CMAKE_PATH "${GITHUB_WORKSPACE}/../build" CTEST_BINARY_DIRECTORY)
+        file(TO_CMAKE_PATH "${PWD}/.." CTEST_DASHBOARD_ROOT)
+        file(TO_CMAKE_PATH "${PWD}/" CTEST_SOURCE_DIRECTORY)
+        file(TO_CMAKE_PATH "${PWD}/../build" CTEST_BINARY_DIRECTORY)
         set(dashboard_source_name "${GITHUB_REPOSITORY}")
         if(ENV{GITHUB_REF} MATCHES "master")
           set(branch "-master")
@@ -103,7 +103,6 @@ jobs:
         set(dashboard_cache "
         ITK_DIR:PATH=\${CTEST_DASHBOARD_ROOT}/ITK-build
         BUILD_TESTING:BOOL=ON
-        Module_MinimalPathExtraction:BOOL=ON
         ")
         string(TIMESTAMP build_date "%Y-%m-%d")
         message("CDash Build Identifier: \${build_date} \${CTEST_BUILD_NAME}")
@@ -158,6 +157,7 @@ jobs:
         pushd ITKMinimalPathExtraction
         ./dockcross-manylinux-download-cache-and-build-module-wheels.sh cp${{ matrix.python-version }}
         popd
+        cp ITKMinimalPathExtraction/include/* include/
         ln -s $(pwd)/ITKMinimalPathExtraction/ITKPythonPackage .
         ln -s $(pwd)/ITKMinimalPathExtraction/tools .
         ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
@@ -193,6 +193,7 @@ jobs:
         pushd ITKMinimalPathExtraction
         ./macpython-download-cache-and-build-module-wheels.sh
         popd
+        cp ITKMinimalPathExtraction/include/* include/
         /Users/Kitware/Dashboards/ITK/ITKPythonPackage/scripts/macpython-build-module-wheels.sh
 
     - name: Publish Python package as GitHub Artifact
@@ -228,6 +229,7 @@ jobs:
         7z x doxygen-1.8.11.windows.bin.zip -o/c/P/doxygen -aoa -r
         curl -L "https://data.kitware.com/api/v1/file/5bbf87ba8d777f06b91f27d6/download/grep-win.zip" -o "grep-win.zip"
         7z x grep-win.zip -o/c/P/grep -aoa -r
+        git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
 
     - name: 'Build 🐍 Python 📦 package'
       shell: cmd
@@ -236,10 +238,10 @@ jobs:
         set PATH="C:\P\grep;%PATH%"
         set CC=cl.exe
         set CXX=cl.exe
-        git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         cd ITKMinimalPathExtraction
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe C:\P\IPP\scripts\windows_build_module_wheels.py --py-envs "3${{ matrix.python-version-minor }}-x64"
         cd ..
+        copy ITKMinimalPathExtraction/include/* include/
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe C:\P\IPP\scripts\windows_build_module_wheels.py --py-envs "3${{ matrix.python-version-minor }}-x64"
 
     - name: Publish Python package as GitHub Artifact

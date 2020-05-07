@@ -110,7 +110,7 @@ protected:
   ReResampleImageFilter( void );
   ~ReResampleImageFilter( void ) {}
 
-  void SetInput( const DataObjectIdentifierType & key, DataObject * input)
+  void SetInput( const DataObjectIdentifierType & key, DataObject * input) override
     { Superclass::SetInput( key, input ); };
 
   void PrintSelf( std::ostream& os, Indent indent ) const override;

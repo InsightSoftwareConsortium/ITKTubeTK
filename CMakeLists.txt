@@ -131,7 +131,6 @@ if( NOT ITK_SOURCE_DIR )
     set( ITK_DIR "NOT_FOUND" CACHE PATH
 	    "Path to ITK installation/build directory." FORCE )
   endif()
-  include( ${ITK_USE_FILE} )
 endif()
 
 ####
