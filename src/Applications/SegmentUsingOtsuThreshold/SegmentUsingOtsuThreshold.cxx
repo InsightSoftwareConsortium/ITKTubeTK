@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -59,7 +58,9 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // typedefs
-  typedef tube::SegmentUsingOtsuThreshold< TPixel, VDimension > FilterType;
+  typedef itk::Image< TPixel, VDimension > ImageType;
+
+  typedef tube::SegmentUsingOtsuThreshold< ImageType > FilterType;
 
   // Load input image
   timeCollector.Start( "Load data" );

@@ -4,7 +4,7 @@ itk_wrap_named_class("tube::SegmentUsingOtsuThreshold" tubeSegmentUsingOtsuThres
  foreach(tI ${WRAP_ITK_SCALAR})
     foreach(d ${ITK_WRAP_IMAGE_DIMS})
       foreach(tM ${WRAP_ITK_SCALAR})
-        itk_wrap_template("${ITKM_${tI}}${d}${ITKM_${tM}}"  "${ITKT_${tI}}, ${d}, ${ITKT_${tM}}")
+        itk_wrap_template("${ITKM_${tI}}${d}${ITKM_${tM}}"  "itk::Image<${ITKT_${tI}}, ${d}>, itk::Image<${ITKT_${tM}}, ${d}>")
       endforeach()
     endforeach()
  endforeach()

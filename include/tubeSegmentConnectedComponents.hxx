@@ -36,6 +36,7 @@ SegmentConnectedComponents< TImage, TSeedMask >
   m_SeedMask = nullptr;
 
   m_MinimumVolume = 0;
+  m_NumberOfComponents = 0;
 }
 
 template< class TImage, class TSeedMask >
@@ -43,7 +44,11 @@ void
 SegmentConnectedComponents< TImage, TSeedMask >
 ::Update( void )
 {
+  Superclass::Update();
+
   m_Filter->Update();
+
+  m_NumberOfComponents = m_Filter->GetObjectCount();
 
   typename ImageType::Pointer curConnComp = m_Filter->GetOutput();
 
@@ -69,12 +74,12 @@ SegmentConnectedComponents< TImage, TSeedMask >
     ++iter;
     }
 
+  unsigned int numObjects = m_Filter->GetObjectCount()+1;
+  std::vector< bool > cSize( numObjects, true );
   if( m_MinimumVolume > 0 )
     {
-    
     // compute the size ( number of pixels ) of each connected component
     iter.GoToBegin();
-    unsigned int numObjects = m_Filter->GetObjectCount()+1;
     std::vector< unsigned int > cPixelCount( numObjects, 0 );
     while( !iter.IsAtEnd() )
       {
@@ -89,21 +94,27 @@ SegmentConnectedComponents< TImage, TSeedMask >
     // compute voxelVolume
     double voxelVolume = 1;
     for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
+      {
       voxelVolume *= m_Filter->GetInput()->GetSpacing()[i];
-    }
-     
+      }
+    double minimumVoxelCount = m_MinimumVolume / voxelVolume;
+    for( unsigned int c = 0; c<numObjects; ++c )
+      {
+      if( cPixelCount[c] < minimumVoxelCount )
+        {
+        cSize[c] = false;
+        --m_NumberOfComponents;
+        }
+      }
+
     // drop connected components of size ( physp ) below a user-specified cutoff
     iter.GoToBegin();
     while( !iter.IsAtEnd() )
       {
       unsigned int c = iter.Get();
-      if( c > 0 && c < numObjects )
+      if( c > 0 && c < numObjects && cSize[c] == false )
         {
-        if( cPixelCount[c] * voxelVolume < m_MinimumVolume )
-          {
-          iter.Set( 0 );
-          }
+        iter.Set( 0 );
         }
       ++iter;
       }
@@ -118,35 +129,39 @@ SegmentConnectedComponents< TImage, TSeedMask >
 
     iter.GoToBegin();
 
-    unsigned int numObjects = m_Filter->GetObjectCount()+1;
     std::vector< bool > cSeeded( numObjects, false );
     while( !iter.IsAtEnd() )
       {
-      unsigned int c = iter.Get();
-      if( c > 0 && c < numObjects )
+      if( seedIter.Get() != 0 )
         {
-        if( !cSeeded[c] )
+        unsigned int c = iter.Get();
+        if( c > 0 && c < numObjects && !cSeeded[c] )
           {
-          if( seedIter.Get() != 0 )
+          if( cSize[c] == true )
             {
-            cSeeded[ c ] = true;
+            cSeeded[c] = true;
             }
           }
         }
       ++iter;
       ++seedIter;
       }
+    m_NumberOfComponents = 0;
+    for( unsigned int c = 0; c<numObjects; ++c )
+      {
+      if( cSeeded[c] )
+        {
+        ++m_NumberOfComponents;
+        }
+      }
+
     iter.GoToBegin();
     while( !iter.IsAtEnd() )
       {
       unsigned int c = iter.Get();
-      if( c > 0 && c < numObjects+1 )
+      if( c > 0 && c < numObjects )
         {
-        if( cSeeded[c] )
-          {
-          iter.Set( c );
-          }
-        else
+        if( !cSeeded[c] )
           {
           iter.Set( 0 );
           }

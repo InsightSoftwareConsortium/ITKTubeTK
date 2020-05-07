@@ -66,7 +66,7 @@ public:
   tubeWrapSetObjectMacro( Input, ImageType, Filter );
   tubeWrapGetConstObjectMacro( Input, ImageType, Filter );
 
-  tubeWrapGetMacro( ObjectCount, unsigned int, Filter );
+  itkGetMacro( NumberOfComponents, unsigned int );
 
   itkSetMacro( MinimumVolume, double );
   itkGetMacro( MinimumVolume, double );
@@ -96,6 +96,7 @@ private:
 
   typename SeedMaskType::Pointer                  m_SeedMask;
   double                                          m_MinimumVolume;
+  unsigned int                                    m_NumberOfComponents;
 
 };
 

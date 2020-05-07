@@ -39,8 +39,7 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TInputPixel, unsigned int Dimension,
-  class TMaskPixel = unsigned char >
+template< class TImageType, class TMaskType=TImageType >
 class SegmentUsingOtsuThreshold:
   public itk::ProcessObject
 {
@@ -51,9 +50,12 @@ public:
   typedef itk::SmartPointer< Self >                 Pointer;
   typedef itk::SmartPointer< const Self >           ConstPointer;
 
-  typedef itk::Image< TInputPixel, Dimension >      InputImageType;
-  typedef itk::Image< TMaskPixel, Dimension >       MaskImageType;
+  typedef TImageType                                InputImageType;
+  typedef TMaskType                                 MaskImageType;
   typedef MaskImageType                             OutputImageType;
+
+  typedef typename InputImageType::PixelType        InputPixelType;
+  typedef typename MaskImageType::PixelType         MaskPixelType;
 
   typedef itk::OtsuThresholdImageFilter< InputImageType,
     OutputImageType >                               FilterType;
@@ -69,8 +71,8 @@ public:
   tubeWrapGetConstObjectMacro( MaskImage, MaskImageType, Filter );
 
   /** Set/Get mask value */
-  tubeWrapSetMacro( MaskValue, TInputPixel, Filter );
-  tubeWrapGetMacro( MaskValue, TInputPixel, Filter );
+  tubeWrapSetMacro( MaskValue, InputPixelType, Filter );
+  tubeWrapGetMacro( MaskValue, InputPixelType, Filter );
 
   /** Set/Get input image */
   tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
@@ -83,7 +85,7 @@ public:
   tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
 
   /** Get output threshold */
-  tubeWrapGetMacro( Threshold, TInputPixel, Filter );
+  tubeWrapGetMacro( Threshold, InputPixelType, Filter );
 
 protected:
   SegmentUsingOtsuThreshold( void );
