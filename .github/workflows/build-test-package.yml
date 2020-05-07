@@ -123,13 +123,6 @@ jobs:
         ctest -j 2 -V -S dashboard.cmake
       shell: cmd
 
-    - name: WIP Debug build output
-      if: matrix.os == 'windows-2019'
-      if: ${{ failure() }}
-      shell: bash
-      run: |
-        find .
-
   build-linux-python-packages:
     runs-on: ubuntu-18.04
     strategy:
