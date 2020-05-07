@@ -15,7 +15,7 @@ except ImportError:
 
 setup(
     name='itk-tubetk',
-    version='1.0.0',
+    version='0.2.0',
     author='Stephen R. Aylward',
     author_email='stephen.aylward@kitware.com',
     include_dirs=[np.get_include()],
