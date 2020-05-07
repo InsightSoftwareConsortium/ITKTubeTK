@@ -1,7 +1,7 @@
 itk_wrap_include( tubeSegmentBinaryImageSkeleton3D.h )
 
 itk_wrap_named_class("tube::SegmentBinaryImageSkeleton3D" tubeSegmentBinaryImageSkeleton3D POINTER)
- foreach(t ${WRAP_ITK_USIGN_INT})
+ foreach(t ${WRAP_ITK_SCALAR})
    itk_wrap_template("${ITKM_${t}}"  "itk::Image<${ITKT_${t}}, 3>")
  endforeach()
 itk_end_wrap_class()

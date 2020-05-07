@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -28,8 +27,8 @@ limitations under the License.
 namespace tube
 {
 
-template< class TInputPixel, unsigned int Dimension, class TMaskPixel >
-SegmentUsingOtsuThreshold< TInputPixel, Dimension, TMaskPixel >
+template< class TImageType, class TMaskType >
+SegmentUsingOtsuThreshold< TImageType, TMaskType >
 ::SegmentUsingOtsuThreshold( void )
 {
   m_Filter = FilterType::New();
@@ -38,9 +37,9 @@ SegmentUsingOtsuThreshold< TInputPixel, Dimension, TMaskPixel >
   m_Filter->SetInsideValue( 1 );
 }
 
-template< class TInputPixel, unsigned int Dimension, class TMaskPixel >
+template< class TImageType, class TMaskType >
 void
-SegmentUsingOtsuThreshold< TInputPixel, Dimension, TMaskPixel >
+SegmentUsingOtsuThreshold< TImageType, TMaskType >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
