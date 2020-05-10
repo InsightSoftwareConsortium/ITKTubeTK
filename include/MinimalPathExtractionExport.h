@@ -1,3 +1,5 @@
+#pragma once
+
 #include "itkConfigure.h"
 // Workaround for ITKTubeTK Python package builds
 #if !defined(ITK_BUILD_SHARED_LIBS) && !defined(MinimalPathExtraction_EXPORT)
