@@ -23,24 +23,23 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.cvt.mha}
     DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp,${MODULE_NAME}-CVT50-Branch-truth.grp,${MODULE_NAME}-CVT50-Branch-truth.grp.mat,${MODULE_NAME}-CVT50-Branch-truth.grp.brc,${MODULE_NAME}-CVT50-Branch-truth.grp.rot}
-    ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image )
 
 # Test1-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare-00
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha} )
 
 set_tests_properties( ${MODULE_NAME}-Test1-Compare-00 PROPERTIES DEPENDS

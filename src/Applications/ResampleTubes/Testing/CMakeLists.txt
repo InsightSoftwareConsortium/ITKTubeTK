@@ -23,60 +23,61 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}Test1
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
     --samplingFactor 20
-    ${TEMP}/${MODULE_NAME}Test1.tre )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.tre )
 
 # Test1-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}Test1-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test1.tre
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.tre
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.tre}
     -d 0.01 )
 set_tests_properties( ${MODULE_NAME}Test1-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}Test1 )
 
 # Test2
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}Test2
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
     --loadTransform DATA{${TubeTK_DATA_ROOT}/VascularNetwork-TestTransform.tfm}
-    ${TEMP}/${MODULE_NAME}Test2.tre )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.tre )
 
 # Test2-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}Test2-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test2.tre
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.tre
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.tre}
     -d 0.01 )
 set_tests_properties( ${MODULE_NAME}Test2-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}Test2 )
 
 # Test3
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}Test3
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
     --matchImage DATA{${TubeTK_DATA_ROOT}/SyntheticSurfaceImage.mha}
-    ${TEMP}/${MODULE_NAME}Test3.tre )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test3.tre )
 
 # Test3-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}Test3-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test3.tre
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test3.tre
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test3.tre}
     -d 0.01 )
 set_tests_properties( ${MODULE_NAME}Test3-Compare PROPERTIES DEPENDS

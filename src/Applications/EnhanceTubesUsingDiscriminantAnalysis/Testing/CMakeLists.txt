@@ -23,33 +23,32 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 #######
 # Test1
 #######
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     --tubeId 255
     --backgroundId 127
     --unknownId 0
     --tubeScales 0.18,0.36
-    --saveDiscriminantInfo ${TEMP}/${MODULE_NAME}Test1.mrs
+    --saveDiscriminantInfo ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mrs
     --labelmap DATA{${TubeTK_DATA_ROOT}/im0001.vk.mask.crop.mha}
     DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
-    ${TEMP}/${MODULE_NAME}Test1_Output.mha )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1_Output.mha )
 
 #######
 # Test1-Compare MRS
 #######
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-MRS-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
+    CompareTextFiles
     -d 0.1
-    -t ${TEMP}/${MODULE_NAME}Test1.mrs
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mrs
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mrs} )
 set_tests_properties( ${MODULE_NAME}-Test1-MRS-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )
@@ -57,11 +56,12 @@ set_tests_properties( ${MODULE_NAME}-Test1-MRS-Compare PROPERTIES DEPENDS
 #######
 # Test1-Compare Output
 #######
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Output-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
+    CompareImages
     -i 0.001
-    -t ${TEMP}/${MODULE_NAME}Test1_Output.mha
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1_Output.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1_Output.mha} )
 set_tests_properties( ${MODULE_NAME}-Test1-Output-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )
@@ -69,25 +69,26 @@ set_tests_properties( ${MODULE_NAME}-Test1-Output-Compare PROPERTIES DEPENDS
 #######
 # Test2
 #######
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
-    --loadDiscriminantInfo ${TEMP}/${MODULE_NAME}Test1.mrs
-    --saveDiscriminantInfo ${TEMP}/${MODULE_NAME}Test2.mrs
+    --loadDiscriminantInfo ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mrs
+    --saveDiscriminantInfo ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.mrs
     DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
-    ${TEMP}/${MODULE_NAME}Test2_Output.mha )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2_Output.mha )
 set_tests_properties( ${MODULE_NAME}-Test2 PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1-Output-Compare )
 
 #######
 # Test2-Compare Output
 #######
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2-Output-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
+    CompareImages
     -i 0.05
     -n 100
-    -t ${TEMP}/${MODULE_NAME}Test2_Output.mha
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2_Output.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1_Output.mha} )
 set_tests_properties( ${MODULE_NAME}-Test2-Output-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test2 )
@@ -95,11 +96,12 @@ set_tests_properties( ${MODULE_NAME}-Test2-Output-Compare PROPERTIES DEPENDS
 #######
 # Test2-Compare MRS
 #######
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2-MRS-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
+    CompareTextFiles
     -d 0.1
-    -t ${TEMP}/${MODULE_NAME}Test2.mrs
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.mrs
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.mrs} )
 set_tests_properties( ${MODULE_NAME}-Test2-MRS-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test2 )

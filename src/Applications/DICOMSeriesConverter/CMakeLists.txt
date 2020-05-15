@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Library:   TubeTKLib
+# Library:   TubeTK
 #
 # Copyright Kitware Inc.
 #
@@ -20,11 +20,17 @@
 #
 ##############################################################################
 
-CreateTestDriver( tubeCompareImages
-  "${TubeTK-Test_LIBRARIES}"
-  CompareImages.cxx )
+set( MODULE_NAME DICOMSeriesConverter )
 
-CreateTestDriver( tubeCompareTextFiles
-  "${TubeTK-Test_LIBRARIES}"
-  CompareTextFiles.cxx )
+SEMMacroBuildCLI(
+  NAME ${MODULE_NAME}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h
+  INCLUDE_DIRECTORIES
+    ${GDCM_DIR}
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES}
+  )
 
+#if( BUILD_TESTING )
+  #add_subdirectory( Testing )
+#endif( BUILD_TESTING )

@@ -23,44 +23,45 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp,${MODULE_NAME}-CVT50-Branch-truth.grp.mat,${MODULE_NAME}-CVT50-Branch-truth.grp.brc,${MODULE_NAME}-CVT50-Branch-truth.grp.rot}
     DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp}
-    ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-CVT50-Branch-truth.grp )
 
 # Test1-Compare-00
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare-00
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.matProb.txt
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-CVT50-Branch-truth.grp.matProb.txt
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp.matProb.txt} )
 
 set_tests_properties( ${MODULE_NAME}-Test1-Compare-00 PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )
 
 # Test1-Compare-01
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare-01
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.cntProb.txt
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-CVT50-Branch-truth.grp.cntProb.txt
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp.cntProb.txt} )
 
 set_tests_properties( ${MODULE_NAME}-Test1-Compare-01 PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )
 
 # Test1-Compare-02
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare-02
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.brcProb.txt
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-CVT50-Branch-truth.grp.brcProb.txt
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp.brcProb.txt} )
 
 set_tests_properties( ${MODULE_NAME}-Test1-Compare-02 PROPERTIES DEPENDS

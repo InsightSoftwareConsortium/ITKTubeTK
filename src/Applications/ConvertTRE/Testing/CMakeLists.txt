@@ -23,24 +23,23 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test1
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/TubeXIOTest.tre}
-               ${TEMP}/${MODULE_NAME}-Test1.tre )
+               ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test1.tre )
 
 # Test1-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test1-Compare
             COMMAND ${TubeTK_CompareTextFiles_EXE}
+              CompareTextFiles
                -d 0.01
-               -t ${TEMP}/${MODULE_NAME}-Test1.tre
+               -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test1.tre
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test1.tre} )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
             ${MODULE_NAME}-Test1 )

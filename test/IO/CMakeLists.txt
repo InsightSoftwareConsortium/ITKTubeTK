@@ -19,7 +19,6 @@
 # limitations under the License.
 #
 ##############################################################################
-set( CompareTextFiles_EXE $<TARGET_FILE:tubeCompareTextFiles> )
 
 if( PYTHON_EXECUTABLE )
   itk_add_test( PrintSelf-TubeTKIO ${PYTHON_EXECUTABLE}
@@ -87,7 +86,8 @@ itk_add_test(
 
 itk_add_test( 
   NAME itktubeTubeExtractorIOTest-Compare
-  COMMAND ${CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
+    CompareTextFiles
     -b DATA{${TubeTK_DATA_ROOT}/TubeExtractorIOTest.mtp}
     -t ${ITK_TEST_OUTPUT_DIR}/itktubeTubeExtractorIOTest.mtp )
 set_property( TEST itktubeTubeExtractorIOTest-Compare APPEND PROPERTY DEPENDS
@@ -95,7 +95,8 @@ set_property( TEST itktubeTubeExtractorIOTest-Compare APPEND PROPERTY DEPENDS
 
 itk_add_test( 
   NAME itktubeTubeExtractorIOTest-Compare2
-  COMMAND ${CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
+    CompareTextFiles
     -b DATA{${TubeTK_DATA_ROOT}/TubeExtractorIOTest.mtp}
     -t ${ITK_TEST_OUTPUT_DIR}/itktubeTubeExtractorIOTest2.mtp )
 set_property( TEST itktubeTubeExtractorIOTest-Compare2 APPEND PROPERTY DEPENDS
@@ -112,7 +113,8 @@ itk_add_test(
 
 itk_add_test( 
   NAME itktubeTubeXIOTest-Compare
-  COMMAND ${CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
+    CompareTextFiles
     -b DATA{${TubeTK_DATA_ROOT}/TubeXIOTest.tre}
     -t ${ITK_TEST_OUTPUT_DIR}/itktubeTubeXIOTest.tre )
 set_property( TEST itktubeTubeXIOTest-Compare APPEND PROPERTY DEPENDS

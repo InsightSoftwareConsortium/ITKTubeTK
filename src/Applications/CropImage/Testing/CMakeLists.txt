@@ -23,94 +23,99 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
-    ${TEMP}/${MODULE_NAME}Test1.mha
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mha
     -m 10,10 -M 100,100 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test1.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mha} )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )
 
 # Test2
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
-    ${TEMP}/${MODULE_NAME}Test2.mha
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.mha
     -m 10,10 -s 91,91 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test2.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mha} )
 set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test2 )
 
 # Test3
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test3
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
-    ${TEMP}/${MODULE_NAME}Test3.mha
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test3.mha
     -m 15,15 -s 81,81 -b 5,5 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test3-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test3.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test3.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mha} )
 set_tests_properties( ${MODULE_NAME}-Test3-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test3 )
 
 # Test4
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test4
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
-    ${TEMP}/${MODULE_NAME}Test4
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test4
     -S 2,2 -b 5,5 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test4-Compare000000
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test4_000000.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test4_000000.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test4_000000.mha} )
 set_tests_properties( ${MODULE_NAME}-Test4-Compare000000 PROPERTIES DEPENDS
   ${MODULE_NAME}-Test4 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test4-Compare000001
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test4_000001.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test4_000001.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test4_000001.mha} )
 set_tests_properties( ${MODULE_NAME}-Test4-Compare000001 PROPERTIES DEPENDS
   ${MODULE_NAME}-Test4 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test4-Compare001000
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test4_001000.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test4_001000.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test4_001000.mha} )
 set_tests_properties( ${MODULE_NAME}-Test4-Compare001000 PROPERTIES DEPENDS
   ${MODULE_NAME}-Test4 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test4-Compare001001
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test4_001001.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test4_001001.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test4_001001.mha} )
 set_tests_properties( ${MODULE_NAME}-Test4-Compare001001 PROPERTIES DEPENDS
   ${MODULE_NAME}-Test4 )

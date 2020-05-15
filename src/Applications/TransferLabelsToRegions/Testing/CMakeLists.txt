@@ -23,63 +23,65 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
      ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
                 NAME ${MODULE_NAME}-Test1
                 COMMAND ${PROJ_EXE}
                   DATA{${TubeTK_DATA_ROOT}/Exemplary-CVT-Tessellation.mha}
                   DATA{${TubeTK_DATA_ROOT}/SPL2012-LabelMap.nrrd}
-                  ${TEMP}/${MODULE_NAME}Test1-Img.mha
-                  ${TEMP}/${MODULE_NAME}Test1-Map.txt )
+                  ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1-Img.mha
+                  ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1-Map.txt )
 
 # Test2
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
                 NAME ${MODULE_NAME}-Test2
                 COMMAND ${PROJ_EXE}
                   DATA{${TubeTK_DATA_ROOT}/Exemplary-CVT-Tessellation.mha}
                   DATA{${TubeTK_DATA_ROOT}/SPL2012-LabelMap.nrrd}
-                  ${TEMP}/${MODULE_NAME}Test2-Img.mha
-                  ${TEMP}/${MODULE_NAME}Test2-Map.txt
+                  ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2-Img.mha
+                  ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2-Map.txt
                   --omitRegions 0 )
 
 # Test1-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
                 NAME ${MODULE_NAME}-Test1-Compare-Map
                 COMMAND ${TubeTK_CompareTextFiles_EXE}
-                  -t ${TEMP}/${MODULE_NAME}Test1-Map.txt
+                  CompareTextFiles
+                  -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1-Map.txt
                   -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Map.txt} )
 
 set_tests_properties( ${MODULE_NAME}-Test1-Compare-Map PROPERTIES DEPENDS
                 ${MODULE_NAME}-Test1 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
                 NAME ${MODULE_NAME}-Test1-Compare-Img
                 COMMAND ${TubeTK_CompareImages_EXE}
-                  -t ${TEMP}/${MODULE_NAME}Test1-Img.mha
+                  CompareImages
+                  -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1-Img.mha
                   -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Img.mha} )
 
 set_tests_properties ${MODULE_NAME}-Test1-Compare-Img PROPERTIES DEPENDS
                 ${MODULE_NAME}-Test1 )
 
 # Test2-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
                 NAME ${MODULE_NAME}-Test2-Compare-Map
                 COMMAND ${TubeTK_CompareTextFiles_EXE}
-                  -t ${TEMP}/${MODULE_NAME}Test2-Map.txt
+                  CompareTextFiles
+                  -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2-Map.txt
                   -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Map.txt} )
 
 set_tests_properties( ${MODULE_NAME}-Test2-Compare-Map PROPERTIES DEPENDS
                 ${MODULE_NAME}-Test2 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
                 NAME ${MODULE_NAME}-Test2-Compare-Img
                 COMMAND ${TubeTK_CompareImages_EXE}
-                  -t ${TEMP}/${MODULE_NAME}Test2-Img.mha
+                  CompareImages
+                  -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2-Img.mha
                   -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Img.mha} )
 
 set_tests_properties( ${MODULE_NAME}-Test2-Compare-Img PROPERTIES DEPENDS

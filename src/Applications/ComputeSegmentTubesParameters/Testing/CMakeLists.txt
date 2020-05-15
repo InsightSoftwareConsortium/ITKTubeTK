@@ -23,27 +23,26 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     -v 1
     DATA{${TubeTK_DATA_ROOT}/SegmentTubeSeedsTest1.threshSkel.mha}
     DATA{${TubeTK_DATA_ROOT}/SegmentTubeSeedsTest1_Scales.mha}
     DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
-    ${TEMP}/${MODULE_NAME}Test1 )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1 )
 
 # Test1-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
+    CompareTextFiles
     -d 0.01
-    -t ${TEMP}/${MODULE_NAME}Test1.mtp
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mtp
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mtp} )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )

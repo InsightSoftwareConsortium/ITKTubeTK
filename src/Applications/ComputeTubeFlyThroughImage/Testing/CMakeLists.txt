@@ -23,8 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
@@ -33,29 +31,31 @@ set( PROJ_EXE
 #
 
 # Run module and generate result on test case
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Cylinder_2D.mha}
     DATA{${TubeTK_DATA_ROOT}/Cylinder_2D.tre} 1
-    ${TEMP}/${MODULE_NAME}Test1.flyThrough.mha
-    ${TEMP}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.flyThrough.mha
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha )
 
 # compare outputs with groundtruth
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare-flyThrough
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test1.flyThrough.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.flyThrough.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.flyThrough.mha}
     -i 0.001 )
 
 set_tests_properties( ${MODULE_NAME}-Test1-Compare-flyThrough PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare-flyThrough-TubeMask
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha}
     -i 0.001 )
 
@@ -67,29 +67,31 @@ set_tests_properties( ${MODULE_NAME}-Test1-Compare-flyThrough-TubeMask PROPERTIE
 #
 
 # Run module and generate result on test case
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Cylinder_3D.mha}
     DATA{${TubeTK_DATA_ROOT}/Cylinder_3D.tre} 1
-    ${TEMP}/${MODULE_NAME}Test2.flyThrough.mha
-    ${TEMP}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.flyThrough.mha
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha )
 
 # compare outputs with groundtruth
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2-Compare-flyThrough
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test2.flyThrough.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.flyThrough.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.flyThrough.mha}
     -i 0.001 )
 
 set_tests_properties( ${MODULE_NAME}-Test2-Compare-flyThrough PROPERTIES DEPENDS
   ${MODULE_NAME}-Test2 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2-Compare-flyThrough-TubeMask
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha}
     -i 0.001 )
 

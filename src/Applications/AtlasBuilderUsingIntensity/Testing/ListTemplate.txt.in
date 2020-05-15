@@ -1,13 +1,13 @@
 NumberOfObjects = 4
 Type = Image
-Name = @ExternalData_BINARY_ROOT@/data_keys/DDMap58.mha
+Name = @ITK_TEST_OUTPUT_DIR@/DDMap58.mha
 EndObject =
 Type = Image
-Name = @ExternalData_BINARY_ROOT@/data_keys/DDMap86.mha
+Name = @ITK_TEST_OUTPUT_DIR@/DDMap86.mha
 EndObject =
 Type = Image
-Name = @ExternalData_BINARY_ROOT@/data_keys/DDMap57.mha
+Name = @ITK_TEST_OUTPUT_DIR@/DDMap57.mha
 EndObject =
 Type = Image
-Name = @ExternalData_BINARY_ROOT@/data_keys/DDMap25.mha
+Name = @ITK_TEST_OUTPUT_DIR@/DDMap25.mha
 EndObject =

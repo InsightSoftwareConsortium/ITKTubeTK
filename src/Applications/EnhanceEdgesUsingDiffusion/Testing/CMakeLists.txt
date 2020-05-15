@@ -23,8 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
@@ -37,68 +35,72 @@ else( UNIX AND NOT APPLE AND NOT CYGWIN AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
 endif( UNIX AND NOT APPLE AND NOT CYGWIN AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test1
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/CroppedWholeLungCTScan.mhd,CroppedWholeLungCTScan.raw}
-               ${TEMP}/${MODULE_NAME}-Test1.mha )
+               ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test1.mha )
 
 # Test1-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test1-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
-               -t ${TEMP}/${MODULE_NAME}-Test1.mha
+               CompareImages
+               -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test1.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test1.mha}
                -i ${CompareImagesTolerance} )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
             ${MODULE_NAME}-Test1 )
 
 # Test2
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test2
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/SyntheticTubeImage.mha}
-               ${TEMP}/${MODULE_NAME}-Test2.mha )
+               ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test2.mha )
 
 # Test2-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test2-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
-               -t ${TEMP}/${MODULE_NAME}-Test2.mha
+               CompareImages
+               -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test2.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test2.mha}
                -i ${CompareImagesTolerance} )
 set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
             ${MODULE_NAME}-Test2 )
 
 # Test3
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test3
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/SyntheticTubePlusSurfaceImage.mha}
-               ${TEMP}/${MODULE_NAME}-Test3.mha )
+               ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test3.mha )
 
 # Test3-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test3-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
-               -t ${TEMP}/${MODULE_NAME}-Test3.mha
+               CompareImages
+               -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test3.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test3.mha}
                -i ${CompareImagesTolerance} )
 set_tests_properties( ${MODULE_NAME}-Test3-Compare PROPERTIES DEPENDS
             ${MODULE_NAME}-Test3 )
 
 # Test4
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test4
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/SyntheticTubePlusSurfaceImage_oriented.mha}
-               ${TEMP}/${MODULE_NAME}-Test4.mha )
+               ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test4.mha )
 
 # Test4-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test4-Compare
             COMMAND ${TubeTK_CompareImages_EXE}
-               -t ${TEMP}/${MODULE_NAME}-Test4.mha
+               CompareImages
+               -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test4.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test4.mha}
                -i ${CompareImagesTolerance} )
 set_tests_properties( ${MODULE_NAME}-Test4-Compare PROPERTIES DEPENDS

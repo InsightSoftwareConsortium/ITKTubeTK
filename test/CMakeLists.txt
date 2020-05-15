@@ -1,12 +1,17 @@
 itk_module_test()
 
-set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/test/Baseline )
-
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
 endif()
 
+set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/test/Baseline )
+
 add_subdirectory(CompareTools)
+set( TubeTK_CompareTextFiles_EXE
+  "$<TARGET_FILE:tubeCompareTextFilesTestDriver>" )
+set( TubeTK_CompareImages_EXE
+  "$<TARGET_FILE:tubeCompareImagesTestDriver>" )
+
 add_subdirectory(Common)
 add_subdirectory(Filtering)
 add_subdirectory(IO)

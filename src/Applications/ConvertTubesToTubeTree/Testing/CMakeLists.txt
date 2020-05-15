@@ -23,23 +23,22 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1 - I-Junction
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}Test1
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Input-IJunc.tre}
-    ${TEMP}/${MODULE_NAME}Test1-Tree.tre )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1-Tree.tre )
 
 # Test1 - Compare - I-Junction
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}Test1-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test1-Tree.tre
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1-Tree.tre
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Tree.tre}
     -d 0.01 )
 
@@ -47,17 +46,18 @@ set_tests_properties( ${MODULE_NAME}Test1-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}Test1 )
 
 # Test2 - Y-Junction
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}Test2
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Input-YJunc.tre}
-    ${TEMP}/${MODULE_NAME}Test2-Tree.tre )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2-Tree.tre )
 
 # Test2 - Compare - Y-Junction
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}Test2-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test2-Tree.tre
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2-Tree.tre
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Tree.tre}
     -d 0.01 )
 
