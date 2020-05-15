@@ -26,7 +26,7 @@ int RegressionTestFile ( const char *testFilename,
   bool createDifferenceFile, double valueTolerance,
   int numberOfDifferenceTolerance );
 
-int main( int argc, char * argv[] )
+int CompareTextFiles( int argc, char * argv[] )
 {
   int bestBaselineStatus = 2001;
 

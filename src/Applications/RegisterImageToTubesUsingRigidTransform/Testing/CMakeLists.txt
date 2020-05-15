@@ -22,35 +22,33 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    --parameterProgression ${TEMP}/${MODULE_NAME}Test1ParameterProgression.h5
+    --parameterProgression ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1ParameterProgression.h5
     DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
     DATA{${TubeTK_DATA_ROOT}/tube.tre}
-    ${TEMP}/${MODULE_NAME}Test1.h5 )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.h5 )
 
 set( METRIC_SAMPLER ComputeImageToTubeRigidMetricImage )
 set( METRIC_SAMPLER_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${METRIC_SAMPLER}> )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-MetricSampler-Test1
   COMMAND ${METRIC_SAMPLER_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
     DATA{${TubeTK_DATA_ROOT}/tube.tre}
-    ${TEMP}/${MODULE_NAME}-MetricSampler-Test1.nrrd )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-MetricSampler-Test1.nrrd )
 
 set( METRIC_EXTRACTOR ExtractMetricImageSlice )
 set( METRIC_EXTRACTOR_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${METRIC_EXTRACTOR}> )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-MetricExtractor-Test1
   COMMAND ${METRIC_EXTRACTOR_EXE}
-    ${TEMP}/${MODULE_NAME}-MetricSampler-Test1.nrrd
-    ${TEMP}/${MODULE_NAME}-MetricExtractor-Test1.mha )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-MetricSampler-Test1.nrrd
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-MetricExtractor-Test1.mha )
 set_tests_properties( ${MODULE_NAME}-MetricExtractor-Test1
   PROPERTIES DEPENDS ${MODULE_NAME}-MetricSampler-Test1 )

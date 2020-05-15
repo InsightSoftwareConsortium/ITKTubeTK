@@ -23,34 +23,34 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test1
             COMMAND ${PROJ_EXE}
                DATA{${TubeTK_DATA_ROOT}/ES0015_1_Subs.mha}
                DATA{${TubeTK_DATA_ROOT}/GDS0015_1_Subs.mha}
-               ${TEMP}/${MODULE_NAME}_ESTest1.mha
-               ${TEMP}/${MODULE_NAME}_GDSTest1.mha
+               ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}_ESTest1.mha
+               ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}_GDSTest1.mha
                -g 3 -f 0 -b 255 -B 10,10 -S 7 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test1-Compare1
             COMMAND ${TubeTK_CompareImages_EXE}
-               -t ${TEMP}/${MODULE_NAME}_ESTest1.mha
+              CompareImages
+               -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}_ESTest1.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}_ESTest1.mha} )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare1 PROPERTIES DEPENDS
             ${MODULE_NAME}-Test1 )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test1-Compare2
             COMMAND ${TubeTK_CompareImages_EXE}
+              CompareImages
                -i 0.005
-               -t ${TEMP}/${MODULE_NAME}_GDSTest1.mha
+               -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}_GDSTest1.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}_GDSTest1.mha} )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare2 PROPERTIES DEPENDS
             ${MODULE_NAME}-Test1 )

@@ -23,37 +23,36 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Valid
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_Seeds.mha}
     DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_SeedScales.mha}
     DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_Points.mha}
-    ${TEMP}/${MODULE_NAME}Test1.sdlst )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.sdlst )
 
 # Test1-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Valid-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test1.sdlst
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.sdlst
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.sdlst} )
 set_tests_properties( ${MODULE_NAME}-Test1-Valid-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1-Valid )
 
 # Test2
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2-DifferentSizeInputs
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
     DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_SeedScales.mha}
     DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_Points.mha}
-    ${TEMP}/${MODULE_NAME}Test2.sdlst )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.sdlst )
 set_tests_properties( ${MODULE_NAME}-Test2-DifferentSizeInputs
   PROPERTIES WILL_FAIL true
   )

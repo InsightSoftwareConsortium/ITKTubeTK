@@ -23,13 +23,11 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test1
             COMMAND ${PROJ_EXE}
                -r 0.2
@@ -37,7 +35,7 @@ ExternalData_Add_Test( TubeTKData
                DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha} )
 
 # Test2
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
             NAME ${MODULE_NAME}-Test2
             COMMAND ${PROJ_EXE}
                -c

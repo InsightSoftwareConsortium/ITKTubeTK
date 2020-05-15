@@ -22,54 +22,55 @@
 ############################################################################
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1 - ObjectMask
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1-Input.mha}
-    ${TEMP}/${MODULE_NAME}-Test1.mha
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test1.mha
     --gap 0.5
     --notObjectWidth 2 )
 
 # Test1 - Compare - ObjectMask
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}-Test1.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test1.mha
     -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1.mha}
     -i 0.01 )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare
   PROPERTIES DEPENDS ${MODULE_NAME}-Test1 )
 
 # Test2
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2-Input.mha}
-    ${TEMP}/${MODULE_NAME}-Test2.mha
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test2.mha
     --gap 5
     --notObjectWidth 2
-    --notObjectMask ${TEMP}/${MODULE_NAME}-Test2-NotObjectMask.mha )
+    --notObjectMask ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test2-NotObjectMask.mha )
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}-Test2.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test2.mha
     -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2.mha}
     -i 0.01 )
 set_tests_properties( ${MODULE_NAME}-Test2-Compare
   PROPERTIES DEPENDS ${MODULE_NAME}-Test2 )
 
 # Test2 - Compare - NotObjectMask
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2-NotObjectMask-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}-Test2-NotObjectMask.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test2-NotObjectMask.mha
     -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2-NotObjectMask.mha}
     -i 0.01 )
 set_tests_properties( ${MODULE_NAME}-Test2-NotObjectMask-Compare

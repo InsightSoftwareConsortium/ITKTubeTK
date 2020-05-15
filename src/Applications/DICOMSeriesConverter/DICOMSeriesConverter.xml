@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>DICOMSeriesConverter (TubeTK)</title>
+  <description>Convert directories of DICOM to MetaIO and anonymized DICOM.</description>
+  <version>1.0</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>CADDLab @ UNC</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+  </parameters>
+</executable>

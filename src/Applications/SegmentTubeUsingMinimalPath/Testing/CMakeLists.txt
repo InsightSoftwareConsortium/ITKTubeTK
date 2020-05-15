@@ -22,19 +22,15 @@
 ############################################################################
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
-set( DATA ${CMAKE_CURRENT_SOURCE_DIR}/Data )
-
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1 - RegularStepGradientDescent
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-RegularStepGradientDescent
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Synthetic-04-Speed.mha}
-    ${TEMP}/${MODULE_NAME}-RegularStepGradientDescent.tre
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-RegularStepGradientDescent.tre
     --startPoint 113.962,58.9872,115
     --targetPoint 66.3718,113.141,76
     --optimizer Regular_Step_Gradient_Descent
@@ -44,21 +40,22 @@ ExternalData_Add_Test( TubeTKData
     --stepLengthRelax 0.999 )
 
 # Test1 - Compare - RegularStepGradientDescent
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-RegularStepGradientDescent-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}-RegularStepGradientDescent.tre
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-RegularStepGradientDescent.tre
     -b DATA{${TubeTK_DATA_ROOT}/SegmentTubeUsingMinimalPath-RegularStepGradientDescent.tre}
     -d 0.01 )
 set_tests_properties( ${MODULE_NAME}-RegularStepGradientDescent-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-RegularStepGradientDescent )
 
 # Test2 - GradientDescent
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-GradientDescent
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Synthetic-04-Speed.mha}
-    ${TEMP}/${MODULE_NAME}-GradientDescent.tre
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-GradientDescent.tre
     --startPoint 113.962,58.9872,115
     --targetPoint 66.3718,113.141,76
     --optimizer Gradient_Descent
@@ -66,21 +63,22 @@ ExternalData_Add_Test( TubeTKData
     --numberOfIterations 1000 )
 
 # Test2 - Compare - GradientDescent
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-GradientDescent-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}-GradientDescent.tre
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-GradientDescent.tre
     -b DATA{${TubeTK_DATA_ROOT}/SegmentTubeUsingMinimalPath-GradientDescent.tre}
     -d 0.01 )
 set_tests_properties( ${MODULE_NAME}-GradientDescent-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-GradientDescent )
 
 # Test3 - IterateNeighborhood
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-IterateNeighborhood
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Synthetic-04-Speed.mha}
-    ${TEMP}/${MODULE_NAME}-IterateNeighborhood.tre
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-IterateNeighborhood.tre
     --startPoint 113.962,58.9872,115
     --targetPoint 66.3718,113.141,76
     --optimizer Iterate_Neighborhood
@@ -88,10 +86,11 @@ ExternalData_Add_Test( TubeTKData
     --stepLengthFactor 1 )
 
 # Test3 - Compare - IterateNeighborhood
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-IterateNeighborhood-Compare
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}-IterateNeighborhood.tre
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-IterateNeighborhood.tre
     -b DATA{${TubeTK_DATA_ROOT}/SegmentTubeUsingMinimalPath-IterateNeighborhood.tre}
     -d 0.01 )
 set_tests_properties( ${MODULE_NAME}-IterateNeighborhood-Compare PROPERTIES DEPENDS

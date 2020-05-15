@@ -23,49 +23,51 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 configure_file(
   ${TubeTK_SOURCE_DIR}/src/Applications/${MODULE_NAME}/Testing/ListTemplate.txt.in
-  ${TEMP}/${MODULE_NAME}-List.txt IMMEDIATE @ONLY 
+  ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-List.txt IMMEDIATE @ONLY
   )
 
 # Fetch data
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-FetchData
-  COMMAND ${CMAKE_COMMAND} -E md5sum
+  COMMAND ${CMAKE_COMMAND} -E copy
     DATA{${TubeTK_DATA_ROOT}/DDMap58.mha}
     DATA{${TubeTK_DATA_ROOT}/DDMap86.mha}
     DATA{${TubeTK_DATA_ROOT}/DDMap57.mha}
-    DATA{${TubeTK_DATA_ROOT}/DDMap25.mha} )
+    DATA{${TubeTK_DATA_ROOT}/DDMap25.mha}
+    ${ITK_TEST_OUTPUT_DIR} )
 
 # Test1
-add_test(	NAME ${MODULE_NAME}-Test1
+itk_add_test(	NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    ${TEMP}/${MODULE_NAME}-List.txt
-    ${TEMP}/${MODULE_NAME}-Test1-Mean.mha
-            ${TEMP}/${MODULE_NAME}-Test1-Variance.mha
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-List.txt
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test1-Mean.mha
+            ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test1-Variance.mha
             --outputSize 128,128,128
             --outputSpacing 2,2,2 )
 set_tests_properties(${MODULE_NAME}-Test1 PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1-FetchData)
 
 # Test1-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare00
+  WORKING_DIRECTORY ${ITK_TEST_OUTPUT_DIR}
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}-Test1-Mean.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test1-Mean.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test1-Mean.mha} )
 set_tests_properties(${MODULE_NAME}-Test1-Compare00 PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1)
 
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare01
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}-Test1-Variance.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test1-Variance.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test1-Variance.mha} )
 set_tests_properties(${MODULE_NAME}-Test1-Compare01 PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1)

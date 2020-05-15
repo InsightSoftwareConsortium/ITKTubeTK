@@ -23,12 +23,10 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     --objectId 127,255
@@ -41,19 +39,20 @@ ExternalData_Add_Test( TubeTKData
     --reclassifyObjectLabels
     DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
     DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask_Subs.mha}
-    ${TEMP}/${MODULE_NAME}Test1.mha )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mha )
 
 # Test1-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test1.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mha} )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )
 
 # Test2
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
     --objectId 127,255
@@ -65,13 +64,14 @@ ExternalData_Add_Test( TubeTKData
     --reclassifyObjectLabels
     DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
     DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask_Subs.mha}
-    ${TEMP}/${MODULE_NAME}Test2.mha )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.mha )
 
 # Test2-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test2.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.mha} )
 set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test2 )

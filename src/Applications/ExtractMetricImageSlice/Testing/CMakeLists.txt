@@ -23,12 +23,10 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-#ExternalData_Add_Test( TubeTKData
+#itk_add_test(
   #NAME ${METRIC_EXTRACTOR}-Test1
   #COMMAND ${PROJ_EXE}
     #DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Sampler.nrrd}
-    #${TEMP}/${MODULE_NAME}Test1.mha )
+    #${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mha )

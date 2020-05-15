@@ -35,7 +35,7 @@
 int RegressionTestImage( const char *, const char *, int, bool, double, int, 
   int, double );
 
-int main( int argc, char **argv )
+int CompareImages( int argc, char * argv[] )
 {
   if( argc < 5 )
     {

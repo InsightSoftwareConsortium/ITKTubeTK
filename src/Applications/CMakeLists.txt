@@ -2,8 +2,7 @@
 #
 # Library:   TubeTK
 #
-# Copyright 2010 Kitware Inc. 28 Corporate Drive,
-# Clifton Park, NY, 12065, USA.
+# Copyright Kitware Inc.
 #
 # All rights reserved.
 #
@@ -27,6 +26,11 @@ find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 
 set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/test/Baseline )
+
+set( TubeTK_CompareTextFiles_EXE 
+  "tubeCompareTextFilesTestDriver")
+set( TubeTK_CompareImages_EXE 
+  "tubeCompareImagesTestDriver" )
 
 set( SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY
   "${ITK_BINARY_DIR}/bin" )
@@ -63,6 +67,7 @@ add_subdirectory( ConvertTubesToTubeGraph )
 add_subdirectory( CropImage )
 add_subdirectory( CropTubes )
 add_subdirectory( DeblendTomosynthesisSlicesUsingPrior )
+#add_subdirectory( DICOMSeriesConverter )
 add_subdirectory( EnhanceCoherenceAndEdgesUsingDiffusion )
 add_subdirectory( EnhanceCoherenceUsingDiffusion )
 add_subdirectory( EnhanceContrastUsingAHE )

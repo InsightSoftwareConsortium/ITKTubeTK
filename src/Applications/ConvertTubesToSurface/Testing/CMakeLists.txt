@@ -23,50 +23,49 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
      ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
-    ${TEMP}/${MODULE_NAME}-Test1.vtk
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test1.vtk
     )
 
 # Test2
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
-    ${TEMP}/${MODULE_NAME}-Test2.stl
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test2.stl
     )
 
 # Test3
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test3
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
-    ${TEMP}/${MODULE_NAME}-Test3.stt
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test3.stt
     )
 set_tests_properties( ${MODULE_NAME}-Test3
   PROPERTIES WILL_FAIL true )
 
 # Test4
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test4
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Input.tre}
-    ${TEMP}/${MODULE_NAME}-Test4_Surface.vtk
-    --centerline ${TEMP}/${MODULE_NAME}-Test4_Centerline.vtp )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test4_Surface.vtk
+    --centerline ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test4_Centerline.vtp )
 
 # Test5 - Compare - Surface
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test4-Compare-Surface
   COMMAND ${TubeTK_CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}-Test4_Surface.vtk
+    CompareTextFiles
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test4_Surface.vtk
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test4_Surface.vtk}
     -d 0.01 )
 

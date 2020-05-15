@@ -23,46 +23,47 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth.tre}
-    ${TEMP}/${MODULE_NAME}Test1-Den.mha
-    ${TEMP}/${MODULE_NAME}Test1-Rad.mha
-    ${TEMP}/${MODULE_NAME}Test1-Tan.mha
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1-Den.mha
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1-Rad.mha
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1-Tan.mha
     --inputTemplateImage DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
     --useSquaredDistance )
 
 # Test1-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare-Den
   COMMAND ${TubeTK_CompareImages_EXE}
+    CompareImages
     -i 0.001
-    -t ${TEMP}/${MODULE_NAME}Test1-Den.mha
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1-Den.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Den.mha} )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare-Den PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )
 
-ExternalData_Add_Test( TubeTKData NAME ${MODULE_NAME}-Test1-Compare-Rad
+itk_add_test( NAME ${MODULE_NAME}-Test1-Compare-Rad
   COMMAND ${TubeTK_CompareImages_EXE}
+    CompareImages
     -i 0.001
     -n 50
-    -t ${TEMP}/${MODULE_NAME}Test1-Rad.mha
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1-Rad.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Rad.mha} )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare-Rad PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )
 
-ExternalData_Add_Test( TubeTKData NAME ${MODULE_NAME}-Test1-Compare-Tan
+itk_add_test( NAME ${MODULE_NAME}-Test1-Compare-Tan
   COMMAND ${TubeTK_CompareImages_EXE}
+    CompareImages
     -i 0.00001
     -n 50
-    -t ${TEMP}/${MODULE_NAME}Test1-Tan.mha
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1-Tan.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Tan.mha} )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare-Tan PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )

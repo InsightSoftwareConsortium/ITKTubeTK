@@ -23,40 +23,40 @@
 
 include_regular_expression( "^.*$" )
 
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
 set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth.tre}
-    ${TEMP}/${MODULE_NAME}Test1.mha )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mha )
 # Test1-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test1-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test1.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mha}
     -i 0.0001 )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )
 
 # Test2
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
     -r
     DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth.tre}
-    ${TEMP}/${MODULE_NAME}Test2.mha )
+    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.mha )
 # Test2-Compare
-ExternalData_Add_Test( TubeTKData
+itk_add_test(
   NAME ${MODULE_NAME}-Test2-Compare
   COMMAND ${TubeTK_CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test2.mha
+    CompareImages
+    -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.mha}
     -i 0.0001 )
 set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
