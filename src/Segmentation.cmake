@@ -25,6 +25,7 @@ set( TubeTK_Segmentation_H_Files
   Segmentation/itktubePDFSegmenterBase.h
   Segmentation/itktubePDFSegmenterParzen.h
   Segmentation/itktubeRadiusExtractor2.h
+  Segmentation/itktubeRadiusExtractor3.h
   Segmentation/itktubeRidgeExtractor.h
   Segmentation/itktubeSegmentBinaryImageSkeleton.h
   Segmentation/itktubeSegmentBinaryImageSkeleton3D.h
@@ -39,6 +40,7 @@ set( TubeTK_Segmentation_HXX_Files
   Segmentation/itktubePDFSegmenterParzen.hxx
   Segmentation/itktubePDFSegmenterRandomForest.hxx
   Segmentation/itktubeRadiusExtractor2.hxx
+  Segmentation/itktubeRadiusExtractor3.hxx
   Segmentation/itktubeRidgeExtractor.hxx
   Segmentation/itktubeSegmentBinaryImageSkeleton.hxx
   Segmentation/itktubeSegmentBinaryImageSkeleton3D.hxx

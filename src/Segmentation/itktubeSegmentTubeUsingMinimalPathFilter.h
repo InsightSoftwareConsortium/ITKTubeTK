@@ -31,7 +31,7 @@
 #include "itkNumericTraits.h"
 #include "itkObject.h"
 //TubeTK imports
-#include "itktubeRadiusExtractor2.h"
+#include "itktubeRadiusExtractor3.h"
 
 namespace itk
 {

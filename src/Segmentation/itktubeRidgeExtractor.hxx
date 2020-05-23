@@ -118,7 +118,7 @@ RidgeExtractor<TInputImage>
   m_DynamicScale = true;
   m_DynamicScaleUsed = 3;
   m_DynamicStepSize = false;
-  m_RadiusExtractor = NULL;
+  m_RadiusExtractor = nullptr;
 
   m_ExtractBoundMinInIndexSpace.Fill( 0 );
   m_ExtractBoundMaxInIndexSpace.Fill( 0 );
@@ -127,12 +127,12 @@ RidgeExtractor<TInputImage>
   m_MaxXChange = 3.0;
   m_MinRidgeness = 0.85;       // 2020.02.23-2 was 0.8
   m_MinRidgenessStart = 0.7;
-  m_MinRoundness = 0.25;       // 2020.02.23-2 was 0.2; 2020.02.23 was 0.3
+  m_MinRoundness = 0.15;       // 2020.02.23-2 was 0.2; 2020.02.23 was 0.3
   m_MinRoundnessStart = 0.1;  // 2020.02.23 was 0.2
-  m_MinCurvature = 0.025;     // 2020.02.23-3 was 0.025; 2020.02.23 was 0.1;
+  m_MinCurvature = 0.005;     // 2020.02.23-3 was 0.025; 2020.02.23 was 0.1;
   m_MinCurvatureStart = 0.0;
-  m_MinLevelness = 0.4;
-  m_MinLevelnessStart = 0.3;
+  m_MinLevelness = 0.3;
+  m_MinLevelnessStart = 0.2;
   m_MaxRecoveryAttempts = 4;
 
   m_SplineValueFunc = new RidgeExtractorSplineValue<TInputImage>( this );
@@ -155,7 +155,7 @@ RidgeExtractor<TInputImage>
   m_FailureCodeCount.set_size( this->GetNumberOfFailureCodes() );
   m_FailureCodeCount.fill( 0 );
 
-  m_Tube = NULL;
+  m_Tube = nullptr;
 }
 
 /**
@@ -393,7 +393,7 @@ RidgeExtractor<TInputImage>
 template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
-::SetRadiusExtractor( RadiusExtractor2<TInputImage> * radiusExtractor )
+::SetRadiusExtractor( RadiusExtractor3<TInputImage> * radiusExtractor )
 {
   m_RadiusExtractor = radiusExtractor;
 }
@@ -1410,7 +1410,9 @@ RidgeExtractor<TInputImage>
           {
           m_DynamicScaleUsed = ( tmpPoint.GetRadiusInObjectSpace()
             + m_DynamicScaleUsed ) / 2;
+          std::cout << "Dynamic Scale = " << m_DynamicScaleUsed << std::endl;
           }
+        std::cout << "Dynamic Scale 2 = " << m_DynamicScaleUsed << std::endl;
         if( m_StatusCallBack )
           {
           char s[80];
@@ -1429,8 +1431,10 @@ RidgeExtractor<TInputImage>
       }
     }
 
+  std::cout << "Here" << std::endl;
   if( dir == -1 )
     {
+  std::cout << "Here1" << std::endl;
     std::vector< TubePointType > * curPoints = &( m_Tube->GetPoints() );
     std::vector< TubePointType > newPoints;
     newPoints.clear();
@@ -1446,6 +1450,7 @@ RidgeExtractor<TInputImage>
     }
   else
     {
+  std::cout << "Here2" << std::endl;
     for( unsigned int i=0; i<pnts.size(); i++ )
       {
       m_Tube->GetPoints().push_back( pnts[i] );
@@ -1851,11 +1856,13 @@ RidgeExtractor<TInputImage>
           "Error: Medial Max Not Found", 0 );
         }
       m_DynamicScaleUsed = scale0;
+      std::cout << "Dyn scale 3 = " << scale0 << std::endl;
       }
     else
       {
       m_DynamicScaleUsed = ( tmpPoint.GetRadiusInObjectSpace() + this->GetScale() ) / 2;
       }
+    std::cout << "Dyn scale 4 = " << scale0 << std::endl;
 
     SetScale( m_DynamicScaleUsed );
     m_RadiusExtractor->SetRadiusStart( m_DynamicScaleUsed );
@@ -1865,14 +1872,19 @@ RidgeExtractor<TInputImage>
       std::cout << "  x =  " << lX << std::endl;
       std::cout << "  newX =  " << newX << std::endl;
       }
+    std::cout << "HERE5" << std::endl;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       lX[i] = ( lX[i] + newX[i] ) / 2;
       }
+    std::cout << "HERE6" << std::endl;
     m_CurrentFailureCode = LocalRidge( lX, verbose );
+    std::cout << "HERE7" << std::endl;
     if( m_CurrentFailureCode != SUCCESS )
       {
+      std::cout << "HERE7.1" << std::endl;
       ++m_FailureCodeCount[ m_CurrentFailureCode ];
+      std::cout << "HERE7.2" << std::endl;
       if( m_StatusCallBack )
         {
         m_StatusCallBack( "AS Failure", NULL, 0 );
@@ -1882,19 +1894,34 @@ RidgeExtractor<TInputImage>
         std::cout << "RidgeExtractor:Extract(): AS Failure" << std::endl;
         }
       m_DynamicScaleUsed = scaleOriginal;
-      SetScale( scaleOriginal );
+      this->SetScale( scaleOriginal );
       m_RadiusExtractor->SetRadiusStart( radiusOriginal );
       return nullptr;
       }
+    std::cout << "HERE7.5" << std::endl;
     scale0 = m_DynamicScaleUsed;
+    std::cout << "scale0 = " << scale0 << std::endl;
     SetScale( scale0 );
+    std::cout << "HERE7.5" << std::endl;
     m_RadiusExtractor->SetRadiusStart( scale0 );
+    std::cout << "HERE7.5" << std::endl;
     }
 
+  std::cout << "HERE8" << std::endl;
+  std::cout << "HERE8" << std::endl;
+  std::cout << "HERE8" << std::endl;
+  std::cout << "HERE8" << std::endl;
+  std::cout << "HERE8" << std::endl;
   m_Tube = TubeType::New();
+  std::cout << "HERE0" << std::endl;
+  std::cout << "HERE0" << std::endl;
   m_Tube->SetId( tubeId );
+  std::cout << "HERE1" << std::endl;
+  std::cout << "HERE1" << std::endl;
   m_Tube->GetPoints().clear();
 
+  std::cout << "HERE9" << std::endl;
+  std::cout << "HERE9" << std::endl;
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     lT[i] = m_XHEVect( i, ImageDimension-1 );
@@ -1907,6 +1934,7 @@ RidgeExtractor<TInputImage>
     {
     std::cout << "Traversing one way" << std::endl;
     }
+  std::cout << "HERE10" << std::endl;
   TraverseOneWay( lX, lT, lN, 1, verbose );
   if( verbose || this->GetDebug() )
     {

@@ -21,6 +21,7 @@ limitations under the License.
 #ifndef __itktubeBinaryThinningImageFilter3D_h
 #define __itktubeBinaryThinningImageFilter3D_h
 
+#include <list>
 #include <itkNeighborhoodIterator.h>
 #include <itkImageToImageFilter.h>
 #include <itkImageRegionIteratorWithIndex.h>
@@ -73,10 +74,14 @@ class ITK_EXPORT BinaryThinningImageFilter3D :
 {
 public:
   /** Standard class typedefs. */
-  typedef BinaryThinningImageFilter3D    Self;
+  typedef BinaryThinningImageFilter3D                  Self;
   typedef ImageToImageFilter<TInputImage,TOutputImage> Superclass;
-  typedef SmartPointer<Self> Pointer;
-  typedef SmartPointer<const Self> ConstPointer;
+  typedef SmartPointer<Self>                           Pointer;
+  typedef SmartPointer<const Self>                     ConstPointer;
+
+  typedef typename TInputImage::PointType              PointType;
+
+  typedef std::vector< PointType >                     EndPointListType;
 
   /** Method for creation through the object factory */
   itkNewMacro(Self);
@@ -92,9 +97,6 @@ public:
 
   /** Type for the region of the input image. */
   typedef typename InputImageType::RegionType RegionType;
-
-  /** Type for the index of the input image. */
-  typedef typename RegionType::IndexType  IndexType;
 
   /** Type for the pixel type of the input image. */
   typedef typename InputImageType::PixelType InputImagePixelType ;
@@ -123,8 +125,8 @@ public:
   /** Get Skelenton by thinning image. */
   OutputImageType * GetThinning(void);
 
-  const std::vector< IndexType > & GetEndPoints(void) const
-  { return & m_EndPoints; };
+  EndPointListType & GetEndPoints(void)
+  { return m_EndPoints; };
 
   /** ImageDimension enumeration   */
   itkStaticConstMacro(InputImageDimension, unsigned int,
@@ -177,7 +179,7 @@ private:
   BinaryThinningImageFilter3D(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
-  std::vector< IndexType > m_EndPoints;
+  EndPointListType m_EndPoints;
 
 }; // end of BinaryThinningImageFilter3D class
 

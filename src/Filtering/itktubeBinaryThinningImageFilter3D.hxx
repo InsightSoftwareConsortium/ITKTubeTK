@@ -135,6 +135,8 @@ BinaryThinningImageFilter3D<TInputImage,TOutputImage>
   NeighborhoodIteratorType ot( radius, thinImage, region );
   ot.SetBoundaryCondition( boundaryCondition );
 
+  typedef typename OutputImageType::IndexType  IndexType;
+
   std::vector < IndexType > simpleBorderPoints;
   typename std::vector < IndexType >::iterator simpleBorderPointsIt;
 
@@ -192,7 +194,9 @@ BinaryThinningImageFilter3D<TInputImage,TOutputImage>
 
         if( numberOfNeighbors == 1 )
         {
-          m_EndPoints.push_back(ot.GetIndex());
+          PointType pnt;
+          thinImage->TransformIndexToPhysicalPoint(ot.GetIndex(), pnt);
+          m_EndPoints.push_back(pnt);
           continue;         // current point is not deletable
         }
 
@@ -236,6 +240,7 @@ BinaryThinningImageFilter3D<TInputImage,TOutputImage>
 
       simpleBorderPoints.clear();
     } // end currentBorder for loop
+    std::cout << "# of endpoints = " << m_EndPoints.size() << std::endl;
   } // end unchangedBorders while loop
 
   itkDebugMacro( << "ComputeThinImage End");
