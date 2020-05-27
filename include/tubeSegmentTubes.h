@@ -56,7 +56,7 @@ public:
 
   typedef itk::tube::TubeExtractor< ImageType >        FilterType;
   typedef itk::tube::RidgeExtractor< ImageType >       RidgeFilterType;
-  typedef itk::tube::RadiusExtractor2< ImageType >     RadiusFilterType;
+  typedef itk::tube::RadiusExtractor3< ImageType >     RadiusFilterType;
 
   typedef typename FilterType::TubeMaskImageType       TubeMaskImageType;
   typedef typename FilterType::TubeType                TubeType;

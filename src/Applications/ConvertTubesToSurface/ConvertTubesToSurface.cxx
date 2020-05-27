@@ -182,6 +182,8 @@ int DoIt( int argc, char * argv[] )
       continue;
       }
 
+    tube->RemoveDuplicatePointsInObjectSpace();
+
     tube->ComputeTangentAndNormals();
 
     // Create a pointID list [linear for a polyline]

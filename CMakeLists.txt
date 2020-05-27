@@ -192,12 +192,6 @@ else()
 endif()
 
 ####
-# Valgrind / MemCheck Options
-####
-set( MEMORYCHECK_SUPPRESSIONS_FILE
- "${TubeTK_SOURCE_DIR}/CMake/TubeTKValgrind.supp" )
-
-####
 # Build Applications?
 ####
 option( TubeTK_BUILD_APPLICATIONS "Build applications based on TubeTK." OFF )

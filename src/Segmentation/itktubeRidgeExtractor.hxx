@@ -484,6 +484,7 @@ RidgeExtractor<TInputImage>
     m_XRidgeness, m_XRoundness, m_XCurvature, m_XLevelness, m_XHEVect,
     m_XHEVal );
 
+  /*
   IndexType offset;
   offset.Fill( 0 );
   ContinuousIndexType xiOffset;
@@ -566,6 +567,7 @@ RidgeExtractor<TInputImage>
       m_XCurvature =  ( m_XCurvature / ( stdXVal * stdXVal ) ) / 3;
       }
     }
+  */
 
   intensity = m_XVal;
   roundness = m_XRoundness;
@@ -1346,14 +1348,14 @@ RidgeExtractor<TInputImage>
       }
     m_InputImage->TransformContinuousIndexToPhysicalPoint( tubeXI, tubeX );
     pnt.SetPositionInObjectSpace( tubeX );
-    if( m_XHEVal[0] != 0 )
-      {
-      pnt.SetRidgeness( roundness );
-      }
-    else
-      {
-      pnt.SetRidgeness( 0.0 );
-      }
+    pnt.SetRidgeness( ridgeness );
+    pnt.SetRoundness( roundness );
+    pnt.SetCurvature( curvature );
+    pnt.SetIntensity( intensity );
+    pnt.SetLevelness( levelness );
+    //pnt.SetRadiusInObjectSpace( this->GetScale() );
+    //pnt.SetMedialness( 0 );
+    //pnt.SetBranchness( 0 );
     pnts.push_back( pnt );
     ++tubePointCount;
 
@@ -1410,9 +1412,7 @@ RidgeExtractor<TInputImage>
           {
           m_DynamicScaleUsed = ( tmpPoint.GetRadiusInObjectSpace()
             + m_DynamicScaleUsed ) / 2;
-          std::cout << "Dynamic Scale = " << m_DynamicScaleUsed << std::endl;
           }
-        std::cout << "Dynamic Scale 2 = " << m_DynamicScaleUsed << std::endl;
         if( m_StatusCallBack )
           {
           char s[80];
@@ -1431,10 +1431,8 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  std::cout << "Here" << std::endl;
   if( dir == -1 )
     {
-  std::cout << "Here1" << std::endl;
     std::vector< TubePointType > * curPoints = &( m_Tube->GetPoints() );
     std::vector< TubePointType > newPoints;
     newPoints.clear();
@@ -1450,7 +1448,6 @@ RidgeExtractor<TInputImage>
     }
   else
     {
-  std::cout << "Here2" << std::endl;
     for( unsigned int i=0; i<pnts.size(); i++ )
       {
       m_Tube->GetPoints().push_back( pnts[i] );
@@ -1856,13 +1853,11 @@ RidgeExtractor<TInputImage>
           "Error: Medial Max Not Found", 0 );
         }
       m_DynamicScaleUsed = scale0;
-      std::cout << "Dyn scale 3 = " << scale0 << std::endl;
       }
     else
       {
       m_DynamicScaleUsed = ( tmpPoint.GetRadiusInObjectSpace() + this->GetScale() ) / 2;
       }
-    std::cout << "Dyn scale 4 = " << scale0 << std::endl;
 
     SetScale( m_DynamicScaleUsed );
     m_RadiusExtractor->SetRadiusStart( m_DynamicScaleUsed );
@@ -1872,19 +1867,14 @@ RidgeExtractor<TInputImage>
       std::cout << "  x =  " << lX << std::endl;
       std::cout << "  newX =  " << newX << std::endl;
       }
-    std::cout << "HERE5" << std::endl;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       lX[i] = ( lX[i] + newX[i] ) / 2;
       }
-    std::cout << "HERE6" << std::endl;
     m_CurrentFailureCode = LocalRidge( lX, verbose );
-    std::cout << "HERE7" << std::endl;
     if( m_CurrentFailureCode != SUCCESS )
       {
-      std::cout << "HERE7.1" << std::endl;
       ++m_FailureCodeCount[ m_CurrentFailureCode ];
-      std::cout << "HERE7.2" << std::endl;
       if( m_StatusCallBack )
         {
         m_StatusCallBack( "AS Failure", NULL, 0 );
@@ -1898,30 +1888,15 @@ RidgeExtractor<TInputImage>
       m_RadiusExtractor->SetRadiusStart( radiusOriginal );
       return nullptr;
       }
-    std::cout << "HERE7.5" << std::endl;
     scale0 = m_DynamicScaleUsed;
-    std::cout << "scale0 = " << scale0 << std::endl;
     SetScale( scale0 );
-    std::cout << "HERE7.5" << std::endl;
     m_RadiusExtractor->SetRadiusStart( scale0 );
-    std::cout << "HERE7.5" << std::endl;
     }
 
-  std::cout << "HERE8" << std::endl;
-  std::cout << "HERE8" << std::endl;
-  std::cout << "HERE8" << std::endl;
-  std::cout << "HERE8" << std::endl;
-  std::cout << "HERE8" << std::endl;
   m_Tube = TubeType::New();
-  std::cout << "HERE0" << std::endl;
-  std::cout << "HERE0" << std::endl;
   m_Tube->SetId( tubeId );
-  std::cout << "HERE1" << std::endl;
-  std::cout << "HERE1" << std::endl;
   m_Tube->GetPoints().clear();
 
-  std::cout << "HERE9" << std::endl;
-  std::cout << "HERE9" << std::endl;
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     lT[i] = m_XHEVect( i, ImageDimension-1 );
@@ -1934,7 +1909,6 @@ RidgeExtractor<TInputImage>
     {
     std::cout << "Traversing one way" << std::endl;
     }
-  std::cout << "HERE10" << std::endl;
   TraverseOneWay( lX, lT, lN, 1, verbose );
   if( verbose || this->GetDebug() )
     {

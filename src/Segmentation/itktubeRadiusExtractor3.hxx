@@ -75,7 +75,7 @@ RadiusExtractor3<TInputImage>
   m_KernelTubePoints.resize( m_NumKernelPoints );
 
   m_KernelPointStep = 7;
-  m_KernelStep = 18;
+  m_KernelStep = 13;
   m_KernelExtent = 1.75;
 
   m_KernelValue.clear();
@@ -340,8 +340,15 @@ RadiusExtractor3<TInputImage>
         double distI = std::sqrt( minNormalDist ) / m_Spacing;
         double count = (distI / maxKernelDist) * kernelSize;
         // std::cout << distI << " : " << count << " : " << val << std::endl;
-        m_KernelValue[ count ] += val;
-        m_KernelCount[ count ]++;
+        if( count < 0 )
+          {
+          count = 0;
+          }
+        if( count < kernelSize )
+          {
+          m_KernelValue[ count ] += val;
+          m_KernelCount[ count ]++;
+          }
         }
       }
     unsigned int d = 0;
