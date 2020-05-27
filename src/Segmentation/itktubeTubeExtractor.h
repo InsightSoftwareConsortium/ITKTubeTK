@@ -29,7 +29,7 @@ limitations under the License.
 #ifndef __itktubeTubeExtractor_h
 #define __itktubeTubeExtractor_h
 
-#include "itktubeRadiusExtractor2.h"
+#include "itktubeRadiusExtractor3.h"
 #include "itktubeRidgeExtractor.h"
 
 #include "itkGroupSpatialObject.h"
@@ -71,7 +71,7 @@ public:
   typedef TInputImage                               ImageType;
 
   typedef RidgeExtractor<ImageType>                 RidgeExtractorType;
-  typedef RadiusExtractor2<ImageType>               RadiusExtractorType;
+  typedef RadiusExtractor3<ImageType>               RadiusExtractorType;
 
   typedef typename RidgeExtractorType::TubeMaskImageType
                                                     TubeMaskImageType;

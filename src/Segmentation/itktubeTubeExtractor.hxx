@@ -48,7 +48,7 @@ TubeExtractor<TInputImage>
 {
   m_RidgeExtractor = RidgeExtractorType::New();
   m_RadiusExtractor = RadiusExtractorType::New();
-  this->m_RidgeExtractor->SetRadiusExtractor( this->m_RadiusExtractor );
+  m_RidgeExtractor->SetRadiusExtractor( m_RadiusExtractor );
 
   m_IdleCallBack = nullptr;
   m_StatusCallBack = nullptr;
@@ -92,7 +92,7 @@ TubeExtractor<TInputImage>
   //this->m_RidgeExtractor = RidgeExtractor<ImageType>::New();
   this->m_RidgeExtractor->SetInputImage( inputImage );
 
-  //this->m_RadiusExtractor = RadiusExtractor2<ImageType>::New();
+  //this->m_RadiusExtractor = RadiusExtractor3<ImageType>::New();
   this->m_RadiusExtractor->SetInputImage( inputImage );
 }
 
@@ -333,7 +333,7 @@ TubeExtractor<TInputImage>
 /**
  * Get the radius extractor */
 template< class TInputImage >
-RadiusExtractor2<TInputImage> *
+RadiusExtractor3<TInputImage> *
 TubeExtractor<TInputImage>
 ::GetRadiusExtractor( void )
 {
@@ -394,7 +394,7 @@ TubeExtractor<TInputImage>
       std::cout << "m_RidgeExtractor->Extract() fails!" << std::endl;
       std::cout << "  x = " << x << std::endl;
       }
-    return tube;
+    return nullptr;
     }
 
   if( this->m_AbortProcess != NULL )

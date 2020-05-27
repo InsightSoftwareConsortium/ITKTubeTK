@@ -236,7 +236,7 @@ SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
     // Extract Radius
     if( m_RadiusImage )
       {
-      typedef itk::tube::RadiusExtractor2< InputImageType >
+      typedef itk::tube::RadiusExtractor3< InputImageType >
         RadiusExtractorType;
       typename RadiusExtractorType::Pointer radiusExtractor
         = RadiusExtractorType::New();

@@ -118,7 +118,7 @@ RidgeExtractor<TInputImage>
   m_DynamicScale = true;
   m_DynamicScaleUsed = 3;
   m_DynamicStepSize = false;
-  m_RadiusExtractor = NULL;
+  m_RadiusExtractor = nullptr;
 
   m_ExtractBoundMinInIndexSpace.Fill( 0 );
   m_ExtractBoundMaxInIndexSpace.Fill( 0 );
@@ -127,12 +127,12 @@ RidgeExtractor<TInputImage>
   m_MaxXChange = 3.0;
   m_MinRidgeness = 0.85;       // 2020.02.23-2 was 0.8
   m_MinRidgenessStart = 0.7;
-  m_MinRoundness = 0.25;       // 2020.02.23-2 was 0.2; 2020.02.23 was 0.3
+  m_MinRoundness = 0.15;       // 2020.02.23-2 was 0.2; 2020.02.23 was 0.3
   m_MinRoundnessStart = 0.1;  // 2020.02.23 was 0.2
-  m_MinCurvature = 0.025;     // 2020.02.23-3 was 0.025; 2020.02.23 was 0.1;
+  m_MinCurvature = 0.005;     // 2020.02.23-3 was 0.025; 2020.02.23 was 0.1;
   m_MinCurvatureStart = 0.0;
-  m_MinLevelness = 0.4;
-  m_MinLevelnessStart = 0.3;
+  m_MinLevelness = 0.3;
+  m_MinLevelnessStart = 0.2;
   m_MaxRecoveryAttempts = 4;
 
   m_SplineValueFunc = new RidgeExtractorSplineValue<TInputImage>( this );
@@ -155,7 +155,7 @@ RidgeExtractor<TInputImage>
   m_FailureCodeCount.set_size( this->GetNumberOfFailureCodes() );
   m_FailureCodeCount.fill( 0 );
 
-  m_Tube = NULL;
+  m_Tube = nullptr;
 }
 
 /**
@@ -393,7 +393,7 @@ RidgeExtractor<TInputImage>
 template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
-::SetRadiusExtractor( RadiusExtractor2<TInputImage> * radiusExtractor )
+::SetRadiusExtractor( RadiusExtractor3<TInputImage> * radiusExtractor )
 {
   m_RadiusExtractor = radiusExtractor;
 }
@@ -484,6 +484,7 @@ RidgeExtractor<TInputImage>
     m_XRidgeness, m_XRoundness, m_XCurvature, m_XLevelness, m_XHEVect,
     m_XHEVal );
 
+  /*
   IndexType offset;
   offset.Fill( 0 );
   ContinuousIndexType xiOffset;
@@ -566,6 +567,7 @@ RidgeExtractor<TInputImage>
       m_XCurvature =  ( m_XCurvature / ( stdXVal * stdXVal ) ) / 3;
       }
     }
+  */
 
   intensity = m_XVal;
   roundness = m_XRoundness;
@@ -1346,14 +1348,14 @@ RidgeExtractor<TInputImage>
       }
     m_InputImage->TransformContinuousIndexToPhysicalPoint( tubeXI, tubeX );
     pnt.SetPositionInObjectSpace( tubeX );
-    if( m_XHEVal[0] != 0 )
-      {
-      pnt.SetRidgeness( roundness );
-      }
-    else
-      {
-      pnt.SetRidgeness( 0.0 );
-      }
+    pnt.SetRidgeness( ridgeness );
+    pnt.SetRoundness( roundness );
+    pnt.SetCurvature( curvature );
+    pnt.SetIntensity( intensity );
+    pnt.SetLevelness( levelness );
+    //pnt.SetRadiusInObjectSpace( this->GetScale() );
+    //pnt.SetMedialness( 0 );
+    //pnt.SetBranchness( 0 );
     pnts.push_back( pnt );
     ++tubePointCount;
 
@@ -1882,7 +1884,7 @@ RidgeExtractor<TInputImage>
         std::cout << "RidgeExtractor:Extract(): AS Failure" << std::endl;
         }
       m_DynamicScaleUsed = scaleOriginal;
-      SetScale( scaleOriginal );
+      this->SetScale( scaleOriginal );
       m_RadiusExtractor->SetRadiusStart( radiusOriginal );
       return nullptr;
       }

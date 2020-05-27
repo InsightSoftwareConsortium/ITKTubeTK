@@ -54,7 +54,9 @@ public:
   typedef TImageType                                 ImageType;
 
   typedef itk::tube::BinaryThinningImageFilter3D<
-    TImageType >                                     FilterType;
+    TImageType, TImageType >                         FilterType;
+
+  typedef typename FilterType::EndPointListType      EndPointListType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -71,6 +73,9 @@ public:
 
   /** Get image similarity */
   tubeWrapGetObjectMacro( Output, ImageType, Filter );
+  tubeWrapGetObjectMacro( Thinning, ImageType, Filter );
+
+  tubeWrapGetConstReferenceMacro( EndPoints, EndPointListType, Filter );
 
 protected:
   SegmentBinaryImageSkeleton3D( void );

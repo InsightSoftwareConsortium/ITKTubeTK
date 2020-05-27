@@ -30,7 +30,7 @@ limitations under the License.
 #define __itktubeRidgeExtractor_h
 
 #include "itktubeBlurImageFunction.h"
-#include "itktubeRadiusExtractor2.h"
+#include "itktubeRadiusExtractor3.h"
 #include "tubeBrentOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
 #include "tubeSplineND.h"
@@ -270,7 +270,7 @@ public:
   bool AddTube( const TubeType * tube );
 
   /** Set the radius Extractor */
-  void  SetRadiusExtractor( RadiusExtractor2<TInputImage> * radiusExtractor );
+  void  SetRadiusExtractor( RadiusExtractor3<TInputImage> * radiusExtractor );
 
   /** Compute the intensity at the point x */
   double  IntensityInIndexSpace( const IndexType & x );
@@ -369,7 +369,7 @@ private:
   bool                                               m_DynamicScale;
   double                                             m_DynamicScaleUsed;
   bool                                               m_DynamicStepSize;
-  RadiusExtractor2<TInputImage>                    * m_RadiusExtractor;
+  RadiusExtractor3<TInputImage>                    * m_RadiusExtractor;
 
   int                                                m_MaxRecoveryAttempts;
 
