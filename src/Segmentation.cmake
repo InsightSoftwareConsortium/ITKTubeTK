@@ -21,37 +21,30 @@
 ##############################################################################
 
 set( TubeTK_Segmentation_H_Files
-  Segmentation/itktubeComputeSegmentTubesParameters.h
   Segmentation/itktubePDFSegmenterBase.h
   Segmentation/itktubePDFSegmenterParzen.h
   Segmentation/itktubeRadiusExtractor2.h
   Segmentation/itktubeRadiusExtractor3.h
   Segmentation/itktubeRidgeExtractor.h
-  Segmentation/itktubeSegmentBinaryImageSkeleton.h
-  Segmentation/itktubeSegmentBinaryImageSkeleton3D.h
   Segmentation/itktubeSegmentTubeUsingMinimalPathFilter.h
   Segmentation/itktubeTubeExtractor.h
   Segmentation/itktubeRidgeSeedFilter.h
-  Segmentation/itktubeComputeTrainingMask.h)
+  Segmentation/itktubeComputeTrainingMaskFilter.h)
 
 set( TubeTK_Segmentation_HXX_Files
-  Segmentation/itktubeComputeSegmentTubesParameters.hxx
   Segmentation/itktubePDFSegmenterBase.hxx
   Segmentation/itktubePDFSegmenterParzen.hxx
-  Segmentation/itktubePDFSegmenterRandomForest.hxx
   Segmentation/itktubeRadiusExtractor2.hxx
   Segmentation/itktubeRadiusExtractor3.hxx
   Segmentation/itktubeRidgeExtractor.hxx
-  Segmentation/itktubeSegmentBinaryImageSkeleton.hxx
-  Segmentation/itktubeSegmentBinaryImageSkeleton3D.hxx
   Segmentation/itktubeSegmentTubeUsingMinimalPathFilter.hxx
   Segmentation/itktubeTubeExtractor.hxx
   Segmentation/itktubeRidgeSeedFilter.hxx
-  Segmentation/itktubeComputeTrainingMask.hxx)
+  Segmentation/itktubeComputeTrainingMaskFilter.hxx)
 
 set( TubeTK_Segmentation_CXX_Files )
 
 list( APPEND TubeTK_SRCS
-  ${TubeTK_Segmentation_Files}
-  ${TubeTK_Segmentation_X_Files}
-  ${TubeTK_Segmentation_X_Files} )
+  ${TubeTK_Segmentation_H_Files}
+  ${TubeTK_Segmentation_HXX_Files}
+  ${TubeTK_Segmentation_CXX_Files} )

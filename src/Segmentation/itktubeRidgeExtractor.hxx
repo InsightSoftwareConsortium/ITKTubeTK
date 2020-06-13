@@ -1385,6 +1385,11 @@ RidgeExtractor<TInputImage>
         tmpPoint.SetTangentInObjectSpace( tubeV );
         tmpPoint.SetRadiusInObjectSpace( this->GetScale() );
         ::tube::ComputeNormalsFromTangent( tmpPoint, tubeV );
+        tmpPoint.SetRidgeness( ridgeness );
+        tmpPoint.SetRoundness( roundness );
+        tmpPoint.SetCurvature( curvature );
+        tmpPoint.SetIntensity( intensity );
+        tmpPoint.SetLevelness( levelness );
         m_RadiusExtractor->SetRadiusStart( this->GetScale() );
         double radiusMin = m_RadiusExtractor->GetRadiusMin();
         double radiusMax = m_RadiusExtractor->GetRadiusMax();
@@ -1590,6 +1595,11 @@ RidgeExtractor<TInputImage>
   double levelness;
   double ridgeness = Ridgeness( newX, intensity, roundness, curvature,
     levelness );
+  m_XVal = intensity;
+  m_XRidgeness = ridgeness;
+  m_XRoundness = roundness;
+  m_XCurvature = curvature;
+  m_XLevelness = levelness;
 
   double     val;
   MatrixType lN( ImageDimension, ImageDimension-1 );
@@ -1664,6 +1674,11 @@ RidgeExtractor<TInputImage>
     m_InputImage->TransformContinuousIndexToPhysicalPoint( newXI, newX );
     ridgeness = Ridgeness( newX, intensity, roundness, curvature,
       levelness );
+    m_XVal = intensity;
+    m_XRidgeness = ridgeness;
+    m_XRoundness = roundness;
+    m_XCurvature = curvature;
+    m_XLevelness = levelness;
     if( ridgeness >= m_MinRidgenessStart &&
       roundness >= m_MinRoundnessStart &&
       curvature >= m_MinCurvatureStart &&
@@ -1837,6 +1852,11 @@ RidgeExtractor<TInputImage>
       }
     tmpPoint.SetPositionInObjectSpace( tubeX );
     tmpPoint.SetTangentInObjectSpace( tubeV );
+    tmpPoint.SetIntensity( m_XVal );
+    tmpPoint.SetRidgeness( m_XRidgeness );
+    tmpPoint.SetRoundness( m_XRoundness );
+    tmpPoint.SetCurvature( m_XCurvature );
+    tmpPoint.SetLevelness( m_XLevelness );
     tmpPoint.SetRadiusInObjectSpace( scale0 );
     double radiusMin = m_RadiusExtractor->GetRadiusMin();
     double radiusMax = m_RadiusExtractor->GetRadiusMax();

@@ -49,8 +49,6 @@ itk_add_test(
     DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
     ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-Test3.stt
     )
-set_tests_properties( ${MODULE_NAME}-Test3
-  PROPERTIES WILL_FAIL true )
 
 # Test4
 itk_add_test(
