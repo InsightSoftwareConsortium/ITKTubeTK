@@ -397,7 +397,7 @@ ImageToImageRegistrationHelper<TImage>
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
-::AffineRegND( Image< double, 2 > * tmpImage )
+::AffineRegND( Image< double, 2 > * itkNotUsed( tmpImage ) )
 {
   if( this->GetReportProgress() )
     {
@@ -501,7 +501,7 @@ ImageToImageRegistrationHelper<TImage>
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
-::AffineRegND( Image< double, 3 > * tmpImage )
+::AffineRegND( Image< double, 3 > * itkNotUsed( tmpImage ) )
 {
   if( this->GetReportProgress() )
     {

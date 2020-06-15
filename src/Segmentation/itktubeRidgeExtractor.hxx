@@ -432,8 +432,6 @@ RidgeExtractor<TInputImage>
   double & levelness,
   const vnl_vector<double> & prevTangent )
 {
-  double outsideScaleFactor = 1.25;
-
   if( this->GetDebug() )
     {
     std::cout << "Ridge::Ridgeness" << std::endl;
@@ -483,91 +481,6 @@ RidgeExtractor<TInputImage>
   ::tube::ComputeRidgeness<double>( m_XH, m_XD, prevTangent,
     m_XRidgeness, m_XRoundness, m_XCurvature, m_XLevelness, m_XHEVect,
     m_XHEVal );
-
-  /*
-  IndexType offset;
-  offset.Fill( 0 );
-  ContinuousIndexType xiOffset;
-  IndexType tmpX;
-
-  bool done = false;
-  double tf;
-  double tmp1XVal = 0;
-  double tmp1XValVal = 0;
-  double sign = 1;
-  int count = 0;
-  while( !done )
-    {
-    xiOffset = xi;
-    for( unsigned int i=0; i<ImageDimension-1; ++i )
-      {
-      if( offset[i] == 0 )
-        {
-        sign = -1;
-        }
-      else
-        {
-        sign = 1;
-        }
-      for( unsigned int j=0; j<ImageDimension; ++j )
-        {
-        xiOffset[j] += sign * ( m_XHEVect.get_column(i)[j]
-          * outsideScaleFactor * this->GetScale() / m_Spacing );
-        }
-      }
-    for( unsigned int j=0; j<ImageDimension; ++j )
-      {
-      tmpX[j] = (int)( xiOffset[j] + 0.5 );
-      }
-    if( m_InputImage->GetLargestPossibleRegion().IsInside( tmpX ) )
-      {
-      tf = this->IntensityInIndexSpace( tmpX );
-      tmp1XVal += tf;
-      tmp1XValVal += tf * tf;
-      count += 1;
-      }
-
-    unsigned int k=0;
-    ++offset[k];
-    if( offset[k] > 1 )
-      {
-      offset[k] = 0;
-      ++k;
-      ++offset[k];
-      while( k<ImageDimension-1 && offset[k] > 1 )
-        {
-        offset[k] = 0;
-        ++k;
-        ++offset[k];
-        }
-      if( k == ImageDimension-1 )
-        {
-        done = true;
-        }
-      }
-    }
-
-  double avgXVal = 0;
-  double stdXVal = 0;
-  if( count != 0 )
-    {
-    avgXVal = tmp1XVal / count;
-    stdXVal = std::sqrt( ( tmp1XValVal / count ) - ( avgXVal * avgXVal ) );
-    }
-
-  if( stdXVal > 0 )
-    {
-    if( stdXVal < 0.1 )
-      {
-      stdXVal = 0.1;
-      }
-    m_XVal = ( m_XVal - avgXVal ) / stdXVal;  // TODO: Make optional
-    if( m_XCurvature > 0 ) // measured in units of 3 std devs.
-      {
-      m_XCurvature =  ( m_XCurvature / ( stdXVal * stdXVal ) ) / 3;
-      }
-    }
-  */
 
   intensity = m_XVal;
   roundness = m_XRoundness;

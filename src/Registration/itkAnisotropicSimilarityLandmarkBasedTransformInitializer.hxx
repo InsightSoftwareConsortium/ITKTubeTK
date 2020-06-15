@@ -596,16 +596,22 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<
       }
 
     case Else:
+      {
       itkWarningMacro(
         << "Landmark initialization using the specified input transform "
         << "not implemented" );
       m_Transform->SetIdentity();
+      break;
+      }
 
     default:
+      {
       itkWarningMacro(
         << "Landmark initialization using the specified "
         << "input transform not implemented" );
       m_Transform->SetIdentity();
+      break;
+      }
 
     }
 
