@@ -73,9 +73,6 @@ public:
   itkSetMacro( NumberOfSides, int );
   itkGetMacro( NumberOfSides, int );
 
-  itkSetMacro( TargetReduction, double );
-  itkGetMacro( TargetReduction, double );
-
   void Write( void )
   { this->Update(); };
 
@@ -84,7 +81,7 @@ protected:
   WriteTubesAsPolyData( void );
   ~WriteTubesAsPolyData() {};
 
-  void GenerateData() override;
+  void Update() override;
 
   void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
 
@@ -103,7 +100,6 @@ private:
   std::string                      m_CenterlineFileName;
 
   int                              m_NumberOfSides;
-  double                           m_TargetReduction;
 };
 
 } // End namespace tube

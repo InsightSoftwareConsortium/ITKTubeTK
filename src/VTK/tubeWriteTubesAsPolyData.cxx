@@ -41,7 +41,6 @@ limitations under the License.
 #include <vtkTriangleFilter.h>
 #include <vtkVersion.h>
 #include <vtkSmartPointer.h>
-#include <vtkDecimatePro.h>
 #include <vtkXMLPolyDataWriter.h>
 
 namespace tube
@@ -56,12 +55,11 @@ WriteTubesAsPolyData()
   m_CenterlineFileName = "";
 
   m_NumberOfSides = 5;
-  m_TargetReduction = 0.5;
 }
 
 /** Main work happens here */
 void WriteTubesAsPolyData::
-GenerateData()
+Update()
 {
   const unsigned int Dimension = 3;
 
@@ -105,12 +103,12 @@ GenerateData()
   // Create scalar array that indicates the radius at each
   // centerline point.
   vtkNew< vtkDoubleArray > tubeRadius;
-  tubeRadius->SetName( "TubeRadius" );
+  tubeRadius->SetName( "Radius" );
   tubeRadius->SetNumberOfTuples( totalNumberOfPoints );
 
   // Create scalar array that indicates TubeId.
   vtkNew< vtkDoubleArray > tubeIds;
-  tubeIds->SetName( "TubeIds" );
+  tubeIds->SetName( "Id" );
   tubeIds->SetNumberOfTuples( totalNumberOfPoints );
 
   // Create scalar array that indicates both tangents at each
@@ -271,7 +269,7 @@ GenerateData()
 
   // Add the Radius information
   tubesCenterlineData->GetPointData()->AddArray( tubeRadius.GetPointer() );
-  tubesCenterlineData->GetPointData()->SetActiveScalars( "TubeRadius" );
+  tubesCenterlineData->GetPointData()->SetActiveScalars( "Radius" );
 
   // Add the TudeId information
   tubesCenterlineData->GetPointData()->AddArray( tubeIds.GetPointer() );
@@ -311,26 +309,6 @@ GenerateData()
     tubesCenterlineData->GetPointData()->AddArray( levelness.GetPointer() );
     }
 
-  vtkSmartPointer< vtkPolyData > tubesSurfaceData;
-
-  vtkNew< vtkTubeFilter > tubesSurfaceFilter;
-  tubesSurfaceFilter->SetVaryRadiusToVaryRadiusByAbsoluteScalar();
-  tubesSurfaceFilter->CappingOn();
-  tubesSurfaceFilter->SetNumberOfSides( m_NumberOfSides );
-  tubesSurfaceFilter->SetInputData( tubesCenterlineData.GetPointer() );
-  tubesSurfaceFilter->Update();
-  tubesSurfaceData = tubesSurfaceFilter->GetOutput();
-
-  if( m_TargetReduction > 0 )
-    {
-    vtkNew< vtkDecimatePro > tubesDecimateFilter;
-    tubesDecimateFilter->SetTargetReduction( m_TargetReduction );
-    tubesDecimateFilter->SetInputData( tubesSurfaceFilter->GetOutput() );
-    tubesDecimateFilter->SetPreserveTopology( true );
-    tubesDecimateFilter->Update();
-    tubesSurfaceData = tubesDecimateFilter->GetOutput();
-    }
-
   if( !m_CenterlineFileName.empty() )
     {
     vtkSmartPointer<vtkXMLPolyDataWriter> centerlineVTKwriter =
@@ -340,28 +318,29 @@ GenerateData()
     centerlineVTKwriter->Write();
     }
 
+  vtkNew< vtkTubeFilter > tubesSurfaceFilter;
+  tubesSurfaceFilter->SetVaryRadiusToVaryRadiusByAbsoluteScalar();
+  tubesSurfaceFilter->CappingOn();
+  tubesSurfaceFilter->SetNumberOfSides( m_NumberOfSides );
+  tubesSurfaceFilter->SetInputData( tubesCenterlineData.GetPointer() );
+  tubesSurfaceFilter->Update();
+
   const std::string extension =
     itksys::SystemTools::GetFilenameLastExtension( m_FileName );
 
-  if( extension == ".vtk" )
-    {
-    vtkNew< vtkPolyDataWriter > polyDataWriter;
-    polyDataWriter->SetInputData( tubesSurfaceData );
-    polyDataWriter->SetFileName( m_FileName.c_str() );
-    polyDataWriter->Write();
-    }
-  else if( extension == ".vtp" )
+  if( extension == ".vtp" )
     {
     vtkNew< vtkXMLPolyDataWriter > polyDataWriter;
-    polyDataWriter->SetInputData( tubesSurfaceData );
+    polyDataWriter->SetInputConnection( tubesSurfaceFilter->GetOutputPort() );
     polyDataWriter->SetFileName( m_FileName.c_str() );
+    polyDataWriter->SetDataModeToBinary();
     polyDataWriter->Write();
     }
   else if( extension == ".stl" )
     {
     // STL files only write triangles
     vtkNew< vtkTriangleFilter > triangleFilter;
-    triangleFilter->SetInputData( tubesSurfaceData );
+    triangleFilter->SetInputConnection( tubesSurfaceFilter->GetOutputPort() );
 
     vtkNew< vtkSTLWriter > stlWriter;
     stlWriter->SetInputConnection( triangleFilter->GetOutputPort() );
@@ -372,11 +351,12 @@ GenerateData()
     {
     std::cout << "Unrecognized output file extension: " << extension
       << std::endl;
-    std::cout << "Appending .vtk instead" << std::endl;
-    std::string filenamevtk = m_FileName + ".vtk";
-    vtkNew< vtkPolyDataWriter > polyDataWriter;
-    polyDataWriter->SetInputData( tubesSurfaceData );
-    polyDataWriter->SetFileName( filenamevtk.c_str() );
+    std::cout << "Appending .vtp instead" << std::endl;
+    std::string filenamevtp = m_FileName + ".vtp";
+    vtkNew< vtkXMLPolyDataWriter > polyDataWriter;
+    polyDataWriter->SetInputConnection( tubesSurfaceFilter->GetOutputPort() );
+    polyDataWriter->SetFileName( filenamevtp.c_str() );
+    polyDataWriter->SetDataModeToBinary();
     polyDataWriter->Write();
     }
 
