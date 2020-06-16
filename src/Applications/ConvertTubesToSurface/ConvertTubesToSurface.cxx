@@ -67,31 +67,20 @@ int DoIt( int argc, char * argv[] )
     }
   GroupSpatialObjectType::Pointer groupSpatialObject = reader->GetGroup();
   groupSpatialObject->Update();
-  std::ostringstream ostrm;
-  ostrm << "Number of children = "
-    << groupSpatialObject->GetNumberOfChildren();
-  tube::InformationMessage( ostrm.str() );
 
   tube::WriteTubesAsPolyData::Pointer writer =
     tube::WriteTubesAsPolyData::New();
 
-  std::cout << "SetInput" << std::endl;
   writer->SetInput( groupSpatialObject );
 
-  std::cout << "SetCenterlineFileName" << std::endl;
   if( !outputCenterline.empty() )
     {
     writer->SetCenterlineFileName( outputCenterline );
     }
 
-  std::cout << "SetSurfaceFileName" << std::endl;
   writer->SetFileName( outputSurfaceFile );
 
-  std::cout << "Update" << std::endl;
-
-  writer->Update();
-
-  std::cout << "Update done" << std::endl;
+  writer->Write();
 
   return EXIT_SUCCESS;
 }
