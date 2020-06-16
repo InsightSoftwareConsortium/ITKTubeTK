@@ -1,3 +1,4 @@
+if( TubeTK_USE_VTK )
 itk_wrap_include( "tubeWriteTubesAsPolyData.h" )
-
 itk_wrap_simple_class("tube::WriteTubesAsPolyData" POINTER)
+endif()
