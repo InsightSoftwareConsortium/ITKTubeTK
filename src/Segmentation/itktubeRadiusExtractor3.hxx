@@ -544,6 +544,7 @@ RadiusExtractor3<TInputImage>
     default:
     case RADIUS_CORRECTION_NONE:
       {
+      // Unchanged value: m_KernelOptimalRadius = m_KernelOptimalRadius;
       break;
       }
     case RADIUS_CORRECTION_FOR_BINARY_IMAGE:
@@ -553,12 +554,12 @@ RadiusExtractor3<TInputImage>
       }
     case RADIUS_CORRECTION_FOR_CTA:
       {
-      m_KernelOptimalRadius = m_KernelOptimalRadius;
+      // Unchanged value: m_KernelOptimalRadius = m_KernelOptimalRadius;
       break;
       }
     case RADIUS_CORRECTION_FOR_MRA:
       {
-      m_KernelOptimalRadius = m_KernelOptimalRadius;
+      // Unchanged value: m_KernelOptimalRadius = m_KernelOptimalRadius;
       break;
       }
     };
