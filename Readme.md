@@ -24,31 +24,34 @@ A guiding premise of TubeTK is that by focusing on 1D and 2D manifolds we can de
 
 TubeTK offers various interface layers:
 
-* [TubeTK/tubetklib](TubeTK/tubetklib): This is the algorithms library.   It is the lowest level of access to the methods of TubeTK.  It is only available via C++, and it requires considerable expertise to effectively combine and call its methods to do anything useful.   Interfacing directly with these algorithms is not recommended and is not well supported. Unit-level testing is performed continuously on these methods.
+* [TubeTK/src](TubeTK/src): This is the algorithms library.   It is the lowest level of access to the methods of TubeTK.  It is only available via C++, and it requires considerable expertise to effectively combine and call its methods to do anything useful.   Interfacing directly with these algorithms is not recommended and is not well supported. Unit-level testing is performed continuously on these methods.
 
-* [TubeTK/include](TubeTK/include): This is the ITK interface to select methods in `TubeTK/tubetklib`.  This level of interface is intended for ITK users and Python scripts writers.  The methods exposed represent a level of modularization that invites experimentation, integration with other toolkits (e.g., Scikit-Learn), and development of processing pipelines that accomplish significant image analysis goals.  The interface is available as an ITK Extension and thereby available via Python using Wrapped ITK.
+* [TubeTK/include](TubeTK/include): This is the ITK interface to select methods in `TubeTK/src`.  This level of interface is intended for ITK users and Python scripts writers.  The methods exposed represent a level of modularization that invites experimentation, integration with other toolkits (e.g., Scikit-Learn), and development of processing pipelines that accomplish significant image analysis goals.  The interface is available as an ITK Extension and thereby available via Python using Wrapped ITK.
 
-* [TubeTK/apps](TubeTK/apps): These are the command-line interface (CLI) equivalents to the methods available via `TubeTK/include`.  This is intended for bash, bat, and other system-call scripts.  The level of modularization and intended users are similar to those of `TubeTK/include`.  C++ and python-based CLIs are provided.  Continuous, unit-level testing of `TubeTK/include` is provided via these applications.
+* [TubeTK/src/Applications](TubeTK/src/Applications): These are optional (TO BE DEPRICATED) command-line interface applications.  These applications are NOT distributed with the pip-installation of itk-tubetk, and they will be depicated in the near future - the python interface to TubeTK should be used instead.  Furthermore, building these applications requires a sequence of compilations, complex configuration changes, and third-party tools (e.g., SlicerExecutionModel). Continuous, unit-level testingis provided for these applications.   
 
-Compiling ITKTubeTK: an ITK remote module!!!
---------------------------------------------
+Installing TubeTK via ITK
+-------------------------
+    > pip install itk-tubetk
 
-ITKTubeTK is available as a official ITK Remote Module, starting with [ITKv5.1rc02](https://github.com/InsightSoftwareConsortium/ITK/releases/tag/v5.1rc02).   When you configure ITK using CMake, set the options
-* CMAKE_BUILD_TYPE = Release           (This and most of the other cmake options are "advanced" options)
-* ITK_LEGACY_SILENT = On
+A version of ITK with TubeTK already compiled into it is available via pip.    This provides the python interface to TubeTK via ITK.
+
+Compiling TubeTK via ITK
+-------------------------
+
+If you wish to compile TubeTK from scratch (because you wish to modify it), then use the version of TubeTK that is bundled with ITK.   ITKTubeTK is available as a official ITK Remote Module, starting with [ITKv5.1rc02](https://github.com/InsightSoftwareConsortium/ITK/releases/tag/v5.1rc02).   `When you configure ITK using CMake`, set the options
+* CMAKE_BUILD_TYPE = Release
 * ITK_WRAP_PYTHON = On
 * Module_TubeTK = On
-* Module_MinimalPathExtraction = On
-* ITK_MINIMUM_COMPLIANCE_LEVEL = 1     (THIS IS IMPORTANT! MinimalPathExtraction requires it!)
 and then when you build ITK, TubeTK will be automatically built as well.  Additionally, if you enable Python wrapping for ITK, that wrapping will include TubeTK.
 
 Roadmap
 -------
 
 Our roadmap includes:
-* Configuration options in the ITK build process to enable building ITKTubeTK applications
 * Adding more Jupyter Notebook examples in ITKTubeTK/examples:
 + Sliding organ registration
++ Vessel-based registration
 + Tomosynthesis simulation
 + Additional vessel extraction demonstrations involving lungs, livers, and brains imaged via MRA, CT, and ultrasound.
 + Updating example/data directory to a wider variety of cases and enable its synchronization/download during cmake configuration.
@@ -56,23 +59,17 @@ Our roadmap includes:
 For advanced developers
 -----------------------
 
-As mentioned in the roadmap, we are working to updating TubeTK's remote module to include options for building its applications and VTK-dependent functionality.   At this time those options are not working as expected.   Once they do work, you will have the option to build SlicerExecutionModel and VTK as described below:
+Select methods in TubeTK require VTK, and those methods are currently not distributed as pre-built binarys.   You must compile ITK with Module_TubeTK enabled and enable VTK, as follows:
 
 *1) SlicerExecutionModel: needed for TubeTK's applications*
 
-After compiling ITK with TubeTK enabled, you can build SlicerExecutionModel and then re-configure ITK's TubeTK to build applications using SlicerExecutionModel.   We hope to soon resolve this circular dependency.   More details will be given soon.
+After compiling ITK with TubeTK enabled (see above section "Compiling TubeTK via ITK"), you can build SlicerExecutionModel and then re-configure ITK's TubeTK to build applications using SlicerExecutionModel.
 
-*2) VTK: needed for Sliding organ registration*
+*2) VTK: needed for Sliding organ registration and select other methods*
 
 Optionally, you may also want to build VTK.   This is used by the Sliding
 Organ Registration algorithm (anisotropic diffusion regularization and
-registration).   Note that VTK must be build BEFORE building ITK's TubeTK.   To build VTK, do the following:
-
-    $ cd /src
-    $ git clone https://github.com:/Kitware/VTK.git
-    $ mkdir VTK-Release
-    $ cd VTK-Release
-    $ cmake-gui ../VTK
+registration).   Note that VTK must be build BEFORE building ITK's TubeTK.
 
 Using CMake, you should configure VTK as follows:
 * CMAKE_BUILD_TYPE = Release
@@ -81,14 +78,10 @@ Using CMake, you should configure VTK as follows:
 * You may also want to turn off building Tests and Examples
 
 After configuring CMake and generating the build files, you should compile
-VTK:
+VTK, and then re-configure ITK and enable TubeTK_USE_VTK, and set the VTK_DIR as appropriate.  You can then recompile ITK and it will include the VTK-based TubeTK methods.
 
-    $ ninja  (or make, or nmake, or whatever is appropriate for your system)
-
-...And now you are ready to compile ITK with TubeTK as described above.
-
-Using a Compiled and Python-Wrapped ITk and ITKTubeTK from Python
------------------------------------------------------------------
+Using a ITKTubeTK from Python
+-----------------------------
 
 First, to be able to run all the python tests and examples, the following packages are required:
 * numpy
@@ -101,11 +94,7 @@ First, to be able to run all the python tests and examples, the following packag
 * tables
 * matplotlib
 
-Installing most required packages can be done with the following command line:
-
-    $ pip install requirements.txt
-
-Second, you will need to add the modules of python-wrapped ITK and ITKTubeTK to your python environment.
+Second, you will need to add the modules of python-wrapped ITK to your python environment.
 This is accomplished by copying the files that specify the paths to their python modules into your
 python site-packages directory.
 
@@ -117,10 +106,6 @@ Let's assume that path is /Python/Python36/site-packages.
 First you will want to copy ITK's python paths file into that directory
 
     $ cp ~/src/ITK-Release/Wrapping/Generators/Python/WrapITK.pth /Python/Python36/site-packages
-
-Then you will want to add ITKTubeTK's paths file ONTO that file
-
-    $ cat ~/src/ITKTubeTK-Release/Wrapping/Generators/Python/WrapITK.pth >> /Python/Python36/site-packages/WrapITK.pth
 
 Then you can test your configuration:
 
