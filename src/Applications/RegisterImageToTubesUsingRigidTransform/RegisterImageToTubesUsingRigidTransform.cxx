@@ -22,7 +22,6 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeImageToTubeRigidRegistration.h"
-#include "itktubeRecordOptimizationParameterProgressionCommand.h"
 #include "itktubeTubeToTubeTransformFilter.h"
 #include "../CLI/tubeCLIFilterWatcher.h"
 #include "../CLI/tubeCLIProgressReporter.h"
@@ -112,18 +111,6 @@ int DoIt( int argc, char * argv[] )
   // to the transform parameters in the future at compile time.
   const unsigned int NumberOfParameters = 6;
 
-  typedef itk::tube::RecordOptimizationParameterProgressionCommand<
-    NumberOfParameters > RecordParameterProgressionCommandType;
-  RecordParameterProgressionCommandType::Pointer
-    recordParameterProgressionCommand =
-    RecordParameterProgressionCommandType::New();
-  if( !parameterProgression.empty() )
-    {
-    // Record the optimization parameter progression and write to a file.
-    recordParameterProgressionCommand->SetFileName( parameterProgression );
-    recordParameterProgressionCommand->Observe( optimizer );
-    }
-
   try
     {
     registrationMethod->Initialize();
@@ -154,13 +141,6 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop( "Register image to tube" );
 
   timeCollector.Start( "Save data" );
-
-  if( !parameterProgression.empty() )
-    {
-    recordParameterProgressionCommand->SetFixedParameters(
-      registrationTransform->GetFixedParameters() );
-    recordParameterProgressionCommand->WriteParameterProgressionToFile();
-    }
 
   itk::TransformFileWriter::Pointer writer =
     itk::TransformFileWriter::New();
