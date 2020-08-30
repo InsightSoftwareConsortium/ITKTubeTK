@@ -42,7 +42,6 @@ limitations under the License.
 #include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
 #include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
 #include "tubeImageMathFilters.h"
-#include "tubeTreeMathFilters.h"
 #include "tubeTubeMathFilters.h"
 
 #if defined( TubeTK_USE_ARRAYFIRE )

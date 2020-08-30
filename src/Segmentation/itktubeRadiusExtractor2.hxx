@@ -115,7 +115,8 @@ RadiusExtractor2<TInputImage>
   m_MinMedialnessStart = 0.1;
 
   m_NumKernelPoints = 7;
-  m_KernelTubePoints.resize( m_NumKernelPoints );
+  m_KernelTube = TubeType::New();
+  m_KernelTube->GetPoints().resize(7);
 
   m_KernelPointStep = 14;
   m_KernelStep = 30;
@@ -188,7 +189,9 @@ RadiusExtractor2<TInputImage>
   double & bness,
   bool doBNess )
 {
-  ::tube::ComputeVectorTangentsAndNormals( points );
+  typename TubeType::Pointer tmpTube = TubeType::New();
+  tmpTube->SetPoints( points );
+  tmpTube->ComputeTangentsAndNormals();
 
   if( this->GetDebug() )
     {
@@ -266,8 +269,7 @@ RadiusExtractor2<TInputImage>
 ::SetNumKernelPoints( unsigned int _numPoints )
 {
   m_NumKernelPoints = _numPoints;
-
-  m_KernelTubePoints.resize( m_NumKernelPoints );
+  m_KernelTube->GetPoints().resize( m_NumKernelPoints );
 }
 
 template< class TInputImage >
@@ -286,18 +288,18 @@ RadiusExtractor2<TInputImage>
     }
 
   typename std::vector< TubePointType >::iterator pntIter;
-  pntIter = m_KernelTubePoints.begin();
+  pntIter = m_KernelTube->GetPoints().begin();
   for( unsigned int i = 0; i < ImageDimension; ++i )
     {
     IndexType kernelPointI;
     m_InputImage->TransformPhysicalPointToIndex( 
-      m_KernelTubePoints[0].GetPositionInObjectSpace(), kernelPointI );
+      m_KernelTube->GetPoints()[0].GetPositionInObjectSpace(), kernelPointI );
     minXI[i] = static_cast< int >( kernelPointI[i] - bufferI[i] );
     maxXI[i] = static_cast< int >( kernelPointI[i] + bufferI[i] );
     }
   ++pntIter;
   int tempI;
-  while( pntIter != m_KernelTubePoints.end() )
+  while( pntIter != m_KernelTube->GetPoints().end() )
     {
     IndexType kernelPointI;
     m_InputImage->TransformPhysicalPointToIndex(
@@ -353,13 +355,13 @@ RadiusExtractor2<TInputImage>
       m_InputImage->TransformIndexToPhysicalPoint( xI, p );
 
       unsigned int pntCount = 0;
-      pntIter = m_KernelTubePoints.begin();
+      pntIter = m_KernelTube->GetPoints().begin();
 
       double pntTangentDist = 0;
       double minTangentDist = 0;
       double minNormalDist = 0;
       int minTangentDistCount = -1;
-      while( pntIter != m_KernelTubePoints.end() )
+      while( pntIter != m_KernelTube->GetPoints().end() )
         {
         VectorType pDiff = pntIter->GetPositionInObjectSpace() - p;
         double d1 = 0;
@@ -430,12 +432,8 @@ RadiusExtractor2<TInputImage>
     std::cerr << "   NumKernelPoints = " << m_NumKernelPoints << std::endl;
     }
 
-  for( unsigned int i=0; i<m_NumKernelPoints; ++i )
-    {
-    m_KernelTubePoints[ i ] = tubePoints[ i ];
-    }
-
-  ::tube::ComputeVectorTangentsAndNormals( m_KernelTubePoints );
+  m_KernelTube->SetPoints( tubePoints );
+  m_KernelTube->ComputeTangentsAndNormals();
 }
 
 template< class TInputImage >
@@ -817,8 +815,7 @@ RadiusExtractor2<TInputImage>
     }
 
   tube->RemoveDuplicatePointsInObjectSpace();
-  ::tube::ComputeVectorTangentsAndNormals< TubePointType >(
-    tube->GetPoints() );
+  tube->ComputeTangentsAndNormals();
 
   typename std::vector< TubePointType >::iterator pntIter;
   pntIter = tube->GetPoints().begin();
@@ -939,7 +936,7 @@ RadiusExtractor2<TInputImage>
         {
         p2[i] = p1[i] - ( ( p2[i] - p1[i] ) * ( -p / m_KernelPointStep ) );
         }
-      m_KernelTubePoints[ count ].SetPositionInObjectSpace( p2 );
+      m_KernelTube->GetPoints()[ count ].SetPositionInObjectSpace( p2 );
       }
     else if( p > static_cast< int >( tubeSize ) - 1 )
       {
@@ -953,16 +950,16 @@ RadiusExtractor2<TInputImage>
         p2[i] = p1[i] - ( ( p2[i] - p1[i] ) * ( ( p - ( tubeSize-1 ) ) /
             m_KernelPointStep ) );
         }
-      m_KernelTubePoints[ count ].SetPositionInObjectSpace( p2 );
+      m_KernelTube->GetPoints()[ count ].SetPositionInObjectSpace( p2 );
       }
     else
       {
-      m_KernelTubePoints[ count ] = tube->GetPoints()[ p ];
+      m_KernelTube->GetPoints()[ count ] = tube->GetPoints()[ p ];
       }
     ++count;
     }
 
-  ::tube::ComputeVectorTangentsAndNormals( m_KernelTubePoints );
+  m_KernelTube->ComputeTangentsAndNormals();
 }
 
 template< class TInputImage >
@@ -1066,8 +1063,7 @@ RadiusExtractor2<TInputImage>
     << std::endl;
 
   os << indent << "NumKernelPoints = " << m_NumKernelPoints << std::endl;
-  os << indent << "KernelTubePoints = " << m_KernelTubePoints.size()
-    << std::endl;
+  os << indent << "KernelTube = " << m_KernelTube << std::endl;
   os << indent << "KernelPointStep = " << m_KernelPointStep << std::endl;
   os << indent << "KernelStep = " << m_KernelStep << std::endl;
   os << indent << "KernelExtent = " << m_KernelExtent << std::endl;

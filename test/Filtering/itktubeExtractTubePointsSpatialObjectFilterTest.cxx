@@ -98,7 +98,7 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
   const itk::SizeValueType numberOfPoints = pointsContainer->Size();
   std::cout << "Output points container size: " << numberOfPoints
     << std::endl;
-  const itk::SizeValueType expectedNumberOfPoints = 110655;
+  const itk::SizeValueType expectedNumberOfPoints = 110658;
   if( numberOfPoints != expectedNumberOfPoints )
     {
     std::cerr << "Did not get expected size." << std::endl;

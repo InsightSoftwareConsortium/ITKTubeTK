@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -103,7 +102,7 @@ int itktubePointsToImageTest( int argc, char * argv[] )
     {
     std::cout << "----tube " << i << std::endl;
     tube = static_cast< TubeType * >( tubeIt->GetPointer() );
-    tube::ComputeTubeTangentsAndNormals< TubeType >( tube );
+    tube->ComputeTangentsAndNormals();
 
     // Get the list of points in the tube
     tubePointList = tube->GetPoints();

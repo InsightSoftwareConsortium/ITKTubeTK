@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -20,62 +19,98 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __tubeTubeMathFilters_h
 #define __tubeTubeMathFilters_h
 
-#include "tubeMacro.h"
-
-#include <vector>
+#include <itkImageFileReader.h>
+#include "itkGroupSpatialObject.h"
+#include "itkTubeSpatialObject.h"
 
 namespace tube
 {
+template< unsigned int DimensionT, class ImagePixelT=float >
+class TubeMathFilters
+{
+public:
+  //typedefs
+  typedef itk::GroupSpatialObject< DimensionT >         TubeGroupType;
+  typedef typename TubeGroupType::ChildrenListPointer   TubeListPointerType;
 
-template< class TTubePoint >
-void
-ComputeNormalsFromTangent( TTubePoint & tubePoint,
-  const typename TTubePoint::VectorType & prevT );
+  typedef itk::TubeSpatialObject< DimensionT >          TubeType;
+  typedef typename TubeType::TubePointType              TubePointType;
 
-template< class TTube >
-bool
-ComputeTubeTangentsAndNormals( typename TTube::Pointer & tube );
+  typedef itk::Image< ImagePixelT, DimensionT >         ImageType;
 
-template< class TTubePoint >
-bool
-ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tube );
+  typedef typename TubeType::PointType                  PositionType;
+  typedef itk::IndexValueType                           TubeIdType;
+  typedef typename TubeType::TubePointListType          TubePointListType;
 
-enum SmoothTubeFunctionEnum { SMOOTH_TUBE_USING_INDEX_AVERAGE,
-  SMOOTH_TUBE_USING_INDEX_GAUSSIAN, SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN };
+  TubeMathFilters();
+  ~TubeMathFilters();
 
-/** Smooth a tube
- * The parameter h has different meanings when using different smoothing
- * functions:
- *
- * smoothFunction = SMOOTH_TUBE_USING_INDEX_AVERAGE:
- *    h is half of the window size
- * smoothFunction = SMOOTH_TUBE_USING_INDEX_GAUSSIAN:
- *    h is the gaussian's standard deviation
- * smoothFunction = SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN:
- *    h is the gaussian's standard deviation
- */
-template< class TTube >
-typename TTube::Pointer
-SmoothTube( const typename TTube::Pointer & tube, double h = 2,
-  SmoothTubeFunctionEnum smoothFunction = SMOOTH_TUBE_USING_INDEX_AVERAGE );
+  void SetInputTubeGroup( typename TubeGroupType::Pointer & inputTubeGroup );
+  void SetInputTube( typename TubeType::Pointer & inputTube );
+  
+  typename TubeGroupType::Pointer & GetOutputTubeGroup( void );
+  typename TubeType::Pointer &      GetOutputTube( void );
 
-template< class TTube >
-int
-RemoveDuplicateTubePoints( typename TTube::Pointer & tube );
+  /** SetCurrentTubeId
+   *  Specifies which tube to process.  Use -1 to specify all tubes. */
+  void SetCurrentTubeId( int currentTubeId );
+  void SetUseAllTubes( void );
 
-template< class TTube >
-typename TTube::Pointer
-SubsampleTube( const typename TTube::Pointer & tube, int N = 2 );
+  void SetPointValuesFromImage( typename ImageType::Pointer & inputImage,
+    std::string propertyId );
 
-template< class TTube >
-double
-ComputeTubeLength( const typename TTube::Pointer & tube );
+  void SetPointValuesFromImageMean( typename ImageType::Pointer & inputImage,
+    std::string propertyId );
+
+  /** Run Fill Gap on the tube-tree. */
+  void FillGapToParent( double stepSize = 0.1 );
+
+
+  /** Smooth a tube
+   * The parameter h has different meanings when using different smoothing
+   * functions:
+   *
+   * smoothFunction = SMOOTH_TUBE_USING_INDEX_AVERAGE:
+   *    h is half of the window size
+   * smoothFunction = SMOOTH_TUBE_USING_INDEX_GAUSSIAN:
+   *    h is the gaussian's standard deviation
+   */
+  enum SmoothTubeFunctionEnum { SMOOTH_TUBE_USING_INDEX_AVERAGE,
+    SMOOTH_TUBE_USING_INDEX_GAUSSIAN };
+  void SmoothTube( double h = 2,
+    SmoothTubeFunctionEnum smoothFunction = SMOOTH_TUBE_USING_INDEX_AVERAGE );
+
+  void RenumberPoints( void );
+
+  void SubsampleTube( int N = 2 );
+  
+  double ComputeTubeLength( void );
+
+protected:
+
+  static void InterpolatePath(
+    typename TubeType::TubePointType * parentNearestPoint,
+    typename TubeType::TubePointType * childEndPoint,
+    float stepSize,
+    typename TubeType::TubePointListType & newTubePoints );
+
+private:
+  typename TubeType::Pointer      m_InputTube;
+  typename TubeGroupType::Pointer m_InputTubeGroup;
+
+  int m_CurrentTubeId;
+
+
+}; // End class ImageFilters
 
 } // End namespace tube
 
+#ifndef ITK_MANUAL_INSTANTIATION
 #include "tubeTubeMathFilters.hxx"
+#endif
 
 #endif // End !defined( __tubeTubeMathFilters_h )

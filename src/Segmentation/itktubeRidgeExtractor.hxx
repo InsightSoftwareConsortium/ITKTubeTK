@@ -1235,12 +1235,13 @@ RidgeExtractor<TInputImage>
     TubePointType pnt;
     pnt.SetId( tubePointCount );
     typename TubePointType::PointType tubeX;
-    typename TubePointType::VectorType tubeV;
+    typename TubePointType::VectorType tubeT;
     typename TubePointType::CovariantVectorType tubeN;
     ContinuousIndexType tubeXI;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       tubeXI[i] = lXIV[i];
+      tubeT[i] = m_XHEVect(i,ImageDimension-1);
       if( i < ImageDimension-1 )
         {
         for( unsigned int j=0; j<ImageDimension; j++ )
@@ -1259,6 +1260,7 @@ RidgeExtractor<TInputImage>
           }
         }
       }
+    pnt.SetTangentInObjectSpace( tubeT );
     m_InputImage->TransformContinuousIndexToPhysicalPoint( tubeXI, tubeX );
     pnt.SetPositionInObjectSpace( tubeX );
     pnt.SetRidgeness( ridgeness );
@@ -1291,13 +1293,10 @@ RidgeExtractor<TInputImage>
           }
 
         TubePointType tmpPoint;
-        for( unsigned int i=0; i<ImageDimension; i++ )
-          {
-          tubeV[i] = lStepDir[i];
-          }
-        tmpPoint.SetTangentInObjectSpace( tubeV );
         tmpPoint.SetRadiusInObjectSpace( this->GetScale() );
-        ::tube::ComputeNormalsFromTangent( tmpPoint, tubeV );
+        tmpPoint.SetTangentInObjectSpace( pnt.GetTangentInObjectSpace() );
+        tmpPoint.SetNormal1InObjectSpace( pnt.GetNormal1InObjectSpace() );
+        tmpPoint.SetNormal1InObjectSpace( pnt.GetNormal2InObjectSpace() );
         tmpPoint.SetRidgeness( ridgeness );
         tmpPoint.SetRoundness( roundness );
         tmpPoint.SetCurvature( curvature );
@@ -1324,6 +1323,9 @@ RidgeExtractor<TInputImage>
         tmpPoint.SetPositionInObjectSpace( tubeX );
         points.push_back( tmpPoint );
         points.push_back( pnt );
+        typename TubeType::Pointer tmpTube = TubeType::New();
+        tmpTube->SetPoints( points );
+        tmpTube->ComputeTangentsAndNormals();
         if( m_RadiusExtractor->GetPointVectorOptimalRadius( points,
           m_DynamicScaleUsed, radiusMin, radiusMax, radiusStep,
           radiusTolerance ) )
@@ -1905,7 +1907,7 @@ RidgeExtractor<TInputImage>
       std::cout << "Calculating tangents." << std::endl;
       }
     m_Tube->RemoveDuplicatePointsInObjectSpace();
-    ::tube::ComputeTubeTangentsAndNormals< TubeType >( m_Tube );
+    m_Tube->ComputeTangentsAndNormals();
     }
 
   if( m_StatusCallBack )

@@ -31,6 +31,8 @@ limitations under the License.
 #include "itkHistogram.h"
 #include "itkVector.h"
 
+#include "tubeTubeMathFilters.h"
+
 namespace itk
 {
 
@@ -50,7 +52,6 @@ TortuositySpatialObjectFilter< TTubeSpatialObject >
   this->m_Lambda = 1.5;
   this->m_MeasureFlag = BITMASK_ALL_METRICS;
   this->m_NumberOfBins = 20;
-  this->m_SmoothingMethod = ::tube::SMOOTH_TUBE_USING_INDEX_GAUSSIAN;
   this->m_SmoothingScale = 5.0;
   this->m_SubsamplingScale = 1;
 
@@ -335,35 +336,16 @@ TortuositySpatialObjectFilter< TTubeSpatialObject >
   double totalSquaredCurvature = 0.0;
   double sumOfRadius = 0.0;
 
-  // Preprocessing
-  TubeSpatialObjectPointer smoothedTube =
-    TubeSpatialObject::New();
-  TubeSpatialObjectPointer resampledTube =
-    TubeSpatialObject::New();
-
   // Smooth the vessel
-  smoothedTube = ::tube::SmoothTube<TubeSpatialObject>( originalInput,
-    this->m_SmoothingScale, this->m_SmoothingMethod );
-
-  if( !smoothedTube )
-    {
-    itkExceptionMacro( << "Cannot run Tortuosity on input. "
-                       << "Input cannot be smoothed" );
-    return;
-    }
+  ::tube::TubeMathFilters<TubeSpatialObject::ObjectDimension> filter;
+  filter.SetInputTube( originalInput );
+  filter.SmoothTube( this->m_SmoothingScale );
 
   // Subsample the vessel
-  resampledTube = ::tube::SubsampleTube<TubeSpatialObject>(
-    smoothedTube, this->m_SubsamplingScale );
+  filter.SubsampleTube( this->m_SubsamplingScale );
 
-  if( !resampledTube )
-    {
-    itkExceptionMacro( << "Cannot run Tortuosity on input. "
-                       << "Input cannot be subsampled" );
-    return;
-    }
   // Make the measurements on the pre-processed tube.
-  TubeSpatialObjectPointer processedInput = resampledTube;
+  TubeSpatialObjectPointer processedInput = filter.GetOutputTube();
 
   if( processedInput->GetNumberOfPoints() < 2 )
     {

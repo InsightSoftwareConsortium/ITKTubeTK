@@ -203,7 +203,8 @@ protected:
   void GenerateKernel( void );
 
   void SetKernelTubePoints( const std::vector< TubePointType > & tubePoints );
-  itkGetMacro( KernelTubePoints, std::vector< TubePointType > );
+  std::vector< TubePointType > & GetKernelTubePoints( void )
+   { return m_KernelTube->GetPoints(); };
 
   itkGetMacro( KernelCount, std::vector< double > );
   itkGetMacro( KernelValue, std::vector< double > );
@@ -246,8 +247,8 @@ private:
   double                                  m_MinMedialness;
   double                                  m_MinMedialnessStart;
 
+  typename TubeType::Pointer              m_KernelTube;
   unsigned int                            m_NumKernelPoints;
-  std::vector< TubePointType >            m_KernelTubePoints;
 
   unsigned int                            m_KernelPointStep;
   unsigned int                            m_KernelStep;

@@ -2,8 +2,7 @@
 #
 # Library:   TubeTK
 #
-# Copyright 2010 Kitware Inc. 28 Corporate Drive,
-# Clifton Park, NY, 12065, USA.
+# Copyright Kitware Inc.
 #
 # All rights reserved.
 #
@@ -49,11 +48,13 @@ itk_add_test(
   NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
-    -l R DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
-    -l M DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
-    -l B DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
-    -l r DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
+    -l Ridgeness DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
+    -l Medialness DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
+    -l Branchness DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
+    -l Custom1 DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
     -u
+    -r
+    -s 4
     -t 100
     -a
     -o

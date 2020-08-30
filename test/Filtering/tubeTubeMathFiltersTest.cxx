@@ -20,10 +20,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeTubeMathFilters.h"
-
 #include "itkTubeSpatialObject.h"
 #include "itkMersenneTwisterRandomVariateGenerator.h"
+
+#include "tubeMacro.h"
+#include "tubeTubeMathFilters.h"
 
 double tubeLength( itk::TubeSpatialObject<3> * tube )
 {
@@ -90,24 +91,30 @@ int tubeTubeMathFiltersTest( int tubeNotUsed( argc ),
 
   std::cout << "Tangents and normals..." << std::endl;
   tube0->SetPoints( tubePointList );
-  ::tube::ComputeTubeTangentsAndNormals< TubeType >( tube0 );
+  tube0->ComputeTangentsAndNormals();
 
   // Run tests
   std::cout << std::endl << "*********** Smoothing Tests *************" << std::endl;
 
   std::cout << std::endl << "-----> Smoothing by average on index" << std::endl;
-  tube = tube0;
+  tube = tube0->Clone();
   double tLength = tubeLength( tube );
   std::cout << "Length = " << tLength << std::endl;
 
+  ::tube::TubeMathFilters<3> filter;
   for( unsigned int i = 0; i < 20; ++i )
     {
     std::cout << "Smoothing..." << std::endl;
-    TubeType::Pointer tube2 = ::tube::SmoothTube< TubeType >( tube, 2,
-      ::tube::SMOOTH_TUBE_USING_INDEX_AVERAGE );
+    TubeType::Pointer tube2 = tube->Clone();
+    filter.SetInputTube(tube2);
+    filter.SmoothTube( 2,
+      ::tube::TubeMathFilters<3>::SMOOTH_TUBE_USING_INDEX_AVERAGE );
+    //tube2 = filter.GetOutput();
 
+    double tLength = tubeLength( tube );
+    std::cout << "Comp Length = " << tLength << std::endl;
     double t2Length = tubeLength( tube2 );
-    std::cout << "Length = " << t2Length << std::endl;
+    std::cout << "   with Length = " << t2Length << std::endl;
     if( tLength <= t2Length )
       {
       std::cerr << "ERROR: Raw length = " << tLength
@@ -120,17 +127,18 @@ int tubeTubeMathFiltersTest( int tubeNotUsed( argc ),
     }
 
   std::cout << std::endl << "-----> Smoothing by gaussian on index" << std::endl;
-  tube = tube0;
+  tube = tube0->Clone();
   tLength = tubeLength( tube );
   std::cout << "Length = " << tLength << std::endl;
 
+  filter.SetInputTube( tube );
   for( unsigned int i = 0; i < 20; ++i )
     {
     std::cout << "Smoothing..." << std::endl;
-    TubeType::Pointer tube2 = ::tube::SmoothTube< TubeType >( tube, 4,
-      ::tube::SMOOTH_TUBE_USING_INDEX_GAUSSIAN );
+    filter.SmoothTube( 4,
+      ::tube::TubeMathFilters<3>::SMOOTH_TUBE_USING_INDEX_GAUSSIAN );
 
-    double t2Length = tubeLength( tube2 );
+    double t2Length = tubeLength( tube );
     std::cout << "Length = " << t2Length << std::endl;
     if( tLength <= t2Length )
       {
@@ -139,25 +147,25 @@ int tubeTubeMathFiltersTest( int tubeNotUsed( argc ),
       returnStatus = EXIT_FAILURE;
       }
 
-    tube = tube2;
     tLength = t2Length;
     }
 
 
   std::cout << std::endl << "*********** Subsampling Tests *************" << std::endl;
-  tube = tube0;
+  tube = tube0->Clone();
   tLength = tubeLength( tube );
   int tNumPoints = tube->GetNumberOfPoints();
   std::cout << "Length = " << tLength << std::endl;
   std::cout<< "Number of Points = " << tNumPoints <<std::endl;
 
+  filter.SetInputTube( tube );
   for( unsigned int i = 0; i < 5; ++i )
     {
     std::cout << "Subsampling..." << std::endl;
-    TubeType::Pointer tube3 = ::tube::SubsampleTube< TubeType >( tube, 2 );
+    filter.SubsampleTube( 2 );
 
-    double t3Length = tubeLength( tube3 );
-    int t3NumPoints = tube3->GetNumberOfPoints();
+    double t3Length = tubeLength( tube );
+    int t3NumPoints = tube->GetNumberOfPoints();
     std::cout << "Length = " << t3Length << std::endl;
     std::cout<< "Number of Points = " << t3NumPoints <<std::endl;
     if( tLength <= t3Length )
@@ -168,13 +176,11 @@ int tubeTubeMathFiltersTest( int tubeNotUsed( argc ),
       }
     if( t3NumPoints >= tNumPoints )
       {
-      std::cerr << "ERROR: Raw: NumberOfPoints = " << tube->GetNumberOfPoints()
-        << " <= Subsampled: NumberOfPoints = " << tube3->GetNumberOfPoints()
-        << std::endl;
+      std::cerr << "ERROR: Raw: NumberOfPoints = " << tNumPoints 
+        << " <= Subsampled: NumberOfPoints = " << t3NumPoints << std::endl;
       returnStatus = EXIT_FAILURE;
       }
 
-    tube = tube3;
     tLength = t3Length;
     tNumPoints = t3NumPoints;
     }

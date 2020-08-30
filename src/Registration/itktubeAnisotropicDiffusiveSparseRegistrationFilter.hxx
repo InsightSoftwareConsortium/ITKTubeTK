@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -421,7 +420,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
     {
     typename TubeType::Pointer tube
         = static_cast< TubeType * >( tubeIt->GetPointer() );
-    ::tube::ComputeTubeTangentsAndNormals< TubeType >( tube );
+    tube->ComputeTangentsAndNormals();
     numPoints += tube->GetPoints().size();
     }
 

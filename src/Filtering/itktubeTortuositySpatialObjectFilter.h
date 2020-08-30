@@ -272,13 +272,6 @@ public:
     std::numeric_limits<size_t>::max() )
   itkGetConstMacro( NumberOfBins, size_t )
 
-  /** Set/Get the smoothing method to be applied to the vessel before
-  * computing the metrics. Default method is
-  * SMOOTH_TUBE_USING_INDEX_GAUSSIAN.
-  */
-  itkSetMacro( SmoothingMethod, ::tube::SmoothTubeFunctionEnum )
-  itkGetConstMacro( SmoothingMethod, ::tube::SmoothTubeFunctionEnum )
-
   /** Set/Get the smoothing scale to be applied to the vessel before
   * computing the metrics. This value has different meanings when using
   * different smoothing methods.
@@ -313,7 +306,6 @@ private:
   double                         m_Lambda;
   int                            m_MeasureFlag;
   size_t                         m_NumberOfBins;
-  ::tube::SmoothTubeFunctionEnum m_SmoothingMethod;
   double                         m_SmoothingScale;
   int                            m_SubsamplingScale;
 

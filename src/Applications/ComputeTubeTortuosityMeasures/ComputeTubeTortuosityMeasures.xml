@@ -64,16 +64,6 @@
 
   <parameters advanced="true">
     <label>Advanced</label>
-    <string-enumeration>
-      <name>smoothingMethod</name>
-      <label>Smoothing Method</label>
-      <description>Specifies the smoothing method to be applied to the vessel before computing the tortuosity measures. See SmoothTubeFunctionEnum in tubeTubeMath.h for more details.</description>
-      <longflag>smoothingMethod</longflag>
-      <default>SMOOTH_TUBE_USING_INDEX_GAUSSIAN</default>
-      <element>SMOOTH_TUBE_USING_INDEX_AVERAGE</element>
-      <element>SMOOTH_TUBE_USING_INDEX_GAUSSIAN</element>
-      <element>SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN</element>
-    </string-enumeration>
     <double>
       <name>smoothingScale</name>
       <label>Smoothing Scale</label>
