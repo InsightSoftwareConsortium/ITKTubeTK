@@ -35,7 +35,6 @@ set( tubeNumericsTests_SRCS
   itktubeNJetFeatureVectorGeneratorTest.cxx
   itktubeNJetImageFunctionTest.cxx
   itktubeSingleValuedCostFunctionImageSourceTest.cxx
-  itktubeRecordOptimizationParameterProgressionCommandTest.cxx
   itktubeRidgeBasisFeatureVectorGeneratorTest.cxx
   itktubeRidgeFFTFeatureVectorGeneratorTest.cxx
   itktubeVotingResampleImageFunctionTest.cxx
@@ -221,11 +220,6 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/tubeSplineNDTest.mha
     tubeSplineNDTest
       ${ITK_TEST_OUTPUT_DIR}/tubeSplineNDTest.mha )
-
-itk_add_test( NAME itktubeRecordOptimizationParameterProgressionCommandTest
-  COMMAND tubeNumericsTestDriver
-    itktubeRecordOptimizationParameterProgressionCommandTest
-      ${ITK_TEST_OUTPUT_DIR}/itkRecordOptimizationParameterProgressionCommandTest.h5 )
 
 itk_add_test(
   NAME itktubeBlurImageFunctionTest

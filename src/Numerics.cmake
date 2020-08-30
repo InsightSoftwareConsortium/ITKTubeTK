@@ -30,7 +30,6 @@ set( TubeTK_Numerics_H_Files
   Numerics/itktubeJointHistogramImageFunction.h
   Numerics/itktubeNJetFeatureVectorGenerator.h
   Numerics/itktubeNJetImageFunction.h
-  Numerics/itktubeRecordOptimizationParameterProgressionCommand.h
   Numerics/itktubeRidgeFFTFeatureVectorGenerator.h
   Numerics/itktubeVectorImageToListGenerator.h
   Numerics/itktubeVotingResampleImageFunction.h
@@ -55,7 +54,6 @@ set( TubeTK_Numerics_HXX_Files
   Numerics/itktubeJointHistogramImageFunction.hxx
   Numerics/itktubeNJetFeatureVectorGenerator.hxx
   Numerics/itktubeNJetImageFunction.hxx
-  Numerics/itktubeRecordOptimizationParameterProgressionCommand.hxx
   Numerics/itktubeRidgeFFTFeatureVectorGenerator.hxx
   Numerics/itktubeVectorImageToListGenerator.hxx
   Numerics/itktubeVotingResampleImageFunction.hxx
