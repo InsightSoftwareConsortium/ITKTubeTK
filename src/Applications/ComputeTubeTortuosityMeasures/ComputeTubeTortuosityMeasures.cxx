@@ -2,8 +2,7 @@
 
    Library:   TubeTK
 
-   Copyright 2010 Kitware Inc. 28 Corporate Drive,
-   Clifton Park, NY, 12065, USA.
+   Copyright Kitware Inc.
 
    All rights reserved.
 
@@ -81,8 +80,6 @@ int DoIt( int argc, char * argv[] )
     TortuosityFilterType;
 
   // Load TRE File
-  tubeStandardOutputMacro( << "\n>> Loading TRE File" );
-
   timeCollector.Start( "Loading Input TRE File" );
 
   typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
@@ -103,25 +100,6 @@ int DoIt( int argc, char * argv[] )
   typename TubeGroupType::Pointer pTubeGroup = tubeFileReader->GetGroup();
 
   timeCollector.Stop( "Loading Input TRE File" );
-
-  // Get specified smoothing method
-  tube::SmoothTubeFunctionEnum smoothingMethodEnum;
-
-  if( smoothingMethod == "SMOOTH_TUBE_USING_INDEX_AVERAGE" )
-    {
-    smoothingMethodEnum =
-      tube::SMOOTH_TUBE_USING_INDEX_AVERAGE;
-    }
-  else if( smoothingMethod == "SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN" )
-    {
-    smoothingMethodEnum =
-      tube::SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN;
-    }
-  else
-    {
-    smoothingMethodEnum =
-      tube::SMOOTH_TUBE_USING_INDEX_GAUSSIAN;
-    }
 
   // Prepare tortuosity measure flag
   int metricFlag = 0;
@@ -188,8 +166,6 @@ int DoIt( int argc, char * argv[] )
       = "TotalSquaredCurvatureMetric";
 
   // Run tortuosity filter
-  tubeStandardOutputMacro( << "\n>> Computing tortuosity measures" );
-
   timeCollector.Start( "Computing tortuosity measures" );
 
   char childName[] = "Tube";
@@ -271,7 +247,6 @@ int DoIt( int argc, char * argv[] )
       TortuosityFilterType::New();
     tortuosityFilter->SetMeasureFlag( metricFlag );
     tortuosityFilter->SetSmoothingScale( smoothingScale );
-    tortuosityFilter->SetSmoothingMethod( smoothingMethodEnum );
     tortuosityFilter->SetNumberOfBins( numberOfHistogramBins );
     tortuosityFilter->SetHistogramMin( histogramMin );
     tortuosityFilter->SetHistogramMax( histogramMax );
@@ -367,8 +342,6 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop( "Computing tortuosity measures" );
 
   // Write tortuosity measures to a CSV file
-  tubeStandardOutputMacro( << "\n>> Writing tortuosity measures to CSV" );
-
   timeCollector.Start( "Writing tortuosity measures to CSV" );
 
   vtkNew< vtkTable > table;

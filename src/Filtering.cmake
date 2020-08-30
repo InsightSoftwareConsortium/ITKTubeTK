@@ -60,8 +60,7 @@ set( TubeTK_Filtering_H_Files
   Filtering/itktubeTubeSpatialObjectToImageFilter.h
   Filtering/itktubeTubeSpatialObjectToTubeGraphFilter.h
   Filtering/tubeImageMathFilters.h
-  Filtering/tubeTubeMathFilters.h
-  Filtering/tubeTreeMathFilters.h )
+  Filtering/tubeTubeMathFilters.h )
 
 set( TubeTK_Filtering_HXX_Files
   Filtering/itkGeneralizedDistanceTransformImageFilter.txx
@@ -102,8 +101,7 @@ set( TubeTK_Filtering_HXX_Files
   Filtering/itktubeTubeSpatialObjectToImageFilter.hxx
   Filtering/itktubeTubeSpatialObjectToTubeGraphFilter.hxx
   Filtering/tubeImageMathFilters.hxx
-  Filtering/tubeTubeMathFilters.hxx
-  Filtering/tubeTreeMathFilters.hxx )
+  Filtering/tubeTubeMathFilters.hxx )
 
 set( TubeTK_Filtering_CXX_Files )
 

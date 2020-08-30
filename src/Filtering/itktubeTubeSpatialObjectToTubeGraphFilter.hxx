@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -111,7 +110,7 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
         dynamic_cast< TubeSpatialObjectType * >( ( *tubeIt ).GetPointer() );
 
     tube->RemoveDuplicatePointsInObjectSpace();
-    tube->ComputeTangentAndNormals();
+    tube->ComputeTangentsAndNormals();
 
     int numberOfPoints = tube->GetNumberOfPoints();
 

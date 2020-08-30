@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -141,9 +140,8 @@ ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
       childrenIt->GetPointer() );
     if( tube.IsNotNull() )
       {
-      ::tube::RemoveDuplicateTubePoints< TubeSpatialObjectType >( tube );
-      ::tube::ComputeTubeTangentsAndNormals< TubeSpatialObjectType >(
-        tube );
+      tube->RemoveDuplicatePointsInObjectSpace();
+      tube->ComputeTangentsAndNormals();
       const typename TubeSpatialObjectType::TubePointListType
         pointsForThisTube = tube->GetPoints();
       unsigned int count = m_PointsContainer->Size();

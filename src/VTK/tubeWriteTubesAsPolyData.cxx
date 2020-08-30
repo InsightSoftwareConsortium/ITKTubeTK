@@ -123,8 +123,21 @@ Update()
   normal2->SetNumberOfTuples( Dimension * totalNumberOfPoints );
   normal2->SetNumberOfComponents( Dimension );
 
-  // Create scalar array that indicates Ridgeness and medialness at each
-  // centerline point.
+  bool containsAlpha1Info = false;
+  vtkNew< vtkDoubleArray > alpha1;
+  alpha1->SetName( "Alpha1" );
+  alpha1->SetNumberOfTuples( totalNumberOfPoints );
+
+  bool containsAlpha2Info = false;
+  vtkNew< vtkDoubleArray > alpha2;
+  alpha2->SetName( "Alpha2" );
+  alpha2->SetNumberOfTuples( totalNumberOfPoints );
+
+  bool containsAlpha3Info = false;
+  vtkNew< vtkDoubleArray > alpha3;
+  alpha3->SetName( "Alpha3" );
+  alpha3->SetNumberOfTuples( totalNumberOfPoints );
+
   bool containsMedialnessInfo = false;
   vtkNew< vtkDoubleArray > medialness;
   medialness->SetName( "Medialness" );
@@ -134,6 +147,11 @@ Update()
   vtkNew< vtkDoubleArray > ridgeness;
   ridgeness->SetName( "Ridgeness" );
   ridgeness->SetNumberOfTuples( totalNumberOfPoints );
+
+  bool containsBranchnessInfo = false;
+  vtkNew< vtkDoubleArray > branchness;
+  branchness->SetName( "Branchness" );
+  branchness->SetNumberOfTuples( totalNumberOfPoints );
 
   bool containsIntensityInfo = false;
   vtkNew< vtkDoubleArray > intensity;
@@ -155,13 +173,29 @@ Update()
   levelness->SetName( "Levelness" );
   levelness->SetNumberOfTuples( totalNumberOfPoints );
 
+  std::list<vtkDoubleArray *> extraPointData;
+  TubeSpatialObjectType * tube =
+    static_cast< TubeSpatialObjectType * >( tubeList->begin()->GetPointer() );
+  unsigned int numExtra =
+    tube->GetPoints().begin()->GetTagScalarDictionary().size();
+  auto pntDictIt = tube->GetPoints().begin()->GetTagScalarDictionary().begin();
+  auto pntDictItEnd = tube->GetPoints().begin()->GetTagScalarDictionary().end();
+  vtkDoubleArray * extraPointField;
+  while( pntDictIt != pntDictItEnd )
+    {
+    extraPointField = vtkDoubleArray::New();
+    extraPointField->SetName( pntDictIt->first.c_str() );
+    extraPointField->SetNumberOfTuples( totalNumberOfPoints );
+    extraPointData.push_back( extraPointField );
+    ++pntDictIt;
+    }
+
   itk::SizeValueType pointId = 0;
   for( ChildrenListType::iterator tubeIt = tubeList->begin();
       tubeIt != tubeList->end();
       ++tubeIt )
     {
-    TubeSpatialObjectType * tube =
-      static_cast< TubeSpatialObjectType * >( tubeIt->GetPointer() );
+    tube = static_cast< TubeSpatialObjectType * >( tubeIt->GetPointer() );
 
     const itk::SizeValueType numberOfPoints = tube->GetNumberOfPoints();
     if( numberOfPoints < 2 )
@@ -171,19 +205,17 @@ Update()
 
     tube->RemoveDuplicatePointsInObjectSpace();
 
-    tube->ComputeTangentAndNormals();
+    tube->ComputeTangentsAndNormals();
 
     // Create a pointID list [linear for a polyline]
     vtkIdType * pointIds = new vtkIdType[numberOfPoints];
     vtkNew<vtkPolyLine> tubeLine;
 
-    const TubeSpatialObjectType::TubePointListType & tubePoints =
-      tube->GetPoints();
     typedef TubeSpatialObjectType::TubePointListType::const_iterator
       TubePointIteratorType;
-    const TubePointIteratorType tubePointsEnd = tubePoints.end();
+    const TubePointIteratorType tubePointsEnd = tube->GetPoints().end();
     itk::SizeValueType index = 0;
-    for( TubePointIteratorType pointIt = tubePoints.begin();
+    for( TubePointIteratorType pointIt = tube->GetPoints().begin();
       pointIt != tubePointsEnd;
       ++pointIt, ++pointId, ++index )
       {
@@ -209,13 +241,19 @@ Update()
         pointIt->GetNormal2InWorldSpace()[1],
         pointIt->GetNormal2InWorldSpace()[2] );
 
-      // Medialness & Ridgness
       double tf = pointIt->GetRidgeness();
       if( tf != 0.0 )
         {
         containsRidgenessInfo = true;
         }
       ridgeness->SetTuple1( pointId, tf );
+
+      tf = pointIt->GetBranchness();
+      if( tf != 0.0 )
+        {
+        containsBranchnessInfo = true;
+        }
+      branchness->SetTuple1( pointId, tf );
 
       tf = pointIt->GetMedialness();
       if( tf != 0.0 )
@@ -251,7 +289,45 @@ Update()
         containsLevelnessInfo = true;
         }
       levelness->SetTuple1( pointId, tf );
+
+      tf = pointIt->GetAlpha1();
+      if( tf != 0.0 )
+        {
+        containsAlpha1Info = true;
+        }
+      alpha1->SetTuple1( pointId, tf );
+
+      tf = pointIt->GetAlpha2();
+      if( tf != 0.0 )
+        {
+        containsAlpha2Info = true;
+        }
+      alpha2->SetTuple1( pointId, tf );
+
+      tf = pointIt->GetAlpha3();
+      if( tf != 0.0 )
+        {
+        containsAlpha3Info = true;
+        }
+      alpha3->SetTuple1( pointId, tf );
+
+      auto extraIt = extraPointData.begin();
+      auto pntExtraIt = pointIt->GetTagScalarDictionary().begin();
+      auto pntExtraItEnd = pointIt->GetTagScalarDictionary().end();
+      while( pntExtraIt != pntExtraItEnd )
+        {
+        if( (*extraIt)->GetName() != pntExtraIt->first )
+          {
+          std::cerr << "Error: point tagscalar dictionary don't match: point = "
+            << pntExtraIt->first << " != " << (*extraIt)->GetName()
+            << std::endl;
+          }
+        (*extraIt)->SetTuple1( pointId, pntExtraIt->second );
+        ++extraIt;
+        ++pntExtraIt;
+        }
       }
+
 
     tubeLine->Initialize( numberOfPoints,
                           pointIds,
@@ -289,6 +365,11 @@ Update()
     tubesCenterlineData->GetPointData()->AddArray( ridgeness.GetPointer() );
     }
 
+  if( containsBranchnessInfo == true )
+    {
+    tubesCenterlineData->GetPointData()->AddArray( branchness.GetPointer() );
+    }
+
   if( containsMedialnessInfo == true )
     {
     tubesCenterlineData->GetPointData()->AddArray( medialness.GetPointer() );
@@ -307,6 +388,14 @@ Update()
   if( containsLevelnessInfo == true )
     {
     tubesCenterlineData->GetPointData()->AddArray( levelness.GetPointer() );
+    }
+
+  auto extraIt = extraPointData.begin();
+  auto extraItEnd = extraPointData.end();
+  while( extraIt != extraItEnd )
+    {
+    tubesCenterlineData->GetPointData()->AddArray( (*extraIt) );
+    ++extraIt;
     }
 
   if( !m_CenterlineFileName.empty() )
@@ -349,9 +438,9 @@ Update()
     }
   else
     {
-    std::cout << "Unrecognized output file extension: " << extension
+    std::cerr << "Unrecognized output file extension: " << extension
       << std::endl;
-    std::cout << "Appending .vtp instead" << std::endl;
+    std::cerr << "Appending .vtp instead" << std::endl;
     std::string filenamevtp = m_FileName + ".vtp";
     vtkNew< vtkXMLPolyDataWriter > polyDataWriter;
     polyDataWriter->SetInputConnection( tubesSurfaceFilter->GetOutputPort() );

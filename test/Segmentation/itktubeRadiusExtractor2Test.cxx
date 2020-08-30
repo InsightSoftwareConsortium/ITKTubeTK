@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -150,7 +149,7 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
       }
     TubeType::Pointer tube = static_cast< TubeType * >(
       tubeIter->GetPointer() );
-    ::tube::ComputeTubeTangentsAndNormals< TubeType >( tube );
+    tube->ComputeTangentsAndNormals();
 
     std::cout << "Test tube = " << rndTubeNum << std::endl;
 

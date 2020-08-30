@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -211,7 +210,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
     if( m_BuildTangentImage )
       {
       tube->RemoveDuplicatePointsInObjectSpace();
-      tube->ComputeTangentAndNormals();
+      tube->ComputeTangentsAndNormals();
       }
 
     for( unsigned int k=0; k < tube->GetNumberOfPoints(); k++ )

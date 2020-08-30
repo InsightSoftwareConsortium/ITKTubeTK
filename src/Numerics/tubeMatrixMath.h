@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -26,6 +25,9 @@ limitations under the License.
 
 #include "tubeMacro.h"
 
+#include <itkVector.h>
+#include <itkCovariantVector.h>
+
 #include <vnl/vnl_math.h>
 #include <vnl/vnl_vector_ref.h>
 
@@ -47,6 +49,24 @@ ComputeOrthogonalVector( vnl_vector<T> x );
 template< class T >
 vnl_vector<T>
 ComputeCrossVector( vnl_vector<T> v1, vnl_vector<T> v2 );
+
+template< class ScalarT=double >
+void
+ComputeNormalsFromTangents(
+  const itk::Vector<ScalarT, 2> & prevT,
+  const itk::CovariantVector<ScalarT, 2> & prevN1,
+  const itk::Vector<ScalarT, 2> & t,
+  itk::CovariantVector<ScalarT, 2> & n1 );
+
+template< class ScalarT=double >
+void
+ComputeNormalsFromTangents(
+  const itk::Vector<ScalarT, 3> & prevT,
+  const itk::CovariantVector<ScalarT, 3> & prevN1,
+  const itk::CovariantVector<ScalarT, 3> & prevN2,
+  const itk::Vector<ScalarT, 3> & t,
+  itk::CovariantVector<ScalarT, 3> & n1,
+  itk::CovariantVector<ScalarT, 3> & n2 );
 
 /** return the new position following the vector direction */
 template< class T >

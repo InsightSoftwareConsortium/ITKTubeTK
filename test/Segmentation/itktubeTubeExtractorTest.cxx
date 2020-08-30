@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -265,7 +264,9 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
       }
 
     std::cout << "***** Attempting smooth tube *****" << std::endl;
-    xTube = ::tube::SmoothTube< TubeType >( xTube, 5 );
+    ::tube::TubeMathFilters<3> filter;
+    filter.SetInputTube( xTube );
+    filter.SmoothTube( 5 );
 
     std::cout << "***** Attempting add tube *****" << std::endl;
     if( !tubeOp->AddTube( xTube ) )

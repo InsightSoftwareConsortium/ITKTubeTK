@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -82,6 +81,140 @@ ComputeCrossVector( vnl_vector<T> v1, vnl_vector<T> v2 )
   dest( 2 ) = ( ( v1 )( 0 ) * ( v2 )( 1 ) ) - ( ( v1 )( 1 ) * ( v2 )( 0 ) );
 
   return dest;
+}
+
+
+template < class TubePointT = itk::TubeSpatialObjectPoint<3> >
+void
+ComputeNormalsFromTangents( std::vector< TubePointT > )
+{
+}
+
+template <class ScalarT>
+void
+ComputeNormalsFromTangents(
+  const itk::Vector<ScalarT, 2> & prevT,
+  const itk::CovariantVector<ScalarT, 2> & prevN1,
+  const itk::Vector<ScalarT, 2> & t,
+  itk::CovariantVector<ScalarT, 2> & n1
+  )
+{
+  double l = 0;
+  for (unsigned int i = 0; i < 2; i++)
+  {
+    l = l + t[i] * t[i];
+  }
+  l = std::sqrt(l);
+  if (Math::AlmostEquals(l, 0.0) || std::isnan(l))
+  {
+    n1 = prevN1;
+    return;
+  }
+    
+  if (PointDimensionT == 2)
+  {
+    n1[0] = t[1];
+    n1[1] = -t[0];
+    l = 0;
+    for (unsigned int i = 0; i < 2; i++)
+    {
+      l += n1[i] * prevN1[i];
+    }
+    if (l < 0)
+    {
+      n1 *= -1;
+    }
+  }
+}
+
+template <class ScalarT>
+void
+ComputeNormalsFromTangents(
+  const itk::Vector<ScalarT, 3> & prevT,
+  const itk::CovariantVector<ScalarT, 3> & prevN1,
+  const itk::CovariantVector<ScalarT, 3> & prevN2,
+  const itk::Vector<ScalarT, 3> & t,
+  itk::CovariantVector<ScalarT, 3> & n1,
+  itk::CovariantVector<ScalarT, 3> & n2
+  )
+{
+  double l = 0;
+  for (unsigned int i = 0; i < 3; i++)
+  {
+    l = l + t[i] * t[i];
+  }
+  l = std::sqrt(l);
+  if (Math::AlmostEquals(l, 0.0) || std::isnan(l))
+  {
+    n1 = prevN1;
+    n2 = prevN2;
+    return;
+  }
+    
+  // The normal to the tanget in 3D is the cross product of adjacent
+  //   tangent directions.
+  n1[0] = t[1] * prevT[2] - t[2] * prevT[1];
+  n1[1] = t[2] * prevT[0] - t[0] * prevT[2];
+  n1[2] = t[0] * prevT[1] - t[1] * prevT[0];
+
+  if (n1[0] * n1[0] + n1[1] * n1[1] + n1[2] * n1[2] == 0.0)
+  {
+    // if the normal is null, pick an orthogonal direction
+    double d = std::sqrt(t[0] * t[0] + t[1] * t[1]);
+    if (d != 0)
+    {
+      n1[0] = t[1] / d;
+      n1[1] = -t[0] / d;
+      n1[2] = 0;
+      l = 0;
+      for (unsigned int i = 0; i < 3; i++)
+      {
+        l += n1[i] * prevN1[i];
+      }
+      if (l < 0)
+      {
+        n1 *= -1;
+      }
+    }
+    else
+    {
+      d = std::sqrt(t[1] * t[1] + t[2] * t[2]);
+      if (d != 0)
+      {
+        n1[0] = 0;
+        n1[1] = t[2] / d;
+        n1[2] = -t[1] / d;
+        l = 0;
+        for (unsigned int i = 0; i < 3; i++)
+        {
+          l += n1[i] * prevN1[i];
+        }
+        if (l < 0)
+        {
+          n1 *= -1;
+        }
+      }
+      else
+      {
+        n1 = prevN1;
+      }
+    }
+  }
+
+  // The second normal is the cross product of the tangent and the
+  //   first normal
+  n2[0] = t[1] * n1[2] - t[2] * n1[1];
+  n2[1] = t[2] * n1[0] - t[0] * n1[2];
+  n2[2] = t[0] * n1[1] - t[1] * n1[0];
+  l = 0;
+  for (unsigned int i = 0; i < 3; i++)
+  {
+    l += n2[i] * prevN2[i];
+  }
+  if (l < 0)
+  {
+    n2 *= -1;
+  }
 }
 
 

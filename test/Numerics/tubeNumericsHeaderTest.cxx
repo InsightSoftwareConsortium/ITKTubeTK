@@ -28,7 +28,6 @@ limitations under the License.
 #include "itktubeJointHistogramImageFunction.h"
 #include "itktubeNJetFeatureVectorGenerator.h"
 #include "itktubeNJetImageFunction.h"
-#include "itktubeRecordOptimizationParameterProgressionCommand.h"
 #include "itktubeRidgeFFTFeatureVectorGenerator.h"
 #include "itktubeSingleValuedCostFunctionImageSource.h"
 #include "itktubeVectorImageToListGenerator.h"

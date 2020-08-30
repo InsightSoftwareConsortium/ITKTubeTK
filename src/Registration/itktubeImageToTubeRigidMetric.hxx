@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -162,7 +161,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
       dynamic_cast< TubeType * >( ( *tubeIterator ).GetPointer() );
     if( currentTube != NULL )
       {
-      currentTube->ComputeTangentAndNormals();
+      currentTube->ComputeTangentsAndNormals();
 
       const typename TubeType::TubePointListType & currentTubePoints
         = currentTube->GetPoints();

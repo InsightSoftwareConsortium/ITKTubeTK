@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -358,7 +357,7 @@ TubeXIO< TDimension >
 
     tube->SetId( tubeId );
     tube->RemoveDuplicatePointsInObjectSpace();
-    tube->ComputeTangentAndNormals();
+    tube->ComputeTangentsAndNormals();
     tube->GetProperty().SetColor( tubeColor[0], tubeColor[1],
       tubeColor[2] );
     tube->GetProperty().SetAlpha( tubeColor[3] );

@@ -2,8 +2,7 @@
 
    Library:   TubeTK
 
-   Copyright 2010 Kitware Inc. 28 Corporate Drive,
-   Clifton Park, NY, 12065, USA.
+   Copyright Kitware Inc.
 
    All rights reserved.
 
@@ -384,7 +383,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     inputRootTube->GetObjectToParentTransform()->GetParameters() );
   rootTube->Update();
 
-  rootTube->ComputeTangentAndNormals();
+  rootTube->ComputeTangentsAndNormals();
   rootTube->SetRoot( true );
 
   // visit root tube
@@ -455,7 +454,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       m_SetTubesReversed.insert( eTop.targetTubeId );
       }
 
-    curTube->ComputeTangentAndNormals();
+    curTube->ComputeTangentsAndNormals();
 
     // add tube to output
     eTop.sourceTube->AddChild( curTube );
@@ -524,8 +523,9 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       TubePQElementType epTube;
       epTube.tubeId = *itRootTubeId;
       epTube.outDegree = m_TubeGraph[epTube.tubeId].size();
-      epTube.tubeLength = ::tube::ComputeTubeLength< TubeType >(
-        m_TubeIdToObjectMap[epTube.tubeId] );
+      ::tube::TubeMathFilters< VDimension > tubeMath;
+      tubeMath.SetInputTube( m_TubeIdToObjectMap[epTube.tubeId] );
+      epTube.tubeLength = tubeMath.ComputeTubeLength();
       maxpqVOutDegree.push( epTube );
       }
     }
@@ -538,8 +538,9 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       TubePQElementType epTube;
       epTube.tubeId = itV->first;
       epTube.outDegree = itV->second.size();
-      epTube.tubeLength = ::tube::ComputeTubeLength< TubeType >(
-        m_TubeIdToObjectMap[epTube.tubeId] );
+      ::tube::TubeMathFilters< VDimension > tubeMath;
+      tubeMath.SetInputTube( m_TubeIdToObjectMap[epTube.tubeId] );
+      epTube.tubeLength = tubeMath.ComputeTubeLength();
       if( m_RemoveOrphanTubes && epTube.outDegree == 0 )
         {
         continue;
@@ -602,7 +603,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       curTube->GetObjectToParentTransform()->SetParameters(
         pCurSourceTube->GetObjectToParentTransform()->GetParameters() );
       curTube->Update();
-      curTube->ComputeTangentAndNormals();
+      curTube->ComputeTangentsAndNormals();
       curTube->SetRoot( false );
 
       outputTubeGroup->AddChild( curTube );

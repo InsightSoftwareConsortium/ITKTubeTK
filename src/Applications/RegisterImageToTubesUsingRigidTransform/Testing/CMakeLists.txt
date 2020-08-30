@@ -27,7 +27,6 @@ set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 itk_add_test(
   NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    --parameterProgression ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1ParameterProgression.h5
     DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
     DATA{${TubeTK_DATA_ROOT}/tube.tre}
     ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.h5 )

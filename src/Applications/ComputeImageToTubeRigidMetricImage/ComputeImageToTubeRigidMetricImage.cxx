@@ -26,7 +26,6 @@ limitations under the License.
 
 #include "itktubeImageToTubeRigidMetric.h"
 #include "itktubeImageToTubeRigidRegistration.h"
-#include "itktubeRecordOptimizationParameterProgressionCommand.h"
 #include "itktubeSingleValuedCostFunctionImageSource.h"
 #include "itktubeTubeToTubeTransformFilter.h"
 #include "tubeMessage.h"
