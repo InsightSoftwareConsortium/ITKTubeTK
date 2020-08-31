@@ -83,13 +83,6 @@ ComputeCrossVector( vnl_vector<T> v1, vnl_vector<T> v2 )
   return dest;
 }
 
-
-template < class TubePointT = itk::TubeSpatialObjectPoint<3> >
-void
-ComputeNormalsFromTangents( std::vector< TubePointT > )
-{
-}
-
 template <class ScalarT>
 void
 ComputeNormalsFromTangents(
@@ -105,25 +98,22 @@ ComputeNormalsFromTangents(
     l = l + t[i] * t[i];
   }
   l = std::sqrt(l);
-  if (Math::AlmostEquals(l, 0.0) || std::isnan(l))
+  if (itk::Math::AlmostEquals(l, 0.0) || std::isnan(l))
   {
     n1 = prevN1;
     return;
   }
     
-  if (PointDimensionT == 2)
+  n1[0] = t[1];
+  n1[1] = -t[0];
+  l = 0;
+  for (unsigned int i = 0; i < 2; i++)
   {
-    n1[0] = t[1];
-    n1[1] = -t[0];
-    l = 0;
-    for (unsigned int i = 0; i < 2; i++)
-    {
-      l += n1[i] * prevN1[i];
-    }
-    if (l < 0)
-    {
-      n1 *= -1;
-    }
+    l += n1[i] * prevN1[i];
+  }
+  if (l < 0)
+  {
+    n1 *= -1;
   }
 }
 
@@ -144,7 +134,7 @@ ComputeNormalsFromTangents(
     l = l + t[i] * t[i];
   }
   l = std::sqrt(l);
-  if (Math::AlmostEquals(l, 0.0) || std::isnan(l))
+  if (itk::Math::AlmostEquals(l, 0.0) || std::isnan(l))
   {
     n1 = prevN1;
     n2 = prevN2;
