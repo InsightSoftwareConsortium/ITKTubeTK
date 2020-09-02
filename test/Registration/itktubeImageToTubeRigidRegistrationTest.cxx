@@ -116,7 +116,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   SubSampleTubeTreeFilterType::Pointer subSampleTubeTreeFilter =
     SubSampleTubeTreeFilterType::New();
   subSampleTubeTreeFilter->SetInput( vesselReader->GetGroup() );
-  subSampleTubeTreeFilter->SetSampling( 30 );
+  subSampleTubeTreeFilter->SetSampling( 20 );
   try
     {
     subSampleTubeTreeFilter->Update();
@@ -201,12 +201,13 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   std::cout << indent << translation[0] << " "
     << translation[1] << " " << translation[2] << std::endl;
 
-  double knownResult[] = { 0.00819,
-    -0.003,
-    0.015,
-    -0.981,
-    -0.194,
-    -0.665 };
+  double knownResult[] = { 0.00697,
+    -0.0049,
+    0.0052,
+    -1.8605,
+    -0.2859,
+    -0.9287 };
+  int result = EXIT_SUCCESS;
   std::cout << "Parameters: " << std::endl;
   for( unsigned int ii = 0; ii < 6; ++ii )
     {
@@ -215,7 +216,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
     if( std::abs( lastParameters[ii] - knownResult[ii] ) > 0.01 )
       {
       std::cerr << "Registration did not converge to correct parameter!" << std::endl;
-      return EXIT_FAILURE;
+      result = EXIT_FAILURE;
       }
     }
 
@@ -231,7 +232,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     std::cerr << "Exception caught: " << err << std::endl;
-    return EXIT_FAILURE;
+    result = EXIT_FAILURE;
     }
   std::cout << " done.\n";
 
@@ -247,7 +248,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     std::cerr << "ExceptionObject: " << err << std::endl;
-    return EXIT_FAILURE;
+    result = EXIT_FAILURE;
     }
 
   typedef itk::SpatialObjectToImageFilter< TubeTreeType, ImageType>
@@ -257,7 +258,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
 
   ImageType::Pointer img = imageReader->GetOutput();
 
-  const double decimationFactor = 4.0;
+  const double decimationFactor = 1.0;
   ImageType::SizeType size = img->GetLargestPossibleRegion().GetSize();
   size[0] = size[0] / decimationFactor;
   size[1] = size[1] / decimationFactor;
@@ -285,5 +286,5 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   imageWriter->Update();
   std::cout << "done." << std::endl;
 
-  return EXIT_SUCCESS;
+  return result;
 }
