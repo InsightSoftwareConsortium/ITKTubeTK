@@ -628,7 +628,9 @@ TubeExtractor<TInputImage>
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  tube = ::tube::SmoothTube< TubeType >( tube, h );
+  ::tube::TubeMathFilters<ImageDimension> filter;
+  filter.SetInputTube( tube );
+  filter.SmoothTube( h );
 }
 
 /**

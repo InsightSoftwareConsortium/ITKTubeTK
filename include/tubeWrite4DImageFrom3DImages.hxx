@@ -19,6 +19,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+#ifndef __tubeWrite4DImageFrom3DImages_hxx
+#define __tubeWrite4DImageFrom3DImages_hxx
+
 
 #include "tubeWrite4DImageFrom3DImages.h"
 
@@ -70,9 +73,9 @@ SetNthInputImage( unsigned int outputIndex,
     inRegion = img->GetLargestPossibleRegion();
 
     typename OutputImageType::SizeType outSize;
-    OutputImageType::SpacingType outSpacing;
-    OutputImageType::IndexType outIndex;
-    OutputImageType::DirectionType outDirection;
+    typename OutputImageType::SpacingType outSpacing;
+    typename OutputImageType::IndexType outIndex;
+    typename OutputImageType::DirectionType outDirection;
     outDirection.SetIdentity();
     for( unsigned int i=0; i<3; ++i )
       {
@@ -146,3 +149,5 @@ PrintSelf( std::ostream & os, itk::Indent indent ) const
 }
 
 }; //namespace
+
+#endif 
