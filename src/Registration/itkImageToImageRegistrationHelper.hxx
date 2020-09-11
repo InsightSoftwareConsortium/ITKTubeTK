@@ -1143,18 +1143,11 @@ ImageToImageRegistrationHelper<TImage>
       ResampleImageFilterType::New();
     resampler->SetInput( mImage );
     resampler->SetInterpolator( interpolator.GetPointer() );
-    // We should not be casting away constness here, but
-    // SetOutputParametersFromImage
-    // Does not change the image.  This is needed to workaround fixes to
-    // ITK
-    //typename ImageType::Pointer tmp = const_cast<ImageType *>(
-      //m_FixedImage.GetPointer() );
-    //resampler->SetOutputParametersFromImage( tmp );
     resampler->SetReferenceImage( m_FixedImage );
     resampler->UseReferenceImageOn();
     typename MatrixTransformType::Pointer tmpTrans = MatrixTransformType::New();
-    tmpTrans->SetFixedParameters( aTrans->GetFixedParameters() );
     tmpTrans->SetIdentity();
+    tmpTrans->SetFixedParameters( aTrans->GetFixedParameters() );
     if( portion != 1.0 )
       {
       typename MatrixTransformType::ParametersType aTransParams =
@@ -1279,9 +1272,11 @@ ImageToImageRegistrationHelper<TImage>
 template <class TImage>
 typename TImage::ConstPointer
 ImageToImageRegistrationHelper<TImage>
-::GetFinalMovingImage( InterpolationMethodEnumType interpolationMethod )
+::GetFinalMovingImage( InterpolationMethodEnumType interpolationMethod,
+  PixelType defaultPixelValue)
 {
-  return ResampleImage( interpolationMethod );
+  return ResampleImage( interpolationMethod, nullptr, nullptr, nullptr,
+    defaultPixelValue, 1.0 );
 }
 
 template <class TImage>

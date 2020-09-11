@@ -242,7 +242,7 @@ public:
   // Returns the moving image resampled into the space of the fixed image
   typename TImage::ConstPointer  GetFinalMovingImage(
     InterpolationMethodEnumType interp = OptimizedRegistrationMethodType
-    ::LINEAR_INTERPOLATION );
+    ::LINEAR_INTERPOLATION, PixelType defaultPixelValue = 0 );
 
   // **************
   // **************

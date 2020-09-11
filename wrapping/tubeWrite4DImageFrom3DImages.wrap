@@ -1,0 +1,10 @@
+itk_wrap_include( tubeWrite4DImageFrom3DImages.h )
+itk_wrap_include( itkImage.h )
+
+itk_wrap_named_class("tube::Write4DImageFrom3DImages" tubeWrite4DImageFrom3DImages POINTER)
+  foreach(t ${WRAP_ITK_SCALAR})
+    foreach(d 2 3)
+      itk_wrap_template("${ITKM_${t}}${d}"  "itk::Image<${ITKT_${t}},${d}>")
+    endforeach()
+ endforeach()
+itk_end_wrap_class()

@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -122,7 +121,9 @@ public:
     PixelType defaultPixelValue = 0,
     double portionOfTransformToApply = 1.0 );
 
-  const ImageType * GetFinalMovingImage( std::string interp );
+  const ImageType * GetFinalMovingImage(
+    std::string interp="LINEAR_INTERPOLATION",
+    PixelType defaultPixelValue = 0 );
 
   //
   // Compare results with a baseline
