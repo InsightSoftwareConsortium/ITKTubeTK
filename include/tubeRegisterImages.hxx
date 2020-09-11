@@ -101,6 +101,11 @@ RegisterImages< TImage >
     m_Filter->SetRegistration(
       FilterType::RegistrationMethodEnumType::BSPLINE );
     }
+  else if( !strcmp(reg.c_str(), "PIPELINE_RIGID") )
+    {
+    m_Filter->SetRegistration(
+      FilterType::RegistrationMethodEnumType::PIPELINE_RIGID );
+    }
   else if( !strcmp(reg.c_str(), "PIPELINE_AFFINE") )
     {
     m_Filter->SetRegistration(
@@ -170,27 +175,31 @@ RegisterImages< TImage >
 template< class TImage >
 const typename RegisterImages<TImage>::ImageType *
 RegisterImages< TImage >
-::GetFinalMovingImage( std::string inter )
+::GetFinalMovingImage( std::string inter, PixelType defaultPixelValue )
 {
   if( !strcmp(inter.c_str(), "LINEAR_INTERPOLATION" ) )
     {
     return m_Filter->GetFinalMovingImage( FilterType::
-      OptimizedRegistrationMethodType::LINEAR_INTERPOLATION );
+      OptimizedRegistrationMethodType::LINEAR_INTERPOLATION,
+      defaultPixelValue );
     }
   else if( !strcmp(inter.c_str(), "BSPLINE_INTERPOLATION" ) )
     {
     return m_Filter->GetFinalMovingImage( FilterType::
-      OptimizedRegistrationMethodType::BSPLINE_INTERPOLATION );
+      OptimizedRegistrationMethodType::BSPLINE_INTERPOLATION,
+      defaultPixelValue );
     }
   else if( !strcmp(inter.c_str(), "SINC_INTERPOLATION" ) )
     {
     return m_Filter->GetFinalMovingImage( FilterType::
-      OptimizedRegistrationMethodType::SINC_INTERPOLATION );
+      OptimizedRegistrationMethodType::SINC_INTERPOLATION,
+      defaultPixelValue );
     }
   else // Assume Nearest Neighbor
     {
     return m_Filter->GetFinalMovingImage( FilterType::
-      OptimizedRegistrationMethodType::NEAREST_NEIGHBOR_INTERPOLATION );
+      OptimizedRegistrationMethodType::NEAREST_NEIGHBOR_INTERPOLATION,
+      defaultPixelValue );
     }
 }
 
