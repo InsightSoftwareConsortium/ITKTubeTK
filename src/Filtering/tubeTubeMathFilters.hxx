@@ -350,7 +350,7 @@ InterpolatePath(
   typename TubeType::TubePointListType & newTubePoints )
 {
   double projLen = 0;
-  TubePointType::PointType midPoint;
+  typename TubePointType::PointType midPoint;
   for( unsigned int i=0; i<DimensionT; ++i )
     {
     double tf = (parentNearestTubePoint->GetPositionInObjectSpace()[i]
