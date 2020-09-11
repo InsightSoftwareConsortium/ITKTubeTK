@@ -353,6 +353,7 @@ MergeAdjacentImagesFilter< TImage >
     m_Input2, NULL, NULL, m_Background );
 
   // timeCollector.Stop( "Resample Image" );
+  typedef typename itk::Image<float, ImageDimension> FloatImageType;
 
   if( m_BlendUsingAverage )
     {
@@ -405,7 +406,7 @@ MergeAdjacentImagesFilter< TImage >
     input2Reg->Allocate();
     input2Reg->FillBuffer( m_Background );
 
-    typename ImageType::Pointer outputMap = ImageType::New();
+    typename FloatImageType::Pointer outputMap = FloatImageType::New();
     outputMap->CopyInformation( tmpImage );
     outputMap->SetRegions( tmpImage->GetLargestPossibleRegion() );
     outputMap->Allocate();
@@ -420,7 +421,7 @@ MergeAdjacentImagesFilter< TImage >
     itk::ImageRegionIteratorWithIndex< ImageType > iterOut( m_Output,
       m_Output->GetLargestPossibleRegion() );
 
-    itk::ImageRegionIteratorWithIndex< ImageType > iterOutMap( outputMap,
+    itk::ImageRegionIteratorWithIndex< FloatImageType > iterOutMap( outputMap,
       outputMap->GetLargestPossibleRegion() );
 
     while( !iter2.IsAtEnd() )
@@ -459,15 +460,15 @@ MergeAdjacentImagesFilter< TImage >
     // timeCollector.Stop( "Resample Image2" );
 
     // timeCollector.Start( "Out Distance Map" );
-    typename ImageType::Pointer outputDistMap = nullptr;
-    typename ImageType::Pointer outputVoronoiMap = nullptr;
+    typename FloatImageType::Pointer outputDistMap = nullptr;
+    typename FloatImageType::Pointer outputVoronoiMap = nullptr;
     if( m_UseFastBlending )
       {
       typedef typename itk::GeneralizedDistanceTransformImageFilter<
-        ImageType, ImageType >   MapFilterType;
+        FloatImageType, FloatImageType, FloatImageType >   MapFilterType;
       typename MapFilterType::Pointer mapDistFilter = MapFilterType::New();
 
-      typedef itk::BinaryThresholdImageFilter<ImageType, ImageType>
+      typedef itk::BinaryThresholdImageFilter<FloatImageType, FloatImageType>
         Indicator;
       typename Indicator::Pointer indicator = Indicator::New();
 
@@ -489,8 +490,8 @@ MergeAdjacentImagesFilter< TImage >
       }
     else
       {
-      typedef typename itk::DanielssonDistanceMapImageFilter< ImageType,
-        ImageType>   MapFilterType;
+      typedef typename itk::DanielssonDistanceMapImageFilter< FloatImageType,
+        FloatImageType, FloatImageType >   MapFilterType;
       typename MapFilterType::Pointer mapDistFilter = MapFilterType::New();
       mapDistFilter->SetInput( outputMap );
       mapDistFilter->SetInputIsBinary( false );
@@ -503,14 +504,14 @@ MergeAdjacentImagesFilter< TImage >
 
     // timeCollector.Start( "Distance Map Selection" );
 
-    typename ImageType::Pointer vorImageMap = ImageType::New();
+    typename FloatImageType::Pointer vorImageMap = FloatImageType::New();
     vorImageMap->CopyInformation( m_Output );
     vorImageMap->SetRegions( m_Output->GetLargestPossibleRegion() );
     vorImageMap->Allocate();
     vorImageMap->FillBuffer( 1 );
-    itk::ImageRegionConstIteratorWithIndex< ImageType > iterOutVor(
+    itk::ImageRegionConstIteratorWithIndex< FloatImageType > iterOutVor(
       outputVoronoiMap, outputVoronoiMap->GetLargestPossibleRegion() );
-    itk::ImageRegionIteratorWithIndex< ImageType > iterVorMap(
+    itk::ImageRegionIteratorWithIndex< FloatImageType > iterVorMap(
       vorImageMap, vorImageMap->GetLargestPossibleRegion() );
     while( !iterOutVor.IsAtEnd() )
       {
@@ -525,16 +526,16 @@ MergeAdjacentImagesFilter< TImage >
 
     // timeCollector.Stop( "Distance Map Selection" );
 
-    typename ImageType::Pointer vorImageDistMap = nullptr;
+    typename FloatImageType::Pointer vorImageDistMap = nullptr;
     if( m_UseFastBlending )
       {
       typedef typename itk::GeneralizedDistanceTransformImageFilter<
-        ImageType, ImageType >   MapFilterType;
+        FloatImageType, FloatImageType >   MapFilterType;
       typename MapFilterType::Pointer mapVorFilter = MapFilterType::New();
 
       // timeCollector.Start( "Voronoi Distance Map" );
 
-      typedef itk::BinaryThresholdImageFilter<ImageType, ImageType>
+      typedef itk::BinaryThresholdImageFilter<FloatImageType, FloatImageType>
         Indicator;
       typename Indicator::Pointer indicator2 = Indicator::New();
 
@@ -560,7 +561,7 @@ MergeAdjacentImagesFilter< TImage >
       // timeCollector.Start( "Voronoi Distance Map" );
 
       typedef typename itk::SignedDanielssonDistanceMapImageFilter<
-        ImageType, ImageType>  SignedMapFilterType;
+        FloatImageType, FloatImageType>  SignedMapFilterType;
       typename SignedMapFilterType::Pointer mapVorFilter =
         SignedMapFilterType::New();
 
@@ -576,10 +577,10 @@ MergeAdjacentImagesFilter< TImage >
 
     iter2.GoToBegin();
     iterOut.GoToBegin();
-    itk::ImageRegionIteratorWithIndex< ImageType > iterOutDistMap(
+    itk::ImageRegionIteratorWithIndex< FloatImageType > iterOutDistMap(
       outputDistMap, outputDistMap->GetLargestPossibleRegion() );
 
-    itk::ImageRegionIteratorWithIndex< ImageType > iterVorDistMap(
+    itk::ImageRegionIteratorWithIndex< FloatImageType > iterVorDistMap(
       vorImageDistMap, vorImageDistMap->GetLargestPossibleRegion() );
 
     while( !iter2.IsAtEnd() )

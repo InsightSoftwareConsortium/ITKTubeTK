@@ -103,7 +103,7 @@ public:
    * \sa MatrixOffsetTransformBase::SetMatrix() */
   virtual void SetMatrix(const MatrixType & matrix) ITK_OVERRIDE;
   virtual void SetMatrix(const MatrixType & matrix, 
-    TParametersValueType tolerance) ITK_OVERRIDE;
+    const TParametersValueType tolerance) ITK_OVERRIDE;
 
   /** Set the transformation from a container of parameters
    * This is typically used by optimizers.
