@@ -501,10 +501,10 @@ TubeExtractor<TInputImage>
     if( m_UseSeedMaskAsProbabilities )
       {
       typedef itk::ImageDuplicator<TubeMaskImageType> DuplicatorType;
-      DuplicatorType::Pointer duplicator = DuplicatorType::New();
+      typename DuplicatorType::Pointer duplicator = DuplicatorType::New();
       duplicator->SetInputImage(m_SeedMask);
       duplicator->Update();
-      TubeMaskImageType::Pointer tmpSeedMask = duplicator->GetOutput();
+      typename TubeMaskImageType::Pointer tmpSeedMask = duplicator->GetOutput();
       
       typedef itk::MinimumMaximumImageCalculator<TubeMaskImageType> MinMaxCalcType;
       typename MinMaxCalcType::Pointer maxCalc = MinMaxCalcType::New();
