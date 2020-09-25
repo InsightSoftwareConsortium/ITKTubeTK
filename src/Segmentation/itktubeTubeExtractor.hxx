@@ -532,7 +532,7 @@ TubeExtractor<TInputImage>
             this->ExtractTubeInObjectSpace( pnt, count, verbose );
           if( !xTube.IsNull() )
             {
-            m_RidgeExtractor->DeleteTube<TubeMaskImageType>( xTube, tmpSeedMask );
+            m_RidgeExtractor->DeleteTube< typename TubeExtractor<TInputImage>::TubeMaskImageType >( xTube, tmpSeedMask );
             successRatio = (successRatio*9 + 1)/10;
             std::cout << "   Ridge size = " << xTube->GetNumberOfPoints()
               << std::endl;
