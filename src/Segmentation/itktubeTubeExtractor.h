@@ -189,6 +189,11 @@ public:
    * Get the radius extractor */
   RadiusExtractorType * GetRadiusExtractor( void );
 
+  /** Set final ridge scale and radius values to the values specified rather
+   *   than optimize. */
+  itkSetMacro( OptimizeRadius, bool );
+  itkGetMacro( OptimizeRadius, bool );
+
 
   /***********/
   /***********/
@@ -213,9 +218,25 @@ public:
   itkSetConstObjectMacro( SeedMask, TubeMaskImageType );
   itkGetConstObjectMacro( SeedMask, TubeMaskImageType );
 
-  /** Set Seed Scale Image */
+  /** Set initial ridge scale and initial radius estimate based on these
+   *    the values in this image */
   itkSetConstObjectMacro( SeedRadiusMask, ImageType );
   itkGetConstObjectMacro( SeedRadiusMask, ImageType );
+
+  /** SeedMask is interpreted as ordered values for initiating 
+   *    seed extractions */
+  itkSetMacro( UseSeedMaskAsProbabilities, bool );
+  itkGetMacro( UseSeedMaskAsProbabilities, bool );
+
+  itkSetMacro( SeedExtractionMinimumSuccessRatio, double );
+  itkGetMacro( SeedExtractionMinimumSuccessRatio, double );
+
+  itkSetMacro( SeedExtractionMinimumProbability, double );
+  itkGetMacro( SeedExtractionMinimumProbability, double );
+
+  /** Set Seed Mask Stride */
+  itkSetMacro( SeedMaskMaximumNumberOfPoints, unsigned int );
+  itkGetMacro( SeedMaskMaximumNumberOfPoints, unsigned int );
 
   /** Set Seed Mask Stride */
   itkSetMacro( SeedMaskStride, int );
@@ -321,8 +342,14 @@ private:
   RadiusListType                      m_SeedRadiiInObjectSpaceList;
 
   typename TubeMaskImageType::ConstPointer m_SeedMask;
+  bool                                     m_UseSeedMaskAsProbabilities;
+  unsigned int                             m_SeedMaskMaximumNumberOfPoints;
+  double                                   m_SeedExtractionMinimumSuccessRatio;
+  double                                   m_SeedExtractionMinimumProbability;
   typename ImageType::ConstPointer         m_SeedRadiusMask;
   int                                      m_SeedMaskStride;
+
+  bool                                     m_OptimizeRadius;
 
 
 
