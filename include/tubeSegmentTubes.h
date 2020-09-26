@@ -139,8 +139,22 @@ public:
 
   tubeWrapSetObjectMacro( SeedMask, TubeMaskImageType, Filter );
   tubeWrapGetConstObjectMacro( SeedMask, TubeMaskImageType, Filter );
+
   tubeWrapSetObjectMacro( SeedRadiusMask, ImageType, Filter );
   tubeWrapGetConstObjectMacro( SeedRadiusMask, ImageType, Filter );
+
+  tubeWrapSetMacro( UseSeedMaskAsProbabilities, bool, Filter );
+  tubeWrapGetMacro( UseSeedMaskAsProbabilities, bool, Filter );
+
+  tubeWrapSetMacro( SeedExtractionMinimumSuccessRatio, double, Filter );
+  tubeWrapGetMacro( SeedExtractionMinimumSuccessRatio, double, Filter );
+
+  tubeWrapSetMacro( SeedExtractionMinimumProbability, double, Filter );
+  tubeWrapGetMacro( SeedExtractionMinimumProbability, double, Filter );
+
+  tubeWrapSetMacro( SeedMaskMaximumNumberOfPoints, unsigned int, Filter );
+  tubeWrapGetMacro( SeedMaskMaximumNumberOfPoints, unsigned int, Filter );
+
   tubeWrapSetMacro( SeedMaskStride, int, Filter );
   tubeWrapGetMacro( SeedMaskStride, int, Filter );
 
