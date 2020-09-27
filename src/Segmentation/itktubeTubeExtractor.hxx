@@ -365,23 +365,50 @@ TubeExtractor<TInputImage>
 ::ExtractTubeInObjectSpace( const PointType & x, unsigned int tubeID,
   bool verbose )
 {
+  if( verbose )
+    {
+    std::cout << "TubeExtractor: ExtracTubeInObjectSpace: Start" << std::endl;
+    }
+
   if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
   IndexType xi;
-  this->m_RidgeExtractor->GetTubeMaskImage()->TransformPhysicalPointToIndex( x,
-    xi );
+  if( !this->m_RidgeExtractor->GetTubeMaskImage()
+        ->TransformPhysicalPointToIndex( x, xi ) )
+    {
+    if( verbose )
+      {
+      std::cout << "Point maps to outside of image. Aborting."
+        << std::endl;
+      return nullptr;
+      }
+    }
+    
+  if( verbose )
+    {
+    std::cout << "Physical point = " << x << std::endl;
+    std::cout << "Index point = " << xi << std::endl;
+    std::cout << "Mask value = "
+      << this->m_RidgeExtractor->GetTubeMaskImage()->GetPixel( xi )
+      << std::endl;
+    }
+
   if( this->m_RidgeExtractor->GetTubeMaskImage()->GetPixel( xi ) != 0 )
     {
-    if( this->GetDebug() )
+    if( verbose || this->GetDebug() )
       {
       std::cout << "Initial pixel on prior tube." << std::endl;
       std::cout << "  x = " << x << std::endl;
       std::cout << "  xi = " << xi << std::endl;
       }
     return nullptr;
+    }
+  else if( verbose )
+    {
+    std::cout << "No overlapping tube" << std::endl;
     }
 
   typename TubeType::Pointer tube = this->m_RidgeExtractor->ExtractRidge( x,
@@ -542,7 +569,7 @@ TubeExtractor<TInputImage>
     {
     PointType x = *seedIter;
 
-    std::cout << "Extracting from index point " << x
+    std::cout << "Extracting from object space point " << x
       << " (" << (count/(double)maxCount)*100 << "%)" << std::endl;
 
     if( useRadiiList )
@@ -554,15 +581,15 @@ TubeExtractor<TInputImage>
 
     typename TubeType::Pointer xTube =
       this->ExtractTubeInObjectSpace( x, count, verbose );
-    if( !xTube.IsNull() )
+    if( xTube.IsNull() )
+      {
+      std::cout << "   Ridge not found" << std::endl;
+      }
+    else
       {
       foundOneTube = true;
       std::cout << "   Ridge size = " << xTube->GetNumberOfPoints()
         << std::endl;
-      }
-    else
-      {
-      std::cout << "   Ridge not found" << std::endl;
       }
 
     ++seedIter;

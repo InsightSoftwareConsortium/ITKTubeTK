@@ -68,6 +68,8 @@ public:
 
   tubeWrapSetMacro( Gap, double, Filter );
   tubeWrapGetMacro( Gap, double, Filter );
+  tubeWrapSetMacro( ObjectWidth, double, Filter );
+  tubeWrapGetMacro( ObjectWidth, double, Filter );
   tubeWrapSetMacro( NotObjectWidth, double, Filter );
   tubeWrapGetMacro( NotObjectWidth, double, Filter );
   tubeWrapGetConstObjectMacro( ObjectMask, LabelMapType, Filter );

@@ -103,6 +103,8 @@ int DoIt( int argc, char * argv[] )
     = SegmentTubesFilterType::New();
   segmentTubesFilter->SetInput( inputImage );
 
+  segmentTubesFilter->SetVerbose( verbose );
+
   if( !radiusInputVolume.empty() )
     {
     typename ReaderType::Pointer radiusReader = ReaderType::New();

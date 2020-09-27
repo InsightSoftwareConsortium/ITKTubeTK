@@ -674,7 +674,7 @@ RidgeExtractor<TInputImage>
 ::TraverseOneWay( PointType & newX, VectorType & newT,
                   MatrixType & newN, int dir, bool verbose )
 {
-  if( this->GetDebug() )
+  if( verbose || this->GetDebug() )
     {
     std::cout << "Ridge::TraverseOneWay" << std::endl;
     }
@@ -1477,7 +1477,7 @@ RidgeExtractor<TInputImage>
 {
   ContinuousIndexType newXI;
   m_InputImage->TransformPhysicalPointToContinuousIndex( newX, newXI );
-  if( this->GetDebug() )
+  if( verbose || this->GetDebug() )
     {
     std::cout << "Ridge::LocalRidge" << std::endl;
     std::cout << "  x = " << newX << std::endl;
@@ -1708,6 +1708,8 @@ typename RidgeExtractor<TInputImage>::TubeType *
 RidgeExtractor<TInputImage>
 ::ExtractRidge( const PointType & newX, int tubeId, bool verbose )
 {
+  std::cout << "RidgeExtractor: ExtractRidge: Start" << std::endl;
+
   double scaleOriginal = this->GetScale();
   double scale0 = scaleOriginal;
   double radiusOriginal = scaleOriginal;
