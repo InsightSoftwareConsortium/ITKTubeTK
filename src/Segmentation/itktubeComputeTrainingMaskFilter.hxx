@@ -35,7 +35,7 @@ ComputeTrainingMaskFilter< TInputImage, TLabelMap >
 ::ComputeTrainingMaskFilter()
 {
   m_Gap = 0;
-  m_ObjectWidth = 1.0;
+  m_ObjectWidth = 0.0;
   m_NotObjectWidth = 1.0;
   m_BinaryThinning = BinaryThinningFilterType::New();
 

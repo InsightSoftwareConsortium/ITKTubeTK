@@ -46,10 +46,18 @@
       <longflag>gap</longflag>
     </double>
     <double>
+      <name>objectWidth</name>
+      <label>Object Width</label>
+      <description>A double value specifying the width of the object by an expert, that would be regarded as object expert mask.</description>
+      <longflag>objectWidth</longflag>
+      <default>1</default>
+    </double>
+    <double>
       <name>notObjectWidth</name>
       <label>Not Object Width</label>
       <description>A double value specifying the width around the region marked as object by an expert, that would be regarded as not-object expert mask.</description>
       <longflag>notObjectWidth</longflag>
+      <default>1</default>
     </double>
   </parameters>
 </executable>
