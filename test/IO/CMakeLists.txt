@@ -90,7 +90,7 @@ itk_add_test(
     CompareTextFiles
     -b DATA{${TubeTK_DATA_ROOT}/TubeExtractorIOTest.mtp}
     -t ${ITK_TEST_OUTPUT_DIR}/itktubeTubeExtractorIOTest.mtp )
-set_property( TEST itktubeTubeExtractorIOTest-Compare APPEND PROPERTY DEPENDS
+set_tests_properties( itktubeTubeExtractorIOTest-Compare PROPERTIES DEPENDS
   itktubeTubeExtractorIOTest )
 
 itk_add_test( 
@@ -99,7 +99,7 @@ itk_add_test(
     CompareTextFiles
     -b DATA{${TubeTK_DATA_ROOT}/TubeExtractorIOTest.mtp}
     -t ${ITK_TEST_OUTPUT_DIR}/itktubeTubeExtractorIOTest2.mtp )
-set_property( TEST itktubeTubeExtractorIOTest-Compare2 APPEND PROPERTY DEPENDS
+set_tests_properties( itktubeTubeExtractorIOTest-Compare2 PROPERTIES DEPENDS
   itktubeTubeExtractorIOTest )
 
 itk_add_test( 
@@ -117,5 +117,5 @@ itk_add_test(
     CompareTextFiles
     -b DATA{${TubeTK_DATA_ROOT}/TubeXIOTest.tre}
     -t ${ITK_TEST_OUTPUT_DIR}/itktubeTubeXIOTest.tre )
-set_property( TEST itktubeTubeXIOTest-Compare APPEND PROPERTY DEPENDS
+set_tests_properties( itktubeTubeXIOTest-Compare PROPERTIES DEPENDS
   itktubeTubeXIOTest )
