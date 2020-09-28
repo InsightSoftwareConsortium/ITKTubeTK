@@ -1268,9 +1268,9 @@ RidgeExtractor<TInputImage>
     pnt.SetCurvature( curvature );
     pnt.SetIntensity( intensity );
     pnt.SetLevelness( levelness );
-    //pnt.SetRadiusInObjectSpace( this->GetScale() );
-    //pnt.SetMedialness( 0 );
-    //pnt.SetBranchness( 0 );
+    pnt.SetRadiusInObjectSpace( this->GetScale() );
+    pnt.SetMedialness( 0 );
+    pnt.SetBranchness( 0 );
     pnts.push_back( pnt );
     ++tubePointCount;
 
@@ -1708,8 +1708,6 @@ typename RidgeExtractor<TInputImage>::TubeType *
 RidgeExtractor<TInputImage>
 ::ExtractRidge( const PointType & newX, int tubeId, bool verbose )
 {
-  std::cout << "RidgeExtractor: ExtractRidge: Start" << std::endl;
-
   double scaleOriginal = this->GetScale();
   double scale0 = scaleOriginal;
   double radiusOriginal = scaleOriginal;
@@ -1882,14 +1880,12 @@ RidgeExtractor<TInputImage>
 
   if( m_Tube->GetPoints().size() < 2.0/m_StepX )
     {
-    std::cout << "Ridge too short, deleting." << std::endl;
     if( m_StatusCallBack )
       {
       m_StatusCallBack( "Extract: Ridge", "Too short", 0 );
       }
     DeleteTube( m_Tube );
     m_Tube = NULL;
-    std::cout << "Ridge returning null." << std::endl;
     return nullptr;
     }
 

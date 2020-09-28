@@ -522,6 +522,7 @@ TubeExtractor<TInputImage>
 ::ProcessSeeds( bool verbose )
 {
   this->GetRidgeExtractor()->ResetFailureCodeCounts();
+  double defaultR = this->GetRadiusInObjectSpace();
 
   if( this->m_SeedMask.IsNotNull() )
     {
@@ -538,20 +539,26 @@ TubeExtractor<TInputImage>
       unsigned int count = 0;
       double successRatio = 1;
       double maxValue = m_SeedExtractionMinimumProbability;
-      while( ( m_SeedMaskMaximumNumberOfPoints != 0
+      while( ( m_SeedMaskMaximumNumberOfPoints == 0
                || count < m_SeedMaskMaximumNumberOfPoints )
              && successRatio >= m_SeedExtractionMinimumSuccessRatio
              && maxValue >= m_SeedExtractionMinimumProbability )
         {
+        std::cout << "Count = " << count << std::endl;
         maxCalc->SetImage( tmpSeedMask );
         maxCalc->ComputeMaximum();
-        double maxValue = maxCalc->GetMaximum();
+        maxValue = maxCalc->GetMaximum();
         typename ImageType::IndexType maxIndx = maxCalc->GetIndexOfMaximum();
-        if( maxValue > m_SeedExtractionMinimumProbability )
+        if( maxValue >= m_SeedExtractionMinimumProbability )
           {
           if( this->m_SeedRadiusMask )
             {
-            this->SetRadiusInObjectSpace( m_SeedRadiusMask->GetPixel(maxIndx) );
+            double r = m_SeedRadiusMask->GetPixel(maxIndx);
+            if( r <= 0 )
+              {
+              r = defaultR;
+              }
+            this->SetRadiusInObjectSpace( r );
             }
           PointType pnt;
           this->GetInputImage()->TransformIndexToPhysicalPoint( maxIndx, pnt );
@@ -566,6 +573,18 @@ TubeExtractor<TInputImage>
             }
           else
             {
+            typedef itk::NeighborhoodIterator< TubeMaskImageType >
+              NeighborIterType;
+            typename NeighborIterType::RadiusType radius;
+            radius.Fill(5);
+            NeighborIterType iter( radius, tmpSeedMask,
+              tmpSeedMask->GetLargestPossibleRegion() );
+            iter.SetLocation( maxIndx );
+            bool inside;
+            for( unsigned int i=0; i<iter.Size(); ++i )
+              {
+              iter.SetPixel( i, 0, inside );
+              }
             successRatio = (successRatio*9 + 0)/10;
             std::cout << "   Ridge not found" << std::endl;
             }

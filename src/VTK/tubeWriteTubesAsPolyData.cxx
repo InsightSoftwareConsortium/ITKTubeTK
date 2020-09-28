@@ -224,8 +224,8 @@ Update()
       pointIds[index] = pointId;
 
       // Insert points using the element spacing information.
-      tubeSpatialPoints->SetPoint( pointId, -1 * point[0],
-        -1 * point[1], point[2] );
+      tubeSpatialPoints->SetPoint( pointId, point[0],
+        point[1], point[2] );
       // TubeId
       tubeIds->SetTuple1( pointId, tube->GetId() );
 
