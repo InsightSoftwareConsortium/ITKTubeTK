@@ -364,9 +364,9 @@ RadiusExtractor3<TInputImage>
       {
       m_KernelValue[i] /= m_KernelCount[i];
       }
-    std::cout << m_KernelValue[i] << "(" << m_KernelCount[i] << ") ";
+    //std::cout << m_KernelValue[i] << "(" << m_KernelCount[i] << ") ";
     }
-  std::cout << std::endl;
+  //std::cout << std::endl;
 }
 
 template< class TInputImage >
@@ -529,7 +529,7 @@ RadiusExtractor3<TInputImage>
     {
     m_KernelOptimalRadius = 1;
     }
-  std::cout << "   " << thresh << " : " << m_KernelOptimalRadius << std::endl;
+  //std::cout << "   " << thresh << " : " << m_KernelOptimalRadius << std::endl;
 
   switch( m_RadiusCorrectionFunction )
     {

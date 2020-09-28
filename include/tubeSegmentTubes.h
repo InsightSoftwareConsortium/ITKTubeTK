@@ -118,6 +118,9 @@ public:
   tubeWrapSetMacro( RadiusInObjectSpace, double, Filter );
   tubeWrapGetMacro( RadiusInObjectSpace, double, Filter );
 
+  tubeWrapSetMacro( OptimizeRadius, bool, Filter );
+  tubeWrapGetMacro( OptimizeRadius, bool, Filter );
+
   /***/
   /***/
   /***/

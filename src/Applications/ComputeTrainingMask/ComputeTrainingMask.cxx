@@ -96,6 +96,7 @@ int DoIt( int argc, char * argv[] )
   filter->SetInput( imReader->GetOutput() );
   filter->SetGap( gap );
   filter->SetNotObjectWidth( notObjectWidth );
+  filter->SetObjectWidth( objectWidth );
   filter->Update();
   progress = 0.65;
   progressReporter.Report( progress );
