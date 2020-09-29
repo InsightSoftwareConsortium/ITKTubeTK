@@ -444,10 +444,43 @@ TubeExtractor<TInputImage>
       }
     }
 
-  if( m_OptimizeRadius && !this->m_RadiusExtractor->ExtractRadii( tube, verbose ) )
+  if( m_OptimizeRadius )
     {
-    return nullptr;
+    if( !this->m_RadiusExtractor->ExtractRadii( tube, verbose ) )
+      {
+      return nullptr;
+      }
     }
+  else
+    {
+    if( m_SeedRadiusMask )
+      {
+      double defaultR = this->m_RadiusExtractor->GetRadiusStart();
+      typename std::vector< TubePointType >::iterator pntIter;
+      pntIter = tube->GetPoints().begin();
+      typename std::vector< TubePointType >::iterator pntIterEnd;
+      pntIterEnd = tube->GetPoints().end();
+      while( pntIter != pntIterEnd )
+        {
+        PointType pnt = pntIter->GetPositionInObjectSpace();
+        IndexType indx;
+        if( m_SeedRadiusMask->TransformPhysicalPointToIndex( pnt, indx ) )
+          {
+          double r = m_SeedRadiusMask->GetPixel(indx);
+          if( r != 0 )
+            {
+            pntIter->SetRadiusInObjectSpace(r);
+            }
+          else
+            {
+            pntIter->SetRadiusInObjectSpace(defaultR);
+            }
+          }
+        ++pntIter;
+        }
+      }
+    }
+
 
   if( this->m_NewTubeCallBack != NULL )
     {
