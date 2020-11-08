@@ -31,6 +31,14 @@
   <parameters advanced="true">
     <label>Ridges</label>
     <description>Ridges</description>
+    <boolean>
+      <name>verbose</name>
+      <label>Verbose output</label>
+      <flag>V</flag>
+      <longflag>Verbose</longflag>
+      <description>Generate verbose progress messsages</description>
+      <default>false</default>
+    </boolean>
     <file>
       <name>seedsInIndexSpaceListFile</name>
       <label>Seed list file</label>

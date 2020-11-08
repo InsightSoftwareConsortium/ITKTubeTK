@@ -373,23 +373,50 @@ TubeExtractor<TInputImage>
 ::ExtractTubeInObjectSpace( const PointType & x, unsigned int tubeID,
   bool verbose )
 {
+  if( verbose )
+    {
+    std::cout << "TubeExtractor: ExtracTubeInObjectSpace: Start" << std::endl;
+    }
+
   if( this->m_RidgeExtractor.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
 
   IndexType xi;
-  this->m_RidgeExtractor->GetTubeMaskImage()->TransformPhysicalPointToIndex( x,
-    xi );
+  if( !this->m_RidgeExtractor->GetTubeMaskImage()
+        ->TransformPhysicalPointToIndex( x, xi ) )
+    {
+    if( verbose )
+      {
+      std::cout << "Point maps to outside of image. Aborting."
+        << std::endl;
+      return nullptr;
+      }
+    }
+    
+  if( verbose )
+    {
+    std::cout << "Physical point = " << x << std::endl;
+    std::cout << "Index point = " << xi << std::endl;
+    std::cout << "Mask value = "
+      << this->m_RidgeExtractor->GetTubeMaskImage()->GetPixel( xi )
+      << std::endl;
+    }
+
   if( this->m_RidgeExtractor->GetTubeMaskImage()->GetPixel( xi ) != 0 )
     {
-    if( this->GetDebug() )
+    if( verbose || this->GetDebug() )
       {
       std::cout << "Initial pixel on prior tube." << std::endl;
       std::cout << "  x = " << x << std::endl;
       std::cout << "  xi = " << xi << std::endl;
       }
     return nullptr;
+    }
+  else if( verbose )
+    {
+    std::cout << "No overlapping tube" << std::endl;
     }
 
   typename TubeType::Pointer tube = this->m_RidgeExtractor->ExtractRidge( x,
@@ -417,10 +444,43 @@ TubeExtractor<TInputImage>
       }
     }
 
-  if( m_OptimizeRadius && !this->m_RadiusExtractor->ExtractRadii( tube, verbose ) )
+  if( m_OptimizeRadius )
     {
-    return nullptr;
+    if( !this->m_RadiusExtractor->ExtractRadii( tube, verbose ) )
+      {
+      return nullptr;
+      }
     }
+  else
+    {
+    if( m_SeedRadiusMask )
+      {
+      double defaultR = this->m_RadiusExtractor->GetRadiusStart();
+      typename std::vector< TubePointType >::iterator pntIter;
+      pntIter = tube->GetPoints().begin();
+      typename std::vector< TubePointType >::iterator pntIterEnd;
+      pntIterEnd = tube->GetPoints().end();
+      while( pntIter != pntIterEnd )
+        {
+        PointType pnt = pntIter->GetPositionInObjectSpace();
+        IndexType indx;
+        if( m_SeedRadiusMask->TransformPhysicalPointToIndex( pnt, indx ) )
+          {
+          double r = m_SeedRadiusMask->GetPixel(indx);
+          if( r != 0 )
+            {
+            pntIter->SetRadiusInObjectSpace(r);
+            }
+          else
+            {
+            pntIter->SetRadiusInObjectSpace(defaultR);
+            }
+          }
+        ++pntIter;
+        }
+      }
+    }
+
 
   if( this->m_NewTubeCallBack != NULL )
     {
@@ -495,6 +555,7 @@ TubeExtractor<TInputImage>
 ::ProcessSeeds( bool verbose )
 {
   this->GetRidgeExtractor()->ResetFailureCodeCounts();
+  double defaultR = this->GetRadiusInObjectSpace();>>>>>>> master
 
   if( this->m_SeedMask.IsNotNull() )
     {
@@ -511,20 +572,25 @@ TubeExtractor<TInputImage>
       unsigned int count = 0;
       double successRatio = 1;
       double maxValue = m_SeedExtractionMinimumProbability;
-      while( ( m_SeedMaskMaximumNumberOfPoints != 0
+      while( ( m_SeedMaskMaximumNumberOfPoints == 0
                || count < m_SeedMaskMaximumNumberOfPoints )
              && successRatio >= m_SeedExtractionMinimumSuccessRatio
              && maxValue >= m_SeedExtractionMinimumProbability )
         {
         maxCalc->SetImage( tmpSeedMask );
         maxCalc->ComputeMaximum();
-        double maxValue = maxCalc->GetMaximum();
+        maxValue = maxCalc->GetMaximum();
         typename ImageType::IndexType maxIndx = maxCalc->GetIndexOfMaximum();
-        if( maxValue > m_SeedExtractionMinimumProbability )
+        if( maxValue >= m_SeedExtractionMinimumProbability )
           {
           if( this->m_SeedRadiusMask )
             {
-            this->SetRadiusInObjectSpace( m_SeedRadiusMask->GetPixel(maxIndx) );
+            double r = m_SeedRadiusMask->GetPixel(maxIndx);
+            if( r <= 0 )
+              {
+              r = defaultR;
+              }
+            this->SetRadiusInObjectSpace( r );
             }
           PointType pnt;
           this->GetInputImage()->TransformIndexToPhysicalPoint( maxIndx, pnt );
@@ -539,6 +605,18 @@ TubeExtractor<TInputImage>
             }
           else
             {
+            typedef itk::NeighborhoodIterator< TubeMaskImageType >
+              NeighborIterType;
+            typename NeighborIterType::RadiusType radius;
+            radius.Fill(3);
+            NeighborIterType iter( radius, tmpSeedMask,
+              tmpSeedMask->GetLargestPossibleRegion() );
+            iter.SetLocation( maxIndx );
+            bool inside;
+            for( unsigned int i=0; i<iter.Size(); ++i )
+              {
+              iter.SetPixel( i, 0, inside );
+              }
             successRatio = (successRatio*9 + 0)/10;
             std::cout << "   Ridge not found" << std::endl;
             }
@@ -593,11 +671,13 @@ TubeExtractor<TInputImage>
       this->m_SeedsInObjectSpaceList.begin();
     typename std::vector< double >::iterator seedRadiusIter =
       this->m_SeedRadiiInObjectSpaceList.begin();
+
     bool useRadiiList = false;
     if( m_SeedRadiiInObjectSpaceList.size() == m_SeedsInObjectSpaceList.size() )
       {
       useRadiiList = true;
       }
+
     unsigned int count = 1;
     unsigned int maxCount = m_SeedsInObjectSpaceList.size();
     bool foundOneTube = false;

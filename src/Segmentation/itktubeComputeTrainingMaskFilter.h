@@ -1,8 +1,7 @@
 /*=========================================================================
    Library:   TubeTK
 
-   Copyright 2010 Kitware Inc. 28 Corporate Drive,
-   Clifton Park, NY, 12065, USA.
+   Copyright Kitware Inc.
 
    All rights reserved.
 
@@ -33,7 +32,6 @@
 #include <itkCastImageFilter.h>
 #include <itkMultiplyImageFilter.h>
 #include <itkAddImageFilter.h>
-#include <itkDivideImageFilter.h>
 
 namespace itk
 {
@@ -68,8 +66,10 @@ public:
   const LabelMapType * GetObjectMask();
   const LabelMapType * GetNotObjectMask();
   itkSetMacro( Gap, double );
+  itkSetMacro( ObjectWidth, double );
   itkSetMacro( NotObjectWidth, double );
   itkGetMacro( Gap, double );
+  itkGetMacro( ObjectWidth, double );
   itkGetMacro( NotObjectWidth, double );
 
 protected:
@@ -90,11 +90,9 @@ private:
   typedef itk::BinaryThresholdImageFilter< ImageType, ImageType >
                                 ThresholdFilterType;
   typedef itk::SubtractImageFilter<ImageType, ImageType, ImageType>
-                                SubstractFilterType;
+                                SubtractFilterType;
   typedef itk::MultiplyImageFilter<ImageType, ImageType, ImageType>
                                 MultiplyFilterType;
-  typedef itk::DivideImageFilter<ImageType, ImageType, ImageType>
-                                DivideFilterType;
   typedef itk::AddImageFilter<ImageType, ImageType, ImageType>
                                 AddFilterType;
   typedef itk::CastImageFilter< ImageType, LabelMapType >
@@ -106,18 +104,20 @@ private:
     int size=1 );
 
   typename AddFilterType::Pointer             m_Add;
+  typename MultiplyFilterType::Pointer        m_Multiply;
   typename ThresholdFilterType::Pointer       m_Threshold;
   typename BinaryThinningFilterType::Pointer  m_BinaryThinning;
   typename DilateFilterType::Pointer          m_Dilate;
-  typename SubstractFilterType::Pointer       m_Substract;
+  typename SubtractFilterType::Pointer        m_Subtract;
   typename MultiplyFilterType::Pointer        m_MultiplyCenterLine;
-  typename DivideFilterType::Pointer          m_DivideImage;
+  typename MultiplyFilterType::Pointer        m_MultiplyOutside;
   typename CastFilterType::Pointer            m_Cast;
   typename CastFilterType::Pointer            m_CastObject;
   typename CastFilterType::Pointer            m_CastNotObject;
 
   BallType m_Ball;
   double   m_Gap;
+  double   m_ObjectWidth;
   double   m_NotObjectWidth;
 };
 

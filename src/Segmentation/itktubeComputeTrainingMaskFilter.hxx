@@ -35,6 +35,7 @@ ComputeTrainingMaskFilter< TInputImage, TLabelMap >
 ::ComputeTrainingMaskFilter()
 {
   m_Gap = 0;
+  m_ObjectWidth = 0.0;
   m_NotObjectWidth = 1.0;
   m_BinaryThinning = BinaryThinningFilterType::New();
 
@@ -43,23 +44,27 @@ ComputeTrainingMaskFilter< TInputImage, TLabelMap >
   m_Threshold->SetLowerThreshold( 0 );
   m_Threshold->SetUpperThreshold( 0 );
   m_Threshold->SetInsideValue( 0 );
-  m_Threshold->SetOutsideValue( 255 );
+  m_Threshold->SetOutsideValue( 1 );
 
   m_Ball.SetRadius( 1 );
   m_Ball.CreateStructuringElement();
 
   m_Dilate = DilateFilterType::New();
-  m_Dilate->SetObjectValue( 255 );
+  m_Dilate->SetObjectValue( 1 );
   m_Dilate->SetKernel( m_Ball );
 
-  m_Substract = SubstractFilterType::New();
+  m_Subtract = SubtractFilterType::New();
+
   m_MultiplyCenterLine = MultiplyFilterType::New();
   m_MultiplyCenterLine->SetConstant( 255 );
 
-  m_DivideImage = DivideFilterType::New();
-  m_DivideImage->SetConstant( 2.0 );
+  m_MultiplyOutside = MultiplyFilterType::New();
+  m_MultiplyOutside->SetConstant( 128 );
 
   m_Add = AddFilterType::New();
+
+  m_Multiply = MultiplyFilterType::New();
+
   m_Cast = CastFilterType::New();
   m_CastObject = CastFilterType::New();
   m_CastNotObject = CastFilterType::New();
@@ -104,31 +109,36 @@ ComputeTrainingMaskFilter< TInputImage, TLabelMap >
   m_Threshold->SetInput( input );
   m_Threshold->Update();
   typename ImageType::Pointer image = m_Threshold->GetOutput();
+  typename ImageType::Pointer inputImage = image;
 
   m_BinaryThinning->SetInput( image );
+  typename ImageType::Pointer skeletonImage = m_BinaryThinning->GetOutput();
+  ApplyDilateMorphologyFilter( skeletonImage, m_ObjectWidth );
+  m_Multiply->SetInput1( inputImage );
+  m_Multiply->SetInput2( skeletonImage );
 
   ApplyDilateMorphologyFilter( image, m_Gap );
   typename ImageType::Pointer dilatedImage = image;
 
   ApplyDilateMorphologyFilter( image, m_NotObjectWidth );
 
-  m_Substract->SetInput1( image );
-  m_Substract->SetInput2( dilatedImage );
+  m_Subtract->SetInput1( image );
+  m_Subtract->SetInput2( dilatedImage );
 
-  m_MultiplyCenterLine->SetInput( m_BinaryThinning->GetOutput() );
+  m_MultiplyCenterLine->SetInput( m_Multiply->GetOutput() );
 
-  m_DivideImage->SetInput( m_Substract->GetOutput() );
+  m_MultiplyOutside->SetInput( m_Subtract->GetOutput() );
 
   m_Add->SetInput1( m_MultiplyCenterLine->GetOutput() );
-  m_Add->SetInput2( m_DivideImage->GetOutput() );
+  m_Add->SetInput2( m_MultiplyOutside->GetOutput() );
 
-  m_CastObject->SetInput( m_BinaryThinning->GetOutput() );
+  m_CastObject->SetInput( m_Multiply->GetOutput() );
   m_CastObject->GraftOutput( const_cast< LabelMapType * >(
       this->GetOutput( 1 ) ) );
   m_CastObject->Update();
   this->GraftNthOutput( 1, m_CastObject->GetOutput() );
 
-  m_CastNotObject->SetInput( m_Substract->GetOutput() );
+  m_CastNotObject->SetInput( m_Subtract->GetOutput() );
   m_CastNotObject->GraftOutput( const_cast< LabelMapType * >(
       this->GetOutput( 2 ) ) );
   m_CastNotObject->Update();
