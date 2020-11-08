@@ -555,7 +555,7 @@ TubeExtractor<TInputImage>
 ::ProcessSeeds( bool verbose )
 {
   this->GetRidgeExtractor()->ResetFailureCodeCounts();
-  double defaultR = this->GetRadiusInObjectSpace();
+  double defaultR = this->GetRadiusInObjectSpace();>>>>>>> master
 
   if( this->m_SeedMask.IsNotNull() )
     {
@@ -577,7 +577,6 @@ TubeExtractor<TInputImage>
              && successRatio >= m_SeedExtractionMinimumSuccessRatio
              && maxValue >= m_SeedExtractionMinimumProbability )
         {
-        std::cout << "Count = " << count << std::endl;
         maxCalc->SetImage( tmpSeedMask );
         maxCalc->ComputeMaximum();
         maxValue = maxCalc->GetMaximum();
@@ -609,7 +608,7 @@ TubeExtractor<TInputImage>
             typedef itk::NeighborhoodIterator< TubeMaskImageType >
               NeighborIterType;
             typename NeighborIterType::RadiusType radius;
-            radius.Fill(5);
+            radius.Fill(3);
             NeighborIterType iter( radius, tmpSeedMask,
               tmpSeedMask->GetLargestPossibleRegion() );
             iter.SetLocation( maxIndx );
@@ -672,13 +671,13 @@ TubeExtractor<TInputImage>
       this->m_SeedsInObjectSpaceList.begin();
     typename std::vector< double >::iterator seedRadiusIter =
       this->m_SeedRadiiInObjectSpaceList.begin();
-    
+
     bool useRadiiList = false;
     if( m_SeedRadiiInObjectSpaceList.size() == m_SeedsInObjectSpaceList.size() )
       {
       useRadiiList = true;
       }
-    
+
     unsigned int count = 1;
     unsigned int maxCount = m_SeedsInObjectSpaceList.size();
     bool foundOneTube = false;
