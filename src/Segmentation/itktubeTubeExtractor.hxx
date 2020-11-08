@@ -555,7 +555,7 @@ TubeExtractor<TInputImage>
 ::ProcessSeeds( bool verbose )
 {
   this->GetRidgeExtractor()->ResetFailureCodeCounts();
-  double defaultR = this->GetRadiusInObjectSpace();>>>>>>> master
+  double defaultR = this->GetRadiusInObjectSpace();
 
   if( this->m_SeedMask.IsNotNull() )
     {
