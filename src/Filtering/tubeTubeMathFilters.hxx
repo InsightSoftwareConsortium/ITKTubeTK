@@ -98,7 +98,7 @@ void
 TubeMathFilters< DimensionT, ImagePixelT >::
 SetPointValuesFromImage(
   typename itk::Image< ImagePixelT, DimensionT>::Pointer & inputImage,
-  std::string propertyId )
+  std::string propertyId, double blend )
 {
   typename TubeType::ChildrenListType::iterator tubeIterator;
   typename TubeType::ChildrenListPointer inputTubeList =
@@ -135,22 +135,47 @@ SetPointValuesFromImage(
           }
         if( propertyId == "Ridgeness" )
           {
+          if( blend != 1 )
+            {
+            double val2 = currentPoint->GetRidgeness();
+            val = val * blend + (1 - blend) * val2;
+            }
           currentPoint->SetRidgeness( val );
           }
         else if( propertyId == "Medialness" )
           {
+          if( blend != 1 )
+            {
+            double val2 = currentPoint->GetMedialness();
+            val = val * blend + (1 - blend) * val2;
+            }
           currentPoint->SetMedialness( val );
           }
         else if( propertyId == "Branchness" )
           {
+          if( blend != 1 )
+            {
+            double val2 = currentPoint->GetBranchness();
+            val = val * blend + (1 - blend) * val2;
+            }
           currentPoint->SetBranchness( val );
           }
         else if( propertyId == "Radius" )
           {
+          if( blend != 1 )
+            {
+            double val2 = currentPoint->GetRadiusInObjectSpace();
+            val = val * blend + (1 - blend) * val2;
+            }
           currentPoint->SetRadiusInObjectSpace( val );
           }
         else
           {
+          if( blend != 1 )
+            {
+            double val2 = currentPoint->GetTagScalarValue( propertyId );
+            val = val * blend + (1 - blend) * val2;
+            }
           currentPoint->SetTagScalarValue( propertyId, val );
           }
         }
@@ -395,7 +420,8 @@ SmoothTube( double h, SmoothTubeFunctionEnum smoothFunction )
       itCurTube->GetPointer() );
     if( m_CurrentTubeId == -1 || curTube->GetId() == m_CurrentTubeId )
       {
-      typename TubeType::PointType avg;
+      typename TubeType::PointType avgPos;
+      std::vector< double > avgTagScalar;
 
       typename TubeType::TubePointListType::iterator pointItr;
       typename TubeType::TubePointListType::iterator tmpPointItr;
@@ -439,7 +465,17 @@ SmoothTube( double h, SmoothTubeFunctionEnum smoothFunction )
         {
         typename TubeType::TubePointType newPoint = *pointItr;
         double wTotal = 0;
-        avg.Fill( 0 );
+        avgPos.Fill( 0 );
+        double avgIntensity = 0;
+        double avgRadius = 0;
+        double avgMedialness = 0;
+        double avgRidgeness = 0;
+        double avgRoundness = 0;
+        double avgCurvature = 0;
+        double avgLevelness = 0;
+        unsigned int dictSize = pointItr->GetTagScalarDictionary().size();
+        avgTagScalar.resize( dictSize, 0 );
+
         tmpPointItr = pointItr;
         int wCenter = ( wSize-1 )/2;
   
@@ -455,8 +491,25 @@ SmoothTube( double h, SmoothTubeFunctionEnum smoothFunction )
           {
           for( unsigned int j=0; j<pointDimension; ++j )
             {
-            avg[j] += w[pos] * tmpPointItr->GetPositionInObjectSpace()[j];
+            avgPos[j] += w[pos] * tmpPointItr->GetPositionInObjectSpace()[j];
             }
+          avgIntensity += w[pos] * tmpPointItr->GetIntensity();
+          avgRadius += w[pos] * tmpPointItr->GetRadiusInObjectSpace();
+          avgMedialness += w[pos] * tmpPointItr->GetMedialness();
+          avgRidgeness += w[pos] * tmpPointItr->GetRidgeness();
+          avgRoundness += w[pos] * tmpPointItr->GetRoundness();
+          avgCurvature += w[pos] * tmpPointItr->GetCurvature();
+          avgLevelness += w[pos] * tmpPointItr->GetLevelness();
+          unsigned int d = 0;
+          std::map<std::string,double>::iterator iter =
+            tmpPointItr->GetTagScalarDictionary().begin();
+          while( d < dictSize )
+            {
+            avgTagScalar[d] += w[pos] * iter->second;
+            ++iter;
+            ++d;
+            }
+
           wTotal += w[pos];
           ++pos;
           ++tmpPointItr;
@@ -467,12 +520,38 @@ SmoothTube( double h, SmoothTubeFunctionEnum smoothFunction )
           {
           for( unsigned int i=0; i<pointDimension; ++i )
             {
-            avg[i] /= wTotal;
+            avgPos[i] /= wTotal;
+            }
+          avgIntensity /= wTotal;
+          avgRadius /= wTotal;
+          avgMedialness /= wTotal;
+          avgRidgeness /= wTotal;
+          avgRoundness /= wTotal;
+          avgCurvature /= wTotal;
+          avgLevelness /= wTotal;
+          for( unsigned int d=0; d<dictSize; ++d )
+            {
+            avgTagScalar[d] /= wTotal;
             }
           // Update the new point coordinates
-          newPoint.SetPositionInObjectSpace( avg );
+          newPoint.SetPositionInObjectSpace( avgPos );
+          newPoint.SetIntensity( avgIntensity );
+          newPoint.SetRadiusInObjectSpace( avgRadius );
+          newPoint.SetMedialness( avgMedialness );
+          newPoint.SetRidgeness( avgRidgeness );
+          newPoint.SetRoundness( avgRoundness );
+          newPoint.SetCurvature( avgCurvature );
+          newPoint.SetLevelness( avgLevelness );
+          unsigned int d = 0;
+          std::map<std::string,double>::iterator iter =
+            pointItr->GetTagScalarDictionary().begin();
+          while( d < dictSize )
+            {
+            newPoint.SetTagScalarValue( iter->first, avgTagScalar[d] );
+            ++iter;
+            ++d;
+            }
           }
-  
         newPointList.push_back( newPoint );
         ++count;
         }

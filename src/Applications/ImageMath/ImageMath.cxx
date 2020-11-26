@@ -2,9 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
-
+Copyright Kitware Inc.
 All rights reserved.
 
 Licensed under the Apache License, Version 2.0 ( the "License" );
@@ -377,6 +375,14 @@ int DoIt( MetaCommand & command )
         command.GetValueAsFloat( *it, "Offset2" ) );
       } // end -a
 
+    else if( ( *it ).name == "Copy" )
+      {
+      std::cout << "Copying image information" << std::endl;
+      typename ImageType::Pointer imTmp = ReadImage<float,VDimension>(
+        command.GetValueAsString(*it,"sourceFile") );
+      imFilters.CopyImageInformation( imTmp );
+      }
+
     // Median
     else if( ( *it ).name == "Median" )
       {
@@ -705,6 +711,9 @@ int main( int argc, char * argv[] )
   command.AddOptionField( "Add", "weight1", MetaCommand::FLOAT, true );
   command.AddOptionField( "Add", "weight2", MetaCommand::FLOAT, true );
   command.AddOptionField( "Add", "Infile", MetaCommand::STRING, true );
+
+  command.SetOption( "Copy", "F", false, "Copy image information (spacing, etc) from source" );
+  command.AddOptionField( "Copy", "sourceFile", MetaCommand::STRING, true );
 
   command.SetOption( "AlgorithmMeanStd", "A", false,
     "Return image value within masked region ( mode: 0=mean, 1=stdDev )" );

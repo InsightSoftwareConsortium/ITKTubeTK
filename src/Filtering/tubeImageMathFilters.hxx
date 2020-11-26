@@ -724,6 +724,17 @@ ImageMathFilters<VDimension>
 
 //------------------------------------------------------------------------
 template< unsigned int VDimension >
+void
+ImageMathFilters<VDimension>
+::CopyImageInformation( ImageType * sourceImage )
+{
+  m_Input->SetOrigin( sourceImage->GetOrigin() );
+  m_Input->SetSpacing( sourceImage->GetSpacing() );
+  m_Input->SetDirection( sourceImage->GetDirection() );
+}
+
+//------------------------------------------------------------------------
+template< unsigned int VDimension >
 std::vector<double>
 ImageMathFilters<VDimension>
 ::ComputeImageHistogram( unsigned int nBins, float & binMin, float & binSize )

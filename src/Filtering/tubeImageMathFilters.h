@@ -107,6 +107,9 @@ public:
   double ComputeImageStatisticsWithinMaskRange( ImageType * mask,
     float threshLow, float threshHigh, int mode );
 
+  /** Copy origin, spacing, and directions from sourceImage */
+  void CopyImageInformation( ImageType * sourceImage );
+
   /** Update image applying 'abs' unary operation. */
   void AbsoluteImage( void );
 

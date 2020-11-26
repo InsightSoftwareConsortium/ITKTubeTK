@@ -123,8 +123,9 @@ int DoIt( MetaCommand & command )
       typedef itk::Image< float, DimensionT > ImageType;
       typename ImageType::Pointer ridgeImage = ReadImageFile< float,
         DimensionT >( command.GetValueAsString( *it, "filename" ).c_str() );
+      double blend = command.GetValueAsFloat( *it, "BlendFactor" );
       filter.SetPointValuesFromImage( ridgeImage,
-        command.GetValueAsString( *it, "value" ) );
+        command.GetValueAsString( *it, "value" ), blend );
       inputTubes = filter.GetOutputTubeGroup();
       }
     else if( it->name == "LoadPointValuesFromImageMean" )
@@ -325,6 +326,8 @@ int main( int argc, char * argv[] )
     MetaCommand::DATA_IN );
   command.AddOptionField( "LoadPointValuesFromImage", "filename",
     MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
+  command.AddOptionField( "LoadPointValuesFromImage", "BlendFactor",
+    MetaCommand::FLOAT, true );
 
   command.SetOption( "LoadPointValuesFromImageMean", "L", false,
     "Sets all point values to mean value along the tube in the image." );
