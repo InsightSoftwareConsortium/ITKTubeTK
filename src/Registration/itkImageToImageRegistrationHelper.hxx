@@ -748,7 +748,7 @@ ImageToImageRegistrationHelper<TImage>
     typename RigidRegistrationMethodType::Pointer regRigid;
     regRigid = RigidRegistrationMethodType::New();
     regRigid->SetRandomNumberSeed( m_RandomNumberSeed );
-    if( m_EnableInitialRegistration || !m_UseEvolutionaryOptimization )
+    if( !m_UseEvolutionaryOptimization )
       {
       regRigid->SetUseEvolutionaryOptimization( false );
       }

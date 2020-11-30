@@ -28,7 +28,7 @@
 #include "itkImage.h"
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
 #include "itkTubeSpatialObject.h"
-#include "itksys/hash_map.hxx"
+#include <unordered_map>
 
 #include <map>
 #include <queue>
@@ -138,11 +138,11 @@ private:
     bool operator>( const ConnectionPointType & rhs ) const;
     };
 
-  typedef itksys::hash_map< TubeIdType, GraphEdgeType >
+  typedef std::unordered_map< TubeIdType, GraphEdgeType >
   GraphEdgeListType;
-  typedef itksys::hash_map< TubeIdType, GraphEdgeListType >
+  typedef std::unordered_map< TubeIdType, GraphEdgeListType >
   TubeAdjacencyListGraphType;
-  typedef itksys::hash_map< TubeIdType, TubePointerType >
+  typedef std::unordered_map< TubeIdType, TubePointerType >
   TubeIdToPointerMapType;
 
   struct TubePQElementType
