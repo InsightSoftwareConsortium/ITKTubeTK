@@ -63,6 +63,10 @@ public:
   void SetInput( GroupSpatialObjectType * grp )
   { m_GroupSpatialObject = grp; };
 
+  void SetTubeInput( TubeSpatialObjectType * tube )
+  { m_GroupSpatialObject = GroupSpatialObjectType::New();
+    m_GroupSpatialObject->AddChild( tube ); };
+
   /** Set the filename for saving. */
   itkSetMacro( FileName, std::string );
   itkGetMacro( FileName, std::string );

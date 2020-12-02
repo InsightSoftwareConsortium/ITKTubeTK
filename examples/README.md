@@ -19,8 +19,8 @@ build, or installation tree).
    > pip install girder-client
 and then run one of the following two scripts available in the data
 directory:
-   > DownloadExampleData.sh
+   > Data-Download.sh
   or
-   > python DownloadExampleData.py
+   > python Data-Download.py
 
 Enjoy!
