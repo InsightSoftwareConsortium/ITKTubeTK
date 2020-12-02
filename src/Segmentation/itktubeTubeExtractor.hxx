@@ -577,6 +577,7 @@ TubeExtractor<TInputImage>
              && successRatio >= m_SeedExtractionMinimumSuccessRatio
              && maxValue >= m_SeedExtractionMinimumProbability )
         {
+        std::cout << "Count = " << count << std::endl;
         maxCalc->SetImage( tmpSeedMask );
         maxCalc->ComputeMaximum();
         maxValue = maxCalc->GetMaximum();
@@ -608,7 +609,7 @@ TubeExtractor<TInputImage>
             typedef itk::NeighborhoodIterator< TubeMaskImageType >
               NeighborIterType;
             typename NeighborIterType::RadiusType radius;
-            radius.Fill(3);
+            radius.Fill(5);
             NeighborIterType iter( radius, tmpSeedMask,
               tmpSeedMask->GetLargestPossibleRegion() );
             iter.SetLocation( maxIndx );

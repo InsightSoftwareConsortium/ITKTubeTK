@@ -15,8 +15,10 @@ build, or installation tree).
 2) Install girder-client
    > pip install girder-client
 and then run one of the following two scripts:
+   > cd TubeTK/examples
    > DownloadExampleData.sh
   or
+   > cd TubeTK/examples
    > python DownloadExampleData.py
 
 Enjoy!
