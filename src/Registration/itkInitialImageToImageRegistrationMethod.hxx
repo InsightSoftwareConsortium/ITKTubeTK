@@ -138,7 +138,6 @@ InitialImageToImageRegistrationMethod<TImage>
         }
       sizeMoving = sqrt(sizeMoving);
       double scale = sizeMoving / sizeFixed;
-      std::cout << "scale = " << scale << std::endl;
       matrix *= scale;
       }
     else
@@ -191,7 +190,6 @@ InitialImageToImageRegistrationMethod<TImage>
 
     if( !this->GetUseRegionOfInterest() )
       {
-      std::cout << "Init: Using full image extent" << std::endl;
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
         fixedCenterIndex[i] = size[i] / 2;
@@ -201,7 +199,6 @@ InitialImageToImageRegistrationMethod<TImage>
       }
     else
       {
-      std::cout << "Init: Using region of interest" << std::endl;
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
         fixedCenterPoint[i] = ( this->GetRegionOfInterestPoint1()[i]
@@ -243,13 +240,8 @@ InitialImageToImageRegistrationMethod<TImage>
       }
     if( this->GetUseRegionOfInterest() )
       {
-      std::cout << "Init: Region of interest" << std::endl;
       momCalc->SetRegionOfInterest( this->GetRegionOfInterestPoint1(),
                                     this->GetRegionOfInterestPoint2() );
-      }
-    else
-      {
-      std::cout << "Init: Using full image extent" << std::endl;
       }
 
     // HELP: ImageMomentsCalculator isn't multi-threaded :(

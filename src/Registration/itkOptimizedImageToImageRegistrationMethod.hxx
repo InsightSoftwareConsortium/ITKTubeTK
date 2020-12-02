@@ -396,8 +396,6 @@ OptimizedImageToImageRegistrationMethod<TImage>
       this->SetNumberOfSamples( indexList.size() );
       metric->SetNumberOfSpatialSamples( m_NumberOfSamples );
       }
-    std::cout << "Passing index list to metric..." << std::endl;
-    std::cout << "  List size = " << indexList.size() << std::endl;
     metric->SetFixedImageIndexes( indexList );
     }
 
@@ -588,8 +586,6 @@ OptimizedImageToImageRegistrationMethod<TImage>
   reg->SetTransform( this->GetTransform() );
   reg->SetInitialTransformParameters(
     this->GetTransform()->GetParameters() );
-  std::cout << "Grad init params = " <<
-    this->GetTransform()->GetParameters() << std::endl;
   reg->SetMetric( metric );
   reg->SetInterpolator( interpolator );
   reg->SetOptimizer( gradOpt );
