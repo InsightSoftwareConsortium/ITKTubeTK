@@ -3,7 +3,7 @@ itk_wrap_include( itkImage.h )
 
 itk_wrap_named_class("tube::MergeAdjacentImages" tubeMergeAdjacentImages POINTER)
  foreach(t ${WRAP_ITK_SCALAR})
-    foreach(d ${ITK_WRAP_IMAGE_DIMS})
+    foreach(d 2 3)
       itk_wrap_template("I${ITKM_${t}}${d}"  "itk::Image<${ITKT_${t}}, ${d}>")
     endforeach()
  endforeach()

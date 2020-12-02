@@ -61,7 +61,7 @@ public:
   void SetUseAllTubes( void );
 
   void SetPointValuesFromImage( typename ImageType::Pointer & inputImage,
-    std::string propertyId );
+    std::string propertyId, double blend=1 );
 
   void SetPointValuesFromImageMean( typename ImageType::Pointer & inputImage,
     std::string propertyId );
