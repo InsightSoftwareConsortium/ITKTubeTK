@@ -110,7 +110,7 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
         dynamic_cast< TubeSpatialObjectType * >( ( *tubeIt ).GetPointer() );
 
     tube->RemoveDuplicatePointsInObjectSpace();
-    tube->ComputeTangentsAndNormals();
+    tube->ComputeTangentAndNormals();
 
     int numberOfPoints = tube->GetNumberOfPoints();
 

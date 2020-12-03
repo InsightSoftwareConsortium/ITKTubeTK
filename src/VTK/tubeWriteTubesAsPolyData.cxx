@@ -205,7 +205,7 @@ Update()
 
     tube->RemoveDuplicatePointsInObjectSpace();
 
-    tube->ComputeTangentsAndNormals();
+    tube->ComputeTangentAndNormals();
 
     // Create a pointID list [linear for a polyline]
     vtkIdType * pointIds = new vtkIdType[numberOfPoints];
