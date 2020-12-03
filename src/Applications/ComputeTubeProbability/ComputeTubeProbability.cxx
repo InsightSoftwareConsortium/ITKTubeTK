@@ -87,7 +87,7 @@ int DoIt( int argc, char * argv[] )
       ( *tubeIt ).GetPointer() );
 
     tube->RemoveDuplicatePointsInObjectSpace();
-    tube->ComputeTangentsAndNormals();
+    tube->ComputeTangentAndNormals();
 
     itk::Point<double, VDimension> pnt;
     itk::Index< VDimension > indx;

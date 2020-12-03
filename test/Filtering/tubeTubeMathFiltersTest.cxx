@@ -91,7 +91,7 @@ int tubeTubeMathFiltersTest( int tubeNotUsed( argc ),
 
   std::cout << "Tangents and normals..." << std::endl;
   tube0->SetPoints( tubePointList );
-  tube0->ComputeTangentsAndNormals();
+  tube0->ComputeTangentAndNormals();
 
   // Run tests
   std::cout << std::endl << "*********** Smoothing Tests *************" << std::endl;
