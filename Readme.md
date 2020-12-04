@@ -3,20 +3,13 @@ ITKTubeTK: Tubular Object Extraction, Registration, and Analysis
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/KitwareMedical/ITKTubeTK/blob/master/LICENSE.md)
 
-![](https://github.com/InsightSoftwareConsortium/ITKTubeTK/workflows/Build,%20test,%20package/badge.svg)
+![](https://github.com/InsightSoftwareConsortium/ITKTubeTK/.github/workflows/Build,%20test,%20package/badge.svg)
 
-Linux Debug: [![Build Status](https://dev.azure.com/KitwareMedical/ITKTubeTK/_apis/build/status/KitwareMedical.ITKTubeTK.LinuxGCCDebug?branchName=master)](https://dev.azure.com/KitwareMedical/ITKTubeTK/_build/latest?definitionId=4&branchName=master)
-
-Linux Release: [![Build Status](https://dev.azure.com/KitwareMedical/ITKTubeTK/_apis/build/status/dashboards/AzureLinuxGCC/KitwareMedical.ITKTubeTK.Linux.GCC?branchName=master)](https://dev.azure.com/KitwareMedical/ITKTubeTK/_build/latest?definitionId=1&branchName=master)
-
-Mac Release: [![Build Status](https://dev.azure.com/KitwareMedical/ITKTubeTK/_apis/build/status/dashboards/AzureMacOSGCC/KitwareMedical.ITKTubeTK.MacOS.GCC?branchName=master)](https://dev.azure.com/KitwareMedical/ITKTubeTK/_build/latest?definitionId=2&branchName=master)
-
-Windows Release: [![Build Status](https://dev.azure.com/KitwareMedical/ITKTubeTK/_apis/build/status/dashboards/AxureWinVS/KitwareMedical.ITKTubeTK.WinVS2017?branchName=master)](https://dev.azure.com/KitwareMedical/ITKTubeTK/_build/latest?definitionId=3&branchName=master)
 
 Overview
 --------
 
-[TubeTK](http://www.tubetk.org) is an open-source toolkit for the segmentation, registration, and analysis of tubes and surfaces in images, developed by [Kitware, Inc.](http://www.kitware.com)
+TubeTK is an open-source toolkit for the segmentation, registration, and analysis of tubes and surfaces in images, developed by [Kitware, Inc.](http://www.kitware.com)
 
 Tubes and surfaces, as generalized 1D and 2D manifolds in N-dimensional images, are essential components in a variety of image analysis tasks. Instances of tubular structures in images include blood vessels in magnetic resonance angiograms and b-mode ultrasound images, wires in microscopy images of integrated circuits, roads in aerial photographs, and nerves in confocal microscopy.
 
@@ -28,7 +21,7 @@ TubeTK offers various interface layers:
 
 * [TubeTK/include](TubeTK/include): This is the ITK interface to select methods in `TubeTK/src`.  This level of interface is intended for ITK users and Python scripts writers.  The methods exposed represent a level of modularization that invites experimentation, integration with other toolkits (e.g., Scikit-Learn), and development of processing pipelines that accomplish significant image analysis goals.  The interface is available as an ITK Extension and thereby available via Python using Wrapped ITK.
 
-* [TubeTK/src/Applications](TubeTK/src/Applications): These are optional (TO BE DEPRICATED) command-line interface applications.  These applications are NOT distributed with the pip-installation of itk-tubetk, and they will be depicated in the near future - the python interface to TubeTK should be used instead.  Furthermore, building these applications requires a sequence of compilations, complex configuration changes, and third-party tools (e.g., SlicerExecutionModel). Continuous, unit-level testingis provided for these applications.   
+* [TubeTK/src/Applications](TubeTK/src/Applications): These are optional command-line interface applications.  These applications are NOT distributed with the pip-installation of itk-tubetk, and they will be depicated in the near future - the python interface to TubeTK should be used instead.  Furthermore, building these applications requires a sequence of compilations, complex configuration changes, and third-party tools (e.g., SlicerExecutionModel). Continuous, unit-level testingis provided for these applications.   
 
 Installing TubeTK via ITK
 -------------------------
@@ -39,7 +32,7 @@ A version of ITK with TubeTK already compiled into it is available via pip.    T
 Compiling TubeTK via ITK
 -------------------------
 
-If you wish to compile TubeTK from scratch (because you wish to modify it), then use the version of TubeTK that is bundled with ITK.   ITKTubeTK is available as a official ITK Remote Module, starting with [ITKv5.1rc02](https://github.com/InsightSoftwareConsortium/ITK/releases/tag/v5.1rc02).   `When you configure ITK using CMake`, set the options
+If you wish to compile TubeTK from scratch (because you wish to modify it), then use the version of TubeTK that is bundled with ITK.   ITKTubeTK is available as a official ITK Remote Module, starting with [ITKv5.1.2](https://github.com/InsightSoftwareConsortium/ITK/releases/tag/v5.1.2).   `When you configure ITK using CMake`, set the options
 * CMAKE_BUILD_TYPE = Release
 * ITK_WRAP_PYTHON = On
 * Module_TubeTK = On
@@ -54,26 +47,24 @@ Our roadmap includes:
 + Vessel-based registration
 + Tomosynthesis simulation
 + Additional vessel extraction demonstrations involving lungs, livers, and brains imaged via MRA, CT, and ultrasound.
-+ Updating example/data directory to a wider variety of cases and enable its synchronization/download during cmake configuration.
 
 For advanced developers
 -----------------------
 
-Select methods in TubeTK require VTK, and those methods are currently not distributed as pre-built binarys.   You must compile ITK with Module_TubeTK enabled and enable VTK, as follows:
+Select methods in TubeTK require VTK, and those methods are currently not distributed as pre-built binaries.   You must compile ITK with Module_TubeTK enabled and enable VTK, as follows:
 
 *1) SlicerExecutionModel: needed for TubeTK's applications*
 
-After compiling ITK with TubeTK enabled (see above section "Compiling TubeTK via ITK"), you can build SlicerExecutionModel and then re-configure ITK's TubeTK to build applications using SlicerExecutionModel.
+After compiling ITK with TubeTK enabled (see above section "Compiling TubeTK via ITK"), you can build [SlicerExecutionModel](https://github.com/Slicer/SlicerExecutionModel) and then re-configure ITK's TubeTK to build applications using SlicerExecutionModel.
 
 *2) VTK: needed for Sliding organ registration and select other methods*
 
 Optionally, you may also want to build VTK.   This is used by the Sliding
 Organ Registration algorithm (anisotropic diffusion regularization and
-registration).   Note that VTK must be build BEFORE building ITK's TubeTK.
+registration).   Note that VTK must be built BEFORE building ITK's TubeTK.
 
 Using CMake, you should configure VTK as follows:
 * CMAKE_BUILD_TYPE = Release
-* VTK_PYTHON_VERSION = 3
 * VTK_WRAP_PYTHON = True
 * You may also want to turn off building Tests and Examples
 
@@ -87,11 +78,6 @@ First, to be able to run all the python tests and examples, the following packag
 * numpy
 * scipy
 * jupyter
-* IPython
-* tornado
-* pyzmq
-* jinja2
-* tables
 * matplotlib
 
 Second, you will need to add the modules of python-wrapped ITK to your python environment.
