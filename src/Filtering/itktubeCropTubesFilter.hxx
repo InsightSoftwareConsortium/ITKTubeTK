@@ -80,7 +80,7 @@ CropTubesFilter< VDimension >
       return;
       }
     //Compute Tangent and Normals
-    pCurSourceTube->ComputeTangentAndNormals();
+    pCurSourceTube->ComputeTangentsAndNormals();
     pCurSourceTube->Update();
     //Point List for TargetTube
     typename TubeType::TubePointListType targetPointList;
@@ -151,7 +151,7 @@ CropTubesFilter< VDimension >
           pTargetTube->CopyInformation( pCurSourceTube );
           pTargetTube->Update();
 
-          pTargetTube->ComputeTangentAndNormals();
+          pTargetTube->ComputeTangentsAndNormals();
 
           pTargetTube->SetId( targetTubeId );
           ++targetTubeId;
@@ -171,7 +171,7 @@ CropTubesFilter< VDimension >
       pTargetTube->CopyInformation( pCurSourceTube );
       pTargetTube->Update();
 
-      pTargetTube->ComputeTangentAndNormals();
+      pTargetTube->ComputeTangentsAndNormals();
 
       pTargetTube->SetId( targetTubeId );
       ++targetTubeId;

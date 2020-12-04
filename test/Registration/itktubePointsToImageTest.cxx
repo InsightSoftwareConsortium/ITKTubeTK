@@ -102,7 +102,7 @@ int itktubePointsToImageTest( int argc, char * argv[] )
     {
     std::cout << "----tube " << i << std::endl;
     tube = static_cast< TubeType * >( tubeIt->GetPointer() );
-    tube->ComputeTangentAndNormals();
+    tube->ComputeTangentsAndNormals();
 
     // Get the list of points in the tube
     tubePointList = tube->GetPoints();

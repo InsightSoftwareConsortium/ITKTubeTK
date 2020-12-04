@@ -557,7 +557,7 @@ SmoothTube( double h, SmoothTubeFunctionEnum smoothFunction )
         }
     
       curTube->SetPoints( newPointList );
-      curTube->ComputeTangentAndNormals();
+      curTube->ComputeTangentsAndNormals();
       }
     }
   tubeList->clear();
@@ -611,7 +611,7 @@ SubsampleTube( int N )
         }
     
       curTube->SetPoints( newPointList );
-      curTube->ComputeTangentAndNormals();
+      curTube->ComputeTangentsAndNormals();
       }
     }
 

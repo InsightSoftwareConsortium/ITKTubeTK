@@ -383,7 +383,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     inputRootTube->GetObjectToParentTransform()->GetParameters() );
   rootTube->Update();
 
-  rootTube->ComputeTangentAndNormals();
+  rootTube->ComputeTangentsAndNormals();
   rootTube->SetRoot( true );
 
   // visit root tube
@@ -454,7 +454,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       m_SetTubesReversed.insert( eTop.targetTubeId );
       }
 
-    curTube->ComputeTangentAndNormals();
+    curTube->ComputeTangentsAndNormals();
 
     // add tube to output
     eTop.sourceTube->AddChild( curTube );
@@ -603,7 +603,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       curTube->GetObjectToParentTransform()->SetParameters(
         pCurSourceTube->GetObjectToParentTransform()->GetParameters() );
       curTube->Update();
-      curTube->ComputeTangentAndNormals();
+      curTube->ComputeTangentsAndNormals();
       curTube->SetRoot( false );
 
       outputTubeGroup->AddChild( curTube );

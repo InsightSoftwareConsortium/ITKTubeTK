@@ -1325,7 +1325,7 @@ RidgeExtractor<TInputImage>
         points.push_back( pnt );
         typename TubeType::Pointer tmpTube = TubeType::New();
         tmpTube->SetPoints( points );
-        tmpTube->ComputeTangentAndNormals();
+        tmpTube->ComputeTangentsAndNormals();
         if( m_RadiusExtractor->GetPointVectorOptimalRadius( points,
           m_DynamicScaleUsed, radiusMin, radiusMax, radiusStep,
           radiusTolerance ) )
@@ -1905,7 +1905,7 @@ RidgeExtractor<TInputImage>
       std::cout << "Calculating tangents." << std::endl;
       }
     m_Tube->RemoveDuplicatePointsInObjectSpace();
-    m_Tube->ComputeTangentAndNormals();
+    m_Tube->ComputeTangentsAndNormals();
     }
 
   if( m_StatusCallBack )

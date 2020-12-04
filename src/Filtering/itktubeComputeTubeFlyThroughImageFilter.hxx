@@ -108,7 +108,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 
   inputTube->Update();
   inputTube->RemoveDuplicatePointsInObjectSpace();
-  inputTube->ComputeTangentAndNormals();
+  inputTube->ComputeTangentsAndNormals();
 
   // Get list of tube points
   typedef typename TubeType::TubePointListType    TubePointListType;

@@ -149,7 +149,7 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
       }
     TubeType::Pointer tube = static_cast< TubeType * >(
       tubeIter->GetPointer() );
-    tube->ComputeTangentAndNormals();
+    tube->ComputeTangentsAndNormals();
 
     std::cout << "Test tube = " << rndTubeNum << std::endl;
 

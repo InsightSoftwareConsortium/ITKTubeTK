@@ -191,7 +191,7 @@ RadiusExtractor2<TInputImage>
 {
   typename TubeType::Pointer tmpTube = TubeType::New();
   tmpTube->SetPoints( points );
-  tmpTube->ComputeTangentAndNormals();
+  tmpTube->ComputeTangentsAndNormals();
 
   if( this->GetDebug() )
     {
@@ -433,7 +433,7 @@ RadiusExtractor2<TInputImage>
     }
 
   m_KernelTube->SetPoints( tubePoints );
-  m_KernelTube->ComputeTangentAndNormals();
+  m_KernelTube->ComputeTangentsAndNormals();
 }
 
 template< class TInputImage >
@@ -815,7 +815,7 @@ RadiusExtractor2<TInputImage>
     }
 
   tube->RemoveDuplicatePointsInObjectSpace();
-  tube->ComputeTangentAndNormals();
+  tube->ComputeTangentsAndNormals();
 
   typename std::vector< TubePointType >::iterator pntIter;
   pntIter = tube->GetPoints().begin();
@@ -959,7 +959,7 @@ RadiusExtractor2<TInputImage>
     ++count;
     }
 
-  m_KernelTube->ComputeTangentAndNormals();
+  m_KernelTube->ComputeTangentsAndNormals();
 }
 
 template< class TInputImage >

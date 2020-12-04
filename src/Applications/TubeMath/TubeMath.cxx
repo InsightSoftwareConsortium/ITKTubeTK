@@ -153,7 +153,7 @@ int DoIt( MetaCommand & command )
         command.GetValueAsString( *it, "InterpolationMethod" ).c_str()[0] );
       inputTubes = filter.GetOutputTubeGroup();
       }
-    else if( it->name == "ComputeTangentAndNormals" )
+    else if( it->name == "ComputeTangentsAndNormals" )
       {
       ::tube::Message( "Compute Tangents and Normals" );
       typedef itk::TubeSpatialObject< DimensionT >  TubeType;
@@ -173,7 +173,7 @@ int DoIt( MetaCommand & command )
 
         if( currentTube == -1 || inputTube->GetId() == currentTube )
           {
-          inputTube->ComputeTangentAndNormals();
+          inputTube->ComputeTangentsAndNormals();
           }
         }
       inputTubeList->clear();
@@ -354,7 +354,7 @@ int main( int argc, char * argv[] )
   command.SetOption( "RenumberPoints", "r", false,
     "Assigned points sequential numbers for Id." );
 
-  command.SetOption( "ComputeTangentAndNormals", "n", false,
+  command.SetOption( "ComputeTangentsAndNormals", "n", false,
     "Compute current tube's tangents and normals from point sequence." );
 
   command.SetOption( "MarkAsArtery", "a", false,
