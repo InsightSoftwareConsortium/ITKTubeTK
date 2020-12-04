@@ -230,7 +230,7 @@ SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
       }
     typename TubeType::Pointer pTube = TubeType::New();
     pTube->SetPoints( tubePointList );
-    pTube->ComputeTangentAndNormals();
+    pTube->ComputeTangentsAndNormals();
     pTube->SetId( i );
 
     // Extract Radius

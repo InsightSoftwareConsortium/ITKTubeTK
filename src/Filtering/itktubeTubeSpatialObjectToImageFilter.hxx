@@ -210,7 +210,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
     if( m_BuildTangentImage )
       {
       tube->RemoveDuplicatePointsInObjectSpace();
-      tube->ComputeTangentAndNormals();
+      tube->ComputeTangentsAndNormals();
       }
 
     for( unsigned int k=0; k < tube->GetNumberOfPoints(); k++ )

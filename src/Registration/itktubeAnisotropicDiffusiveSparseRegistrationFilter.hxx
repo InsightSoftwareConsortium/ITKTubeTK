@@ -420,7 +420,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
     {
     typename TubeType::Pointer tube
         = static_cast< TubeType * >( tubeIt->GetPointer() );
-    tube->ComputeTangentAndNormals();
+    tube->ComputeTangentsAndNormals();
     numPoints += tube->GetPoints().size();
     }
 

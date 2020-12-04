@@ -161,7 +161,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
       dynamic_cast< TubeType * >( ( *tubeIterator ).GetPointer() );
     if( currentTube != NULL )
       {
-      currentTube->ComputeTangentAndNormals();
+      currentTube->ComputeTangentsAndNormals();
 
       const typename TubeType::TubePointListType & currentTubePoints
         = currentTube->GetPoints();

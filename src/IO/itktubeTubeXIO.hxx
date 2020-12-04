@@ -357,7 +357,7 @@ TubeXIO< TDimension >
 
     tube->SetId( tubeId );
     tube->RemoveDuplicatePointsInObjectSpace();
-    tube->ComputeTangentAndNormals();
+    tube->ComputeTangentsAndNormals();
     tube->GetProperty().SetColor( tubeColor[0], tubeColor[1],
       tubeColor[2] );
     tube->GetProperty().SetAlpha( tubeColor[3] );
