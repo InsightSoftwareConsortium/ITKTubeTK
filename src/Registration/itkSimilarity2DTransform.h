@@ -234,7 +234,7 @@ protected:
   }
 
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(Similarity2DTransform);
+  ITK_DISALLOW_COPY_AND_MOVE(Similarity2DTransform);
 
   ScaleType m_Scale;
 }; // class Similarity2DTransform

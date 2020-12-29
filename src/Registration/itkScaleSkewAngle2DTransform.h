@@ -164,7 +164,7 @@ protected:
   void ComputeMatrixParameters(void) ITK_OVERRIDE;
 
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(ScaleSkewAngle2DTransform);
+  ITK_DISALLOW_COPY_AND_MOVE(ScaleSkewAngle2DTransform);
 
   /**  If true, parameters[3] is used for scaling in x and y. */
   bool m_UseSingleScale;
