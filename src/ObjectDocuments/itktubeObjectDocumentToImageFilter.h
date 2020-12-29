@@ -75,7 +75,7 @@ public:
   itkTypeMacro( ObjectDocumentToImageFilter, ObjectDocumentToObjectSource );
 
   /** Return the interpolator. */
-  itkGetObjectMacro( Interpolator, InterpolateImageFunctionType );
+  itkGetModifiableObjectMacro( Interpolator, InterpolateImageFunctionType );
 
   /** Set the interpolator. */
   itkSetObjectMacro( Interpolator, InterpolateImageFunctionType );

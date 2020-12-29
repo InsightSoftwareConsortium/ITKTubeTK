@@ -74,7 +74,7 @@ public:
 
   /** Set Central Voronoi Tesselation Image*/
   itkSetObjectMacro( CVTImage, InputImageType );
-  itkGetObjectMacro( CVTImage, InputImageType );
+  itkGetModifiableObjectMacro( CVTImage, InputImageType );
 
   /** Sets the input tubes */
   itkSetMacro( InputTubeGroup, TubeGroupPointer );

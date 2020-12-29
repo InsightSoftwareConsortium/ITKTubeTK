@@ -69,7 +69,7 @@ public:
 
   /** Set/Get input Mask Image */
   itkSetObjectMacro( InputMaskImage, ImageType );
-  itkGetObjectMacro( InputMaskImage, ImageType );
+  itkGetModifiableObjectMacro( InputMaskImage, ImageType );
 
   /** Set/Get Object Scale */
   itkSetMacro( ObjectScale, float );

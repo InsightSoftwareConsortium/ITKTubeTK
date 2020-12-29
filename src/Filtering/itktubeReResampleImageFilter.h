@@ -66,7 +66,7 @@ public:
 
   /** Set/Get input Match Image */
   itkSetObjectMacro( MatchImage, ImageType );
-  itkGetObjectMacro( MatchImage, ImageType );
+  itkGetModifiableObjectMacro( MatchImage, ImageType );
 
   /** Set/Get whether Output is isotropic or not */
   itkSetMacro( MakeIsotropic, bool );
@@ -99,10 +99,10 @@ public:
   /** Set Output Resample Factor */
   void SetResampleFactor( std::vector<double> rf );
 
-  itkGetObjectMacro( Output, ImageType );
+  itkGetModifiableObjectMacro( Output, ImageType );
 
   itkSetObjectMacro( Input, ImageType );
-  itkGetObjectMacro( Input, ImageType );
+  itkGetModifiableObjectMacro( Input, ImageType );
 
   virtual void Update( void ) override;
 

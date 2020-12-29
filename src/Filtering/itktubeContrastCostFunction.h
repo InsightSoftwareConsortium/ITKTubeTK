@@ -64,7 +64,7 @@ public:
 
   /** Set/Get input mask image */
   itkSetObjectMacro( InputMask, ImageType );
-  itkGetObjectMacro( InputMask, ImageType );
+  itkGetModifiableObjectMacro( InputMask, ImageType );
 
   /** Set/Get Mask Object Value */
   itkSetMacro( MaskObjectValue, int );
@@ -76,7 +76,7 @@ public:
 
   /** Set/Get output  image */
   itkSetObjectMacro( OutputImage, ImageType );
-  itkGetObjectMacro( OutputImage, ImageType );
+  itkGetModifiableObjectMacro( OutputImage, ImageType );
 
   /** Set Scales */
   void SetScales( ParametersType & scales );

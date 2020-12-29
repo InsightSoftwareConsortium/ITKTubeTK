@@ -158,7 +158,7 @@ public:
   itkGetConstReferenceMacro( OutputSpacing, SpacingType );
 
   itkGetConstObjectMacro( Input, InputImageType );
-  itkGetObjectMacro( Output, OutputImageType );
+  itkGetModifiableObjectMacro( Output, OutputImageType );
 
 protected:
 

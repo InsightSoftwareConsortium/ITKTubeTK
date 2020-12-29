@@ -77,7 +77,7 @@ public:
 
   /** Set/Get mask image */
   itkSetObjectMacro( MaskImage, ImageType );
-  itkGetObjectMacro( MaskImage, ImageType );
+  itkGetModifiableObjectMacro( MaskImage, ImageType );
 
   /** Set/Get Use mask image to crop tubes */
   itkSetMacro( UseMaskImage, bool );

@@ -147,8 +147,8 @@ public:
     this->PrecomputeAtIndex( nindex );
     }
 
-  itkGetObjectMacro( MeanHistogram, HistogramType );
-  itkGetObjectMacro( StandardDeviationHistogram, HistogramType );
+  itkGetModifiableObjectMacro( MeanHistogram, HistogramType );
+  itkGetModifiableObjectMacro( StandardDeviationHistogram, HistogramType );
 
   itkSetObjectMacro( MeanHistogram, HistogramType );
   itkSetObjectMacro( StandardDeviationHistogram, HistogramType );

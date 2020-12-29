@@ -87,7 +87,7 @@ public:
                  GetInputFeatureVectorGenerator( void );
 
   itkSetObjectMacro( LabelMap, LabelMapType );
-  itkGetObjectMacro( LabelMap, LabelMapType );
+  itkGetModifiableObjectMacro( LabelMap, LabelMapType );
 
   void         SetObjectId( ObjectIdType objectId );
   void         AddObjectId( ObjectIdType objectId );
