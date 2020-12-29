@@ -611,7 +611,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
       itkExceptionMacro(
         << "Size of output and input MIP point image do not match. "
            "Make sure you are using the same shrink amount parameters "
-           "that were used to generate the input MIP point image." )
+           "that were used to generate the input MIP point image." );
       }
     }
 

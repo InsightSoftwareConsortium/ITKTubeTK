@@ -232,45 +232,45 @@ public:
   * should be acceptable for most cases.
   */
   itkSetClampMacro( EpsilonForSpacing, double, 0,
-    std::numeric_limits<double>::max() )
-  itkGetConstMacro( EpsilonForSpacing, double )
+    std::numeric_limits<double>::max() );
+  itkGetConstMacro( EpsilonForSpacing, double );
 
   /** Set/Get the sensibility of the filter. This is used in internal
   * computation when comparing whether a value should be considered null or
   * not. Default value ( 1e-6 ) should be acceptable for most cases.
   */
   itkSetClampMacro( EpsilonForZero, double, 0,
-    std::numeric_limits<double>::max() )
-  itkGetConstMacro( EpsilonForZero, double )
+    std::numeric_limits<double>::max() );
+  itkGetConstMacro( EpsilonForZero, double );
 
   /** Set/Get the maximum of the range of values the histogram must be
   * computed on. Used for CURVATURE_HISTOGRAM_METRICS. Default value is 1.
   */
   itkSetClampMacro( HistogramMax, double, 0,
-    std::numeric_limits<double>::max() )
-  itkGetConstMacro( HistogramMax, double )
+    std::numeric_limits<double>::max() );
+  itkGetConstMacro( HistogramMax, double );
 
   /** Set/Get the minimum of the range of values the histogram must be
   * computed on. Used for CURVATURE_HISTOGRAM_METRICS. Default value is 0.
   */
   itkSetClampMacro( HistogramMin, double, 0,
-    std::numeric_limits<double>::max() )
-  itkGetConstMacro( HistogramMin, double )
+    std::numeric_limits<double>::max() );
+  itkGetConstMacro( HistogramMin, double );
 
   /** Set/Get the arbitrary parameter lambda used to compute Inflection
   * count 1 metric. By default, it is set to 1.5, because it works well.
   * These methods are mainly for experimentation. See
   * INFLECTION_COUNT_1_METRIC
   */
-  itkSetMacro( Lambda, double )
-  itkGetConstMacro( Lambda, double )
+  itkSetMacro( Lambda, double );
+  itkGetConstMacro( Lambda, double );
 
   /** Set/Get the number of bins that the histogram must have.
   * Used for CURVATURE_HISTOGRAM_METRICS. Default value is 20.
   */
   itkSetClampMacro( NumberOfBins, size_t, 1,
-    std::numeric_limits<size_t>::max() )
-  itkGetConstMacro( NumberOfBins, size_t )
+    std::numeric_limits<size_t>::max() );
+  itkGetConstMacro( NumberOfBins, size_t );
 
   /** Set/Get the smoothing scale to be applied to the vessel before
   * computing the metrics. This value has different meanings when using
@@ -278,15 +278,15 @@ public:
   * See ::tube::SmoothTube() for more details. Default value is 5.0.
   */
   itkSetClampMacro( SmoothingScale, double, 0,
-    std::numeric_limits<double>::max() )
-  itkGetConstMacro( SmoothingScale, double )
+    std::numeric_limits<double>::max() );
+  itkGetConstMacro( SmoothingScale, double );
 
   /** Set/Get the subsampling scale to be applied to the vessel before
   * computing the metrics.
   */
   itkSetClampMacro( SubsamplingScale, int, 0,
-    std::numeric_limits<int>::max() )
-  itkGetConstMacro( SubsamplingScale, int )
+    std::numeric_limits<int>::max() );
+  itkGetConstMacro( SubsamplingScale, int );
 
 protected:
   TortuositySpatialObjectFilter( void );
