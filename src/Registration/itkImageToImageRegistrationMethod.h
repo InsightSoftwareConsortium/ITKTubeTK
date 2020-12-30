@@ -141,7 +141,6 @@ protected:
    * variable. */
   itkSetObjectMacro( Transform, TransformType );
   itkGetModifiableObjectMacro( Transform, TransformType );
-  itkGetConstObjectMacro( Transform, TransformType );
 
   using Superclass::MakeOutput;
   virtual DataObjectPointer  MakeOutput( DataObjectPointerArraySizeType
