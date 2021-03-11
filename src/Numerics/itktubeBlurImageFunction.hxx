@@ -311,7 +311,7 @@ BlurImageFunction<TInputImage>
     }
 
   double res = 0;
-  double wTotal;
+  double wTotal = 0;
 
   IndexType kernelX;
 
@@ -391,7 +391,7 @@ BlurImageFunction<TInputImage>
       }
     }
 
-  if( wTotal < *( m_KernelWeights.begin() ) )
+  if( wTotal < *( m_KernelWeights.begin() ) || wTotal == 0 ) 
     {
     return 0;
     }
@@ -551,7 +551,7 @@ BlurImageFunction<TInputImage>
       }
     }
 
-  if( wTotal < *( m_KernelWeights.begin() ) )
+  if( wTotal < *( m_KernelWeights.begin() ) || wTotal == 0 )
     {
     return 0;
     }
