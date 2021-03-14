@@ -111,13 +111,13 @@ public:
   virtual void FinalizeOutput( void );
 
   /** Get the output mean image */
-  itkGetObjectMacro( OutputMeanImage, OutputMeanImageType );
+  itkGetModifiableObjectMacro( OutputMeanImage, OutputMeanImageType );
 
   /** Get the output variance image */
-  itkGetObjectMacro( OutputSigmaImage, OutputSigmaImageType );
+  itkGetModifiableObjectMacro( OutputSigmaImage, OutputSigmaImageType );
 
   /** Get the output valid count image */
-  itkGetObjectMacro( ValidCountImage, CountImageType );
+  itkGetModifiableObjectMacro( ValidCountImage, CountImageType );
 
   /**
    * Get the minimum number of contributing images for a given voxel
@@ -214,7 +214,7 @@ public:
   /** Set the current size of the output images */
   itkSetMacro( OutputOrigin, PointType );
 
-  itkGetObjectMacro( SumImage, ProcessImageType );
+  itkGetModifiableObjectMacro( SumImage, ProcessImageType );
 
 protected:
 
@@ -235,7 +235,7 @@ protected:
 
   itkSetObjectMacro( SumImage, ProcessImageType );
 
-  itkGetObjectMacro( SumSquareImage, ProcessImageType );
+  itkGetModifiableObjectMacro( SumSquareImage, ProcessImageType );
   itkSetObjectMacro( SumSquareImage, ProcessImageType );
 
   itkSetObjectMacro( ValidCountImage, CountImageType );

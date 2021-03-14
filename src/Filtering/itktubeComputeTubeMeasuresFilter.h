@@ -74,16 +74,16 @@ public:
   itkGetConstObjectMacro( InputImage, InputImageType );
 
   /** Get output Ridge Image */
-  itkGetObjectMacro( Ridgeness, OutputImageType );
+  itkGetModifiableObjectMacro( Ridgeness, OutputImageType );
 
   /** Get output Round Image */
-  itkGetObjectMacro( Roundness, OutputImageType );
+  itkGetModifiableObjectMacro( Roundness, OutputImageType );
 
   /** Get output Curve Image */
-  itkGetObjectMacro( Curvature, OutputImageType );
+  itkGetModifiableObjectMacro( Curvature, OutputImageType );
 
   /** Get output Level Image */
-  itkGetObjectMacro( Levelness, OutputImageType );
+  itkGetModifiableObjectMacro( Levelness, OutputImageType );
 
 protected:
 

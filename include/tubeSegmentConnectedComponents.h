@@ -72,7 +72,7 @@ public:
   itkGetMacro( MinimumVolume, double );
 
   itkSetObjectMacro( SeedMask, SeedMaskType );
-  itkGetObjectMacro( SeedMask, SeedMaskType );
+  itkGetModifiableObjectMacro( SeedMask, SeedMaskType );
 
   void Update( void ) override;
 

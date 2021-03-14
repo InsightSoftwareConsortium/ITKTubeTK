@@ -116,7 +116,7 @@ public:
   itkGetMacro( VoidId, ObjectIdType );
 
   itkSetObjectMacro( InputLabelMap, LabelMapType );
-  itkGetObjectMacro( InputLabelMap, LabelMapType );
+  itkGetModifiableObjectMacro( InputLabelMap, LabelMapType );
 
   itkSetMacro( ErodeDilateRadius, unsigned int );
   itkGetMacro( ErodeDilateRadius, unsigned int );
@@ -152,7 +152,7 @@ public:
 
   virtual void Update( void ) override;
 
-  itkGetObjectMacro( OutputLabelMap, LabelMapType );
+  itkGetModifiableObjectMacro( OutputLabelMap, LabelMapType );
 
   virtual void ClassifyImages( void );
 

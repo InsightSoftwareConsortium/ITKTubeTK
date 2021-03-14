@@ -75,7 +75,7 @@ public:
   itkGetConstObjectMacro( InputImage, InputImageType );
 
   /** Get output tube mask image */
-  itkGetObjectMacro( OutputMask, OutputMaskType );
+  itkGetModifiableObjectMacro( OutputMask, OutputMaskType );
 
 protected:
 

@@ -147,7 +147,7 @@ public:
    * The index of the point weights should correspond to "standard tube tree
    * interation". */
   void SetFeatureWeights( FeatureWeightsType & featureWeights );
-  itkGetConstReferenceMacro( FeatureWeights, FeatureWeightsType )
+  itkGetConstReferenceMacro( FeatureWeights, FeatureWeightsType );
 
   TransformPointer GetTransform( void ) const
     {

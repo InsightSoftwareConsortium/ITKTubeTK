@@ -118,7 +118,7 @@ public:
   typename InputImageType::Pointer GetInputImage( void );
 
   /** Get the mask image */
-  itkGetObjectMacro( TubeMaskImage, TubeMaskImageType );
+  itkGetModifiableObjectMacro( TubeMaskImage, TubeMaskImageType );
 
   /** Set the mask image */
   itkSetObjectMacro( TubeMaskImage, TubeMaskImageType );

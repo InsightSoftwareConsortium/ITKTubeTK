@@ -130,7 +130,7 @@ public:
   itkSetConstObjectMacro( InputMipPointImage, PointImageType );
   itkGetConstObjectMacro( InputMipPointImage, PointImageType );
 
-  itkGetObjectMacro( OutputMipPointImage, PointImageType );
+  itkGetModifiableObjectMacro( OutputMipPointImage, PointImageType );
 
   void GenerateOutputInformation( void ) override;
 

@@ -120,7 +120,7 @@ public:
     * incidence of a pixel > threshold */
   itkBooleanMacro( ClipStartIndices );
 
-  itkGetObjectMacro( Output, OutputImageType );
+  itkGetModifiableObjectMacro( Output, OutputImageType );
 
 protected:
 

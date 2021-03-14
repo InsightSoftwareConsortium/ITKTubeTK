@@ -78,7 +78,7 @@ public:
 
   /** Set/Get match image */
   itkSetObjectMacro( MatchImage, ImageType );
-  itkGetObjectMacro( MatchImage, ImageType );
+  itkGetModifiableObjectMacro( MatchImage, ImageType );
 
   /** Set/Get sampling factor */
   itkSetMacro( SamplingFactor, int );

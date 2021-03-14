@@ -143,7 +143,7 @@ public:
   virtual void Update();
 
   /** Get output image */
-  itkGetObjectMacro( Output, ImageType );
+  itkGetModifiableObjectMacro( Output, ImageType );
 
 protected:
   MergeAdjacentImagesFilter( void );

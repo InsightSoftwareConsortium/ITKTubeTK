@@ -71,7 +71,7 @@ public:
                       TInputMask::ImageDimension );
 
   itkSetObjectMacro( InputMask, InputMaskType );
-  itkGetObjectMacro( InputMask, InputMaskType );
+  itkGetModifiableObjectMacro( InputMask, InputMaskType );
 
   OutputType* GetOutput();
 
