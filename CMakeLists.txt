@@ -19,6 +19,8 @@
 # limitations under the License.
 #
 ##############################################################################
+cmake_minimum_required(VERSION 3.10.2)
+
 if(NOT ITK_SOURCE_DIR)
   include(itk-module-init.cmake)
 endif()
