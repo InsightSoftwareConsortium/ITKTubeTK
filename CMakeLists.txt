@@ -85,8 +85,68 @@ endif()
 ####
 # VTK setup.
 ####
-option( TubeTK_USE_VTK "Use VTK to enable additional functionality." OFF )
-# find_package happens in itk-module-init.cmake
+option(TubeTK_USE_VTK "Build TubeTK filters that require VTK." ON)
+
+if(TubeTK_USE_VTK)
+  find_package(VTK NO_MODULE REQUIRED)
+
+  # Add compiler flags needed to use VTK.
+  set(CMAKE_C_FLAGS
+      "${CMAKE_C_FLAGS} ${VTK_REQUIRED_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS
+      "${CMAKE_CXX_FLAGS} ${VTK_REQUIRED_CXX_FLAGS}")
+  set(CMAKE_EXE_LINKER_FLAGS
+      "${CMAKE_EXE_LINKER_FLAGS} ${VTK_REQUIRED_EXE_LINKER_FLAGS}")
+  set(CMAKE_SHARED_LINKER_FLAGS
+      "${CMAKE_SHARED_LINKER_FLAGS} ${VTK_REQUIRED_SHARED_LINKER_FLAGS}")
+  set(CMAKE_MODULE_LINKER_FLAGS
+      "${CMAKE_MODULE_LINKER_FLAGS} ${VTK_REQUIRED_MODULE_LINKER_FLAGS}")
+
+  vtk_module_config(TubeTK_VTK
+    vtkCommonDataModel
+    vtkIOLegacy
+  )
+
+  # The VTK DICOMParser and vtkmetaio includes conflict with the ITK
+  # versions. Here we remove them from the include directories.
+  #
+  string(REGEX REPLACE "[^;]*MetaIO;"
+           "" TubeTK_VTK_INCLUDE_DIRS "${TubeTK_VTK_INCLUDE_DIRS}")
+  string(REGEX REPLACE "[^;]*vtkmetaio;"
+           "" TubeTK_VTK_INCLUDE_DIRS "${TubeTK_VTK_INCLUDE_DIRS}")
+  string(REGEX REPLACE "[^;]*DICOMParser;"
+           "" TubeTK_VTK_INCLUDE_DIRS "${TubeTK_VTK_INCLUDE_DIRS}")
+
+  # Add preprocessor definitions needed to use VTK.
+  set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS
+               ${TubeTK_VTK_DEFINITIONS})
+
+  set(TubeTK_EXPORT_CODE_INSTALL "
+  set(VTK_DIR \"${VTK_DIR}\")
+
+  find_package(VTK NO_MODULE REQUIRED)
+
+  vtk_module_config(TubeTK_VTK vtkCommonDataModel)
+
+  set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS
+               \${TubeTK_VTK_DEFINITIONS})
+  ")
+
+  set(TubeTK_EXPORT_CODE_BUILD "
+  if(NOT ITK_BINARY_DIR)
+    set(VTK_DIR \"${VTK_DIR}\")
+
+    find_package(VTK NO_MODULE REQUIRED)
+
+    vtk_module_config(TubeTK_VTK
+      vtkCommonDataModel
+      )
+
+    set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS
+                 \${TubeTK_VTK_DEFINITIONS})
+  endif()
+  ")
+endif() # ITKTubeTK_USE_VTK
 
 ####
 # Find ITK and pre-built modules
@@ -154,8 +214,10 @@ set( TubeTK_INCLUDE_DIRS
   $<INSTALL_INTERFACE:include/Segmentation> )
 
 set( TubeTK_LIBRARIES TubeTK )
+set( TubeTK_SYSTEM_LIBRARY_DIRS )
 
 if( TubeTK_USE_VTK )
+  list( APPEND TubeTK_SYSTEM_LIBRARY_DIRS ${TubeTK_VTK_LIBRARY_DIRS} )
   list( APPEND TubeTK_LIBRARIES ${VTK_LIBRARIES} )
 endif()
 
@@ -175,7 +237,7 @@ set( TubeTK_SYSTEM_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/src/Segmentation )
 
 if( TubeTK_USE_VTK )
-  list( APPEND TubeTK_SYSTEM_INCLUDE_DIRS ${VTK_INCLUDE_DIRS} )
+  list( APPEND TubeTK_SYSTEM_INCLUDE_DIRS ${TubeTK_VTK_INCLUDE_DIRS} )
 endif()
 
 include_directories( ${TubeTK_SYSTEM_INCLUDE_DIRS} )

@@ -16,17 +16,20 @@ jobs:
           - os: ubuntu-18.04
             c-compiler: "gcc"
             cxx-compiler: "g++"
-            itk-git-tag: "7548a390d71dc25b80e792703ee3cfea17853a99"
+            itk-git-tag: "v5.2.0"
+            vtk-git-tag: "v9.0.1"
             cmake-build-type: "MinSizeRel"
           - os: windows-2019
             c-compiler: "cl.exe"
             cxx-compiler: "cl.exe"
-            itk-git-tag: "7548a390d71dc25b80e792703ee3cfea17853a99"
+            itk-git-tag: "v5.2.0"
+            vtk-git-tag: "v9.0.1"
             cmake-build-type: "Release"
           - os: macos-10.15
             c-compiler: "clang"
             cxx-compiler: "clang++"
-            itk-git-tag: "7548a390d71dc25b80e792703ee3cfea17853a99"
+            itk-git-tag: "v5.2.0"
+            vtk-git-tag: "v9.0.1"
             cmake-build-type: "MinSizeRel"
 
     steps:
@@ -45,6 +48,32 @@ jobs:
     - name: Get specific version of CMake, Ninja
       uses: lukka/get-cmake@v3.18.3
 
+    - name: Download VTK
+      run: |
+        cd ..
+        git clone https://github.com/Kitware/VTK.git
+        cd VTK
+        git checkout ${{ matrix.vtk-git-tag }}
+
+    - name: Build VTK
+      if: matrix.os != 'windows-2019'
+      run: |
+        cd ..
+        mkdir VTK-build
+        cd VTK-build
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
+        ninja
+    - name: Build VTK
+      if: matrix.os == 'windows-2019'
+      run: |
+        cd ..
+        mkdir ITK-build
+        cd ITK-build
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
+        ninja
+      shell: cmd
+
     - name: Download ITK
       run: |
         cd ..
@@ -58,7 +87,7 @@ jobs:
         cd ..
         mkdir ITK-build
         cd ITK-build
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DModule_ITKVtkGlue:BOOL=ON -DVTK_DIR="..\VTK-build" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
         ninja
 
     - name: Build ITK
@@ -68,7 +97,7 @@ jobs:
         mkdir ITK-build
         cd ITK-build
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DModule_ITKVtkGlue:BOOL=ON -DVTK_DIR="..\VTK-build" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
         ninja
       shell: cmd
 
@@ -139,7 +168,7 @@ jobs:
       matrix:
         python-version: [36, 37, 38, 39]
         include:
-          - itk-python-git-tag: "v5.2rc03"
+          - itk-python-git-tag: "v5.2.0"
 
     steps:
     - uses: actions/checkout@v2
@@ -186,7 +215,7 @@ jobs:
       max-parallel: 2
       matrix:
         include:
-          - itk-python-git-tag: "v5.2rc03"
+          - itk-python-git-tag: "v5.2.0"
 
     steps:
     - uses: actions/checkout@v2
@@ -229,7 +258,7 @@ jobs:
       matrix:
         python-version-minor: [6, 7, 8, 9]
         include:
-          - itk-python-git-tag: "v5.2rc03"
+          - itk-python-git-tag: "v5.2.0"
 
     steps:
     - name: Get specific version of CMake, Ninja
