@@ -4,6 +4,8 @@ on: [push,pull_request]
 
 env:
   ITKMinimalPathExtraction-git-tag: v1.1.2
+  itk-git-tag: "v5.2.0"
+  vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
 
 jobs:
   build-test-cxx:
@@ -16,20 +18,14 @@ jobs:
           - os: ubuntu-18.04
             c-compiler: "gcc"
             cxx-compiler: "g++"
-            itk-git-tag: "v5.2.0"
-            vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
             cmake-build-type: "Release"
           - os: windows-2019
             c-compiler: "cl.exe"
             cxx-compiler: "cl.exe"
-            itk-git-tag: "v5.2.0"
-            vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
             cmake-build-type: "Release"
           - os: macos-10.15
             c-compiler: "clang"
             cxx-compiler: "clang++"
-            itk-git-tag: "v5.2.0"
-            vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
             cmake-build-type: "Release"
 
     steps:
@@ -60,7 +56,7 @@ jobs:
         cd ..
         git clone https://github.com/Kitware/VTK.git
         cd VTK
-        git checkout ${{ matrix.vtk-git-tag }}
+        git checkout ${{ env.vtk-git-tag }}
 
     - name: Build VTK
       if: matrix.os != 'windows-2019'
@@ -86,7 +82,7 @@ jobs:
         cd ..
         git clone https://github.com/InsightSoftwareConsortium/ITK.git
         cd ITK
-        git checkout ${{ matrix.itk-git-tag }}
+        git checkout ${{ env.itk-git-tag }}
 
     - name: Build ITK
       if: matrix.os != 'windows-2019'
@@ -177,6 +173,9 @@ jobs:
         python-version: [36, 37, 38, 39]
         include:
           - itk-python-git-tag: "v5.2.0"
+            c-compiler: "gcc"
+            cxx-compiler: "g++"
+            cmake-build-type: "Release"
 
     steps:
     - uses: actions/checkout@v2
@@ -235,6 +234,9 @@ jobs:
       matrix:
         include:
           - itk-python-git-tag: "v5.2.0"
+            c-compiler: "clang"
+            cxx-compiler: "clang++"
+            cmake-build-type: "Release"
 
     steps:
     - uses: actions/checkout@v2
@@ -291,6 +293,9 @@ jobs:
         python-version-minor: [6, 7, 8, 9]
         include:
           - itk-python-git-tag: "v5.2.0"
+            c-compiler: "cl.exe"
+            cxx-compiler: "cl.exe"
+            cmake-build-type: "Release"
 
     steps:
     - name: Get specific version of CMake, Ninja
