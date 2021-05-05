@@ -94,7 +94,7 @@ jobs:
         cd ..
         mkdir ITK-build
         cd ITK-build
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DModule_ITKVtkGlue:BOOL=ON -DVTK_DIR="../VTK-build" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
         ninja
 
     - name: Build ITK
@@ -104,7 +104,7 @@ jobs:
         mkdir ITK-build
         cd ITK-build
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DModule_ITKVtkGlue:BOOL=ON -DVTK_DIR="../VTK-build" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
         ninja
       shell: cmd
 

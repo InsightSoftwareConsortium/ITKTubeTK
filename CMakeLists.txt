@@ -102,6 +102,19 @@ if(TubeTK_USE_VTK)
   set(CMAKE_MODULE_LINKER_FLAGS
       "${CMAKE_MODULE_LINKER_FLAGS} ${VTK_REQUIRED_MODULE_LINKER_FLAGS}")
 
+  if(NOT COMMAND vtk_module_config)
+    macro(vtk_module_config ns)
+       foreach(arg \${ARGN})
+        if(\${arg} MATCHES \"^[Vv][Tt][Kk]\")
+          string(REGEX REPLACE \"^[Vv][Tt][Kk]\" \"\" _arg \${arg})
+        else()
+          set(_arg \${arg})
+        endif()
+        set(\${ns}_LIBRARIES \${\${ns}_LIBRARIES} VTK::\${_arg})
+       endforeach()
+    endmacro()
+  endif()
+
   vtk_module_config(TubeTK_VTK
     vtkCommonDataModel
     vtkIOLegacy
