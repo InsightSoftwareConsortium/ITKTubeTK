@@ -197,17 +197,17 @@ jobs:
         curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
         chmod u+x dockcross-manylinux-download-cache-and-build-module-wheels.sh
 
-    - name: 'Build 🐍 Python 📦 package - VTK'
-      run: |
-        git clone https://github.com/Kitware/VTK
-        pushd VTK
-        git checkout ${{env.vtk-git-tag}}
-        popd
-        mkdir VTK-build
-        pushd VTK-build
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
-        ninja
-        popd
+    #- name: 'Build 🐍 Python 📦 package - VTK'
+      #run: |
+        #git clone https://github.com/Kitware/VTK
+        #pushd VTK
+        #git checkout ${{env.vtk-git-tag}}
+        #popd
+        #mkdir VTK-build
+        #pushd VTK-build
+        #cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
+        #ninja
+        #popd
 
     - name: 'Build 🐍 Python 📦 package'
       shell: cmd
