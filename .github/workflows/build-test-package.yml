@@ -11,9 +11,9 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        os: [ubuntu-latest, windows-2019, macos-10.15]
+        os: [ubuntu-18.04, windows-2019, macos-10.15]
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-18.04
             c-compiler: "gcc"
             cxx-compiler: "g++"
             itk-git-tag: "v5.2.0"
@@ -41,9 +41,10 @@ jobs:
         python-version: 3.7
 
     - name: Set up OpenGL
-      if: matrix.os == 'ubuntu-latest'
-      uses: openrndr/setup-opengl@v1.1
-      run: xvfb-run glxinfo
+      if: matrix.os == 'ubuntu-18.04'
+      run: |
+        apt-get install -y libosmesa6-dev xvfb
+        xvfb glxinfo
 
     - name: Install build dependencies
       run: |
@@ -167,7 +168,7 @@ jobs:
       shell: cmd
 
   build-linux-python-packages:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
       max-parallel: 2
       matrix:
@@ -317,7 +318,7 @@ jobs:
       - build-linux-python-packages
       - build-macos-python-packages
       - build-windows-python-packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - name: Download Python Packages
