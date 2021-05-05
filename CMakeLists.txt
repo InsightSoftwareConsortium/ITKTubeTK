@@ -88,7 +88,8 @@ endif()
 option(TubeTK_USE_VTK "Build TubeTK filters that require VTK." ON)
 
 if(TubeTK_USE_VTK)
-  find_package(VTK NO_MODULE REQUIRED HINTS ../VTK-build)
+  find_package(VTK NO_MODULE REQUIRED
+               HINTS ./VTK-build ../VTK-build ../../VTK-build)
 
   # Add compiler flags needed to use VTK.
   set(CMAKE_C_FLAGS
@@ -137,7 +138,8 @@ if(TubeTK_USE_VTK)
   set(TubeTK_EXPORT_CODE_INSTALL "
   set(VTK_DIR \"${VTK_DIR}\")
 
-  find_package(VTK NO_MODULE REQUIRED HINTS ../VTK-build)
+  find_package(VTK NO_MODULE REQUIRED
+               HINTS ./VTK-build ../VTK-build ../../VTK-build)
 
   if(NOT COMMAND vtk_module_config)
     macro(vtk_module_config ns)
@@ -162,7 +164,8 @@ if(TubeTK_USE_VTK)
   if(NOT ITK_BINARY_DIR)
     set(VTK_DIR \"${VTK_DIR}\")
 
-    find_package(VTK NO_MODULE REQUIRED HINTS ../VTK-build)
+    find_package(VTK NO_MODULE REQUIRED
+                 HINTS ./VTK-build ../VTK-build ../../VTK-build)
 
     if(NOT COMMAND vtk_module_config)
       macro(vtk_module_config ns)
