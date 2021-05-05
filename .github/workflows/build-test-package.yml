@@ -183,7 +183,8 @@ jobs:
 
     - name: 'Free up disk space'
       run: |
-        # Workaround for https://github.com/actions/virtual-environments/issues/709
+        # Workaround for
+        #     https://github.com/actions/virtual-environments/issues/709
         df -h
         sudo swapoff -a
         sudo rm -f /swapfile
@@ -197,15 +198,15 @@ jobs:
         curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
         chmod u+x dockcross-manylinux-download-cache-and-build-module-wheels.sh
 
-        #git clone https://github.com/Kitware/VTK
-        #pushd VTK
-        #git checkout ${{env.vtk-git-tag}}
-        #popd
-        #mkdir VTK-build
-        #pushd VTK-build
-        #cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
-        #ninja
-        #popd
+        git clone https://github.com/Kitware/VTK
+        pushd VTK
+        git checkout ${{env.vtk-git-tag}}
+        popd
+        mkdir VTK-build
+        pushd VTK-build
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
+        ninja
+        popd
 
         export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
@@ -252,6 +253,17 @@ jobs:
       run: |
         export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         export MACOSX_DEPLOYMENT_TARGET=10.9
+
+        git clone https://github.com/Kitware/VTK
+        pushd VTK
+        git checkout ${{env.vtk-git-tag}}
+        popd
+        mkdir VTK-build
+        pushd VTK-build
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
+        ninja
+        popd
+
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         cp ./macpython-download-cache-and-build-module-wheels.sh ITKMinimalPathExtraction/
         pushd ITKMinimalPathExtraction
@@ -311,6 +323,17 @@ jobs:
         set PATH="C:\P\grep;%PATH%"
         set CC=cl.exe
         set CXX=cl.exe
+
+        git clone https://github.com/Kitware/VTK
+        pushd VTK
+        git checkout ${{env.vtk-git-tag}}
+        popd
+        mkdir VTK-build
+        pushd VTK-build
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
+        ninja
+        popd
+
         cd ITKMinimalPathExtraction
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe C:\P\IPP\scripts\windows_build_module_wheels.py --py-envs "3${{ matrix.python-version-minor }}-x64"
         cd ..
