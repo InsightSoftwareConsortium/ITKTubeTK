@@ -43,7 +43,8 @@ jobs:
     - name: Set up OpenGL
       if: matrix.os == 'ubuntu-18.04'
       run: |
-        sudo apt-get install -y libosmesa6-dev
+        sudo apt-get install -y freeglut3 freeglut3-dev
+        #sudo apt-get install -y libosmesa6-dev libgl1-mesa-glx
 
     - name: Install build dependencies
       run: |
