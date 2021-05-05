@@ -199,7 +199,6 @@ jobs:
 
     - name: 'Build 🐍 Python 📦 package - VTK'
       run: |
-        export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         git clone https://github.com/Kitware/VTK
         pushd VTK
         git checkout ${{env.vtk-git-tag}}
@@ -210,8 +209,9 @@ jobs:
         ninja
         popd
 
-    - name: 'Build 🐍 Python 📦 package - MinimalPath'
+    - name: 'Build 🐍 Python 📦 package'
       shell: cmd
+        export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         mv ./dockcross-manylinux-download-cache-and-build-module-wheels.sh ./ITKMinimalPathExtraction
         pushd ITKMinimalPathExtraction
@@ -221,8 +221,6 @@ jobs:
         cp ITKMinimalPathExtraction/include/* include/
         ln -s $(pwd)/ITKMinimalPathExtraction/ITKPythonPackage .
         ln -s $(pwd)/ITKMinimalPathExtraction/tools .
-
-    - name: 'Build 🐍 Python 📦 package - ITKTubeTK'
         ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
 
     - name: Publish Python package as GitHub Artifact
