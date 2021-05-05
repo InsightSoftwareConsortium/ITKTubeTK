@@ -27,7 +27,7 @@ jobs:
             cmake-build-type: "Release"
           - os: macos-10.15
             c-compiler: "clang"
-            cxx-compiler: "clang++ -std=c++17"
+            cxx-compiler: "clang++"
             itk-git-tag: "v5.2.0"
             vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
             cmake-build-type: "Release"
