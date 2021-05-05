@@ -33,7 +33,7 @@ jobs:
             cmake-build-type: "Release"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v1
 
     - name: Set up Python 3.7
       uses: actions/setup-python@v1
@@ -43,6 +43,7 @@ jobs:
     - name: Set up OpenGL
       if: matrix.os == 'ubuntu-latest'
       uses: openrndr/setup-opengl@v1.1
+      run: xvfb-run glxinfo
 
     - name: Install build dependencies
       run: |
