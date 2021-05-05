@@ -194,6 +194,9 @@ jobs:
 
     - name: 'Fetch build script'
       run: |
+        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev
+        sudo apt-get install -y libgl1-mesa-glx
+        sudo apt-get install -y freeglut3-dev
         python -m pip install ninja
 
         curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
