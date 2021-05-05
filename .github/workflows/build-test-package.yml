@@ -17,19 +17,19 @@ jobs:
             c-compiler: "gcc"
             cxx-compiler: "g++"
             itk-git-tag: "v5.2.0"
-            vtk-git-tag: "v9.0.1"
+            vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
             cmake-build-type: "Release"
           - os: windows-2019
             c-compiler: "cl.exe"
             cxx-compiler: "cl.exe"
             itk-git-tag: "v5.2.0"
-            vtk-git-tag: "v9.0.1"
+            vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
             cmake-build-type: "Release"
           - os: macos-10.15
             c-compiler: "clang"
-            cxx-compiler: "clang++"
+            cxx-compiler: "clang++ -std=c++17"
             itk-git-tag: "v5.2.0"
-            vtk-git-tag: "v9.0.1"
+            vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
             cmake-build-type: "Release"
 
     steps:
@@ -43,8 +43,9 @@ jobs:
     - name: Set up OpenGL
       if: matrix.os == 'ubuntu-18.04'
       run: |
-        sudo apt-get install -y libglu1-mesa-dev freeglut3-dev mesa-common-dev libgl1-mesa-glx
-        #sudo apt-get install -y libosmesa6-dev libgl1-mesa-glx
+        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev
+        sudo apt-get install -y libgl1-mesa-glx
+        sudo apt-get install -y freeglut3-dev
 
     - name: Install build dependencies
       run: |
