@@ -11,9 +11,9 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        os: [ubuntu-18.04, windows-2019, macos-10.15]
+        os: [ubuntu-latest, windows-2019, macos-10.15]
         include:
-          - os: ubuntu-18.04
+          - os: ubuntu-latest
             c-compiler: "gcc"
             cxx-compiler: "g++"
             itk-git-tag: "v5.2.0"
@@ -41,7 +41,7 @@ jobs:
         python-version: 3.7
 
     - name: Set up OpenGL
-      if: matrix.os == 'ubuntu-18.04'
+      if: matrix.os == 'ubuntu-latest'
       uses: openrndr/setup-opengl@v1.1
 
     - name: Install build dependencies
@@ -166,7 +166,7 @@ jobs:
       shell: cmd
 
   build-linux-python-packages:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       max-parallel: 2
       matrix:
@@ -316,7 +316,7 @@ jobs:
       - build-linux-python-packages
       - build-macos-python-packages
       - build-windows-python-packages
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Download Python Packages
