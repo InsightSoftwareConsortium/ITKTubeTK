@@ -197,8 +197,6 @@ jobs:
         curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
         chmod u+x dockcross-manylinux-download-cache-and-build-module-wheels.sh
 
-    #- name: 'Build 🐍 Python 📦 package - VTK'
-      #run: |
         #git clone https://github.com/Kitware/VTK
         #pushd VTK
         #git checkout ${{env.vtk-git-tag}}
@@ -209,8 +207,6 @@ jobs:
         #ninja
         #popd
 
-    - name: 'Build 🐍 Python 📦 package'
-      shell: cmd
         export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         mv ./dockcross-manylinux-download-cache-and-build-module-wheels.sh ./ITKMinimalPathExtraction
