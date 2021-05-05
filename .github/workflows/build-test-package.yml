@@ -326,6 +326,13 @@ jobs:
         curl -L "https://data.kitware.com/api/v1/file/5bbf87ba8d777f06b91f27d6/download/grep-win.zip" -o "grep-win.zip"
         7z x grep-win.zip -o/c/P/grep -aoa -r
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
+        pushd ITKMinimalPathExtraction
+        git checkout ${{env.ITKMinimalPathExtraction-git-tag}}
+        popd
+        git clone https://github.com/Kitware/VTK
+        pushd VTK
+        git checkout ${{env.vtk-git-tag}}
+        popd
 
     - name: 'Build 🐍 Python 📦 package'
       shell: cmd
@@ -335,12 +342,8 @@ jobs:
         set PATH="C:\P\grep;%PATH%"
         set CC=cl.exe
         set CXX=cl.exe
-        python -m pip install ninja
-
-        git clone https://github.com/Kitware/VTK
-        pushd VTK
-        git checkout ${{env.vtk-git-tag}}
-        popd
+        C:\Python3${{ matrix.python-version-minor }}-x64\python.exe -m pip install ninja
+        C:\Python3${{ matrix.python-version-minor }}-x64\python.exe -m pip install cmake
         mkdir VTK-build
         pushd VTK-build
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
