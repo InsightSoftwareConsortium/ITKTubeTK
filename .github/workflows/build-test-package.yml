@@ -43,7 +43,7 @@ jobs:
     - name: Set up OpenGL
       if: matrix.os == 'ubuntu-18.04'
       run: |
-        apt-get install -y libosmesa6-dev xvfb
+        sudo apt-get install -y libosmesa6-dev xvfb
         xvfb glxinfo
 
     - name: Install build dependencies
