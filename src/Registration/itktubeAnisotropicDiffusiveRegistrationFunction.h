@@ -198,7 +198,7 @@ public:
    *  to use the global data supplied since we are returning a fixed
    *  value. */
   TimeStepType ComputeGlobalTimeStep( void * itkNotUsed( globalData ) )
-    const
+    const override
     { return this->GetTimeStep(); }
 
   /** Set/Get the time step. For this class of anisotropic diffusion
@@ -255,13 +255,13 @@ public:
     { return m_IntensityDistanceFunction->GetBackgroundIntensity(); }
 
   /** Set the object's state before each iteration. */
-  virtual void InitializeIteration( void );
+  virtual void InitializeIteration( void ) override;
 
   /** Inherited from superclass - do not call this function!  Call the other
    *  ComputeUpdate instead */
   PixelType ComputeUpdate( const NeighborhoodType &neighborhood,
     void *globalData, const FloatOffsetType &offset =
-    FloatOffsetType( 0.0 ) );
+    FloatOffsetType( 0.0 ) ) override;
 
   /** Compute the update value.  The intensityDistanceTerm and
    *  regularizationTerm are outputs.  Incorporates weighting between
@@ -295,10 +295,10 @@ public:
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation. */
-  virtual void * GetGlobalDataPointer( void ) const;
+  virtual void * GetGlobalDataPointer( void ) const override;
 
   /** Release the global data structure. */
-  virtual void ReleaseGlobalDataPointer( void *GlobalData ) const;
+  virtual void ReleaseGlobalDataPointer( void *GlobalData ) const override;
 
   /** Returns the pointers to the regularization function and the intensity
     difference function */

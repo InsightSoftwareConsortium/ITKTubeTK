@@ -397,7 +397,7 @@ protected:
   enum DivTerm { GAUSSIAN };
 
   /** Initialization occuring before the registration iterations begin. */
-  virtual void Initialize( void );
+  virtual void Initialize( void ) override;
 
   /** Allocate images used during the registration. */
   virtual void AllocateImageMembers( void );
@@ -435,7 +435,7 @@ protected:
   virtual void ComputeMultiplicationVectorImages( void ) {}
 
   /** Initialize the state of the filter before each iteration. */
-  virtual void InitializeIteration( void );
+  virtual void InitializeIteration( void ) override;
 
   /** Updates the deformation vector component images on each iteration. */
   virtual void UpdateDeformationComponentImages( OutputImageType * output );
@@ -696,11 +696,11 @@ protected:
    * parameter, which is incorporated in ApplyUpdate
    * Return value is a time step to be used for the update.
    * \sa CalculateChangeGradient */
-  virtual TimeStepType CalculateChange( void );
+  virtual TimeStepType CalculateChange( void ) override;
 
   /** Inherited from superclass - do not call this function! */
   TimeStepType ThreadedCalculateChange(
-      const ThreadRegionType & regionToProcess, ThreadIdType threadId );
+      const ThreadRegionType & regionToProcess, ThreadIdType threadId ) override;
 
   /** This method populates an update buffer with changes for each pixel
    * in the
@@ -766,14 +766,14 @@ protected:
    * each
    * voxel in the update buffer by the scaling value from the line search.
    * \sa ThreadedApplyUpdate */
-  virtual void ApplyUpdate( const TimeStepType & dt );
+  virtual void ApplyUpdate( const TimeStepType & dt ) override;
   virtual void ApplyUpdate( TimeStepType dt, OutputImagePointer
     outputImage );
 
   /** Inherited from superclass - do not call this function! */
   virtual void ThreadedApplyUpdate( const TimeStepType & dt,
     const ThreadRegionType & regionToProcess,
-    ThreadIdType threadId );
+    ThreadIdType threadId ) override;
 
   /**  Does the actual work of updating the output from the UpdateContainer
    * over an output region supplied by the multithreading mechanism.
@@ -792,10 +792,10 @@ protected:
     void ) const;
 
   /** Allocate the update buffer. */
-  virtual void AllocateUpdateBuffer( void );
+  virtual void AllocateUpdateBuffer( void ) override;
 
   /** Get the update buffer. */
-  virtual UpdateBufferType * GetUpdateBuffer( void )
+  virtual UpdateBufferType * GetUpdateBuffer( void ) override
     { return m_UpdateBuffer; }
 
   /** This method is called after ApplyUpdate() to print out energy and RMS
