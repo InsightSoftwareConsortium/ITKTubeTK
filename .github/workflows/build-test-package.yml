@@ -339,7 +339,7 @@ jobs:
       run: |
         pushd ..\..\im
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        set PATH="C:\P\grep;C:\Python3${{ matrix.python-version-minor }}-x64\Scripts;%PATH%"
+        set PATH="C:\P\grep;C:\Python3${{ matrix.python-version-minor }}-x64;C:\Python3${{ matrix.python-version-minor }}-x64\Scripts;%PATH%"
         echo %PATH%
         set CC=cl.exe
         set CXX=cl.exe
