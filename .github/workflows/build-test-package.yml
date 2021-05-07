@@ -61,7 +61,7 @@ jobs:
     - name: Build VTK
       if: matrix.os != 'windows-2019'
       run: |
-        popd
+        cd ..
         mkdir VTK-build
         pushd VTK-build
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
@@ -69,7 +69,7 @@ jobs:
     - name: Build VTK
       if: matrix.os == 'windows-2019'
       run: |
-        popd
+        cd ..
         mkdir VTK-build
         pushd VTK-build
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
@@ -79,7 +79,7 @@ jobs:
 
     - name: Download ITK
       run: |
-        popd
+        cd ..
         git clone https://github.com/InsightSoftwareConsortium/ITK.git
         pushd ITK
         git checkout ${{ env.itk-git-tag }}
@@ -87,7 +87,7 @@ jobs:
     - name: Build ITK
       if: matrix.os != 'windows-2019'
       run: |
-        popd
+        cd ..
         mkdir ITK-build
         pushd ITK-build
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
@@ -96,7 +96,7 @@ jobs:
     - name: Build ITK
       if: matrix.os == 'windows-2019'
       run: |
-        popd
+        cd ..
         mkdir ITK-build
         pushd ITK-build
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
