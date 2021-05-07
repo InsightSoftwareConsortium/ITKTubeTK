@@ -337,7 +337,7 @@ jobs:
     - name: 'Build 🐍 Python 📦 package'
       shell: cmd
       run: |
-        pushd ../../im
+        pushd ..\..\im
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         set PATH="C:\P\grep;C:\Python3${{ matrix.python-version-minor }}-x64\Scripts;%PATH%"
         echo %PATH%
@@ -347,14 +347,14 @@ jobs:
         python -m pip install cmake
         mkdir VTK-build
         pushd VTK-build
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ..\VTK
         ninja
         popd
 
         pushd ITKMinimalPathExtraction
         python C:\P\IPP\scripts\windows_build_module_wheels.py --py-envs "3${{ matrix.python-version-minor }}-x64"
         popd
-        copy ITKMinimalPathExtraction/include/* include/
+        copy ITKMinimalPathExtraction\include\* include\
         python C:\P\IPP\scripts\windows_build_module_wheels.py --py-envs "3${{ matrix.python-version-minor }}-x64"
 
     - name: Publish Python package as GitHub Artifact
