@@ -55,23 +55,23 @@ jobs:
       run: |
         cd ..
         git clone https://github.com/Kitware/VTK.git
-        cd VTK
+        pushd VTK
         git checkout ${{ env.vtk-git-tag }}
 
     - name: Build VTK
       if: matrix.os != 'windows-2019'
       run: |
-        cd ..
+        popd
         mkdir VTK-build
-        cd VTK-build
+        pushd VTK-build
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
         ninja
     - name: Build VTK
       if: matrix.os == 'windows-2019'
       run: |
-        cd ..
+        popd
         mkdir VTK-build
-        cd VTK-build
+        pushd VTK-build
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
         ninja
@@ -79,26 +79,26 @@ jobs:
 
     - name: Download ITK
       run: |
-        cd ..
+        popd
         git clone https://github.com/InsightSoftwareConsortium/ITK.git
-        cd ITK
+        pushd ITK
         git checkout ${{ env.itk-git-tag }}
 
     - name: Build ITK
       if: matrix.os != 'windows-2019'
       run: |
-        cd ..
+        popd
         mkdir ITK-build
-        cd ITK-build
+        pushd ITK-build
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
         ninja
 
     - name: Build ITK
       if: matrix.os == 'windows-2019'
       run: |
-        cd ..
+        popd
         mkdir ITK-build
-        cd ITK-build
+        pushd ITK-build
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
         ninja
@@ -318,7 +318,7 @@ jobs:
       shell: bash
       run: |
         mv im ../../
-        cd ../../im
+        pushd ../../im
         curl -L "https://github.com/InsightSoftwareConsortium/ITKPythonBuilds/releases/download/${{ matrix.itk-python-git-tag }}/ITKPythonBuilds-windows.zip" -o "ITKPythonBuilds-windows.zip"
         7z x ITKPythonBuilds-windows.zip -o/c/P -aoa -r
         curl -L "https://data.kitware.com/api/v1/file/5c0ad59d8d777f2179dd3e9c/download" -o "doxygen-1.8.11.windows.bin.zip"
@@ -337,7 +337,7 @@ jobs:
     - name: 'Build 🐍 Python 📦 package'
       shell: cmd
       run: |
-        cd ../../im
+        pushd ../../im
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         set PATH="C:\P\grep;%PATH%"
         set CC=cl.exe
@@ -350,9 +350,9 @@ jobs:
         ninja
         popd
 
-        cd ITKMinimalPathExtraction
+        pushd ITKMinimalPathExtraction
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe C:\P\IPP\scripts\windows_build_module_wheels.py --py-envs "3${{ matrix.python-version-minor }}-x64"
-        cd ..
+        popd
         copy ITKMinimalPathExtraction/include/* include/
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe C:\P\IPP\scripts\windows_build_module_wheels.py --py-envs "3${{ matrix.python-version-minor }}-x64"
 
