@@ -1,0 +1,6 @@
+include_directories(BEFORE ${SlicerExecutionModel_INCLUDE_DIRS})
+
+set(CMAKE_MODULE_PATH ${SlicerExecutionModel_CMAKE_DIR} ${CMAKE_MODULE_PATH})
+
+include(SEMMacroBuildCLI)
+include(SEMFunctionAddExecutable)

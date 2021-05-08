@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>utf8</category>
+  <title>Test special characters oØo</title>
+  <description>This test checks if special characters can be used in SEM</description>
+  <version>0.1.0.$Revision$(alpha)</version>
+  <documentation-url></documentation-url>
+  <license></license>
+  <contributor>András Lassó</contributor>
+
+  <parameters>
+    <label>Section låbel with an ao</label>
+    <description>Section dæscription with an ae</description>
+    <string-enumeration>
+      <name>inputStringEnum</name>
+      <longflag>--inputStringEnum</longflag>
+      <description>Enumerated strings test</description>
+      <label>Enumerated input string</label>
+      <default>Hungarian: árvíztűrő tükörfúrógép</default>
+      <element>Hungarian: árvíztűrő tükörfúrógép</element>
+      <element>Nordic: æ (ae) Æ (AE) ä (a:) Ä (A:) ø (o|) Ø (O|) ö (o:) Ö (O:) å (ao) Å (Ao)</element>
+      <element>Japanese: 日本</element>
+    </string-enumeration>
+    <file>
+      <name>inputFile</name>
+      <longflag>--inputFile</longflag>
+      <description>Generic input file</description>
+      <label>Input file</label>
+      <default><![CDATA[input-test-日本-árvíztűrő-tükörfúrógép.txt]]></default>
+    </file>
+    <file>
+      <name>outputFile</name>
+      <longflag>--outputFile</longflag>
+      <description>Generic output file</description>
+      <label>Output file</label>
+      <default>output-test-日本-árvíztűrő-tükörfúrógép.txt</default>
+    </file>
+    <string>
+      <name>outputString</name>
+      <label>Output string</label>
+      <channel>output</channel>
+      <default>árvíztűrő 日本</default>
+      <description><![CDATA[An example of a string return type]]></description>
+    </string>
+  </parameters>
+</executable>

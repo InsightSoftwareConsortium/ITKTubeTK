@@ -1,0 +1,205 @@
+#
+# Typical usage could be something like:
+#
+#   find_package(SlicerExecutionModel REQUIRED)
+#   include(${SlicerExecutionModel_USE_FILE})
+#
+#   SEMMacroBuildCLI(...)
+##
+# When using the components argument, SlicerExecutionModel_USE_* variables are
+# automatically set for the SlicerExecutionModel_USE_FILE to pick up.
+# If one wishes to manually set them, the available ones to set include:
+#                    SlicerExecutionModel_USE_GENERATECLP
+#                    SlicerExecutionModel_USE_MODULEDESCRIPTIONPARSER
+#                    SlicerExecutionModel_USE_TCLAP
+#                    SlicerExecutionModel_USE_JSONCPP
+#                    SlicerExecutionModel_USE_SERIALIZER
+
+# Check if components where passed to find_package()
+if(SlicerExecutionModel_FIND_COMPONENTS)
+  foreach(component ${SlicerExecutionModel_FIND_COMPONENTS})
+    string(TOUPPER ${component} _COMPONENT)
+    set(SlicerExecutionModel_USE_${_COMPONENT} 1)
+  endforeach()
+endif()
+
+# If no components are passed, let's assume all components built by default are expected to be enabled.
+if(NOT SlicerExecutionModel_FIND_COMPONENTS)
+  set(SlicerExecutionModel_USE_GENERATECLP 1)
+  set(SlicerExecutionModel_USE_MODULEDESCRIPTIONPARSER 1)
+  set(SlicerExecutionModel_USE_TCLAP 1)
+endif()
+
+# SlicerExecutionModel_USE_JSONCPP is optional and it must be turned on at
+# build time.
+set(SlicerExecutionModel_BUILD_WITH_JSONCPP "@SlicerExecutionModel_USE_JSONCPP@")
+if(SlicerExecutionModel_USE_JSONCPP AND NOT SlicerExecutionModel_BUILD_WITH_JSONCPP)
+  message(SEND_ERROR "The JSONCPP COMPONENT for SlicerExecutionModel was requested,
+  but SlicerExecutionModel was not built with SlicerExecutionModel_USE_JSONCPP ON.")
+endif()
+set(SlicerExecutionModel_USE_JSONCPP ${SlicerExecutionModel_BUILD_WITH_JSONCPP})
+
+# SlicerExecutionModel_USE_SERIALIZER is optional and it must be turned on at
+# build time. It also depends on SlicerExecutionModel_USE_JSONCPP.
+set(SlicerExecutionModel_BUILD_WITH_SERIALIZER "@SlicerExecutionModel_USE_SERIALIZER@")
+if(SlicerExecutionModel_USE_SERIALIZER AND NOT SlicerExecutionModel_BUILD_WITH_SERIALIZER)
+  message(SEND_ERROR "The SERIALIZER COMPONENT for SlicerExecutionModel was requested,
+  but SlicerExecutionModel was not built with SlicerExecutionModel_USE_SERIALIZER ON.")
+endif()
+set(SlicerExecutionModel_USE_SERIALIZER ${SlicerExecutionModel_BUILD_WITH_SERIALIZER})
+if(SlicerExecutionModel_USE_SERIALIZER AND NOT SlicerExecutionModel_USE_JSONCPP)
+  message(SEND_ERROR "The SERIALIZER COMPONENT for SlicerExecutionModel was requested,
+  but SlicerExecutionModel it depends on the JSONCPP component.
+  Make sure SlicerExecutionModel_USE_JSONCPP is ON.")
+endif()
+
+# SlicerExecutionModel_USE_UTF8 is optional and it must be turned on at
+# build time to make sure active code page is consistent in all executables.
+set(SlicerExecutionModel_USE_UTF8 @SlicerExecutionModel_USE_UTF8@)
+
+# Set SlicerExecutionModel variables
+set(SlicerExecutionModel_INCLUDE_DIRS
+  "@SlicerExecutionModel_INCLUDE_DIRS_CONFIG@"
+  )
+set(SlicerExecutionModel_LIBRARIES
+  @SlicerExecutionModel_LIBRARIES_CONFIG@
+  )
+set(DEFAULT_SEM_TARGET_LIBRARIES
+  @DEFAULT_SEM_TARGET_LIBRARIES_CONFIG@
+  )
+set(SlicerExecutionModel_USE_FILE
+  "@SlicerExecutionModel_USE_FILE_CONFIG@"
+  )
+set(SlicerExecutionModel_CMAKE_DIR ${SlicerExecutionModel_DIR}/CMake)
+
+# If not already defined, set default "output directories" used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY)
+  set(SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY
+    "@SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY_CONFIG@"
+    )
+endif()
+
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY)
+  set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY
+    "@SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY_CONFIG@"
+    )
+endif()
+
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY)
+  set(SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY
+    "@SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY_CONFIG@"
+    )
+endif()
+
+# If not already defined, set default "install destination" used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION)
+  set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION
+    "@SlicerExecutionModel_DEFAULT_CLI_INSTALL_RUNTIME_DESTINATION_CONFIG@"
+    )
+endif()
+
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION)
+  set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION
+    "@SlicerExecutionModel_DEFAULT_CLI_INSTALL_LIBRARY_DESTINATION_CONFIG@"
+    )
+endif()
+
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION)
+  set(SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION
+    "@SlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION_CONFIG@"
+    )
+endif()
+
+# If not already defined, set rpath flags used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_EXECUTABLE_LINK_FLAGS)
+  set(SlicerExecutionModel_DEFAULT_CLI_EXECUTABLE_LINK_FLAGS
+    "@SlicerExecutionModel_DEFAULT_CLI_EXECUTABLE_LINK_FLAGS@"
+    )
+endif()
+
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_LIBRARY_LINK_FLAGS)
+  set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_LINK_FLAGS
+    "@SlicerExecutionModel_DEFAULT_CLI_LIBRARY_LINK_FLAGS@"
+    )
+endif()
+
+# If not already defined, set default library wrapper used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX)
+  set(SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX
+    "@SlicerExecutionModel_DEFAULT_CLI_LIBRARY_WRAPPER_CXX_CONFIG@"
+    )
+endif()
+
+# If not already defined, set default "cli targets folder prefix" used by SEMMacroBuildCLI.cmake
+if(NOT DEFINED SlicerExecutionModel_DEFAULT_CLI_TARGETS_FOLDER_PREFIX)
+  set(SlicerExecutionModel_DEFAULT_CLI_TARGETS_FOLDER_PREFIX
+    "@SlicerExecutionModel_DEFAULT_CLI_TARGETS_FOLDER_PREFIX_CONFIG@"
+    )
+endif()
+
+# The SlicerExecutionModel targets file.
+if(NOT TARGET GenerateCLP AND EXISTS "@SlicerExecutionModel_EXPORT_FILE@")
+  include("@SlicerExecutionModel_EXPORT_FILE@")
+endif()
+
+# Set *_DIR variable so that find_package() works appropriately
+set(ModuleDescriptionParser_DIR ${SlicerExecutionModel_DIR}/ModuleDescriptionParser)
+set(GenerateCLP_DIR ${SlicerExecutionModel_DIR}/GenerateCLP)
+set(TCLAP_DIR ${SlicerExecutionModel_DIR}/tclap)
+
+set(SlicerExecutionModel_JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
+if(NOT "${SlicerExecutionModel_JsonCpp_INCLUDE_DIR}" STREQUAL "")
+  set(JsonCpp_INCLUDE_DIR ${SlicerExecutionModel_JsonCpp_INCLUDE_DIR})
+endif()
+
+set(SlicerExecutionModel_JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
+if(NOT "${SlicerExecutionModel_JsonCpp_LIBRARY}" STREQUAL "")
+  set(JsonCpp_LIBRARY ${SlicerExecutionModel_JsonCpp_LIBRARY})
+endif()
+
+set(SlicerExecutionModel_ParameterSerializer_DIR "@ParameterSerializer_DIR@")
+if(NOT "${SlicerExecutionModel_ParameterSerializer_DIR}" STREQUAL "")
+  set(ParameterSerializer_DIR ${SlicerExecutionModel_ParameterSerializer_DIR})
+endif()
+
+#
+# Find ModuleDescriptionParser, GenerateCLP and TCLAP so that the associated
+# variables (ModuleDescriptionParser_INCLUDE_DIRS, ...) are exposed.
+#
+if(SlicerExecutionModel_USE_MODULEDESCRIPTIONPARSER)
+  find_package(ModuleDescriptionParser REQUIRED)
+endif()
+
+if(SlicerExecutionModel_USE_GENERATECLP)
+  find_package(GenerateCLP REQUIRED)
+endif()
+
+if(SlicerExecutionModel_USE_TCLAP)
+  find_package(TCLAP REQUIRED)
+endif()
+
+if(SlicerExecutionModel_USE_JSONCPP)
+  # Add FindJsonCpp.cmake to module path
+  set(CMAKE_MODULE_PATH ${SlicerExecutionModel_CMAKE_DIR} ${CMAKE_MODULE_PATH})
+  find_package(JsonCpp REQUIRED)
+
+  if(WIN32)
+    add_definitions(-DJSON_DLL)
+  endif()
+endif()
+
+if(SlicerExecutionModel_USE_SERIALIZER)
+  find_package(ParameterSerializer REQUIRED)
+endif()
+
+set(_extra_config_file "@SlicerExecutionModel_EXTRA_CONFIG_FILE@")
+if(_extra_config_file)
+  include(${_extra_config_file})
+endif()
+
+set(SlicerExecutionModel_LIBRARY_DIRS
+  "@SlicerExecutionModel_LIBRARY_DIRS_CONFIG@"
+  ${GenerateCLP_LIBRARY_DIRS}
+  ${ModuleDescriptionParser_LIBRARY_DIRS}
+  ${TCLAP_LIBRARY_DIRS}
+  )

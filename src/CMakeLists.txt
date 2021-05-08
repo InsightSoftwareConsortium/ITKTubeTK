@@ -31,6 +31,7 @@ include( ObjectDocuments.cmake )
 include( Registration.cmake )
 include( Segmentation.cmake )
 if( TubeTK_USE_VTK )
+  find_package(VTK REQUIRED)
   include( VTK.cmake )
 endif( TubeTK_USE_VTK )
 

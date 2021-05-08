@@ -296,6 +296,6 @@ else()
 endif()
 
 ####
-# Build Applications?
+# Build Applications
 ####
 option( TubeTK_BUILD_APPLICATIONS "Build applications based on TubeTK." OFF )

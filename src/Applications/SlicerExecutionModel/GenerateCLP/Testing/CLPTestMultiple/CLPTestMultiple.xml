@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>Testing</category>
+  <title>CLP Test multiple</title>
+  <index>1</index>
+  <version>1.0</version>
+  <parameters>
+    <integer multiple="true">
+      <name>IntList</name>
+      <label>Int List</label>
+      <channel>input</channel>
+      <longflag>--int</longflag>
+    </integer>
+    <file multiple="true">
+      <name>FileList</name>
+      <label>file List</label>
+      <channel>input</channel>
+      <longflag>--file</longflag>
+    </file>
+    <directory multiple="true">
+      <name>DirList</name>
+      <label>Dir List</label>
+      <channel>input</channel>
+      <longflag>--dir</longflag>
+    </directory>
+    <image multiple="true">
+      <name>ImageList</name>
+      <label>file List</label>
+      <channel>input</channel>
+      <longflag>--image</longflag>
+    </image>
+    <geometry multiple="true">
+      <name>GeometryList</name>
+      <label>Geometry List</label>
+      <channel>input</channel>
+      <longflag>--geo</longflag>
+    </geometry>
+    <point multiple="true">
+      <name>PointList</name>
+      <label>Point List</label>
+      <longflag>--point</longflag>
+    </point>
+    <pointfile multiple="true">
+      <name>PointFileList</name>
+      <label>Point file List</label>
+      <channel>input</channel>
+      <longflag>--pointFile</longflag>
+    </pointfile>
+    <region multiple="true">
+      <name>RegionList</name>
+      <label>ROI List</label>
+      <channel>input</channel>
+      <longflag>--roi</longflag>
+    </region>
+
+    <boolean>
+      <name>TestInterruption</name>
+      <label>To make sure we can have a random flag in the middle of multiple flag list.</label>
+      <channel>input</channel>
+      <longflag>--interruptionFlag</longflag>
+      <default>False</default>
+    </boolean>
+
+    <boolean>
+      <name>TestCommandLineOverWrite</name>
+      <label>To make sure we can overwrite the JSON with the command line.</label>
+      <channel>input</channel>
+      <longflag>--testCommandLineOverWrite</longflag>
+      <default>False</default>
+    </boolean>
+  </parameters>
+</executable>

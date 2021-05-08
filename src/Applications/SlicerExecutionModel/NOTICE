@@ -1,0 +1,13 @@
+SlicerExecutionModel is distributed under the 3D Slicer license, a BSD style license, with extensions
+to cover contributions and other issues specific to 3D Slicer.
+
+See https://www.slicer.org/LICENSE file for details.
+
+
+SlicerExecutionModel contains third party software licensed under the terms of separate
+open source software licenses:
+
+GenerateCLP and ModuleDescriptionParser are distributed under the 3D Slicer license.
+
+tclap is distributed under the MIT License.
+

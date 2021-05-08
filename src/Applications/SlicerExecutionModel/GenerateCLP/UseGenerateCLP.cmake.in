@@ -1,0 +1,34 @@
+
+#
+# TCLAP
+#
+find_package(TCLAP REQUIRED)
+include(${TCLAP_USE_FILE})
+
+#
+# ModuleDescriptionParser
+#
+find_package(ModuleDescriptionParser REQUIRED)
+include(${ModuleDescriptionParser_USE_FILE})
+
+if(NOT ITK_FOUND) #Do not clobber existing found version of ITK
+  #
+  # ITK - Import ITK targets required by ModuleDescriptionParser
+  #
+  set(${PROJECT_NAME}_ITK_COMPONENTS
+    ${ModuleDescriptionParser_ITK_COMPONENTS}
+     )
+  find_package(ITK 4.3 COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
+  # Allow other projects to specify a different list of COMPONENTS
+  set(ITK_FOUND FALSE)
+endif()
+
+#
+# JsonCpp
+#
+if(GenerateCLP_USE_JSONCPP)
+  find_package(JsonCpp REQUIRED)
+  include_directories(${JsonCpp_INCLUDE_DIR})
+endif()
+
+include(${GenerateCLP_CMAKE_DIR}/GenerateCLP.cmake)

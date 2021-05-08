@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>Developer Tools</category>
+  <title>Fiducial XML Parsing Test</title>
+  <description><![CDATA[Shows point and pointfiles.]]></description>
+  <version>0.1.0.$Revision$(alpha)</version>
+  <license/>
+  <contributor>Nicole Aucoin (BWH)</contributor>
+  <acknowledgements><![CDATA[This work is part of the National Alliance for Medical Image Computing (NAMIC), funded by the National Institutes of Health through the NIH Roadmap for Medical Research, Grant U54 EB005149.]]></acknowledgements>
+  <parameters>
+    <label>Fiducial Input Parameters</label>
+    <description><![CDATA[Parameters that describe input fidicuals.]]></description>
+    <point multiple="true" coordinateSystem="ras">
+      <name>seed</name>
+      <label>Seeds</label>
+      <longflag>--seed</longflag>
+      <description><![CDATA[Lists of points in the CLI correspond to slicer fiducial lists]]></description>
+      <default>0,0,0</default>
+    </point>
+    <pointfile multiple="true" fileExtensions=".fcsv" coordinateSystem="lps">
+      <name>seedsFile</name>
+      <description><![CDATA[Test file of input fiducials, compared to seeds]]></description>
+      <label>Seeds file</label>
+      <longflag>seedsFile</longflag>
+      <channel>input</channel>
+    </pointfile>
+  </parameters>
+  <parameters>
+    <label>Fiducial file return types</label>
+    <pointfile fileExtensions=".fcsv" coordinateSystem="lps">
+      <name>seedsOutFile</name>
+      <label>Output Fiducials File</label>
+      <description><![CDATA[Output file to read back in.]]></description>
+      <longflag>seedsOutFile</longflag>
+      <channel>output</channel>
+    </pointfile>
+  </parameters>
+</executable>

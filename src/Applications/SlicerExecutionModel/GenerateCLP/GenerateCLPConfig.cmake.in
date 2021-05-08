@@ -1,0 +1,47 @@
+
+
+# The GenerateCLP source tree.
+set(GenerateCLP_INCLUDE_DIRS "@GenerateCLP_INCLUDE_DIRS_CONFIG@")
+set(GenerateCLP_LIBRARY_DIRS "@GenerateCLP_LIBRARY_DIRS_CONFIG@")
+set(GenerateCLP_CMAKE_DIR "@GenerateCLP_CMAKE_DIR_CONFIG@")
+set(GenerateCLP_USE_FILE "@GenerateCLP_USE_FILE_CONFIG@")
+set(GenerateCLP_USE_JSONCPP "@GenerateCLP_USE_JSONCPP@")
+set(GenerateCLP_USE_SERIALIZER "@GenerateCLP_USE_SERIALIZER@")
+set(SlicerExecutionModel_USE_UTF8 "@SlicerExecutionModel_USE_UTF8@")
+set(SlicerExecutionModel_CMAKE_DIR "@SlicerExecutionModel_CMAKE_DIR@")
+set(TCLAP_DIR "@TCLAP_DIR@")
+set(ModuleDescriptionParser_DIR "@ModuleDescriptionParser_DIR@")
+set(ITK_DIR "@ITK_DIR_CONFIG@")
+
+set(GenerateCLP_JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
+if(NOT "${GenerateCLP_JsonCpp_INCLUDE_DIR}" STREQUAL "")
+  set(JsonCpp_INCLUDE_DIR ${GenerateCLP_JsonCpp_INCLUDE_DIR})
+endif()
+
+set(GenerateCLP_JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
+if(NOT "${GenerateCLP_JsonCpp_LIBRARY}" STREQUAL "")
+  set(JsonCpp_LIBRARY ${GenerateCLP_JsonCpp_LIBRARY})
+endif()
+
+set(GenerateCLP_ParameterSerializer_DIR "@ParameterSerializer_DIR@")
+if(NOT "${GenerateCLP_ParameterSerializer_DIR}" STREQUAL "")
+  set(ParameterSerializer_DIR ${GenerateCLP_ParameterSerializer_DIR})
+endif()
+
+find_program(GENERATECLP_EXE
+  NAMES GenerateCLPLauncher GenerateCLP
+  PATHS
+    "@GenerateCLP_CONFIG_DIR@/bin"
+    "@GenerateCLP_CONFIG_DIR@/bin/Release"
+    "@GenerateCLP_CONFIG_DIR@/bin/RelWithDebInfo"
+    "@GenerateCLP_CONFIG_DIR@/bin/MinSizeRel"
+    "@GenerateCLP_CONFIG_DIR@/bin/Debug"
+  NO_DEFAULT_PATH
+  )
+
+# The GenerateCLP targets file.
+if(NOT TARGET GenerateCLP AND EXISTS "@CMAKE_CURRENT_BINARY_DIR@/GenerateCLPTargets.cmake")
+  include("@CMAKE_CURRENT_BINARY_DIR@/GenerateCLPTargets.cmake")
+endif()
+
+include("${SlicerExecutionModel_CMAKE_DIR}/SEMFunctionAddExecutable.cmake")

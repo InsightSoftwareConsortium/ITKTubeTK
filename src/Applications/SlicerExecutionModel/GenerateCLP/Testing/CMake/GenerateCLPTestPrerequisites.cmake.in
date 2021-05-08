@@ -1,0 +1,50 @@
+
+
+set(CMAKE_CONFIGURATION_TYPES "@CMAKE_CONFIGURATION_TYPES@")
+set(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@")
+set(CMAKE_EXECUTABLE_SUFFIX "@CMAKE_EXECUTABLE_SUFFIX@")
+
+set(generateclp_cmake_generator "@CMAKE_GENERATOR@")
+set(GenerateCLP_BINARY_DIR "@GenerateCLP_BINARY_DIR@")
+
+set(GenerateCLP_USE_JSONCPP @GenerateCLP_USE_JSONCPP@)
+set(JsonCpp_INCLUDE_DIR "@JsonCpp_INCLUDE_DIR@")
+set(JsonCpp_LIBRARY "@JsonCpp_LIBRARY@")
+
+set(JsonCpp_CMAKE_MODULE_PATH "@SlicerExecutionModel_SOURCE_DIR@/CMake")
+
+set(SlicerExecutionModel_USE_UTF8 @SlicerExecutionModel_USE_UTF8@)
+set(SlicerExecutionModel_CMAKE_DIR "@SlicerExecutionModel_CMAKE_DIR@")
+
+# --------------------------------------------------------------------------
+# Sanity checks
+
+if(NOT EXISTS ${GenerateCLP_BINARY_DIR})
+  message(FATAL_ERROR "Make sure variable GenerateCLP_BINARY_DIR is set to a valid directory. "
+                      "GenerateCLP_BINARY_DIR [${GenerateCLP_BINARY_DIR}]")
+endif()
+
+
+# --------------------------------------------------------------------------
+# Attempt to guess GenerateCLP build type
+
+set(generateclp_dir ${GenerateCLP_BINARY_DIR}/bin)
+if(CMAKE_CONFIGURATION_TYPES)
+  foreach (type ${CMAKE_CONFIGURATION_TYPES})
+    if(EXISTS ${generateclp_dir}/${type}/GenerateCLPLauncher${CMAKE_EXECUTABLE_SUFFIX})
+      set(generateclp_build_type ${type})
+      break()
+    endif()
+    if(EXISTS ${generateclp_dir}/${type}/GenerateCLP${CMAKE_EXECUTABLE_SUFFIX})
+      set(generateclp_build_type ${type})
+      break()
+    endif()
+  endforeach()
+else()
+  set(generateclp_build_type "${CMAKE_BUILD_TYPE}")
+endif()
+
+if("${generateclp_build_type}" STREQUAL "")
+  message(FATAL_ERROR "'generateclp_build_type' shouldn't be empty !")
+endif()
+

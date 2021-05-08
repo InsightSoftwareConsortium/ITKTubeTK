@@ -1,0 +1,15 @@
+
+//-----------------------------------------------------------------------------
+// Content read from ModuleDescriptionParserPragmas.h.in and added by
+// passing CUSTOM_CONTENT_FROM_VARIABLE parameter associated with the
+// generate_export_header() CMake function.
+
+/** Disable some common warnings in MS VC++ */
+#if defined( _MSC_VER )
+
+// 'identifier' : class 'type' needs to have dll-interface to be used by
+// clients of class 'type2'
+#pragma warning ( disable : 4251 )
+
+#endif
+//-----------------------------------------------------------------------------
