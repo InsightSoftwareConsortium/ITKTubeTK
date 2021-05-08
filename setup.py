@@ -47,7 +47,6 @@ setup(
     keywords='ITK InsightToolkit',
     url=r'https://itk.org/',
     install_requires=[
-        r'vtk>=9.0.1',
         r'itk>=5.2.0',
         r'itk-minimalpathextraction>=1.1.2'
     ]

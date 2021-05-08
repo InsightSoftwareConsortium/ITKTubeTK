@@ -88,7 +88,7 @@ endif()
 option(TubeTK_USE_VTK "Build TubeTK filters that require VTK." ON)
 
 if(TubeTK_USE_VTK)
-  find_package(VTK NO_MODULE REQUIRED
+  find_package(VTK REQUIRED
                HINTS ./VTK-build ../VTK-build ../../VTK-build)
 
   # Add compiler flags needed to use VTK.
@@ -103,89 +103,25 @@ if(TubeTK_USE_VTK)
   set(CMAKE_MODULE_LINKER_FLAGS
       "${CMAKE_MODULE_LINKER_FLAGS} ${VTK_REQUIRED_MODULE_LINKER_FLAGS}")
 
-  if(NOT COMMAND vtk_module_config)
-    macro(vtk_module_config ns)
-       foreach(arg ${ARGN})
-        if(${arg} MATCHES "^[Vv][Tt][Kk]")
-          string(REGEX REPLACE "^[Vv][Tt][Kk]" "" _arg ${arg})
-        else()
-          set(_arg ${arg})
-        endif()
-        set(${ns}_LIBRARIES ${${ns}_LIBRARIES} VTK::${_arg})
-       endforeach()
-    endmacro()
-  endif()
-
-  vtk_module_config(TubeTK_VTK
-    vtkCommonDataModel
-    vtkIOLegacy
-  )
-
   # The VTK DICOMParser and vtkmetaio includes conflict with the ITK
   # versions. Here we remove them from the include directories.
   #
   string(REGEX REPLACE "[^;]*MetaIO;"
-           "" TubeTK_VTK_INCLUDE_DIRS "${TubeTK_VTK_INCLUDE_DIRS}")
+           "" TubeTK_VTK_INCLUDE_DIRS "${VTK_INCLUDE_DIRS}")
   string(REGEX REPLACE "[^;]*vtkmetaio;"
-           "" TubeTK_VTK_INCLUDE_DIRS "${TubeTK_VTK_INCLUDE_DIRS}")
+           "" TubeTK_VTK_INCLUDE_DIRS "${VTK_INCLUDE_DIRS}")
   string(REGEX REPLACE "[^;]*DICOMParser;"
-           "" TubeTK_VTK_INCLUDE_DIRS "${TubeTK_VTK_INCLUDE_DIRS}")
-
-  # Add preprocessor definitions needed to use VTK.
-  set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS
-               ${TubeTK_VTK_DEFINITIONS})
+           "" TubeTK_VTK_INCLUDE_DIRS "${VTK_INCLUDE_DIRS}")
 
   set(TubeTK_EXPORT_CODE_INSTALL "
   set(VTK_DIR \"${VTK_DIR}\")
-
-  find_package(VTK NO_MODULE REQUIRED
-               HINTS ./VTK-build ../VTK-build ../../VTK-build)
-
-  if(NOT COMMAND vtk_module_config)
-    macro(vtk_module_config ns)
-       foreach(arg \${ARGN})
-        if(\${arg} MATCHES \"^[Vv][Tt][Kk]\")
-          string(REGEX REPLACE \"^[Vv][Tt][Kk]\" \"\" _arg \${arg})
-        else()
-          set(_arg \${arg})
-        endif()
-        set(\${ns}_LIBRARIES \${\${ns}_LIBRARIES} VTK::\${_arg})
-       endforeach()
-    endmacro()
-  endif()
-
-  vtk_module_config(TubeTK_VTK vtkCommonDataModel)
-
-  set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS
-               \${TubeTK_VTK_DEFINITIONS})
+  find_package(VTK REQUIRED)
   ")
 
   set(TubeTK_EXPORT_CODE_BUILD "
   if(NOT ITK_BINARY_DIR)
     set(VTK_DIR \"${VTK_DIR}\")
-
-    find_package(VTK NO_MODULE REQUIRED
-                 HINTS ./VTK-build ../VTK-build ../../VTK-build)
-
-    if(NOT COMMAND vtk_module_config)
-      macro(vtk_module_config ns)
-         foreach(arg \${ARGN})
-          if(\${arg} MATCHES \"^[Vv][Tt][Kk]\")
-            string(REGEX REPLACE \"^[Vv][Tt][Kk]\" \"\" _arg \${arg})
-          else()
-            set(_arg \${arg})
-          endif()
-          set(\${ns}_LIBRARIES \${\${ns}_LIBRARIES} VTK::\${_arg})
-         endforeach()
-      endmacro()
-    endif()
-
-    vtk_module_config(TubeTK_VTK
-      vtkCommonDataModel
-      )
-
-    set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS
-                 \${TubeTK_VTK_DEFINITIONS})
+    find_package(VTK REQUIRED)
   endif()
   ")
 endif() # ITKTubeTK_USE_VTK
@@ -219,6 +155,7 @@ set( TubeTK_ITK_COMPONENTS
   ITKTransform
   ITKTransformIO
   ITKStatistics
+  ITKVTK
   )
 
 if( NOT ITK_SOURCE_DIR )
@@ -259,7 +196,7 @@ set( TubeTK_LIBRARIES TubeTK )
 set( TubeTK_SYSTEM_LIBRARY_DIRS )
 
 if( TubeTK_USE_VTK )
-  list( APPEND TubeTK_SYSTEM_LIBRARY_DIRS ${TubeTK_VTK_LIBRARY_DIRS} )
+  list( APPEND TubeTK_SYSTEM_LIBRARY_DIRS ${VTK_LIBRARY_DIRS} )
   list( APPEND TubeTK_LIBRARIES ${VTK_LIBRARIES} )
 endif()
 
