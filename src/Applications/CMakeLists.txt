@@ -39,7 +39,9 @@ set( SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY
 set( SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY
   "${ITK_BINARY_DIR}/lib" )
 
-find_package( SlicerExecutionModel REQUIRED )
+find_package( SlicerExecutionModel REQUIRED
+  HINTS ./SlicerExecutionModel-build ../SlicerExecutionModel-build
+        ../../SlicerExecutionModel-build )
 include( ${SlicerExecutionModel_USE_FILE} )
 mark_as_advanced( GENERATECLP_EXE )
 

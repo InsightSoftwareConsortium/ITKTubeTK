@@ -104,6 +104,30 @@ jobs:
         ninja
       shell: cmd
 
+    - name: Download SlicerExecutionModel
+      run: |
+        cd ..
+        git clone https://github.com/Slicer/SlicerExecutionModel.git
+
+    - name: Build SlicerExecutionModel
+      if: matrix.os != 'windows-2019'
+      run: |
+        cd ..
+        mkdir SlicerExecutionModel-build
+        pushd SlicerExecutionModel-build
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DITK_DIR="../ITK-build" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
+        ninja
+    - name: Build SlicerExecutionModel
+      if: matrix.os == 'windows-2019'
+      run: |
+        cd ..
+        mkdir SlicerExecutionModel-build
+        pushd SlicerExecutionModel-build
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DITK_DIR="../ITK-build" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
+        ninja
+      shell: cmd
+
     - name: Fetch CTest driver script
       run: |
         curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITK/dashboard/itk_common.cmake -O
@@ -144,7 +168,9 @@ jobs:
         set(dashboard_cache "
         ITK_DIR:PATH=\${CTEST_DASHBOARD_ROOT}/ITK-build
         VTK_DIR:PATH=\${CTEST_DASHBOARD_ROOT}/VTK-build
+        SlicerExecutionModel_DIR:PATH=\${CTEST_DASHBOARD_ROOT}/SlicerExecutionModel-build
         BUILD_TESTING:BOOL=ON
+        TubeTK_BUILD_APPLICATIONS:BOOL=ON
         ")
         string(TIMESTAMP build_date "%Y-%m-%d")
         message("CDash Build Identifier: \${build_date} \${CTEST_BUILD_NAME}")
@@ -222,6 +248,13 @@ jobs:
         cp ITKMinimalPathExtraction/include/* include/
         ln -s $(pwd)/ITKMinimalPathExtraction/ITKPythonPackage .
         ln -s $(pwd)/ITKMinimalPathExtraction/tools .
+
+        git clone https://github.com/Slicer/SlicerExecutionModel
+        mkdir SlicerExecutionModel-build
+        pushd SlicerExecutionModel-build
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DITK_DIR="../ITK-build" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
+        ninja
+        popd
         ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
 
     - name: Publish Python package as GitHub Artifact
@@ -280,6 +313,14 @@ jobs:
         ./macpython-download-cache-and-build-module-wheels.sh
         popd
         cp ITKMinimalPathExtraction/include/* include/
+
+        git clone https://github.com/Slicer/SlicerExecutionModel
+        mkdir SlicerExecutionModel-build
+        pushd SlicerExecutionModel-build
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DITK_DIR="../ITK-build" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
+        ninja
+        popd
+
         /Users/svc-dashboard/D/P/ITKPythonPackage/scripts/macpython-build-module-wheels.sh
 
     - name: Publish Python package as GitHub Artifact
@@ -333,6 +374,7 @@ jobs:
         pushd VTK
         git checkout ${{env.vtk-git-tag}}
         popd
+        git clone https://github.com/Slicer/SlicerExecutionModel
 
     - name: 'Build 🐍 Python 📦 package'
       shell: cmd
@@ -358,6 +400,13 @@ jobs:
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe C:\P\IPP\scripts\windows_build_module_wheels.py --py-envs "3${{ matrix.python-version-minor }}-x64"
         popd
         copy ITKMinimalPathExtraction\include\* include\
+
+        mkdir SlicerExecutionModel-build
+        pushd SlicerExecutionModel-build
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DITK_DIR="../ITK-build" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
+        ninja
+        popd
+
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe C:\P\IPP\scripts\windows_build_module_wheels.py --py-envs "3${{ matrix.python-version-minor }}-x64"
 
     - name: Publish Python package as GitHub Artifact
