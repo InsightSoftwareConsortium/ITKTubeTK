@@ -86,7 +86,6 @@ endif()
 # VTK setup.
 ####
 option(TubeTK_USE_VTK "Build TubeTK filters that require VTK." ON)
-
 if(TubeTK_USE_VTK)
   find_package(VTK REQUIRED
                HINTS ./VTK-build ../VTK-build ../../VTK-build)
@@ -193,10 +192,7 @@ set( TubeTK_INCLUDE_DIRS
   $<INSTALL_INTERFACE:include/Segmentation> )
 
 set( TubeTK_LIBRARIES TubeTK )
-set( TubeTK_SYSTEM_LIBRARY_DIRS )
-
 if( TubeTK_USE_VTK )
-  list( APPEND TubeTK_SYSTEM_LIBRARY_DIRS ${VTK_LIBRARY_DIRS} )
   list( APPEND TubeTK_LIBRARIES ${VTK_LIBRARIES} )
 endif()
 
@@ -236,3 +232,5 @@ endif()
 # Build Applications?
 ####
 option( TubeTK_BUILD_APPLICATIONS "Build applications based on TubeTK." OFF )
+
+itk_module_examples()
