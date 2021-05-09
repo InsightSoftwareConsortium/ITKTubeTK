@@ -115,7 +115,7 @@ jobs:
         cd ..
         mkdir SlicerExecutionModel-build
         pushd SlicerExecutionModel-build
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DITK_DIR="../ITK-build" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DITK_DIR=../ITK-build -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
         ninja
     - name: Build SlicerExecutionModel
       if: matrix.os == 'windows-2019'
@@ -124,7 +124,7 @@ jobs:
         mkdir SlicerExecutionModel-build
         pushd SlicerExecutionModel-build
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DITK_DIR="../ITK-build" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DITK_DIR=../ITK-build -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
         ninja
       shell: cmd
 
