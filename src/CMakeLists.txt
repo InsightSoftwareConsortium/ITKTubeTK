@@ -36,7 +36,7 @@ endif( TubeTK_USE_VTK )
 
 itk_module_add_library( TubeTK ${TubeTK_SRCS} )
 if( TubeTK_USE_VTK )
-  target_link_libraries( TubeTK PUBLIC ${VTK_LIBRARIES} )
+  target_link_libraries( TubeTK PRIVATE ${VTK_LIBRARIES} )
 endif( TubeTK_USE_VTK )
 
 if( ITK_WRAP_PYTHON )

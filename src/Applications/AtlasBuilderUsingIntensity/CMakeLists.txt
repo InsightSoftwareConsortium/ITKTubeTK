@@ -44,7 +44,7 @@ SEMMacroBuildCLI(
   ADDITIONAL_SRCS tubeAtlasSummation.cxx
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h
   TARGET_LIBRARIES
-    ${ITK_LIBRARIES}
+    TubeTK ${ITK_LIBRARIES}
   )
 
 if( BUILD_TESTING )

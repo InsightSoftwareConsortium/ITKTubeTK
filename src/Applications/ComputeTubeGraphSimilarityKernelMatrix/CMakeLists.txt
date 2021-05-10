@@ -37,7 +37,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER
     ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h
   TARGET_LIBRARIES
-    ${ITK_LIBRARIES}
+    TubeTK ${ITK_LIBRARIES}
   ADDITIONAL_SRCS
     GraphKernel.cxx tubeShortestPathKernel.cxx tubeWLSubtreeKernel.cxx
   )
