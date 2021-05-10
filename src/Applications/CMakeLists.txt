@@ -26,6 +26,10 @@ find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 
 set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/test/Baseline )
+if( NOT ITK_TEST_OUTPUT_DIR )
+  file( make_directory ${TubeTK_BINARY_DIR}/Testing/Temporary )
+  set( ITK_TEST_OUTPUT_DIR ${TubeTK_BINARY_DIR}/Testing/Temporary )
+endif()
 
 set( TubeTK_CompareTextFiles_EXE 
   "tubeCompareTextFilesTestDriver")

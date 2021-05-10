@@ -52,8 +52,6 @@ endif()
 ####
 include( CTest )
 
-make_directory( ${TubeTK_BINARY_DIR}/Temporary )
-
 set( BUILDNAME "${BUILDNAME}" CACHE STRING
   "Name of the build on the CDash dashboard." )
 mark_as_advanced( BUILDNAME )
