@@ -392,7 +392,17 @@ InterpolatePath(
     }
   TubePointType midTubePoint;
   midTubePoint.SetPositionInObjectSpace( midPoint );
+  if( stepSize > 0 && midProjLen > stepSize )
+    {
+    InterpolatePath( &midTubePoint, childEndTubePoint, stepSize,
+                     newTubePoints );
+    }
   newTubePoints.push_back( midTubePoint );
+  if( stepSize > 0 && midProjLen > stepSize )
+    {
+    InterpolatePath( parentNearestTubePoint, &midTubePoint, stepSize,
+                     newTubePoints );
+    }
   newTubePoints.push_back( *parentNearestTubePoint );
   return;
 }
@@ -678,7 +688,6 @@ RenumberPoints( void )
   TubeListPointerType tubeList = m_InputTubeGroup->GetChildren(
     m_InputTubeGroup->GetMaximumDepth(), "Tube" );
 
-  double tubeLength = 0;
   for( typename TubeGroupType::ChildrenListType::iterator itCurTube =
     tubeList->begin(); itCurTube != tubeList->end(); ++itCurTube )
     {
