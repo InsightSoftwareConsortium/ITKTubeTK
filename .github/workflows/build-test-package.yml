@@ -254,7 +254,8 @@ jobs:
         ln -s $(pwd)/ITKMinimalPathExtraction/ITKPythonPackage .
         ln -s $(pwd)/ITKMinimalPathExtraction/tools .
 
-        export ITK_DIR="${PWD}/ITK-build"
+        #  Can build SEM using any version of python wrapping
+        export ITK_DIR="/work/ITKPythonPackage/ITK-cp36-cp36m-manylinux2014_x64/"
         git clone https://github.com/Slicer/SlicerExecutionModel
         mkdir SlicerExecutionModel-build
         pushd SlicerExecutionModel-build
@@ -320,7 +321,8 @@ jobs:
         popd
         cp ITKMinimalPathExtraction/include/* include/
 
-        export ITK_DIR="${PWD}/ITK-build"
+        #  Can build SEM using any version of python wrapping
+        export ITK_DIR="/Users/svc-dashboard/D/P/ITKPythonPackage/ITK-3.6-macosx_x86_64/"
         git clone https://github.com/Slicer/SlicerExecutionModel
         mkdir SlicerExecutionModel-build
         pushd SlicerExecutionModel-build
