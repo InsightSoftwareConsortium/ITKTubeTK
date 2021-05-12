@@ -641,8 +641,6 @@ ComputeTubeLength( void )
         {
         continue;
         }
-      typedef typename TubeType::TubePointListType TubePointListType;
-      typedef typename TubeType::PointType         PositionType;
       typedef typename PositionType::VectorType PositionVectorType;
     
       typename TubePointListType::const_iterator itTubePoints =
@@ -692,10 +690,6 @@ RenumberPoints( void )
         {
         continue;
         }
-      typedef typename TubeType::TubePointListType TubePointListType;
-      typedef typename TubeType::PointType         PositionType;
-      typedef typename PositionType::VectorType PositionVectorType;
-    
       typename TubePointListType::iterator itTubePoints =
         curTube->GetPoints().begin();
 
