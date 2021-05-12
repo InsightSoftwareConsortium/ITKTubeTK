@@ -3,9 +3,9 @@ name: Build, test, package
 on: [push,pull_request]
 
 env:
-  ITKMinimalPathExtraction-git-tag: v1.1.2
-  itk-git-tag: "v5.2.0"
+  ITKMinimalPathExtraction-git-tag: v1.2.0
   vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
+  itk-git-tag: v5.2.0
 
 jobs:
   build-test-cxx:
@@ -29,18 +29,19 @@ jobs:
             cmake-build-type: "Release"
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v1
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.8
 
     - name: Set up OpenGL
       if: matrix.os == 'ubuntu-18.04'
       run: |
         sudo apt-get install -y libglu1-mesa-dev mesa-common-dev
         sudo apt-get install -y libgl1-mesa-glx
+        sudo apt-get install -y libglvnd-core-dev
         sudo apt-get install -y freeglut3-dev
 
     - name: Install build dependencies
@@ -195,13 +196,13 @@ jobs:
       shell: cmd
 
   build-linux-python-packages:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       max-parallel: 1
       matrix:
         python-version: [36, 37, 38, 39]
         include:
-          - itk-python-git-tag: "v5.2.0"
+          - itk-python-git-tag: "v5.2.0.post2"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
@@ -225,6 +226,7 @@ jobs:
       run: |
         sudo apt-get install -y libglu1-mesa-dev mesa-common-dev
         sudo apt-get install -y libgl1-mesa-glx
+        sudo apt-get install -y libglvnd-core-dev
         sudo apt-get install -y freeglut3-dev
         python -m pip install ninja
 
@@ -273,7 +275,7 @@ jobs:
       max-parallel: 1
       matrix:
         include:
-          - itk-python-git-tag: "v5.2.0"
+          - itk-python-git-tag: "v5.2.0.post2"
             c-compiler: "clang"
             cxx-compiler: "clang++"
             cmake-build-type: "Release"
@@ -341,7 +343,7 @@ jobs:
       matrix:
         python-version-minor: [6, 7, 8, 9]
         include:
-          - itk-python-git-tag: "v5.2.0"
+          - itk-python-git-tag: "v5.2.0.post2"
             c-compiler: "cl.exe"
             cxx-compiler: "cl.exe"
             cmake-build-type: "Release"
@@ -387,7 +389,6 @@ jobs:
         pushd ..\..\im
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         set PATH="C:\P\grep;%PATH%"
-        echo %PATH%
         dir C:\Python3${{ matrix.python-version-minor }}-x64\
         dir C:\Python3${{ matrix.python-version-minor }}-x64\Scripts
         dir C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\cmake
