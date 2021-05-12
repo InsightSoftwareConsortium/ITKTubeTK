@@ -140,29 +140,29 @@ public:
 
   /** This class uses a constant time step of 1. */
   virtual TimeStepType ComputeGlobalTimeStep( void * itkNotUsed(
-    globalData ) ) const
+    globalData ) ) const override
     { return m_TimeStep; }
 
   /** Return a pointer to a global data structure that is passed to
    * this object from the solver at each calculation.  */
-  virtual void *GetGlobalDataPointer( void ) const
+  virtual void *GetGlobalDataPointer( void ) const override
     {
     GlobalDataStruct *global = new GlobalDataStruct();
     return global;
     }
 
   /** Release memory for global data structure. */
-  virtual void ReleaseGlobalDataPointer( void *GlobalData ) const
+  virtual void ReleaseGlobalDataPointer( void *GlobalData ) const override
     { delete ( GlobalDataStruct * ) GlobalData;  }
 
   /** Set the object's state before each iteration. */
-  virtual void InitializeIteration( void );
+  virtual void InitializeIteration( void ) override;
 
   /** This method is called by a finite difference solver image filter at
    * each pixel that does not lie on a data set boundary */
   virtual PixelType  ComputeUpdate( const NeighborhoodType &neighborhood,
     void *globalData,
-    const FloatOffsetType &offset = FloatOffsetType( 0.0 ) );
+    const FloatOffsetType &offset = FloatOffsetType( 0.0 ) ) override;
 
   /** Computes the intensity difference between the fixed and moving image
    *  at the given index, under the given deformation vector. */

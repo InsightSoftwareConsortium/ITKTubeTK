@@ -26,6 +26,10 @@ find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 
 set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/test/Baseline )
+if( NOT ITK_TEST_OUTPUT_DIR )
+  make_directory( ${TubeTK_BINARY_DIR}/Testing/Temporary )
+  set( ITK_TEST_OUTPUT_DIR ${TubeTK_BINARY_DIR}/Testing/Temporary )
+endif()
 
 set( TubeTK_CompareTextFiles_EXE 
   "tubeCompareTextFilesTestDriver")
@@ -39,7 +43,9 @@ set( SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY
 set( SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY
   "${ITK_BINARY_DIR}/lib" )
 
-find_package( SlicerExecutionModel REQUIRED )
+find_package( SlicerExecutionModel REQUIRED
+  HINTS ./SlicerExecutionModel-build ../SlicerExecutionModel-build
+        ../../SlicerExecutionModel-build )
 include( ${SlicerExecutionModel_USE_FILE} )
 mark_as_advanced( GENERATECLP_EXE )
 

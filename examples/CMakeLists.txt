@@ -19,19 +19,3 @@
 # limitations under the License.
 #
 ##############################################################################
-
-set( MODULE_NAME ComputeTubeTortuosityMeasures )
-
-SEMMacroBuildCLI(
-  NAME
-    ${MODULE_NAME}
-  LOGO_HEADER
-    ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h
-  TARGET_LIBRARIES
-    TubeTK ${ITK_LIBRARIES}
-    ${VTK_LIBRARIES}
-  )
-
-if( BUILD_TESTING )
-  add_subdirectory( Testing )
-endif( BUILD_TESTING )

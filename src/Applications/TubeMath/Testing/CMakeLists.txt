@@ -48,10 +48,10 @@ itk_add_test(
   NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
-    -l Ridgeness DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
-    -l Medialness DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
-    -l Branchness DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
-    -l Custom1 DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
+    -l Ridgeness DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha} 1.0
+    -l Medialness DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha} 1.0
+    -l Branchness DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha} 1.0
+    -l Custom1 DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha} 1.0
     -u
     -r
     -s 4

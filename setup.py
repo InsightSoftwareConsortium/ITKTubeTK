@@ -15,7 +15,7 @@ except ImportError:
 
 setup(
     name='itk-tubetk',
-    version='0.2.2',
+    version='0.3',
     author='Stephen R. Aylward',
     author_email='stephen.aylward@kitware.com',
     include_dirs=[np.get_include()],
@@ -47,7 +47,7 @@ setup(
     keywords='ITK InsightToolkit',
     url=r'https://itk.org/',
     install_requires=[
-        r'itk>=5.2rc3',
+        r'itk>=5.2.0',
         r'itk-minimalpathextraction>=1.1.2'
     ]
     )

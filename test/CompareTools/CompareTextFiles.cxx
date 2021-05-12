@@ -28,7 +28,7 @@ int RegressionTestFile ( const char *testFilename,
 
 int CompareTextFiles( int argc, char * argv[] )
 {
-  int bestBaselineStatus = 2001;
+  int bestBaselineStatus = 999999999;
 
   // Process some command-line arguments intended for BatchMake
   MetaCommand command;
@@ -140,14 +140,18 @@ int CompareTextFiles( int argc, char * argv[] )
       nameIterator baselineFileItr = baselineFilenames.begin();
       while( baselineFileItr != baselineFilenames.end() )
         {
+        std::cout << baselineFileItr->c_str() << std::endl;
         const int currentStatus =
           RegressionTestFile(
               testFilename.c_str(), baselineFileItr->c_str(),
               false, false, toleranceValue, toleranceNumberOfDifferences );
+        std::cout << "   " << currentStatus << std::endl;
         if( currentStatus < bestBaselineStatus )
           {
+          std::cout << "   BEST = " << currentStatus << std::endl;
           bestBaselineStatus = currentStatus;
           bestBaselineFilename = *baselineFileItr;
+          std::cout << "   " << bestBaselineFilename << std::endl;
           }
         if( bestBaselineStatus == 0 )
           {
@@ -159,12 +163,14 @@ int CompareTextFiles( int argc, char * argv[] )
     // generate images of our closest match
     if( bestBaselineStatus == 0 )
       {
+      std::cout << "Validating : " << bestBaselineFilename.c_str() << std::endl;
       RegressionTestFile(
         testFilename.c_str(), bestBaselineFilename.c_str(), true, false,
         toleranceValue, toleranceNumberOfDifferences );
       }
     else
       {
+      std::cout << "Rejecting : " << bestBaselineFilename.c_str() << std::endl;
       RegressionTestFile(
         testFilename.c_str(),
         bestBaselineFilename.c_str(), true, true,
@@ -271,11 +277,16 @@ int RegressionTestFile ( const char *testFilename,
       }
     }
 
-  if( numberOfDifferenceTolerance >= 0 &&
-    differences > ( unsigned int )( numberOfDifferenceTolerance ) )
+  if( numberOfDifferenceTolerance >= 0 )
     {
-    return EXIT_FAILURE;
+    if( differences > ( unsigned int )( numberOfDifferenceTolerance ) )
+      {
+      return differences;
+      }
+    return 0;
     }
-
-  return EXIT_SUCCESS;
+  else
+    {
+    return differences;
+    }
 }

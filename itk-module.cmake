@@ -36,6 +36,7 @@ itk_module( TubeTK
     ITKStatistics
     ITKSpatialObjects
     ITKTransform
+    ITKVTK
     MinimalPathExtraction
   COMPILE_DEPENDS
     ITKAnisotropicSmoothing

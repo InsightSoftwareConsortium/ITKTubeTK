@@ -230,7 +230,7 @@ public:
 
   /** The number of div( Tensor \grad u )v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
-  virtual int GetNumberOfTerms( void ) const
+  virtual int GetNumberOfTerms( void ) const override
     { return 4; }
 
   /** Set/get the organ boundary polydata, which must be in the same space
@@ -335,27 +335,27 @@ protected:
   /** Allocate the deformation component images and their derivative images.
    *  ( which may be updated throughout the registration ). Reimplement in
    *  derived classes. */
-  virtual void InitializeDeformationComponentAndDerivativeImages( void );
+  virtual void InitializeDeformationComponentAndDerivativeImages( void ) override;
 
   /** Allocate and populate the diffusion tensor images.
    *  Reimplement in derived classes. */
-  virtual void ComputeDiffusionTensorImages( void );
+  virtual void ComputeDiffusionTensorImages( void ) override;
 
   /** Allocate and populate the images of multiplication vectors that the
    *  div( T \grad( u ) ) values are multiplied by.  Allocate and populate
    *  all or some of the multiplication vector images in derived classes.
    *  Otherwise,
    *  default to e_l, where e_l is the lth canonical unit vector. */
-  virtual void ComputeMultiplicationVectorImages( void );
+  virtual void ComputeMultiplicationVectorImages( void ) override;
 
   /** Updates the deformation vector component images on each iteration. */
-  virtual void UpdateDeformationComponentImages( OutputImageType * output );
+  virtual void UpdateDeformationComponentImages( OutputImageType * output ) override;
 
   /** Computes the first- and second-order partial derivatives of the
    *  deformation component images on each iteration.  Override in derived
    *  classes if the deformation components image pointers are not unique,
    *  to avoid computing the same derivatives multiple times. */
-  virtual void ComputeDeformationComponentDerivativeImages( void );
+  virtual void ComputeDeformationComponentDerivativeImages( void ) override;
 
   /** If needed, allocates and computes the normal vector and weight
    * images. */
