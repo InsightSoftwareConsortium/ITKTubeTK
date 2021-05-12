@@ -58,7 +58,7 @@ itk_add_test(
   COMMAND ${TubeTK_CompareTextFiles_EXE}
     CompareTextFiles
     -t ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2-Tree.tre
-    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Tree.tre}
+    -B 2 DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Tree.tre} DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Tree2.tre}
     -d 0.01 )
 
 set_tests_properties( ${MODULE_NAME}Test2-Compare PROPERTIES DEPENDS
