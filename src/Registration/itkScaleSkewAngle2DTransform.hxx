@@ -267,7 +267,8 @@ ScaleSkewAngle2DTransform<TParametersValueType>
     //<< " : New = " << angle << std::endl;
   Superclass::SetVarAngle( angle );
 
-  MatrixType scaleSkew = matrix * vnl_inverse(ortho);
+  vnl_matrix<TParametersValueType> scaleSkew(2, 2);
+  scaleSkew = matrix * vnl_inverse(ortho);
   //std::cout << "   Original scale = " << m_Scale[0] << ", " << m_Scale[1]
     //<< " : New = " << scaleSkew[0][0] << ", " << scaleSkew[1][1] << std::endl;
   m_Scale[0] = scaleSkew[0][0];

@@ -111,7 +111,7 @@ int tubeTubeMathFiltersTest( int tubeNotUsed( argc ),
       ::tube::TubeMathFilters<3>::SMOOTH_TUBE_USING_INDEX_AVERAGE );
     //tube2 = filter.GetOutput();
 
-    double tLength = tubeLength( tube );
+    tLength = tubeLength( tube );
     std::cout << "Comp Length = " << tLength << std::endl;
     double t2Length = tubeLength( tube2 );
     std::cout << "   with Length = " << t2Length << std::endl;
