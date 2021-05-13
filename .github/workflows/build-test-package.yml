@@ -255,7 +255,7 @@ jobs:
         ln -s $(pwd)/ITKMinimalPathExtraction/tools .
 
         #  Can build SEM using any version of python wrapping
-        export ITK_DIR="/work/ITKPythonPackage/ITK-cp36-cp36m-manylinux2014_x64/"
+        export ITK_DIR=$(pwd)/ITKPythonPackage/ITK-cp36-cp36m-manylinux2014_x64
         git clone https://github.com/Slicer/SlicerExecutionModel
         mkdir SlicerExecutionModel-build
         pushd SlicerExecutionModel-build
