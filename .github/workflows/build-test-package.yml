@@ -251,7 +251,7 @@ jobs:
       run: |
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
-        ln -sf /work/ITK-cp36-cp36m-manlinux2014_x64 /ITKPythonPackage/ITK-cp36-cp36m-manylinux2014_x64
+        ln -sf /work/ITK-cp36-cp36m-manylinux2014_x64 /ITKPythonPackage/ITK-cp36-cp36m-manylinux2014_x64
         export ITK_DIR="/work/ITK-cp36-cp36m-manylinux2014_x64"
         git clone https://github.com/Slicer/SlicerExecutionModel
         mkdir -p SlicerExecutionModel-build
