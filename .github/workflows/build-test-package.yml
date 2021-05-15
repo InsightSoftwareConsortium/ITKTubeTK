@@ -237,14 +237,14 @@ jobs:
       run: |
         export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
-        mv ./dockcross-manylinux-download-cache-and-build-module-wheels.sh ./ITKMinimalPathExtraction
+        cp ./dockcross-manylinux-download-cache-and-build-module-wheels.sh ./ITKMinimalPathExtraction
         pushd ITKMinimalPathExtraction
         git checkout ${{env.ITKMinimalPathExtraction-git-tag}}
         ./dockcross-manylinux-download-cache-and-build-module-wheels.sh cp${{ matrix.python-version }}
         popd
         cp ITKMinimalPathExtraction/include/* include/
-        ln -s $(pwd)/ITKMinimalPathExtraction/ITKPythonPackage .
-        ln -s $(pwd)/ITKMinimalPathExtraction/tools .
+        mv ./ITKMinimalPathExtraction/ITKPythonPackage .
+        mv ./ITKMinimalPathExtraction/tools .
 
     - name: 'Git-Configure-Build SEM'
       shell: bash
@@ -294,6 +294,7 @@ jobs:
 
     - name: 'Build 🐍 Python 📦 package TubeTK'
       run: |
+        export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
 
     - name: Publish Python package as GitHub Artifact
