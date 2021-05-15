@@ -251,11 +251,12 @@ jobs:
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
 
-        version=${1:-cp38-cp38}
-        ARCH=${2:-x64}
+        export version=${1:-cp38-cp38}
+        export ARCH=${2:-x64}
 
-        version=${version:0:9}
-        itk_build_dir=/work/$(basename /ITKPythonPackage/ITK-${version}*-manylinux2014_${ARCH})
+        # remove trailing m
+        export version=${version:0:9}
+        export itk_build_dir=/work/$(basename /ITKPythonPackage/ITK-${version}*-manylinux2014_${ARCH})
         ln -fs /ITKPythonPackage/ITK-${version}*-manylinux2014_${ARCH} $itk_build_dir
 
         if [[ ! -d ${itk_build_dir} ]]; then
