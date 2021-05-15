@@ -252,27 +252,10 @@ jobs:
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
 
-        echo "1 = ${1}"
-        echo "2 = ${2}"
-        export version=${1:-cp38-cp38}
-        export ARCH=${2:-x64}
-        echo "version = ${version}"
-        # remove trailing m
-        export version=${version:0:9}
-        echo "version = ${version}"
-        itk_build_dir=/work/$(basename /ITKPythonPackage/ITK-${version}*-manylinux2014_${ARCH})
-        echo "itk_build_dir = ${itk_build_dir}"
-        echo "Dir /work = "
-        ls /work
-        echo "Dir /ITKPythonPackage = "
-        ls /ITKPythonPackage
-        ln -fs /ITKPythonPackage/ITK-${version}*-manylinux2014_${ARCH} $itk_build_dir
-
-        if [[ ! -d ${itk_build_dir} ]]; then
-          echo 'ITK build tree not available!' 1>&2
-          exit 1
-        fi
-
+        export itk_build_dir=/work/ITKPythonPackage/ITK-cp36-cp36m-manylinux2014_x64
+        ln -fs /ITKPythonPackage/ITK-cp36-cp36m-manylinux2014_x64 ${itk_build_dir}
+        echo "ITK = ${itk_build_dir}"
+        ls ${itk_build_dir}
         git clone https://github.com/Slicer/SlicerExecutionModel
         mkdir -p SlicerExecutionModel-build
         cd SlicerExecutionModel-build
@@ -283,7 +266,7 @@ jobs:
         ninja
         EOF
         chmod +x ./git-configure-build-sem.sh
-        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-sem.sh cp${{ matrix.python-version }}-cp${{ matrix.python-version }}
+        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-sem.sh
 
     - name: 'Git-Configure-Build VTK'
       shell: bash
@@ -307,7 +290,7 @@ jobs:
         ninja
         EOF
         chmod +x ./git-configure-build-vtk.sh
-        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-vtk.sh cp${{ matrix.python-version }}-cp${{ matrix.python-version }}
+        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-vtk.sh
 
     - name: 'Build 🐍 Python 📦 package TubeTK'
       run: |
