@@ -233,16 +233,8 @@ jobs:
         curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
         chmod u+x dockcross-manylinux-download-cache-and-build-module-wheels.sh
 
-        git clone https://github.com/Kitware/VTK
-        pushd VTK
-        git checkout ${{env.vtk-git-tag}}
-        popd
-        mkdir VTK-build
-        pushd VTK-build
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
-        ninja
-        popd
-
+    - name: 'Build MinimalPathExtraction'
+      run: |
         export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         mv ./dockcross-manylinux-download-cache-and-build-module-wheels.sh ./ITKMinimalPathExtraction
@@ -254,15 +246,63 @@ jobs:
         ln -s $(pwd)/ITKMinimalPathExtraction/ITKPythonPackage .
         ln -s $(pwd)/ITKMinimalPathExtraction/tools .
 
-        #  Can build SEM using any version of python wrapping
-        export ITK_DIR=$(pwd)/ITKPythonPackage/ITK-cp36-cp36m-manylinux2014_x64
-        git clone https://github.com/Slicer/SlicerExecutionModel
-        mkdir SlicerExecutionModel-build
-        pushd SlicerExecutionModel-build
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
-        ninja
-        popd
-        ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
+    - name: 'Git-Configure-Build SEM'
+      run: |
+        cat > git-configure-build-sem.sh << EOF
+          #!/bin/sh
+
+          version=${1:-cp38-cp38}
+          ARCH=${2:-x64}
+
+          version=${version:0:9}
+          itk_build_dir=/work/$(basename /ITKPythonPackage/ITK-${version}*-manylinux2014_${ARCH})
+          ln -fs /ITKPythonPackage/ITK-${version}*-manylinux2014_${ARCH} $itk_build_dir
+
+          if [[ ! -d ${itk_build_dir} ]]; then
+            echo 'ITK build tree not available!' 1>&2
+            exit 1
+          fi
+
+          git clone https://github.com/Slicer/SlicerExecutionModel
+          mkdir -p SlicerExecutionModel-build
+          cd SlicerExecutionModel-build
+          cmake \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DITK_DIR:PATH=${itk_build_dir} \
+            -GNinja \
+            ../SlicerExecutionModel
+          ninja
+          EOF
+        chmod +x ./git-configure-build-sem.sh
+        # /tmp/dockcross-manylinux-x64 is created by the run of ./dockcross-manylinux-download-cache-and-build-module-wheels.sh
+        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-sem.sh
+
+    - name: 'Git-Configure-Build VTK'
+      run: |
+        cat > git-configure-build-vtk.sh << EOF
+          #!/bin/sh
+
+          git clone https://github.com/Kitware/VTK.git
+          cd VTK
+          git checkout ${{ env.vtk-git-tag }}
+          cd ..
+          mkdir -p VTK-build
+          cd VTK-build
+          cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" \
+                -DBUILD_TESTING:BOOL=OFF \
+                -DBUILD_SHARED_LIBS:BOOL=OFF \
+                -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" \
+                -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} \
+                -GNinja \
+                ../VTK
+          ninja
+          EOF
+        chmod +x ./git-configure-build-vtk.sh
+        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-vtk.sh
+
+    - name: Build TubeTK package
+      run: |
+      ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
 
     - name: Publish Python package as GitHub Artifact
       uses: actions/upload-artifact@v1
