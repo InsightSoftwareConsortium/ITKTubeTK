@@ -233,7 +233,7 @@ jobs:
         curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
         chmod u+x dockcross-manylinux-download-cache-and-build-module-wheels.sh
 
-    - name: 'Build MinimalPathExtraction'
+    - name: 'Git-Configure-Build MinimalPathExtraction'
       run: |
         export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
@@ -300,9 +300,9 @@ jobs:
         chmod +x ./git-configure-build-vtk.sh
         /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-vtk.sh
 
-    - name: Build TubeTK package
+    - name: 'Build 🐍 Python 📦 package TubeTK'
       run: |
-      ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
+        ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
 
     - name: Publish Python package as GitHub Artifact
       uses: actions/upload-artifact@v1
@@ -338,7 +338,7 @@ jobs:
         curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/macpython-download-cache-and-build-module-wheels.sh -O
         chmod u+x macpython-download-cache-and-build-module-wheels.sh
 
-    - name: 'Build 🐍 Python 📦 package'
+    - name: 'Git-Configure-Build VTK'
       run: |
         export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         export MACOSX_DEPLOYMENT_TARGET=10.9
@@ -351,7 +351,11 @@ jobs:
         pushd VTK-build
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
         ninja
-        popd
+
+    - name: 'Git-Configure-Build MinimalPathExtraction'
+      run: |
+        export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
+        export MACOSX_DEPLOYMENT_TARGET=10.9
 
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         cp ./macpython-download-cache-and-build-module-wheels.sh ITKMinimalPathExtraction/
@@ -361,6 +365,11 @@ jobs:
         popd
         cp ITKMinimalPathExtraction/include/* include/
 
+    - name: 'Git-Configure-Build SEM'
+      run: |
+        export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
+        export MACOSX_DEPLOYMENT_TARGET=10.9
+
         #  Can build SEM using any version of python wrapping
         export ITK_DIR="/Users/svc-dashboard/D/P/ITKPythonPackage/ITK-3.6-macosx_x86_64/"
         git clone https://github.com/Slicer/SlicerExecutionModel
@@ -368,7 +377,11 @@ jobs:
         pushd SlicerExecutionModel-build
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
         ninja
-        popd
+
+    - name: 'Build 🐍 Python 📦 package TubeTK'
+      run: |
+        export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
+        export MACOSX_DEPLOYMENT_TARGET=10.9
 
         /Users/svc-dashboard/D/P/ITKPythonPackage/scripts/macpython-build-module-wheels.sh
 
