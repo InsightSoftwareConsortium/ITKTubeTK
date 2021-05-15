@@ -247,6 +247,7 @@ jobs:
         ln -s $(pwd)/ITKMinimalPathExtraction/tools .
 
     - name: 'Git-Configure-Build SEM'
+      shell: bash
       run: |
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
@@ -285,6 +286,7 @@ jobs:
         /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-sem.sh cp${{ matrix.python-version }}-cp${{ matrix.python-version }}
 
     - name: 'Git-Configure-Build VTK'
+      shell: bash
       run: |
         cat > git-configure-build-vtk.sh << EOF
         #!/bin/sh
