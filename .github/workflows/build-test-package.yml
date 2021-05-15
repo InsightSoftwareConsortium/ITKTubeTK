@@ -252,6 +252,7 @@ jobs:
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
         ln -s -f -T /ITKPythonPackage/ITK-cp36-cp36m-manylinux2014_x64 /work/ITK-cp36-cp36m-manylinux2014_x64
+        ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
         export ITK_DIR="/work/ITK-cp36-cp36m-manylinux2014_x64"
         echo "itk_dir = ${ITK_DIR}"
         ls -la /work
