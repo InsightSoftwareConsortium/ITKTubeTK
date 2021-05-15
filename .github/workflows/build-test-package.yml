@@ -249,56 +249,54 @@ jobs:
     - name: 'Git-Configure-Build SEM'
       run: |
         cat > git-configure-build-sem.sh << EOF
-          #!/bin/sh
+        #!/bin/sh
 
-          version=${1:-cp38-cp38}
-          ARCH=${2:-x64}
+        version=${1:-cp38-cp38}
+        ARCH=${2:-x64}
 
-          version=${version:0:9}
-          itk_build_dir=/work/$(basename /ITKPythonPackage/ITK-${version}*-manylinux2014_${ARCH})
-          ln -fs /ITKPythonPackage/ITK-${version}*-manylinux2014_${ARCH} $itk_build_dir
+        version=${version:0:9}
+        itk_build_dir=/work/$(basename /ITKPythonPackage/ITK-${version}*-manylinux2014_${ARCH})
+        ln -fs /ITKPythonPackage/ITK-${version}*-manylinux2014_${ARCH} $itk_build_dir
 
-          if [[ ! -d ${itk_build_dir} ]]; then
-            echo 'ITK build tree not available!' 1>&2
-            exit 1
-          fi
+        if [[ ! -d ${itk_build_dir} ]]; then
+          echo 'ITK build tree not available!' 1>&2
+          exit 1
+        fi
 
-          git clone https://github.com/Slicer/SlicerExecutionModel
-          mkdir -p SlicerExecutionModel-build
-          cd SlicerExecutionModel-build
-          cmake \
-            -DCMAKE_BUILD_TYPE:STRING=Release \
-            -DITK_DIR:PATH=${itk_build_dir} \
-            -GNinja \
-            ../SlicerExecutionModel
-          ninja
-          EOF
+        git clone https://github.com/Slicer/SlicerExecutionModel
+        mkdir -p SlicerExecutionModel-build
+        cd SlicerExecutionModel-build
+        cmake -DCMAKE_BUILD_TYPE:STRING=Release \
+          -DITK_DIR:PATH=${itk_build_dir} \
+          -GNinja \
+          ../SlicerExecutionModel
+        ninja
+        EOF
         chmod +x ./git-configure-build-sem.sh
-        # /tmp/dockcross-manylinux-x64 is created by the run of ./dockcross-manylinux-download-cache-and-build-module-wheels.sh
-        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-sem.sh
+        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-sem.sh cp${{ matrix.python-version }}-cp${{ matrix.python-version }}
 
     - name: 'Git-Configure-Build VTK'
       run: |
         cat > git-configure-build-vtk.sh << EOF
-          #!/bin/sh
+        #!/bin/sh
 
-          git clone https://github.com/Kitware/VTK.git
-          cd VTK
-          git checkout ${{ env.vtk-git-tag }}
-          cd ..
-          mkdir -p VTK-build
-          cd VTK-build
-          cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" \
-                -DBUILD_TESTING:BOOL=OFF \
-                -DBUILD_SHARED_LIBS:BOOL=OFF \
-                -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" \
-                -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} \
-                -GNinja \
-                ../VTK
-          ninja
-          EOF
+        git clone https://github.com/Kitware/VTK.git
+        cd VTK
+        git checkout ${{ env.vtk-git-tag }}
+        cd ..
+        mkdir -p VTK-build
+        cd VTK-build
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" \
+              -DBUILD_TESTING:BOOL=OFF \
+              -DBUILD_SHARED_LIBS:BOOL=OFF \
+              -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" \
+              -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} \
+              -GNinja \
+              ../VTK
+        ninja
+        EOF
         chmod +x ./git-configure-build-vtk.sh
-        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-vtk.sh
+        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-vtk.sh cp${{ matrix.python-version }}-cp${{ matrix.python-version }}
 
     - name: 'Build 🐍 Python 📦 package TubeTK'
       run: |
