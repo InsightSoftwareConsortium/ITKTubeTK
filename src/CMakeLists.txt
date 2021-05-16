@@ -42,7 +42,3 @@ endif( TubeTK_USE_VTK )
 if( ITK_WRAP_PYTHON )
   add_subdirectory( Python )
 endif()
-
-if( TubeTK_BUILD_APPLICATIONS )
-  add_subdirectory( Applications )
-endif()
