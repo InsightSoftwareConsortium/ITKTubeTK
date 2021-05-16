@@ -27,7 +27,7 @@ set( PROJ_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 configure_file(
-  ${TubeTK_SOURCE_DIR}/src/Applications/${MODULE_NAME}/Testing/ListTemplate.txt.in
+  ${TubeTK_SOURCE_DIR}/examples/Applications/${MODULE_NAME}/Testing/ListTemplate.txt.in
   ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-List.txt IMMEDIATE @ONLY
   )
 

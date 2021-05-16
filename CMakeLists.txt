@@ -226,9 +226,4 @@ else()
   itk_module_impl()
 endif()
 
-####
-# Build Applications?
-####
-option( TubeTK_BUILD_APPLICATIONS "Build applications based on TubeTK." OFF )
-
 itk_module_examples()
