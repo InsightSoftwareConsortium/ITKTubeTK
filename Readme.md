@@ -5,6 +5,7 @@ ITKTubeTK: Tubular Object Extraction, Registration, and Analysis
 
 [![Build, test, package](https://github.com/InsightSoftwareConsortium/ITKTubeTK/actions/workflows/build-test-package.yml/badge.svg)](https://github.com/InsightSoftwareConsortium/ITKTubeTK/actions/workflows/build-test-package.yml)
 
+Available in C++ and Python for Linux, Windows, and MacOS.
 
 Overview
 --------
@@ -21,75 +22,82 @@ TubeTK offers various interface layers:
 
 * [TubeTK/include](include): This is the ITK interface to select methods in `TubeTK/src`.  This level of interface is intended for ITK users and Python scripts writers.  The methods exposed represent a level of modularization that invites experimentation, integration with other toolkits (e.g., Scikit-Learn), and development of processing pipelines that accomplish significant image analysis goals.  The interface is available as an ITK Extension and thereby available via Python using Wrapped ITK.
 
-* [TubeTK/src/Applications](src/Applications): These are optional command-line interface applications.  These applications are NOT distributed with the pip-installation of itk-tubetk, and they will be deprecated in the near future - the python interface to TubeTK should be used instead.  Furthermore, building these applications requires a sequence of compilations, complex configuration changes, and third-party tools (e.g., SlicerExecutionModel). Continuous, unit-level testingis provided for these applications.   
+* [TubeTK/examples/Applications](examples/Applications): These are optional command-line interface applications.  These applications are mostly also available via the TubeTK/include interface, and thereby are available via python.  Expansion of ITK will focus on the TubeTK/include directory, and new applications will only rarely be added.  These applications are built when the cmake options BUILD_EXAMPLES is enabled.  These applications also require SlicerExecutionModel, see https://github.com/Slicer/SlicerExecutionModel.   
 
-Installing TubeTK via ITK
--------------------------
+Installing TubeTK
+=================
+
+We recommend using TubeTK via Python.  To do so, the installation command is
+
     > pip install itk-tubetk
 
-A version of ITK with TubeTK already compiled into it is available via pip.    This provides the python interface to TubeTK via ITK.
+There may also be newer, experimental versions of TubeTK available via
 
-Compiling TubeTK via ITK
--------------------------
+    > pip install --pre itk-tubetk
+    
+For a list of present and past releases and pre-releases, see https://pypi.org/project/itk-tubetk/
 
-If you wish to compile TubeTK from scratch (because you wish to modify it), then use the version of TubeTK that is bundled with ITK.   ITKTubeTK is available as a official ITK Remote Module, starting with [ITKv5.1.2](https://github.com/InsightSoftwareConsortium/ITK/releases/tag/v5.1.2).   `When you configure ITK using CMake`, set the options
+Compiling TubeTK
+================
+
+We stronly reocmmend that you use the Python version of TubeTK, as described above.  However, if you wish to compile TubeTK from scratch (e.g., because you wish to modify it or use its C++ interface), then use the version of TubeTK that is bundled with ITK.   ITKTubeTK is available as a official ITK Remote Module, starting with [ITKv5.1.2](https://github.com/InsightSoftwareConsortium/ITK/releases/tag/v5.1.2).   
+
+Details on compiling ITK (and optionally compiling it with VTK, compiling its example applications, and wrapping it for python) are described next.
+
+Within ITK
+----------
+
+If you decide to compile TubeTK instead of using its convenient Python interface (see above), then when you configure ITK (https://github.com/InsightSoftwareConsortium/ITK) using CMake (https://cmake.org/), you must set the following options
+
 * CMAKE_BUILD_TYPE = Release
 * ITK_WRAP_PYTHON = On
 * Module_TubeTK = On
-and then when you build ITK, TubeTK will be automatically built as well.  Additionally, if you enable Python wrapping for ITK, that wrapping will include TubeTK.
 
-Roadmap
--------
+and then, when you build ITK, TubeTK will be automatically built as well.  Additionally, if you enable Python wrapping for ITK, that wrapping will include TubeTK.
 
-Our roadmap includes:
-* Adding more Jupyter Notebook examples in ITKTubeTK/examples:
-+ Sliding organ registration
-+ Vessel-based registration
-+ Tomosynthesis simulation
-+ Additional vessel extraction demonstrations involving lungs, livers, and brains imaged via MRA, CT, and ultrasound.
+With VTK
+--------
 
-For advanced developers
------------------------
+TubeTK will also default to requiring VTK (https://github.com/Kitware/VTK).  If you plan on wrapping for Python, you must build VTK with static libraries.  Typically, CMake will automatically find your VTK build directory, otherwise, you must set the VTK_DIR variable during ITK configuration:
 
-Select methods in TubeTK require VTK, and those methods are currently not distributed as pre-built binaries.   You must compile ITK with Module_TubeTK enabled and enable VTK, as follows:
+* VTK_DIR = \<Path to VTK build directory\>
 
-*1) SlicerExecutionModel: needed for TubeTK's applications*
 
-After compiling ITK with TubeTK enabled (see above section "Compiling TubeTK via ITK"), you can build [SlicerExecutionModel](https://github.com/Slicer/SlicerExecutionModel) and then re-configure ITK's TubeTK to build applications using SlicerExecutionModel.
+If you do not wish to have TubeTK use VTK, some functionality will be lost, but this can be accomplished by setting the ITK CMake variable
 
-*2) VTK: needed for Sliding organ registration and select other methods*
+* TubeTK_USE_VTK = Off
 
-Optionally, you may also want to build VTK.   This is used by the Sliding
-Organ Registration algorithm (anisotropic diffusion regularization and
-registration).   Note that VTK must be built BEFORE building ITK's TubeTK.
+Example Applications
+--------------------
 
-Using CMake, you should configure VTK as follows:
-* CMAKE_BUILD_TYPE = Release
-* VTK_WRAP_PYTHON = True
-* You may also want to turn off building Tests and Examples
+To build TubeTK's example applications, we recommend compiling with VTK (see above).   Additionally, you must do the following: 
 
-After configuring CMake and generating the build files, you should compile
-VTK, and then re-configure ITK and enable TubeTK_USE_VTK, and set the VTK_DIR as appropriate.  You can then recompile ITK and it will include the VTK-based TubeTK methods.
+1) Build Slicer Execution Model: https://github.com/Slicer/SlicerExecutionModel
+2) Set the following configuration options in CMake for ITK:
+    * BUILD_EXAMPLES = On
+    * SlicerExecutionModel_DIR = \<Path to your build of Slicer Execution Model\>
 
-Using a ITKTubeTK from Python
------------------------------
+We then recommend adding the following paths to your user environment:
 
-First, to be able to run all the python tests and examples, the following packages are required:
+For Python
+----------
+
+Again, our recommendation is to use the freely avaible and easy-to install Python wrapping of TubeTK that is available simply by issuing the following command:
+
+    pip install itk-tubetk
+    
+However, if you are compiling your own version of ITK/TubeTK, and you have set ITK_WRAP_PYTHON = On, then when you compile ITK, you will generate the Python interface for ITK and TubeTK.
+
+To use TubeTK from Python, you will also need the following packages on your build machine:
 * numpy
 * scipy
 * jupyter
 * matplotlib
 
-Second, you will need to add the modules of python-wrapped ITK to your python environment.
-This is accomplished by copying the files that specify the paths to their python modules into your
-python site-packages directory.
-
-To find the site-packages directory on your system, follow the directions on this link:
+Tou will also need to add the modules of python-wrapped ITK to your python environment. This is accomplished by copying the files that specify the paths to their python modules into your python site-packages directory.  To find the site-packages directory on your system, follow the directions on this link:
 https://stackoverflow.com/questions/122327/how-do-i-find-the-location-of-my-python-site-packages-directory
 
-Let's assume that path is /Python/Python36/site-packages.
-
-First you will want to copy ITK's python paths file into that directory
+If that reveals that your site-packages directory is /Python/Python36/site-packages. then copy ITK's python paths file into that directory, e.g.,
 
     $ cp ~/src/ITK-Release/Wrapping/Generators/Python/WrapITK.pth /Python/Python36/site-packages
 
@@ -101,13 +109,25 @@ and
 
     $ python -c "from itk import TubeTK"
 
-Both of the above commands should execute and return without errors.
+Both of the above commands should execute and return without errors.   Otherwise, please post a detailed description (of what you've done and what error you received) on the TubeTK issue tracker: https://github.com/InsightSoftwareConsortium/ITKTubeTK/issues
 
+Roadmap
+=======
+
+Our roadmap includes:
+* Adding more Jupyter Notebook examples in ITKTubeTK/examples:
+    * Sliding organ registration
+    * Vessel-based registration
+    * Tomosynthesis simulation
+    * Additional vessel extraction demonstrations involving lungs, livers, and brains imaged via MRA, CT, and ultrasound.
 
 Acknowledgements
 ----------------
 
-The development of TubeTK is supported in part by the
+If you find TubeTK to be useful for your work, please cite the following publication when publishing your work:
+* S. R. Aylward and E. Bullitt, "Initialization, noise, singularities, and scale in height ridge traversal for tubular object centerline extraction," Medical Imaging, IEEE Transactions on, vol. 21, no. 2, pp. 61-75, 2002.
+
+The development of TubeTK has been supported, in part, by the following grants:
 
 * [NCI](http://www.cancer.gov/) under award numbers R01CA138419, R01CA170665, R43CA165621, and R44CA143234;
 * [NIBIB](http://www.nibib.nih.gov) (NBIB) of the National Institutes of Health (NIH) under award numbers R01EB014955, R41EB015775, R43EB016621, and U54EB005149;
@@ -124,9 +144,8 @@ the *LICENSE* file for details.
 References
 ----------
 
-*Publications*
+( See also [Stephen R. Aylward @ Google Scholar](https://scholar.google.com/citations?user=jHEgTSwAAAAJ&hl=en) )
 
-( See also [http://www.aylward.org/biosketch/publications-1] )
 * D.F. Pace, S.R. Aylward, M. Niethammer, "A Locally Adaptive Regularization Based on Anisotropic Diffusion for Deformable Image Registration of Sliding Organs," Medical Imaging, IEEE Transactions on , vol.32, no.11, pp.2114,2126, Nov. 2013 doi: 10.1109/TMI.2013.2274777
 * E. Bullitt, D. Zeng, B. Mortamet, A. Ghosh, S. R. Aylward, W. Lin, B. L. Marks, and K. Smith, "The effects of healthy aging on intracerebral blood vessels visualized by magnetic resonance angiography," NEUROBIOLOGY OF AGING, vol. 31, no. 2, pp. 290-300, Feb. 2010.
 * E. Bullitt, M. Ewend, J. Vredenburgh, A. Friedman, W. Lin, K. Wilber, D. Zeng, S. R. Aylward, and D. Reardon, "Computerized assessment of vessel morphological changes during treatment of glioblastoma multiforme: Report of a case imaged serially by MRA over four years," NEUROIMAGE, vol. 47, pp. T143-T151, Aug. 2009.
