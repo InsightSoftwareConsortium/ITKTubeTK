@@ -5,6 +5,8 @@ ITKTubeTK: Tubular Object Extraction, Registration, and Analysis
 
 [![Build, test, package](https://github.com/InsightSoftwareConsortium/ITKTubeTK/actions/workflows/build-test-package.yml/badge.svg)](https://github.com/InsightSoftwareConsortium/ITKTubeTK/actions/workflows/build-test-package.yml)
 
+[![Documentation Status](https://readthedocs.org/projects/tubetk/badge/?version=latest)](https://tubetk.readthedocs.io/en/latest/?badge=latest)
+
 Available in C++ and Python for Linux, Windows, and MacOS.
 
 Overview
