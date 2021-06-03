@@ -39,6 +39,7 @@ jobs:
     - name: Set up OpenGL
       if: matrix.os == 'ubuntu-18.04'
       run: |
+        sudo apt-get update
         sudo apt-get install -y libglu1-mesa-dev mesa-common-dev
         sudo apt-get install -y libgl1-mesa-glx
         sudo apt-get install -y libglvnd-core-dev
