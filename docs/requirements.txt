@@ -1,10 +1,4 @@
 recommonmark
 Sphinx
-sphinx-rtd-theme
-sphinxcontrib-applehelp
-sphinxcontrib-devhelp
-sphinxcontrib-htmlhelp
-sphinxcontrib-jsmath
-sphinxcontrib-qthelp
-sphinxcontrib-serializinghtml
+sphinx_rtd_theme
 sphinx_autodoc_typehints
