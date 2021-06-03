@@ -1,7 +1,3 @@
-itk
-numpy
-scikit-image
-commonmark
 recommonmark
 Sphinx
 sphinx-rtd-theme
@@ -11,4 +7,4 @@ sphinxcontrib-htmlhelp
 sphinxcontrib-jsmath
 sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
-sphinx-autodoc-typehints
+sphinx_autodoc_typehints
