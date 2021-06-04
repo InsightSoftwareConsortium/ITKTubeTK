@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -56,16 +55,6 @@ namespace tube
  * The basic elements of a registration method are:
  *   - Metric to compare the image and the tubes.
  *   - Transformation used to register the image against the tubes.
- *
- * \todo Below is out of date and needs to be updated.
- *
- *   - Optimization method used to search for the best transformation.
- *
- * Registration is not limited to Images, and for this reason
- * this class is templated over the type of the FixedImage object,
- * the TMovingTube object and the transformation. This types are obtained
- * from the Metric type, to reduce the number of redundant
- * template parameters
  *
  *  \ingroup AffineImageRegistration
  */
