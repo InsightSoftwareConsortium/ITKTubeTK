@@ -30,7 +30,7 @@
       <label>Output Transform</label>
       <channel>output</channel>
       <index>2</index>
-      <description>Transform that aligns the input vessels and input image.</description>
+      <description>Transform that aligns the input vessels to input image.</description>
     </file>
     <file>
       <name>parameterProgression</name>
@@ -40,16 +40,5 @@
       <flag>p</flag>
       <longflag>parameterProgression</longflag>
     </file>
-  </parameters>
-  <parameters>
-    <label>Blur Filter</label>
-    <double>
-      <name>gaussianBlurStdDev</name>
-      <label>Gaussian Blur Standard Deviation</label>
-      <description>Standard deviation of the Gaussian kernel used to blur input volume. This increases the likelihood that the vessel spatial object overlaps with the vessel image at their initial alignment and enlarges the convergence zone.</description>
-      <longflag>gaussianBlurStdDev</longflag>
-      <flag>g</flag>
-      <default>3.0</default>
-    </double>
   </parameters>
 </executable>

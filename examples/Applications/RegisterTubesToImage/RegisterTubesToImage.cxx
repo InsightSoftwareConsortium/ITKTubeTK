@@ -20,18 +20,18 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeImageToTubeRigidRegistration.h"
+#include "itktubeTubesToImageRegistration.h"
 #include "itktubeTubeToTubeTransformFilter.h"
+
 #include "../CLI/tubeCLIFilterWatcher.h"
 #include "../CLI/tubeCLIProgressReporter.h"
+
 #include "tubeMessage.h"
 
 #include <itkTransformFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>
 
-
-#include "RegisterImageToTubesUsingRigidTransformCLP.h"
-#include "tubePreProcessRegistrationInputs.h"
+#include "RegisterTubesToImageCLP.h"
 
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
@@ -53,23 +53,18 @@ int DoIt( int argc, char * argv[] )
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
   tube::CLIProgressReporter progressReporter(
-    "RegisterImageToTubesUsingRigidTransform",
+    "RegisterTubesToImageUsingRigidTransform",
     CLPProcessInformation );
   progressReporter.Start();
 
-  const unsigned int Dimension = 3;
-  typedef double     FloatType;
+  typedef itk::TubeSpatialObject< VDimension >            TubeType;
+  typedef itk::GroupSpatialObject< VDimension >           GroupType;
+  typedef itk::Image< FloatType, VDimension >             ImageType;
 
-  typedef itk::TubeSpatialObject< Dimension >            TubeType;
-  typedef itk::GroupSpatialObject< Dimension >           TubeNetType;
-  typedef itk::Image< FloatType, Dimension >             ImageType;
-
-  typedef itk::tube::ImageToTubeRigidRegistration< ImageType, TubeNetType,
-   TubeType >           RegistrationMethodType;
+  typedef itk::tube::TubesToImageRegistration< TubeType, ImageType >
+                                                         RegistrationMethodType;
 
   typedef typename RegistrationMethodType::TransformType TransformType;
-
-  typedef RegistrationMethodType::FeatureWeightsType     PointWeightsType;
 
   typename ImageType::Pointer currentImage;
   typename TubeNetType::Pointer tubeNet;

@@ -20,7 +20,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME RegisterImageToTubesUsingRigidTransform )
+set( MODULE_NAME RegisterTubesToImage )
 
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
