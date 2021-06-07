@@ -20,16 +20,14 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeImageToTubeRigidRegistration_h
-#define __itktubeImageToTubeRigidRegistration_h
+#ifndef __itktubeTubesToImageRegistrationMethod_h
+#define __itktubeTubesToImageRegistrationMethod_h
 
-#include "itktubeImageToTubeRigidMetric.h"
-#include "itktubeTubeExponentialResolutionWeightFunction.h"
+#include "itktubeTubesToImageMetric.h"
 
-#include <itkEuler3DTransform.h>
 #include <itkImage.h>
 #include <itkImageRegionIterator.h>
-#include <itkImageToSpatialObjectRegistrationMethod.h>
+#include <itkSpatialObjectToImageRegistrationMethod.h>
 #include <itkTransform.h>
 #include <itkTubeSpatialObject.h>
 #include <itkVectorContainer.h>
@@ -40,7 +38,7 @@ namespace itk
 namespace tube
 {
 
-/** \class ImageToTubeRigidRegistration
+/** \class TubesToImageRegistrationMethod
  * \brief Register a hierarchy of tubes to an image.
  *
  * This class provides basic registration of a hierarchy of tubes to an image.
@@ -59,14 +57,14 @@ namespace tube
  *  \ingroup AffineImageRegistration
  */
 
-template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
-class ImageToTubeRigidRegistration
+template< class TFixedImage, class TMovingSpatialObject >
+class TubesToImageRegistration
   : public ImageToSpatialObjectRegistrationMethod< TFixedImage,
                                                    TMovingSpatialObject >
 {
 public:
-  typedef ImageToTubeRigidRegistration                  Self;
-  typedef ImageToSpatialObjectRegistrationMethod< TFixedImage,
+  typedef TubesToImageRegistration                  Self;
+  typedef SpatialObjectToImageRegistrationMethod< TFixedImage,
     TMovingSpatialObject >
                                                         Superclass;
   typedef SmartPointer< Self >                          Pointer;
@@ -74,28 +72,24 @@ public:
 
   typedef typename Superclass::FixedImageType           FixedImageType;
   typedef typename Superclass::MovingSpatialObjectType  MovingSpatialObjectType;
-  typedef TMovingTube                                   MovingTubeType;
+  typedef TMovingSpatialObject                          MovingTubeType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ImageToTubeRigidRegistration,
-                ImageToSpatialObjectRegistrationMethod );
+  itkTypeMacro( TubesToImageRegistrationMethod,
+                SpatialObjectToImageRegistrationMethod );
 
   typedef typename Superclass::MetricType  MetricType;
 
-  typedef ImageToTubeRigidMetric< FixedImageType,
-    MovingSpatialObjectType,
-    MovingTubeType >
+  typedef TubesToImageMetric< MovingSpatialObjectType, FixedImageType >
     DefaultMetricType;
 
   typedef typename DefaultMetricType::TransformParametersType
     ParametersType;
   typedef typename DefaultMetricType::TransformType
     TransformType;
-  typedef ParametersType
-    FeatureWeightsType;
 
   /**  Dimension of the images.  */
   enum { ImageDimension = FixedImageType::ImageDimension,
@@ -110,31 +104,25 @@ public:
   /** Initialize the registration */
   void Initialize( void );
 
-  /** Set/Get the scalar weights associated with every point in the tube.
-   * The index of the point weights should correspond to "standard tube tree
-   * interation". */
-  void SetFeatureWeights( FeatureWeightsType & featureWeights );
-  itkGetConstReferenceMacro( FeatureWeights, FeatureWeightsType );
-
 protected:
-  ImageToTubeRigidRegistration( void );
-  virtual ~ImageToTubeRigidRegistration( void ) {}
+  TubesToImageRegistrationMethod( void );
+  virtual ~TubesToImageRegistrationMethod( void ) {}
 
 private:
-  ImageToTubeRigidRegistration( const Self& ); //purposely not implemented
+  TubesToImageRegistrationMethod( const Self& ); //purposely not implemented
   void operator=( const Self& ); //purposely not implemented
 
   bool                                     m_IsInitialized;
 
   FeatureWeightsType m_FeatureWeights;
-}; // End class ImageToTubeRigidRegistration
+}; // End class TubesToImageRegistrationMethod
 
 } // End namespace tube
 
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeImageToTubeRigidRegistration.hxx"
+#include "itktubeTubesToImageRegistrationMethod.hxx"
 #endif
 
-#endif // End !defined( __itktubeImageToTubeRigidRegistration_h )
+#endif // End !defined( __itktubeTubesToImageRegistrationMethod_h )

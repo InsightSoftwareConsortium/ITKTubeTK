@@ -20,10 +20,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeImageToTubeRigidMetric_hxx
-#define __itktubeImageToTubeRigidMetric_hxx
+#ifndef __itktubeTubesToImageMetric_hxx
+#define __itktubeTubesToImageMetric_hxx
 
-#include "itktubeImageToTubeRigidMetric.h"
+#include "itktubeTubesToImageMetric.h"
 
 #include <itkLinearInterpolateImageFunction.h>
 
@@ -35,9 +35,9 @@ namespace tube
 
 template< class TFixedImage, class TMovingSpatialObject,
   class TTubeSpatialObject >
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+TubesToImageMetric< TFixedImage, TMovingSpatialObject,
   TTubeSpatialObject >
-::ImageToTubeRigidMetric( void )
+::TubesToImageMetric( void )
 {
   m_Kappa = 1.0;
   m_MinimumScalingRadius = 0.1;
@@ -56,9 +56,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
 
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+TubesToImageMetric< TFixedImage, TMovingSpatialObject,
   TTubeSpatialObject >
-::~ImageToTubeRigidMetric( void )
+::~TubesToImageMetric( void )
 {
 }
 
@@ -66,7 +66,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+TubesToImageMetric< TFixedImage, TMovingSpatialObject,
   TTubeSpatialObject >
 ::SetFeatureWeights( FeatureWeightsType & featureWeights )
 {
@@ -84,7 +84,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+TubesToImageMetric< TFixedImage, TMovingSpatialObject,
   TTubeSpatialObject >
 ::Initialize( void )
 {
@@ -115,7 +115,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
 SizeValueType
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+TubesToImageMetric< TFixedImage, TMovingSpatialObject,
   TTubeSpatialObject >
 ::CountTubePoints( void )
 {
@@ -144,7 +144,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ComputeCenterOfRotation( void )
 {
   typename TubeTreeType::ChildrenListType* tubeList = this->GetTubes();
@@ -201,9 +201,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
-typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+typename TubesToImageMetric< TFixedImage, TMovingSpatialObject,
   TTubeSpatialObject >::TubeTreeType::ChildrenListType*
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::GetTubes( void ) const
 {
   if( !this->m_MovingSpatialObject )
@@ -219,9 +219,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
-typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+typename TubesToImageMetric< TFixedImage, TMovingSpatialObject,
   TTubeSpatialObject >::MeasureType
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::GetValue( const ParametersType & parameters ) const
 {
   itkDebugMacro( << "**** Get Value ****" );
@@ -300,9 +300,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 // TODO FACTORIZE CODE --> See ComputeThirdDerivative
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
-typename ImageToTubeRigidMetric< TFixedImage,
+typename TubesToImageMetric< TFixedImage,
   TMovingSpatialObject, TTubeSpatialObject >::ScalarType
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ComputeLaplacianMagnitude(
   const typename TubePointType::CovariantVectorType & tubeNormal,
   const ScalarType scale,
@@ -373,7 +373,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::GetDeltaAngles( const OutputPointType & tubePoint,
   const VnlVectorType & dx,
   const VectorType & offsets,
@@ -391,7 +391,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::GetDerivative( const ParametersType & parameters,
                  DerivativeType & derivative ) const
 {
@@ -586,7 +586,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::GetValueAndDerivative( const ParametersType & parameters,
                          MeasureType & value,
                          DerivativeType & derivative ) const
@@ -598,9 +598,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
-typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+typename TubesToImageMetric< TFixedImage, TMovingSpatialObject,
   TTubeSpatialObject >::ScalarType
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ComputeThirdDerivatives(
   const CovariantVectorType & tubeNormal,
   const ScalarType scale,
@@ -646,7 +646,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
 bool
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::IsInside( const InputPointType & inputPoint,
   OutputPointType & outputPoint,
   const TransformType * transform ) const
@@ -659,4 +659,4 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
 } // End namespace itk
 
-#endif // End !defined( __itktubeImageToTubeRigidMetric_hxx )
+#endif // End !defined( __itktubeTubesToImageMetric_hxx )

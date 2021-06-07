@@ -1,30 +1,24 @@
 /*=========================================================================
 
-Library:   TubeTK
+  Program:   Insight Segmentation & Registration Toolkit
+  Module:    $RCSfile: ITKHeader.h,v $
+  Language:  C++
+  Date:      $Date: 2007-07-10 11:35:36 -0400 ( Tue, 10 Jul 2007 ) $
+  Version:   $Revision: 0 $
 
-Copyright Kitware Inc.
+  Copyright ( c ) 2002 Insight Consortium. All rights reserved.
+  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
-All rights reserved.
-
-Licensed under the Apache License, Version 2.0 ( the "License" );
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-
-#ifndef __itkAffineImageToImageRegistrationMethod_h
-#define __itkAffineImageToImageRegistrationMethod_h
+#ifndef __itkScaleSkewAngle2DImageToImageRegistrationMethod_h
+#define __itkScaleSkewAngle2DImageToImageRegistrationMethod_h
 
 #include "itkImage.h"
-#include "itkAffineTransform.h"
+#include "itkScaleSkewAngle2DTransform.h"
 
 #include "itkOptimizedImageToImageRegistrationMethod.h"
 
@@ -32,34 +26,42 @@ namespace itk
 {
 
 template <class TImage>
-class AffineImageToImageRegistrationMethod
-  : public OptimizedImageToImageRegistrationMethod<TImage>
+class ScaleSkewAngle2DImageToImageRegistrationMethod
+  : public OptimizedImageToImageRegistrationMethod<
+    Image< typename TImage::PixelType, 2 > >
 {
 
 public:
 
-  typedef AffineImageToImageRegistrationMethod            Self;
-  typedef OptimizedImageToImageRegistrationMethod<TImage> Superclass;
+  typedef ScaleSkewAngle2DImageToImageRegistrationMethod  Self;
+  typedef OptimizedImageToImageRegistrationMethod< 
+    Image< typename TImage::PixelType, 2 > >              Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
 
-  itkTypeMacro( AffineImageToImageRegistrationMethod,
+  itkTypeMacro( ScaleSkewAngle2DImageToImageRegistrationMethod,
                 OptimizedImageToImageRegistrationMethod );
 
   itkNewMacro( Self );
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TImage::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int, 2 );
 
   //
   // Typedefs from Superclass
   //
 
   // Overrides the superclass' TransformType typedef
-  typedef AffineTransform<double, itkGetStaticConstMacro( ImageDimension )>
-                                                AffineTransformType;
-  typedef typename AffineTransformType::Pointer AffineTransformPointer;
-  typedef AffineTransformType                   TransformType;
+  typedef ::itk::ScaleSkewAngle2DTransform< double >
+            ScaleSkewAngle2DTransformType;
+  typedef typename ScaleSkewAngle2DTransformType::Pointer
+            ScaleSkewAngle2DTransformPointer;
+  typedef ScaleSkewAngle2DTransformType
+            TransformType;
+
+  typedef AffineTransform<double, 2>
+            AffineTransformType;
+  typedef typename AffineTransformType::Pointer
+            AffineTransformPointer;
 
   //
   // Superclass Methods
@@ -99,22 +101,22 @@ public:
    * SetInitialTransformFixedParameters(). The method below facilitates to
    * use the AffineTransform returned by the
    * InitialImageToImageRegistrationMethod
-   * to directly initialize this rigid registration method.
+   * to directly initialize this registration method.
    */
   void SetInitialTransformParametersFromAffineTransform(
-    const AffineTransformType * affine );
+    const AffineTransformType * transform );
 
 protected:
 
-  AffineImageToImageRegistrationMethod( void );
-  virtual ~AffineImageToImageRegistrationMethod( void );
+  ScaleSkewAngle2DImageToImageRegistrationMethod( void );
+  virtual ~ScaleSkewAngle2DImageToImageRegistrationMethod( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 
   // Purposely not implemented
-  AffineImageToImageRegistrationMethod( const Self & );
+  ScaleSkewAngle2DImageToImageRegistrationMethod( const Self & );
   // Purposely not implemented
   void operator =( const Self & );
 
@@ -123,7 +125,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkAffineImageToImageRegistrationMethod.hxx"
+#include "itkScaleSkewAngle2DImageToImageRegistrationMethod.hxx"
 #endif
 
 #endif // __ImageToImageRegistrationMethod_h

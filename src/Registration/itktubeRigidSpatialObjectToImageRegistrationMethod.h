@@ -14,11 +14,14 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef __itkAffineImageToImageRegistrationMethod_h
-#define __itkAffineImageToImageRegistrationMethod_h
+
+#ifndef __itkRigidImageToImageRegistrationMethod_h
+#define __itkRigidImageToImageRegistrationMethod_h
 
 #include "itkImage.h"
 #include "itkAffineTransform.h"
+#include "itkVersorRigid3DTransform.h"
+#include "itkRigid2DTransform.h"
 
 #include "itkOptimizedImageToImageRegistrationMethod.h"
 
@@ -26,40 +29,54 @@ namespace itk
 {
 
 template <class TImage>
-class AffineImageToImageRegistrationMethod
+class RigidImageToImageRegistrationMethod
   : public OptimizedImageToImageRegistrationMethod<TImage>
 {
 
 public:
 
-  typedef AffineImageToImageRegistrationMethod            Self;
+  typedef RigidImageToImageRegistrationMethod             Self;
   typedef OptimizedImageToImageRegistrationMethod<TImage> Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
 
-  itkTypeMacro( AffineImageToImageRegistrationMethod,
+  itkTypeMacro( RigidImageToImageRegistrationMethod,
                 OptimizedImageToImageRegistrationMethod );
 
   itkNewMacro( Self );
-
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TImage::ImageDimension );
 
   //
   // Typedefs from Superclass
   //
 
+  itkStaticConstMacro( ImageDimension, unsigned int,
+                       TImage::ImageDimension );
+
   // Overrides the superclass' TransformType typedef
-  typedef AffineTransform<double, itkGetStaticConstMacro( ImageDimension )>
-                                                AffineTransformType;
+  // We must use MatrixOffsetTransformBase since no itk rigid transform is
+  //   templated over ImageDimension.
+  typedef MatrixOffsetTransformBase<double,
+                                    itkGetStaticConstMacro( ImageDimension ),
+                                    itkGetStaticConstMacro( ImageDimension )>
+  RigidTransformType;
+  typedef RigidTransformType TransformType;
+
+  //
+  //  Custom Typedefs
+  //
+  typedef Rigid2DTransform<double>       Rigid2DTransformType;
+  typedef VersorRigid3DTransform<double> Rigid3DTransformType;
+
+  typedef AffineTransform<double,
+                          itkGetStaticConstMacro( ImageDimension )>
+  AffineTransformType;
+
   typedef typename AffineTransformType::Pointer AffineTransformPointer;
-  typedef AffineTransformType                   TransformType;
 
   //
-  // Superclass Methods
+  //  Superclass Methods
   //
-
-  void GenerateData( void );
+  void GenerateData( void ) override;
 
   //
   // Custom Methods
@@ -68,10 +85,8 @@ public:
   /**
    * The function performs the casting.  This function should only appear
    *   once in the class hierarchy.  It is provided so that member
-   *   functions that exist only in specific transforms
-   *   ( e.g., SetIdentity )
-   *   can be called without the caller having to do the casting.
-   */
+   *   functions that exist only in specific transforms ( e.g., SetIdentity )
+   *   can be called without the caller having to do the casting. */
   TransformType * GetTypedTransform( void );
 
   const TransformType * GetTypedTransform( void ) const;
@@ -83,32 +98,32 @@ public:
    * available in the GetTypedTransform() method. The returned transform is
    * not a member variable, and therefore, must be received into a
    * SmartPointer to prevent it from being destroyed by depletion of its
-   * reference counting.
-   */
+   * reference counting. */
   AffineTransformPointer GetAffineTransform( void ) const;
 
-  /** Initialize the transform parameters from an AffineTransform.
-   * This method is intended as an alternative to calling
-   * SetInitialTransformParameters() and
-   * SetInitialTransformFixedParameters(). The method below facilitates to
-   * use the AffineTransform returned by the
-   * InitialImageToImageRegistrationMethod
-   * to directly initialize this rigid registration method.
-   */
+  /** Initialize the transform parameters from an AffineTransform This method
+   * is intended as an alternative to calling SetInitialTransformParameters()
+   * and SetInitialTransformFixedParameters(). These later methods require
+   * you to have a rigid transform at hand, and this is not always the case,
+   * specially when a transform initializer is being used. The method below
+   * facilitates to use the AffineTransform returned by the
+   * InitialImageToImageRegistrationMethod to directly initialize this rigid
+   * registration method. The received Affine transform will be approximated
+   * to its closest rigid transform by using Polar decomposition. */
   void SetInitialTransformParametersFromAffineTransform(
     const AffineTransformType * affine );
 
 protected:
 
-  AffineImageToImageRegistrationMethod( void );
-  virtual ~AffineImageToImageRegistrationMethod( void );
+  RigidImageToImageRegistrationMethod( void );
+  virtual ~RigidImageToImageRegistrationMethod( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 
   // Purposely not implemented
-  AffineImageToImageRegistrationMethod( const Self & );
+  RigidImageToImageRegistrationMethod( const Self & );
   // Purposely not implemented
   void operator =( const Self & );
 
@@ -117,7 +132,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkAffineImageToImageRegistrationMethod.hxx"
+#include "itkRigidImageToImageRegistrationMethod.hxx"
 #endif
 
 #endif // __ImageToImageRegistrationMethod_h

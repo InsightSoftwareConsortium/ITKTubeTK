@@ -20,37 +20,43 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkOptimizedImageToImageRegistrationMethod_h
-#define __itkOptimizedImageToImageRegistrationMethod_h
+#ifndef __itkOptimizedSpatialObjectToImageRegistrationMethod_h
+#define __itkOptimizedSpatialObjectToImageRegistrationMethod_h
 
 #include "itkImage.h"
 
-#include "itkImageToImageRegistrationMethod.h"
+#include "itkSpatialObjectToImageRegistrationMethod.h"
+#include "itkTubeToImageMetric.h"
 
 namespace itk
 {
 
-template <class TImage>
-class OptimizedImageToImageRegistrationMethod
-  : public ImageToImageRegistrationMethod<TImage>
+template <class TSpatialObject, class TImage>
+class OptimizedSpatialObjectToImageRegistrationMethod
+  : public SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 {
 
 public:
 
-  typedef OptimizedImageToImageRegistrationMethod Self;
-  typedef ImageToImageRegistrationMethod<TImage>  Superclass;
+  typedef OptimizedSpatialObjectToImageRegistrationMethod
+                                                  Self;
+  typedef SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+                                                  Superclass;
   typedef SmartPointer<Self>                      Pointer;
   typedef SmartPointer<const Self>                ConstPointer;
 
-  itkTypeMacro( OptimizedImageToImageRegistrationMethod,
-                ImageToImageRegistrationMethod );
+  itkTypeMacro( OptimizedSpatialObjectToImageRegistrationMethod,
+                SpatialObjectToImageRegistrationMethod );
 
   itkNewMacro( Self );
 
   //
   // Typedefs from Superclass
   //
-  typedef TImage ImageType;
+  typedef TImage         ImageType;
+  typedef TSpatialObject SpatialObjectType;
+
+  typedef typename Superclass::GroupType GroupType;
 
   typedef typename ImageType::PixelType PixelType;
 
@@ -62,6 +68,8 @@ public:
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
+  itkStaticConstMacro( SpatialObjectDimension, unsigned int,
+                       SpatialObject::Dimension );
 
   //
   // Custom Typedefs
@@ -70,9 +78,7 @@ public:
                                  AFFINE_TRANSFORM,
                                  BSPLINE_TRANSFORM };
 
-  enum MetricMethodEnumType { MATTES_MI_METRIC,
-                              NORMALIZED_CORRELATION_METRIC,
-                              MEAN_SQUARED_ERROR_METRIC };
+  enum MetricMethodEnumType { TUBE_TO_IMAGE_METRIC };
 
   enum InterpolationMethodEnumType { NEAREST_NEIGHBOR_INTERPOLATION,
                                      LINEAR_INTERPOLATION,
@@ -98,9 +104,6 @@ public:
 
   itkSetMacro( TransformParametersScales, TransformParametersScalesType );
   itkGetConstMacro( TransformParametersScales, TransformParametersScalesType );
-
-  itkSetMacro( SampleFromOverlap, bool );
-  itkGetConstMacro( SampleFromOverlap, bool );
 
   itkSetMacro( MinimizeMemory, bool );
   itkGetConstMacro( MinimizeMemory, bool );
@@ -135,17 +138,19 @@ public:
   itkGetConstMacro( InterpolationMethodEnum, InterpolationMethodEnumType );
 
   itkGetMacro( FinalMetricValue, double );
+
 protected:
 
-  OptimizedImageToImageRegistrationMethod( void );
-  virtual ~OptimizedImageToImageRegistrationMethod( void );
+  OptimizedSpatialObjectToImageRegistrationMethod( void );
+  virtual ~OptimizedSpatialObjectToImageRegistrationMethod( void );
 
   itkSetMacro( FinalMetricValue, double );
 
   itkSetMacro( TransformMethodEnum, TransformMethodEnumType );
 
   typedef InterpolateImageFunction<TImage, double> InterpolatorType;
-  typedef ImageToImageMetric<TImage, TImage>       MetricType;
+
+  typedef SpatialObjectToImageMetric<TSpatialObject, TImage>       MetricType;
 
   virtual void Optimize( MetricType * metric, InterpolatorType * interpolator );
 
@@ -154,7 +159,7 @@ protected:
 private:
 
   // Purposely not implemented
-  OptimizedImageToImageRegistrationMethod( const Self & );
+  OptimizedSpatialObjectToImageRegistrationMethod( const Self & );
   // Purposely not implemented
   void operator =( const Self & );
 
@@ -164,8 +169,6 @@ private:
   TransformParametersType m_LastTransformParameters;
 
   TransformParametersScalesType m_TransformParametersScales;
-
-  bool m_SampleFromOverlap;
 
   bool m_MinimizeMemory;
 
@@ -194,7 +197,7 @@ private:
 }
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkOptimizedImageToImageRegistrationMethod.hxx"
+#include "itkOptimizedSpatialObjectToImageRegistrationMethod.hxx"
 #endif
 
 #endif

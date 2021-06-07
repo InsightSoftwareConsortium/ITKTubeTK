@@ -24,8 +24,8 @@ set( TubeTK_Registration_H_Files
   Registration/itktubeAnisotropicDiffusiveRegistrationFunction.h
   Registration/itktubeDiffusiveRegistrationFilter.h
   Registration/itktubeDiffusiveRegistrationFilterUtils.h
-  Registration/itktubeImageToTubeRigidMetric.h
-  Registration/itktubeImageToTubeRigidRegistration.h
+  Registration/itktubeTubesToImageMetric.h
+  Registration/itktubeTubesToImageRegistration.h
   Registration/itktubeMeanSquareRegistrationFunction.h
   Registration/itktubeMergeAdjacentImagesFilter.h
   Registration/itktubeTubeExponentialResolutionWeightFunction.h
@@ -43,8 +43,8 @@ set( TubeTK_Registration_HXX_Files
   Registration/itktubeAnisotropicDiffusiveRegistrationFunction.hxx
   Registration/itktubeDiffusiveRegistrationFilter.hxx
   Registration/itktubeDiffusiveRegistrationFilterUtils.hxx
-  Registration/itktubeImageToTubeRigidMetric.hxx
-  Registration/itktubeImageToTubeRigidRegistration.hxx
+  Registration/itktubeTubesToImageMetric.hxx
+  Registration/itktubeTubesToImageRegistration.hxx
   Registration/itktubeMeanSquareRegistrationFunction.hxx
   Registration/itktubeMergeAdjacentImagesFilter.hxx
   Registration/itktubeTubeToTubeTransformFilter.hxx )

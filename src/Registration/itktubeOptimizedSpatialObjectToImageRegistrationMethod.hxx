@@ -20,22 +20,19 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __OptimizedImageToImageRegistrationMethod_txx
-#define __OptimizedImageToImageRegistrationMethod_txx
+#ifndef __OptimizedSpatialObjectToImageRegistrationMethod_txx
+#define __OptimizedSpatialObjectToImageRegistrationMethod_txx
 
-#include "itkOptimizedImageToImageRegistrationMethod.h"
+#include "itkOptimizedSpatialObjectToImageRegistrationMethod.h"
 
-#include "itkMattesMutualInformationImageToImageMetric.h"
-#include "itkNormalizedCorrelationImageToImageMetric.h"
-#include "itkMeanSquaresImageToImageMetric.h"
+#include "itkTubeToImageMetric.h"
 
 #include "itkNearestNeighborInterpolateImageFunction.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkBSplineInterpolateImageFunction.h"
 #include "itkWindowedSincInterpolateImageFunction.h"
 
-#include "itkImageRegistrationMethod.h"
-#include "itkMultiResolutionImageRegistrationMethod.h"
+#include "itkSpatialObjectToImageRegistrationMethod.h"
 
 #include "itkRealTimeClock.h"
 
@@ -50,23 +47,22 @@ limitations under the License.
 #include "itkImage.h"
 #include <itkConstantBoundaryCondition.h>
 
-
 #include <sstream>
 
 namespace itk
 {
 
-class ImageRegistrationViewer
+class SpatialObjectToImageRegistrationViewer
   : public Command
 {
 public:
-  typedef ImageRegistrationViewer Self;
+  typedef SpatialObjectToImageRegistrationViewer Self;
   typedef Command                 Superclass;
   typedef SmartPointer<Self>      Pointer;
 
-  itkTypeMacro( ImageRegistrationViewer, Command );
+  itkTypeMacro( SpatialObjectToImageRegistrationViewer, Command );
 
-  itkNewMacro( ImageRegistrationViewer );
+  itkNewMacro( SpatialObjectToImageRegistrationViewer );
 
   typedef SingleValuedNonLinearOptimizer OptimizerType;
 
@@ -123,7 +119,7 @@ protected:
   int  m_UpdateInterval;
   bool m_DontShowParameters;
 
-  ImageRegistrationViewer()
+  SpatialObjectToImageRegistrationViewer()
   {
     m_Clock = RealTimeClock::New();
     m_LastTime = m_Clock->GetTimeInSeconds();
@@ -131,15 +127,15 @@ protected:
     m_UpdateInterval = 1;
     m_DontShowParameters = false;
   };
-  ~ImageRegistrationViewer()
+  ~SpatialObjectToImageRegistrationViewer()
   {
   };
 
 };
 
-template <class TImage>
-OptimizedImageToImageRegistrationMethod<TImage>
-::OptimizedImageToImageRegistrationMethod( void )
+template <class TSpatialObject, class TImage>
+OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+::OptimizedSpatialObjectToImageRegistrationMethod( void )
 {
   m_InitialTransformParameters = TransformParametersType(1);
   m_InitialTransformParameters.Fill( 0.0f ); \
@@ -157,7 +153,6 @@ OptimizedImageToImageRegistrationMethod<TImage>
   //   registration.  Other derived registration methods should use
   //   their own default.
   m_MaxIterations = 100;
-  m_SampleFromOverlap = false;
   m_MinimizeMemory = false;
 
   m_UseEvolutionaryOptimization = true;
@@ -182,24 +177,24 @@ OptimizedImageToImageRegistrationMethod<TImage>
 
 }
 
-template <class TImage>
-OptimizedImageToImageRegistrationMethod<TImage>
-::~OptimizedImageToImageRegistrationMethod( void )
+template <class TSpatialObject, class TImage>
+OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+::~OptimizedSpatialObjectToImageRegistrationMethod( void )
 {
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-OptimizedImageToImageRegistrationMethod<TImage>
+OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::SetFixedImageSamplesIntensityThreshold( PixelType val )
 {
   m_FixedImageSamplesIntensityThreshold = val;
   m_UseFixedImageSamplesIntensityThreshold = true;
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-OptimizedImageToImageRegistrationMethod<TImage>
+OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::GenerateData( void )
 {
   if( this->GetReportProgress() )
@@ -216,9 +211,10 @@ OptimizedImageToImageRegistrationMethod<TImage>
 
   switch( this->GetMetricMethodEnum() )
     {
-    case MATTES_MI_METRIC:
+    default:
+    case TUBE_TO_IMAGE_METRIC:
         {
-        typedef MattesMutualInformationImageToImageMetric<TImage, TImage>
+        typedef MattesMutualInformationSpatialObjectToImageMetric<TSpatialObject, TImage, TImage>
           TypedMetricType;
 
         typename TypedMetricType::Pointer typedMetric = TypedMetricType::New();
@@ -234,12 +230,6 @@ OptimizedImageToImageRegistrationMethod<TImage>
         metric = typedMetric;
         }
       break;
-    case NORMALIZED_CORRELATION_METRIC:
-      metric = NormalizedCorrelationImageToImageMetric<TImage, TImage>::New();
-      break;
-    case MEAN_SQUARED_ERROR_METRIC:
-      metric = MeanSquaresImageToImageMetric<TImage, TImage>::New();
-      break;
     }
   if( m_RandomNumberSeed != 0 )
     {
@@ -251,15 +241,17 @@ OptimizedImageToImageRegistrationMethod<TImage>
     }
 
   typename ImageType::ConstPointer fixedImage = this->GetFixedImage();
-  typename ImageType::ConstPointer movingImage = this->GetMovingImage();
+  typename ImageType::ConstPointer movingSpatialObject = this->GetMovingSpatialObject();
 
+  //
+  // HERE
+  //
   metric->SetFixedImage( fixedImage );
-  metric->SetMovingImage( movingImage );
+  metric->SetMovingSpatialObject( movingSpatialObject );
 
   metric->SetNumberOfSpatialSamples( m_NumberOfSamples );
 
   if( this->GetUseRegionOfInterest() ||
-      this->GetSampleFromOverlap() ||
       this->GetUseFixedImageSamplesIntensityThreshold() ||
       this->GetUseFixedImageMaskObject() )
     {
@@ -281,15 +273,6 @@ OptimizedImageToImageRegistrationMethod<TImage>
       {
       index = iter.GetIndex();
       fixedImage->TransformIndexToPhysicalPoint(index, fixedPoint);
-      if( this->GetSampleFromOverlap() )
-        {
-        movingPoint = this->GetTransform()->TransformPoint( fixedPoint );
-        if( !movingImage->TransformPhysicalPointToIndex( movingPoint,
-          movingIndex ) )
-          {
-          continue;
-          }
-        }
       if( this->GetUseFixedImageSamplesIntensityThreshold() )
         {
         if( iter.Get() < this->m_FixedImageSamplesIntensityThreshold )
@@ -352,15 +335,6 @@ OptimizedImageToImageRegistrationMethod<TImage>
       {
       index = iter.GetIndex();
       fixedImage->TransformIndexToPhysicalPoint(index, fixedPoint);
-      if( this->GetSampleFromOverlap() )
-        {
-        movingPoint = this->GetTransform()->TransformPoint( fixedPoint );
-        if( !movingImage->TransformPhysicalPointToIndex( movingPoint,
-          movingIndex ) )
-          {
-          continue;
-          }
-        }
       if( this->GetUseFixedImageSamplesIntensityThreshold() )
         {
         if( iter.Get() < this->m_FixedImageSamplesIntensityThreshold )
@@ -451,12 +425,12 @@ OptimizedImageToImageRegistrationMethod<TImage>
     }
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-OptimizedImageToImageRegistrationMethod<TImage>
+OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::Optimize( MetricType * metric, InterpolatorType * interpolator )
 {
-  typedef ImageRegistrationMethod<TImage, TImage> RegType;
+  typedef SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage> RegType;
 
   if( m_UseEvolutionaryOptimization )
     {
@@ -484,7 +458,7 @@ OptimizedImageToImageRegistrationMethod<TImage>
 
     if( this->GetReportProgress() )
       {
-      typedef ImageRegistrationViewer ViewerCommandType;
+      typedef SpatialObjectToImageRegistrationViewer ViewerCommandType;
       typename ViewerCommandType::Pointer command = ViewerCommandType::New();
       if( this->GetTransform()->GetNumberOfParameters() > 16 )
         {
@@ -568,7 +542,7 @@ OptimizedImageToImageRegistrationMethod<TImage>
 
   if( this->GetReportProgress() )
     {
-    typedef ImageRegistrationViewer ViewerCommandType;
+    typedef SpatialObjectToImageRegistrationViewer ViewerCommandType;
     typename ViewerCommandType::Pointer command = ViewerCommandType::New();
     if( this->GetTransform()->GetNumberOfParameters() > 16 )
       {
@@ -652,9 +626,9 @@ OptimizedImageToImageRegistrationMethod<TImage>
     }
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-OptimizedImageToImageRegistrationMethod<TImage>
+OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf(os, indent);
@@ -675,8 +649,6 @@ OptimizedImageToImageRegistrationMethod<TImage>
 
   os << indent << "Use Evolutionary Optimization = " <<
     m_UseEvolutionaryOptimization << std::endl;
-
-  os << indent << "Sample From Overlap = " << m_SampleFromOverlap << std::endl;
 
   os << indent << "Minimize Memory = " << m_MinimizeMemory << std::endl;
 
@@ -719,7 +691,7 @@ OptimizedImageToImageRegistrationMethod<TImage>
          << std::endl;
       break;
     default:
-      os << indent << "ERROR: Interpolation method NOT HANDLED BY OptimizedImageToImageRegistrationMethod::PrintSelf"
+      os << indent << "ERROR: Interpolation method NOT HANDLED BY OptimizedSpatialObjectToImageRegistrationMethod::PrintSelf"
          << std::endl;
       break;
     }

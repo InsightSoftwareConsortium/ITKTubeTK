@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -21,8 +20,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeImageToTubeRigidMetric_h
-#define __itktubeImageToTubeRigidMetric_h
+#ifndef __itktubeTubesToImageMetric_h
+#define __itktubeTubesToImageMetric_h
 
 #include <itkEuler3DTransform.h>
 #include <itkCompensatedSummation.h>
@@ -35,7 +34,7 @@ namespace itk
 namespace tube
 {
 
-/** \class ImageToTubeRigidMetric
+/** \class TubesToImageMetric
  * \brief Computes similarity between two objects to be registered
  * The metric implemented here corresponds to the following paper:
  * \link
@@ -52,15 +51,14 @@ namespace tube
  * \warning ( Derivative )
  */
 
-template< class TFixedImage,
-          class TMovingSpatialObject,
-          class TTubeSpatialObject >
-class ImageToTubeRigidMetric
+template< class TMovingTubeSpatialObject,
+          class TFixedImage >
+class TubesToImageMetric
   : public ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
 {
 public:
   /** Standard class typedefs. */
-  typedef ImageToTubeRigidMetric                Self;
+  typedef TubesToImageMetric                    Self;
   typedef ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
                                                 Superclass;
   typedef SmartPointer< Self >                  Pointer;
@@ -73,7 +71,7 @@ public:
     TTubeSpatialObject::ObjectDimension );
 
   typedef TFixedImage                           FixedImageType;
-  typedef TMovingSpatialObject                  TubeTreeType;
+  typedef TMovingSpatialObject                  GroupType;
   typedef TTubeSpatialObject                    TubeType;
   typedef typename TubeType::TubePointType      TubePointType;
 
@@ -85,7 +83,7 @@ public:
   typedef typename Superclass::MeasureType      MeasureType;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ImageToTubeRigidMetric, ImageToSpatialObjectMetric );
+  itkTypeMacro( TubesToImageMetric, ImageToSpatialObjectMetric );
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -106,13 +104,12 @@ public:
   typedef typename TFixedImage::PixelType      PixelType;
 
   /**  Type of the Transform Base class */
-  typedef Euler3DTransform< ScalarType >           TransformType;
+  typedef TTransform                               TransformType;
   typedef typename TransformType::Pointer          TransformPointer;
   typedef typename TransformType::InputPointType   InputPointType;
   typedef typename TransformType::OutputPointType  OutputPointType;
   typedef typename TransformType::ParametersType   TransformParametersType;
   typedef typename TransformType::JacobianType     TransformJacobianType;
-  typedef TransformType::ParametersType            FeatureWeightsType;
 
   /** Get the Derivatives of the Match Measure */
   const DerivativeType & GetDerivative( const ParametersType &
@@ -134,21 +131,25 @@ public:
   itkSetMacro( Kappa, ScalarType );
   itkGetConstMacro( Kappa, ScalarType );
 
-  /** Set/Get the minimum scaling radius. */
-  itkSetMacro( MinimumScalingRadius, ScalarType );
-  itkGetConstMacro( MinimumScalingRadius, ScalarType );
-
   /** Set/Get the extent of the blurring calculation given in Gaussian
    * sigma's. */
   itkSetMacro( Extent, ScalarType );
   itkGetConstMacro( Extent, ScalarType );
 
-  /** Set/Get the scalar weights associated with every point in the tube.
-   * The index of the point weights should correspond to "standard tube tree
-   * interation". */
-  void SetFeatureWeights( FeatureWeightsType & featureWeights );
-  itkGetConstReferenceMacro( FeatureWeights, FeatureWeightsType );
+  /** Set/Get the minimum scaling radius. */
+  itkSetMacro( SamplingRadiusMin, ScalarType );
+  itkGetConstMacro( SamplingRadiusMin, ScalarType );
 
+  /** Set/Get the minimum scaling radius. */
+  itkSetMacro( SamplingRadiusMax, ScalarType );
+  itkGetConstMacro( SamplingRadiusMax, ScalarType );
+
+  /** Set/Get the minimum scaling radius. */
+  itkSetMacro( SampleSpacingInRadii, ScalarType );
+  itkGetConstMacro( SampleSpacingInRadii, ScalarType );
+
+  void ResampleTube( void );
+  
   TransformPointer GetTransform( void ) const
     {
     return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() );
@@ -157,8 +158,8 @@ public:
   /** Downsample the tube points by this integer value. */
 
 protected:
-  ImageToTubeRigidMetric( void );
-  virtual ~ImageToTubeRigidMetric( void );
+  TubesToImageMetric( void );
+  virtual ~TubesToImageMetric( void );
 
   typedef CovariantVector< ScalarType, TubeDimension >    CovariantVectorType;
   typedef Vector< ScalarType, TubeDimension >             VectorType;
@@ -179,7 +180,7 @@ protected:
     ScalarType angle[3] ) const;
 
 private:
-  ImageToTubeRigidMetric( const Self& ); // purposely not implemented
+  TubesToImageMetric( const Self& ); // purposely not implemented
   void operator=( const Self& ); // purposely not implemented
 
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
@@ -216,14 +217,14 @@ private:
   typename TubeTreeType::ChildrenListType* GetTubes( void ) const;
 
   FeatureWeightsType m_FeatureWeights;
-}; // End class ImageToTubeRigidMetric
+}; // End class TubesToImageMetric
 
 } // End namespace tube
 
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeImageToTubeRigidMetric.hxx"
+#include "itktubeTubesToImageMetric.hxx"
 #endif
 
-#endif // End !defined( __itktubeImageToTubeRigidMetric_h )
+#endif // End !defined( __itktubeTubesToImageMetric_h )

@@ -20,8 +20,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkImageToImageRegistrationMethod_h
-#define __itkImageToImageRegistrationMethod_h
+#ifndef __itkSpatialObjectToImageRegistrationMethod_h
+#define __itkSpatialObjectToImageRegistrationMethod_h
 
 #include "itkSpatialObject.h"
 #include "itkImageRegistrationMethod.h"
@@ -29,7 +29,7 @@ limitations under the License.
 namespace itk
 {
 
-/** \class ImageToImageRegistrationMethod base class for the registration
+/** \class SpatialObjectToImageRegistrationMethod base class for the registration
  * methods.
  *
  * This class has a separate hierarchy from the ImageRegistrationMethod
@@ -40,30 +40,33 @@ namespace itk
  * problem.
  *
  */
-template <class TImage>
-class ImageToImageRegistrationMethod
+template <class TSpatialObject, class TImage>
+class SpatialObjectToImageRegistrationMethod
   : public ProcessObject
 {
 
 public:
 
-  typedef ImageToImageRegistrationMethod Self;
+  typedef SpatialObjectToImageRegistrationMethod Self;
   typedef ProcessObject                  Superclass;
   typedef SmartPointer<Self>             Pointer;
   typedef SmartPointer<const Self>       ConstPointer;
 
-  itkTypeMacro( ImageToImageRegistrationMethod, ProcessObject );
+  itkTypeMacro( SpatialObjectToImageRegistrationMethod, ProcessObject );
 
   itkNewMacro( Self );
 
   //
   // Custom Typedefs
   //
+  itkStaticConstMacro( SpatialObjectDimension, unsigned int,
+                       TSpatialObject::Dimension );
+
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
 
   typedef Transform<double,
-                    itkGetStaticConstMacro( ImageDimension ),
+                    itkGetStaticConstMacro( SpatialObjectDimension ),
                     itkGetStaticConstMacro( ImageDimension )>
   TransformType;
 
@@ -73,12 +76,20 @@ public:
   typedef Superclass::DataObjectPointerArraySizeType
                                        DataObjectPointerArraySizeType;
 
-  typedef TImage ImageType;
+  typedef TSpatialObject SpatialObjectType;
+  typedef TImage         ImageType;
 
+  typedef GroupSpatialObject<itkGetStaticConstMacro( SpatialObjectDimension )>
+  GroupType;
+
+  typedef typename TSpatialObject::PointType SpatialObjectPointType;
   typedef typename TImage::PointType PointType;
 
   typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
-  MaskObjectType;
+  ImageMaskObjectType;
+
+  typedef SpatialObject<itkGetStaticConstMacro( SpatialObjectDimension )>
+  SpatialObjectMaskObjectType;
 
   //
   // Custom Methods
@@ -93,9 +104,10 @@ public:
 
   itkGetConstObjectMacro( FixedImage, ImageType );
 
-  void SetMovingImage( const ImageType * movingImage );
+  void SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject );
+  void SetMovingGroupSpatialObject( const GroupType * movingSpatialObject );
 
-  itkGetConstObjectMacro( MovingImage, ImageType );
+  itkGetConstObjectMacro( MovingGroupSpatialObject, GroupType );
 
   void SetRegionOfInterest( const PointType & point1,
     const PointType & point2 );
@@ -107,19 +119,20 @@ public:
   itkSetMacro( RegionOfInterestPoint2, PointType );
   itkGetMacro( RegionOfInterestPoint2, PointType );
 
-  void SetFixedImageMaskObject( const MaskObjectType * maskObject );
+  void SetFixedImageMaskObject( const ImageMaskObjectType * maskObject );
 
-  itkGetConstObjectMacro( FixedImageMaskObject, MaskObjectType );
+  itkGetConstObjectMacro( FixedImageMaskObject, ImageMaskObjectType );
 
   itkSetMacro( UseFixedImageMaskObject, bool );
   itkGetMacro( UseFixedImageMaskObject, bool );
 
-  void SetMovingImageMaskObject( const MaskObjectType * maskObject );
+  void SetMovingSpatialObjectMaskObject(
+    const SpatialObjectMaskObjectType * maskObject );
 
-  itkGetConstObjectMacro( MovingImageMaskObject, MaskObjectType );
+  itkGetConstObjectMacro( MovingImageMaskObject, SpatialObjectMaskObjectType );
 
-  itkSetMacro( UseMovingImageMaskObject, bool );
-  itkGetMacro( UseMovingImageMaskObject, bool );
+  itkSetMacro( UseMovingSpatialObjectMaskObject, bool );
+  itkGetMacro( UseMovingSpatialObjectMaskObject, bool );
 
   itkSetMacro( ReportProgress, bool );
   itkGetMacro( ReportProgress, bool );
@@ -130,8 +143,8 @@ public:
 
 protected:
 
-  ImageToImageRegistrationMethod( void );
-  virtual ~ImageToImageRegistrationMethod( void );
+  SpatialObjectToImageRegistrationMethod( void );
+  virtual ~SpatialObjectToImageRegistrationMethod( void );
 
   virtual void    Initialize( void );
 
@@ -160,7 +173,7 @@ protected:
 private:
 
   // Purposely not implemented
-  ImageToImageRegistrationMethod( const Self & );
+  SpatialObjectToImageRegistrationMethod( const Self & );
   // Purposely not implemented
   void operator =( const Self & );
 
@@ -169,7 +182,7 @@ private:
   Command::Pointer m_Observer;
 
   typename ImageType::ConstPointer       m_FixedImage;
-  typename ImageType::ConstPointer       m_MovingImage;
+  typename GroupType::ConstPointer       m_MovingGroupSpatialObject;
 
   bool      m_UseRegionOfInterest;
   PointType m_RegionOfInterestPoint1;
@@ -178,8 +191,8 @@ private:
   bool                                   m_UseFixedImageMaskObject;
   typename MaskObjectType::ConstPointer  m_FixedImageMaskObject;
 
-  bool                                   m_UseMovingImageMaskObject;
-  typename MaskObjectType::ConstPointer  m_MovingImageMaskObject;
+  bool                                   m_UseMovingSpatialObjectMaskObject;
+  typename MaskObjectType::ConstPointer  m_MovingSpatialObjectMaskObject;
 
   bool m_ReportProgress;
 
@@ -188,7 +201,7 @@ private:
 }
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkImageToImageRegistrationMethod.hxx"
+#include "itkSpatialObjectToImageRegistrationMethod.hxx"
 #endif
 
 #endif
