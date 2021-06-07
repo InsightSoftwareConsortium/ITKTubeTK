@@ -49,6 +49,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install ninja
+        python -m pip install numpy
 
     - name: Get specific version of CMake, Ninja
       uses: lukka/get-cmake@v3.18.3
@@ -229,7 +230,10 @@ jobs:
         sudo apt-get install -y libgl1-mesa-glx
         sudo apt-get install -y libglvnd-core-dev
         sudo apt-get install -y freeglut3-dev
+
+        python -m pip install --upgrade pip
         python -m pip install ninja
+        python -m pip install numpy
 
         curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
         chmod u+x dockcross-manylinux-download-cache-and-build-module-wheels.sh
