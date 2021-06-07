@@ -2,8 +2,6 @@
 from __future__ import print_function
 from os import sys
 
-import numpy as np
-
 try:
     from skbuild import setup
 except ImportError:
@@ -13,12 +11,12 @@ except ImportError:
     print('  python -m pip install scikit-build')
     sys.exit(1)
 
+    #include_dirs=[np.get_include()],
 setup(
     name='itk-tubetk',
     version='0.9.0',
     author='Stephen R. Aylward',
     author_email='stephen.aylward@kitware.com',
-    include_dirs=[np.get_include()],
     packages=['itk'],
     package_dir={'itk': 'itk'},
     download_url=r'https://github.com/InsightSoftwareConsortium/ITKTubeTK',
@@ -48,7 +46,6 @@ setup(
     url=r'https://itk.org/',
     install_requires=[
         r'itk>=5.2.0.post2',
-        r'itk-minimalpathextraction>=1.2.0',
-        r'numpy'
+        r'itk-minimalpathextraction>=1.2.0'
     ]
     )
