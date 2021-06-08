@@ -20,31 +20,31 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkAffineImageToImageRegistrationMethod_h
-#define __itkAffineImageToImageRegistrationMethod_h
+#ifndef __itkAffineSpatialObjectToImageRegistrationMethod_h
+#define __itkAffineSpatialObjectToImageRegistrationMethod_h
 
 #include "itkImage.h"
 #include "itkAffineTransform.h"
 
-#include "itkOptimizedImageToImageRegistrationMethod.h"
+#include "itkOptimizedSpatialObjectToImageRegistrationMethod.h"
 
 namespace itk
 {
 
-template <class TImage>
-class AffineImageToImageRegistrationMethod
-  : public OptimizedImageToImageRegistrationMethod<TImage>
+template <class TSpatialObject, class TImage>
+class AffineSpatialObjectToImageRegistrationMethod
+  : public OptimizedSpatialObjectToImageRegistrationMethod<TImage>
 {
 
 public:
 
-  typedef AffineImageToImageRegistrationMethod            Self;
-  typedef OptimizedImageToImageRegistrationMethod<TImage> Superclass;
+  typedef AffineSpatialObjectToImageRegistrationMethod            Self;
+  typedef OptimizedSpatialObjectToImageRegistrationMethod<TImage> Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
 
-  itkTypeMacro( AffineImageToImageRegistrationMethod,
-                OptimizedImageToImageRegistrationMethod );
+  itkTypeMacro( AffineSpatialObjectToImageRegistrationMethod,
+                OptimizedSpatialObjectToImageRegistrationMethod );
 
   itkNewMacro( Self );
 
@@ -98,7 +98,7 @@ public:
    * SetInitialTransformParameters() and
    * SetInitialTransformFixedParameters(). The method below facilitates to
    * use the AffineTransform returned by the
-   * InitialImageToImageRegistrationMethod
+   * InitialSpatialObjectToImageRegistrationMethod
    * to directly initialize this rigid registration method.
    */
   void SetInitialTransformParametersFromAffineTransform(
@@ -106,15 +106,15 @@ public:
 
 protected:
 
-  AffineImageToImageRegistrationMethod( void );
-  virtual ~AffineImageToImageRegistrationMethod( void );
+  AffineSpatialObjectToImageRegistrationMethod( void );
+  virtual ~AffineSpatialObjectToImageRegistrationMethod( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 
   // Purposely not implemented
-  AffineImageToImageRegistrationMethod( const Self & );
+  AffineSpatialObjectToImageRegistrationMethod( const Self & );
   // Purposely not implemented
   void operator =( const Self & );
 
@@ -123,7 +123,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkAffineImageToImageRegistrationMethod.hxx"
+#include "itkAffineSpatialObjectToImageRegistrationMethod.hxx"
 #endif
 
-#endif // __ImageToImageRegistrationMethod_h
+#endif // __SpatialObjectToImageRegistrationMethod_h

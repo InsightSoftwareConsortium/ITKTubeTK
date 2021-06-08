@@ -1,19 +1,25 @@
 /*=========================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: ITKHeader.h,v $
-  Language:  C++
-  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
-  Version:   $Revision: 0 $
+Library:   TubeTK
 
-  Copyright (c) 2002 Insight Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright Kitware Inc.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 ( the "License" );
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkImageToImageRegistrationHelper_txx
 #define __itkImageToImageRegistrationHelper_txx
 
@@ -26,7 +32,6 @@
 #include "itkInterpolateImageFunction.h"
 #include "itkNearestNeighborInterpolateImageFunction.h"
 #include "itkLinearInterpolateImageFunction.h"
-#include "itkBSplineInterpolateImageFunction.h"
 #include "itkWindowedSincInterpolateImageFunction.h"
 #include "itkTransformFileReader.h"
 #include "itkTransformFileWriter.h"
@@ -67,7 +72,6 @@ ImageToImageRegistrationHelper<TImage>
   m_EnableInitialRegistration = true;
   m_EnableRigidRegistration = true;
   m_EnableAffineRegistration = false;
-  m_EnableBSplineRegistration = false;
 
   // Expected transform magnitude
   m_ExpectedOffsetMagnitude = 5;
@@ -83,11 +87,9 @@ ImageToImageRegistrationHelper<TImage>
 
   m_CurrentMovingImage = NULL;
   m_CurrentMatrixTransform = NULL;
-  m_CurrentBSplineTransform = NULL;
 
   m_LoadedTransformResampledImage = NULL;
   m_MatrixTransformResampledImage = NULL;
-  m_BSplineTransformResampledImage = NULL;
 
   // Results
   m_FinalMetricValue = 0.0;
@@ -110,7 +112,6 @@ ImageToImageRegistrationHelper<TImage>
   m_UseEvolutionaryOptimization = true ;
   // Loaded
   m_LoadedMatrixTransform = NULL;
-  m_LoadedBSplineTransform = NULL;
 
   // Initial
   m_InitialMethodEnum = INIT_WITH_CENTERS_OF_MASS;
@@ -137,18 +138,6 @@ ImageToImageRegistrationHelper<TImage>
   m_AffineInterpolationMethodEnum =
     OptimizedRegistrationMethodType::LINEAR_INTERPOLATION;
   m_AffineMetricValue = 0.0;
-
-  // BSpline
-  m_BSplineSamplingRatio = 0.20;
-  m_BSplineTargetError = 0.0001;
-  m_BSplineMaxIterations = 200;
-  m_BSplineControlPointPixelSpacing = 40;
-  m_BSplineTransform = NULL;
-  m_BSplineMetricMethodEnum =
-    OptimizedRegistrationMethodType::MATTES_MI_METRIC;
-  m_BSplineInterpolationMethodEnum =
-    OptimizedRegistrationMethodType::BSPLINE_INTERPOLATION;
-  m_BSplineMetricValue = 0.0;
 
 }
 
@@ -271,7 +260,6 @@ ImageToImageRegistrationHelper<TImage>
       this->SetEnableInitialRegistration(false);
       this->SetEnableRigidRegistration(false);
       this->SetEnableAffineRegistration(false);
-      this->SetEnableBSplineRegistration(false);
       break;
       }
     case INITIAL:
@@ -279,7 +267,6 @@ ImageToImageRegistrationHelper<TImage>
       this->SetEnableInitialRegistration(true);
       this->SetEnableRigidRegistration(false);
       this->SetEnableAffineRegistration(false);
-      this->SetEnableBSplineRegistration(false);
       break;
       }
     case RIGID:
@@ -287,7 +274,6 @@ ImageToImageRegistrationHelper<TImage>
       this->SetEnableInitialRegistration(false);
       this->SetEnableRigidRegistration(true);
       this->SetEnableAffineRegistration(false);
-      this->SetEnableBSplineRegistration(false);
       break;
       }
     case AFFINE:
@@ -295,7 +281,6 @@ ImageToImageRegistrationHelper<TImage>
       this->SetEnableInitialRegistration(false);
       this->SetEnableRigidRegistration(false);
       this->SetEnableAffineRegistration(true);
-      this->SetEnableBSplineRegistration(false);
       break;
       }
     case BSPLINE:
@@ -303,7 +288,6 @@ ImageToImageRegistrationHelper<TImage>
       this->SetEnableInitialRegistration(false);
       this->SetEnableRigidRegistration(false);
       this->SetEnableAffineRegistration(false);
-      this->SetEnableBSplineRegistration(true);
       break;
       }
     case PIPELINE_RIGID:
@@ -311,7 +295,6 @@ ImageToImageRegistrationHelper<TImage>
       this->SetEnableInitialRegistration(true);
       this->SetEnableRigidRegistration(true);
       this->SetEnableAffineRegistration(false);
-      this->SetEnableBSplineRegistration(false);
       break;
       }
     case PIPELINE_AFFINE:
@@ -319,15 +302,6 @@ ImageToImageRegistrationHelper<TImage>
       this->SetEnableInitialRegistration(true);
       this->SetEnableRigidRegistration(true);
       this->SetEnableAffineRegistration(true);
-      this->SetEnableBSplineRegistration(false);
-      break;
-      }
-    case PIPELINE_BSPLINE:
-      {
-      this->SetEnableInitialRegistration(true);
-      this->SetEnableRigidRegistration(true);
-      this->SetEnableAffineRegistration(true);
-      this->SetEnableBSplineRegistration(true);
       break;
       }
     }
@@ -340,7 +314,6 @@ ImageToImageRegistrationHelper<TImage>
 {
   this->SetRigidInterpolationMethodEnum( interp );
   this->SetAffineInterpolationMethodEnum( interp );
-  this->SetBSplineInterpolationMethodEnum( interp );
 }
 
 template <class TImage>
@@ -350,7 +323,6 @@ ImageToImageRegistrationHelper<TImage>
 {
   this->SetRigidMetricMethodEnum( metric );
   this->SetAffineMetricMethodEnum( metric );
-  this->SetBSplineMetricMethodEnum( metric );
 }
 
 template <class TImage>
@@ -362,7 +334,6 @@ ImageToImageRegistrationHelper<TImage>
   m_InitialTransform = 0;
   m_RigidTransform = 0;
   m_AffineTransform = 0;
-  m_BSplineTransform = 0;
 
   m_CompletedStage = PRE_STAGE;
 
@@ -370,12 +341,10 @@ ImageToImageRegistrationHelper<TImage>
   m_CompletedResampling = false;
 
   m_CurrentMatrixTransform = 0;
-  m_CurrentBSplineTransform = 0;
 
   m_FinalMetricValue = 0;
   m_RigidMetricValue = 0;
   m_AffineMetricValue = 0;
-  m_BSplineMetricValue = 0;
 
   if( m_InitialMethodEnum == INIT_WITH_CURRENT_RESULTS )
     {
@@ -391,7 +360,6 @@ ImageToImageRegistrationHelper<TImage>
   //   necessary to re-run the entire registration pipeline
   m_LoadedTransformResampledImage = 0;
   m_MatrixTransformResampledImage = 0;
-  m_BSplineTransformResampledImage = 0;
 }
 
 template <class TImage>
@@ -489,7 +457,6 @@ ImageToImageRegistrationHelper<TImage>
 
   m_AffineTransform = regAff->GetAffineTransform();
   m_CurrentMatrixTransform = m_AffineTransform;
-  m_CurrentBSplineTransform = 0;
 
   m_FinalMetricValue = regAff->GetFinalMetricValue();
   m_AffineMetricValue = m_FinalMetricValue;
@@ -598,7 +565,6 @@ ImageToImageRegistrationHelper<TImage>
 
   m_AffineTransform = regAff->GetAffineTransform();
   m_CurrentMatrixTransform = m_AffineTransform;
-  m_CurrentBSplineTransform = 0;
 
   m_FinalMetricValue = regAff->GetFinalMetricValue();
   m_AffineMetricValue = m_FinalMetricValue;
@@ -620,8 +586,7 @@ ImageToImageRegistrationHelper<TImage>
     }
 
   if( m_EnableLoadedRegistration
-      && ( m_LoadedMatrixTransform.IsNotNull()
-           || m_LoadedBSplineTransform.IsNotNull() ) )
+      && m_LoadedMatrixTransform.IsNotNull() )
     {
     if( m_LoadedTransformResampledImage.IsNotNull() )
       {
@@ -631,32 +596,13 @@ ImageToImageRegistrationHelper<TImage>
         std::cout << "*** Using existing loaded transform ***" << std::endl;
         }
       }
-    else
-      {
-      if( this->GetReportProgress() )
-        {
-        std::cout << "*** Resampling using loaded transform ***" << std::endl;
-        }
-      if( m_LoadedBSplineTransform.IsNotNull() )
-        {
-        m_LoadedTransformResampledImage = ResampleImage(
-            m_AffineInterpolationMethodEnum,
-            m_MovingImage,
-            m_LoadedMatrixTransform,
-            m_LoadedBSplineTransform );
-        m_CurrentMovingImage = m_LoadedTransformResampledImage;
-        }
-      // this->SaveImage("transform.mha",m_CurrentMovingImage);
-      }
 
     m_MatrixTransformResampledImage = 0;
-    m_BSplineTransformResampledImage = 0;
 
     m_CompletedStage = LOAD_STAGE;
     m_CompletedResampling = true;
 
     m_CurrentMatrixTransform = 0;
-    m_CurrentBSplineTransform = 0;
     }
 
   if( this->GetReportProgress() )
@@ -714,8 +660,7 @@ ImageToImageRegistrationHelper<TImage>
   else
     {
     if( m_EnableLoadedRegistration
-      && m_LoadedMatrixTransform.IsNotNull()
-      && ! m_LoadedBSplineTransform.IsNotNull() )
+      && m_LoadedMatrixTransform.IsNotNull() )
       {
       m_InitialTransform = m_LoadedMatrixTransform;
       }
@@ -728,7 +673,6 @@ ImageToImageRegistrationHelper<TImage>
     }
 
   m_CurrentMatrixTransform = m_InitialTransform;
-  m_CurrentBSplineTransform = 0;
 
   m_CompletedStage = INIT_STAGE;
   m_CompletedResampling = false;
@@ -847,7 +791,6 @@ ImageToImageRegistrationHelper<TImage>
     m_RigidTransform->SetParametersByValue(
       regRigid->GetAffineTransform()->GetParameters() );
     m_CurrentMatrixTransform = regRigid->GetAffineTransform();
-    m_CurrentBSplineTransform = 0;
 
     m_FinalMetricValue = regRigid->GetFinalMetricValue();
     m_RigidMetricValue = m_FinalMetricValue;
@@ -860,92 +803,6 @@ ImageToImageRegistrationHelper<TImage>
     {
     this->AffineRegND<ImageDimension>();
     }
-
-  if( m_EnableBSplineRegistration )
-    {
-    if( this->GetReportProgress() )
-      {
-      std::cout << "*** BSPLINE REGISTRATION ***" << std::endl;
-      }
-
-    if( m_CurrentMatrixTransform.IsNotNull() && !m_CompletedResampling )
-      {
-      m_CurrentMovingImage = this->ResampleImage();
-      m_CompletedResampling = true;
-      }
-
-    typename BSplineRegistrationMethodType::Pointer regBspline =
-      BSplineRegistrationMethodType::New();
-    if( m_EnableAffineRegistration || !m_UseEvolutionaryOptimization )
-      {
-      regBspline->SetUseEvolutionaryOptimization( false );
-      }
-    regBspline->SetRandomNumberSeed( m_RandomNumberSeed );
-    regBspline->SetReportProgress( m_ReportProgress );
-    regBspline->SetFixedImage( m_FixedImage );
-    regBspline->SetMovingImage( m_CurrentMovingImage );
-    regBspline->SetNumberOfSamples( (unsigned int)(
-        m_BSplineSamplingRatio * fixedImageNumPixels) );
-    if( m_UseRegionOfInterest )
-      {
-      regBspline->SetRegionOfInterest( m_RegionOfInterestPoint1,
-        m_RegionOfInterestPoint2 );
-      }
-    regBspline->SetSampleFromOverlap( m_SampleFromOverlap );
-    regBspline->SetMinimizeMemory( m_MinimizeMemory );
-    regBspline->SetMaxIterations( m_BSplineMaxIterations );
-    regBspline->SetExpectedDeformationMagnitude( m_ExpectedDeformationMagnitude );
-    regBspline->SetTargetError( m_BSplineTargetError );
-    if( m_UseFixedImageMaskObject )
-      {
-      if( m_FixedImageMaskObject.IsNotNull() )
-        {
-        regBspline->SetFixedImageMaskObject( m_FixedImageMaskObject );
-        }
-      }
-    if( m_UseMovingImageMaskObject )
-      {
-      if( m_MovingImageMaskObject.IsNotNull() )
-        {
-        regBspline->SetMovingImageMaskObject( m_MovingImageMaskObject );
-        }
-      }
-    if( m_SampleIntensityPortion > 0 )
-      {
-      typedef MinimumMaximumImageCalculator<ImageType> MinMaxCalcType;
-      typename MinMaxCalcType::Pointer calc = MinMaxCalcType::New();
-      calc->SetImage( m_FixedImage );
-      calc->Compute();
-      PixelType fixedImageMax = calc->GetMaximum();
-      PixelType fixedImageMin = calc->GetMinimum();
-
-      regBspline->SetFixedImageSamplesIntensityThreshold(
-        static_cast<PixelType>( ( m_SampleIntensityPortion
-        * (fixedImageMax - fixedImageMin) ) + fixedImageMin ) );
-      }
-    regBspline->SetMetricMethodEnum( m_BSplineMetricMethodEnum );
-    regBspline->SetInterpolationMethodEnum(
-      m_BSplineInterpolationMethodEnum );
-    regBspline->SetNumberOfControlPoints( (int)(fixedImageSize[0] /
-      m_BSplineControlPointPixelSpacing) );
-
-    regBspline->Update();
-
-    m_BSplineTransform = regBspline->GetBSplineTransform();
-    m_CurrentBSplineTransform = m_BSplineTransform;
-
-    m_FinalMetricValue = regBspline->GetFinalMetricValue();
-    m_BSplineMetricValue = m_FinalMetricValue;
-
-    m_CompletedStage = BSPLINE_STAGE;
-    m_CompletedResampling = false;
-
-    if( this->GetReportProgress() )
-      {
-      std::cout << "BSpline results stored" << std::endl;
-      }
-    }
-  // this->SaveImage("c:/result.mha",m_CurrentMovingImage);
 }
 
 template <class TImage>
@@ -954,7 +811,6 @@ ImageToImageRegistrationHelper<TImage>
 ::ResampleImage( InterpolationMethodEnumType interpolationMethod,
                  const ImageType * movingImage,
                  const MatrixTransformType * matrixTransform,
-                 const BSplineTransformType * bsplineTransform,
                  PixelType defaultPixelValue, double portion)
 {
   typedef InterpolateImageFunction<TImage, double>
@@ -1009,7 +865,6 @@ ImageToImageRegistrationHelper<TImage>
 
   bool doLoaded = false;
   bool doMatrix = false;
-  bool doBSpline = false;
 
   switch( m_CompletedStage )
     {
@@ -1024,9 +879,6 @@ ImageToImageRegistrationHelper<TImage>
     case AFFINE_STAGE:
       doMatrix = true;
       break;
-    case BSPLINE_STAGE:
-      doBSpline = true;
-      break;
     }
 
   bool resampled = false;
@@ -1038,19 +890,14 @@ ImageToImageRegistrationHelper<TImage>
 
     //doLoaded = true;
     //doMatrix = true;
-    //doBSpline = true;
     }
 
   typename AffineTransformType::ConstPointer aTrans =
     m_CurrentMatrixTransform.GetPointer();
-  typename BSplineTransformType::ConstPointer bTrans =
-    m_CurrentBSplineTransform.GetPointer();
-  if( matrixTransform != NULL
-      || bsplineTransform != NULL )
+  if( matrixTransform != NULL )
     {
     doLoaded = false;
     doMatrix = false;
-    doBSpline = false;
 
     if( matrixTransform != NULL )
       {
@@ -1060,77 +907,10 @@ ImageToImageRegistrationHelper<TImage>
     if( bsplineTransform != NULL )
       {
       bTrans = bsplineTransform;
-      doBSpline = true;
       }
     }
 
   interpolator->SetInputImage( mImage );
-
-  if( doLoaded
-      && m_LoadedBSplineTransform.IsNotNull() )
-    {
-    if( m_LoadedMatrixTransform.IsNotNull() )
-      {
-      if( this->GetReportProgress() )
-        {
-        std::cout << "Resampling using loaded matrix." << std::endl;
-        }
-      // Register using LoadedMatrix
-      typename ResampleImageFilterType::Pointer resampler =
-        ResampleImageFilterType::New();
-      resampler->SetInput( mImage );
-      resampler->SetInterpolator( interpolator.GetPointer() );
-      // We should not be casting away constness here, but
-      // SetOutputParametersFromImage
-      // Does not change the image.  This is needed to workaround fixes to
-      // ITK
-      //typename ImageType::Pointer tmp = const_cast<ImageType *>(
-        //m_FixedImage.GetPointer() );
-      //resampler->SetOutputParametersFromImage( tmp );
-      resampler->SetReferenceImage( m_FixedImage );
-      resampler->UseReferenceImageOn();
-      resampler->SetTransform( m_LoadedMatrixTransform );
-      resampler->SetDefaultPixelValue( defaultPixelValue );
-      resampler->Update();
-      m_CurrentMovingImage = resampler->GetOutput();
-      m_LoadedTransformResampledImage = m_CurrentMovingImage;
-
-      resampled = true;
-      mImage = resampler->GetOutput();
-      interpolator->SetInputImage( mImage );
-      }
-
-    if( m_LoadedBSplineTransform.IsNotNull() )
-      {
-      if( this->GetReportProgress() )
-        {
-        std::cout << "Resampling using loaded bspline." << std::endl;
-        }
-      // Register using LoadedMatrix
-      typename ResampleImageFilterType::Pointer resampler =
-        ResampleImageFilterType::New();
-      resampler->SetInput( mImage );
-      resampler->SetInterpolator( interpolator.GetPointer() );
-      // We should not be casting away constness here, but
-      // SetOutputParametersFromImage
-      // Does not change the image.  This is needed to workaround fixes to
-      // ITK
-      //typename ImageType::Pointer tmp = const_cast<ImageType *>(
-        //m_FixedImage.GetPointer() );
-      //resampler->SetOutputParametersFromImage( tmp );
-      resampler->SetReferenceImage( m_FixedImage );
-      resampler->UseReferenceImageOn();
-      resampler->SetTransform( m_LoadedBSplineTransform );
-      resampler->SetDefaultPixelValue( defaultPixelValue );
-      resampler->Update();
-      m_CurrentMovingImage = resampler->GetOutput();
-      m_LoadedTransformResampledImage = m_CurrentMovingImage;
-
-      resampled = true;
-      mImage = resampler->GetOutput();
-      interpolator->SetInputImage( mImage );
-      }
-    }
 
   if( doMatrix && aTrans.IsNotNull() )
     {
@@ -1171,58 +951,6 @@ ImageToImageRegistrationHelper<TImage>
     resampler->Update();
     m_CurrentMovingImage = resampler->GetOutput();
     m_MatrixTransformResampledImage = m_CurrentMovingImage;
-
-    resampled = true;
-    mImage = resampler->GetOutput();
-    interpolator->SetInputImage( mImage );
-    }
-
-  if( doBSpline && bTrans.IsNotNull() )
-    {
-    if( this->GetReportProgress() )
-      {
-      std::cout << "Resampling using bspline." << std::endl;
-      }
-    // Register using BSpline
-    typename ResampleImageFilterType::Pointer resampler =
-      ResampleImageFilterType::New();
-    resampler->SetInput( mImage );
-    resampler->SetInterpolator( interpolator.GetPointer() );
-    // We should not be casting away constness here, but
-    // SetOutputParametersFromImage
-    // Does not change the image.  This is needed to workaround fixes to
-    // ITK
-    //typename ImageType::Pointer tmp = const_cast<ImageType *>(
-      //m_FixedImage.GetPointer() );
-    //resampler->SetOutputParametersFromImage( tmp );
-    resampler->SetReferenceImage( m_FixedImage );
-    resampler->UseReferenceImageOn();
-    typename BSplineTransformType::Pointer tmpTrans =
-      BSplineTransformType::New();
-    tmpTrans->SetTransformDomainMeshSize(
-      bTrans->GetTransformDomainMeshSize() );
-    tmpTrans->SetFixedParameters( bTrans->GetFixedParameters() );
-    if( portion != 1.0 )
-      {
-      typename BSplineTransformType::ParametersType bTransParams =
-        bTrans->GetParameters();
-      typename BSplineTransformType::ParametersType tmpParams =
-        tmpTrans->GetParameters();
-      for( unsigned int p=0; p<tmpParams.size(); ++p )
-        {
-        tmpParams[p] = tmpParams[p] + portion * (bTransParams[p]-tmpParams[p]);
-        }
-      tmpTrans->SetParameters( tmpParams );
-      }
-    else
-      {
-      tmpTrans->SetParameters( bTrans->GetParameters() );
-      }
-    resampler->SetTransform( tmpTrans );
-    resampler->SetDefaultPixelValue( defaultPixelValue );
-    resampler->Update();
-    m_CurrentMovingImage = resampler->GetOutput();
-    m_BSplineTransformResampledImage = m_CurrentMovingImage;
 
     resampled = true;
     mImage = resampler->GetOutput();
@@ -1270,9 +998,9 @@ ImageToImageRegistrationHelper<TImage>
 }
 
 template <class TImage>
-typename TImage::ConstPointer
+typename TGroupType::ConstPointer
 ImageToImageRegistrationHelper<TImage>
-::GetFinalMovingImage( InterpolationMethodEnumType interpolationMethod,
+::GetFinalMovingGroupSpatialObject( InterpolationMethodEnumType interpolationMethod,
   PixelType defaultPixelValue)
 {
   return ResampleImage( interpolationMethod, nullptr, nullptr, nullptr,

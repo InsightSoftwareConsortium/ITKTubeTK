@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeTubesToImageMetric_h
 #define __itktubeTubesToImageMetric_h
 
-#include <itkEuler3DTransform.h>
 #include <itkCompensatedSummation.h>
 #include <itkGaussianDerivativeImageFunction.h>
 #include <itkImageToSpatialObjectMetric.h>
@@ -54,12 +53,12 @@ namespace tube
 template< class TMovingTubeSpatialObject,
           class TFixedImage >
 class TubesToImageMetric
-  : public ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
+  : public SpatialObjectToImageMetric< TMovingSpatialObject, TFixedImage >
 {
 public:
   /** Standard class typedefs. */
   typedef TubesToImageMetric                    Self;
-  typedef ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
+  typedef SpatialObjectToImageMetric< TMovingSpatialObject, TFixedImage >
                                                 Superclass;
   typedef SmartPointer< Self >                  Pointer;
   typedef SmartPointer< const Self >            ConstPointer;
@@ -127,24 +126,25 @@ public:
   /** Initialize the metric */
   void Initialize( void ) override;
 
-  /** Control the radius scaling of the metric. */
+  /** The radius mulitplier used to define the scale of the Gaussian kernel
+   *  used to make image measures in the metric. */
   itkSetMacro( Kappa, ScalarType );
   itkGetConstMacro( Kappa, ScalarType );
 
-  /** Set/Get the extent of the blurring calculation given in Gaussian
-   * sigma's. */
+  /** Set/Get the extent of the Gaussian kernel used for image measures. */
   itkSetMacro( Extent, ScalarType );
   itkGetConstMacro( Extent, ScalarType );
 
-  /** Set/Get the minimum scaling radius. */
+  /** Set/Get the minimum tube radius used by the metric. */
   itkSetMacro( SamplingRadiusMin, ScalarType );
   itkGetConstMacro( SamplingRadiusMin, ScalarType );
 
-  /** Set/Get the minimum scaling radius. */
+  /** Set/Get the maximum tube radius used by the metric. */
   itkSetMacro( SamplingRadiusMax, ScalarType );
   itkGetConstMacro( SamplingRadiusMax, ScalarType );
 
-  /** Set/Get the minimum scaling radius. */
+  /** Set/Get the space between points at which the metric is computed. Spacing
+   * is given as a multiplier of the radius of the adjacent points. */
   itkSetMacro( SampleSpacingInRadii, ScalarType );
   itkGetConstMacro( SampleSpacingInRadii, ScalarType );
 
@@ -186,8 +186,10 @@ private:
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
   ScalarType m_Kappa;
-  ScalarType m_MinimumScalingRadius;
   ScalarType m_Extent;
+  ScalarType m_SamplingRadiusMin;
+  ScalarType m_SamplingRadiusMax;
+  ScalarType m_SamplingSpacingInRadii;
 
   /** The center of rotation of the weighted tube points. */
   typedef PointType CenterOfRotationType;
@@ -205,6 +207,7 @@ private:
     const typename TubePointType::CovariantVectorType & tubeNormal,
     const ScalarType scale,
     const OutputPointType & currentPoint ) const;
+
   ScalarType ComputeThirdDerivatives(
     const CovariantVectorType & v,
     const ScalarType scale,
@@ -216,7 +219,6 @@ private:
    */
   typename TubeTreeType::ChildrenListType* GetTubes( void ) const;
 
-  FeatureWeightsType m_FeatureWeights;
 }; // End class TubesToImageMetric
 
 } // End namespace tube

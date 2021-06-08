@@ -117,12 +117,6 @@ public:
   itkSetMacro( NumberOfSamples, unsigned int );
   itkGetConstMacro( NumberOfSamples, unsigned int );
 
-  itkSetMacro( UseFixedImageSamplesIntensityThreshold, bool );
-  itkGetConstMacro( UseFixedImageSamplesIntensityThreshold, bool );
-  void SetFixedImageSamplesIntensityThreshold( PixelType val );
-
-  itkGetConstMacro( FixedImageSamplesIntensityThreshold, PixelType );
-
   itkSetMacro( TargetError, double );
   itkGetConstMacro( TargetError, double );
 
@@ -177,9 +171,6 @@ private:
   bool m_UseEvolutionaryOptimization;
 
   unsigned int m_NumberOfSamples;
-
-  bool      m_UseFixedImageSamplesIntensityThreshold;
-  PixelType m_FixedImageSamplesIntensityThreshold;
 
   double m_TargetError;
 

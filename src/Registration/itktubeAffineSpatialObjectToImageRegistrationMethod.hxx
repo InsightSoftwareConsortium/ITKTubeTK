@@ -20,17 +20,17 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkAffineImageToImageRegistrationMethod_txx
-#define __itkAffineImageToImageRegistrationMethod_txx
+#ifndef __itkAffineSpatialObjectToImageRegistrationMethod_txx
+#define __itkAffineSpatialObjectToImageRegistrationMethod_txx
 
-#include "itkAffineImageToImageRegistrationMethod.h"
+#include "itkAffineSpatialObjectToImageRegistrationMethod.h"
 
 namespace itk
 {
 
-template <class TImage>
-AffineImageToImageRegistrationMethod<TImage>
-::AffineImageToImageRegistrationMethod( void )
+template <class TSpatialObject, class TImage>
+AffineSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+::AffineSpatialObjectToImageRegistrationMethod( void )
 {
   this->SetTransform( AffineTransformType::New() );
   this->GetTypedTransform()->SetIdentity();
@@ -76,15 +76,15 @@ AffineImageToImageRegistrationMethod<TImage>
   this->SetNumberOfSamples( 150000 );
 }
 
-template <class TImage>
-AffineImageToImageRegistrationMethod<TImage>
-::~AffineImageToImageRegistrationMethod( void )
+template <class TSpatialObject, class TImage>
+AffineSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+::~AffineSpatialObjectToImageRegistrationMethod( void )
 {
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-AffineImageToImageRegistrationMethod<TImage>
+AffineSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::GenerateData( void )
 {
   // Set the center of rotation
@@ -93,25 +93,25 @@ AffineImageToImageRegistrationMethod<TImage>
   Superclass::GenerateData();
 }
 
-template <class TImage>
-typename AffineImageToImageRegistrationMethod<TImage>::TransformType
-* AffineImageToImageRegistrationMethod<TImage>
+template <class TSpatialObject, class TImage>
+typename AffineSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>::TransformType
+* AffineSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::GetTypedTransform( void )
 {
   return static_cast<TransformType  *>( Superclass::GetTransform() );
 }
 
-template <class TImage>
-const typename AffineImageToImageRegistrationMethod<TImage>::TransformType
-* AffineImageToImageRegistrationMethod<TImage>
+template <class TSpatialObject, class TImage>
+const typename AffineSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>::TransformType
+* AffineSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::GetTypedTransform( void ) const
 {
   return static_cast<const TransformType  *>( Superclass::GetTransform() );
 }
 
-template <class TImage>
-typename AffineImageToImageRegistrationMethod<TImage>::AffineTransformPointer
-AffineImageToImageRegistrationMethod<TImage>
+template <class TSpatialObject, class TImage>
+typename AffineSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>::AffineTransformPointer
+AffineSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::GetAffineTransform( void ) const
 {
   AffineTransformPointer trans = AffineTransformType::New();
@@ -126,18 +126,18 @@ AffineImageToImageRegistrationMethod<TImage>
   return trans;
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-AffineImageToImageRegistrationMethod<TImage>
+AffineSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::SetInitialTransformParametersFromAffineTransform( const AffineTransformType * affine )
 {
   this->SetInitialTransformFixedParameters( affine->GetFixedParameters() );
   this->SetInitialTransformParameters( affine->GetParameters() );
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-AffineImageToImageRegistrationMethod<TImage>
+AffineSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf(os, indent);

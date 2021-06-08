@@ -20,36 +20,35 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkImageToImageRegistrationHelper_h
-#define __itkImageToImageRegistrationHelper_h
+#ifndef __itkSpatialObjectToImageRegistrationHelper_h
+#define __itkSpatialObjectToImageRegistrationHelper_h
 
 #include "itkImage.h"
 #include "itkCommand.h"
 
-#include "itkImageToImageRegistrationMethod.h"
-#include "itkInitialImageToImageRegistrationMethod.h"
-#include "itkOptimizedImageToImageRegistrationMethod.h"
-#include "itkRigidImageToImageRegistrationMethod.h"
-#include "itkAffineImageToImageRegistrationMethod.h"
-#include "itkScaleSkewAngle2DImageToImageRegistrationMethod.h"
-#include "itkScaleSkewVersor3DImageToImageRegistrationMethod.h"
-#include "itkBSplineImageToImageRegistrationMethod.h"
+#include "itkSpatialObjectToImageRegistrationMethod.h"
+#include "itkInitialSpatialObjectToImageRegistrationMethod.h"
+#include "itkOptimizedSpatialObjectToImageRegistrationMethod.h"
+#include "itkRigidSpatialObjectToImageRegistrationMethod.h"
+#include "itkAffineSpatialObjectToImageRegistrationMethod.h"
+#include "itkScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.h"
+#include "itkScaleSkewVersor3DSpatialObjectToImageRegistrationMethod.h"
 
 namespace itk
 {
 
-template <class TImage>
-class ImageToImageRegistrationHelper : public Object
+template <class TSpatialObject, class TImage>
+class SpatialObjectToImageRegistrationHelper : public Object
 {
 
 public:
 
-  typedef ImageToImageRegistrationHelper Self;
-  typedef Object                         Superclass;
-  typedef SmartPointer<Self>             Pointer;
-  typedef SmartPointer<const Self>       ConstPointer;
+  typedef SpatialObjectToImageRegistrationHelper Self;
+  typedef Object                                 Superclass;
+  typedef SmartPointer<Self>                     Pointer;
+  typedef SmartPointer<const Self>               ConstPointer;
 
-  itkTypeMacro( ImageToImageRegistrationHelper, Object );
+  itkTypeMacro( SpatialObjectToImageRegistrationHelper, Object );
 
   itkNewMacro( Self );
 
@@ -63,38 +62,44 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
 
+  itkStaticConstMacro( ObjectDimension, unsigned int,
+                       TSpatialObject::ObjectDimension );
+
   //
   // Available Registration Methods
   //
-  typedef ImageToImageRegistrationMethod<TImage>
+  typedef SpatialObjectToImageRegistrationMethod<TImage>
   RegistrationMethodType;
 
-  typedef InitialImageToImageRegistrationMethod<TImage>
+  typedef InitialSpatialObjectToImageRegistrationMethod<TImage>
   InitialRegistrationMethodType;
 
-  typedef OptimizedImageToImageRegistrationMethod<TImage>
+  typedef OptimizedSpatialObjectToImageRegistrationMethod<TImage>
   OptimizedRegistrationMethodType;
 
-  typedef RigidImageToImageRegistrationMethod<TImage>
+  typedef RigidSpatialObjectToImageRegistrationMethod<TImage>
   RigidRegistrationMethodType;
 
-  typedef AffineImageToImageRegistrationMethod<TImage>
+  typedef AffineSpatialObjectToImageRegistrationMethod<TImage>
   AffineRegistrationMethodType;
 
-  typedef ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
+  typedef ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TImage>
   Affine2DRegistrationMethodType;
 
-  typedef ScaleSkewVersor3DImageToImageRegistrationMethod<TImage>
+  typedef ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>
   Affine3DRegistrationMethodType;
-
-  typedef BSplineImageToImageRegistrationMethod<TImage>
-  BSplineRegistrationMethodType;
 
   //
   // Typedefs for the parameters of the registration methods
   //
-  typedef typename RegistrationMethodType::MaskObjectType
-  MaskObjectType;
+  typedef typename RegistrationMethodType::GroupType
+  GroupType;
+
+  typedef typename RegistrationMethodType::ImageMaskObjectType
+  ImageMaskObjectType;
+
+  typedef typename RegistrationMethodType::SpatialObjectMaskObjectType
+  SpatialObjectMaskObjectType;
 
   typedef typename OptimizedRegistrationMethodType::MetricMethodEnumType
   MetricMethodEnumType;
@@ -113,17 +118,14 @@ public:
                                    LOAD_STAGE,
                                    INIT_STAGE,
                                    RIGID_STAGE,
-                                   AFFINE_STAGE,
-                                   BSPLINE_STAGE };
+                                   AFFINE_STAGE };
 
   enum RegistrationMethodEnumType { NONE,
                                     INITIAL,
                                     RIGID,
                                     AFFINE,
-                                    BSPLINE,
                                     PIPELINE_RIGID,
-                                    PIPELINE_AFFINE,
-                                    PIPELINE_BSPLINE };
+                                    PIPELINE_AFFINE };
 
   typedef typename InitialRegistrationMethodType::TransformType
   InitialTransformType;
@@ -146,9 +148,6 @@ public:
 
   typedef AffineTransformType MatrixTransformType;
 
-  typedef typename BSplineRegistrationMethodType::TransformType
-  BSplineTransformType;
-
   //
   // Custom Methods
   //
@@ -163,15 +162,18 @@ public:
   itkSetConstObjectMacro( FixedImage, TImage );
   itkGetConstObjectMacro( FixedImage, TImage );
 
-  void LoadMovingImage( const std::string & filename );
+  void LoadMovingSpatialObject( const std::string & filename );
 
-  itkSetConstObjectMacro( MovingImage, TImage );
-  itkGetConstObjectMacro( MovingImage, TImage );
+  void SetMovingSpatialObject( const TSpatialObject * MovingSpatialObject );
+
+  itkSetConstObjectMacro( MovingGroupSpatialObject, GroupType );
+  itkGetConstObjectMacro( MovingGroupSpatialObject, GroupType );
 
   // **************
   //  Generic file-save function
   // **************
-  void SaveImage( const std::string & filename, const TImage * image );
+  void SaveSpatialObject( const std::string & filename,
+    const SpatialObject * spatialObject );
 
   itkSetMacro( RandomNumberSeed, unsigned int );
   itkGetMacro( RandomNumberSeed, unsigned int );
@@ -186,17 +188,19 @@ public:
   itkGetConstMacro( UseFixedImageMaskObject, bool );
   itkBooleanMacro( UseFixedImageMaskObject );
 
-  void SetFixedImageMaskObject( const MaskObjectType * mask );
+  void SetFixedImageMaskObject( const ImageMaskObjectType * mask );
 
-  itkGetConstObjectMacro( FixedImageMaskObject, MaskObjectType );
+  itkGetConstObjectMacro( FixedImageMaskObject, ImageMaskObjectType );
 
-  itkSetMacro( UseMovingImageMaskObject, bool );
-  itkGetConstMacro( UseMovingImageMaskObject, bool );
-  itkBooleanMacro( UseMovingImageMaskObject );
+  itkSetMacro( UseMovingSpatialObjectMaskObject, bool );
+  itkGetConstMacro( UseMovingSpatialObjectMaskObject, bool );
+  itkBooleanMacro( UseMovingSpatialObjectMaskObject );
 
-  void SetMovingImageMaskObject( const MaskObjectType * mask );
+  void SetMovingSpatialObjectMaskObject(
+    const SpatialObjectMaskObjectType * mask );
 
-  itkGetConstObjectMacro( MovingImageMaskObject, MaskObjectType );
+  itkGetConstObjectMacro( MovingSpatialObjectMaskObject,
+    SpatialObjectMaskObjectType );
 
   itkSetMacro( UseRegionOfInterest, bool );
   itkGetMacro( UseRegionOfInterest, bool );
@@ -208,17 +212,6 @@ public:
     const PointType & point2 );
 
   void SetRegionOfInterest( const std::vector<float> & points );
-
-  // **************
-  //  Initialize the moving image mask as the region of initial overlap
-  //  between the fixed and moving images
-  // **************
-  itkSetMacro( SampleFromOverlap, bool );
-  itkGetMacro( SampleFromOverlap, bool );
-  itkBooleanMacro( SampleFromOverlap );
-
-  itkSetMacro( SampleIntensityPortion, double );
-  itkGetConstMacro( SampleIntensityPortion, double );
 
   // **************
   // **************
@@ -236,49 +229,13 @@ public:
   //  Resample
   // **************
   // **************
-  const TImage * ResampleImage(
-    InterpolationMethodEnumType interp
-      = OptimizedRegistrationMethodType
-        ::LINEAR_INTERPOLATION, const TImage * movingImage = NULL,
+  const GroupType * ResampleGroupSpatialObject(
+    const GroupType * movingGroupSpatialObject = NULL,
     const MatrixTransformType * matrixTransform = NULL,
-    const BSplineTransformType * bsplineTransform = NULL,
-    PixelType defaultPixelValue = 0, double portion = 1.0 );
+    double portion = 1.0 );
 
   // Returns the moving image resampled into the space of the fixed image
-  typename TImage::ConstPointer  GetFinalMovingImage(
-    InterpolationMethodEnumType interp = OptimizedRegistrationMethodType
-    ::LINEAR_INTERPOLATION, PixelType defaultPixelValue = 0 );
-
-  // **************
-  // **************
-  // Compute registration "accuracy" by comparing a resampled moving image
-  // with a baseline image.
-  // **************
-  // **************
-
-  // Specify the baseline image.
-  void LoadBaselineImage( const std::string & filename );
-
-  itkSetConstObjectMacro( BaselineImage, TImage );
-  itkGetConstObjectMacro( BaselineImage, TImage );
-
-  // Bound the required accuracy for the registration test to "pass"
-  itkSetMacro( BaselineNumberOfFailedPixelsTolerance, unsigned int );
-  itkGetMacro( BaselineNumberOfFailedPixelsTolerance, unsigned int );
-  itkSetMacro( BaselineIntensityTolerance, PixelType );
-  itkGetMacro( BaselineIntensityTolerance, PixelType );
-  itkSetMacro( BaselineRadiusTolerance, unsigned int );
-  itkGetMacro( BaselineRadiusTolerance, unsigned int );
-
-  // Must be called after setting the BaselineImage in order to resample
-  //   the moving image into the BaselineImage space, compute differences,
-  //   and determine if it passed the test within the specified tolerances
-  void ComputeBaselineDifference( void );
-
-  itkGetConstObjectMacro( BaselineDifferenceImage, TImage );
-  itkGetConstObjectMacro( BaselineResampledMovingImage, TImage );
-  itkGetMacro( BaselineNumberOfFailedPixels, unsigned int );
-  itkGetMacro( BaselineTestPassed, bool );
+  typename GroupType::ConstPointer  GetFinalMovingGroupSpatialObject( void );
 
   // **************
   // **************
@@ -304,10 +261,6 @@ public:
   itkSetMacro( EnableAffineRegistration, bool );
   itkGetConstMacro( EnableAffineRegistration, bool );
   itkBooleanMacro( EnableAffineRegistration );
-
-  itkSetMacro( EnableBSplineRegistration, bool );
-  itkGetConstMacro( EnableBSplineRegistration, bool );
-  itkBooleanMacro( EnableBSplineRegistration );
 
   void SetRegistration( RegistrationMethodEnumType reg );
   void SetInterpolation( InterpolationMethodEnumType interp );
@@ -341,18 +294,17 @@ public:
   //  Return the current product of the registration pipeline
   // **************
   itkGetConstObjectMacro( CurrentMatrixTransform, MatrixTransformType );
-  itkGetConstObjectMacro( CurrentBSplineTransform, BSplineTransformType );
 
   // The image used for registration is updated at certain points in the
   //   registration pipeline for speed and transform composition.
-  // Specifically, the image is resmpled using the loaded transforms prior
-  //   to running the initial registration method and the image is resampled
-  //   after the affine registration / prior to running bspline registration
-  // The result of these resamplings is available as the CurrentMovingImage.
-  itkGetConstObjectMacro( CurrentMovingImage, TImage );
-  itkGetConstObjectMacro( LoadedTransformResampledImage, TImage );
-  itkGetConstObjectMacro( MatrixTransformResampledImage, TImage );
-  itkGetConstObjectMacro( BSplineTransformResampledImage, TImage );
+  // Specifically, the SpatialObject is resmpled using the loaded transforms
+  // prior to running the initial registration method and the spatialobject
+  // is resampled after the affine registration / prior to running bspline
+  // registration. The result of these resamplings is available as the
+  // CurrentMovingSpatialObject.
+  itkGetConstObjectMacro( CurrentMovingSpatialObject, TSpatialObject );
+  itkGetConstObjectMacro( LoadedTransformResampledSpatialObject, TSpatialObject );
+  itkGetConstObjectMacro( MatrixTransformResampledSpatialObject, TSpatialObject );
 
   // **************
   //  Not implemented at this time :(
@@ -390,10 +342,6 @@ public:
     bool invert=false );
 
   itkGetConstObjectMacro( LoadedMatrixTransform, MatrixTransformType );
-
-  void SetLoadedBSplineTransform( const BSplineTransformType & tfm );
-
-  itkGetConstObjectMacro( LoadedBSplineTransform, BSplineTransformType );
 
   //
   // Initial Parameters
@@ -448,35 +396,10 @@ public:
   itkGetConstObjectMacro( AffineTransform, AffineTransformType );
   itkGetMacro( AffineMetricValue, double );
 
-  //
-  // BSpline Parameters
-  //
-  itkSetMacro( BSplineSamplingRatio, double );
-  itkGetConstMacro( BSplineSamplingRatio, double );
-
-  itkSetMacro( BSplineTargetError, double );
-  itkGetConstMacro( BSplineTargetError, double );
-
-  itkSetMacro( BSplineMaxIterations, unsigned int );
-  itkGetConstMacro( BSplineMaxIterations, unsigned int );
-
-  itkSetMacro( BSplineControlPointPixelSpacing, double );
-  itkGetConstMacro( BSplineControlPointPixelSpacing, double );
-
-  itkSetMacro( BSplineMetricMethodEnum, MetricMethodEnumType );
-  itkGetConstMacro( BSplineMetricMethodEnum, MetricMethodEnumType );
-
-  itkSetMacro( BSplineInterpolationMethodEnum,
-    InterpolationMethodEnumType );
-  itkGetConstMacro( BSplineInterpolationMethodEnum,
-    InterpolationMethodEnumType );
-
-  itkGetConstObjectMacro( BSplineTransform, BSplineTransformType );
-  itkGetMacro( BSplineMetricValue, double );
 protected:
 
-  ImageToImageRegistrationHelper( void );
-  virtual ~ImageToImageRegistrationHelper( void );
+  SpatialObjectToImageRegistrationHelper( void );
+  virtual ~SpatialObjectToImageRegistrationHelper( void );
 
   void PrintSelfHelper( std::ostream & os, Indent indent,
     const std::string & basename, MetricMethodEnumType metric,
@@ -500,22 +423,20 @@ private:
   LandmarkPointContainer;
 
   // Purposely not implemented
-  ImageToImageRegistrationHelper( const Self & );
+  SpatialObjectToImageRegistrationHelper( const Self & );
   // Purposely not implemented
   void operator =( const Self & );
 
   //  Data
-  typename TImage::ConstPointer         m_FixedImage;
-  typename TImage::ConstPointer         m_MovingImage;
+  typename TImage::ConstPointer              m_FixedImage;
+  typename TSpatialObject::ConstPointer      m_MovingSpatialObject;
 
-  bool   m_SampleFromOverlap;
-  double m_SampleIntensityPortion;
+  bool                                       m_UseFixedImageMaskObject;
+  typename ImageMaskObjectType::ConstPointer m_FixedImageMaskObject;
 
-  bool                                  m_UseFixedImageMaskObject;
-  typename MaskObjectType::ConstPointer m_FixedImageMaskObject;
-
-  bool                                  m_UseMovingImageMaskObject;
-  typename MaskObjectType::ConstPointer m_MovingImageMaskObject;
+  bool                                       m_UseMovingSpatialObjectMaskObject;
+  typename SpatialObjectMaskObjectType::ConstPointer
+                                             m_MovingSpatialObjectMaskObject;
 
   bool      m_UseRegionOfInterest;
   PointType m_RegionOfInterestPoint1;
@@ -528,7 +449,6 @@ private:
   bool m_EnableInitialRegistration;
   bool m_EnableRigidRegistration;
   bool m_EnableAffineRegistration;
-  bool m_EnableBSplineRegistration;
 
   double m_ExpectedOffsetMagnitude;
   double m_ExpectedRotationMagnitude;
@@ -540,27 +460,13 @@ private:
   RegistrationStageEnumType m_CompletedStage;
   bool                      m_CompletedResampling;
 
-  typename TImage::ConstPointer           m_CurrentMovingImage;
+  typename TSpatialObject::ConstPointer   m_CurrentMovingSpatialObject;
   typename MatrixTransformType::Pointer   m_CurrentMatrixTransform;
-  typename BSplineTransformType::Pointer  m_CurrentBSplineTransform;
 
-  typename TImage::ConstPointer         m_LoadedTransformResampledImage;
-  typename TImage::ConstPointer         m_MatrixTransformResampledImage;
-  typename TImage::ConstPointer         m_BSplineTransformResampledImage;
+  typename TSpatialObject::ConstPointer m_LoadedTransformResampledSpatialObject;
+  typename TSpatialObject::ConstPointer m_MatrixTransformResampledSpatialObject;
 
   double m_FinalMetricValue;
-
-  typename TImage::ConstPointer         m_BaselineImage;
-
-  unsigned int m_BaselineNumberOfFailedPixelsTolerance;
-  PixelType    m_BaselineIntensityTolerance;
-  unsigned int m_BaselineRadiusTolerance;
-
-  typename TImage::ConstPointer         m_BaselineResampledMovingImage;
-  typename TImage::ConstPointer         m_BaselineDifferenceImage;
-
-  unsigned int m_BaselineNumberOfFailedPixels;
-  bool         m_BaselineTestPassed;
 
   bool m_ReportProgress;
 
@@ -571,7 +477,6 @@ private:
 
   //  Loaded Tansform
   typename MatrixTransformType::Pointer   m_LoadedMatrixTransform;
-  typename BSplineTransformType::Pointer  m_LoadedBSplineTransform;
 
   //  Initial Parameters
   InitialMethodEnumType                   m_InitialMethodEnum;
@@ -602,24 +507,12 @@ private:
 
   double m_AffineMetricValue;
 
-  //  BSpline Parameters
-  double       m_BSplineSamplingRatio;
-  double       m_BSplineTargetError;
-  unsigned int m_BSplineMaxIterations;
-  double       m_BSplineControlPointPixelSpacing;
-
-  typename BSplineTransformType::Pointer  m_BSplineTransform;
-  MetricMethodEnumType                    m_BSplineMetricMethodEnum;
-  InterpolationMethodEnumType             m_BSplineInterpolationMethodEnum;
-
-  double m_BSplineMetricValue;
-
 };
 
 }
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkImageToImageRegistrationHelper.hxx"
+#include "itkSpatialObjectToImageRegistrationHelper.hxx"
 #endif
 
 #endif

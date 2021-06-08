@@ -59,14 +59,14 @@ public:
   //
   // Custom Typedefs
   //
-  itkStaticConstMacro( SpatialObjectDimension, unsigned int,
+  itkStaticConstMacro( ObjectDimension, unsigned int,
                        TSpatialObject::Dimension );
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
 
   typedef Transform<double,
-                    itkGetStaticConstMacro( SpatialObjectDimension ),
+                    itkGetStaticConstMacro( ObjectDimension ),
                     itkGetStaticConstMacro( ImageDimension )>
   TransformType;
 
@@ -79,7 +79,7 @@ public:
   typedef TSpatialObject SpatialObjectType;
   typedef TImage         ImageType;
 
-  typedef GroupSpatialObject<itkGetStaticConstMacro( SpatialObjectDimension )>
+  typedef GroupSpatialObject<itkGetStaticConstMacro( ObjectDimension )>
   GroupType;
 
   typedef typename TSpatialObject::PointType SpatialObjectPointType;
@@ -88,7 +88,7 @@ public:
   typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
   ImageMaskObjectType;
 
-  typedef SpatialObject<itkGetStaticConstMacro( SpatialObjectDimension )>
+  typedef SpatialObject<itkGetStaticConstMacro( ObjectDimension )>
   SpatialObjectMaskObjectType;
 
   //
@@ -129,7 +129,8 @@ public:
   void SetMovingSpatialObjectMaskObject(
     const SpatialObjectMaskObjectType * maskObject );
 
-  itkGetConstObjectMacro( MovingImageMaskObject, SpatialObjectMaskObjectType );
+  itkGetConstObjectMacro( MovingSpatialObjectMaskObject,
+    SpatialObjectMaskObjectType );
 
   itkSetMacro( UseMovingSpatialObjectMaskObject, bool );
   itkGetMacro( UseMovingSpatialObjectMaskObject, bool );

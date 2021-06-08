@@ -1,32 +1,37 @@
 /*=========================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: MomentRegistrator.txx,v $
-  Language:  C++
-  Date:      $Date: 2007/03/29 17:52:55 $
-  Version:   $Revision: 1.6 $
+Library:   TubeTK
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright Kitware Inc.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 ( the "License" );
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
 
-#ifndef __RigidImageToImageRegistrationMethod_txx
-#define __RigidImageToImageRegistrationMethod_txx
+#ifndef __RigidSpatialObjectToImageRegistrationMethod_txx
+#define __RigidSpatialObjectToImageRegistrationMethod_txx
 
-#include "itkRigidImageToImageRegistrationMethod.h"
+#include "itkRigidSpatialObjectToImageRegistrationMethod.h"
 #include "vnl/vnl_inverse.h"
 
 namespace itk
 {
 
-template <class TImage>
-RigidImageToImageRegistrationMethod<TImage>
-::RigidImageToImageRegistrationMethod( void )
+template <class TSpatialObject, class TImage>
+RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
+::RigidSpatialObjectToImageRegistrationMethod( void )
 {
   if( ImageDimension == 2 )
     {
@@ -82,32 +87,32 @@ RigidImageToImageRegistrationMethod<TImage>
   this->SetTransformMethodEnum( Superclass::RIGID_TRANSFORM );
 }
 
-template <class TImage>
-RigidImageToImageRegistrationMethod<TImage>
-::~RigidImageToImageRegistrationMethod( void )
+template <class TSpatialObject, class TImage>
+RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
+::~RigidSpatialObjectToImageRegistrationMethod( void )
 {
   this->m_Transform->UnRegister();
 }
 
-template <class TImage>
-typename RigidImageToImageRegistrationMethod<TImage>::TransformType
-* RigidImageToImageRegistrationMethod<TImage>
+template <class TSpatialObject, class TImage>
+typename RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>::TransformType
+* RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
 ::GetTypedTransform( void )
   {
   return dynamic_cast<TransformType  *>( Superclass::GetTransform() );
   }
 
-template <class TImage>
-const typename RigidImageToImageRegistrationMethod<TImage>::TransformType
-* RigidImageToImageRegistrationMethod<TImage>
+template <class TSpatialObject, class TImage>
+const typename RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>::TransformType
+* RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
 ::GetTypedTransform( void ) const
   {
   return dynamic_cast<const TransformType  *>( Superclass::GetTransform() );
   }
 
-template <class TImage>
-typename RigidImageToImageRegistrationMethod<TImage>::AffineTransformPointer
-RigidImageToImageRegistrationMethod<TImage>
+template <class TSpatialObject, class TImage>
+typename RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>::AffineTransformPointer
+RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
 ::GetAffineTransform( void ) const
 {
   typename AffineTransformType::Pointer trans = AffineTransformType::New();
@@ -120,9 +125,9 @@ RigidImageToImageRegistrationMethod<TImage>
   return trans;
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-RigidImageToImageRegistrationMethod<TImage>
+RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
 ::SetInitialTransformParametersFromAffineTransform( const AffineTransformType * affine )
 {
   RigidTransformType * rigidTransform =
@@ -179,9 +184,9 @@ RigidImageToImageRegistrationMethod<TImage>
   this->SetInitialTransformParameters( rigidTransform->GetParameters() );
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-RigidImageToImageRegistrationMethod<TImage>
+RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
 ::GenerateData( void )
 {
   // Set the center of rotation
@@ -190,9 +195,9 @@ RigidImageToImageRegistrationMethod<TImage>
   Superclass::GenerateData();
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-RigidImageToImageRegistrationMethod<TImage>
+RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf(os, indent);

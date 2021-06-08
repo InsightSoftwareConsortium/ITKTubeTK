@@ -1,31 +1,36 @@
 /*=========================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: ITKHeader.h,v $
-  Language:  C++
-  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
-  Version:   $Revision: 0 $
+Library:   TubeTK
 
-  Copyright (c) 2002 Insight Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright Kitware Inc.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 ( the "License" );
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkScaleSkewAngle2DImageToImageRegistrationMethod_txx
-#define __itkScaleSkewAngle2DImageToImageRegistrationMethod_txx
+#ifndef __itkScaleSkewAngle2DSpatialObjectToImageRegistrationMethod_txx
+#define __itkScaleSkewAngle2DSpatialObjectToImageRegistrationMethod_txx
 
-#include "itkScaleSkewAngle2DImageToImageRegistrationMethod.h"
+#include "itkScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.h"
 
 namespace itk
 {
 
-template <class TImage>
-ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
-::ScaleSkewAngle2DImageToImageRegistrationMethod( void )
+template <class TSpatialObject, class TImage>
+ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+::ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod( void )
 {
   this->SetTransform( ScaleSkewAngle2DTransformType::New() );
   this->GetTypedTransform()->SetUseSingleScale( true );
@@ -62,15 +67,15 @@ ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
   this->SetNumberOfSamples( 150000 );
 }
 
-template <class TImage>
-ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
-::~ScaleSkewAngle2DImageToImageRegistrationMethod( void )
+template <class TSpatialObject, class TImage>
+ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+::~ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod( void )
 {
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
+ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::GenerateData( void )
 {
   // Set the center of rotation
@@ -80,25 +85,25 @@ ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
   Superclass::GenerateData();
 }
 
-template <class TImage>
-typename ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::TransformType
-* ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
+template <class TSpatialObject, class TImage>
+typename ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>::TransformType
+* ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::GetTypedTransform( void )
 {
   return static_cast<TransformType  *>( Superclass::GetTransform() );
 }
 
-template <class TImage>
-const typename ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::TransformType
-* ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
+template <class TSpatialObject, class TImage>
+const typename ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>::TransformType
+* ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::GetTypedTransform( void ) const
 {
   return static_cast<const TransformType  *>( Superclass::GetTransform() );
 }
 
-template <class TImage>
-typename ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::AffineTransformPointer
-ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
+template <class TSpatialObject, class TImage>
+typename ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>::AffineTransformPointer
+ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::GetAffineTransform( void ) const
 {
   AffineTransformPointer trans = AffineTransformType::New();
@@ -113,9 +118,9 @@ ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
   return trans;
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
+ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::SetInitialTransformParametersFromAffineTransform(
   const AffineTransformType * tfm )
 {
@@ -123,9 +128,9 @@ ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
   this->SetInitialTransformParameters( tfm->GetParameters() );
 }
 
-template <class TImage>
+template <class TSpatialObject, class TImage>
 void
-ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
+ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf(os, indent);

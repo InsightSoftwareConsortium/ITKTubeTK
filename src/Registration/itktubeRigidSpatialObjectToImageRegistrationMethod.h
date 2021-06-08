@@ -1,47 +1,52 @@
 /*=========================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: ITKHeader.h,v $
-  Language:  C++
-  Date:      $Date: 2007-07-10 11:35:36 -0400 ( Tue, 10 Jul 2007 ) $
-  Version:   $Revision: 0 $
+Library:   TubeTK
 
-  Copyright ( c ) 2002 Insight Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright Kitware Inc.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 ( the "License" );
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkRigidImageToImageRegistrationMethod_h
-#define __itkRigidImageToImageRegistrationMethod_h
+#ifndef __itkRigidSpatialObjectToImageRegistrationMethod_h
+#define __itkRigidSpatialObjectToImageRegistrationMethod_h
 
 #include "itkImage.h"
 #include "itkAffineTransform.h"
 #include "itkVersorRigid3DTransform.h"
 #include "itkRigid2DTransform.h"
 
-#include "itkOptimizedImageToImageRegistrationMethod.h"
+#include "itkOptimizedSpatialObjectToImageRegistrationMethod.h"
 
 namespace itk
 {
 
-template <class TImage>
-class RigidImageToImageRegistrationMethod
-  : public OptimizedImageToImageRegistrationMethod<TImage>
+template <class TSpatialObject, class TImage>
+class RigidSpatialObjectToImageRegistrationMethod
+  : public OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 {
 
 public:
 
-  typedef RigidImageToImageRegistrationMethod             Self;
-  typedef OptimizedImageToImageRegistrationMethod<TImage> Superclass;
+  typedef RigidSpatialObjectToImageRegistrationMethod             Self;
+  typedef OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage> Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
 
-  itkTypeMacro( RigidImageToImageRegistrationMethod,
-                OptimizedImageToImageRegistrationMethod );
+  itkTypeMacro( RigidSpatialObjectToImageRegistrationMethod,
+                OptimizedSpatialObjectToImageRegistrationMethod );
 
   itkNewMacro( Self );
 
@@ -107,7 +112,7 @@ public:
    * you to have a rigid transform at hand, and this is not always the case,
    * specially when a transform initializer is being used. The method below
    * facilitates to use the AffineTransform returned by the
-   * InitialImageToImageRegistrationMethod to directly initialize this rigid
+   * InitialSpatialObjectToImageRegistrationMethod to directly initialize this rigid
    * registration method. The received Affine transform will be approximated
    * to its closest rigid transform by using Polar decomposition. */
   void SetInitialTransformParametersFromAffineTransform(
@@ -115,15 +120,15 @@ public:
 
 protected:
 
-  RigidImageToImageRegistrationMethod( void );
-  virtual ~RigidImageToImageRegistrationMethod( void );
+  RigidSpatialObjectToImageRegistrationMethod( void );
+  virtual ~RigidSpatialObjectToImageRegistrationMethod( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 
   // Purposely not implemented
-  RigidImageToImageRegistrationMethod( const Self & );
+  RigidSpatialObjectToImageRegistrationMethod( const Self & );
   // Purposely not implemented
   void operator =( const Self & );
 
@@ -132,7 +137,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkRigidImageToImageRegistrationMethod.hxx"
+#include "itkRigidSpatialObjectToImageRegistrationMethod.hxx"
 #endif
 
-#endif // __ImageToImageRegistrationMethod_h
+#endif // __SpatialObjectToImageRegistrationMethod_h

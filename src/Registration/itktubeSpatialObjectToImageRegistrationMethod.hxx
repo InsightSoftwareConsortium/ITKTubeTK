@@ -46,10 +46,13 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 
   this->m_FixedImage = 0;
   this->m_MovingGroupSpatialObject = 0;
+
   this->m_UseFixedImageMaskObject = false;
   this->m_FixedImageMaskObject = 0;
+
   this->m_UseMovingSpatialObjectMaskObject = false;
   this->m_MovingSpatialObjectMaskObject = 0;
+
   this->m_Observer = 0;
   this->m_ReportProgress = false;
 
@@ -75,6 +78,7 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     this->m_FixedImage = fixedImage;
 
     this->ProcessObject::SetNthInput(0, const_cast<ImageType *>( fixedImage ) );
+
     this->Modified();
     }
 }
@@ -84,10 +88,13 @@ void
 SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject )
 {
+  this->m_MovingGroupSpatialObject = GroupType::New();
+
   this->m_MovingGroupSpatialObject->AddChild(movingSpatialObject);
 
   this->ProcessObject::SetNthInput(1, const_cast<GroupType *>(
       m_MovingGroupSpatialObject ) );
+
   this->Modified();
 }
 
@@ -100,6 +107,7 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 
   this->ProcessObject::SetNthInput(1, const_cast<GroupType *>(
       m_MovingGroupSpatialObject ) );
+
   this->Modified();
 }
 
@@ -162,7 +170,8 @@ const typename SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>::T
 * SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::GetOutput() const
   {
-  return static_cast<const TransformOutputType *>( this->ProcessObject::GetOutput( 0 ) );
+  return static_cast<const TransformOutputType *>(
+    this->ProcessObject::GetOutput( 0 ) );
   }
 
 template <class TSpatialObject, class TImage>

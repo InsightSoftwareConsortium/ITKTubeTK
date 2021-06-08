@@ -1,50 +1,57 @@
 /*=========================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: ITKHeader.h,v $
-  Language:  C++
-  Date:      $Date: 2007-07-10 11:35:36 -0400 ( Tue, 10 Jul 2007 ) $
-  Version:   $Revision: 0 $
+Library:   TubeTK
 
-  Copyright ( c ) 2002 Insight Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright Kitware Inc.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 ( the "License" );
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
-#ifndef __itkScaleSkewVersor3DImageToImageRegistrationMethod_h
-#define __itkScaleSkewVersor3DImageToImageRegistrationMethod_h
+
+#ifndef __itkScaleSkewVersor3DSpatialObjectToImageRegistrationMethod_h
+#define __itkScaleSkewVersor3DSpatialObjectToImageRegistrationMethod_h
 
 #include "itkImage.h"
 #include "itkComposeScaleSkewVersor3DTransform.h"
 
-#include "itkOptimizedImageToImageRegistrationMethod.h"
+#include "itkOptimizedSpatialObjectToImageRegistrationMethod.h"
 
 namespace itk
 {
 
-template <class TImage>
-class ScaleSkewVersor3DImageToImageRegistrationMethod
-  : public OptimizedImageToImageRegistrationMethod<
-    Image< typename TImage::PixelType, 3 > >
+template <class TSpatialObject, class TImage>
+class ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod
+  : public OptimizedSpatialObjectToImageRegistrationMethod<
+    TSpatialObject, Image< typename TImage::PixelType, 3 > >
 {
 
 public:
 
-  typedef ScaleSkewVersor3DImageToImageRegistrationMethod Self;
-  typedef OptimizedImageToImageRegistrationMethod<
-    Image< typename TImage::PixelType, 3 > >              Superclass;
+  typedef ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod Self;
+  typedef OptimizedSpatialObjectToImageRegistrationMethod<
+    TSpatialObject, Image< typename TImage::PixelType, 3 > >      Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
 
-  itkTypeMacro( ScaleSkewVersor3DImageToImageRegistrationMethod,
-                OptimizedImageToImageRegistrationMethod );
+  itkTypeMacro( ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod,
+                OptimizedSpatialObjectToImageRegistrationMethod );
 
   itkNewMacro( Self );
 
   itkStaticConstMacro( ImageDimension, unsigned int, 3 );
+  itkStaticConstMacro( ObjectDimension, unsigned int, 3 );
 
   //
   // Typedefs from Superclass
@@ -99,7 +106,7 @@ public:
    * SetInitialTransformParameters() and
    * SetInitialTransformFixedParameters(). The method below facilitates to
    * use the AffineTransform returned by the
-   * InitialImageToImageRegistrationMethod
+   * InitialSpatialObjectToImageRegistrationMethod
    * to directly initialize this registration method.
    */
   void SetInitialTransformParametersFromAffineTransform(
@@ -107,15 +114,15 @@ public:
 
 protected:
 
-  ScaleSkewVersor3DImageToImageRegistrationMethod( void );
-  virtual ~ScaleSkewVersor3DImageToImageRegistrationMethod( void );
+  ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod( void );
+  virtual ~ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 
   // Purposely not implemented
-  ScaleSkewVersor3DImageToImageRegistrationMethod( const Self & );
+  ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod( const Self & );
   // Purposely not implemented
   void operator =( const Self & );
 
@@ -124,7 +131,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkScaleSkewVersor3DImageToImageRegistrationMethod.hxx"
+#include "itkScaleSkewVersor3DSpatialObjectToImageRegistrationMethod.hxx"
 #endif
 
-#endif // __ImageToImageRegistrationMethod_h
+#endif // __SpatialObjectToImageRegistrationMethod_h

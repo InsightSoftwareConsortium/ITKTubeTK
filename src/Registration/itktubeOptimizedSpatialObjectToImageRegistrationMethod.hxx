@@ -161,8 +161,6 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
   //   registration.  Other derived registration methods should use
   //   their own default.
   m_NumberOfSamples = 100000;
-  m_FixedImageSamplesIntensityThreshold = 0;
-  m_UseFixedImageSamplesIntensityThreshold = false;
 
   m_TargetError = 0.00001;
 
@@ -181,15 +179,6 @@ template <class TSpatialObject, class TImage>
 OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 ::~OptimizedSpatialObjectToImageRegistrationMethod( void )
 {
-}
-
-template <class TSpatialObject, class TImage>
-void
-OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
-::SetFixedImageSamplesIntensityThreshold( PixelType val )
-{
-  m_FixedImageSamplesIntensityThreshold = val;
-  m_UseFixedImageSamplesIntensityThreshold = true;
 }
 
 template <class TSpatialObject, class TImage>
@@ -243,148 +232,30 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
   typename ImageType::ConstPointer fixedImage = this->GetFixedImage();
   typename ImageType::ConstPointer movingSpatialObject = this->GetMovingSpatialObject();
 
-  //
-  // HERE
-  //
   metric->SetFixedImage( fixedImage );
   metric->SetMovingSpatialObject( movingSpatialObject );
 
   metric->SetNumberOfSpatialSamples( m_NumberOfSamples );
 
-  if( this->GetUseRegionOfInterest() ||
-      this->GetUseFixedImageSamplesIntensityThreshold() ||
-      this->GetUseFixedImageMaskObject() )
+  metric->SetUseRegionOfInterest( this->GetUseRegionOfInterest() );
+  if( this->GetUseRegionOfInterest() )
     {
-    if( this->GetReportProgress() )
-      {
-      std::cout << "Creating fixed image samples" << std::endl;
-      }
-
-    itk::ImageRegionConstIteratorWithIndex<ImageType> iter( fixedImage,
-      fixedImage->GetLargestPossibleRegion() );
-    typename ImageType::IndexType index;
-    typename ImageType::IndexType movingIndex;
-    typename MetricType::InputPointType fixedPoint;
-    typename MetricType::InputPointType movingPoint;
-
-    iter.GoToBegin();
-    int count = 0;
-    for( iter.GoToBegin(); !iter.IsAtEnd(); ++iter )
-      {
-      index = iter.GetIndex();
-      fixedImage->TransformIndexToPhysicalPoint(index, fixedPoint);
-      if( this->GetUseFixedImageSamplesIntensityThreshold() )
-        {
-        if( iter.Get() < this->m_FixedImageSamplesIntensityThreshold )
-          {
-          continue;
-          }
-        }
-      if( this->GetUseFixedImageMaskObject() )
-        {
-        double val;
-        if( this->GetFixedImageMaskObject()->ValueAtInWorldSpace( fixedPoint, val ) )
-          {
-          if( val == 0 )
-            {
-            continue;
-            }
-          }
-        }
-      if( this->GetUseRegionOfInterest() )
-        {
-        bool isInside = true;
-        for( unsigned int i = 0; i < ImageDimension; i++ )
-          {
-          if( !( (fixedPoint[i] >= this->GetRegionOfInterestPoint1()[i] &&
-                  fixedPoint[i] <= this->GetRegionOfInterestPoint2()[i])
-                 || (fixedPoint[i] >= this->GetRegionOfInterestPoint2()[i] &&
-                     fixedPoint[i] <= this->GetRegionOfInterestPoint1()[i]) ) )
-            {
-            isInside = false;
-            break;
-            }
-          }
-        if( !isInside )
-          {
-          continue;
-          }
-        }
-
-      ++count;
-      }
-    double samplingRate = (double)(m_NumberOfSamples + 2) / (double)count;
-    if( this->GetReportProgress() )
-      {
-      std::cout << "...Second pass, sampling rate = " << samplingRate
-        << std::endl;
-      }
-
-    if( samplingRate > 1 )
-      {
-      samplingRate = 1;
-      itkWarningMacro(
-         << "Adjusting the number of samples due to restrictive criteria.");
-      this->SetNumberOfSamples( count );
-      metric->SetNumberOfSpatialSamples( m_NumberOfSamples );
-      }
-    double step = 0;
-    typename MetricType::FixedImageIndexContainer indexList;
-    indexList.clear();
-    for( iter.GoToBegin(); !iter.IsAtEnd(); ++iter )
-      {
-      index = iter.GetIndex();
-      fixedImage->TransformIndexToPhysicalPoint(index, fixedPoint);
-      if( this->GetUseFixedImageSamplesIntensityThreshold() )
-        {
-        if( iter.Get() < this->m_FixedImageSamplesIntensityThreshold )
-          {
-          continue;
-          }
-        }
-      if( this->GetUseFixedImageMaskObject() )
-        {
-        double val;
-        if( this->GetFixedImageMaskObject()->ValueAtInWorldSpace( fixedPoint, val ) )
-          {
-          if( val == 0 )
-            {
-            continue;
-            }
-          }
-        }
-      step = step + samplingRate;
-      if( step > 1 )
-        {
-        indexList.push_back( index );
-        while( step > 1 )
-          {
-          step -= 1;
-          }
-
-        if( indexList.size() == m_NumberOfSamples )
-          {
-          break;
-          }
-        }
-      }
-    if( indexList.size() != m_NumberOfSamples )
-      {
-      itkWarningMacro(<< "Full set of samples not collected. Collected "
-                      << indexList.size() << " of " << m_NumberOfSamples );
-      this->SetNumberOfSamples( indexList.size() );
-      metric->SetNumberOfSpatialSamples( m_NumberOfSamples );
-      }
-    metric->SetFixedImageIndexes( indexList );
+    metric->SetRegionOfInterestPoint1( this->GetRegionOfInterestPoint1() );
+    metric->SetRegionOfInterestPoint2( this->GetRegionOfInterestPoint2() );
     }
 
-  if( this->GetUseMovingImageMaskObject() )
+  metric->SetUseFixedImageMaskObject( this->GetUseFixedImageMaskObject() );
+  if( this->GetUseFixedImageMaskObject() )
     {
-    if( this->GetMovingImageMaskObject() )
-      {
-      metric->SetMovingImageMask( const_cast<itk::SpatialObject<ImageDimension> *>
-        (this->GetMovingImageMaskObject() ) );
-      }
+    metric->SetFixedImageMaskObject( this->GetFixedImageMaskObject() );
+    }
+
+  metric->SetUseMovingSpatialObjectMaskObject(
+    this->GetUseMovingSpatialObjectMaskObject() );
+  if( this->GetUseMovingSpatialObjectMaskObject() )
+    {
+    metric->SetMovingSpatialObjectMaskObject(
+      this->GetMovingSpatialObjectMaskObject() );
     }
 
   typename InterpolatorType::Pointer interpolator;
@@ -407,7 +278,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
         double>::New();
       break;
     }
-  interpolator->SetInputImage( this->GetMovingImage() );
+  interpolator->SetInputImage( this->GetFixedImage() );
 
   try
     {
@@ -469,9 +340,10 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 
     typename RegType::Pointer reg = RegType::New();
     typename ImageType::ConstPointer fixedImage = this->GetFixedImage();
-    typename ImageType::ConstPointer movingImage = this->GetMovingImage();
+    typename GroupType::ConstPointer movingImage =
+      this->GetMovingGroupSpatialObject();
     reg->SetFixedImage( fixedImage );
-    reg->SetMovingImage( movingImage );
+    reg->SetMovingGroupSpatialObject( movingGroupSpatialObject );
     reg->SetFixedImageRegion( this->GetFixedImage()
                               ->GetLargestPossibleRegion() );
     reg->SetTransform( this->GetTransform() );
@@ -557,9 +429,10 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 
   typename RegType::Pointer reg = RegType::New();
   typename ImageType::ConstPointer fixedImage = this->GetFixedImage();
-  typename ImageType::ConstPointer movingImage = this->GetMovingImage();
+  typename ImageType::ConstPointer movingImage =
+    this->GetMovingGroupSpatialObject();
   reg->SetFixedImage( fixedImage );
-  reg->SetMovingImage( movingImage );
+  reg->SetMovingGroupSpatialObject( movingGroupSpatialObject );
   reg->SetFixedImageRegion( this->GetFixedImage()
     ->GetLargestPossibleRegion() );
   reg->SetTransform( this->GetTransform() );
@@ -654,21 +527,13 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 
   os << indent << "Number of Samples = " << m_NumberOfSamples << std::endl;
 
-  os << indent << "Samples threshold = " <<
-    m_FixedImageSamplesIntensityThreshold << std::endl;
-
   os << indent << "Target Error = " << m_TargetError << std::endl;
 
   switch( m_MetricMethodEnum )
     {
-    case MATTES_MI_METRIC:
-      os << indent << "Metric method = Mattes Mutual Information" << std::endl;
-      break;
-    case NORMALIZED_CORRELATION_METRIC:
-      os << indent << "Metric method = Normalized Correlation" << std::endl;
-      break;
-    case MEAN_SQUARED_ERROR_METRIC:
-      os << indent << "Metric method = Mean Squared Error" << std::endl;
+    default:
+    case TUBE_TO_IMAGE_METRIC:
+      os << indent << "Metric method = Tube to image metric" << std::endl;
       break;
     }
 
