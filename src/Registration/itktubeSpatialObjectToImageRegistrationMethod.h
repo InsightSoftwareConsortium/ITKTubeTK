@@ -40,7 +40,7 @@ namespace itk
  * problem.
  *
  */
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 class SpatialObjectToImageRegistrationMethod
   : public ProcessObject
 {
@@ -59,9 +59,6 @@ public:
   //
   // Custom Typedefs
   //
-  itkStaticConstMacro( ObjectDimension, unsigned int,
-                       TSpatialObject::Dimension );
-
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
 
@@ -76,14 +73,11 @@ public:
   typedef Superclass::DataObjectPointerArraySizeType
                                        DataObjectPointerArraySizeType;
 
-  typedef TSpatialObject SpatialObjectType;
-  typedef TImage         ImageType;
+  typedef SpatialObject<ObjectDimension> SpatialObjectType;
+  typedef TImage                         ImageType;
 
-  typedef GroupSpatialObject<itkGetStaticConstMacro( ObjectDimension )>
-  GroupType;
-
-  typedef typename TSpatialObject::PointType SpatialObjectPointType;
-  typedef typename TImage::PointType PointType;
+  typedef typename SpatialObjectType::PointType SpatialObjectPointType;
+  typedef typename ImageType::PointType         PointType;
 
   typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
   ImageMaskObjectType;
@@ -101,23 +95,20 @@ public:
   itkGetModifiableObjectMacro( Observer, Command );
 
   void SetFixedImage( const ImageType * fixedImage );
-
   itkGetConstObjectMacro( FixedImage, ImageType );
 
   void SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject );
-  void SetMovingGroupSpatialObject( const GroupType * movingSpatialObject );
+  itkGetConstObjectMacro( MovingSpatialObject, SpatialObjectType );
 
-  itkGetConstObjectMacro( MovingGroupSpatialObject, GroupType );
-
-  void SetRegionOfInterest( const PointType & point1,
+  void SetFixedImageRegionOfInterest( const PointType & point1,
     const PointType & point2 );
 
-  itkSetMacro( UseRegionOfInterest, bool );
-  itkGetMacro( UseRegionOfInterest, bool );
-  itkSetMacro( RegionOfInterestPoint1, PointType );
-  itkGetMacro( RegionOfInterestPoint1, PointType );
-  itkSetMacro( RegionOfInterestPoint2, PointType );
-  itkGetMacro( RegionOfInterestPoint2, PointType );
+  itkSetMacro( UseFixedImageRegionOfInterest, bool );
+  itkGetMacro( UseFixedImageRegionOfInterest, bool );
+  itkSetMacro( FixedImageRegionOfInterestPoint1, PointType );
+  itkGetMacro( FixedImageRegionOfInterestPoint1, PointType );
+  itkSetMacro( FixedImageRegionOfInterestPoint2, PointType );
+  itkGetMacro( FixedImageRegionOfInterestPoint2, PointType );
 
   void SetFixedImageMaskObject( const ImageMaskObjectType * maskObject );
 
@@ -182,12 +173,12 @@ private:
 
   Command::Pointer m_Observer;
 
-  typename ImageType::ConstPointer       m_FixedImage;
-  typename GroupType::ConstPointer       m_MovingGroupSpatialObject;
+  typename ImageType::ConstPointer              m_FixedImage;
+  typename SpatialObjectType::ConstPointer      m_MovingSpatialObject;
 
-  bool      m_UseRegionOfInterest;
-  PointType m_RegionOfInterestPoint1;
-  PointType m_RegionOfInterestPoint2;
+  bool      m_UseFixedImageRegionOfInterest;
+  PointType m_FixedImageRegionOfInterestPoint1;
+  PointType m_FixedImageRegionOfInterestPoint2;
 
   bool                                   m_UseFixedImageMaskObject;
   typename MaskObjectType::ConstPointer  m_FixedImageMaskObject;

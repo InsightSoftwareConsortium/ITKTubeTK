@@ -31,16 +31,16 @@ limitations under the License.
 namespace itk
 {
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 class OptimizedSpatialObjectToImageRegistrationMethod
-  : public SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+  : public SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 {
 
 public:
 
   typedef OptimizedSpatialObjectToImageRegistrationMethod
                                                   Self;
-  typedef SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+  typedef SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
                                                   Superclass;
   typedef SmartPointer<Self>                      Pointer;
   typedef SmartPointer<const Self>                ConstPointer;
@@ -53,10 +53,8 @@ public:
   //
   // Typedefs from Superclass
   //
-  typedef TImage         ImageType;
-  typedef TSpatialObject SpatialObjectType;
-
-  typedef typename Superclass::GroupType GroupType;
+  typedef TImage                         ImageType;
+  typedef SpatialObject<ObjectDimension> SpatialObjectType;
 
   typedef typename ImageType::PixelType PixelType;
 
@@ -105,9 +103,6 @@ public:
   itkSetMacro( TransformParametersScales, TransformParametersScalesType );
   itkGetConstMacro( TransformParametersScales, TransformParametersScalesType );
 
-  itkSetMacro( MinimizeMemory, bool );
-  itkGetConstMacro( MinimizeMemory, bool );
-
   itkSetMacro( MaxIterations, unsigned int );
   itkGetConstMacro( MaxIterations, unsigned int );
 
@@ -116,6 +111,9 @@ public:
 
   itkSetMacro( NumberOfSamples, unsigned int );
   itkGetConstMacro( NumberOfSamples, unsigned int );
+
+  itkSetMacro( SamplingRatio, double );
+  itkGetConstMacro( SamplingRatio, double );
 
   itkSetMacro( TargetError, double );
   itkGetConstMacro( TargetError, double );
@@ -144,7 +142,7 @@ protected:
 
   typedef InterpolateImageFunction<TImage, double> InterpolatorType;
 
-  typedef SpatialObjectToImageMetric<TSpatialObject, TImage>       MetricType;
+  typedef SpatialObjectToImageMetric<ObjectDimension, TImage>       MetricType;
 
   virtual void Optimize( MetricType * metric, InterpolatorType * interpolator );
 
@@ -164,13 +162,12 @@ private:
 
   TransformParametersScalesType m_TransformParametersScales;
 
-  bool m_MinimizeMemory;
-
   unsigned int m_MaxIterations;
 
   bool m_UseEvolutionaryOptimization;
 
   unsigned int m_NumberOfSamples;
+  double       m_SamplingRatio;
 
   double m_TargetError;
 

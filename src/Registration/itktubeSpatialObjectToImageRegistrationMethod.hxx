@@ -28,8 +28,8 @@ limitations under the License.
 namespace itk
 {
 
-template <class TSpatialObject, class TImage>
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SpatialObjectToImageRegistrationMethod( void )
 {
   this->SetNumberOfRequiredOutputs( 1 ); // the transform
@@ -45,7 +45,7 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
   this->GetMultiThreader()->SetNumberOfWorkUnits( this->m_RegistrationNumberOfWorkUnits );
 
   this->m_FixedImage = 0;
-  this->m_MovingGroupSpatialObject = 0;
+  this->m_MovingSpatialObject = 0;
 
   this->m_UseFixedImageMaskObject = false;
   this->m_FixedImageMaskObject = 0;
@@ -56,21 +56,21 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
   this->m_Observer = 0;
   this->m_ReportProgress = false;
 
-  this->m_UseRegionOfInterest = false;
-  this->m_RegionOfInterestPoint1.Fill(0);
-  this->m_RegionOfInterestPoint2.Fill(0);
+  this->m_UseFixedImageRegionOfInterest = false;
+  this->m_FixedImageRegionOfInterestPoint1.Fill(0);
+  this->m_FixedImageRegionOfInterestPoint2.Fill(0);
 
 }
 
-template <class TSpatialObject, class TImage>
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::~SpatialObjectToImageRegistrationMethod( void )
 {
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetFixedImage( const ImageType * fixedImage )
 {
   if( this->m_FixedImage.GetPointer() != fixedImage )
@@ -83,47 +83,35 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject )
 {
-  this->m_MovingGroupSpatialObject = GroupType::New();
+  if( this->m_MovingSpatialObject != movingSpatialObject )
+    {
+    this->m_MovingSpatialObject = movingSpatialObject;
 
-  this->m_MovingGroupSpatialObject->AddChild(movingSpatialObject);
+    this->ProcessObject::SetNthInput(1, const_cast<SpatialObjectType *>(
+        m_MovingSpatialObject ) );
 
-  this->ProcessObject::SetNthInput(1, const_cast<GroupType *>(
-      m_MovingGroupSpatialObject ) );
-
-  this->Modified();
+    this->Modified();
+    }
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
-::SetMovingGroupSpatialObject( const GroupType * movingGroupSpatialObject )
+SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
+::SetFixedImageRegionOfInterest( const PointType & point1, const PointType & point2 )
 {
-  this->m_MovingGroupSpatialObject = movingGroupSpatialObject;
-
-  this->ProcessObject::SetNthInput(1, const_cast<GroupType *>(
-      m_MovingGroupSpatialObject ) );
-
-  this->Modified();
+  m_FixedImageRegionOfInterestPoint1 = point1;
+  m_FixedImageRegionOfInterestPoint2 = point2;
+  m_UseFixedImageRegionOfInterest = true;
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
-::SetRegionOfInterest( const PointType & point1, const PointType & point2 )
-{
-  m_RegionOfInterestPoint1 = point1;
-  m_RegionOfInterestPoint2 = point2;
-  m_UseRegionOfInterest = true;
-}
-
-template <class TSpatialObject, class TImage>
-void
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetFixedImageMaskObject( const MaskObjectType * maskObject )
 {
   if( this->m_FixedImageMaskObject.GetPointer() != maskObject )
@@ -143,9 +131,9 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetMovingSpatialObjectMaskObject( const MaskObjectType * maskObject )
 {
   if( this->m_MovingSpatialObjectMaskObject.GetPointer() != maskObject )
@@ -165,18 +153,18 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
-const typename SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>::TransformOutputType
-* SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+const typename SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformOutputType
+* SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetOutput() const
   {
   return static_cast<const TransformOutputType *>(
     this->ProcessObject::GetOutput( 0 ) );
   }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 DataObject::Pointer
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::MakeOutput( DataObjectPointerArraySizeType idx )
 {
   switch( idx )
@@ -192,9 +180,9 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 ModifiedTimeType
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetMTime( void ) const
 {
   unsigned long mtime = Superclass::GetMTime();
@@ -218,9 +206,9 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     mtime = (m > mtime ? m : mtime);
     }
 
-  if( m_MovingGroupSpatialObject.IsNotNull() )
+  if( m_MovingSpatialObject.IsNotNull() )
     {
-    m = m_MovingGroupSpatialObject->GetMTime();
+    m = m_MovingSpatialObject->GetMTime();
     mtime = (m > mtime ? m : mtime);
     }
 
@@ -233,9 +221,9 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
   return mtime;
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::Initialize( void )
 {
   this->GetMultiThreader()->SetNumberOfWorkUnits( m_RegistrationNumberOfWorkUnits );
@@ -250,7 +238,7 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     itkExceptionMacro( << "Fixed image is not set" );
     }
 
-  if( m_MovingGroupSpatialObject.IsNull() )
+  if( m_MovingSpatialObject.IsNull() )
     {
     itkExceptionMacro( << "Moving image is not set" );
     }
@@ -262,17 +250,17 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
 {
   this->Update();
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
@@ -306,7 +294,7 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     os << indent << "Fixed Image = 0" << std::endl;
     }
 
-  if( this->m_MovingGroupSpatialObject.IsNotNull() )
+  if( this->m_MovingSpatialObject.IsNotNull() )
     {
     os << indent << "Moving Image = " << this->m_FixedImage << std::endl;
     }
@@ -315,11 +303,11 @@ SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     os << indent << "Moving Image = 0" << std::endl;
     }
 
-  os << indent << "Use region of interest = " << m_UseRegionOfInterest
+  os << indent << "Use fixed image region of interest = " << m_UseFixedImageRegionOfInterest
      << std::endl;
-  os << indent << "Region of interest point1 = " << m_RegionOfInterestPoint1
+  os << indent << "Fixed image region of interest point1 = " << m_FixedImageRegionOfInterestPoint1
      << std::endl;
-  os << indent << "Region of interest point2 = " << m_RegionOfInterestPoint2
+  os << indent << "Fixed image region of interest point2 = " << m_FixedImageRegionOfInterestPoint2
      << std::endl;
 
   if( this->m_FixedImageMaskObject.IsNotNull() )

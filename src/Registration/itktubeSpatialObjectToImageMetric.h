@@ -143,6 +143,32 @@ public:
   /** Get the Interpolator. */
   itkGetModifiableObjectMacro(Interpolator, InterpolatorType);
 
+   void SetFixedImageRegionOfInterest( const PointType & point1,
+    const PointType & point2 );
+
+  itkSetMacro( UseFixedImageRegionOfInterest, bool );
+  itkGetMacro( UseFixedImageRegionOfInterest, bool );
+  itkSetMacro( FixedImageRegionOfInterestPoint1, PointType );
+  itkGetMacro( FixedImageRegionOfInterestPoint1, PointType );
+  itkSetMacro( FixedImageRegionOfInterestPoint2, PointType );
+  itkGetMacro( FixedImageRegionOfInterestPoint2, PointType );
+
+  void SetFixedImageMaskObject( const ImageMaskObjectType * maskObject );
+
+  itkGetConstObjectMacro( FixedImageMaskObject, ImageMaskObjectType );
+
+  itkSetMacro( UseFixedImageMaskObject, bool );
+  itkGetMacro( UseFixedImageMaskObject, bool );
+
+  void SetMovingSpatialObjectMaskObject(
+    const SpatialObjectMaskObjectType * maskObject );
+
+  itkGetConstObjectMacro( MovingSpatialObjectMaskObject,
+    SpatialObjectMaskObjectType );
+
+  itkSetMacro( UseMovingSpatialObjectMaskObject, bool );
+  itkGetMacro( UseMovingSpatialObjectMaskObject, bool );
+
   /** Get Value and Derivatives for MultipleValuedOptimizers */
   void
   GetValueAndDerivative(const ParametersType & parameters,
@@ -178,6 +204,18 @@ protected:
 
   MovingSpatialObjectConstPointer m_MovingSpatialObject;
   FixedImageConstPointer          m_FixedImage;
+
+  bool      m_UseFixedImageRegionOfInterest;
+  PointType m_FixedImageRegionOfInterestPoint1;
+  PointType m_FixedImageRegionOfInterestPoint2;
+
+  bool                                   m_UseFixedImageMaskObject;
+  typename MaskObjectType::ConstPointer  m_FixedImageMaskObject;
+
+  bool                                   m_UseMovingSpatialObjectMaskObject;
+  typename MaskObjectType::ConstPointer  m_MovingSpatialObjectMaskObject;
+
+
   ParametersType                  m_LastTransformParameters;
 };
 } // end namespace itk

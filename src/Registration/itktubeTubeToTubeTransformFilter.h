@@ -57,13 +57,13 @@ class TubeToTubeTransformFilter :
 {
 public:
 
-  typedef GroupSpatialObject< TDimension >                   GroupType;
+  typedef GroupSpatialObject< TDimension >                   GroupSpatialObjectType;
 
   /** Standard class typedefs. */
   typedef TubeToTubeTransformFilter< TTransformType, TDimension >
     Self;
 
-  typedef SpatialObjectToSpatialObjectFilter< GroupType, GroupType >
+  typedef SpatialObjectToSpatialObjectFilter< GroupSpatialObjectType, GroupSpatialObjectType >
     Superclass;
 
   typedef SmartPointer< Self >                               Pointer;

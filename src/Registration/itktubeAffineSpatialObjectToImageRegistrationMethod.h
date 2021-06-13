@@ -31,15 +31,15 @@ limitations under the License.
 namespace itk
 {
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 class AffineSpatialObjectToImageRegistrationMethod
-  : public OptimizedSpatialObjectToImageRegistrationMethod<TImage>
+  : public OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 {
 
 public:
 
   typedef AffineSpatialObjectToImageRegistrationMethod            Self;
-  typedef OptimizedSpatialObjectToImageRegistrationMethod<TImage> Superclass;
+  typedef OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage> Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
 

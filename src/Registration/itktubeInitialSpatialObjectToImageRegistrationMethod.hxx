@@ -20,19 +20,19 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __InitialImageToImageRegistrationMethod_txx
-#define __InitialImageToImageRegistrationMethod_txx
+#ifndef __InitialSpatialObjectToImageRegistrationMethod_txx
+#define __InitialSpatialObjectToImageRegistrationMethod_txx
 
-#include "itkInitialImageToImageRegistrationMethod.h"
+#include "itkInitialSpatialObjectToImageRegistrationMethod.h"
 
 #include "itkImageRegionMomentsCalculator.h"
 
 namespace itk
 {
 
-template <class TImage>
-InitialImageToImageRegistrationMethod<TImage>
-::InitialImageToImageRegistrationMethod( void )
+template <int ObjectDimension, class TImage>
+InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
+::InitialSpatialObjectToImageRegistrationMethod( void )
 {
   this->SetTransform( TransformType::New() );
   this->GetTypedTransform()->SetIdentity();
@@ -45,17 +45,17 @@ InitialImageToImageRegistrationMethod<TImage>
 
 }
 
-template <class TImage>
-InitialImageToImageRegistrationMethod<TImage>
-::~InitialImageToImageRegistrationMethod( void )
+template <int ObjectDimension, class TImage>
+InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
+::~InitialSpatialObjectToImageRegistrationMethod( void )
 {
 }
 
 /** Only the GenerateData() method should be overloaded. The Update() method
  * must not be overloaded */
-template <class TImage>
+template <int ObjectDimension, class TImage>
 void
-InitialImageToImageRegistrationMethod<TImage>
+InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
 {
   Superclass::GenerateData();
@@ -298,22 +298,22 @@ InitialImageToImageRegistrationMethod<TImage>
       }
 
     typename MomentsCalculatorType::AffineTransformType::Pointer
-    movingImageAxesTransform;
-    movingImageAxesTransform =
+      movingSpatialObjectAxesTransform;
+    movingSpatialObjectAxesTransform =
       momCalc->GetPrincipalAxesToPhysicalAxesTransform();
 
-    typename TransformType::InputPointType movingImageCenterOfMass;
+    typename TransformType::InputPointType movingSpatialObjectCenterOfMass;
     for( unsigned int i = 0; i < this->ImageDimension; i++ )
       {
-      movingImageCenterOfMass[i] = momCalc->GetCenterOfGravity()[i];
+      movingSpatialObjectCenterOfMass[i] = momCalc->GetCenterOfGravity()[i];
       }
 
     typename TransformType::OffsetType offset;
-    offset = movingImageCenterOfMass - fixedImageCenterOfMass;
+    offset = movingSpatialObjectCenterOfMass - fixedImageCenterOfMass;
 
     if( this->m_NumberOfMoments == 1 ) // Centers of mass
       {
-      newTransform->SetCenter(movingImageCenterOfMass);
+      newTransform->SetCenter(movingSpatialObjectCenterOfMass);
       newTransform->SetOffset(offset);
       }
     else  // m_NumberOfMoments == 2 // Principle axes
@@ -321,32 +321,32 @@ InitialImageToImageRegistrationMethod<TImage>
       newTransform->SetCenter(fixedImageCenterOfMass);
       newTransform->SetMatrix(fixedImageAxesTransform->GetMatrix() );
       newTransform->SetOffset(fixedImageAxesTransform->GetOffset() );
-      newTransform->Compose(movingImageAxesTransform, true);
+      newTransform->Compose(movingSpatialObjectAxesTransform, true);
       }
     }
 
   this->SetTransform(newTransform);
 }
 
-template <class TImage>
-typename InitialImageToImageRegistrationMethod<TImage>::TransformType
-* InitialImageToImageRegistrationMethod<TImage>
+template <int ObjectDimension, class TImage>
+typename InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
+* InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void )
   {
   return static_cast<TransformType  *>( Superclass::GetTransform() );
   }
 
-template <class TImage>
-const typename InitialImageToImageRegistrationMethod<TImage>::TransformType
-* InitialImageToImageRegistrationMethod<TImage>
+template <int ObjectDimension, class TImage>
+const typename InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
+* InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void ) const
   {
   return static_cast<const TransformType  *>( this->Superclass::GetTransform() );
   }
 
-template <class TImage>
-typename InitialImageToImageRegistrationMethod<TImage>::TransformPointer
-InitialImageToImageRegistrationMethod<TImage>
+template <int ObjectDimension, class TImage>
+typename InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformPointer
+InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetAffineTransform( void ) const
 {
   typename TransformType::Pointer trans = TransformType::New();
@@ -361,27 +361,27 @@ InitialImageToImageRegistrationMethod<TImage>
   return trans;
 }
 
-template <class TImage>
+template <int ObjectDimension, class TImage>
 void
-InitialImageToImageRegistrationMethod<TImage>
+InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetFixedLandmarks( const LandmarkPointContainer& fixedLandmarks )
 {
   m_FixedLandmarks = fixedLandmarks;
   this->Modified();
 }
 
-template <class TImage>
+template <int ObjectDimension, class TImage>
 void
-InitialImageToImageRegistrationMethod<TImage>
+InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetMovingLandmarks( const LandmarkPointContainer& movingLandmarks )
 {
   m_MovingLandmarks = movingLandmarks;
   this->Modified();
 }
 
-template <class TImage>
+template <int ObjectDimension, class TImage>
 void
-InitialImageToImageRegistrationMethod<TImage>
+InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

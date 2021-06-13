@@ -36,15 +36,15 @@ limitations under the License.
 namespace itk
 {
 
-template <class TImage>
+template <int ObjectDimension, class TImage>
 class InitialImageToImageRegistrationMethod
-  : public ImageToImageRegistrationMethod<TImage>
+  : public SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 {
 
 public:
 
   typedef InitialImageToImageRegistrationMethod  Self;
-  typedef ImageToImageRegistrationMethod<TImage> Superclass;
+  typedef ImageToImageRegistrationMethod<ObjectDimension, TImage> Superclass;
   typedef SmartPointer<Self>                     Pointer;
   typedef SmartPointer<const Self>               ConstPointer;
 

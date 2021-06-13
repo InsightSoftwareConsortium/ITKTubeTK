@@ -133,8 +133,8 @@ protected:
 
 };
 
-template <class TSpatialObject, class TImage>
-OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::OptimizedSpatialObjectToImageRegistrationMethod( void )
 {
   m_InitialTransformParameters = TransformParametersType(1);
@@ -153,14 +153,14 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
   //   registration.  Other derived registration methods should use
   //   their own default.
   m_MaxIterations = 100;
-  m_MinimizeMemory = false;
 
   m_UseEvolutionaryOptimization = true;
 
   // The following NumberOfSamples value is a good default for rigid
   //   registration.  Other derived registration methods should use
   //   their own default.
-  m_NumberOfSamples = 100000;
+  m_SamplingRatio = 0.01;
+  m_NumberOfSamples = 0;
 
   m_TargetError = 0.00001;
 
@@ -175,15 +175,15 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 
 }
 
-template <class TSpatialObject, class TImage>
-OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::~OptimizedSpatialObjectToImageRegistrationMethod( void )
 {
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
 {
   if( this->GetReportProgress() )
@@ -203,19 +203,10 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     default:
     case TUBE_TO_IMAGE_METRIC:
         {
-        typedef MattesMutualInformationSpatialObjectToImageMetric<TSpatialObject, TImage, TImage>
+        typedef TubeToImageMetric<ObjectDimension, TImage>
           TypedMetricType;
 
         typename TypedMetricType::Pointer typedMetric = TypedMetricType::New();
-
-        typedMetric->SetNumberOfHistogramBins( 100 );
-        // Shouldn't need to limit this call to cases of bspline transforms.
-        // if( m_MinimizeMemory && m_TransformMethodEnum == BSPLINE_TRANSFORM )
-        if( m_MinimizeMemory )
-          {
-          typedMetric->SetUseExplicitPDFDerivatives( false );
-          typedMetric->SetUseCachingOfBSplineWeights( false );
-          }
         metric = typedMetric;
         }
       break;
@@ -235,13 +226,20 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
   metric->SetFixedImage( fixedImage );
   metric->SetMovingSpatialObject( movingSpatialObject );
 
-  metric->SetNumberOfSpatialSamples( m_NumberOfSamples );
-
-  metric->SetUseRegionOfInterest( this->GetUseRegionOfInterest() );
-  if( this->GetUseRegionOfInterest() )
+  if( m_NumberOfSamples == 0 )
     {
-    metric->SetRegionOfInterestPoint1( this->GetRegionOfInterestPoint1() );
-    metric->SetRegionOfInterestPoint2( this->GetRegionOfInterestPoint2() );
+    metric->SetSamplingRatio( m_SamplingRatio );
+    }
+  else
+    {
+    metric->SetNumberOfSpatialSamples( m_NumberOfSamples );
+    }
+
+  metric->SetUseFixedImageRegionOfInterest( this->GetUseFixedImageRegionOfInterest() );
+  if( this->GetUseFixedImageRegionOfInterest() )
+    {
+    metric->SetFixedImageRegionOfInterestPoint1( this->GetFixedImageRegionOfInterestPoint1() );
+    metric->SetFixedImageRegionOfInterestPoint2( this->GetFixedImageRegionOfInterestPoint2() );
     }
 
   metric->SetUseFixedImageMaskObject( this->GetUseFixedImageMaskObject() );
@@ -296,12 +294,12 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::Optimize( MetricType * metric, InterpolatorType * interpolator )
 {
-  typedef SpatialObjectToImageRegistrationMethod<TSpatialObject, TImage> RegType;
+  typedef SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage> RegType;
 
   if( m_UseEvolutionaryOptimization )
     {
@@ -340,10 +338,10 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 
     typename RegType::Pointer reg = RegType::New();
     typename ImageType::ConstPointer fixedImage = this->GetFixedImage();
-    typename GroupType::ConstPointer movingImage =
-      this->GetMovingGroupSpatialObject();
+    typename SpatialObjectType::ConstPointer movingSpatialObject =
+      this->GetMovingSpatialObject();
     reg->SetFixedImage( fixedImage );
-    reg->SetMovingGroupSpatialObject( movingGroupSpatialObject );
+    reg->SetMovingSpatialObject( movingSpatialObject );
     reg->SetFixedImageRegion( this->GetFixedImage()
                               ->GetLargestPossibleRegion() );
     reg->SetTransform( this->GetTransform() );
@@ -429,10 +427,10 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
 
   typename RegType::Pointer reg = RegType::New();
   typename ImageType::ConstPointer fixedImage = this->GetFixedImage();
-  typename ImageType::ConstPointer movingImage =
-    this->GetMovingGroupSpatialObject();
+  typename ImageType::ConstPointer movingSpatialObject =
+    this->GetMovingSpatialObject();
   reg->SetFixedImage( fixedImage );
-  reg->SetMovingGroupSpatialObject( movingGroupSpatialObject );
+  reg->SetMovingSpatialObject( movingSpatialObject );
   reg->SetFixedImageRegion( this->GetFixedImage()
     ->GetLargestPossibleRegion() );
   reg->SetTransform( this->GetTransform() );
@@ -499,9 +497,9 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf(os, indent);
@@ -523,9 +521,8 @@ OptimizedSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
   os << indent << "Use Evolutionary Optimization = " <<
     m_UseEvolutionaryOptimization << std::endl;
 
-  os << indent << "Minimize Memory = " << m_MinimizeMemory << std::endl;
-
   os << indent << "Number of Samples = " << m_NumberOfSamples << std::endl;
+  os << indent << "Sampling Ratio = " << m_SamplingRatio << std::endl;
 
   os << indent << "Target Error = " << m_TargetError << std::endl;
 

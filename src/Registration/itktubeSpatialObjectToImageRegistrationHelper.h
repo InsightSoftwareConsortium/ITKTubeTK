@@ -37,7 +37,7 @@ limitations under the License.
 namespace itk
 {
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 class SpatialObjectToImageRegistrationHelper : public Object
 {
 
@@ -56,45 +56,40 @@ public:
   // Custom Typedefs
   //
   typedef TImage ImageType;
-
   typedef typename TImage::PixelType PixelType;
+
+  typedef SpatialObject< ObjectDimension > SpatialObjectType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
 
-  itkStaticConstMacro( ObjectDimension, unsigned int,
-                       TSpatialObject::ObjectDimension );
-
   //
   // Available Registration Methods
   //
-  typedef SpatialObjectToImageRegistrationMethod<TImage>
+  typedef SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   RegistrationMethodType;
 
-  typedef InitialSpatialObjectToImageRegistrationMethod<TImage>
+  typedef InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   InitialRegistrationMethodType;
 
-  typedef OptimizedSpatialObjectToImageRegistrationMethod<TImage>
+  typedef OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   OptimizedRegistrationMethodType;
 
-  typedef RigidSpatialObjectToImageRegistrationMethod<TImage>
+  typedef RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   RigidRegistrationMethodType;
 
-  typedef AffineSpatialObjectToImageRegistrationMethod<TImage>
+  typedef AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   AffineRegistrationMethodType;
 
-  typedef ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TImage>
+  typedef ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   Affine2DRegistrationMethodType;
 
-  typedef ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>
+  typedef ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   Affine3DRegistrationMethodType;
 
   //
   // Typedefs for the parameters of the registration methods
   //
-  typedef typename RegistrationMethodType::GroupType
-  GroupType;
-
   typedef typename RegistrationMethodType::ImageMaskObjectType
   ImageMaskObjectType;
 
@@ -157,24 +152,17 @@ public:
   //  Specify the fixed and moving images
   // **************
   // **************
-  void LoadFixedImage( const std::string & filename );
-
-  itkSetConstObjectMacro( FixedImage, TImage );
+  void SetFixedImage( const TImage * fixedImage );
   itkGetConstObjectMacro( FixedImage, TImage );
 
-  void LoadMovingSpatialObject( const std::string & filename );
-
-  void SetMovingSpatialObject( const TSpatialObject * MovingSpatialObject );
-
-  itkSetConstObjectMacro( MovingGroupSpatialObject, GroupType );
-  itkGetConstObjectMacro( MovingGroupSpatialObject, GroupType );
+  void SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject );
+  itkGetConstObjectMacro( MovingSpatialObject, SpatialObjectType );
 
   // **************
-  //  Generic file-save function
   // **************
-  void SaveSpatialObject( const std::string & filename,
-    const SpatialObject * spatialObject );
-
+  //  Reproducibility
+  // **************
+  // **************
   itkSetMacro( RandomNumberSeed, unsigned int );
   itkGetMacro( RandomNumberSeed, unsigned int );
 
@@ -202,16 +190,16 @@ public:
   itkGetConstObjectMacro( MovingSpatialObjectMaskObject,
     SpatialObjectMaskObjectType );
 
-  itkSetMacro( UseRegionOfInterest, bool );
-  itkGetMacro( UseRegionOfInterest, bool );
-  itkSetMacro( RegionOfInterestPoint1, PointType );
-  itkGetMacro( RegionOfInterestPoint1, PointType );
-  itkSetMacro( RegionOfInterestPoint2, PointType );
-  itkGetMacro( RegionOfInterestPoint2, PointType );
-  void SetRegionOfInterest( const PointType & point1,
+  itkSetMacro( UseFixedImageRegionOfInterest, bool );
+  itkGetMacro( UseFixedImageRegionOfInterest, bool );
+  itkSetMacro( FixedImageRegionOfInterestPoint1, PointType );
+  itkGetMacro( FixedImageRegionOfInterestPoint1, PointType );
+  itkSetMacro( FixedImageRegionOfInterestPoint2, PointType );
+  itkGetMacro( FixedImageRegionOfInterestPoint2, PointType );
+  void SetFixedImageRegionOfInterest( const PointType & point1,
     const PointType & point2 );
 
-  void SetRegionOfInterest( const std::vector<float> & points );
+  void SetFixedImageRegionOfInterest( const std::vector<float> & points );
 
   // **************
   // **************
@@ -229,13 +217,13 @@ public:
   //  Resample
   // **************
   // **************
-  const GroupType * ResampleGroupSpatialObject(
-    const GroupType * movingGroupSpatialObject = NULL,
+  const SpatialObjectType * ResampleSpatialObject(
+    const SpatialObjectType * movingSpatialObject = NULL,
     const MatrixTransformType * matrixTransform = NULL,
     double portion = 1.0 );
 
   // Returns the moving image resampled into the space of the fixed image
-  typename GroupType::ConstPointer  GetFinalMovingGroupSpatialObject( void );
+  typename SpatialObjectType::ConstPointer  GetFinalMovingSpatialObject( void );
 
   // **************
   // **************
@@ -287,9 +275,6 @@ public:
   itkSetMacro( ExpectedSkewMagnitude, double );
   itkGetConstMacro( ExpectedSkewMagnitude, double );
 
-  itkSetMacro( ExpectedDeformationMagnitude, double );
-  itkGetConstMacro( ExpectedDeformationMagnitude, double );
-
   // **************
   //  Return the current product of the registration pipeline
   // **************
@@ -302,9 +287,11 @@ public:
   // is resampled after the affine registration / prior to running bspline
   // registration. The result of these resamplings is available as the
   // CurrentMovingSpatialObject.
-  itkGetConstObjectMacro( CurrentMovingSpatialObject, TSpatialObject );
-  itkGetConstObjectMacro( LoadedTransformResampledSpatialObject, TSpatialObject );
-  itkGetConstObjectMacro( MatrixTransformResampledSpatialObject, TSpatialObject );
+  itkGetConstObjectMacro( CurrentMovingSpatialObject, SpatialObjectType );
+  itkGetConstObjectMacro( LoadedTransformResampledSpatialObject,
+    SpatialObjectType );
+  itkGetConstObjectMacro( MatrixTransformResampledSpatialObject,
+    SpatialObjectType );
 
   // **************
   //  Not implemented at this time :(
@@ -325,18 +312,12 @@ public:
   itkGetMacro( ReportProgress, bool );
   itkBooleanMacro( ReportProgress );
 
-  itkSetMacro( MinimizeMemory, bool );
-  itkGetMacro( MinimizeMemory, bool );
-  itkBooleanMacro( MinimizeMemory );
-
   //
   // Loaded transforms parameters
   //
   void LoadTransform( const std::string & filename, bool invert=false );
 
   void SaveTransform( const std::string & filename );
-
-  void SaveDisplacementField( const std::string &filename );
 
   void SetLoadedMatrixTransform( const MatrixTransformType & tfm,
     bool invert=false );
@@ -428,8 +409,8 @@ private:
   void operator =( const Self & );
 
   //  Data
-  typename TImage::ConstPointer              m_FixedImage;
-  typename TSpatialObject::ConstPointer      m_MovingSpatialObject;
+  typename ImageType::ConstPointer           m_FixedImage;
+  typename SpatialObjectType::ConstPointer   m_MovingSpatialObject;
 
   bool                                       m_UseFixedImageMaskObject;
   typename ImageMaskObjectType::ConstPointer m_FixedImageMaskObject;
@@ -438,9 +419,9 @@ private:
   typename SpatialObjectMaskObjectType::ConstPointer
                                              m_MovingSpatialObjectMaskObject;
 
-  bool      m_UseRegionOfInterest;
-  PointType m_RegionOfInterestPoint1;
-  PointType m_RegionOfInterestPoint2;
+  bool      m_UseFixedImageRegionOfInterest;
+  PointType m_FixedImageRegionOfInterestPoint1;
+  PointType m_FixedImageRegionOfInterestPoint2;
 
   unsigned int m_RandomNumberSeed;
 
@@ -454,23 +435,20 @@ private:
   double m_ExpectedRotationMagnitude;
   double m_ExpectedScaleMagnitude;
   double m_ExpectedSkewMagnitude;
-  double m_ExpectedDeformationMagnitude;
 
   bool                      m_CompletedInitialization;
   RegistrationStageEnumType m_CompletedStage;
   bool                      m_CompletedResampling;
 
-  typename TSpatialObject::ConstPointer   m_CurrentMovingSpatialObject;
-  typename MatrixTransformType::Pointer   m_CurrentMatrixTransform;
+  typename SpatialObjectType::ConstPointer m_CurrentMovingGSpatialObject;
+  typename MatrixTransformType::Pointer    m_CurrentMatrixTransform;
 
-  typename TSpatialObject::ConstPointer m_LoadedTransformResampledSpatialObject;
-  typename TSpatialObject::ConstPointer m_MatrixTransformResampledSpatialObject;
+  typename SpatialObjectType::ConstPointer m_LoadedTransformResampledSpatialObject;
+  typename SpatialObjectType::ConstPointer m_MatrixTransformResampledSpatialObject;
 
   double m_FinalMetricValue;
 
   bool m_ReportProgress;
-
-  bool m_MinimizeMemory;
 
   //  Optimizer
   bool m_UseEvolutionaryOptimization;

@@ -29,8 +29,8 @@ limitations under the License.
 namespace itk
 {
 
-template <class TSpatialObject, class TImage>
-RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::RigidSpatialObjectToImageRegistrationMethod( void )
 {
   if( ImageDimension == 2 )
@@ -87,32 +87,32 @@ RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
   this->SetTransformMethodEnum( Superclass::RIGID_TRANSFORM );
 }
 
-template <class TSpatialObject, class TImage>
-RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::~RigidSpatialObjectToImageRegistrationMethod( void )
 {
   this->m_Transform->UnRegister();
 }
 
-template <class TSpatialObject, class TImage>
-typename RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>::TransformType
-* RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+typename RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
+* RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void )
   {
   return dynamic_cast<TransformType  *>( Superclass::GetTransform() );
   }
 
-template <class TSpatialObject, class TImage>
-const typename RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>::TransformType
-* RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+const typename RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
+* RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void ) const
   {
   return dynamic_cast<const TransformType  *>( Superclass::GetTransform() );
   }
 
-template <class TSpatialObject, class TImage>
-typename RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>::AffineTransformPointer
-RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+typename RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::AffineTransformPointer
+RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetAffineTransform( void ) const
 {
   typename AffineTransformType::Pointer trans = AffineTransformType::New();
@@ -125,9 +125,9 @@ RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
   return trans;
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
+RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetInitialTransformParametersFromAffineTransform( const AffineTransformType * affine )
 {
   RigidTransformType * rigidTransform =
@@ -184,9 +184,9 @@ RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
   this->SetInitialTransformParameters( rigidTransform->GetParameters() );
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
+RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
 {
   // Set the center of rotation
@@ -195,9 +195,9 @@ RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
   Superclass::GenerateData();
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-RigidSpatialObjectToImageRegistrationMethod<SpatialObject, TImage>
+RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf(os, indent);

@@ -25,7 +25,7 @@ limitations under the License.
 
 #include <itkCompensatedSummation.h>
 #include <itkGaussianDerivativeImageFunction.h>
-#include <itkImageToSpatialObjectMetric.h>
+#include <itktubeSpatialObjectToImageMetric.h>
 
 namespace itk
 {
@@ -70,7 +70,7 @@ public:
     TTubeSpatialObject::ObjectDimension );
 
   typedef TFixedImage                           FixedImageType;
-  typedef TMovingSpatialObject                  GroupType;
+  typedef TMovingSpatialObject                  GroupSpatialObjectType;
   typedef TTubeSpatialObject                    TubeType;
   typedef typename TubeType::TubePointType      TubePointType;
 

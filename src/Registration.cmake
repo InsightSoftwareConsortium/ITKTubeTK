@@ -21,17 +21,38 @@
 ##############################################################################
 
 set( TubeTK_Registration_H_Files
+  Registration/itkAffineImageToImageRegistrationMethod.h
+  Registration/itkAnisotropicSimilarity3DTransform.h
+  Registration/itkAnisotropicSimilarityLandmarkBasedTransformInitializer.h
+  Registration/itkBSplineImageToImageRegistrationMethod.h
+  Registration/itkImageRegionMomentsCalculator.h
+  Registration/itkImageRegionSplitter.h
+  Registration/itkImageToImageRegistrationHelper.h
+  Registration/itkImageToImageRegistrationMethod.h
+  Registration/itkInitialImageToImageRegistrationMethod.h
+  Registration/itkOptimizedImageToImageRegistrationMethod.h
+  Registration/itkRigidImageToImageRegistrationMethod.h
+  Registration/itkScaleSkewAngle2DImageToImageRegistrationMethod.h
+  Registration/itkScaleSkewAngle2DTransform.h
+  Registration/itkScaleSkewVersor3DImageToImageRegistrationMethod.h
+  Registration/itkSimilarity2DTransform.h
+  Registration/itkSpatialObjectToImageMetric.h
+  Registration/itktubeAffineSpatialObjectToImageRegistrationMethod.h
   Registration/itktubeAnisotropicDiffusiveRegistrationFunction.h
   Registration/itktubeDiffusiveRegistrationFilter.h
   Registration/itktubeDiffusiveRegistrationFilterUtils.h
-  Registration/itktubeTubesToImageMetric.h
-  Registration/itktubeTubesToImageRegistration.h
+  Registration/itktubeInitialSpatialObjectToImageRegistrationMethod.h
   Registration/itktubeMeanSquareRegistrationFunction.h
   Registration/itktubeMergeAdjacentImagesFilter.h
-  Registration/itktubeTubeExponentialResolutionWeightFunction.h
-  Registration/itktubeTubeParametricExponentialResolutionWeightFunction.h
-  Registration/itktubeTubeParametricExponentialWithBoundsResolutionWeightFunction.h
-  Registration/itktubeTubeToTubeTransformFilter.h )
+  Registration/itktubeOptimizedSpatialObjectToImageRegistrationMethod.h
+  Registration/itktubeRigidSpatialObjectToImageRegistrationMethod.h
+  Registration/itktubeScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.h
+  Registration/itktubeScaleSkewVersor3DSpatialObjectToImageRegistrationMethod.h
+  Registration/itktubeSpatialObjectToImageRegistrationHelper.h
+  Registration/itktubeSpatialObjectToImageRegistrationMethod.h
+  Registration/itktubeTubesToImageMetric.h
+  Registration/itktubeTubeToTubeTransformFilter.h
+  )
 
 if( TubeTK_USE_VTK )
   list( APPEND TubeTK_Registration_H_Files
@@ -40,14 +61,38 @@ if( TubeTK_USE_VTK )
 endif()
 
 set( TubeTK_Registration_HXX_Files
+  Registration/itkAffineImageToImageRegistrationMethod.hxx
+  Registration/itkAnisotropicSimilarity3DTransform.hxx
+  Registration/itkAnisotropicSimilarityLandmarkBasedTransformInitializer.hxx
+  Registration/itkBSplineImageToImageRegistrationMethod.hxx
+  Registration/itkImageRegionMomentsCalculator.hxx
+  Registration/itkImageRegionSplitter.hxx
+  Registration/itkImageToImageRegistrationHelper.hxx
+  Registration/itkImageToImageRegistrationMethod.hxx
+  Registration/itkInitialImageToImageRegistrationMethod.hxx
+  Registration/itkOptimizedImageToImageRegistrationMethod.hxx
+  Registration/itkRigidImageToImageRegistrationMethod.hxx
+  Registration/itkScaleSkewAngle2DImageToImageRegistrationMethod.hxx
+  Registration/itkScaleSkewAngle2DTransform.hxx
+  Registration/itkScaleSkewVersor3DImageToImageRegistrationMethod.hxx
+  Registration/itkSimilarity2DTransform.hxx
+  Registration/itkSpatialObjectToImageMetric.hxx
+  Registration/itktubeAffineSpatialObjectToImageRegistrationMethod.hxx
   Registration/itktubeAnisotropicDiffusiveRegistrationFunction.hxx
   Registration/itktubeDiffusiveRegistrationFilter.hxx
   Registration/itktubeDiffusiveRegistrationFilterUtils.hxx
-  Registration/itktubeTubesToImageMetric.hxx
-  Registration/itktubeTubesToImageRegistration.hxx
+  Registration/itktubeInitialSpatialObjectToImageRegistrationMethod.hxx
   Registration/itktubeMeanSquareRegistrationFunction.hxx
   Registration/itktubeMergeAdjacentImagesFilter.hxx
-  Registration/itktubeTubeToTubeTransformFilter.hxx )
+  Registration/itktubeOptimizedSpatialObjectToImageRegistrationMethod.hxx
+  Registration/itktubeRigidSpatialObjectToImageRegistrationMethod.hxx
+  Registration/itktubeScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.hxx
+  Registration/itktubeScaleSkewVersor3DSpatialObjectToImageRegistrationMethod.hxx
+  Registration/itktubeSpatialObjectToImageRegistrationHelper.hxx
+  Registration/itktubeSpatialObjectToImageRegistrationMethod.hxx
+  Registration/itktubeTubesToImageMetric.hxx
+  Registration/itktubeTubeToTubeTransformFilter.hxx
+  )
 
 if( TubeTK_USE_VTK )
   list( APPEND TubeTK_Registration_HXX_Files

@@ -31,17 +31,17 @@ limitations under the License.
 namespace itk
 {
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 class ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod
   : public OptimizedSpatialObjectToImageRegistrationMethod<
-    TSpatialObject, Image< typename TImage::PixelType, 3 > >
+    3, Image< typename TImage::PixelType, 3 > >
 {
 
 public:
 
   typedef ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod Self;
   typedef OptimizedSpatialObjectToImageRegistrationMethod<
-    TSpatialObject, Image< typename TImage::PixelType, 3 > >      Superclass;
+    3, Image< typename TImage::PixelType, 3 > >           Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
 

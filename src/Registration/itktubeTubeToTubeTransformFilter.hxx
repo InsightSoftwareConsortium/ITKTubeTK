@@ -43,7 +43,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
   SpatialObjectFactoryBase::RegisterDefaultSpatialObjects();
   SpatialObjectFactory< SpatialObject< TDimension > >::
     RegisterSpatialObject();
-  SpatialObjectFactory< GroupType >::RegisterSpatialObject();
+  SpatialObjectFactory< GroupSpatialObjectType >::RegisterSpatialObject();
   SpatialObjectFactory< TubeType >::RegisterSpatialObject();
 }
 
@@ -55,7 +55,7 @@ void
 TubeToTubeTransformFilter< TTransformType, TDimension >
 ::GenerateData( void )
 {
-  typename GroupType::Pointer output = this->GetOutput();
+  typename GroupSpatialObjectType::Pointer output = this->GetOutput();
   output->CopyInformation( this->GetInput() );
 
   typedef typename SpatialObject< TDimension >::ChildrenListType

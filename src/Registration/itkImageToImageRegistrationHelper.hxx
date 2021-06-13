@@ -119,7 +119,7 @@ ImageToImageRegistrationHelper<TImage>
   m_LoadedBSplineTransform = NULL;
 
   // Initial
-  m_InitialMethodEnum = INIT_WITH_CENTERS_OF_MASS;
+  m_InitialMethodEnum = INIT_WITH_NONE;
   m_InitialTransform = NULL;
 
   // Rigid

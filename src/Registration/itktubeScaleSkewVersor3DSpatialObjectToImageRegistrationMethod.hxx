@@ -29,8 +29,8 @@ limitations under the License.
 namespace itk
 {
 
-template <class TSpatialObject, class TImage>
-ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod( void )
 {
   this->SetTransform( ScaleSkewVersor3DTransformType::New() );
@@ -76,20 +76,17 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
     }
   this->SetTransformParametersScales( scales );
   this->SetTransformMethodEnum( Superclass::AFFINE_TRANSFORM );
-
-  this->SetMaxIterations( 150 );
-  this->SetNumberOfSamples( 150000 );
 }
 
-template <class TSpatialObject, class TImage>
-ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::~ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod( void )
 {
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
 {
   // Set the center of rotation
@@ -98,25 +95,25 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
   Superclass::GenerateData();
 }
 
-template <class TSpatialObject, class TImage>
-typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>::TransformType
-* ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
+* ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void )
 {
   return static_cast<TransformType  *>( Superclass::GetTransform() );
 }
 
-template <class TSpatialObject, class TImage>
-const typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>::TransformType
-* ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+const typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
+* ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void ) const
 {
   return static_cast<const TransformType  *>( Superclass::GetTransform() );
 }
 
-template <class TSpatialObject, class TImage>
-typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>::AffineTransformPointer
-ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+template <int ObjectDimension, class TImage>
+typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::AffineTransformPointer
+ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetAffineTransform( void ) const
 {
   AffineTransformPointer trans = AffineTransformType::New();
@@ -131,9 +128,9 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
   return trans;
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetInitialTransformParametersFromAffineTransform(
   const AffineTransformType * tfm )
 {
@@ -141,9 +138,9 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
   this->SetInitialTransformParameters( tfm->GetParameters() );
 }
 
-template <class TSpatialObject, class TImage>
+template <int ObjectDimension, class TImage>
 void
-ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TSpatialObject, TImage>
+ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf(os, indent);
