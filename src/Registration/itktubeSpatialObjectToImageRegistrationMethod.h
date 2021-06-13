@@ -40,7 +40,7 @@ namespace itk
  * problem.
  *
  */
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 class SpatialObjectToImageRegistrationMethod
   : public ProcessObject
 {
@@ -62,8 +62,7 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
 
-  typedef Transform<double,
-                    itkGetStaticConstMacro( ObjectDimension ),
+  typedef Transform<double, ObjectDimension,
                     itkGetStaticConstMacro( ImageDimension )>
   TransformType;
 
@@ -82,7 +81,7 @@ public:
   typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
   ImageMaskObjectType;
 
-  typedef SpatialObject<itkGetStaticConstMacro( ObjectDimension )>
+  typedef SpatialObject< ObjectDimension >
   SpatialObjectMaskObjectType;
 
   //

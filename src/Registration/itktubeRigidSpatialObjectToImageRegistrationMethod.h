@@ -33,7 +33,7 @@ limitations under the License.
 namespace itk
 {
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 class RigidSpatialObjectToImageRegistrationMethod
   : public OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 {

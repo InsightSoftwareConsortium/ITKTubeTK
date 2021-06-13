@@ -29,7 +29,7 @@ limitations under the License.
 namespace itk
 {
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::RigidSpatialObjectToImageRegistrationMethod( void )
 {
@@ -87,14 +87,14 @@ RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->SetTransformMethodEnum( Superclass::RIGID_TRANSFORM );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::~RigidSpatialObjectToImageRegistrationMethod( void )
 {
   this->m_Transform->UnRegister();
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 typename RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
 * RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void )
@@ -102,7 +102,7 @@ typename RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::T
   return dynamic_cast<TransformType  *>( Superclass::GetTransform() );
   }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 const typename RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
 * RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void ) const
@@ -110,7 +110,7 @@ const typename RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TIma
   return dynamic_cast<const TransformType  *>( Superclass::GetTransform() );
   }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 typename RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::AffineTransformPointer
 RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetAffineTransform( void ) const
@@ -125,7 +125,7 @@ RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   return trans;
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetInitialTransformParametersFromAffineTransform( const AffineTransformType * affine )
@@ -184,7 +184,7 @@ RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->SetInitialTransformParameters( rigidTransform->GetParameters() );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
@@ -195,7 +195,7 @@ RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   Superclass::GenerateData();
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const

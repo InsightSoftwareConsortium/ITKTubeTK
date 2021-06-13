@@ -44,8 +44,8 @@ limitations under the License.
 namespace itk
 {
 
-template <class TSpatialObject, class TImage>
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+template <unsigned int ObjectDimension, class TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SpatialObjectToImageRegistrationHelper()
 {
   // Data
@@ -127,26 +127,18 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
 
 }
 
-template <class TSpatialObject, class TImage>
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+template <unsigned int ObjectDimension, class TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::~SpatialObjectToImageRegistrationHelper()
 {
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject )
 {
-  if( movingSpatialObject->GetTypeName() != "GroupSpatialObject" )
-    {
-    this->m_MovingGroupSpatialObject = GroupSpatialObjectType::New();
-    this->m_MovingGroupSpatialObject->AddChild(movingSpatialObject);
-    }
-  else
-    {
-    this->m_MovingGroupSpatialObject = movingSpatialObject;
-    }
+  this->m_MovingGroupSpatialObject = movingSpatialObject;
 
   this->ProcessObject::SetNthInput(1, const_cast<GroupSpatialObjectType *>(
       m_MovingGroupSpatialObject ) );
@@ -159,9 +151,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
   m_CompletedResampling = false;
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetMovingGroupSpatialObject(
   const GroupSpatialObjectType * movingGroupSpatialObject )
 {
@@ -179,9 +171,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
 }
 
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetFixedImageMaskObject( const MaskObjectType * maskObject )
 {
   if( this->m_FixedImageMaskObject.GetPointer() != maskObject )
@@ -201,9 +193,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetMovingSpatialObjectMaskObject( const MaskObjectType * maskObject )
 {
   if( this->m_MovingSpatialObjectMaskObject.GetPointer() != maskObject )
@@ -223,9 +215,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetRegistration( RegistrationMethodEnumType reg )
 {
   switch(reg)
@@ -276,27 +268,27 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetInterpolation( InterpolationMethodEnumType interp )
 {
   this->SetRigidInterpolationMethodEnum( interp );
   this->SetAffineInterpolationMethodEnum( interp );
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetMetric( MetricMethodEnumType metric )
 {
   this->SetRigidMetricMethodEnum( metric );
   this->SetAffineMetricMethodEnum( metric );
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::Initialize( void )
 {
   // m_LoadedTransform = 0;  Not Initialized - since it is a user parameter
@@ -331,9 +323,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
   m_MatrixTransformResampledImage = 0;
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::AffineRegND( Image< double, 2 > * itkNotUsed( tmpImage ) )
 {
   if( this->GetReportProgress() )
@@ -433,9 +425,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
   m_CompletedResampling = false;
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::AffineRegND( Image< double, 3 > * itkNotUsed( tmpImage ) )
 {
   if( this->GetReportProgress() )
@@ -542,9 +534,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
 
 /** This class provides an Update() method to fit the appearance of a
  * ProcessObject API, but it is not a ProcessObject.  */
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::Update( void )
 {
   if( !(this->m_CompletedInitialization) )
@@ -771,9 +763,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 const TImage *
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::ResampleImage( InterpolationMethodEnumType interpolationMethod,
                  const ImageType * movingImage,
                  const MatrixTransformType * matrixTransform,
@@ -963,9 +955,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
   return mImage.GetPointer();
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 typename TGroupSpatialObjectType::ConstPointer
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::GetFinalMovingGroupSpatialObject( InterpolationMethodEnumType interpolationMethod,
   PixelType defaultPixelValue)
 {
@@ -973,9 +965,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
     defaultPixelValue, 1.0 );
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::LoadBaselineImage( const std::string & filename )
 {
   typedef ImageFileReader<TImage> ImageReaderType;
@@ -989,23 +981,23 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
   SetBaselineImage( imageReader->GetOutput() );
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::LoadParameters( const std::string & itkNotUsed(filename) )
 {
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SaveParameters( const std::string & itkNotUsed(filename) )
 {
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::LoadTransform( const std::string & filename, bool invert )
 {
   typedef TransformFileReader                    TransformReaderType;
@@ -1033,9 +1025,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SaveTransform( const std::string & filename )
 {
   typedef TransformFileWriter TransformWriterType;
@@ -1050,9 +1042,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SaveDisplacementField( const std::string &filename )
 {
   typedef itk::Vector<PixelType,TImage::ImageDimension>  VectorType;
@@ -1108,9 +1100,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
   fieldWriter->Update();
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetLoadedMatrixTransform( const MatrixTransformType & tfm, bool invert )
 {
   m_LoadedMatrixTransform = MatrixTransformType::New();
@@ -1132,9 +1124,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
   m_CurrentMovingImage = m_MovingImage;
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetFixedImageRegionOfInterest( const PointType & point1,
                        const PointType & point2 )
 {
@@ -1143,9 +1135,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
   m_UseFixedImageRegionOfInterest = true;
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetFixedImageRegionOfInterest( const std::vector<float> & points )
 {
   if( points.size() != 2 * ImageDimension )
@@ -1161,9 +1153,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
   m_UseFixedImageRegionOfInterest = true;
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetFixedLandmarks( const std::vector<std::vector<float> > & fixedLandmarks )
 {
   m_FixedLandmarks.clear();
@@ -1177,9 +1169,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetMovingLandmarks( const std::vector<std::vector<float> > & movingLandmarks )
 {
   m_MovingLandmarks.clear();
@@ -1193,9 +1185,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::PrintSelfHelper( std::ostream & os, Indent indent,
                    const std::string & basename,
                    MetricMethodEnumType metric,
@@ -1247,9 +1239,9 @@ SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageRegistrationHelper<TSpatialObject, TImage>
+SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

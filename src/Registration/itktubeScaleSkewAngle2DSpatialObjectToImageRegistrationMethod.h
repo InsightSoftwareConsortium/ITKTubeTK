@@ -31,7 +31,7 @@ limitations under the License.
 namespace itk
 {
 
-template <int ObjectDimension, class TImage>
+template <class TImage>
 class ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod
   : public OptimizedSpatialObjectToImageRegistrationMethod<
     2, Image< typename TImage::PixelType, 2 > >

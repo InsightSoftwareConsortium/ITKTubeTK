@@ -28,7 +28,7 @@ limitations under the License.
 namespace itk
 {
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::AffineSpatialObjectToImageRegistrationMethod( void )
 {
@@ -76,13 +76,13 @@ AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->SetNumberOfSamples( 150000 );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::~AffineSpatialObjectToImageRegistrationMethod( void )
 {
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
@@ -93,7 +93,7 @@ AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   Superclass::GenerateData();
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 typename AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
 * AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void )
@@ -101,7 +101,7 @@ typename AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::
   return static_cast<TransformType  *>( Superclass::GetTransform() );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 const typename AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
 * AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void ) const
@@ -109,7 +109,7 @@ const typename AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TIm
   return static_cast<const TransformType  *>( Superclass::GetTransform() );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 typename AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::AffineTransformPointer
 AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetAffineTransform( void ) const
@@ -126,7 +126,7 @@ AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   return trans;
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetInitialTransformParametersFromAffineTransform( const AffineTransformType * affine )
@@ -135,7 +135,7 @@ AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->SetInitialTransformParameters( affine->GetParameters() );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const

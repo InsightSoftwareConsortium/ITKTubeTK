@@ -30,7 +30,7 @@ limitations under the License.
 namespace itk
 {
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::InitialSpatialObjectToImageRegistrationMethod( void )
 {
@@ -45,7 +45,7 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::~InitialSpatialObjectToImageRegistrationMethod( void )
 {
@@ -53,7 +53,7 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
 /** Only the GenerateData() method should be overloaded. The Update() method
  * must not be overloaded */
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
@@ -328,7 +328,7 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->SetTransform(newTransform);
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 typename InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
 * InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void )
@@ -336,7 +336,7 @@ typename InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>:
   return static_cast<TransformType  *>( Superclass::GetTransform() );
   }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 const typename InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
 * InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void ) const
@@ -344,7 +344,7 @@ const typename InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TI
   return static_cast<const TransformType  *>( this->Superclass::GetTransform() );
   }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 typename InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformPointer
 InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetAffineTransform( void ) const
@@ -361,7 +361,7 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   return trans;
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetFixedLandmarks( const LandmarkPointContainer& fixedLandmarks )
@@ -370,7 +370,7 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->Modified();
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetMovingLandmarks( const LandmarkPointContainer& movingLandmarks )
@@ -379,7 +379,7 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->Modified();
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const

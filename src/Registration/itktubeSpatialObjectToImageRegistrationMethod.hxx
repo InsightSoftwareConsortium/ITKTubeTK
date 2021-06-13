@@ -28,7 +28,7 @@ limitations under the License.
 namespace itk
 {
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SpatialObjectToImageRegistrationMethod( void )
 {
@@ -62,13 +62,13 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::~SpatialObjectToImageRegistrationMethod( void )
 {
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetFixedImage( const ImageType * fixedImage )
@@ -83,7 +83,7 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     }
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject )
@@ -99,7 +99,7 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     }
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetFixedImageRegionOfInterest( const PointType & point1, const PointType & point2 )
@@ -109,7 +109,7 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   m_UseFixedImageRegionOfInterest = true;
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetFixedImageMaskObject( const MaskObjectType * maskObject )
@@ -131,7 +131,7 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     }
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetMovingSpatialObjectMaskObject( const MaskObjectType * maskObject )
@@ -153,7 +153,7 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     }
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 const typename SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformOutputType
 * SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetOutput() const
@@ -162,7 +162,7 @@ const typename SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::
     this->ProcessObject::GetOutput( 0 ) );
   }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 DataObject::Pointer
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::MakeOutput( DataObjectPointerArraySizeType idx )
@@ -180,7 +180,7 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     }
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 ModifiedTimeType
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetMTime( void ) const
@@ -221,7 +221,7 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   return mtime;
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::Initialize( void )
@@ -250,7 +250,7 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
@@ -258,7 +258,7 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->Update();
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const

@@ -133,7 +133,7 @@ protected:
 
 };
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::OptimizedSpatialObjectToImageRegistrationMethod( void )
 {
@@ -175,13 +175,13 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::~OptimizedSpatialObjectToImageRegistrationMethod( void )
 {
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
@@ -294,7 +294,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     }
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::Optimize( MetricType * metric, InterpolatorType * interpolator )
@@ -497,7 +497,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     }
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const

@@ -31,7 +31,7 @@ limitations under the License.
 namespace itk
 {
 
-template <int ObjectDimension, class TImage>
+template <class TImage>
 class ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod
   : public OptimizedSpatialObjectToImageRegistrationMethod<
     3, Image< typename TImage::PixelType, 3 > >
@@ -51,7 +51,6 @@ public:
   itkNewMacro( Self );
 
   itkStaticConstMacro( ImageDimension, unsigned int, 3 );
-  itkStaticConstMacro( ObjectDimension, unsigned int, 3 );
 
   //
   // Typedefs from Superclass

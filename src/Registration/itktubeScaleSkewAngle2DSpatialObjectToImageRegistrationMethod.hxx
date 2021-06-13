@@ -28,7 +28,7 @@ limitations under the License.
 namespace itk
 {
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod( void )
 {
@@ -64,13 +64,13 @@ ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->SetTransformMethodEnum( Superclass::AFFINE_TRANSFORM );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::~ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod( void )
 {
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
@@ -82,7 +82,7 @@ ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   Superclass::GenerateData();
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 typename ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
 * ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void )
@@ -90,7 +90,7 @@ typename ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension,
   return static_cast<TransformType  *>( Superclass::GetTransform() );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 const typename ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
 * ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void ) const
@@ -98,7 +98,7 @@ const typename ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDime
   return static_cast<const TransformType  *>( Superclass::GetTransform() );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 typename ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::AffineTransformPointer
 ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetAffineTransform( void ) const
@@ -115,7 +115,7 @@ ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   return trans;
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetInitialTransformParametersFromAffineTransform(
@@ -125,7 +125,7 @@ ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->SetInitialTransformParameters( tfm->GetParameters() );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const

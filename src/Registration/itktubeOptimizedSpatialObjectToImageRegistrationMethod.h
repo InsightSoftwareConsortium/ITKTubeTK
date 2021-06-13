@@ -31,7 +31,7 @@ limitations under the License.
 namespace itk
 {
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 class OptimizedSpatialObjectToImageRegistrationMethod
   : public SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 {
@@ -66,8 +66,6 @@ public:
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
-  itkStaticConstMacro( SpatialObjectDimension, unsigned int,
-                       SpatialObject::Dimension );
 
   //
   // Custom Typedefs

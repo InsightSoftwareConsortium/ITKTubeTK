@@ -29,7 +29,7 @@ limitations under the License.
 namespace itk
 {
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod( void )
 {
@@ -78,13 +78,13 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->SetTransformMethodEnum( Superclass::AFFINE_TRANSFORM );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::~ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod( void )
 {
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
@@ -95,7 +95,7 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   Superclass::GenerateData();
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
 * ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void )
@@ -103,7 +103,7 @@ typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension
   return static_cast<TransformType  *>( Superclass::GetTransform() );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 const typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
 * ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetTypedTransform( void ) const
@@ -111,7 +111,7 @@ const typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDim
   return static_cast<const TransformType  *>( Superclass::GetTransform() );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::AffineTransformPointer
 ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GetAffineTransform( void ) const
@@ -128,7 +128,7 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   return trans;
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::SetInitialTransformParametersFromAffineTransform(
@@ -138,7 +138,7 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->SetInitialTransformParameters( tfm->GetParameters() );
 }
 
-template <int ObjectDimension, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
 ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const

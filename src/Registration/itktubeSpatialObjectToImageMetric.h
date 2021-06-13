@@ -61,7 +61,7 @@ namespace itk
  * \ingroup ITKRegistrationCommon
  */
 
-template <typename TMovingSpatialObject, typename TFixedImage>
+template <unsigned int ObjectDimension, class TFixedImage>
 class ITK_TEMPLATE_EXPORT SpatialObjectToImageMetric : public SingleValuedCostFunction
 {
 public:
@@ -76,16 +76,13 @@ public:
   using FixedImageType = TFixedImage;
 
   /** Type of the MovingSpatialObject */
-  using MovingSpatialObjectType = TMovingSpatialObject;
+  using MovingSpatialObjectType = SpatialObject<ObjectDimension>;
 
   /** Type used for representing point components  */
   using CoordinateRepresentationType = Superclass::ParametersValueType;
 
   /** Image dimension enumeration. */
   static constexpr unsigned int ImageDimension = FixedImageType::ImageDimension;
-
-  /** Object dimension enumeration. */
-  static constexpr unsigned int ObjectDimension = MovingSpatialObjectType::ObjectDimension;
 
   /**  Type of the Transform Base class */
   using TransformType = Transform<CoordinateRepresentationType, Self::ObjectDimension, Self::ImageDimension>;
