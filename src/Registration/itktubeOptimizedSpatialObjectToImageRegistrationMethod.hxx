@@ -25,7 +25,7 @@ limitations under the License.
 
 #include "itkOptimizedSpatialObjectToImageRegistrationMethod.h"
 
-#include "itkTubeToImageMetric.h"
+#include "itkPointBasedSpatialObjectToImageMetric.h"
 
 #include "itkNearestNeighborInterpolateImageFunction.h"
 #include "itkLinearInterpolateImageFunction.h"
@@ -201,9 +201,9 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   switch( this->GetMetricMethodEnum() )
     {
     default:
-    case TUBE_TO_IMAGE_METRIC:
+    case POINTS_TO_IMAGE_METRIC:
         {
-        typedef TubeToImageMetric<ObjectDimension, TImage>
+        typedef PointBasedSpatialObjectToImageMetric<ObjectDimension, TImage>
           TypedMetricType;
 
         typename TypedMetricType::Pointer typedMetric = TypedMetricType::New();
@@ -529,7 +529,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   switch( m_MetricMethodEnum )
     {
     default:
-    case TUBE_TO_IMAGE_METRIC:
+    case POINTS_TO_IMAGE_METRIC:
       os << indent << "Metric method = Tube to image metric" << std::endl;
       break;
     }

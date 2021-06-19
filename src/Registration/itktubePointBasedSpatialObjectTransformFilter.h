@@ -20,14 +20,24 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeTubeToTubeTransformFilter_h
-#define __itktubeTubeToTubeTransformFilter_h
+#ifndef __itktubePointBasedSpatialObjectTransformFilter_h
+#define __itktubePointBasedSpatialObjectTransformFilter_h
 
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
 
-#include <itkGroupSpatialObject.h>
+#include <itkSpatialObject.h>
+
 #include <itkObject.h>
 #include <itkObjectFactory.h>
+
+#include <itkContourSpatialObject.h>
+#include <itkContourSpatialObjectPoint.h>
+#include <itkDTITubeSpatialObject.h>
+#include <itkDTITubeSpatialObjectPoint.h>
+#include <itkLineSpatialObject.h>
+#include <itkLineSpatialObjectPoint.h>
+#include <itkSurfaceSpatialObject.h>
+#include <itkSurfaceSpatialObjectPoint.h>
 #include <itkTubeSpatialObject.h>
 #include <itkTubeSpatialObjectPoint.h>
 
@@ -50,50 +60,54 @@ namespace tube
  *  defined.
  */
 template< class TTransformType, unsigned int TDimension >
-class TubeToTubeTransformFilter :
+class PointBasedSpatialObjectTransformFilter :
   public SpatialObjectToSpatialObjectFilter<
-  GroupSpatialObject< TDimension >,
-  GroupSpatialObject< TDimension > >
+  SpatialObject< TDimension >,
+  SpatialObject< TDimension > >
 {
 public:
 
-  typedef GroupSpatialObject< TDimension >                   GroupSpatialObjectType;
+  typedef TTransformType                                TransformType;
+
+  typedef SpatialObject< TDimension >                   SpatialObjectType;
 
   /** Standard class typedefs. */
-  typedef TubeToTubeTransformFilter< TTransformType, TDimension >
+  typedef PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
     Self;
 
-  typedef SpatialObjectToSpatialObjectFilter< GroupSpatialObjectType, GroupSpatialObjectType >
-    Superclass;
+  typedef SpatialObjectToSpatialObjectFilter< SpatialObjectType,
+    SpatialObjectType > Superclass;
 
   typedef SmartPointer< Self >                               Pointer;
   typedef SmartPointer< const Self >                         ConstPointer;
 
+  typedef PointBasedSpatialObject< TDimension >              PointBasedType;
   typedef TubeSpatialObject< TDimension >                    TubeType;
+  typedef SurfaceSpatialObject< TDimension >                 SurfaceType;
+  typedef LineSpatialObject< TDimension >                    LineType;
+  typedef DITubeSpatialObject< TDimension >                  DTITubeType;
+  typedef ContourSpatialObject< TDimension >                 ContourType;
 
-  typedef typename TubeSpatialObject< TDimension >::TransformType
-    TubeTransformType;
-
-  /** Typedef for the transformations */
-  typedef TTransformType                                     TransformType;
+  typedef typename SpatialObject< TDimension >::TransformType
+    SpatialObjectTrasnformType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( TubeToTubeTransformFilter,
+  itkTypeMacro( PointBasedSpatialObjectTransformFilter,
     SpatialObjectToSpatialObjectFilter );
 
   /** Set the Transformation */
   itkSetObjectMacro( Transform, TransformType );
 
   /** Set the Object to Parent transform for the output tubes */
-  itkSetObjectMacro( OutputObjectToParentTransform, TubeTransformType );
+  itkSetObjectMacro( OutputObjectToParentTransform, SpatialObjectTransformType );
 
 protected:
 
-  TubeToTubeTransformFilter( void );
-  virtual ~TubeToTubeTransformFilter( void ) {}
+  PointBasedSpatialObjectTransformFilter( void );
+  virtual ~PointBasedSpatialObjectTransformFilter( void ) {}
 
   void PrintSelf( std::ostream& os, Indent indent ) const override;
 
@@ -103,24 +117,27 @@ protected:
 
 private:
 
-  TubeToTubeTransformFilter( const Self& ); //purposely not implemented
-  void operator=( const Self& );            //purposely not implemented
+  //purposely not implemented
+  PointBasedSpatialObjectTransformFilter( const Self& );
+  void operator=( const Self& );
 
   void UpdateLevel( SpatialObject< TDimension > * inputSO,
     SpatialObject< TDimension > * parentSO );
 
-  typename TransformType::Pointer            m_Transform;
+  void Transform( SpatialObject< TDimension > * inputSO );
 
-  typename TubeTransformType::Pointer        m_OutputObjectToParentTransform;
+  typename TransformType::Pointer              m_Transform;
 
-}; // End class TubeToTubeTransformFilter
+  typename SpatialObjectTransformType::Pointer m_OutputObjectToParentTransform;
+
+}; // End class PointBasedSpatialObjectTransformFilter
 
 } // End namespace tube
 
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeTubeToTubeTransformFilter.hxx"
+#include "itktubePointBasedSpatialObjectTransformFilter.hxx"
 #endif
 
-#endif // End !defined( __itktubeTubeToTubeTransformFilter_h )
+#endif // End !defined( __itktubePointBasedSpatialObjectTransformFilter_h )

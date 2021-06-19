@@ -67,40 +67,40 @@ public:
   // Available Registration Methods
   //
   typedef SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-  RegistrationMethodType;
+    RegistrationMethodType;
 
   typedef InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-  InitialRegistrationMethodType;
+    InitialRegistrationMethodType;
 
-  typedef OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-  OptimizedRegistrationMethodType;
+  typedef OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension,
+    TImage> OptimizedRegistrationMethodType;
 
   typedef RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-  RigidRegistrationMethodType;
+    RigidRegistrationMethodType;
 
   typedef AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-  AffineRegistrationMethodType;
+    AffineRegistrationMethodType;
 
-  typedef ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-  Affine2DRegistrationMethodType;
+  typedef ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<
+    ObjectDimension, TImage>   Affine2DRegistrationMethodType;
 
-  typedef ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-  Affine3DRegistrationMethodType;
+  typedef ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<
+    ObjectDimension, TImage> Affine3DRegistrationMethodType;
 
   //
   // Typedefs for the parameters of the registration methods
   //
   typedef typename RegistrationMethodType::ImageMaskObjectType
-  ImageMaskObjectType;
+    ImageMaskObjectType;
 
   typedef typename RegistrationMethodType::SpatialObjectMaskObjectType
-  SpatialObjectMaskObjectType;
+    SpatialObjectMaskObjectType;
 
   typedef typename OptimizedRegistrationMethodType::MetricMethodEnumType
-  MetricMethodEnumType;
+    MetricMethodEnumType;
 
   typedef typename OptimizedRegistrationMethodType::InterpolationMethodEnumType
-  InterpolationMethodEnumType;
+    InterpolationMethodEnumType;
 
   enum InitialMethodEnumType { INIT_WITH_NONE,
                                INIT_WITH_CURRENT_RESULTS,
@@ -123,23 +123,23 @@ public:
                                     PIPELINE_AFFINE };
 
   typedef typename InitialRegistrationMethodType::TransformType
-  InitialTransformType;
+    InitialTransformType;
 
   typedef std::vector<std::vector<float>  > LandmarkVectorType;
 
   typedef typename TImage::PointType PointType;
 
   typedef typename RigidRegistrationMethodType::TransformType
-  RigidTransformType;
+    RigidTransformType;
 
   typedef typename AffineRegistrationMethodType::TransformType
-  AffineTransformType;
+    AffineTransformType;
 
   typedef typename Affine2DRegistrationMethodType::TransformType
-  Affine2DTransformType;
+    Affine2DTransformType;
 
   typedef typename Affine3DRegistrationMethodType::TransformType
-  Affine3DTransformType;
+    Affine3DTransformType;
 
   typedef AffineTransformType MatrixTransformType;
 

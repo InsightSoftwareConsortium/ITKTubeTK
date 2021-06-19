@@ -74,7 +74,7 @@ public:
                                  AFFINE_TRANSFORM,
                                  BSPLINE_TRANSFORM };
 
-  enum MetricMethodEnumType { TUBE_TO_IMAGE_METRIC };
+  enum MetricMethodEnumType { POINTS_TO_IMAGE_METRIC };
 
   enum InterpolationMethodEnumType { NEAREST_NEIGHBOR_INTERPOLATION,
                                      LINEAR_INTERPOLATION,

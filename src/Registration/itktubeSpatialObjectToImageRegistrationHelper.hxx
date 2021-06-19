@@ -25,19 +25,16 @@ limitations under the License.
 
 #include "itkSpatialObjectToImageRegistrationHelper.h"
 
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkSpatialObjectReader.h"
-#include "itkSpatialObjectWriter.h"
-#include "itkResampleImageFilter.h"
+#include "itktubePointBasedSpatialObjectTransformFilter.h"
+
 #include "itkInterpolateImageFunction.h"
 #include "itkNearestNeighborInterpolateImageFunction.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkWindowedSincInterpolateImageFunction.h"
+
 #include "itkTransformFileReader.h"
 #include "itkTransformFileWriter.h"
-#include "itkTransformFactory.h"
-#include "itkMinimumMaximumImageCalculator.h"
+
 #include "itkVector.h"
 #include "itkAffineTransform.h"
 
@@ -84,8 +81,8 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   m_CurrentMovingSpatialObject = NULL;
   m_CurrentMatrixTransform = NULL;
 
-  m_LoadedTransformResampledImage = NULL;
-  m_MatrixTransformResampledImage = NULL;
+  m_LoadedTransformResampledSpatialObject = NULL;
+  m_MatrixTransformResampledSpatialObject = NULL;
 
   // Results
   m_FinalMetricValue = 0.0;
@@ -109,7 +106,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   m_RigidMaxIterations = 1000;
   m_RigidTransform = NULL;
   m_RigidMetricMethodEnum =
-    OptimizedRegistrationMethodType::TUBE_TO_IMAGE_METRIC;
+    OptimizedRegistrationMethodType::POINTS_TO_IMAGE_METRIC;
   m_RigidInterpolationMethodEnum =
     OptimizedRegistrationMethodType::LINEAR_INTERPOLATION;
   m_RigidMetricValue = 0.0;
@@ -120,7 +117,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   m_AffineMaxIterations = 500;
   m_AffineTransform = NULL;
   m_AffineMetricMethodEnum =
-    OptimizedRegistrationMethodType::TUBE_TO_IMAGE_METRIC;
+    OptimizedRegistrationMethodType::POINTS_TO_IMAGE_METRIC;
   m_AffineInterpolationMethodEnum =
     OptimizedRegistrationMethodType::LINEAR_INTERPOLATION;
   m_AffineMetricValue = 0.0;
@@ -136,40 +133,42 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
-::SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject )
+::SetFixedImage( const TImage * fixedImage )
 {
-  this->m_MovingGroupSpatialObject = movingSpatialObject;
+  if( this->m_FixedImage.GetPointer() != fixedImage )
+    {
+    this->m_FixedImage = fixedImage;
 
-  this->ProcessObject::SetNthInput(1, const_cast<GroupSpatialObjectType *>(
-      m_MovingGroupSpatialObject ) );
+    this->ProcessObject::SetNthInput(0, m_FixedImage);
 
-  this->Modified();
+    this->Modified();
 
-  m_CompletedStage = PRE_STAGE;
+    m_CompletedStage = PRE_STAGE;
 
-  m_CompletedInitialization = false;
-  m_CompletedResampling = false;
+    m_CompletedInitialization = false;
+    m_CompletedResampling = false;
+    }
 }
 
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
-::SetMovingGroupSpatialObject(
-  const GroupSpatialObjectType * movingGroupSpatialObject )
+::SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject )
 {
-  this->m_MovingGroupSpatialObject = movingGroupSpatialObject;
+  if( this->m_MovingSpatialObject.GetPointer() != movingSpatialObject )
+    {
+    this->m_MovingSpatialObject = movingSpatialObject;
 
-  this->ProcessObject::SetNthInput(1, const_cast<GroupSpatialObjectType *>(
-      m_MovingGroupSpatialObject ) );
+    this->ProcessObject::SetNthInput(1, m_MovingSpatialObject);
 
-  this->Modified();
+    this->Modified();
 
-  m_CompletedStage = PRE_STAGE;
+    m_CompletedStage = PRE_STAGE;
 
-  m_CompletedInitialization = false;
-  m_CompletedResampling = false;
+    m_CompletedInitialization = false;
+    m_CompletedResampling = false;
+    }
 }
-
 
 template <unsigned int ObjectDimension, class TImage>
 void
@@ -309,18 +308,15 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 
   if( m_InitialMethodEnum == INIT_WITH_CURRENT_RESULTS )
     {
-    m_CurrentMovingGroupSpatialObject = GetFinalMovingGroupSpatialObject();
+    m_CurrentMovingSpatialObject = GetFinalMovingSpatialObject();
     }
   else
     {
-    m_CurrentMovingGroupSpatialObject = m_MovingSpatialObject;
+    m_CurrentMovingSpatialObject = m_MovingSpatialObject;
     }
 
-  // Eventually these should only be reset if necessary - that is, if the
-  //   only difference is enable BSpline registration, it shouldn't be
-  //   necessary to re-run the entire registration pipeline
-  m_LoadedTransformResampledImage = 0;
-  m_MatrixTransformResampledImage = 0;
+  m_LoadedTransformResampledSpatialObject = 0;
+  m_MatrixTransformResampledSpatialObject = 0;
 }
 
 template <unsigned int ObjectDimension, class TImage>
@@ -334,23 +330,19 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     }
 
   std::cout << "Start affine" << std::endl;
-  unsigned long fixedImageNumPixels = m_FixedImage->GetLargestPossibleRegion()
-    .GetNumberOfPixels();
 
   typename Affine2DRegistrationMethodType::Pointer regAff
     = Affine2DRegistrationMethodType::New();
   regAff->SetRandomNumberSeed( m_RandomNumberSeed );
   regAff->SetReportProgress( m_ReportProgress );
-  regAff->SetMovingImage( m_CurrentMovingImage );
+  regAff->SetMovingSpatialObject( m_CurrentMovingSpatialObject );
   regAff->SetFixedImage( m_FixedImage );
-  regAff->SetNumberOfSamples( (unsigned int)(m_AffineSamplingRatio
-    * fixedImageNumPixels) );
+  regAff->SetSamplingRatio( m_AffineSamplingRatio );
   if( m_UseFixedImageRegionOfInterest )
     {
     regAff->SetFixedImageRegionOfInterest( m_FixedImageRegionOfInterestPoint1,
       m_FixedImageRegionOfInterestPoint2 );
     }
-  regAff->SetSampleFromOverlap( m_SampleFromOverlap );
   regAff->SetMaxIterations( m_AffineMaxIterations );
   regAff->SetTargetError( m_AffineTargetError );
   if( m_EnableRigidRegistration || !m_UseEvolutionaryOptimization )
@@ -372,21 +364,9 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       regAff->SetMovingSpatialObjectMaskObject( m_MovingSpatialObjectMaskObject );
       }
     }
-  if( m_SampleIntensityPortion > 0 )
-    {
-    typedef MinimumMaximumImageCalculator<ImageType> MinMaxCalcType;
-    typename MinMaxCalcType::Pointer calc = MinMaxCalcType::New();
-    calc->SetImage( m_FixedImage );
-    calc->Compute();
-    PixelType fixedImageMax = calc->GetMaximum();
-    PixelType fixedImageMin = calc->GetMinimum();
-
-    regAff->SetFixedImageSamplesIntensityThreshold(
-      static_cast<PixelType>( ( m_SampleIntensityPortion
-        * (fixedImageMax - fixedImageMin) ) + fixedImageMin ) );
-    }
   regAff->SetMetricMethodEnum( m_AffineMetricMethodEnum );
   regAff->SetInterpolationMethodEnum( m_AffineInterpolationMethodEnum );
+
   typename AffineTransformType::ParametersType scales;
   scales.set_size( 7 );
   unsigned int scaleNum = 0;
@@ -403,14 +383,14 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     {
     regAff->GetTypedTransform()->SetCenter(
       m_CurrentMatrixTransform->GetCenter() );
-    //regAff->GetTypedTransform()->SetMatrix(
-      //m_CurrentMatrixTransform->GetMatrix() );
+    regAff->GetTypedTransform()->SetMatrix(
+      m_CurrentMatrixTransform->GetMatrix() );
     regAff->GetTypedTransform()->SetOffset(
       m_CurrentMatrixTransform->GetOffset() );
-    regAff->SetInitialTransformParameters(
-      regAff->GetTypedTransform()->GetParameters() );
     regAff->SetInitialTransformFixedParameters(
       regAff->GetTypedTransform()->GetFixedParameters() );
+    regAff->SetInitialTransformParameters(
+      regAff->GetTypedTransform()->GetParameters() );
     }
 
   regAff->Update();
@@ -435,23 +415,18 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     std::cout << "*** AFFINE REGISTRATION ***" << std::endl;
     }
 
-  unsigned long fixedImageNumPixels = m_FixedImage->GetLargestPossibleRegion()
-    .GetNumberOfPixels();
-
   typename Affine3DRegistrationMethodType::Pointer regAff =
     Affine3DRegistrationMethodType::New();
   regAff->SetRandomNumberSeed( m_RandomNumberSeed );
   regAff->SetReportProgress( m_ReportProgress );
-  regAff->SetMovingImage( m_CurrentMovingImage );
+  regAff->SetMovingSpatialObject( m_CurrentMovingSpatialObject );
   regAff->SetFixedImage( m_FixedImage );
-  regAff->SetNumberOfSamples( (unsigned int)(m_AffineSamplingRatio
-    * fixedImageNumPixels) );
+  regAff->SetSamplingRatio( m_AffineSamplingRatio );
   if( m_UseFixedImageRegionOfInterest )
     {
     regAff->SetFixedImageRegionOfInterest( m_FixedImageRegionOfInterestPoint1,
       m_FixedImageRegionOfInterestPoint2 );
     }
-  regAff->SetSampleFromOverlap( m_SampleFromOverlap );
   regAff->SetMaxIterations( m_AffineMaxIterations );
   regAff->SetTargetError( m_AffineTargetError );
   if( m_EnableRigidRegistration || !m_UseEvolutionaryOptimization )
@@ -473,23 +448,10 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       regAff->SetMovingSpatialObjectMaskObject( m_MovingSpatialObjectMaskObject );
       }
     }
-  if( m_SampleIntensityPortion > 0 )
-    {
-    typedef MinimumMaximumImageCalculator<ImageType> MinMaxCalcType;
-    typename MinMaxCalcType::Pointer calc = MinMaxCalcType::New();
-    calc->SetImage( m_FixedImage );
-    calc->Compute();
-    PixelType fixedImageMax = calc->GetMaximum();
-    PixelType fixedImageMin = calc->GetMinimum();
-
-    regAff->SetFixedImageSamplesIntensityThreshold(
-      static_cast<PixelType>( ( m_SampleIntensityPortion
-        * (fixedImageMax - fixedImageMin) ) + fixedImageMin ) );
-    }
   regAff->SetMetricMethodEnum( m_AffineMetricMethodEnum );
   regAff->SetInterpolationMethodEnum( m_AffineInterpolationMethodEnum );
-  typename AffineTransformType::ParametersType scales;
 
+  typename AffineTransformType::ParametersType scales;
   scales.set_size( 12 );
   unsigned int scaleNum = 0;
   scales[scaleNum++] = 1.0 / ( m_ExpectedRotationMagnitude );
@@ -514,10 +476,10 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       m_CurrentMatrixTransform->GetMatrix() );
     regAff->GetTypedTransform()->SetOffset(
       m_CurrentMatrixTransform->GetOffset() );
-    regAff->SetInitialTransformParameters(
-      regAff->GetTypedTransform()->GetParameters() );
     regAff->SetInitialTransformFixedParameters(
       regAff->GetTypedTransform()->GetFixedParameters() );
+    regAff->SetInitialTransformParameters(
+      regAff->GetTypedTransform()->GetParameters() );
     }
 
   regAff->Update();
@@ -547,16 +509,16 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   if( m_EnableLoadedRegistration
       && m_LoadedMatrixTransform.IsNotNull() )
     {
-    if( m_LoadedTransformResampledImage.IsNotNull() )
+    if( m_LoadedTransformResampledSpatialObject.IsNotNull() )
       {
-      m_CurrentMovingImage = m_LoadedTransformResampledImage;
+      m_CurrentMovingSpatialObject = m_LoadedTransformResampledSpatialObject;
       if( this->GetReportProgress() )
         {
         std::cout << "*** Using existing loaded transform ***" << std::endl;
         }
       }
 
-    m_MatrixTransformResampledImage = 0;
+    m_MatrixTransformResampledSpatialObject = 0;
 
     m_CompletedStage = LOAD_STAGE;
     m_CompletedResampling = true;
@@ -572,7 +534,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   typename InitialRegistrationMethodType::Pointer regInit =
     InitialRegistrationMethodType::New();
   regInit->SetReportProgress( m_ReportProgress );
-  regInit->SetMovingImage( m_CurrentMovingImage );
+  regInit->SetMovingSpatialObject( m_CurrentMovingSpatialObject );
   regInit->SetFixedImage( m_FixedImage );
   if( m_UseFixedImageMaskObject )
     {
@@ -636,11 +598,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   m_CompletedStage = INIT_STAGE;
   m_CompletedResampling = false;
 
-  typename TImage::SizeType fixedImageSize;
-  fixedImageSize = m_FixedImage->GetLargestPossibleRegion().GetSize();
-  unsigned long fixedImageNumPixels = m_FixedImage->GetLargestPossibleRegion()
-    .GetNumberOfPixels();
-
   if( m_EnableRigidRegistration )
     {
     if( this->GetReportProgress() )
@@ -656,11 +613,9 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       regRigid->SetUseEvolutionaryOptimization( false );
       }
     regRigid->SetReportProgress( m_ReportProgress );
-    regRigid->SetMovingImage( m_CurrentMovingImage );
+    regRigid->SetMovingSpatialObject( m_CurrentMovingSpatialObject );
     regRigid->SetFixedImage( m_FixedImage );
-    regRigid->SetNumberOfSamples( (unsigned int)( m_RigidSamplingRatio
-                                                  * fixedImageNumPixels ) );
-    regRigid->SetSampleFromOverlap( m_SampleFromOverlap );
+    regRigid->SetSamplingRatio( m_RigidSamplingRatio );
     regRigid->SetMaxIterations( m_RigidMaxIterations );
     regRigid->SetTargetError( m_RigidTargetError );
     if( m_UseFixedImageMaskObject )
@@ -677,25 +632,11 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
         regRigid->SetMovingSpatialObjectMaskObject( m_MovingSpatialObjectMaskObject );
         }
       }
-    if( m_SampleIntensityPortion > 0 )
-      {
-      typedef MinimumMaximumImageCalculator<ImageType> MinMaxCalcType;
-      typename MinMaxCalcType::Pointer calc = MinMaxCalcType::New();
-      calc->SetImage( m_FixedImage );
-      calc->Compute();
-      PixelType fixedImageMax = calc->GetMaximum();
-      PixelType fixedImageMin = calc->GetMinimum();
-
-      regRigid->SetFixedImageSamplesIntensityThreshold(
-        static_cast<PixelType>( ( m_SampleIntensityPortion *
-        (fixedImageMax - fixedImageMin) ) + fixedImageMin ) );
-      }
     if( m_UseFixedImageRegionOfInterest )
       {
       regRigid->SetFixedImageRegionOfInterest( m_FixedImageRegionOfInterestPoint1,
         m_FixedImageRegionOfInterestPoint2 );
       }
-    regRigid->SetSampleFromOverlap( m_SampleFromOverlap );
     regRigid->SetMetricMethodEnum( m_RigidMetricMethodEnum );
     regRigid->SetInterpolationMethodEnum( m_RigidInterpolationMethodEnum );
     typename RigidTransformType::ParametersType scales;
@@ -732,10 +673,10 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
         m_CurrentMatrixTransform->GetMatrix() );
       regRigid->GetTypedTransform()->SetOffset(
         m_CurrentMatrixTransform->GetOffset() );
-      regRigid->SetInitialTransformParameters(
-        regRigid->GetTypedTransform()->GetParameters() );
       regRigid->SetInitialTransformFixedParameters(
         regRigid->GetTypedTransform()->GetFixedParameters() );
+      regRigid->SetInitialTransformParameters(
+        regRigid->GetTypedTransform()->GetParameters() );
       }
 
     regRigid->Update();
@@ -743,9 +684,9 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     m_RigidTransform = RigidTransformType::New();
     m_RigidTransform->SetFixedParameters(
       regRigid->GetTypedTransform()->GetFixedParameters() );
-    // must call GetAffineTransform here because the typed transform
-    // is a versor and has only 6 parameters (in this code the type
-    // RigidTransform is a 12 parameter transform)
+    // Rigid transform is stored as a matrix+offset (affine) transform 
+    // because no rigid transform is templated over dimension.
+    // See itktubeRigidSpatialObjectToImageRegistrationMethod class.
     m_RigidTransform->SetParametersByValue(
       regRigid->GetAffineTransform()->GetParameters() );
     m_CurrentMatrixTransform = regRigid->GetAffineTransform();
@@ -764,61 +705,20 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 }
 
 template <unsigned int ObjectDimension, class TImage>
-const TImage *
+const SpatialObject<ObjectDimension> *
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
-::ResampleImage( InterpolationMethodEnumType interpolationMethod,
-                 const ImageType * movingImage,
-                 const MatrixTransformType * matrixTransform,
-                 PixelType defaultPixelValue, double portion)
+::ResampleSpatialObject( const SpatialObjectType * movingSpatialObject,
+                 const MatrixTransformType * matrixTransform, double portion)
 {
-  typedef InterpolateImageFunction<TImage, double>
-    InterpolatorType;
-  typedef NearestNeighborInterpolateImageFunction<TImage, double>
-    NearestNeighborInterpolatorType;
-  typedef LinearInterpolateImageFunction<TImage, double>
-    LinearInterpolatorType;
-  typedef BSplineInterpolateImageFunction<TImage, double>
-    BSplineInterpolatorType;
-  typedef WindowedSincInterpolateImageFunction<TImage, 4,
-    Function::HammingWindowFunction<4>, ConstantBoundaryCondition<TImage>,
-    double>
-    SincInterpolatorType;
-  typedef ResampleImageFilter<TImage, TImage, double>
-    ResampleImageFilterType;
+  typedef PointBasedSpatialObjectTransformFilter<MatrixTransformType,
+    ObjectDimension> ResampleFilterType;
 
-  typename InterpolatorType::Pointer interpolator = nullptr;
-
-  switch( interpolationMethod )
-    {
-    case OptimizedRegistrationMethodType::NEAREST_NEIGHBOR_INTERPOLATION:
-      interpolator = NearestNeighborInterpolatorType::New();
-      break;
-    case OptimizedRegistrationMethodType::LINEAR_INTERPOLATION:
-      interpolator = LinearInterpolatorType::New();
-      break;
-    case OptimizedRegistrationMethodType::BSPLINE_INTERPOLATION:
-      interpolator = BSplineInterpolatorType::New();
-      ( static_cast<BSplineInterpolatorType *>(
-        interpolator.GetPointer() ) )->SetSplineOrder( 3 );
-      break;
-    case OptimizedRegistrationMethodType::SINC_INTERPOLATION:
-      interpolator = SincInterpolatorType::New();
-      break;
-    default:
-      std::cerr
-        << "ERROR: Interpolation function not supported"
-        << " in itk::SpatialObjectToImageRegistrationHelper::ResampleImage"
-        << std::endl;
-      interpolator = LinearInterpolatorType::New();
-      break;
-    }
-
-  if( movingImage == NULL
+  if( movingSpatialObject == NULL
       && matrixTransform == NULL
-      && bsplineTransform == NULL
+      && portion == 1.0
       && m_CompletedResampling )
     {
-    return m_CurrentMovingImage;
+    return m_CurrentMovingSpatialObject;
     }
 
   bool doLoaded = false;
@@ -839,12 +739,10 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       break;
     }
 
-  bool resampled = false;
-  bool passedImage = false;
-  typename TImage::ConstPointer mImage = m_CurrentMovingImage;
-  if( movingImage != NULL )
+  typename SpatialObject::ConstPointer inputSO = m_CurrentMovingSpatialObject;
+  if( movingSpatialObject != NULL )
     {
-    mImage = movingImage;
+    inputSO = movingSpatialObject;
 
     //doLoaded = true;
     //doMatrix = true;
@@ -862,13 +760,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       aTrans = matrixTransform;
       doMatrix = true;
       }
-    if( bsplineTransform != NULL )
-      {
-      bTrans = bsplineTransform;
-      }
     }
-
-  interpolator->SetInputImage( mImage );
 
   if( doMatrix && aTrans.IsNotNull() )
     {
@@ -877,12 +769,8 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       std::cout << "Resampling using matrix." << std::endl;
       }
     // Register using Matrix
-    typename ResampleImageFilterType::Pointer resampler =
-      ResampleImageFilterType::New();
-    resampler->SetInput( mImage );
-    resampler->SetInterpolator( interpolator.GetPointer() );
-    resampler->SetReferenceImage( m_FixedImage );
-    resampler->UseReferenceImageOn();
+    typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
+    resampler->SetInput( inputSO );
     typename MatrixTransformType::Pointer tmpTrans = MatrixTransformType::New();
     tmpTrans->SetIdentity();
     tmpTrans->SetFixedParameters( aTrans->GetFixedParameters() );
@@ -905,80 +793,28 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       tmpTrans->SetParameters( aTrans->GetParameters() );
       }
     resampler->SetTransform( tmpTrans );
-    resampler->SetDefaultPixelValue( defaultPixelValue );
     resampler->Update();
-    m_CurrentMovingImage = resampler->GetOutput();
-    m_MatrixTransformResampledImage = m_CurrentMovingImage;
-
-    resampled = true;
-    mImage = resampler->GetOutput();
-    interpolator->SetInputImage( mImage );
-    }
-
-  if( !resampled )
-    {
-    // Warning: No registrations computed
-    if( this->GetReportProgress() )
+    m_MatrixTransformResampledSpatialObject = resampler->GetOutput();
+    if( movingSpatialObject == NULL
+        && matrixTransform == NULL
+        && portion == 1.0 )
       {
-      std::cout << "Resampling using identity transform." << std::endl;
+      m_CurrentMovingSpatialObject = resampler->GetOutput();
+      m_CompletedResampling = true;
       }
-    typename RigidTransformType::Pointer tmpTransform =
-      RigidTransformType::New();
-    tmpTransform->SetIdentity();
-
-    interpolator->SetInputImage( mImage );
-    typename ResampleImageFilterType::Pointer resampler =
-      ResampleImageFilterType::New();
-    resampler->SetInput( mImage );
-    resampler->SetInterpolator( interpolator.GetPointer() );
-    // We should not be casting away constness here, but
-    // SetOutputParametersFromImage
-    // Does not change the image.  This is needed to workaround fixes
-    // to ITK
-    //typename ImageType::Pointer tmp = const_cast<ImageType *>(
-      //m_FixedImage.GetPointer() );
-    //resampler->SetOutputParametersFromImage( tmp );
-    resampler->SetReferenceImage( m_FixedImage );
-    resampler->UseReferenceImageOn();
-    resampler->SetTransform( tmpTransform );
-    resampler->SetDefaultPixelValue( defaultPixelValue );
-    resampler->Update();
-
-    mImage = resampler->GetOutput();
-    }
-  else if( !passedImage )
-    {
-    m_CompletedResampling = true;
     }
 
-  mImage->Register();
-  return mImage.GetPointer();
+  m_CurrentMovingSpatialObject->Register();
+  return m_CurrentMovingSpatialObject.GetPointer();
 }
 
 template <unsigned int ObjectDimension, class TImage>
 typename TGroupSpatialObjectType::ConstPointer
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
-::GetFinalMovingGroupSpatialObject( InterpolationMethodEnumType interpolationMethod,
+::GetFinalMovingSpatialObject( InterpolationMethodEnumType interpolationMethod,
   PixelType defaultPixelValue)
 {
-  return ResampleImage( interpolationMethod, nullptr, nullptr, nullptr,
-    defaultPixelValue, 1.0 );
-}
-
-template <unsigned int ObjectDimension, class TImage>
-void
-SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
-::LoadBaselineImage( const std::string & filename )
-{
-  typedef ImageFileReader<TImage> ImageReaderType;
-
-  typename ImageReaderType::Pointer imageReader = ImageReaderType::New();
-
-  imageReader->SetFileName( filename );
-
-  imageReader->Update();
-
-  SetBaselineImage( imageReader->GetOutput() );
+  return ResampleSpatialObject();
 }
 
 template <unsigned int ObjectDimension, class TImage>
@@ -1045,64 +881,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
-::SaveDisplacementField( const std::string &filename )
-{
-  typedef itk::Vector<PixelType,TImage::ImageDimension>  VectorType;
-  typedef itk::Image<VectorType,TImage::ImageDimension>  DisplacementFieldType;
-  typedef itk::ImageRegionIterator< DisplacementFieldType > FieldIterator;
-
-  typename TImage::RegionType fixedImageRegion =
-    m_FixedImage->GetBufferedRegion();
-
-  typename DisplacementFieldType::Pointer field =
-    DisplacementFieldType::New();
-  field->SetRegions( fixedImageRegion );
-  field->SetOrigin( m_FixedImage->GetOrigin() );
-  field->SetSpacing( m_FixedImage->GetSpacing() );
-  field->SetDirection( m_FixedImage->GetDirection() );
-  field->Allocate();
-
-  typename DisplacementFieldType::IndexType index;
-
-  VectorType dx;
-
-  FieldIterator it( field, fixedImageRegion );
-  it.GoToBegin();
-
-  while( ! it.IsAtEnd() )
-    {
-    index = it.GetIndex();
-    field->TransformIndexToPhysicalPoint( index, fixedPoint );
-    movingPoint = fixedPoint;
-    if(m_InitialTransform.IsNotNull())
-      {
-      movingPoint = m_InitialTransform->TransformPoint( movingPoint );
-      }
-    if(m_RigidTransform.IsNotNull())
-      {
-      movingPoint = m_RigidTransform->TransformPoint( movingPoint );
-      }
-    if(m_AffineTransform.IsNotNull())
-      {
-      movingPoint = m_AffineTransform->TransformPoint( movingPoint );
-      }
-    dx = movingPoint - fixedPoint;
-    it.Set( dx );
-    ++it;
-    }
-
-  typedef itk::ImageFileWriter< DisplacementFieldType >  FieldWriterType;
-  typename FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
-
-  fieldWriter->SetInput( field );
-  fieldWriter->SetFileName( filename );
-
-  fieldWriter->Update();
-}
-
-template <unsigned int ObjectDimension, class TImage>
-void
-SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetLoadedMatrixTransform( const MatrixTransformType & tfm, bool invert )
 {
   m_LoadedMatrixTransform = MatrixTransformType::New();
@@ -1120,8 +898,8 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     }
 
   m_EnableLoadedRegistration = true;
-  m_LoadedTransformResampledImage = 0;
-  m_CurrentMovingImage = m_MovingImage;
+  m_LoadedTransformResampledSpatialObject = 0;
+  m_CurrentMovingSpatialObject = m_MovingSpatialObject;
 }
 
 template <unsigned int ObjectDimension, class TImage>
@@ -1195,17 +973,9 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 {
   switch( metric )
     {
-    case OptimizedRegistrationMethodType::MATTES_MI_METRIC:
-      os << indent << basename << " Metric Method = MATTES_MI_METRIC"
+    case OptimizedRegistrationMethodType::POINTS_TO_IMAGE_METRIC:
+      os << indent << basename << " Metric Method = POINTS_TO_IMAGE_METRIC"
         << std::endl;
-      break;
-    case OptimizedRegistrationMethodType::NORMALIZED_CORRELATION_METRIC:
-      os << indent << basename
-        << " Metric Method = NORMALIZED_CORRELATION_METRIC" << std::endl;
-      break;
-    case OptimizedRegistrationMethodType::MEAN_SQUARED_ERROR_METRIC:
-      os << indent << basename
-        << " Metric Method = MEAN_SQUARED_ERROR_METRIC" << std::endl;
       break;
     default:
       os << indent << basename << " Metric Method = UNKNOWN" << std::endl;
@@ -1252,7 +1022,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     }
   if( m_MovingImage.IsNotNull() )
     {
-    os << indent << "Moving Image = " << m_MovingImage << std::endl;
+    os << indent << "Moving SpatialObject = " << m_MovingSpatialObject << std::endl;
     }
   os << indent << std::endl;
   os << indent << "Use region of interest = " << m_UseFixedImageRegionOfInterest
@@ -1270,12 +1040,12 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     os << indent << "Fixed Image Mask Object = " << m_FixedImageMaskObject
       << std::endl;
     }
-  os << indent << "Use Moving Image Mask Object = "
+  os << indent << "Use Moving SpatialObject Mask Object = "
     << m_UseMovingSpatialObjectMaskObject << std::endl;
   os << indent << std::endl;
   if( m_MovingSpatialObjectMaskObject.IsNotNull() )
     {
-    os << indent << "Moving Image Mask Object = "
+    os << indent << "Moving SpatialObject Mask Object = "
       << m_MovingSpatialObjectMaskObject << std::endl;
     }
   os << indent << std::endl;
@@ -1315,12 +1085,12 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   os << indent << std::endl;
   if( m_CurrentMovingSpatialObject.IsNotNull() )
     {
-    os << indent << "Current Moving Image = " << m_CurrentMovingSpatialObject
+    os << indent << "Current Moving SpatialObject = " << m_CurrentMovingSpatialObject
       << std::endl;
     }
   else
     {
-    os << indent << "Current Moving Image = NULL" << std::endl;
+    os << indent << "Current Moving SpatialObject = NULL" << std::endl;
     }
   if( m_CurrentMatrixTransform.IsNotNull() )
     {
@@ -1332,23 +1102,23 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     os << indent << "Current Matrix Transform = NULL" << std::endl;
     }
   os << indent << std::endl;
-  if( m_LoadedTransformResampledImage.IsNotNull() )
+  if( m_LoadedTransformResampledSpatialObject.IsNotNull() )
     {
-    os << indent << "Loaded Transform Resampled Image = "
-      << m_LoadedTransformResampledImage << std::endl;
+    os << indent << "Loaded Transform Resampled SpatialObject = "
+      << m_LoadedTransformResampledSpatialObject << std::endl;
     }
   else
     {
-    os << indent << "Loaded Transform Resampled Image = NULL" << std::endl;
+    os << indent << "Loaded Transform Resampled SpatialObject = NULL" << std::endl;
     }
-  if( m_MatrixTransformResampledImage.IsNotNull() )
+  if( m_MatrixTransformResampledSpatialObject.IsNotNull() )
     {
-    os << indent << "Matrix Transform Resampled Image = "
-      << m_MatrixTransformResampledImage << std::endl;
+    os << indent << "Matrix Transform Resampled SpatialObject = "
+      << m_MatrixTransformResampledSpatialObject << std::endl;
     }
   else
     {
-    os << indent << "Matrix Transform Resampled Image = NULL" << std::endl;
+    os << indent << "Matrix Transform Resampled SpatialObject = NULL" << std::endl;
     }
   os << indent << std::endl;
   if( m_LoadedMatrixTransform.IsNotNull() )
