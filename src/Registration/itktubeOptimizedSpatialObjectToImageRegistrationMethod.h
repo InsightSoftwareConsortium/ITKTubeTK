@@ -76,11 +76,6 @@ public:
 
   enum MetricMethodEnumType { POINTS_TO_IMAGE_METRIC };
 
-  enum InterpolationMethodEnumType { NEAREST_NEIGHBOR_INTERPOLATION,
-                                     LINEAR_INTERPOLATION,
-                                     BSPLINE_INTERPOLATION,
-                                     SINC_INTERPOLATION };
-
   //
   // Methods from Superclass
   //
@@ -124,9 +119,6 @@ public:
   itkSetMacro( MetricMethodEnum, MetricMethodEnumType );
   itkGetConstMacro( MetricMethodEnum, MetricMethodEnumType );
 
-  itkSetMacro( InterpolationMethodEnum, InterpolationMethodEnumType );
-  itkGetConstMacro( InterpolationMethodEnum, InterpolationMethodEnumType );
-
   itkGetMacro( FinalMetricValue, double );
 
 protected:
@@ -138,11 +130,9 @@ protected:
 
   itkSetMacro( TransformMethodEnum, TransformMethodEnumType );
 
-  typedef InterpolateImageFunction<TImage, double> InterpolatorType;
-
   typedef SpatialObjectToImageMetric<ObjectDimension, TImage>       MetricType;
 
-  virtual void Optimize( MetricType * metric, InterpolatorType * interpolator );
+  virtual void Optimize( MetricType * metric );
 
   virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
 
@@ -174,8 +164,6 @@ private:
   TransformMethodEnumType m_TransformMethodEnum;
 
   MetricMethodEnumType m_MetricMethodEnum;
-
-  InterpolationMethodEnumType m_InterpolationMethodEnum;
 
   double m_FinalMetricValue;
 };

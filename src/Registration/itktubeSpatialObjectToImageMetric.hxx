@@ -28,23 +28,24 @@ limitations under the License.
 namespace itk
 {
 /** Constructor */
-template <typename TMovingSpatialObject, typename TFixedImage>
+template <unsigned int ObjectDimension, typename TFixedImage>
 SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::SpatialObjectToImageMetric()
 
 {
   m_FixedImage = nullptr;          // has to be provided by the user.
   m_MovingSpatialObject = nullptr; // has to be provided by the user.
   m_Transform = nullptr;           // has to be provided by the user.
-  m_Interpolator = nullptr;        // has to be provided by the user.
+
+  m_SamplingRatio = 0.1;
 
   this->m_UseFixedImageRegionOfInterest = false;
   this->m_FixedImageRegionOfInterestPoint1.Fill(0);
   this->m_FixedImageRegionOfInterestPoint2.Fill(0);
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageMetric<TSpatialObject, TImage>
+SpatialObjectToImageMetric<ObjectDimension, TImage>
 ::SetFixedImage( const ImageType * fixedImage )
 {
   if( this->m_FixedImage.GetPointer() != fixedImage )
@@ -57,37 +58,22 @@ SpatialObjectToImageMetric<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageMetric<TSpatialObject, TImage>
+SpatialObjectToImageMetric<ObjectDimension, TImage>
 ::SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject )
 {
-  this->m_MovingGroupSpatialObject = GroupType::New();
+  this->m_MovingSpatialObject = movingSpatialObject;
 
-  this->m_MovingGroupSpatialObject->AddChild(movingSpatialObject);
-
-  this->ProcessObject::SetNthInput(1, const_cast<GroupType *>(
-      m_MovingGroupSpatialObject ) );
+  this->ProcessObject::SetNthInput(1, const_cast<SpatialObjectType *>(
+      m_MovingSpatialObject ) );
 
   this->Modified();
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageMetric<TSpatialObject, TImage>
-::SetMovingGroupSpatialObject( const GroupType * movingGroupSpatialObject )
-{
-  this->m_MovingGroupSpatialObject = movingGroupSpatialObject;
-
-  this->ProcessObject::SetNthInput(1, const_cast<GroupType *>(
-      m_MovingGroupSpatialObject ) );
-
-  this->Modified();
-}
-
-template <class TSpatialObject, class TImage>
-void
-SpatialObjectToImageMetric<TSpatialObject, TImage>
+SpatialObjectToImageMetric<ObjectDimension, TImage>
 ::SetFixedImageRegionOfInterest( const PointType & point1,
   const PointType & point2 )
 {
@@ -96,9 +82,9 @@ SpatialObjectToImageMetric<TSpatialObject, TImage>
   m_UseFixedImageRegionOfInterest = true;
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageMetric<TSpatialObject, TImage>
+SpatialObjectToImageMetric<ObjectDimension, TImage>
 ::SetFixedImageMaskObject( const MaskObjectType * maskObject )
 {
   if( this->m_FixedImageMaskObject.GetPointer() != maskObject )
@@ -118,9 +104,9 @@ SpatialObjectToImageMetric<TSpatialObject, TImage>
     }
 }
 
-template <class TSpatialObject, class TImage>
+template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageMetric<TSpatialObject, TImage>
+SpatialObjectToImageMetric<ObjectDimension, TImage>
 ::SetMovingSpatialObjectMaskObject( const MaskObjectType * maskObject )
 {
   if( this->m_MovingSpatialObjectMaskObject.GetPointer() != maskObject )
@@ -165,11 +151,6 @@ SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::Initialize()
     itkExceptionMacro(<< "Transform is not present");
   }
 
-  if (!m_Interpolator)
-  {
-    itkExceptionMacro(<< "Interpolator is not present");
-  }
-
   if (!m_MovingSpatialObject)
   {
     itkExceptionMacro(<< "MovingSpatialObject is not present");
@@ -186,8 +167,6 @@ SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::Initialize()
     m_FixedImage->GetSource()->Update();
   }
 
-  m_Interpolator->SetInputImage(m_FixedImage);
-
   // If there are any observers on the metric, call them to give the
   // user code a chance to set parameters on the metric
   this->InvokeEvent(InitializeEvent());
@@ -202,8 +181,9 @@ SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::PrintSelf(std::os
   os << indent << "Moving Spatial Object: " << m_MovingSpatialObject.GetPointer() << std::endl;
   os << indent << "Fixed  Image: " << m_FixedImage.GetPointer() << std::endl;
   os << indent << "Transform:    " << m_Transform.GetPointer() << std::endl;
-  os << indent << "Interpolator: " << m_Interpolator.GetPointer() << std::endl;
   os << indent << "Last Transform parameters = " << m_LastTransformParameters << std::endl;
+
+  os << indent << "Sampling Ratio:    " << m_SamplingRatio << std::endl;
 }
 } // end namespace itk
 

@@ -20,12 +20,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeTubesToImageMetric_hxx
-#define __itktubeTubesToImageMetric_hxx
+#ifndef __itktubePointBasedSpatialObjectToImageMetric_hxx
+#define __itktubePointBasedSpatialObjectToImageMetric_hxx
 
-#include "itktubeTubesToImageMetric.h"
-
-#include <itkLinearInterpolateImageFunction.h>
+#include "itktubePointBasedSpatialObjectToImageMetric.h"
 
 namespace itk
 {
@@ -33,59 +31,37 @@ namespace itk
 namespace tube
 {
 
-template< class TFixedImage, class TMovingSpatialObject,
-  class TTubeSpatialObject >
-TubesToImageMetric< TFixedImage, TMovingSpatialObject,
-  TTubeSpatialObject >
-::TubesToImageMetric( void )
+template< unsigned int ObjectDimension, class TFixedImage >
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
+::PointBasedSpatialObjectToImageMetric( void )
 {
   m_Kappa = 1.0;
-  m_MinimumScalingRadius = 0.1;
   m_Extent = 3.0;
+
+  m_TubePriorityRadius = 0;
+  m_TubeSamplingRadiusMin = 0;
+  m_TubeSamplingRadiusMax = 0;
 
   m_CenterOfRotation.Fill( 0.0 );
 
-  m_DerivativeImageFunction = DerivativeImageFunctionType::New();
-
-  typedef LinearInterpolateImageFunction< FixedImageType >
-    DefaultInterpolatorType;
-
-  this->m_Interpolator = DefaultInterpolatorType::New();
+  m_SubsampledPoints.clear();
+  m_SubsampledPointsWeights.clear();
+  m_SubsampledTubePoints.clear();
+  m_SubsampledTubePointsWeights.clear();
+  m_SubsampledSurfacePoints.clear();
+  m_SubsampledSurfacePointsWeights.clear();
 }
 
 
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
-TubesToImageMetric< TFixedImage, TMovingSpatialObject,
-  TTubeSpatialObject >
-::~TubesToImageMetric( void )
+template< unsigned int ObjectDimension, class TFixedImage >
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
+::~PointBasedSpatialObjectToImageMetric( void )
 {
 }
 
-
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
+template< unsigned int ObjectDimension, class TFixedImage >
 void
-TubesToImageMetric< TFixedImage, TMovingSpatialObject,
-  TTubeSpatialObject >
-::SetFeatureWeights( FeatureWeightsType & featureWeights )
-{
-  if( this->m_FeatureWeights.data_block() != featureWeights.data_block() ||
-      this->m_FeatureWeights.GetSize() != featureWeights.GetSize() )
-    {
-    // m_FeatureWeights should treated as const.
-    this->m_FeatureWeights.SetData( featureWeights.data_block(),
-      featureWeights.GetSize(), false );
-    this->Modified();
-    }
-}
-
-
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
-void
-TubesToImageMetric< TFixedImage, TMovingSpatialObject,
-  TTubeSpatialObject >
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::Initialize( void )
 {
   if( !this->m_MovingSpatialObject || !this->m_FixedImage )
@@ -93,142 +69,363 @@ TubesToImageMetric< TFixedImage, TMovingSpatialObject,
     itkExceptionMacro( << "No tube/image net plugged in." );
     }
 
-  const SizeValueType tubePoints = this->CountTubePoints();
-  if( this->m_FeatureWeights.GetSize() == 0 )
-    {
-    this->m_FeatureWeights.SetSize( tubePoints );
-    this->m_FeatureWeights.Fill( NumericTraits< ScalarType >::One );
-    }
-  if( this->m_FeatureWeights.GetSize() != tubePoints )
-    {
-    itkExceptionMacro(
-      << "The number of FeatureWeights "
-      << "do not equal the number of tube points!" );
-    }
   this->ComputeCenterOfRotation();
-
-  this->m_Interpolator->SetInputImage( this->m_FixedImage );
-  this->m_DerivativeImageFunction->SetInputImage( this->m_FixedImage );
 }
 
 
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
-SizeValueType
-TubesToImageMetric< TFixedImage, TMovingSpatialObject,
-  TTubeSpatialObject >
-::CountTubePoints( void )
+template< unsigned int ObjectDimension, class TFixedImage >
+unsigned int
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
+::GetMaximumNumberOfPoints( void )
 {
-  SizeValueType tubePoints = 0;
+  unsigned int maximumNumberOfPoints = 0;
 
-  typename TubeTreeType::ChildrenListType * tubeList = this->GetTubes();
-  typename TubeTreeType::ChildrenListType::const_iterator tubeIterator;
-  for( tubeIterator = tubeList->begin();
-       tubeIterator != tubeList->end();
-       ++tubeIterator )
-    {
-    TubeType* currentTube = dynamic_cast<TubeType*>(
-      ( *tubeIterator ).GetPointer() );
-
-    if( currentTube != NULL )
-      {
-      tubePoints += currentTube->GetNumberOfPoints();
-      }
-    }
-  delete tubeList;
-
-  return tubePoints;
-}
-
-
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
-void
-TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
-::ComputeCenterOfRotation( void )
-{
-  typename TubeTreeType::ChildrenListType* tubeList = this->GetTubes();
-
-  CompensatedSummationType featureWeightSum;
-
-  SizeValueType weightCount = 0;
-  typedef typename TubeTreeType::ChildrenListType::iterator TubesIteratorType;
-  for( TubesIteratorType tubeIterator = tubeList->begin();
-       tubeIterator != tubeList->end();
-       ++tubeIterator )
+  typename PointBasedSpatialObjectType::ChildrenListType * pbsoList =
+    this->GetPointBasedChildren( m_MovingSpatialObject );
+  typename PointBasedSpatialObjectType::ChildrenListType::const_iterator
+    pbsoIter;
+  for( pbsoIter = pbsoList->begin(); pbsoIter != pbsoList->end();
+    ++pbsoIter )
     {
     TubeType* currentTube =
-      dynamic_cast< TubeType * >( ( *tubeIterator ).GetPointer() );
-    if( currentTube != NULL )
+      dynamic_cast<TubeType*>((*pbsoIter).GetPointer());
+    SurfaceType* currentSurface =
+      dynamic_cast<SurfaceType*>((*pbsoIter).GetPointer());
+    PointBasedSpatialObjectType* currentPBSO =
+      dynamic_cast<PointBasedSpatialObjectType*>((*pbsoIter).GetPointer());
+    if( currentTube != nullptr )
       {
-      currentTube->ComputeTangentsAndNormals();
-
-      const typename TubeType::TubePointListType & currentTubePoints
-        = currentTube->GetPoints();
-      typedef typename TubeType::TubePointListType::const_iterator
-        TubePointIteratorType;
-      for( TubePointIteratorType tubePointIterator =
-        currentTubePoints.begin();
-        tubePointIterator != currentTubePoints.end();
-        ++tubePointIterator )
+      const typename TubeType::TubePointListType & currentPoints =
+        currentTube->GetPoints();
+      auto pIter = currentPoints.begin();
+      while( pIter != currentPoints.end() )
         {
-        const ScalarType weight = this->m_FeatureWeights[weightCount];
-        ++weightCount;
-
-        for( unsigned int ii = 0; ii < TubeDimension; ++ii )
+        if( this->IsValidMovingPoint( *pIter ) )
           {
-          //! \todo CompensatedSummation
-          this->m_CenterOfRotation[ii] +=
-            weight * ( tubePointIterator->GetPositionInObjectSpace() )[ii];
+          ++maximumNumberOfPoints;
           }
-        featureWeightSum += weight;
+        ++pIter;
+        }
+      }
+    else if( currentSurface != NULL )
+      {
+      const typename SurfaceType::SurfacePointListType & currentPoints =
+        currentSurface->GetPoints();
+      auto pIter = currentPoints.begin();
+      while( pIter != currentPoints.end() )
+        {
+        if( this->IsValidMovingPoint( *pIter ) )
+          {
+          ++maximumNumberOfPoints;
+          }
+        ++pIter;
+        }
+      }
+    else
+      {
+      const typename PointBasedSpatialObjectType::SpatialObjectPointListType &
+        currentPoints = currentPBSO->GetPoints();
+      auto pIter = currentPoints.begin();
+      while( pIter != currentPoints.end() )
+        {
+        if( this->IsValidMovingPoint( *pIter ) )
+          {
+          ++maximumNumberOfPoints;
+          }
+        ++pIter;
         }
       }
     }
-  delete tubeList;
+  delete pbsoList;
 
-  for( unsigned int ii = 0; ii < TubeDimension; ++ii )
-    {
-    this->m_CenterOfRotation[ii] /= featureWeightSum.GetSum();
-    }
-
-  //! \todo partial template specialization for transforms with a center?
-  TransformType * transform = static_cast< TransformType * >
-    ( this->m_Transform.GetPointer() );
-  transform->SetCenter( this->m_CenterOfRotation );
+  return maximumNumberOfPoints;
 }
 
 
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
-typename TubesToImageMetric< TFixedImage, TMovingSpatialObject,
-  TTubeSpatialObject >::TubeTreeType::ChildrenListType*
-TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
-::GetTubes( void ) const
+template< unsigned int ObjectDimension, class TFixedImage >
+void
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
+::ComputeCenterOfRotation( void )
 {
-  if( !this->m_MovingSpatialObject )
-    {
-    return nullptr;
-    }
+  unsigned int pointCount = 0;
 
-  char childName[] = "Tube";
-  return this->m_MovingSpatialObject->GetChildren(
-    this->m_MovingSpatialObject->GetMaximumDepth(), childName );
+  typename PointBasedSpatialObjectType::ChildrenListType * pbsoList =
+    this->GetPointBasedChildren( m_MovingSpatialObject );
+  typename PointBasedSpatialObjectType::ChildrenListType::const_iterator
+    pbsoIter;
+  for( pbsoIter = pbsoList->begin(); pbsoIter != pbsoList->end();
+    ++pbsoIter )
+    {
+    TubeType* currentTube =
+      dynamic_cast<TubeType*>((*pbsoIter).GetPointer());
+    SurfaceType* currentSurface =
+      dynamic_cast<SurfaceType*>((*pbsoIter).GetPointer());
+    PointBasedSpatialObjectType* currentPBSO =
+      dynamic_cast<PointBasedSpatialObjectType*>((*pbsoIter).GetPointer());
+    if( currentTube != nullptr )
+      {
+      const typename TubeType::TubePointListType & currentPoints =
+        currentTube->GetPoints();
+      auto pIter = currentPoints.begin();
+      while( pIter != currentPoints.end() )
+        {
+        if( this->IsValidMovingPoint( *pIter ) )
+          {
+          for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
+            {
+            this->m_CenterOfRotation[ii] +=
+              (tubePointIter->GetPositionInWorldSpace())[ii];
+            }
+          ++pointCount;
+          }
+        ++pIter;
+        }
+      }
+    else if( currentSurface != NULL )
+      {
+      const typename SurfaceType::SurfacePointListType & currentPoints =
+        currentSurface->GetPoints();
+      auto pIter = currentPoints.begin();
+      while( pIter != currentPoints.end() )
+        {
+        if( this->IsValidMovingPoint( *pIter ) )
+          {
+          ++maximumNumberOfPoints;
+          for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
+            {
+            this->m_CenterOfRotation[ii] +=
+              (tubePointIter->GetPositionInWorldSpace())[ii];
+            }
+          ++pointCount;
+          }
+        ++pIter;
+        }
+      }
+    else
+      {
+      const typename PointBasedSpatialObjectType::SpatialObjectPointListType &
+        currentPoints = currentPBSO->GetPoints();
+      auto pIter = currentPoints.begin();
+      while( pIter != currentPoints.end() )
+        {
+        if( this->IsValidMovingPoint( *pIter ) )
+          {
+          for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
+            {
+            this->m_CenterOfRotation[ii] +=
+              (tubePointIter->GetPositionInWorldSpace())[ii];
+            }
+          ++pointCount;
+          }
+        ++pIter;
+        }
+      }
+    }
+  delete pbsoList;
+
+  for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
+    {
+    this->m_CenterOfRotation[ii] /= pointCount;
+    }
 }
 
 
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
-typename TubesToImageMetric< TFixedImage, TMovingSpatialObject,
-  TTubeSpatialObject >::MeasureType
-TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+template< unsigned int ObjectDimension, class TFixedImage >
+void
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
+::SubsamplePoints( void ) 
+{
+  unsigned int maxPointCount = this->GetMaximumNumberOfPoints();
+
+  unsigned int targetPointCount = maxPointCount * m_SamplingRatio;
+  
+  m_SubsampledPoints.clear();
+  m_SubsampledPointsWeights.clear();
+  m_SubsampledTubePoints.clear();
+  m_SubsampledTubePointsWeights.clear();
+  m_SubsampledSurfacePoints.clear();
+  m_SubsampledSurfacePointsWeights.clear();
+
+  unsigned int pointCount = 0;
+  typename PointBasedSpatialObjectType::ChildrenListType * pbsoList =
+    this->GetPointBasedSpatialObjects();
+  typename PointBasedSpatialObjectType::ChildrenListType::const_iterator
+    pbsoIter;
+  pbsoIter = pbsoList->begin();
+  while( pbsoIter != pbsoList->end() )
+    {
+    TubeType* currentTube =
+      dynamic_cast<TubeType*>((*pbsoIter).GetPointer());
+    SurfaceType* currentSurface =
+      dynamic_cast<SurfaceType*>((*pbsoIter).GetPointer());
+    PointBasedSpatialObjectType* currentPBSO =
+      dynamic_cast<PointBasedSpatialObjectType*>((*pbsoIter).GetPointer());
+    unsigned int preCount;
+    unsigned int postCount;
+    PointIteratorType pointIter = currentPoints.begin();
+    if( currentTube != nullptr )
+      {
+      const TubePointListType & currentPoints = currentTube->GetPoints();
+      auto pointIter = currentPoints.begin();
+      while( pointIter != currentPoints.end() )
+        {
+        m_SubsampledTubePoints.push_back( *pointIter );
+        m_SubsampledTubePointsWeights.push_back(1);
+        preCount = pointCount * m_SamplingRatio;
+        postCount = preCount;
+        while( preCount == postCount && pointIter != currentPoints.end() )
+          {
+          ++pointIter;
+          ++pointCount;
+          postCount = pointCount * m_SamplingRatio;
+          }
+        }
+      }
+    else if( currentSurface != nullptr )
+      {
+      const SurfacePointListType & currentPoints = currentSurface->GetPoints();
+      auto pointIter = currentPoints.begin();
+      while( pointIter != currentPoints.end() )
+        {
+        m_SubsampledSurfacePoints.push_back( *pointIter );
+        m_SubsampledSurfacePointsWeights.push_back(1);
+        preCount = pointCount * m_SamplingRatio;
+        postCount = preCount;
+        while( preCount == postCount && pointIter != currentPoints.end() )
+          {
+          ++pointIter;
+          ++pointCount;
+          postCount = pointCount * m_SamplingRatio;
+          }
+        }
+      }
+    else
+      {
+      const SpatialObjectPointListType & currentPoints = currentPBSO->GetPoints();
+      auto pointIter = currentPoints.begin();
+      while( pointIter != currentPoints.end() )
+        {
+        m_SubsampledPoints.push_back( *pointIter );
+        m_SubsampledPointsWeights.push_back(1);
+        preCount = pointCount * m_SamplingRatio;
+        postCount = preCount;
+        while( preCount == postCount && pointIter != currentPoints.end() )
+          {
+          ++pointIter;
+          ++pointCount;
+          postCount = pointCount * m_SamplingRatio;
+          }
+        }
+      }
+    ++pbsoIter;
+    }
+  delete pbsoList;
+}
+
+template< unsigned int ObjectDimension, class TFixedImage >
+void
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
+::ComputeSubsampledPointsWeights( void ) 
+{
+  m_SubsampledTubePointsWeights.clear();
+  auto tubePointIter = m_SubsampledTubePoints.begin();
+  while( tubePointIter != m_SubsampledTubePoints.end() )
+  {
+    double radius = tubePointIter->GetRadiusInWorldSpace();
+    if( m_TubePriorityRadius != 0 &&
+      m_TubePriorityRadius > m_TubeSamplingRadiusMin)
+      {
+      if( radius > m_TubePriorityRadius )
+        {
+        m_SubsampledTubePointsWeights.push_back(1);
+        }
+      double weight = ( radius - m_TubeSamplingRadiusMin ) /
+        (m_TubePriorityRadius - m_TubeSamplingRadiusMin);
+      m_SubsampledTubePointsWeights.push_back( weight );
+      }
+    else
+      {
+      if( m_TubeSamplingRadiusMin < m_TubeSamplingRadiusMax )
+        {
+        double weight = ( radius - m_TubeSamplingRadiusMin ) /
+          (m_TubeSamplingRadiusMax - m_TubeSamplingRadiusMin);
+        m_SubsampledTubePointsWeights.push_back( weight );
+        }
+      else
+        {
+        m_SubsampledTubePointsWeights.push_back( 1 );
+        }
+      }
+    ++tubePointIter;
+  }
+  m_SubsampledSurfacePointsWeights.clear();
+  auto surfacePointIter = m_SubsampledSurfacePoints.begin();
+  while( surfacePointIter != m_SubsampledSurfacePoints.end() )
+  {
+    m_SubsampledSurfacePointsWeights.push_back( 1 );
+    ++surfacePointIter;
+  }
+  m_SubsampledPointsWeights.clear();
+  auto pointIter = m_SubsampledPoints.begin();
+  while( pointIter != m_SubsampledPoints.end() )
+  {
+    m_SubsampledPointsWeights.push_back( 1 );
+    ++pointIter;
+  }
+}
+
+template< unsigned int ObjectDimension, class TFixedImage >
+typename
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >::SpatialObjectType::ChildrenListType*
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
+::GetPointBasedChildren( SpatialObjectType::Pointer & parentSO, 
+  SpatialObjectType::ChildrenListType * childrenSO ) const
+{
+  if( parentSO.IsNull() )
+  {
+    return childrenSO;
+  }
+
+  if( childrenSO == nullptr )
+  {
+    childrenSO = new SpatialObjectType::ChildrenListType;
+  }
+
+  auto tmpChildren = parentSO->GetChildren();
+
+  auto it = tmpChildren->begin();
+  while (it != tmpChildren->end())
+  {
+    if (dynamic_cast< PointBasedSpatialObjectType * >(*it) != nullptr)
+    {
+      childrenSO->push_back((*it));
+    }
+    it++;
+  }
+
+  auto it = tmpChildren->begin();
+  while (it != tmpChildren->end())
+  {
+    this->AddPointBasedChildrenToList( *it, childrenSO );
+    it++;
+  }
+
+  delete tmpChildren;
+
+  return childrenSO;
+}
+
+template< unsigned int ObjectDimension, class TFixedImage >
+typename PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >::
+  MeasureType
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::GetValue( const ParametersType & parameters ) const
 {
   itkDebugMacro( << "**** Get Value ****" );
   itkDebugMacro( << "Parameters = " << parameters );
 
-  CompensatedSummationType matchMeasure;
-  CompensatedSummationType weightSum;
+  double matchMeasure;
+  double weightSum;
 
   // Create a copy of the transform to keep true const correctness (
   // thread-safe )
@@ -239,159 +436,141 @@ TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
   transformCopy->SetFixedParameters( this->m_Transform->GetFixedParameters() );
   transformCopy->SetParameters( parameters );
 
-  typename TubeTreeType::ChildrenListType::iterator tubeIterator;
-  typename TubeTreeType::ChildrenListType * tubeList = GetTubes();
-  SizeValueType weightCount = 0;
-  for( tubeIterator = tubeList->begin();
-       tubeIterator != tubeList->end();
-       ++tubeIterator )
+  typename NJetImageFunction< FixedImageType >::Pointer imFunc =
+    NJetImageFunction< FixedImageType >::New();
+  imFunc->SetInput( m_FixedImage );
+
+  auto tubePointIter = m_SubsampledTubePoints.begin();
+  auto tubePointWeightIter = m_SubsampledTubePointsWeights.begin();
+  while( tubePointIter != m_SubsampledTubePoints.end() )
     {
-    TubeType * currentTube =
-      dynamic_cast< TubeType * >( ( *tubeIterator ).GetPointer() );
-    if( currentTube != NULL )
+    if( this->IsValidMovingPoint( inputPoint )
       {
-      typename TubeType::TubePointListType::iterator pointIterator;
-      for( pointIterator = currentTube->GetPoints().begin();
-           pointIterator != currentTube->GetPoints().end();
-           ++pointIterator )
+      const InputPointType inputPoint = tubePointIter->GetPositionInWorldSpace();
+      OutputPointType currentPoint;
+      transformCopy->TransformPoint( inputPoint, currentPoint );
+      if( IsValidFixedPoint( currentPoint ) )
         {
-        const InputPointType inputPoint = pointIterator->GetPositionInObjectSpace();
-        OutputPointType currentPoint;
-        if( this->IsInside( inputPoint, currentPoint, transformCopy ) )
+        double scale = tubePointIter->GetRadiusInWorldSpace() * m_Kappa;
+
+        CovariantVectorType n1;
+        TransformedCovariantVectorType n1T;
+        CovariantVectorType n2;
+        TransformedCovariantVectorType n2T;
+        for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
           {
-          weightSum += m_FeatureWeights[weightCount];
-          ScalarType scalingRadius = pointIterator->GetRadiusInObjectSpace();
-          scalingRadius = std::max( scalingRadius, m_MinimumScalingRadius );
-
-          const ScalarType scale = scalingRadius * m_Kappa;
-
-          matchMeasure += m_FeatureWeights[weightCount] * std::fabs(
-            this->ComputeLaplacianMagnitude(
-              pointIterator->GetNormal1InObjectSpace(),
-              scale,
-              currentPoint ) );
+          n1[ii] = pointIter->GetNormal1InWorldSpace()[ii];
+          if( ObjectDimension > 2 )
+            {
+            n2[ii] = pointIter->GetNormal2InWorldSpace()[ii];
+            }
           }
-        ++weightCount;
+
+        for( unsigned int ii = 0; ii < ImageDimension; ++ii )
+          {
+          n1T[ii] = transformCopy->TransformCovariantVector( n1 )[ii];
+          if( ObjectDimension > 2 )
+            {
+            n2T[ii] = transformCopy->TransformCovariantVector( n2 )[ii];
+            }
+          }
+
+        if( ObjectDimension > 2 )
+          {
+          matchMeasure += *tubePointWeightIter * imFunc->Evaluate( currentPoint,
+            n1, n2, scale );
+          }
+        else
+          {
+          matchMeasure += *tubePointWeightIter * imFunc->Evaluate( currentPoint,
+            n1, scale );
+          }
+        weightSum += *tubePointWeightIter;
         }
-      } // end is a tube
+      }
+    ++tubePointIter;
+    ++tubePointWeightIter;
     }
 
-  if( weightSum.GetSum() == NumericTraits< ScalarType >::Zero )
+  auto surfacePointIter = m_SubsampledSurfacePoints.begin();
+  auto surfacePointWeightIter = m_SubsampledSurfacePointsWeights.begin();
+  while( surfacePointIter != m_SubsampledSurfacePoints.end() )
+    {
+    if( this->IsValidMovingPoint( inputPoint )
+      {
+      const InputPointType inputPoint =
+        surfacePointIter->GetPositionInWorldSpace();
+      OutputPointType currentPoint;
+      transformCopy->TransformPoint( inputPoint, currentPoint );
+      if( IsValidFixedPoint( currentPoint ) )
+        {
+        double scale = surfacePointIter->GetRadiusInWorldSpace() * m_Kappa;
+
+        CovariantVectorType n1;
+        TransformedCovariantVectorType n1T;
+        for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
+          {
+          n1[ii] = pointIter->GetNormal1InWorldSpace()[ii];
+          }
+
+        for( unsigned int ii = 0; ii < ImageDimension; ++ii )
+          {
+          n1T[ii] = transformCopy->TransformCovariantVector( n1 )[ii];
+          }
+
+        matchMeasure += *surfacePointWeightIter * imFunc->Evaluate(
+          currentPoint, n1, scale );
+        weightSum += *surfacePointWeightIter;
+        }
+      }
+    ++surfacePointIter;
+    ++surfacePointWeightIter;
+    }
+
+  auto pointIter = m_SubsampledPoints.begin();
+  auto pointWeightIter = m_SubsampledPointsWeights.begin();
+  while( pointIter != m_SubsampledSurfacePoints.end() )
+    {
+    if( this->IsValidMovingPoint( inputPoint )
+      {
+      const InputPointType inputPoint =
+        pointIter->GetPositionInWorldSpace();
+      OutputPointType currentPoint;
+      transformCopy->TransformPoint( inputPoint, currentPoint );
+      if( IsValidFixedPoint( currentPoint ) )
+        {
+        double scale = pointIter->GetRadiusInWorldSpace() * m_Kappa;
+
+        matchMeasure += *pointWeightIter * imFunc->Evaluate(
+          currentPoint, scale );
+        weightSum += *pointWeightIter;
+        }
+      }
+    ++pointIter;
+    ++pointWeightIter;
+    }
+
+  if( weightSum == NumericTraits< double >::Zero )
     {
     itkWarningMacro(
       << "GetValue: All the transformed tube points are outside the image." );
-    matchMeasure = NumericTraits< ScalarType >::min();
+    matchMeasure = 0;
     }
   else
     {
-    const ScalarType normalizedMeasure =
-      static_cast< ScalarType >( matchMeasure.GetSum() / weightSum.GetSum() );
-    matchMeasure = normalizedMeasure;
+    matchMeasure /= weightSum;
     }
 
-  itkDebugMacro( << "matchMeasure = " << matchMeasure.GetSum() );
+  itkDebugMacro( << "matchMeasure = " << matchMeasure );
 
   delete tubeList;
-  return matchMeasure.GetSum();
+
+  return matchMeasure;
 }
 
-
-/** Compute the Laplacian magnitude */
-// TODO FACTORIZE CODE --> See ComputeThirdDerivative
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
-typename TubesToImageMetric< TFixedImage,
-  TMovingSpatialObject, TTubeSpatialObject >::ScalarType
-TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
-::ComputeLaplacianMagnitude(
-  const typename TubePointType::CovariantVectorType & tubeNormal,
-  const ScalarType scale,
-  const OutputPointType & currentPoint ) const
-{
-  // We convolve the 1D signal defined by the direction v at point
-  // currentPoint with a second derivative of a Gaussian
-  const ScalarType scaleSquared = scale * scale;
-  const ScalarType scaleExtentProduct = scale * m_Extent;
-  CompensatedSummationType kernelSum;
-  SizeValueType numberOfKernelPoints = 0;
-
-  for( ScalarType distance = -scaleExtentProduct;
-       distance <= scaleExtentProduct;
-       //! \todo better calculation of the increment instead of just +1
-       ++distance )
-    {
-    typename FixedImageType::PointType point;
-    for( unsigned int ii = 0; ii < ImageDimension; ++ii )
-      {
-      point[ii] = currentPoint[ii] + distance * tubeNormal.GetElement( ii );
-      }
-
-    if( this->m_Interpolator->IsInsideBuffer( point ) )
-      {
-      const ScalarType distanceSquared = distance * distance;
-      //! \todo cache this value, so it can be used in the next loop
-      kernelSum += ( -1.0 + ( distanceSquared / scaleSquared ) )
-        * std::exp( -0.5 * distanceSquared / scaleSquared );
-      ++numberOfKernelPoints;
-      }
-    }
-
-  //! \todo check this normalization
-  //( //where is the 1/( scale * sqrt( 2 pi ) )
-  //term?
-  const ScalarType error = kernelSum.GetSum() / numberOfKernelPoints;
-  CompensatedSummationType result;
-  for( ScalarType distance = -scaleExtentProduct;
-       distance <= scaleExtentProduct;
-       //! \todo better calculation of the increment instead of just +1
-       ++distance )
-    {
-    const ScalarType distanceSquared = distance * distance;
-    const ScalarType kernelValue =
-      ( -1.0 + ( distanceSquared / scaleSquared ) )
-      * std::exp( -0.5 * distanceSquared / scaleSquared ) - error;
-
-    typename FixedImageType::PointType point;
-    for( unsigned int ii = 0; ii < ImageDimension; ++ii )
-      {
-      point[ii] = currentPoint[ii] + distance * tubeNormal.GetElement( ii );
-      }
-
-    if( this->m_Interpolator->IsInsideBuffer( point ) )
-      {
-      const ScalarType value =
-        static_cast< ScalarType >(
-          this->m_Interpolator->Evaluate( point ) );
-      result += value * kernelValue;
-      }
-    }
-
-  return result.GetSum();
-}
-
-
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
+template< unsigned int ObjectDimension, class TFixedImage >
 void
-TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
-::GetDeltaAngles( const OutputPointType & tubePoint,
-  const VnlVectorType & dx,
-  const VectorType & offsets,
-  ScalarType dAngle[3] ) const
-{
-  VectorType radius = ( tubePoint - offsets ) - ( this->m_CenterOfRotation );
-  radius.Normalize();
-
-  dAngle[0] = dx[1] * -radius[2] + dx[2] *  radius[1];
-  dAngle[1] = dx[0] *  radius[2] + dx[2] * -radius[0];
-  dAngle[2] = dx[0] * -radius[1] + dx[1] *  radius[0];
-}
-
-
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
-void
-TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::GetDerivative( const ParametersType & parameters,
                  DerivativeType & derivative ) const
 {
@@ -411,9 +590,9 @@ TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
   itkDebugMacro( << "parameters = "<< parameters );
 
   VnlMatrixType biasV( TubeDimension, TubeDimension,
-    NumericTraits< ScalarType >::Zero );
+    NumericTraits< double >::Zero );
   VnlMatrixType biasVI( TubeDimension, TubeDimension,
-    NumericTraits< ScalarType >::Zero );
+    NumericTraits< double >::Zero );
 
   SizeValueType weightCount = 0;
 
@@ -434,22 +613,22 @@ TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
   derivative.fill( 0.0 );
 
   typename TubeTreeType::ChildrenListType * tubeList = GetTubes();
-  typename TubeTreeType::ChildrenListType::const_iterator tubeIterator;
-  for( tubeIterator = tubeList->begin();
-       tubeIterator != tubeList->end();
-       ++tubeIterator )
+  typename TubeTreeType::ChildrenListType::const_iterator tubeIter;
+  for( tubeIter = tubeList->begin();
+       tubeIter != tubeList->end();
+       ++tubeIter )
     {
     TubeType* currentTube = dynamic_cast<TubeType*>(
-      ( *tubeIterator ).GetPointer() );
+      ( *tubeIter ).GetPointer() );
 
     if( currentTube != NULL )
       {
-      typename TubeType::TubePointListType::const_iterator pointIterator;
-      for( pointIterator = currentTube->GetPoints().begin();
-           pointIterator != currentTube->GetPoints().end();
-           ++pointIterator )
+      typename TubeType::TubePointListType::const_iterator pointIter;
+      for( pointIter = currentTube->GetPoints().begin();
+           pointIter != currentTube->GetPoints().end();
+           ++pointIter )
         {
-        InputPointType inputPoint = pointIterator->GetPositionInObjectSpace();
+        InputPointType inputPoint = pointIter->GetPositionInObjectSpace();
         OutputPointType currentPoint;
         if( this->IsInside( inputPoint, currentPoint, transformCopy ) )
           {
@@ -459,8 +638,8 @@ TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
           CovariantVectorType v2;
           for( unsigned int ii = 0; ii < TubeDimension; ++ii )
             {
-            v1[ii] = pointIterator->GetNormal1InObjectSpace()[ii];
-            v2[ii] = pointIterator->GetNormal2InObjectSpace()[ii];
+            v1[ii] = pointIter->GetNormal1InObjectSpace()[ii];
+            v2[ii] = pointIter->GetNormal2InObjectSpace()[ii];
             }
 
           for( unsigned int ii = 0; ii < TubeDimension; ++ii )
@@ -476,14 +655,14 @@ TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
           v1 = transformCopy->TransformCovariantVector( v1 );
           v2 = transformCopy->TransformCovariantVector( v2 );
 
-          ScalarType scalingRadius = pointIterator->GetRadiusInObjectSpace();
+          double scalingRadius = pointIter->GetRadiusInObjectSpace();
           scalingRadius = std::max( scalingRadius, m_MinimumScalingRadius );
 
-          const ScalarType scale = scalingRadius * m_Kappa;
+          const double scale = scalingRadius * m_Kappa;
 
-          const ScalarType dXProj1
+          const double dXProj1
             = this->ComputeThirdDerivatives( v1, scale, currentPoint );
-          const ScalarType dXProj2
+          const double dXProj2
             = this->ComputeThirdDerivatives( v2, scale, currentPoint );
 
           VectorType dtransformedTubePoint;
@@ -501,7 +680,7 @@ TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
       }
     }
 
-  biasVI = vnl_matrix_inverse< ScalarType >( biasV ).inverse();
+  biasVI = vnl_matrix_inverse< double >( biasV ).inverse();
 
   VnlVectorType tV( TubeDimension );
   for( unsigned int ii = 0; ii < TubeDimension; ++ii )
@@ -527,21 +706,21 @@ TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
   typename dTubePointsContainerType::const_iterator
     dtransformedTubePointsIt = dtransformedTubePoints.begin();
   weightCount = 0;
-  for( tubeIterator = tubeList->begin();
-       tubeIterator != tubeList->end();
-       ++tubeIterator )
+  for( tubeIter = tubeList->begin();
+       tubeIter != tubeList->end();
+       ++tubeIter )
     {
     TubeType* currentTube = dynamic_cast<TubeType*>(
-      ( *tubeIterator ).GetPointer() );
+      ( *tubeIter ).GetPointer() );
 
     if( currentTube != NULL )
       {
-      typename TubeType::TubePointListType::const_iterator pointIterator;
-      for( pointIterator = currentTube->GetPoints().begin();
-           pointIterator != currentTube->GetPoints().end();
-           ++pointIterator )
+      typename TubeType::TubePointListType::const_iterator pointIter;
+      for( pointIter = currentTube->GetPoints().begin();
+           pointIter != currentTube->GetPoints().end();
+           ++pointIter )
         {
-        InputPointType inputPoint = pointIterator->GetPositionInObjectSpace();
+        InputPointType inputPoint = pointIter->GetPositionInObjectSpace();
         OutputPointType currentPoint;
         //! \todo this checking is not necessary, but we have to make sure
         //have
@@ -557,7 +736,7 @@ TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
           dXT = dXT * biasVI;
 
-          ScalarType angleDelta[TubeDimension];
+          double angleDelta[TubeDimension];
           this->GetDeltaAngles( *transformedTubePointsIt, dXT, offsets,
             angleDelta );
           for( unsigned int ii = 0; ii < TubeDimension; ++ii )
@@ -583,10 +762,9 @@ TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 }
 
 
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
+template< unsigned int ObjectDimension, class TFixedImage >
 void
-TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::GetValueAndDerivative( const ParametersType & parameters,
                          MeasureType & value,
                          DerivativeType & derivative ) const
@@ -596,67 +774,16 @@ TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 }
 
 
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
-typename TubesToImageMetric< TFixedImage, TMovingSpatialObject,
-  TTubeSpatialObject >::ScalarType
-TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
-::ComputeThirdDerivatives(
-  const CovariantVectorType & tubeNormal,
-  const ScalarType scale,
-  const OutputPointType & currentPoint ) const
-{
-  // We convolve the 1D signal defined by the direction v at point
-  // currentPoint with a second derivative of a Gaussian
-  CompensatedSummationType result;
-  CompensatedSummationType kernelSum;
-
-  const ScalarType scaleSquared = scale * scale;
-  const ScalarType scaleExtentProduct = scale * m_Extent;
-  const ScalarType step = 0.1 * scaleExtentProduct;
-  for( ScalarType distance = -scaleExtentProduct;
-       distance <= scaleExtentProduct;
-       distance += step )
-    {
-    const ScalarType distanceSquared = distance * distance;
-    const ScalarType kernelValue =
-      2.0 * distance * std::exp( -0.5 * distanceSquared / scaleSquared );
-
-    kernelSum += std::fabs( kernelValue );
-
-    typename FixedImageType::PointType point;
-    for( unsigned int ii = 0; ii < ImageDimension; ++ii )
-      {
-      point[ii] = currentPoint[ii] + distance * tubeNormal.GetElement( ii );
-      }
-
-    if( this->m_Interpolator->IsInsideBuffer( point ) )
-      {
-      const ScalarType value =
-        static_cast< ScalarType >(
-          this->m_Interpolator->Evaluate( point ) );
-      result += value * kernelValue;
-      }
-    }
-
-  return result.GetSum() / kernelSum.GetSum();
-}
-
-
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
+template< unsigned int ObjectDimension, class TFixedImage >
 bool
-TubesToImageMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
-::IsInside( const InputPointType & inputPoint,
-  OutputPointType & outputPoint,
-  const TransformType * transform ) const
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
+::IsValidMovingPoint( TubePointType * pnt )
 {
-  outputPoint = transform->TransformPoint( inputPoint );
-  return ( this->m_Interpolator->IsInsideBuffer( outputPoint ) );
+  
 }
 
 } // End namespace tube
 
 } // End namespace itk
 
-#endif // End !defined( __itktubeTubesToImageMetric_hxx )
+#endif // End !defined( __itktubePointBasedSpatialObjectToImageMetric_hxx )

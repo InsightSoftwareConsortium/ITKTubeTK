@@ -25,7 +25,6 @@ limitations under the License.
 
 #include "itkSingleValuedCostFunction.h"
 #include "itkMinimumMaximumImageCalculator.h"
-#include "itkLinearInterpolateImageFunction.h"
 #include "vnl/vnl_vector_fixed.h"
 #include "itkTransform.h"
 
@@ -85,18 +84,14 @@ public:
   static constexpr unsigned int ImageDimension = FixedImageType::ImageDimension;
 
   /**  Type of the Transform Base class */
-  using TransformType = Transform<CoordinateRepresentationType, Self::ObjectDimension, Self::ImageDimension>;
+  using TransformType = Transform<CoordinateRepresentationType,
+    Self::ObjectDimension, Self::ImageDimension>;
 
   using TransformPointer = typename TransformType::Pointer;
   using InputPointType = typename TransformType::InputPointType;
   using OutputPointType = typename TransformType::OutputPointType;
   using TransformParametersType = typename TransformType::ParametersType;
   using TransformJacobianType = typename TransformType::JacobianType;
-
-  /**  Type of the Interpolator Base class */
-  using InterpolatorType = LinearInterpolateImageFunction<TFixedImage, CoordinateRepresentationType>;
-
-  using InterpolatorPointer = typename InterpolatorType::Pointer;
 
   /** Typede of the vector type to return derivatives */
   using VectorType = vnl_vector_fixed<double, Self::ObjectDimension>;
@@ -127,20 +122,18 @@ public:
   itkTypeMacro(SpatialObjectToImageMetric, Object);
 
   /** Get/Set the FixedImage. */
-  itkSetConstObjectMacro(FixedImage, FixedImageType);
+  void SetFixedImage( const ImageType * fixedImage );
   itkGetConstObjectMacro(FixedImage, FixedImageType);
 
   /** Get/Set the MovingSpatialObject */
-  itkSetConstObjectMacro(MovingSpatialObject, MovingSpatialObjectType);
+  void SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject );
   itkGetConstObjectMacro(MovingSpatialObject, MovingSpatialObjectType);
 
-  /** Connect the Interpolator. */
-  itkSetObjectMacro(Interpolator, InterpolatorType);
+  /** Set/Get the point sampling ratio / portion. */
+  itkSetMacro( SamplingRatio, double );
+  itkGetConstMacro( SamplingRatio, double );
 
-  /** Get the Interpolator. */
-  itkGetModifiableObjectMacro(Interpolator, InterpolatorType);
-
-   void SetFixedImageRegionOfInterest( const PointType & point1,
+  void SetFixedImageRegionOfInterest( const PointType & point1,
     const PointType & point2 );
 
   itkSetMacro( UseFixedImageRegionOfInterest, bool );
@@ -197,10 +190,11 @@ protected:
   MeasureType              m_MatchMeasure{ 0 };
   DerivativeType           m_MatchMeasureDerivatives;
   mutable TransformPointer m_Transform;
-  InterpolatorPointer      m_Interpolator;
 
   MovingSpatialObjectConstPointer m_MovingSpatialObject;
   FixedImageConstPointer          m_FixedImage;
+
+  double    m_SamplingRatio;
 
   bool      m_UseFixedImageRegionOfInterest;
   PointType m_FixedImageRegionOfInterestPoint1;

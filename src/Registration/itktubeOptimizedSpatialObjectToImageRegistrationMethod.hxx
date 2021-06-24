@@ -27,11 +27,6 @@ limitations under the License.
 
 #include "itkPointBasedSpatialObjectToImageMetric.h"
 
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkBSplineInterpolateImageFunction.h"
-#include "itkWindowedSincInterpolateImageFunction.h"
-
 #include "itkSpatialObjectToImageRegistrationMethod.h"
 
 #include "itkRealTimeClock.h"
@@ -156,11 +151,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
   m_UseEvolutionaryOptimization = true;
 
-  // The following NumberOfSamples value is a good default for rigid
-  //   registration.  Other derived registration methods should use
-  //   their own default.
   m_SamplingRatio = 0.01;
-  m_NumberOfSamples = 0;
 
   m_TargetError = 0.00001;
 
@@ -168,8 +159,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
   m_TransformMethodEnum = RIGID_TRANSFORM;
 
-  m_MetricMethodEnum = MATTES_MI_METRIC;
-  m_InterpolationMethodEnum = LINEAR_INTERPOLATION;
+  m_MetricMethodEnum = POINTS_TO_IMAGE_METRIC;
 
   m_FinalMetricValue = 0;
 
@@ -226,14 +216,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   metric->SetFixedImage( fixedImage );
   metric->SetMovingSpatialObject( movingSpatialObject );
 
-  if( m_NumberOfSamples == 0 )
-    {
-    metric->SetSamplingRatio( m_SamplingRatio );
-    }
-  else
-    {
-    metric->SetNumberOfSpatialSamples( m_NumberOfSamples );
-    }
+  metric->SetSamplingRatio( m_SamplingRatio );
 
   metric->SetUseFixedImageRegionOfInterest( this->GetUseFixedImageRegionOfInterest() );
   if( this->GetUseFixedImageRegionOfInterest() )
@@ -256,31 +239,9 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       this->GetMovingSpatialObjectMaskObject() );
     }
 
-  typename InterpolatorType::Pointer interpolator;
-
-  switch( this->GetInterpolationMethodEnum() )
-    {
-    case NEAREST_NEIGHBOR_INTERPOLATION:
-      interpolator = NearestNeighborInterpolateImageFunction<TImage,
-        double>::New();
-      break;
-    case LINEAR_INTERPOLATION:
-      interpolator = LinearInterpolateImageFunction<TImage, double>::New();
-      break;
-    case BSPLINE_INTERPOLATION:
-      interpolator = BSplineInterpolateImageFunction<TImage, double>::New();
-      break;
-    case SINC_INTERPOLATION:
-      interpolator = WindowedSincInterpolateImageFunction<TImage, 4,
-        Function::HammingWindowFunction<4>, ConstantBoundaryCondition<TImage>,
-        double>::New();
-      break;
-    }
-  interpolator->SetInputImage( this->GetFixedImage() );
-
   try
     {
-    this->Optimize(metric, interpolator);
+    this->Optimize(metric);
     }
   catch( itk::ExceptionObject& exception )
     {
@@ -297,7 +258,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-::Optimize( MetricType * metric, InterpolatorType * interpolator )
+::Optimize( MetricType * metric )
 {
   typedef SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage> RegType;
 
@@ -348,7 +309,6 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     reg->SetInitialTransformParameters(
       this->GetInitialTransformParameters() );
     reg->SetMetric( metric );
-    reg->SetInterpolator( interpolator );
     reg->SetOptimizer( evoOpt );
 
     try
@@ -437,7 +397,6 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   reg->SetInitialTransformParameters(
     this->GetTransform()->GetParameters() );
   reg->SetMetric( metric );
-  reg->SetInterpolator( interpolator );
   reg->SetOptimizer( gradOpt );
 
   bool failure = false;
@@ -521,7 +480,6 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   os << indent << "Use Evolutionary Optimization = " <<
     m_UseEvolutionaryOptimization << std::endl;
 
-  os << indent << "Number of Samples = " << m_NumberOfSamples << std::endl;
   os << indent << "Sampling Ratio = " << m_SamplingRatio << std::endl;
 
   os << indent << "Target Error = " << m_TargetError << std::endl;
@@ -531,30 +489,6 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     default:
     case POINTS_TO_IMAGE_METRIC:
       os << indent << "Metric method = Tube to image metric" << std::endl;
-      break;
-    }
-
-  switch( m_InterpolationMethodEnum )
-    {
-    case NEAREST_NEIGHBOR_INTERPOLATION:
-      os << indent << "Interpolation method = NearestNeighbor "
-         << std::endl;
-      break;
-    case LINEAR_INTERPOLATION:
-      os << indent << "Interpolation method = Linear "
-         << std::endl;
-      break;
-    case BSPLINE_INTERPOLATION:
-      os << indent << "Interpolation method = BSpline"
-         << std::endl;
-      break;
-    case SINC_INTERPOLATION:
-      os << indent << "Interpolation method = Sinc"
-         << std::endl;
-      break;
-    default:
-      os << indent << "ERROR: Interpolation method NOT HANDLED BY OptimizedSpatialObjectToImageRegistrationMethod::PrintSelf"
-         << std::endl;
       break;
     }
 }
