@@ -20,36 +20,36 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkInitialImageToImageRegistrationMethod_h
-#define __itkInitialImageToImageRegistrationMethod_h
+#ifndef __itktubeInitialSpatialObjectToImageRegistrationMethod_h
+#define __itktubeInitialSpatialObjectToImageRegistrationMethod_h
 
 #include "itkImage.h"
 #include "itkCommand.h"
 
-#include "itkImageToImageRegistrationMethod.h"
+#include "itktubeSpatialObjectToImageRegistrationMethod.h"
 
 #include "itkAffineTransform.h"
-
-#include "itkAnisotropicSimilarity3DTransform.h"
-#include "itkAnisotropicSimilarityLandmarkBasedTransformInitializer.h"
 
 namespace itk
 {
 
+namespace tube
+{
+
 template <unsigned int ObjectDimension, class TImage>
-class InitialImageToImageRegistrationMethod
+class InitialSpatialObjectToImageRegistrationMethod
   : public SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 {
 
 public:
 
-  typedef InitialImageToImageRegistrationMethod  Self;
-  typedef ImageToImageRegistrationMethod<ObjectDimension, TImage> Superclass;
+  typedef InitialSpatialObjectToImageRegistrationMethod  Self;
+  typedef SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage> Superclass;
   typedef SmartPointer<Self>                     Pointer;
   typedef SmartPointer<const Self>               ConstPointer;
 
-  itkTypeMacro( InitialImageToImageRegistrationMethod,
-                ImageToImageRegistrationMethod );
+  itkTypeMacro( InitialSpatialObjectToImageRegistrationMethod,
+                SpatialObjectToImageRegistrationMethod );
 
   itkNewMacro( Self );
 
@@ -106,8 +106,8 @@ public:
 
 protected:
 
-  InitialImageToImageRegistrationMethod( void );
-  virtual ~InitialImageToImageRegistrationMethod( void );
+  InitialSpatialObjectToImageRegistrationMethod( void );
+  virtual ~InitialSpatialObjectToImageRegistrationMethod( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
@@ -120,7 +120,7 @@ protected:
 private:
 
   // Purposely not implemented
-  InitialImageToImageRegistrationMethod( const Self & );
+  InitialSpatialObjectToImageRegistrationMethod( const Self & );
   // Purposely not implemented
   void operator =( const Self & );
 
@@ -131,10 +131,12 @@ private:
   LandmarkPointContainer m_MovingLandmarks;
 };
 
+} // end namespace tube
+
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkInitialImageToImageRegistrationMethod.hxx"
+#include "itktubeInitialSpatialObjectToImageRegistrationMethod.hxx"
 #endif
 
-#endif // __ImageToImageRegistrationMethod_h
+#endif // __InitialSpatialObjectToImageRegistrationMethod_h

@@ -35,6 +35,8 @@ template< unsigned int ObjectDimension, class TFixedImage >
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::PointBasedSpatialObjectToImageMetric( void )
 {
+  m_SamplingRatio = 0.1;
+
   m_Kappa = 1.0;
   m_Extent = 3.0;
 
@@ -68,8 +70,6 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     {
     itkExceptionMacro( << "No tube/image net plugged in." );
     }
-
-  this->ComputeCenterOfRotation();
 }
 
 
@@ -78,7 +78,9 @@ unsigned int
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::GetMaximumNumberOfPoints( void )
 {
-  unsigned int maximumNumberOfPoints = 0;
+  m_MaximumNumberOfPoints = 0;
+  m_MaximumNumberOfTubePoints = 0;
+  m_MaximumNumberOfSurfacePoints = 0;
 
   typename PointBasedSpatialObjectType::ChildrenListType * pbsoList =
     this->GetPointBasedChildren( m_MovingSpatialObject );
@@ -102,7 +104,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
         {
         if( this->IsValidMovingPoint( *pIter ) )
           {
-          ++maximumNumberOfPoints;
+          ++m_MaximumNumberOfTubePoints;
           }
         ++pIter;
         }
@@ -116,7 +118,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
         {
         if( this->IsValidMovingPoint( *pIter ) )
           {
-          ++maximumNumberOfPoints;
+          ++m_MaximumNumberOfSurfacePoints;
           }
         ++pIter;
         }
@@ -130,7 +132,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
         {
         if( this->IsValidMovingPoint( *pIter ) )
           {
-          ++maximumNumberOfPoints;
+          ++m_MaximumNumberOfPoints;
           }
         ++pIter;
         }
@@ -138,7 +140,9 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     }
   delete pbsoList;
 
-  return maximumNumberOfPoints;
+  return m_MaximumNumberOfPoints +
+    m_MaximumNumberOfTubePoints +
+    m_MaximumNumberOfSurfacePoints;
 }
 
 
@@ -339,9 +343,12 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
         {
         m_SubsampledTubePointsWeights.push_back(1);
         }
-      double weight = ( radius - m_TubeSamplingRadiusMin ) /
-        (m_TubePriorityRadius - m_TubeSamplingRadiusMin);
-      m_SubsampledTubePointsWeights.push_back( weight );
+      else
+        {
+        double weight = ( radius - m_TubeSamplingRadiusMin ) /
+          (m_TubePriorityRadius - m_TubeSamplingRadiusMin);
+        m_SubsampledTubePointsWeights.push_back( weight );
+        }
       }
     else
       {
@@ -575,6 +582,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
                  DerivativeType & derivative ) const
 {
   derivative.SetSize( this->GetNumberOfParameters() );
+  derivative.fill( 0.0 );
 
   // Create a copy of the transform to keep true const correctness
   // ( thread-safe )
@@ -589,115 +597,108 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   itkDebugMacro( << "**** Get Derivative ****" );
   itkDebugMacro( << "parameters = "<< parameters );
 
-  VnlMatrixType biasV( TubeDimension, TubeDimension,
+  vnl_matrix<double> biasV( ObjectDimension, ObjectDimension,
     NumericTraits< double >::Zero );
-  VnlMatrixType biasVI( TubeDimension, TubeDimension,
+  vnl_matrix<double> biasVI( ObjectDimension, ObjectDimension,
     NumericTraits< double >::Zero );
 
-  SizeValueType weightCount = 0;
+  double weightSum = 0;
+  double dMagSum = 0;
 
-  CompensatedSummationType dPosition[TubeDimension];
+  vnl_matrix<double> tM( ObjectDimension, ObjectDimension );
+  vnl_vector<double> n1T( ObjectDimension );
+  vnl_vector<double> n2T( ObjectDimension );
 
-  VnlMatrixType tM( TubeDimension, TubeDimension );
-  VnlVectorType v1T( TubeDimension );
-  VnlVectorType v2T( TubeDimension );
+  int totalNumberOfPoints = m_SubsampledPoints.GetSize()
+    + m_SubsampledTubePoints.GetSize() + m_SubsampledSurfacePoints.GetSize();
 
-  typedef std::vector< OutputPointType > TubePointsContainerType;
-  TubePointsContainerType transformedTubePoints;
-  transformedTubePoints.reserve( m_FeatureWeights.GetSize() );
+  std::vector< InputPointType > MovingPointListType;
+  MovingPointListType movingPoints;
+  movingPoints.reserve( totalNumberOfPoints );
 
-  typedef std::vector< VectorType >      dTubePointsContainerType;
-  dTubePointsContainerType dtransformedTubePoints;
-  dtransformedTubePoints.reserve( m_FeatureWeights.GetSize() );
+  std::vector< OutputPointType > FixedPointListType;
+  FixedPointListType fixedPoints;
+  fixedPoints.reserve( totalNumberOfPoints );
 
-  derivative.fill( 0.0 );
+  typedef std::vector< InputVectorType > MovingPointDerivListType;
+  MovingPointDerivListType  movingPointsDerivs;
+  movingPointsDerivs.reserve( totalNumberOfPoints );
 
-  typename TubeTreeType::ChildrenListType * tubeList = GetTubes();
-  typename TubeTreeType::ChildrenListType::const_iterator tubeIter;
-  for( tubeIter = tubeList->begin();
-       tubeIter != tubeList->end();
-       ++tubeIter )
+  typename NJetImageFunction< FixedImageType >::Pointer imFunc =
+    NJetImageFunction< FixedImageType >::New();
+  imFunc->SetInput( m_FixedImage );
+
+  typename PointWeightListType::const_iterator pointWeightIter;
+
+  typename TubePointListType::const_iterator tubePointIter;
+  tubePointIter = m_TubePointList.begin()
+  while( pointIter != m_TubePointList.end() )
     {
-    TubeType* currentTube = dynamic_cast<TubeType*>(
-      ( *tubeIter ).GetPointer() );
-
-    if( currentTube != NULL )
+    InputPointType inputPoint = pointIter->GetPositionInWorldSpace();
+    OutputPointType currentPoint = transformCopy->TransformPoint( inputPoint );
+    VectorType currentDeriv;
+    if( this->IsValidFixedPoint( currentPoint ) )
       {
-      typename TubeType::TubePointListType::const_iterator pointIter;
-      for( pointIter = currentTube->GetPoints().begin();
-           pointIter != currentTube->GetPoints().end();
-           ++pointIter )
+      movingPoints.push_back( inputPoint );
+      fixedPoints.push_back( currentPoint );
+
+      double scalingRadius = pointIter->GetRadiusInWorldSpace();
+      const double scale = scalingRadius * m_Kappa;
+
+      CovariantVectorType n1 = pointIter->GetNormal1InWorldSpace();
+      n1 = transformCopy->TransformCovariantVector( n1 );
+      n1T = n1.GetVnlVector();
+      tM = outer_product( n1T, n1T );
+      if( ObjectDimension > 2 )
         {
-        InputPointType inputPoint = pointIter->GetPositionInObjectSpace();
-        OutputPointType currentPoint;
-        if( this->IsInside( inputPoint, currentPoint, transformCopy ) )
-          {
-          transformedTubePoints.push_back( currentPoint );
-
-          CovariantVectorType v1;
-          CovariantVectorType v2;
-          for( unsigned int ii = 0; ii < TubeDimension; ++ii )
-            {
-            v1[ii] = pointIter->GetNormal1InObjectSpace()[ii];
-            v2[ii] = pointIter->GetNormal2InObjectSpace()[ii];
-            }
-
-          for( unsigned int ii = 0; ii < TubeDimension; ++ii )
-            {
-            v1T[ii] = transformCopy->TransformCovariantVector( v1 )[ii];
-            v2T[ii] = transformCopy->TransformCovariantVector( v2 )[ii];
-            }
-          tM = outer_product( v1T, v1T );
-          tM = tM + outer_product( v2T, v2T );
-          tM = m_FeatureWeights[weightCount] * tM;
-          biasV += tM;
-
-          v1 = transformCopy->TransformCovariantVector( v1 );
-          v2 = transformCopy->TransformCovariantVector( v2 );
-
-          double scalingRadius = pointIter->GetRadiusInObjectSpace();
-          scalingRadius = std::max( scalingRadius, m_MinimumScalingRadius );
-
-          const double scale = scalingRadius * m_Kappa;
-
-          const double dXProj1
-            = this->ComputeThirdDerivatives( v1, scale, currentPoint );
-          const double dXProj2
-            = this->ComputeThirdDerivatives( v2, scale, currentPoint );
-
-          VectorType dtransformedTubePoint;
-          for( unsigned int ii = 0; ii < TubeDimension; ++ii )
-            {
-            dtransformedTubePoint[ii] =
-              ( dXProj1 * v1[ii] + dXProj2 * v2[ii] );
-            dPosition[ii] +=
-              m_FeatureWeights[weightCount] * ( dtransformedTubePoint[ii] );
-            }
-          dtransformedTubePoints.push_back( dtransformedTubePoint );
-          }
-        ++weightCount;
+        CovariantVectorType n2 = pointIter->GetNormal2InWorldSpace();
+        n2 = transformCopy->TransformCovariantVector( n2 );
+        n2T = n2.GetVnlVector();
+        tM = tM + outer_product( n2T, n2T );
+        dMagSum += *tubePointWeightIter * imFunc->Derivative( currentPoint,
+          n1, n2, scale, currentDeriv );
         }
+      else
+        {
+        dMagSum += *tubePointWeightIter * imFunc->Derivative( currentPoint,
+          n1, scale, currentDeriv );
+        }
+      tM = *tubePointWeightIter * tM;
+      biasV += tM;
+
+      weightSum += *tubePointWeightIter;
+
+      VectorType dtransformedTubePoint;
+      for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
+        {
+        dtransformedTubePoint[ii] =
+          ( dXProj1 * n1[ii] + dXProj2 * n2[ii] );
+        dPosition[ii] += dtransformedTubePoint[ii];
+        }
+      dtransformedTubePoints.push_back( dtransformedTubePoint );
       }
+    ++weightCount;
+    ++pointIter;
     }
 
   biasVI = vnl_matrix_inverse< double >( biasV ).inverse();
 
-  VnlVectorType tV( TubeDimension );
-  for( unsigned int ii = 0; ii < TubeDimension; ++ii )
+  VnlVectorType tV( ObjectDimension );
+  for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
     {
     tV[ii] = dPosition[ii].GetSum();
     }
 
   tV *= biasVI;
 
-  for( unsigned int ii = 0; ii < TubeDimension; ++ii )
+  for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
     {
     dPosition[ii] = tV[ii];
     }
 
-  CompensatedSummationType dAngle[TubeDimension];
+  CompensatedSummationType dAngle[ObjectDimension];
   VectorType offsets;
-  for( unsigned int ii = 0; ii < TubeDimension; ++ii )
+  for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
     {
     offsets[ii] = dPosition[ii].GetSum();
     }
@@ -720,26 +721,26 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
            pointIter != currentTube->GetPoints().end();
            ++pointIter )
         {
-        InputPointType inputPoint = pointIter->GetPositionInObjectSpace();
-        OutputPointType currentPoint;
+        InputPointType inputPoint = pointIter->GetPositionInWorldSpace();
+        OutputPointType currentPoint = transformCopy->TransformPoint( inputPoint );
         //! \todo this checking is not necessary, but we have to make sure
         //have
         //the corresponding weight -- should cache the result and use it
         //here.
-        if( this->IsInside( inputPoint, currentPoint, transformCopy ) )
+        if( this->IsValidFixedPoint( inputPoint, currentPoint, transformCopy ) )
           {
-          VnlVectorType dXT( TubeDimension );
-          for( unsigned int ii = 0; ii < TubeDimension; ++ii )
+          VnlVectorType dXT( ObjectDimension );
+          for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
             {
             dXT[ii] = ( *dtransformedTubePointsIt )[ii];
             }
 
           dXT = dXT * biasVI;
 
-          double angleDelta[TubeDimension];
+          double angleDelta[ObjectDimension];
           this->GetDeltaAngles( *transformedTubePointsIt, dXT, offsets,
             angleDelta );
-          for( unsigned int ii = 0; ii < TubeDimension; ++ii )
+          for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
             {
             dAngle[ii] += m_FeatureWeights[weightCount] * angleDelta[ii];
             }
@@ -777,9 +778,71 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 template< unsigned int ObjectDimension, class TFixedImage >
 bool
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
-::IsValidMovingPoint( TubePointType * pnt )
+::IsValidMovingPoint( const TubePointType & pnt ) const
 {
-  
+  if( m_TubeSamplingRadiusMin != 0 || m_TubeSamplingRadiusMax != 0 )
+    {
+    double radius = pnt->GetRadiusInWorldSpace();
+    if( radius < m_TubeSamplingRadiusMin || radius > m_TubeSamplingRadiusMax )
+      {
+      return false;
+      }
+    }
+  if( m_MovingSpatialObjectMaskObject.IsNotNull() &&
+    m_UseMovingSpatialObjectMaskObject )
+    {
+    if( !m_MovingSpatialObjectMaskObject->IsInside(
+      pnt->GetPositionInWorldSpace() ) )
+      {
+      return false;
+      }
+    }
+}
+
+template< unsigned int ObjectDimension, class TFixedImage >
+bool
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
+::IsValidMovingPoint( const SurfacePointType & pnt ) const
+{
+  if( m_MovingSpatialObjectMaskObject.IsNotNull() &&
+    m_UseMovingSpatialObjectMaskObject )
+    {
+    if( !m_MovingSpatialObjectMaskObject->IsInside(
+      pnt->GetPositionInWorldSpace() ) )
+      {
+      return false;
+      }
+    }
+}
+
+template< unsigned int ObjectDimension, class TFixedImage >
+bool
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
+::IsValidMovingPoint( const SpatialObjectPointType & pnt ) const
+{
+  if( m_MovingSpatialObjectMaskObject.IsNotNull() &&
+    m_UseMovingSpatialObjectMaskObject )
+    {
+    if( !m_MovingSpatialObjectMaskObject->IsInside(
+      pnt->GetPositionInWorldSpace() ) )
+      {
+      return false;
+      }
+    }
+}
+
+template< unsigned int ObjectDimension, class TFixedImage >
+bool
+PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
+::IsValidFixedPoint( const OutputPointType & pnt ) const
+{
+  if( m_FixedImageMaskObject.IsNotNull() && m_UseFixedImageMaskObject )
+    {
+    if( !m_FixedImageMaskObject->IsInside( pnt ) )
+      {
+      return false;
+      }
+    }
 }
 
 } // End namespace tube

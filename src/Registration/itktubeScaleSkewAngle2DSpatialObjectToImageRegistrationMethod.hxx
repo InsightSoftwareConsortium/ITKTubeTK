@@ -20,12 +20,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkScaleSkewAngle2DSpatialObjectToImageRegistrationMethod_txx
-#define __itkScaleSkewAngle2DSpatialObjectToImageRegistrationMethod_txx
+#ifndef __itktubeScaleSkewAngle2DSpatialObjectToImageRegistrationMethod_txx
+#define __itktubeScaleSkewAngle2DSpatialObjectToImageRegistrationMethod_txx
 
-#include "itkScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.h"
 
 namespace itk
+{
+
+namespace tube
 {
 
 template <unsigned int ObjectDimension, class TImage>
@@ -133,6 +136,8 @@ ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   Superclass::PrintSelf(os, indent);
 }
 
-}
+} // tube
+
+} // itk
 
 #endif

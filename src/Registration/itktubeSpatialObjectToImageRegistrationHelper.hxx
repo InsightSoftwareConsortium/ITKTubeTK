@@ -20,10 +20,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkSpatialObjectToImageRegistrationHelper_txx
-#define __itkSpatialObjectToImageRegistrationHelper_txx
+#ifndef __itktubeSpatialObjectToImageRegistrationHelper_txx
+#define __itktubeSpatialObjectToImageRegistrationHelper_txx
 
-#include "itkSpatialObjectToImageRegistrationHelper.h"
+#include "itktubeSpatialObjectToImageRegistrationHelper.h"
 
 #include "itktubePointBasedSpatialObjectTransformFilter.h"
 
@@ -41,6 +41,9 @@ limitations under the License.
 namespace itk
 {
 
+namespace tube
+{
+
 template <unsigned int ObjectDimension, class TImage>
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SpatialObjectToImageRegistrationHelper()
@@ -54,10 +57,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   m_FixedImageMaskObject = NULL;
   m_UseMovingSpatialObjectMaskObject = false;
   m_MovingSpatialObjectMaskObject = NULL;
-
-  m_UseFixedImageRegionOfInterest = false;
-  m_FixedImageRegionOfInterestPoint1.Fill(0);
-  m_FixedImageRegionOfInterestPoint2.Fill(0);
 
   m_RandomNumberSeed = 0;
 
@@ -338,11 +337,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   regAff->SetMovingSpatialObject( m_CurrentMovingSpatialObject );
   regAff->SetFixedImage( m_FixedImage );
   regAff->SetSamplingRatio( m_AffineSamplingRatio );
-  if( m_UseFixedImageRegionOfInterest )
-    {
-    regAff->SetFixedImageRegionOfInterest( m_FixedImageRegionOfInterestPoint1,
-      m_FixedImageRegionOfInterestPoint2 );
-    }
   regAff->SetMaxIterations( m_AffineMaxIterations );
   regAff->SetTargetError( m_AffineTargetError );
   if( m_EnableRigidRegistration || !m_UseEvolutionaryOptimization )
@@ -422,11 +416,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   regAff->SetMovingSpatialObject( m_CurrentMovingSpatialObject );
   regAff->SetFixedImage( m_FixedImage );
   regAff->SetSamplingRatio( m_AffineSamplingRatio );
-  if( m_UseFixedImageRegionOfInterest )
-    {
-    regAff->SetFixedImageRegionOfInterest( m_FixedImageRegionOfInterestPoint1,
-      m_FixedImageRegionOfInterestPoint2 );
-    }
   regAff->SetMaxIterations( m_AffineMaxIterations );
   regAff->SetTargetError( m_AffineTargetError );
   if( m_EnableRigidRegistration || !m_UseEvolutionaryOptimization )
@@ -631,11 +620,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
         {
         regRigid->SetMovingSpatialObjectMaskObject( m_MovingSpatialObjectMaskObject );
         }
-      }
-    if( m_UseFixedImageRegionOfInterest )
-      {
-      regRigid->SetFixedImageRegionOfInterest( m_FixedImageRegionOfInterestPoint1,
-        m_FixedImageRegionOfInterestPoint2 );
       }
     regRigid->SetMetricMethodEnum( m_RigidMetricMethodEnum );
     regRigid->SetInterpolationMethodEnum( m_RigidInterpolationMethodEnum );
@@ -905,35 +889,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
-::SetFixedImageRegionOfInterest( const PointType & point1,
-                       const PointType & point2 )
-{
-  m_FixedImageRegionOfInterestPoint1 = point1;
-  m_FixedImageRegionOfInterestPoint2 = point2;
-  m_UseFixedImageRegionOfInterest = true;
-}
-
-template <unsigned int ObjectDimension, class TImage>
-void
-SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
-::SetFixedImageRegionOfInterest( const std::vector<float> & points )
-{
-  if( points.size() != 2 * ImageDimension )
-    {
-    throw
-      "Error: points to SetFixedImageRegionOfInterest is not twice image dimension";
-    }
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    m_FixedImageRegionOfInterestPoint1[i] = points[i];
-    m_FixedImageRegionOfInterestPoint2[i] = points[ImageDimension + i];
-    }
-  m_UseFixedImageRegionOfInterest = true;
-}
-
-template <unsigned int ObjectDimension, class TImage>
-void
-SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetFixedLandmarks( const std::vector<std::vector<float> > & fixedLandmarks )
 {
   m_FixedLandmarks.clear();
@@ -1024,13 +979,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     {
     os << indent << "Moving SpatialObject = " << m_MovingSpatialObject << std::endl;
     }
-  os << indent << std::endl;
-  os << indent << "Use region of interest = " << m_UseFixedImageRegionOfInterest
-    << std::endl;
-  os << indent << "Region of interest point1 = "
-    << m_FixedImageRegionOfInterestPoint1 << std::endl;
-  os << indent << "Region of interest point2 = "
-    << m_FixedImageRegionOfInterestPoint2 << std::endl;
   os << indent << std::endl;
   os << indent << "Use Fixed Image Mask Object = "
     << m_UseFixedImageMaskObject << std::endl;
@@ -1212,6 +1160,8 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 
 }
 
-}
+}; // tube
+
+}; // itk
 
 #endif

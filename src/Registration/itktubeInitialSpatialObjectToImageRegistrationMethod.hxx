@@ -20,14 +20,19 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __InitialSpatialObjectToImageRegistrationMethod_txx
-#define __InitialSpatialObjectToImageRegistrationMethod_txx
+#ifndef __itktubeInitialSpatialObjectToImageRegistrationMethod_txx
+#define __itktubeInitialSpatialObjectToImageRegistrationMethod_txx
 
-#include "itkInitialSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeInitialSpatialObjectToImageRegistrationMethod.h"
 
-#include "itkImageRegionMomentsCalculator.h"
+//#include "itktubeSpatialObjectRegionMomentsCalculator.h"
+#include "itkAnisotropicSimilarity3DTransform.h"
+#include "itkAnisotropicSimilarityLandmarkBasedTransformInitializer.h"
 
 namespace itk
+{
+
+namespace tube
 {
 
 template <unsigned int ObjectDimension, class TImage>
@@ -159,79 +164,91 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     return;
     }
 
-  typedef ImageRegionMomentsCalculator<TImage> MomentsCalculatorType;
+  //typedef SpatialObjectRegionMomentsCalculator<TImage> MomentsCalculatorType;
 
-  typename MomentsCalculatorType::AffineTransformType::Pointer newTransform;
-  newTransform = MomentsCalculatorType::AffineTransformType::New();
+  typename SpatialObjectType::AffineTransformType::Pointer newTransform;
+  newTransform = SpatialObjectType::AffineTransformType::New();
   newTransform->SetIdentity();
 
-  if( this->m_ComputeCenterOfRotationOnly )
+  if( this->m_ComputeCenterOfRotationOnly ||
+    this->m_NumberOfMoments == 0 )
     {
-    typename TImage::SizeType    size;
-
     //  Moving image info
-    typename TImage::IndexType       movingCenterIndex;
-    Point<double, ImageDimension> movingCenterPoint;
+    typename SpatialObjectType::BoundingBoxType             bbox;
+    Point<double, ObjectDimension>                          movingCenterPoint;
+    typename SpatialObjectType::BoundingBoxType::PointType  minPnt;
+    typename SpatialObjectType::BoundingBoxType::PointType  maxPnt;
 
-    size = this->GetMovingImage()->GetLargestPossibleRegion().GetSize();
-    for( unsigned int i = 0; i < ImageDimension; i++ )
+    if( m_MovingSpatialObjectMask.IsNotNull() )
       {
-      movingCenterIndex[i] = size[i] / 2;
-      }
-    this->GetMovingImage()->TransformIndexToPhysicalPoint(movingCenterIndex,
-                                                          movingCenterPoint);
-
-    newTransform->SetCenter(movingCenterPoint);
-    }
-  else if( this->m_NumberOfMoments == 0 )
-    {
-    typename TImage::SizeType    size;
-
-    //  Fixed image info
-    typename TImage::IndexType        fixedCenterIndex;
-    Point<double, ImageDimension> fixedCenterPoint;
-
-    size = this->GetFixedImage()->GetLargestPossibleRegion().GetSize();
-
-    if( !this->GetUseRegionOfInterest() )
-      {
-      for( unsigned int i = 0; i < ImageDimension; i++ )
-        {
-        fixedCenterIndex[i] = size[i] / 2;
-        }
-      this->GetFixedImage()->TransformIndexToPhysicalPoint(fixedCenterIndex,
-                                                           fixedCenterPoint);
+      this->GetMovingSpatialObjectMask()->Update();
+      bbox = this->GetMovingSpatialObjectMask()->GetMyBoundingBoxInWorldSpace();
       }
     else
       {
-      for( unsigned int i = 0; i < ImageDimension; i++ )
-        {
-        fixedCenterPoint[i] = ( this->GetRegionOfInterestPoint1()[i]
-                                + this->GetRegionOfInterestPoint2()[i] ) / 2;
-        }
+      this->GetMovingSpatialObject()->Update();
+      bbox = this->GetMovingSpatialObject()->GetMyBoundingBoxInWorldSpace();
       }
 
-    //  Moving image info
-    typename TImage::IndexType       movingCenterIndex;
-    Point<double, ImageDimension> movingCenterPoint;
-
-    size = this->GetMovingImage()->GetLargestPossibleRegion().GetSize();
-    for( unsigned int i = 0; i < ImageDimension; i++ )
+    minPnt = bbox->GetMinimum();
+    maxPnt = bbox->GetMaximum();
+    for( unsigned int i = 0; i < ObjectDimension; i++ )
       {
-      movingCenterIndex[i] = size[i] / 2;
+      movingCenterPoint[i] = (maxPnt[i] + minPnt[i]) / 2.0;
       }
-    this->GetMovingImage()->TransformIndexToPhysicalPoint(movingCenterIndex,
-                                                          movingCenterPoint);
 
-    //  Compute alignment
-    typename TransformType::OffsetType   offset;
-    offset = movingCenterPoint - fixedCenterPoint;
+    if( this->m_ComputeCenterOfRotationOnly  )
+      {
+      newTransform->SetCenter(movingCenterPoint);
+      }
+    else
+      {
+      //  Fixed image info
+      Point<double, ImageDimension>     fixedCenterPoint;
+      if( m_FixedSpatialObjectMask.IsNotNull() )
+        {
+        typename SpatialObjectType::BoundingBoxType             bbox;
+        typename SpatialObjectType::BoundingBoxType::PointType  minPnt;
+        typename SpatialObjectType::BoundingBoxType::PointType  maxPnt;
+    
+        this->GetFixedSpatialObjectMask()->Update();
+        bbox = this->GetFixedSpatialObjectMask()->GetMyBoundingBoxInWorldSpace();
+        minPnt = bbox->GetMinimum();
+        maxPnt = bbox->GetMaximum();
+        for( unsigned int i = 0; i < ObjectDimension; i++ )
+          {
+          fixedCenterPoint[i] = (maxPnt[i] + minPnt[i]) / 2.0;
+          }
+        }
+      else
+        {
+        typename TImage::IndexType        fixedCenterIndex;
+        typename TImage::SizeType         size;
 
-    newTransform->SetCenter(movingCenterPoint);
-    newTransform->SetOffset(offset);
+        fixedCenterIndex =
+          this->GetFixedImage()->GetLargestPossibleRegion().GetIndex();
+        size = this->GetFixedImage()->GetLargestPossibleRegion().GetSize();
+
+        for( unsigned int i = 0; i < ImageDimension; i++ )
+          {
+          fixedCenterIndex[i] = (fixedCenterIndex[i] + size[i]) / 2;
+          }
+        this->GetFixedImage()->TransformIndexToPhysicalPoint(fixedCenterIndex,
+                                                             fixedCenterPoint);
+        }
+      //  Compute alignment
+      typename TransformType::OffsetType   offset;
+      offset = movingCenterPoint - fixedCenterPoint;
+
+      newTransform->SetCenter(movingCenterPoint);
+      newTransform->SetOffset(offset);
+      }
     }
   else
     {
+    std::cerr << "SpatialObject moment calculator only supports 0th moments"
+      << std::endl;
+    /*
     typename MomentsCalculatorType::Pointer momCalc;
     momCalc = MomentsCalculatorType::New();
 
@@ -274,13 +291,13 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       fixedImageCenterOfMass[i] = momCalc->GetCenterOfGravity()[i];
       }
 
-    momCalc->SetImage( this->GetMovingImage() );
+    momCalc->SetImage( this->GetMovingSpatialObject() );
 
-    if( this->GetUseMovingImageMaskObject() )
+    if( this->GetUseMovingSpatialObjectMaskObject() )
       {
-      if( this->GetMovingImageMaskObject() )
+      if( this->GetMovingSpatialObjectMaskObject() )
         {
-        momCalc->SetSpatialObjectMask( this->GetMovingImageMaskObject() );
+        momCalc->SetSpatialObjectMask( this->GetMovingSpatialObjectMaskObject() );
         }
       }
 
@@ -323,8 +340,8 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       newTransform->SetOffset(fixedImageAxesTransform->GetOffset() );
       newTransform->Compose(movingSpatialObjectAxesTransform, true);
       }
+    */
     }
-
   this->SetTransform(newTransform);
 }
 
@@ -393,6 +410,8 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   os << indent << "Use Landmarks = " << this->m_UseLandmarks << std::endl;
 }
 
-};
+};  // tube
+
+};  // itk
 
 #endif

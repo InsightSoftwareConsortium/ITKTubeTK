@@ -23,8 +23,13 @@ limitations under the License.
 #ifndef __itktubePointBasedSpatialObjectToImageMetric_h
 #define __itktubePointBasedSpatialObjectToImageMetric_h
 
-#include <itkCompensatedSummation.h>
+#include <vector>
+
 #include <itktubeSpatialObjectToImageMetric.h>
+
+#include <itkTubeSpatialObject.h>
+#include <itkSurfaceSpatialObject.h>
+#include <itkPointBasedSpatialObject.h>
 
 namespace itk
 {
@@ -49,59 +54,18 @@ class PointBasedSpatialObjectToImageMetric
 {
 public:
   /** Standard class typedefs. */
-  typedef PointBasedSpatialObjectToImageMetric  Self;
+  typedef PointBasedSpatialObjectToImageMetric     Self;
   typedef SpatialObjectToImageMetric< ObjectDimension, TFixedImage >
-                                                Superclass;
-  typedef SmartPointer< Self >                  Pointer;
-  typedef SmartPointer< const Self >            ConstPointer;
+                                                   Superclass;
+  typedef SmartPointer< Self >                     Pointer;
+  typedef SmartPointer< const Self >               ConstPointer;
 
   /**  Dimension of the image and tube.  */
   itkStaticConstMacro( ImageDimension, unsigned int,
     TFixedImage::ImageDimension );
 
-  typedef TFixedImage                           FixedImageType;
-  typedef SpatialObject< ObjectDimension >      SpatialObjectType;
-
-  typedef PointBasedSpatialObject< ObjectDimension >
-    PointBasedSpatialObjectType;
-  typedef typename PointBasedSpatialObjectType::PointType
-    SpatialObjectPointType;
-  typedef typename PointBasedSpatialObjectType::SpatialObjectPointListType
-    SpatialObjectPointListType;
-
-  typedef TubeSpatialObject< ObjectDimension >  TubeType;
-  typedef typename TubeType::PointType          TubePointType;
-  typedef typename TubeType::TubePointListType  TubePointListType;
-
-  typedef SurfacSpatialObject< ObjectDimension >     SurfaceType;
-  typedef typename SurfaceType::PointType            SurfacePointType;
-  typedef typename SurfaceType::SurfacePointListType SurfacePointListType;
-
-  typedef typename Superclass::DerivativeType   DerivativeType;
-  typedef typename Superclass::ParametersType   ParametersType;
-  typedef typename Superclass::MeasureType      MeasureType;
-
-  /** Run-time type information ( and related methods ). */
-  itkTypeMacro( PointBasedSpatialObjectToImageMetric,
-    SpatialObjectToImageMetric );
-
-  /** Method for creation through the object factory. */
-  itkNewMacro( Self );
-
-  inline unsigned int GetNumberOfParameters( void ) const override
-    {
-    return this->m_Transform->GetNumberOfParameters();
-    }
-
-  /** Type used for representing point components  */
-  typedef typename Superclass::CoordinateRepresentationType
-                                               CoordinateRepresentationType;
-
-  /** Type definition for the size */
-  typedef typename TFixedImage::SizeType       SizeType;
-
-  /** Type definition for the pixel type */
-  typedef typename TFixedImage::PixelType      PixelType;
+  typedef TFixedImage                              FixedImageType;
+  typedef SpatialObject< ObjectDimension >         SpatialObjectType;
 
   /**  Type of the Transform Base class */
   typedef typename Superclass::TransformType       TransformType;
@@ -110,6 +74,36 @@ public:
   typedef typename TransformType::OutputPointType  OutputPointType;
   typedef typename TransformType::ParametersType   TransformParametersType;
   typedef typename TransformType::JacobianType     TransformJacobianType;
+
+  typedef PointBasedSpatialObject< ObjectDimension >
+                                                   PointBasedSpatialObjectType;
+  typedef typename PointBasedSpatialObjectType::PointType
+                                                   SpatialObjectPointType;
+  typedef typename PointBasedSpatialObjectType::SpatialObjectPointListType
+                                                   SpatialObjectPointListType;
+
+  typedef std::vector< double >                    PointWeightListType;
+
+  typedef TubeSpatialObject< ObjectDimension >     TubeType;
+  typedef typename TubeType::PointType             TubePointType;
+  typedef typename TubeType::TubePointListType     TubePointListType;
+
+  typedef SurfacSpatialObject< ObjectDimension >     SurfaceType;
+  typedef typename SurfaceType::PointType            SurfacePointType;
+  typedef typename SurfaceType::SurfacePointListType SurfacePointListType;
+
+  typedef typename Superclass::ParametersType      ParametersType;
+  typedef typename Superclass::MeasureType         MeasureType;
+  typedef typename Superclass::InputVectorType     InputVectorType;
+  typedef typename Superclass::OutputVectorType    OutputVectorType;
+  typedef typename Superclass::DerivativeType      DerivativeType;
+
+  /** Run-time type information ( and related methods ). */
+  itkTypeMacro( PointBasedSpatialObjectToImageMetric,
+    SpatialObjectToImageMetric );
+
+  /** Method for creation through the object factory. */
+  itkNewMacro( Self );
 
   /** Initialize the metric */
   void Initialize( void ) override;
@@ -127,6 +121,10 @@ public:
   void GetValueAndDerivative( const ParametersType & parameters,
     MeasureType & Value, DerivativeType  & Derivative ) const override;
 
+  /** Set/Get the portion of points used to compute the match metric. */
+  itkSetMacro( SamplingRatio, double );
+  itkGetConstMacro( SamplingRatio, double );
+
   /** The radius (for tube points) or image voxel size (for all other points)
    *    mulitplier used to define the scale of the Gaussian kernel
    *    used to make image measures in the metric. */
@@ -140,88 +138,88 @@ public:
   /** Set/Get the minimum tube radius used by the metric. */
   itkSetMacro( TubeSamplingRadiusMin, double );
   itkGetConstMacro( TubeSamplingRadiusMin, double );
-
   /** Set/Get the maximum tube radius used by the metric. */
   itkSetMacro( TubeSamplingRadiusMax, double );
   itkGetConstMacro( TubeSamplingRadiusMax, double );
-
   /** Set/Get the priority tube radius used in computing weights. */
   itkSetMacro( TubePriorityRadius, double );
   itkGetConstMacro( TubePriorityRadius, double );
 
-  void SubsamplePoints( void );
+  void ComputeSubsampledPoints( void );
   void ComputeSubsampledPointsWeights( void );
 
   itkSetMacro( SubsampledPoints, SpatialObjectPointListType );
   itkGetConstMacro( SubsampledPoints, SpatialObjectPointListType );
+  itkSetMacro( SubsampledPointsWeights, PointWeightListType );
+  itkGetConstMacro( SubsampledPointsWeights, PointWeightListType );
   
   itkSetMacro( SubsampledTubePoints, TubePointListType );
   itkGetConstMacro( SubsampledTubePoints, TubePointListType );
+  itkSetMacro( SubsampledTubePointsWeights, PointWeightListType );
+  itkGetConstMacro( SubsampledTubePointsWeights, PointWeightListType );
   
   itkSetMacro( SubsampledSurfacePoints, SurfacePointListType );
   itkGetConstMacro( SubsampledSurfacePoints, SurfacePointListType );
+  itkSetMacro( SubsampledSurfacePointsWeights, PointWeightListType );
+  itkGetConstMacro( SubsampledSurfacePointsWeights, PointWeightListType );
   
   TransformPointer GetTransform( void ) const
-    {
-    return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() );
-    }
+    { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
+
+  /** Get the number of transform parameters */
+  inline unsigned int GetNumberOfParameters( void ) const override
+    { return this->m_Transform->GetNumberOfParameters(); }
 
 protected:
-  PointBasedSpatialObjectToImageMetric( void );
-  virtual ~PointBasedSpatialObjectToImageMetric( void );
 
-  typedef CovariantVector< double, ObjectDimension >    CovariantVectorType;
-  typedef Vector< double, ObjectDimension >             VectorType;
-
-  typedef Matrix< double, ObjectDimension, ObjectDimension >   MatrixType; 
-
-  typedef typename SpatialObjectPointType::PointType     PointType;
-
-  typedef vnl_vector< double >                       VnlVectorType;
-  typedef vnl_matrix< double >                       VnlMatrixType;
+  // purposely not implemented
+  PointBasedSpatialObjectToImageMetric( const Self& );
+  void operator=( const Self& );
 
   unsigned int GetMaximumNumberOfPoints( void );
 
   virtual void ComputeCenterOfRotation( void );
 
-private:
-  // purposely not implemented
-  PointBasedSpatialObjectToImageMetric( const Self& );
-  void operator=( const Self& );
-
-  double m_Kappa;
-  double m_Extent;
-
-  double m_TubePriorityRadius;
-  double m_TubeSamplingRadiusMin;
-  double m_TubeSamplingRadiusMax;
-
-  /** The center of rotation of the weighted tube points. */
-  PointType m_CenterOfRotation;
-
-  /** Points with no tangets or normals */
-  SpatialObjectPointListType m_SubsampledPoints;
-
-  /** Points with one tangent and two normals */
-  TubePointListType          m_SubsampledTubePoints;
-
-  /** Points with one normal */
-  SurfacePointListType       m_SubsampledSurfacePoints;
-
-  /** Test whether the specified tube point is inside the Image.
-   * \param inputPoint the non-transformed tube point.
-   * \param outputPoint the transformed tube point.
-   * \param transform the transform to apply to the input point. */
   bool IsValidMovingPoint( const TubePointType & inputPoint ) const;
-  bool IsValidFixedPoint( OutputPointType & outputPoint ) const;
+  bool IsValidMovingPoint( const SurfacePointType & inputPoint ) const;
+  bool IsValidMovingPoint( const SpatialObjectPointType & inputPoint ) const;
+  bool IsValidFixedPoint( const OutputPointType & outputPoint ) const;
 
-  /**
-   * \warning User is responsible for freeing the list, but not the elements
-   * of the list.
-   */
   typename SpatialObjectType::ChildrenListType *
     GetPointBasedChildren( SpatialObjectType::Pointer & parentSO,
       SpatialObjectType::ChildrenListType * childrenSO=nullptr ) const;
+
+private:
+
+  PointBasedSpatialObjectToImageMetric( void );
+  virtual ~PointBasedSpatialObjectToImageMetric( void );
+
+  unsigned int m_MaximumNumberOfPoints;
+  unsigned int m_MaximumNumberOfTubePoints;
+  unsigned int m_MaximumNumberOfSurfacePoints;
+
+  double     m_SamplingRatio;
+
+  double     m_Kappa;
+  double     m_Extent;
+
+  double     m_TubePriorityRadius;
+  double     m_TubeSamplingRadiusMin;
+  double     m_TubeSamplingRadiusMax;
+
+  PointType  m_CenterOfRotation;
+
+  /** Points with no tangets or normals */
+  SpatialObjectPointListType m_SubsampledPoints;
+  PointWeightListType        m_SubsampledPointsWeights;
+
+  /** Points with one tangent and two normals */
+  TubePointListType          m_SubsampledTubePoints;
+  PointWeightListType        m_SubsampledTubePointsWeights;
+
+  /** Points with one normal */
+  SurfacePointListType       m_SubsampledSurfacePoints;
+  PointWeightListType        m_SubsampledSurfacePointsWeights;
 
 }; // End class PointBasedSpatialObjectToImageMetric
 

@@ -21,12 +21,15 @@ limitations under the License.
 =========================================================================*/
 
 
-#ifndef __itkScaleSkewVersor3DSpatialObjectToImageRegistrationMethod_txx
-#define __itkScaleSkewVersor3DSpatialObjectToImageRegistrationMethod_txx
+#ifndef __itktubeScaleSkewVersor3DSpatialObjectToImageRegistrationMethod_txx
+#define __itktubeScaleSkewVersor3DSpatialObjectToImageRegistrationMethod_txx
 
-#include "itkScaleSkewVersor3DSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeScaleSkewVersor3DSpatialObjectToImageRegistrationMethod.h"
 
 namespace itk
+{
+
+namespace tube
 {
 
 template <unsigned int ObjectDimension, class TImage>
@@ -146,6 +149,8 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   Superclass::PrintSelf(os, indent);
 }
 
-}
+} // tube
+
+} // itk
 
 #endif

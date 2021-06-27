@@ -20,12 +20,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __SpatialObjectToImageRegistrationMethod_txx
-#define __SpatialObjectToImageRegistrationMethod_txx
+#ifndef __itktubeSpatialObjectToImageRegistrationMethod_txx
+#define __itktubeSpatialObjectToImageRegistrationMethod_txx
 
-#include "itkSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeSpatialObjectToImageRegistrationMethod.h"
 
 namespace itk
+{
+
+namespace tube
 {
 
 template <unsigned int ObjectDimension, class TImage>
@@ -55,10 +58,6 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
   this->m_Observer = 0;
   this->m_ReportProgress = false;
-
-  this->m_UseFixedImageRegionOfInterest = false;
-  this->m_FixedImageRegionOfInterestPoint1.Fill(0);
-  this->m_FixedImageRegionOfInterestPoint2.Fill(0);
 
 }
 
@@ -97,16 +96,6 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
     this->Modified();
     }
-}
-
-template <unsigned int ObjectDimension, class TImage>
-void
-SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-::SetFixedImageRegionOfInterest( const PointType & point1, const PointType & point2 )
-{
-  m_FixedImageRegionOfInterestPoint1 = point1;
-  m_FixedImageRegionOfInterestPoint2 = point2;
-  m_UseFixedImageRegionOfInterest = true;
 }
 
 template <unsigned int ObjectDimension, class TImage>
@@ -303,13 +292,6 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     os << indent << "Moving Image = 0" << std::endl;
     }
 
-  os << indent << "Use fixed image region of interest = " << m_UseFixedImageRegionOfInterest
-     << std::endl;
-  os << indent << "Fixed image region of interest point1 = " << m_FixedImageRegionOfInterestPoint1
-     << std::endl;
-  os << indent << "Fixed image region of interest point2 = " << m_FixedImageRegionOfInterestPoint2
-     << std::endl;
-
   if( this->m_FixedImageMaskObject.IsNotNull() )
     {
     os << indent << "Fixed Image Mask Object = " << this->m_FixedImageMaskObject
@@ -334,6 +316,8 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
 }
 
-};
+}; // tube
+
+}; // itk
 
 #endif

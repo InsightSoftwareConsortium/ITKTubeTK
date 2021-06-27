@@ -20,13 +20,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkSpatialObjectToImageRegistrationMethod_h
-#define __itkSpatialObjectToImageRegistrationMethod_h
+#ifndef __itktubeSpatialObjectToImageRegistrationMethod_h
+#define __itktubeSpatialObjectToImageRegistrationMethod_h
 
 #include "itkSpatialObject.h"
-#include "itkImageRegistrationMethod.h"
 
 namespace itk
+{
+
+namespace tube
 {
 
 /** \class SpatialObjectToImageRegistrationMethod base class for the registration
@@ -99,29 +101,15 @@ public:
   void SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject );
   itkGetConstObjectMacro( MovingSpatialObject, SpatialObjectType );
 
-  void SetFixedImageRegionOfInterest( const PointType & point1,
-    const PointType & point2 );
-
-  itkSetMacro( UseFixedImageRegionOfInterest, bool );
-  itkGetMacro( UseFixedImageRegionOfInterest, bool );
-  itkSetMacro( FixedImageRegionOfInterestPoint1, PointType );
-  itkGetMacro( FixedImageRegionOfInterestPoint1, PointType );
-  itkSetMacro( FixedImageRegionOfInterestPoint2, PointType );
-  itkGetMacro( FixedImageRegionOfInterestPoint2, PointType );
-
   void SetFixedImageMaskObject( const ImageMaskObjectType * maskObject );
-
   itkGetConstObjectMacro( FixedImageMaskObject, ImageMaskObjectType );
-
   itkSetMacro( UseFixedImageMaskObject, bool );
   itkGetMacro( UseFixedImageMaskObject, bool );
 
   void SetMovingSpatialObjectMaskObject(
     const SpatialObjectMaskObjectType * maskObject );
-
   itkGetConstObjectMacro( MovingSpatialObjectMaskObject,
     SpatialObjectMaskObjectType );
-
   itkSetMacro( UseMovingSpatialObjectMaskObject, bool );
   itkGetMacro( UseMovingSpatialObjectMaskObject, bool );
 
@@ -175,10 +163,6 @@ private:
   typename ImageType::ConstPointer              m_FixedImage;
   typename SpatialObjectType::ConstPointer      m_MovingSpatialObject;
 
-  bool      m_UseFixedImageRegionOfInterest;
-  PointType m_FixedImageRegionOfInterestPoint1;
-  PointType m_FixedImageRegionOfInterestPoint2;
-
   bool                                   m_UseFixedImageMaskObject;
   typename MaskObjectType::ConstPointer  m_FixedImageMaskObject;
 
@@ -189,10 +173,12 @@ private:
 
 };
 
-}
+} // tube
+
+} // itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkSpatialObjectToImageRegistrationMethod.hxx"
+#include "itktubeSpatialObjectToImageRegistrationMethod.hxx"
 #endif
 
 #endif

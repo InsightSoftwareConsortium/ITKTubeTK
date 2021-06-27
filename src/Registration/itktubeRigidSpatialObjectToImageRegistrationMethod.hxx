@@ -20,13 +20,17 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __RigidSpatialObjectToImageRegistrationMethod_txx
-#define __RigidSpatialObjectToImageRegistrationMethod_txx
+#ifndef __tubeRigidSpatialObjectToImageRegistrationMethod_hxx
+#define __tubeRigidSpatialObjectToImageRegistrationMethod_hxx
 
-#include "itkRigidSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeRigidSpatialObjectToImageRegistrationMethod.h"
+
 #include "vnl/vnl_inverse.h"
 
 namespace itk
+{
+
+namespace tube
 {
 
 template <unsigned int ObjectDimension, class TImage>
@@ -203,6 +207,8 @@ RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->Superclass::PrintSelf(os, indent);
 }
 
-};
+}; // tube
+
+}; // itk
 
 #endif

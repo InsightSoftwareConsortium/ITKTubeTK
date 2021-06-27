@@ -20,8 +20,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkSpatialObjectMomentsCalculator_h
-#define __itkSpatialObjectMomentsCalculator_h
+#ifndef __itktubeSpatialObjectMomentsCalculator_h
+#define __itktubeSpatialObjectMomentsCalculator_h
 
 #include "itkAffineTransform.h"
 #include "itkMacro.h"
@@ -32,6 +32,9 @@ limitations under the License.
 #include "vnl/vnl_diag_matrix.h"
 
 namespace itk
+{
+
+namespace tube
 {
 
 /** \class SpatialObjectMomentsCalculator
@@ -45,22 +48,12 @@ namespace itk
  * ( in an SpatialObjectMomentsCalculator object ) for later retrieval by
  * the user.
  *
- * The non-central moments computed by this class are not really
- * intended for general use and are therefore in index coordinates;
- * that is, we pretend that the index that selects a particular
- * pixel also equals its physical coordinates.  The center of gravity,
- * central moments, principal moments and principal axes are all
- * more generally useful and are computed in the physical coordinates
- * defined by the Origin and Spacing parameters of the image.
- *
  * The methods that return values return the values themselves rather
  * than references because the cost is small compared to the cost of
  * computing the moments and doing so simplifies memory management for
  * the caller.
  *
  * \ingroup Operators
- *
- * \todo It's not yet clear how multi-echo images should be handled here.
  */
 template <unsigned int ObjectDimension>
 class SpatialObjectMomentsCalculator : public Object
@@ -111,25 +104,17 @@ public:
       }
     }
 
-  /** Method for controlling the region of interest that optionally limits
-   * the spatial extent of the computations */
-  itkSetMacro( UseRegionOfInterest, bool );
-  itkGetMacro( UseRegionOfInterest, bool );
-  virtual void SetRegionOfInterest( const PointType & point1,
-    const PointType & point2 )
+  /** Set the spatial object mask - which defines the ROI over which
+   *   moments are computed from the input spatial object. */
+  virtual void SetSpatialObjectMask( const SpatialObject<ObjectDimension> * so )
     {
-    if( m_RegionOfInterestPoint1 != point1
-      || m_RegionOfInterestPoint2 != point2 )
+    if( m_SpatialObjectMask != so )
       {
-      m_RegionOfInterestPoint1 = point1;
-      m_RegionOfInterestPoint2 = point2;
+      m_SpatialObjectMask = so;
       this->Modified();
       m_Valid = false;
       }
     }
-
-  itkGetMacro( RegionOfInterestPoint1, PointType );
-  itkGetMacro( RegionOfInterestPoint2, PointType );
 
   /** Compute moments of a new or modified image.
    * This method computes the moments of the image given as a
@@ -224,18 +209,17 @@ private:
   VectorType m_Pm;                   // Principal moments ( physical )
   MatrixType m_Pa;                   // Principal axes ( physical )
 
-  bool      m_UseRegionOfInterest;
-  PointType m_RegionOfInterestPoint1;
-  PointType m_RegionOfInterestPoint2;
-
   SpatialObjectConstPointer m_SpatialObject;
+  SpatialObjectConstPointer m_SpatialObjectMask;
 
 };  // class SpatialObjectMomentsCalculator
+
+} // end namespace tube
 
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkSpatialObjectMomentsCalculator.hxx"
+#include "itktubeSpatialObjectMomentsCalculator.hxx"
 #endif
 
 #endif /* __itkSpatialObjectMomentsCalculator_h */

@@ -20,9 +20,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef _itkImageRegionMomentsCalculator_txx
-#define _itkImageRegionMomentsCalculator_txx
-#include "itkImageRegionMomentsCalculator.h"
+#ifndef _itktubeSpatialObjectRegionMomentsCalculator_txx
+#define _itktubeSpatialObjectRegionMomentsCalculator_txx
 
 #include "vnl/algo/vnl_real_eigensystem.h"
 #include "vnl/algo/vnl_symmetric_eigensystem.h"
@@ -31,36 +30,45 @@ limitations under the License.
 namespace itk
 {
 
-class InvalidImageRegionMomentsError : public ExceptionObject
+namespace tube
+{
+
+class InvalidSpatialObjectRegionMomentsError : public ExceptionObject
 {
 public:
   /*
    * Constructor. Needed to ensure the exception object can be copied.
    */
-  InvalidImageRegionMomentsError(const char *file, unsigned int lineNumber) : ExceptionObject(file, lineNumber)
+  InvalidSpatialObjectRegionMomentsError(const char *file,
+    unsigned int lineNumber) : ExceptionObject(file, lineNumber)
   {
-    this->SetDescription("No valid image moments are availble.");
+    this->SetDescription("No valid spatial object moments are availble.");
   }
 
   /*
    * Constructor. Needed to ensure the exception object can be copied.
    */
-  InvalidImageRegionMomentsError(const std::string& file, unsigned int lineNumber) : ExceptionObject(file, lineNumber)
+  InvalidSpatialObjectRegionMomentsError(const std::string& file,
+    unsigned int lineNumber) : ExceptionObject(file, lineNumber)
   {
-    this->SetDescription("No valid image moments are availble.");
+    this->SetDescription("No valid spatial Object moments are availble.");
   }
 
-  itkTypeMacro(InvalidImageRegionMomentsError, ExceptionObject);
+  itkTypeMacro(InvalidSpatialObjectRegionMomentsError, ExceptionObject);
 };
 
 // ----------------------------------------------------------------------
 // Construct without computing moments
-template <class TImage>
-ImageRegionMomentsCalculator<TImage>::ImageRegionMomentsCalculator(void)
+template <unsigned int ObjectDimension>
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::SpatialObjectRegionMomentsCalculator(void)
 {
   m_Valid = false;
-  m_Image = NULL;
-  m_SpatialObjectMask = NULL;
+  m_Region =
+  m_Origin
+  m_Spacing
+  m_Direction = 
+  m_SpatialObject = nullptr;
+  m_SpatialObjectMask = nullptr;
   m_M0 = NumericTraits<ScalarType>::Zero;
   m_M1.Fill(NumericTraits<typename VectorType::ValueType>::Zero);
   m_M2.Fill(NumericTraits<typename MatrixType::ValueType>::Zero);
@@ -68,26 +76,24 @@ ImageRegionMomentsCalculator<TImage>::ImageRegionMomentsCalculator(void)
   m_Cm.Fill(NumericTraits<typename MatrixType::ValueType>::Zero);
   m_Pm.Fill(NumericTraits<typename VectorType::ValueType>::Zero);
   m_Pa.Fill(NumericTraits<typename MatrixType::ValueType>::Zero);
-  m_UseRegionOfInterest = false;
-  m_RegionOfInterestPoint1.Fill(0);
-  m_RegionOfInterestPoint2.Fill(0);
 }
 
 // ----------------------------------------------------------------------
 // Destructor
-template <class TImage>
-ImageRegionMomentsCalculator<TImage>::
-~ImageRegionMomentsCalculator()
+template <unsigned int ObjectDimension>
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::
+~SpatialObjectRegionMomentsCalculator()
 {
 }
 
 template <class TInputImage>
 void
-ImageRegionMomentsCalculator<TInputImage>
+SpatialObjectRegionMomentsCalculator<TInputImage>
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os, indent);
-  os << indent << "Image: " << m_Image.GetPointer() << std::endl;
+  os << indent << "SpatialObject: " << m_SpatialObject.GetPointer() << std::endl;
+  os << indent << "SpatialObjectMask: " << m_SpatialObjectMask.GetPointer() << std::endl;
   os << indent << "Valid: " << m_Valid << std::endl;
   os << indent << "Zeroth Moment about origin: " << m_M0 << std::endl;
   os << indent << "First Moment about origin: " << m_M1 << std::endl;
@@ -96,16 +102,13 @@ ImageRegionMomentsCalculator<TInputImage>
   os << indent << "Second central moments: " << m_Cm << std::endl;
   os << indent << "Principal Moments: " << m_Pm << std::endl;
   os << indent << "Principal axes: " << m_Pa << std::endl;
-  os << indent << "Use RegionOfInterest : " << m_UseRegionOfInterest << std::endl;
-  os << indent << "RegionOfInterest Point1: " << m_RegionOfInterestPoint1 << std::endl;
-  os << indent << "RegionOfInterest Point2: " << m_RegionOfInterestPoint2 << std::endl;
 }
 
 // ----------------------------------------------------------------------
 // Compute moments for a new or modified image
-template <class TImage>
+template <unsigned int ObjectDimension>
 void
-ImageRegionMomentsCalculator<TImage>::Compute()
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::Compute()
 {
   m_M0 = NumericTraits<ScalarType>::Zero;
   m_M1.Fill(NumericTraits<typename VectorType::ValueType>::Zero);
@@ -120,7 +123,7 @@ ImageRegionMomentsCalculator<TImage>::Compute()
     return;
     }
 
-  ImageRegionConstIteratorWithIndex<ImageType> it( m_Image,
+  SpatialObjectRegionConstIteratorWithIndex<ImageType> it( m_Image,
                                                    m_Image->GetRequestedRegion() );
 
   while( !it.IsAtEnd() )
@@ -235,9 +238,9 @@ ImageRegionMomentsCalculator<TImage>::Compute()
 
 // ---------------------------------------------------------------------
 // Get sum of intensities
-template <class TImage>
-typename ImageRegionMomentsCalculator<TImage>::ScalarType
-ImageRegionMomentsCalculator<TImage>::GetTotalMass() const
+template <unsigned int ObjectDimension>
+typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::ScalarType
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetTotalMass() const
 {
   if( !m_Valid )
     {
@@ -248,9 +251,9 @@ ImageRegionMomentsCalculator<TImage>::GetTotalMass() const
 
 // --------------------------------------------------------------------
 // Get first moments about origin, in index coordinates
-template <class TImage>
-typename ImageRegionMomentsCalculator<TImage>::VectorType
-ImageRegionMomentsCalculator<TImage>::GetFirstMoments() const
+template <unsigned int ObjectDimension>
+typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::VectorType
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetFirstMoments() const
 {
   if( !m_Valid )
     {
@@ -261,9 +264,9 @@ ImageRegionMomentsCalculator<TImage>::GetFirstMoments() const
 
 // --------------------------------------------------------------------
 // Get second moments about origin, in index coordinates
-template <class TImage>
-typename ImageRegionMomentsCalculator<TImage>::MatrixType
-ImageRegionMomentsCalculator<TImage>::GetSecondMoments() const
+template <unsigned int ObjectDimension>
+typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::MatrixType
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetSecondMoments() const
 {
   if( !m_Valid )
     {
@@ -274,9 +277,9 @@ ImageRegionMomentsCalculator<TImage>::GetSecondMoments() const
 
 // --------------------------------------------------------------------
 // Get center of gravity, in physical coordinates
-template <class TImage>
-typename ImageRegionMomentsCalculator<TImage>::VectorType
-ImageRegionMomentsCalculator<TImage>::GetCenterOfGravity() const
+template <unsigned int ObjectDimension>
+typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::VectorType
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetCenterOfGravity() const
 {
   if( !m_Valid )
     {
@@ -287,9 +290,9 @@ ImageRegionMomentsCalculator<TImage>::GetCenterOfGravity() const
 
 // --------------------------------------------------------------------
 // Get second central moments, in physical coordinates
-template <class TImage>
-typename ImageRegionMomentsCalculator<TImage>::MatrixType
-ImageRegionMomentsCalculator<TImage>::GetCentralMoments() const
+template <unsigned int ObjectDimension>
+typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::MatrixType
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetCentralMoments() const
 {
   if( !m_Valid )
     {
@@ -300,9 +303,9 @@ ImageRegionMomentsCalculator<TImage>::GetCentralMoments() const
 
 // --------------------------------------------------------------------
 // Get principal moments, in physical coordinates
-template <class TImage>
-typename ImageRegionMomentsCalculator<TImage>::VectorType
-ImageRegionMomentsCalculator<TImage>::GetPrincipalMoments() const
+template <unsigned int ObjectDimension>
+typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::VectorType
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetPrincipalMoments() const
 {
   if( !m_Valid )
     {
@@ -314,9 +317,9 @@ ImageRegionMomentsCalculator<TImage>::GetPrincipalMoments() const
 
 // --------------------------------------------------------------------
 // Get principal axes, in physical coordinates
-template <class TImage>
-typename ImageRegionMomentsCalculator<TImage>::MatrixType
-ImageRegionMomentsCalculator<TImage>::GetPrincipalAxes() const
+template <unsigned int ObjectDimension>
+typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::MatrixType
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetPrincipalAxes() const
 {
   if( !m_Valid )
     {
@@ -327,9 +330,9 @@ ImageRegionMomentsCalculator<TImage>::GetPrincipalAxes() const
 
 // --------------------------------------------------------------------
 // Get principal axes to physical axes transform
-template <class TImage>
-typename ImageRegionMomentsCalculator<TImage>::AffineTransformPointer
-ImageRegionMomentsCalculator<TImage>::GetPrincipalAxesToPhysicalAxesTransform(void) const
+template <unsigned int ObjectDimension>
+typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::AffineTransformPointer
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetPrincipalAxesToPhysicalAxesTransform(void) const
 {
   typename AffineTransformType::MatrixType matrix;
   typename AffineTransformType::OffsetType offset;
@@ -353,9 +356,9 @@ ImageRegionMomentsCalculator<TImage>::GetPrincipalAxesToPhysicalAxesTransform(vo
 // --------------------------------------------------------------------
 // Get physical axes to principal axes transform
 
-template <class TImage>
-typename ImageRegionMomentsCalculator<TImage>::AffineTransformPointer
-ImageRegionMomentsCalculator<TImage>::GetPhysicalAxesToPrincipalAxesTransform(void) const
+template <unsigned int ObjectDimension>
+typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::AffineTransformPointer
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetPhysicalAxesToPrincipalAxesTransform(void) const
 {
   typename AffineTransformType::MatrixType matrix;
   typename AffineTransformType::OffsetType offset;
@@ -377,6 +380,8 @@ ImageRegionMomentsCalculator<TImage>::GetPhysicalAxesToPrincipalAxesTransform(vo
 
   return inverse;
 }
+
+} // end namespace tube
 
 } // end namespace itk
 

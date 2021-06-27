@@ -20,8 +20,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __OptimizedSpatialObjectToImageRegistrationMethod_txx
-#define __OptimizedSpatialObjectToImageRegistrationMethod_txx
+#ifndef __itktubeOptimizedSpatialObjectToImageRegistrationMethod_txx
+#define __itktubeOptimizedSpatialObjectToImageRegistrationMethod_txx
 
 #include "itkOptimizedSpatialObjectToImageRegistrationMethod.h"
 
@@ -45,6 +45,9 @@ limitations under the License.
 #include <sstream>
 
 namespace itk
+{
+
+namespace tube
 {
 
 class SpatialObjectToImageRegistrationViewer
@@ -493,6 +496,8 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     }
 }
 
-};
+}; // tube
+
+}; // itk
 
 #endif

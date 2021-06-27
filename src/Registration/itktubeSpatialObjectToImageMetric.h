@@ -20,8 +20,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef itkSpatialObjectToImageMetric_h
-#define itkSpatialObjectToImageMetric_h
+#ifndef itktubeSpatialObjectToImageMetric_h
+#define itktubeSpatialObjectToImageMetric_h
 
 #include "itkSingleValuedCostFunction.h"
 #include "itkMinimumMaximumImageCalculator.h"
@@ -29,6 +29,9 @@ limitations under the License.
 #include "itkTransform.h"
 
 namespace itk
+{
+
+namespace tube
 {
 /** \class SpatialObjectToImageMetric
  * \brief Computes similarity between a moving spatial object
@@ -93,8 +96,8 @@ public:
   using TransformParametersType = typename TransformType::ParametersType;
   using TransformJacobianType = typename TransformType::JacobianType;
 
-  /** Typede of the vector type to return derivatives */
-  using VectorType = vnl_vector_fixed<double, Self::ObjectDimension>;
+  using InputVectorType = vnl_vector_fixed<double, Self::ObjectDimension>;
+  using OutputVectorType = vnl_vector_fixed<double, Self::ImageDimension>;
 
   /**  Type of the match measure */
   using MeasureType = Superclass::MeasureType;
@@ -133,29 +136,13 @@ public:
   itkSetMacro( SamplingRatio, double );
   itkGetConstMacro( SamplingRatio, double );
 
-  void SetFixedImageRegionOfInterest( const PointType & point1,
-    const PointType & point2 );
-
-  itkSetMacro( UseFixedImageRegionOfInterest, bool );
-  itkGetMacro( UseFixedImageRegionOfInterest, bool );
-  itkSetMacro( FixedImageRegionOfInterestPoint1, PointType );
-  itkGetMacro( FixedImageRegionOfInterestPoint1, PointType );
-  itkSetMacro( FixedImageRegionOfInterestPoint2, PointType );
-  itkGetMacro( FixedImageRegionOfInterestPoint2, PointType );
-
-  void SetFixedImageMaskObject( const ImageMaskObjectType * maskObject );
-
-  itkGetConstObjectMacro( FixedImageMaskObject, ImageMaskObjectType );
-
+  void SetFixedImageMaskObject( const MaskObjectType * maskObject );
+  itkGetConstObjectMacro( FixedImageMaskObject, MaskObjectType );
   itkSetMacro( UseFixedImageMaskObject, bool );
   itkGetMacro( UseFixedImageMaskObject, bool );
 
-  void SetMovingSpatialObjectMaskObject(
-    const SpatialObjectMaskObjectType * maskObject );
-
-  itkGetConstObjectMacro( MovingSpatialObjectMaskObject,
-    SpatialObjectMaskObjectType );
-
+  void SetMovingSpatialObjectMaskObject( const MaskObjectType * maskObject );
+  itkGetConstObjectMacro( MovingSpatialObjectMaskObject, MaskObjectType );
   itkSetMacro( UseMovingSpatialObjectMaskObject, bool );
   itkGetMacro( UseMovingSpatialObjectMaskObject, bool );
 
@@ -187,32 +174,31 @@ protected:
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 
-  MeasureType              m_MatchMeasure{ 0 };
-  DerivativeType           m_MatchMeasureDerivatives;
-  mutable TransformPointer m_Transform;
-
   MovingSpatialObjectConstPointer m_MovingSpatialObject;
+
   FixedImageConstPointer          m_FixedImage;
 
-  double    m_SamplingRatio;
+  mutable TransformPointer        m_Transform;
 
-  bool      m_UseFixedImageRegionOfInterest;
-  PointType m_FixedImageRegionOfInterestPoint1;
-  PointType m_FixedImageRegionOfInterestPoint2;
-
-  bool                                   m_UseFixedImageMaskObject;
-  typename MaskObjectType::ConstPointer  m_FixedImageMaskObject;
-
-  bool                                   m_UseMovingSpatialObjectMaskObject;
-  typename MaskObjectType::ConstPointer  m_MovingSpatialObjectMaskObject;
-
+  MeasureType                     m_MatchMeasure{ 0 };
+  DerivativeType                  m_MatchMeasureDerivatives;
 
   ParametersType                  m_LastTransformParameters;
+
+  bool                                  m_UseFixedImageMaskObject;
+  typename MaskObjectType::ConstPointer m_FixedImageMaskObject;
+
+  bool                                  m_UseMovingSpatialObjectMaskObject;
+  typename MaskObjectType::ConstPointer m_MovingSpatialObjectMaskObject;
+
 };
+
+} // end namespace tube
+
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#  include "itkSpatialObjectToImageMetric.hxx"
+#  include "itktubeSpatialObjectToImageMetric.hxx"
 #endif
 
 #endif

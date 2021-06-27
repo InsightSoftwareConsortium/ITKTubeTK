@@ -20,8 +20,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkSpatialObjectToImageRegistrationHelper_h
-#define __itkSpatialObjectToImageRegistrationHelper_h
+#ifndef __itktubeSpatialObjectToImageRegistrationHelper_h
+#define __itktubeSpatialObjectToImageRegistrationHelper_h
 
 #include "itkImage.h"
 #include "itkCommand.h"
@@ -35,6 +35,9 @@ limitations under the License.
 #include "itkScaleSkewVersor3DSpatialObjectToImageRegistrationMethod.h"
 
 namespace itk
+{
+
+namespace tube
 {
 
 template <unsigned int ObjectDimension, class TImage>
@@ -175,31 +178,16 @@ public:
   itkSetMacro( UseFixedImageMaskObject, bool );
   itkGetConstMacro( UseFixedImageMaskObject, bool );
   itkBooleanMacro( UseFixedImageMaskObject );
-
   void SetFixedImageMaskObject( const ImageMaskObjectType * mask );
-
   itkGetConstObjectMacro( FixedImageMaskObject, ImageMaskObjectType );
 
   itkSetMacro( UseMovingSpatialObjectMaskObject, bool );
   itkGetConstMacro( UseMovingSpatialObjectMaskObject, bool );
   itkBooleanMacro( UseMovingSpatialObjectMaskObject );
-
   void SetMovingSpatialObjectMaskObject(
     const SpatialObjectMaskObjectType * mask );
-
   itkGetConstObjectMacro( MovingSpatialObjectMaskObject,
     SpatialObjectMaskObjectType );
-
-  itkSetMacro( UseFixedImageRegionOfInterest, bool );
-  itkGetMacro( UseFixedImageRegionOfInterest, bool );
-  itkSetMacro( FixedImageRegionOfInterestPoint1, PointType );
-  itkGetMacro( FixedImageRegionOfInterestPoint1, PointType );
-  itkSetMacro( FixedImageRegionOfInterestPoint2, PointType );
-  itkGetMacro( FixedImageRegionOfInterestPoint2, PointType );
-  void SetFixedImageRegionOfInterest( const PointType & point1,
-    const PointType & point2 );
-
-  void SetFixedImageRegionOfInterest( const std::vector<float> & points );
 
   // **************
   // **************
@@ -419,10 +407,6 @@ private:
   typename SpatialObjectMaskObjectType::ConstPointer
                                              m_MovingSpatialObjectMaskObject;
 
-  bool      m_UseFixedImageRegionOfInterest;
-  PointType m_FixedImageRegionOfInterestPoint1;
-  PointType m_FixedImageRegionOfInterestPoint2;
-
   unsigned int m_RandomNumberSeed;
 
   //  Process
@@ -487,10 +471,12 @@ private:
 
 };
 
-}
+} // tube
+
+} // itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkSpatialObjectToImageRegistrationHelper.hxx"
+#include "itktubeSpatialObjectToImageRegistrationHelper.hxx"
 #endif
 
 #endif

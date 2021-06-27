@@ -20,15 +20,18 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itkOptimizedSpatialObjectToImageRegistrationMethod_h
-#define __itkOptimizedSpatialObjectToImageRegistrationMethod_h
+#ifndef __itktubeOptimizedSpatialObjectToImageRegistrationMethod_h
+#define __itktubeOptimizedSpatialObjectToImageRegistrationMethod_h
 
 #include "itkImage.h"
 
-#include "itkSpatialObjectToImageRegistrationMethod.h"
-#include "itkTubeToImageMetric.h"
+#include "itktubeSpatialObjectToImageRegistrationMethod.h"
+#include "itktubePointBasedSpatialObjectToImageMetric.h"
 
 namespace itk
+{
+
+namespace tube
 {
 
 template <unsigned int ObjectDimension, class TImage>
@@ -168,10 +171,12 @@ private:
   double m_FinalMetricValue;
 };
 
-}
+} // tube
+
+} // itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkOptimizedSpatialObjectToImageRegistrationMethod.hxx"
+#include "itktubeOptimizedSpatialObjectToImageRegistrationMethod.hxx"
 #endif
 
 #endif

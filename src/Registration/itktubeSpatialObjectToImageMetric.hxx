@@ -20,27 +20,38 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef itkSpatialObjectToImageMetric_hxx
-#define itkSpatialObjectToImageMetric_hxx
+#ifndef itktubeSpatialObjectToImageMetric_hxx
+#define itktubeSpatialObjectToImageMetric_hxx
 
-#include "itkSpatialObjectToImageMetric.h"
+#include "itktubeSpatialObjectToImageMetric.h"
 
 namespace itk
 {
+
+namespace tube
+{
+
 /** Constructor */
 template <unsigned int ObjectDimension, typename TFixedImage>
 SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::SpatialObjectToImageMetric()
 
 {
   m_FixedImage = nullptr;          // has to be provided by the user.
+
   m_MovingSpatialObject = nullptr; // has to be provided by the user.
+
   m_Transform = nullptr;           // has to be provided by the user.
 
-  m_SamplingRatio = 0.1;
+  m_UseFixedSpatialObjectMaskObject = false;
+  m_FixedSpatialObjectMaskObject = nullptr;
+  
+  m_UseMovingSpatialObjectMaskObject = false;
+  m_MovingSpatialObjectMaskObject = nullptr;
 
-  this->m_UseFixedImageRegionOfInterest = false;
-  this->m_FixedImageRegionOfInterestPoint1.Fill(0);
-  this->m_FixedImageRegionOfInterestPoint2.Fill(0);
+  m_MatchMeasure = 0;
+  m_MatchMeasureDerivatives.fill(0);
+
+  m_LastTransformParameters.fill(0);
 }
 
 template <unsigned int ObjectDimension, class TImage>
@@ -178,13 +189,16 @@ void
 SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
-  os << indent << "Moving Spatial Object: " << m_MovingSpatialObject.GetPointer() << std::endl;
+  os << indent << "Moving Spatial Object: "
+    << m_MovingSpatialObject.GetPointer() << std::endl;
   os << indent << "Fixed  Image: " << m_FixedImage.GetPointer() << std::endl;
   os << indent << "Transform:    " << m_Transform.GetPointer() << std::endl;
-  os << indent << "Last Transform parameters = " << m_LastTransformParameters << std::endl;
-
-  os << indent << "Sampling Ratio:    " << m_SamplingRatio << std::endl;
+  os << indent << "Last Transform parameters = " << m_LastTransformParameters
+    << std::endl;
 }
+
+} // end namespace tube
+
 } // end namespace itk
 
 #endif
