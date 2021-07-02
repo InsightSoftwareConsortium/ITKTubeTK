@@ -85,11 +85,11 @@ public:
   typedef TubeSpatialObject< TDimension >                    TubeType;
   typedef SurfaceSpatialObject< TDimension >                 SurfaceType;
   typedef LineSpatialObject< TDimension >                    LineType;
-  typedef DITubeSpatialObject< TDimension >                  DTITubeType;
+  typedef DTITubeSpatialObject< TDimension >                 DTITubeType;
   typedef ContourSpatialObject< TDimension >                 ContourType;
 
   typedef typename SpatialObject< TDimension >::TransformType
-    SpatialObjectTrasnformType;
+    SpatialObjectTransformType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -124,7 +124,8 @@ private:
   void UpdateLevel( SpatialObject< TDimension > * inputSO,
     SpatialObject< TDimension > * parentSO );
 
-  void Transform( SpatialObject< TDimension > * inputSO );
+  void Transform( SpatialObject< TDimension > * inputSO,
+    SpatialObject< TDimension > * outputSO );
 
   typename TransformType::Pointer              m_Transform;
 

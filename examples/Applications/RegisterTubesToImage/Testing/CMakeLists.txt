@@ -30,24 +30,3 @@ itk_add_test(
     DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
     DATA{${TubeTK_DATA_ROOT}/tube.tre}
     ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.h5 )
-
-set( METRIC_SAMPLER ComputeImageToTubeRigidMetricImage )
-set( METRIC_SAMPLER_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${METRIC_SAMPLER}> )
-
-itk_add_test(
-  NAME ${MODULE_NAME}-MetricSampler-Test1
-  COMMAND ${METRIC_SAMPLER_EXE}
-    DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
-    DATA{${TubeTK_DATA_ROOT}/tube.tre}
-    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-MetricSampler-Test1.nrrd )
-
-set( METRIC_EXTRACTOR ExtractMetricImageSlice )
-set( METRIC_EXTRACTOR_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${METRIC_EXTRACTOR}> )
-
-itk_add_test(
-  NAME ${MODULE_NAME}-MetricExtractor-Test1
-  COMMAND ${METRIC_EXTRACTOR_EXE}
-    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-MetricSampler-Test1.nrrd
-    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}-MetricExtractor-Test1.mha )
-set_tests_properties( ${MODULE_NAME}-MetricExtractor-Test1
-  PROPERTIES DEPENDS ${MODULE_NAME}-MetricSampler-Test1 )

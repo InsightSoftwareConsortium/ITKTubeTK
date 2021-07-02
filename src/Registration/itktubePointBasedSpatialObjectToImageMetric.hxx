@@ -458,7 +458,17 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       transformCopy->TransformPoint( inputPoint, currentPoint );
       if( IsValidFixedPoint( currentPoint ) )
         {
-        double scale = tubePointIter->GetRadiusInWorldSpace() * m_Kappa;
+        double radius = pointIter->GetRadiusInWorldSpace();
+        radius = radius * m_Kappa;
+        InputPointType radiusPoint.Fill(radius);
+        OutputPointType currentRadiusPoint =
+          transformCopy->TransformPoint( radiusPoint );
+        double currentScale = radiusPoint[0];
+        for( unsigned int i=1; i<ImageDimension; ++i )
+          {
+          currentScale += radiusPoint[i];
+          }
+        currentScale /= ImageDimension;
 
         CovariantVectorType n1;
         TransformedCovariantVectorType n1T;
@@ -485,12 +495,12 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
         if( ObjectDimension > 2 )
           {
           matchMeasure += *tubePointWeightIter * imFunc->Evaluate( currentPoint,
-            n1, n2, scale );
+            n1, n2, currentScale );
           }
         else
           {
           matchMeasure += *tubePointWeightIter * imFunc->Evaluate( currentPoint,
-            n1, scale );
+            n1, currentScale );
           }
         weightSum += *tubePointWeightIter;
         }
@@ -511,7 +521,17 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       transformCopy->TransformPoint( inputPoint, currentPoint );
       if( IsValidFixedPoint( currentPoint ) )
         {
-        double scale = surfacePointIter->GetRadiusInWorldSpace() * m_Kappa;
+        double radius = pointIter->GetRadiusInWorldSpace();
+        radius = radius * m_Kappa;
+        InputPointType radiusPoint.Fill(radius);
+        OutputPointType currentRadiusPoint =
+          transformCopy->TransformPoint( radiusPoint );
+        double currentScale = radiusPoint[0];
+        for( unsigned int i=1; i<ImageDimension; ++i )
+          {
+          currentScale += radiusPoint[i];
+          }
+        currentScale /= ImageDimension;
 
         CovariantVectorType n1;
         TransformedCovariantVectorType n1T;
@@ -526,7 +546,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
           }
 
         matchMeasure += *surfacePointWeightIter * imFunc->Evaluate(
-          currentPoint, n1, scale );
+          currentPoint, n1, currentScale );
         weightSum += *surfacePointWeightIter;
         }
       }
@@ -546,10 +566,20 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       transformCopy->TransformPoint( inputPoint, currentPoint );
       if( IsValidFixedPoint( currentPoint ) )
         {
-        double scale = pointIter->GetRadiusInWorldSpace() * m_Kappa;
+        double radius = pointIter->GetRadiusInWorldSpace();
+        radius = radius * m_Kappa;
+        InputPointType radiusPoint.Fill(radius);
+        OutputPointType currentRadiusPoint =
+          transformCopy->TransformPoint( radiusPoint );
+        double currentScale = radiusPoint[0];
+        for( unsigned int i=1; i<ImageDimension; ++i )
+          {
+          currentScale += radiusPoint[i];
+          }
+        currentScale /= ImageDimension;
 
         matchMeasure += *pointWeightIter * imFunc->Evaluate(
-          currentPoint, scale );
+          currentPoint, currentScale );
         weightSum += *pointWeightIter;
         }
       }
@@ -612,38 +642,42 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   int totalNumberOfPoints = m_SubsampledPoints.GetSize()
     + m_SubsampledTubePoints.GetSize() + m_SubsampledSurfacePoints.GetSize();
 
-  std::vector< InputPointType > MovingPointListType;
-  MovingPointListType movingPoints;
-  movingPoints.reserve( totalNumberOfPoints );
-
   std::vector< OutputPointType > FixedPointListType;
   FixedPointListType fixedPoints;
   fixedPoints.reserve( totalNumberOfPoints );
 
-  typedef std::vector< InputVectorType > MovingPointDerivListType;
-  MovingPointDerivListType  movingPointsDerivs;
-  movingPointsDerivs.reserve( totalNumberOfPoints );
+  typedef std::vector< outputVectorType > FixedPointDerivListType;
+  FixedPointDerivListType  fixedPointsDerivs;
+  fixedPointsDerivs.reserve( totalNumberOfPoints );
 
   typename NJetImageFunction< FixedImageType >::Pointer imFunc =
     NJetImageFunction< FixedImageType >::New();
   imFunc->SetInput( m_FixedImage );
 
   typename PointWeightListType::const_iterator pointWeightIter;
-
-  typename TubePointListType::const_iterator tubePointIter;
-  tubePointIter = m_TubePointList.begin()
+  typename TubePointListType::const_iterator pointIter =
+    m_TubePointList.begin();
   while( pointIter != m_TubePointList.end() )
     {
     InputPointType inputPoint = pointIter->GetPositionInWorldSpace();
     OutputPointType currentPoint = transformCopy->TransformPoint( inputPoint );
-    VectorType currentDeriv;
     if( this->IsValidFixedPoint( currentPoint ) )
       {
-      movingPoints.push_back( inputPoint );
+      VectorType currentDeriv;
+
       fixedPoints.push_back( currentPoint );
 
-      double scalingRadius = pointIter->GetRadiusInWorldSpace();
-      const double scale = scalingRadius * m_Kappa;
+      double radius = pointIter->GetRadiusInWorldSpace();
+      radius = radius * m_Kappa;
+      InputPointType radiusPoint.Fill(radius);
+      OutputPointType currentRadiusPoint =
+        transformCopy->TransformPoint( radiusPoint );
+      double currentScale = radiusPoint[0];
+      for( unsigned int i=1; i<ImageDimension; ++i )
+        {
+        currentScale += radiusPoint[i];
+        }
+      currentScale /= ImageDimension;
 
       CovariantVectorType n1 = pointIter->GetNormal1InWorldSpace();
       n1 = transformCopy->TransformCovariantVector( n1 );
@@ -655,111 +689,65 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
         n2 = transformCopy->TransformCovariantVector( n2 );
         n2T = n2.GetVnlVector();
         tM = tM + outer_product( n2T, n2T );
-        dMagSum += *tubePointWeightIter * imFunc->Derivative( currentPoint,
-          n1, n2, scale, currentDeriv );
+        VectorType tmpDeriv;
+        dMagSum += *pointWeightIter * imFunc->Derivative( currentPoint,
+          n1T, n2T, currentScale, tmpDeriv );
+        currentDeriv.fill(0);
+        for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
+          {
+          currentDeriv[ii] += tmpDeriv[0] * n1T[ii];
+          currentDeriv[ii] += tmpDeriv[1] * n2T[ii];
+          }
         }
       else
         {
-        dMagSum += *tubePointWeightIter * imFunc->Derivative( currentPoint,
-          n1, scale, currentDeriv );
+        VectorType tmpDeriv;
+        dMagSum += *pointWeightIter * imFunc->Derivative( currentPoint,
+          n1T, currentScale, tmpDeriv );
+        currentDeriv.fill(0);
+        for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
+          {
+          currentDeriv[ii] += tmpDeriv[0] * n1T[ii];
+          }
         }
-      tM = *tubePointWeightIter * tM;
+      fixedPointsDerivs.push_back( currentDeriv );
+
+      tM = *pointWeightIter * tM;
       biasV += tM;
 
-      weightSum += *tubePointWeightIter;
-
-      VectorType dtransformedTubePoint;
-      for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
-        {
-        dtransformedTubePoint[ii] =
-          ( dXProj1 * n1[ii] + dXProj2 * n2[ii] );
-        dPosition[ii] += dtransformedTubePoint[ii];
-        }
-      dtransformedTubePoints.push_back( dtransformedTubePoint );
+      weightSum += *pointWeightIter;
       }
-    ++weightCount;
     ++pointIter;
+    ++pointWeightIter;
     }
 
   biasVI = vnl_matrix_inverse< double >( biasV ).inverse();
 
-  VnlVectorType tV( ObjectDimension );
-  for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
+  auto fixedPointsIter = fixedPoints.begin();
+  auto fixedPointsDerivsIter = fixedPointsDerivs.begin();
+  while( fixedPointsIter != fixedPoints.end() )
     {
-    tV[ii] = dPosition[ii].GetSum();
-    }
+    OutputPointType currentPoint = *fixedPointIter;
 
-  tV *= biasVI;
-
-  for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
-    {
-    dPosition[ii] = tV[ii];
-    }
-
-  CompensatedSummationType dAngle[ObjectDimension];
-  VectorType offsets;
-  for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
-    {
-    offsets[ii] = dPosition[ii].GetSum();
-    }
-  typename TubePointsContainerType::const_iterator transformedTubePointsIt =
-    transformedTubePoints.begin();
-  typename dTubePointsContainerType::const_iterator
-    dtransformedTubePointsIt = dtransformedTubePoints.begin();
-  weightCount = 0;
-  for( tubeIter = tubeList->begin();
-       tubeIter != tubeList->end();
-       ++tubeIter )
-    {
-    TubeType* currentTube = dynamic_cast<TubeType*>(
-      ( *tubeIter ).GetPointer() );
-
-    if( currentTube != NULL )
+    VnlVectorType dXT( ObjectDimension );
+    for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
       {
-      typename TubeType::TubePointListType::const_iterator pointIter;
-      for( pointIter = currentTube->GetPoints().begin();
-           pointIter != currentTube->GetPoints().end();
-           ++pointIter )
-        {
-        InputPointType inputPoint = pointIter->GetPositionInWorldSpace();
-        OutputPointType currentPoint = transformCopy->TransformPoint( inputPoint );
-        //! \todo this checking is not necessary, but we have to make sure
-        //have
-        //the corresponding weight -- should cache the result and use it
-        //here.
-        if( this->IsValidFixedPoint( inputPoint, currentPoint, transformCopy ) )
-          {
-          VnlVectorType dXT( ObjectDimension );
-          for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
-            {
-            dXT[ii] = ( *dtransformedTubePointsIt )[ii];
-            }
-
-          dXT = dXT * biasVI;
-
-          double angleDelta[ObjectDimension];
-          this->GetDeltaAngles( *transformedTubePointsIt, dXT, offsets,
-            angleDelta );
-          for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
-            {
-            dAngle[ii] += m_FeatureWeights[weightCount] * angleDelta[ii];
-            }
-          ++dtransformedTubePointsIt;
-          ++transformedTubePointsIt;
-          }
-        ++weightCount;
-        }
+      dXT[ii] = ( *fixedPointsDerivsIter )[ii];
       }
+
+    dXT = dXT * biasVI;
+
+    typename TransformType::JacobianType jacobian;
+    m_Transform->ComputeJacobianWithRespectToParameters( currentPoint,
+      jacobian );
+
+    DerivativeType tmpDeriv = jacobian * dXT;
+
+    derivative += tmpDeriv;
+
+    ++fixedPointsIter;
+    ++fixedPointsDerivsIter;
     }
-
-  derivative[0] = dAngle[0].GetSum();
-  derivative[1] = dAngle[1].GetSum();
-  derivative[2] = dAngle[2].GetSum();
-  derivative[3] = dPosition[0].GetSum();
-  derivative[4] = dPosition[1].GetSum();
-  derivative[5] = dPosition[2].GetSum();
-
-  delete tubeList;
 }
 
 

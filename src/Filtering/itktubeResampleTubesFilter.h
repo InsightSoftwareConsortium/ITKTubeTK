@@ -29,7 +29,7 @@
 #include <itkDisplacementFieldTransform.h>
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
 #include "itkTubeSpatialObject.h"
-#include "itktubeTubeToTubeTransformFilter.h"
+#include "itktubePointBasedSpatialObjectTransformFilter.h"
 #include "itkTransformBase.h"
 namespace itk
 {

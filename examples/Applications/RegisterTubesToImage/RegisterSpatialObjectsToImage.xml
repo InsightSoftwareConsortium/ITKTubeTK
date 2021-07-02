@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>RegisterSpatialObjectsToImage (TubeTK)</title>
+  <description>Provides rigid and affine registration methods for aligning Tubes, Surfaces, and Points with an image</description>
+  <contributor>Stephen R Aylward (Kitware)</contributor>
+  <parameters>
+    <label>IO</label>
+    <description>Input and output parameters</description>
+    <image>
+      <name>fixedImage</name>
+      <label>Fixed Image</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Image which defines the space into which the moving image is registered</description>
+    </image>
+    <file>
+      <name>movingSpatialObject</name>
+      <label>Moving Spatial Object</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>The objects to be registered to the fixed image</description>
+    </image>
+    <image>
+      <name>resampledSpatialObject</name>
+      <label>Resample Spatial Object</label>
+      <channel>output</channel>
+      <longflag>resampledSpatialObject</longflag>
+      <description>Registration results</description>
+      <default/>
+    </image>
+    <float>
+      <name>resampledImagePortion</name>
+      <label>Resample image portion</label>
+      <channel>input</channel>
+      <longflag>resampledImagePortion</longflag>
+      <description>Only apply a portion of the transform.  This scalar enables, for example, 1/2 of the transform magnitude to be applied.</description>
+      <default>1.0</default>
+    </float>
+  </parameters>
+  <parameters>
+    <label>Registration Parameters</label>
+    <description>Common parameters</description>
+    <transform fileExtensions=".txt">
+      <name>loadTransform</name>
+      <label>Load transform</label>
+      <description>Load a transform that is immediately applied to the moving image</description>
+      <longflag>loadTransform</longflag>
+      <channel>input</channel>
+      <default/>
+    </transform>
+    <boolean>
+      <name>invertLoadedTransform</name>
+      <label>Invert loaded transform</label>
+      <description>Invert the loaded transform before applying it to the moving image</description>
+      <longflag>invertLoadedTransform</longflag>
+      <channel>input</channel>
+      <default>false</default>
+    </boolean>
+    <transform fileExtensions=".txt">
+      <name>saveTransform</name>
+      <label>Save transform</label>
+      <description>Save the transform that results from registration</description>
+      <longflag>saveTransform</longflag>
+      <channel>output</channel>
+      <default/>
+    </transform>
+    <image type="vector">
+      <name>saveDisplacementField</name>
+      <label>Displacement Field</label>
+      <channel>output</channel>
+      <longflag>saveDisplacementField</longflag>
+      <description>Save displacement field result from registration</description>
+      <default/>
+    </image>
+    <boolean>
+      <name>skipInitialRandomSearch</name>
+      <description>Skips initial random search (skips the evolutionary optimizer) during the registration process and uses only the gradient optimizer</description>
+      <label>Skip Initial Random Search</label>
+      <longflag>skipInitialRandomSearch</longflag>
+    </boolean>
+    <string-enumeration>
+      <name>initialization</name>
+      <description>Method to prime the registration process</description>
+      <label>Initialization</label>
+      <longflag>initialization</longflag>
+      <element>None</element>
+      <element>Landmarks</element>
+      <element>ImageCenters</element>
+      <element>CentersOfMass</element>
+      <element>SecondMoments</element>
+      <default>CentersOfMass</default>
+    </string-enumeration>
+    <string-enumeration>
+      <name>registration</name>
+      <description>Method for the registration process</description>
+      <label>Registration</label>
+      <longflag>registration</longflag>
+      <element>None</element>
+      <element>Initial</element>
+      <element>Rigid</element>
+      <element>Affine</element>
+      <element>BSpline</element>
+      <element>PipelineRigid</element>
+      <element>PipelineAffine</element>
+      <element>PipelineBSpline</element>
+      <default>PipelineAffine</default>
+    </string-enumeration>
+    <string-enumeration>
+      <name>metric</name>
+      <description>Method to quantify image match</description>
+      <label>Metric</label>
+      <longflag>metric</longflag>
+      <element>MattesMI</element>
+      <element>NormCorr</element>
+      <element>MeanSqrd</element>
+      <default>MattesMI</default>
+    </string-enumeration>
+    <float>
+      <name>expectedOffset</name>
+      <description>Expected misalignment after initialization</description>
+      <label>Expected offset magnitude</label>
+      <longflag>expectedOffset</longflag>
+      <default>10</default>
+    </float>
+    <float>
+      <name>expectedRotation</name>
+      <description>Expected misalignment after initialization</description>
+      <label>Expected rotation magnitude</label>
+      <longflag>expectedRotation</longflag>
+      <default>0.1</default>
+    </float>
+    <float>
+      <name>expectedScale</name>
+      <description>Expected misalignment after initialization</description>
+      <label>Expected scale magnitude</label>
+      <longflag>expectedScale</longflag>
+      <default>0.05</default>
+    </float>
+    <float>
+      <name>expectedSkew</name>
+      <description>Expected misalignment after initialization</description>
+      <label>Expected skew magnitude</label>
+      <longflag>expectedSkew</longflag>
+      <default>0.01</default>
+    </float>
+    <float>
+      <name>expectedDeformation</name>
+      <description>Expected control point movement for BSplines</description>
+      <label>Expected Deformation magnitude</label>
+      <longflag>expectedDeformation</longflag>
+      <default>2</default>
+    </float>
+  </parameters>
+  <parameters advanced="true">
+    <label>Advanced Registration Parameters</label>
+    <description>Parameters that determine how registration is performed</description>
+    <string-enumeration>
+      <name>verbosityLevel</name>
+      <description>Level of detail of reporting progress</description>
+      <label>Verbosity level</label>
+      <longflag>verbosityLevel</longflag>
+      <element>Silent</element>
+      <element>Standard</element>
+      <element>Verbose</element>
+      <default>Standard</default>
+    </string-enumeration>
+    <boolean>
+      <name>sampleFromOverlap</name>
+      <description>Limit metric evaluation to the fixed image region overlapped by the moving image</description>
+      <label>Sample from fixed/moving overlap</label>
+      <longflag>sampleFromOverlap</longflag>
+      <default>false</default>
+    </boolean>
+    <image type="label">
+      <name>fixedImageMask</name>
+      <label>Fixed Image Mask</label>
+      <channel>input</channel>
+      <longflag>fixedImageMask</longflag>
+      <description>Image which defines a mask for the fixed image</description>
+    </image>
+    <integer>
+      <name>randomNumberSeed</name>
+      <description>Seed to generate a consistent random number sequence</description>
+      <label>Random number seed (0=none)</label>
+      <longflag>randomNumberSeed</longflag>
+      <default>0</default>
+    </integer>
+    <integer>
+      <name>numberOfThreads</name>
+      <description>Number of CPU threads to use</description>
+      <label>Number of threads (0=max)</label>
+      <longflag>numberOfThreads</longflag>
+      <default>0</default>
+    </integer>
+    <boolean>
+      <name>minimizeMemory</name>
+      <description>Reduce the amount of memory required at the cost of increased computation time</description>
+      <label>Minimize memory</label>
+      <longflag>minimizeMemory</longflag>
+      <default>false</default>
+    </boolean>
+    <string-enumeration>
+      <name>interpolation</name>
+      <description>Method for interpolation within the optimization process</description>
+      <label>Interpolation</label>
+      <longflag>interpolation</longflag>
+      <element>NearestNeighbor</element>
+      <element>Linear</element>
+      <element>BSpline</element>
+      <default>Linear</default>
+    </string-enumeration>
+  </parameters>
+  <parameters advanced="true">
+    <label>Advanced Initial Registration Parameters</label>
+    <description>Parameters that determine how initial registration is performed</description>
+    <point multiple="true">
+      <name>fixedLandmarks</name>
+      <description>Ordered list of landmarks in the fixed image</description>
+      <label>Fixed landmarks</label>
+      <longflag>fixedLandmarks</longflag>
+      <default/>
+    </point>
+    <point multiple="true">
+      <name>movingLandmarks</name>
+      <description>Ordered list of landmarks in the moving image</description>
+      <label>Moving landmarks</label>
+      <longflag>movingLandmarks</longflag>
+      <default/>
+    </point>
+  </parameters>
+  <parameters advanced="true">
+    <label>Advanced Rigid Registration Parameters</label>
+    <description>Parameters that determine how registration is performed</description>
+    <integer>
+      <name>rigidMaxIterations</name>
+      <description>Maximum number of rigid optimization iterations</description>
+      <label>Rigid Max Iterations</label>
+      <longflag>rigidMaxIterations</longflag>
+      <default>100</default>
+    </integer>
+    <float>
+      <name>rigidSamplingRatio</name>
+      <description>Portion of the image to use in computing the metric during rigid registration</description>
+      <label>Rigid sampling ratio</label>
+      <longflag>rigidSamplingRatio</longflag>
+      <default>0.01</default>
+    </float>
+  </parameters>
+  <parameters advanced="true">
+    <label>Advanced Affine Registration Parameters</label>
+    <description>Parameters that determine how registration is performed</description>
+    <integer>
+      <name>affineMaxIterations</name>
+      <description>Maximum number of affine optimization iterations</description>
+      <label>Affine Max Iterations</label>
+      <longflag>affineMaxIterations</longflag>
+      <default>50</default>
+    </integer>
+    <float>
+      <name>affineSamplingRatio</name>
+      <description>Portion of the image to use in computing the metric during affine registration</description>
+      <label>Affine sampling ratio</label>
+      <longflag>affineSamplingRatio</longflag>
+      <default>0.02</default>
+    </float>
+  </parameters>
+  <parameters advanced="true">
+    <label>Advanced BSpline Registration Parameters</label>
+    <description>Parameters that determine how registration is performed</description>
+    <integer>
+      <name>bsplineMaxIterations</name>
+      <description>Maximum number of bspline optimization iterations</description>
+      <label>BSpline Max Iterations</label>
+      <longflag>bsplineMaxIterations</longflag>
+      <default>20</default>
+    </integer>
+    <float>
+      <name>bsplineSamplingRatio</name>
+      <description>Portion of the image to use in computing the metric during BSpline registration</description>
+      <label>BSpline sampling ratio</label>
+      <longflag>bsplineSamplingRatio</longflag>
+      <default>0.10</default>
+    </float>
+    <integer>
+      <name>controlPointSpacing</name>
+      <description>Number of pixels between control points</description>
+      <label>Control point spacing (pixels)</label>
+      <longflag>controlPointSpacing</longflag>
+      <default>40</default>
+    </integer>
+  </parameters>
+</executable>

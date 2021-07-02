@@ -36,7 +36,6 @@ set( TubeTK_Registration_H_Files
   Registration/itkScaleSkewAngle2DTransform.h
   Registration/itkScaleSkewVersor3DImageToImageRegistrationMethod.h
   Registration/itkSimilarity2DTransform.h
-  Registration/itkSpatialObjectToImageMetric.h
   Registration/itktubeAffineSpatialObjectToImageRegistrationMethod.h
   Registration/itktubeAnisotropicDiffusiveRegistrationFunction.h
   Registration/itktubeDiffusiveRegistrationFilter.h
@@ -45,13 +44,14 @@ set( TubeTK_Registration_H_Files
   Registration/itktubeMeanSquareRegistrationFunction.h
   Registration/itktubeMergeAdjacentImagesFilter.h
   Registration/itktubeOptimizedSpatialObjectToImageRegistrationMethod.h
+  Registration/itktubePointBasedSpatialObjectToImageMetric.h
+  Registration/itktubePointBasedSpatialObjectTransformFilter.h
   Registration/itktubeRigidSpatialObjectToImageRegistrationMethod.h
   Registration/itktubeScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.h
   Registration/itktubeScaleSkewVersor3DSpatialObjectToImageRegistrationMethod.h
+  Registration/itktubeSpatialObjectToImageMetric.h
   Registration/itktubeSpatialObjectToImageRegistrationHelper.h
   Registration/itktubeSpatialObjectToImageRegistrationMethod.h
-  Registration/itktubeTubesToImageMetric.h
-  Registration/itktubeTubeToTubeTransformFilter.h
   )
 
 if( TubeTK_USE_VTK )
@@ -76,7 +76,6 @@ set( TubeTK_Registration_HXX_Files
   Registration/itkScaleSkewAngle2DTransform.hxx
   Registration/itkScaleSkewVersor3DImageToImageRegistrationMethod.hxx
   Registration/itkSimilarity2DTransform.hxx
-  Registration/itkSpatialObjectToImageMetric.hxx
   Registration/itktubeAffineSpatialObjectToImageRegistrationMethod.hxx
   Registration/itktubeAnisotropicDiffusiveRegistrationFunction.hxx
   Registration/itktubeDiffusiveRegistrationFilter.hxx
@@ -85,13 +84,13 @@ set( TubeTK_Registration_HXX_Files
   Registration/itktubeMeanSquareRegistrationFunction.hxx
   Registration/itktubeMergeAdjacentImagesFilter.hxx
   Registration/itktubeOptimizedSpatialObjectToImageRegistrationMethod.hxx
+  Registration/itktubePointBasedSpatialObjectToImageMetric.hxx
+  Registration/itktubePointBasedSpatialObjectTransformFilter.hxx
   Registration/itktubeRigidSpatialObjectToImageRegistrationMethod.hxx
   Registration/itktubeScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.hxx
   Registration/itktubeScaleSkewVersor3DSpatialObjectToImageRegistrationMethod.hxx
   Registration/itktubeSpatialObjectToImageRegistrationHelper.hxx
   Registration/itktubeSpatialObjectToImageRegistrationMethod.hxx
-  Registration/itktubeTubesToImageMetric.hxx
-  Registration/itktubeTubeToTubeTransformFilter.hxx
   )
 
 if( TubeTK_USE_VTK )

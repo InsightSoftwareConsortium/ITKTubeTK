@@ -2,8 +2,7 @@
 
    Library:   TubeTK
 
-   Copyright 2010 Kitware Inc. 28 Corporate Drive,
-   Clifton Park, NY, 12065, USA.
+   Copyright Kitware Inc.
 
    All rights reserved.
 
@@ -109,7 +108,7 @@ ResampleTubesFilter< VDimension >
   const TubeGroupType * inputTubeGroup = this->GetInput();
 
   /** Typedefs for Displacement field tranform filter.    */
-  typedef itk::tube::TubeToTubeTransformFilter<
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter<
     DisplacementFieldTransformType, VDimension >
     DisplacementFieldTransformFilterType;
 
@@ -144,7 +143,8 @@ ResampleTubesFilter< VDimension >
   /** Typedefs for transform read from a file    */
   typedef itk::MatrixOffsetTransformBase< double, VDimension, VDimension >
     MatrixOffsetTransformType;
-  typedef itk::tube::TubeToTubeTransformFilter< MatrixOffsetTransformType,
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter<
+    MatrixOffsetTransformType,
     VDimension >
     MatrixOffsetTransformFilterType;
 
@@ -185,7 +185,8 @@ ResampleTubesFilter< VDimension >
   /** Typedefs for Affine Transform */
   typedef itk::AffineTransform< double, VDimension >
     AffineTransformType;
-  typedef itk::tube::TubeToTubeTransformFilter< AffineTransformType,
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter<
+    AffineTransformType,
     VDimension >
     AffineTransformFilterType;
 

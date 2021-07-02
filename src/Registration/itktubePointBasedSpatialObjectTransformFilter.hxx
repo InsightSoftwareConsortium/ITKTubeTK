@@ -60,7 +60,7 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
 {
 
   typename SpatialObjectType::Pointer output = this->GetInput()->Clone();
-  this->Transform( output );
+  this->Transform( this->GetInput(), output );
 
   SpatialObjectType * soOutput =
     static_cast<SpatialObjectType *>( this->ProcessObject::GetOutput(0) );
@@ -96,7 +96,7 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
       << "registering the SpatialObject with SpatialFactory." );
     }
 
-  this->Transform( outputSO );
+  this->Transform( inputSO, outputSO );
 
   parentSO->AddChild( outputSO );
 
@@ -115,13 +115,17 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
 template< class TTransformType, unsigned int TDimension >
 void
 PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
-::Transform( SpatialObject< TDimension > * inputSO )
+::Transform( SpatialObject< TDimension > * inputSO,
+  SpatialObject< TDimension > * outputSO )
 {
   // We make the copy and sub-sample if it is a tube.
   PointBasedType * inputSOAsPointBased = dynamic_cast< PointBasedType * >(
     inputSO );
   if( inputSOAsPointBased != NULL )
     {
+    PointBasedType * outputSOAsPointBased = dynamic_cast< PointBasedType * >(
+      outputSO );
+
     Point<double, TDimension> inputObjectPoint;
     Point<double, TDimension> worldPoint;
     Point<double, TDimension> transformedWorldPoint;
@@ -146,7 +150,7 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
       tfm->SetIdentity();
       tfm->SetMatrix( m_OutputObjectToParentTransform->GetMatrix() );
       tfm->SetOffset( m_OutputObjectToParentTransform->GetOffset() );
-      inputSO->SetObjectToParentTransform( tfm );
+      outputSO->SetObjectToParentTransform( tfm );
       }
 
     inputSOAsPointBased->Update();
@@ -159,6 +163,7 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
     TubeType * inputSOAsTube = dynamic_cast< TubeType * >( inputSO );
     if( inputSOAsTube != NULL )
       {
+      TubeType * outputSOAsTube = dynamic_cast< TubeType * >( outputSO );
       typedef typename TubeType::TubePointListType      TubePointListType;
       TubePointListType tubePointList = inputSOAsTube->GetPoints();
       typename TubePointListType::const_iterator tubePointIterator =
@@ -248,6 +253,8 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
       SurfaceType * inputSOAsSurface = dynamic_cast< SurfaceType * >( inputSO );
       if( inputSOAsSurface != NULL )
         {
+        SurfaceType * outputSOAsSurface = dynamic_cast< SurfaceType * >( 
+          outputSO );
         typedef typename SurfaceType::SurfacePointListType SurfacePointListType;
         SurfacePointListType surfacePointList = inputSOAsSurface->GetPoints();
         typename SurfacePointListType::const_iterator surfacePointIterator =
