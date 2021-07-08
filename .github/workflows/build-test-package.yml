@@ -229,6 +229,8 @@ jobs:
         sudo apt-get install -y libgl1-mesa-glx
         sudo apt-get install -y libglvnd-core-dev
         sudo apt-get install -y freeglut3-dev
+
+        python -m pip install --upgrade pip
         python -m pip install ninja
 
         curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
@@ -327,6 +329,7 @@ jobs:
 
     - name: 'Fetch build script'
       run: |
+        python -m pip install --upgrade pip
         python -m pip install ninja
 
         curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/macpython-download-cache-and-build-module-wheels.sh -O
