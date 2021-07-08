@@ -72,10 +72,15 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<
     {
     transformType = AnisotropicSimilarity3Dtransform;
     }
+  else if( dynamic_cast< VersorRigid3DTransformType * >(
+    this->m_Transform.GetPointer() ) )
+    {
+    transformType = VersorRigid3Dtransform;
+    }
   else if( dynamic_cast< Rigid2DTransformType * >(
     this->m_Transform.GetPointer() ) )
     {
-    transformType = Rigid2Dtransfrom;
+    transformType = Rigid2Dtransform;
     }
 
   // The returning value of size() must be casted, as it might not be the
@@ -454,13 +459,242 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<
 
       break;
       }
-    case Rigid2Dtransfrom:
+    case VersorRigid3Dtransform:
+      {
+      // Sanity check
+      if( FixedImageType::ImageDimension != 3 )
+        {
+        itkExceptionMacro(
+          "In VersorRigid3DTransform Fixed dimension must be 3"
+          );
+        return;
+        }
+      if( MovingImageType::ImageDimension != 3 )
+        {
+        itkExceptionMacro(
+          "In VersorRigid3DTransform Moving dimension must be 3"
+          );
+        return;
+        }
+
+      // --- compute the necessary transform to match the two sets of
+      // landmarks ---
+      //
+      //
+      //    The solution is based on
+      //    Berthold K. P. Horn ( 1987 ),
+      //    "Closed-form solution of absolute orientation using unit
+      //    quaternions,"
+      //    Journal of the Optical Society of America A, 4:629-642
+      //
+      //
+      //    Original python implementation by David G. Gobbi
+      //    Readpted from the code in VTK: Hybrid/vtkLandmarkTransform
+      //
+      // -----------------------------------------------------
+
+      VersorRigid3DTransformType *transform = dynamic_cast<
+        VersorRigid3DTransformType * >( this->m_Transform.GetPointer() );
+
+      typedef typename
+        VersorRigid3DTransformType::OutputVectorType VectorType;
+      typedef typename
+        VersorRigid3DTransformType::OutputPointType  PointType;
+
+      // Compute the centroids
+      PointType fixedCentroid;
+      fixedCentroid.Fill( 0.0 );
+      PointsContainerConstIterator fixedItr = m_FixedLandmarks.begin();
+      while( fixedItr != m_FixedLandmarks.end() )
+        {
+        fixedCentroid[0] += ( *fixedItr )[0];
+        fixedCentroid[1] += ( *fixedItr )[1];
+        fixedCentroid[2] += ( *fixedItr )[2];
+        ++fixedItr;
+        }
+
+      fixedCentroid[0] /= m_FixedLandmarks.size();
+      fixedCentroid[1] /= m_FixedLandmarks.size();
+      fixedCentroid[2] /= m_FixedLandmarks.size();
+
+      PointsContainerConstIterator movingItr = m_MovingLandmarks.begin();
+      PointType                    movingCentroid;
+      movingCentroid.Fill( 0.0 );
+      while( movingItr != m_MovingLandmarks.end() )
+        {
+        movingCentroid[0] += ( *movingItr )[0];
+        movingCentroid[1] += ( *movingItr )[1];
+        movingCentroid[2] += ( *movingItr )[2];
+        ++movingItr;
+        }
+
+      movingCentroid[0] /= m_MovingLandmarks.size();
+      movingCentroid[1] /= m_MovingLandmarks.size();
+      movingCentroid[2] /= m_MovingLandmarks.size();
+
+      itkDebugMacro( << "fixed centroid  = " <<  fixedCentroid );
+      itkDebugMacro( << "moving centroid  = " << movingCentroid );
+
+      VectorType scale;
+      double     fixedScale = 0;
+      fixedItr = m_FixedLandmarks.begin();
+      while( fixedItr != m_FixedLandmarks.end() )
+        {
+        fixedScale += ( ( ( *fixedItr )[0] - fixedCentroid[0] )
+                        * ( ( *fixedItr )[0] - fixedCentroid[0] ) );
+        fixedScale += ( ( ( *fixedItr )[1] - fixedCentroid[1] )
+                        * ( ( *fixedItr )[1] - fixedCentroid[1] ) );
+        fixedScale += ( ( ( *fixedItr )[2] - fixedCentroid[2] )
+                        * ( ( *fixedItr )[2] - fixedCentroid[2] ) );
+        ++fixedItr;
+        }
+
+      fixedScale = sqrt( fixedScale / ( 3 * numberOfLandmarks ) );
+      double movingScale = 0;
+      movingItr = m_MovingLandmarks.begin();
+      while( movingItr != m_MovingLandmarks.end() )
+        {
+        movingScale += ( ( ( *movingItr )[0] - movingCentroid[0] )
+                         * ( ( *movingItr )[0] - movingCentroid[0] ) );
+        movingScale += ( ( ( *movingItr )[1] - movingCentroid[1] )
+                         * ( ( *movingItr )[1] - movingCentroid[1] ) );
+        movingScale += ( ( ( *movingItr )[2] - movingCentroid[2] )
+                         * ( ( *movingItr )[2] - movingCentroid[2] ) );
+        ++movingItr;
+        }
+
+      movingScale = sqrt( movingScale / ( 3 * numberOfLandmarks ) );
+      scale[0] = movingScale / fixedScale;
+      scale[1] = movingScale / fixedScale;
+      scale[2] = movingScale / fixedScale;
+
+      typedef typename VersorRigid3DTransformType::VersorType
+        VersorType;
+      typedef typename VersorRigid3DTransformType::MatrixType
+        MatrixType;
+
+      VersorType versor;
+      transform->SetIdentity();
+
+      // If we have at least 3 landmarks, we can compute a rotation.
+      // Otherwise the versor will be an identity versor.
+      if( numberOfLandmarks >= ImageDimension )
+        {
+        itk::Matrix< double, ImageDimension, ImageDimension > M;
+
+        fixedItr  = m_FixedLandmarks.begin();
+        movingItr = m_MovingLandmarks.begin();
+
+        PointType fixedCentered;
+        PointType movingCentered;
+
+        fixedCentered.Fill( 0.0 );
+        movingCentered.Fill( 0.0 );
+
+        int ii = 0;
+        // Computations are relative to the Center of Rotation.
+        while( movingItr != m_MovingLandmarks.end() )
+          {
+          for( unsigned int i = 0; i < ImageDimension; i++ )
+            {
+            fixedCentered[i]  = ( ( *fixedItr )[i]  - fixedCentroid[i] )
+              * scale[i];
+            movingCentered[i] = ( *movingItr )[i] - movingCentroid[i];
+            }
+          for( unsigned int i = 0; i < ImageDimension; i++ )
+            {
+            for( unsigned int j = 0; j < ImageDimension; j++ )
+              {
+              // mmm this indices i,j may have to be reverted...
+              M[i][j] += fixedCentered[i] * movingCentered[j];
+              }
+            }
+
+          ++ii;
+          itkDebugMacro( << "f_" << ii << " = " << fixedCentered );
+          itkDebugMacro( << "m_" << ii << " = " << movingCentered );
+          ++movingItr;
+          ++fixedItr;
+          }
+
+        // -- build the 4x4 matrix N --
+
+        itk::Matrix< double, 4, 4 > N;
+
+        // on-diagonal elements
+        N[0][0] =  M[0][0] + M[1][1] + M[2][2];
+        N[1][1] =  M[0][0] - M[1][1] - M[2][2];
+        N[2][2] = -M[0][0] + M[1][1] - M[2][2];
+        N[3][3] = -M[0][0] - M[1][1] + M[2][2];
+        // off-diagonal elements
+        N[0][1] = N[1][0] = M[1][2] - M[2][1];
+        N[0][2] = N[2][0] = M[2][0] - M[0][2];
+        N[0][3] = N[3][0] = M[0][1] - M[1][0];
+
+        N[1][2] = N[2][1] = M[0][1] + M[1][0];
+        N[1][3] = N[3][1] = M[2][0] + M[0][2];
+        N[2][3] = N[3][2] = M[1][2] + M[2][1];
+
+        itkDebugMacro( << "For Closed form solution: " );
+        itkDebugMacro( << "M matrix " << M );
+        itkDebugMacro( << "N matrix " << N );
+
+        vnl_matrix< double > eigenVectors( 4, 4 );
+        vnl_vector< double > eigenValues( 4 );
+
+        typedef itk::SymmetricEigenAnalysis<
+          itk::Matrix< double, 4, 4 >,
+          vnl_vector< double >,
+          vnl_matrix< double > > SymmetricEigenAnalysisType;
+        SymmetricEigenAnalysisType symmetricEigenSystem( 4 );
+
+        symmetricEigenSystem.ComputeEigenValuesAndVectors( N,
+          eigenValues, eigenVectors );
+
+        itkDebugMacro( << "EigenVectors " << eigenVectors );
+        itkDebugMacro( << "EigenValues " << eigenValues );
+
+        // By default eigen values are sorted in ascending order.
+        // therefore the maximum
+        // eigen value is the one  in the fourth place = index 3.
+        // We need the eigen
+        // vector associated with the maximum eigenvalue,
+        // so we take the eigenvector
+        // from the last row, index=3.
+
+        versor.Set( eigenVectors[3][1],
+                    eigenVectors[3][2],
+                    eigenVectors[3][3],
+                    eigenVectors[3][0]  );
+
+        transform->SetCenter( fixedCentroid );
+        transform->SetRotation( versor );
+
+        VectorType translation = transform->GetTranslation();
+        translation = movingCentroid - fixedCentroid;
+        transform->SetTranslation( translation );
+        }
+      else
+        {
+        // Remember..
+        // Less than 3 landmarks available. Rotation is not computed
+        transform->SetCenter( fixedCentroid );
+        transform->SetRotation( versor );
+
+        VectorType translation = transform->GetTranslation();
+        translation = movingCentroid - fixedCentroid;
+        transform->SetTranslation( translation );
+        }
+
+      break;
+      }
+    case Rigid2Dtransform:
       {
       // Sanity check
       if( FixedImageType::ImageDimension != 2 )
         {
         itkExceptionMacro(
-          "In Rigid2DTransfrom Fixed image dimension must be 2" );
+          "In Rigid2DTransform Fixed image dimension must be 2" );
         return;
         }
       if( MovingImageType::ImageDimension != 2 )

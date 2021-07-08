@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -91,16 +90,6 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  if( fixedLandmarks.size() > 1 || movingLandmarks.size() > 1 )
-    {
-    if( initialization != "Landmarks" )
-      {
-      std::cout << "WARNING: Landmarks specified, but initialization "
-                << "process was not told to use landmarks. " << std::endl;
-      std::cout << "Changing initialization to use landmarks." << std::endl;
-      reger->SetInitialMethodEnum( RegistrationType::INIT_WITH_LANDMARKS );
-      }
-    }
   if( skipInitialRandomSearch )
     {
     reger->SetUseEvolutionaryOptimization( false );
@@ -110,8 +99,19 @@ int DoIt( int argc, char * argv[] )
     reger->SetUseEvolutionaryOptimization( true );
     }
 
-  if( initialization == "Landmarks" )
+  if( fixedLandmarks.size() > 0 || movingLandmarks.size() > 0 )
     {
+    if( initialization != "Landmarks" )
+      {
+      std::cout << "WARNING: Landmarks specified, but initialization "
+                << "process was not told to use landmarks. " << std::endl;
+      std::cout << "Changing initialization to use landmarks." << std::endl;
+      }
+    if( verbosity >= STANDARD )
+      {
+      std::cout << "###Initialization: Landmarks" << std::endl;
+      }
+    initialization = "Landmarks";
     reger->SetInitialMethodEnum( RegistrationType::INIT_WITH_LANDMARKS );
     reger->SetFixedLandmarks( fixedLandmarks );
     reger->SetMovingLandmarks( movingLandmarks );

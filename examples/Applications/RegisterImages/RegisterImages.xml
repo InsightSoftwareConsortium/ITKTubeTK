@@ -223,6 +223,7 @@
       <description>Ordered list of landmarks in the fixed image</description>
       <label>Fixed landmarks</label>
       <longflag>fixedLandmarks</longflag>
+      <flag>f</flag>
       <default/>
     </point>
     <point multiple="true">
@@ -230,6 +231,7 @@
       <description>Ordered list of landmarks in the moving image</description>
       <label>Moving landmarks</label>
       <longflag>movingLandmarks</longflag>
+      <flag>m</flag>
       <default/>
     </point>
   </parameters>
