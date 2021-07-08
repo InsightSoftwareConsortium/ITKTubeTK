@@ -21,6 +21,7 @@
 #include "itkObjectFactory.h"
 #include "itkAnisotropicSimilarity3DTransform.h"
 #include "itkRigid2DTransform.h"
+#include "itkVersorRigid3DTransform.h"
 #include <vector>
 #include <iostream>
 
@@ -151,6 +152,7 @@ public:
   /**  Supported Transform typedefs */
   typedef AnisotropicSimilarity3DTransform<ParameterValueType>
   AnisotropicSimilarity3DTransformType;
+  typedef VersorRigid3DTransform<ParameterValueType> VersorRigid3DTransformType;
   typedef Rigid2DTransform<ParameterValueType> Rigid2DTransformType;
 
   /** Initialize the transform from the landmarks */
@@ -168,7 +170,8 @@ protected:
   typedef enum
     {
     AnisotropicSimilarity3Dtransform = 1,
-    Rigid2Dtransfrom,
+    VersorRigid3Dtransform,
+    Rigid2Dtransform,
     Else
     } InputTransformType;
 private:
