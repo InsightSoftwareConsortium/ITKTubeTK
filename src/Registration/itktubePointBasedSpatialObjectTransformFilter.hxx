@@ -64,7 +64,7 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
 
   SpatialObjectType * soOutput =
     static_cast<SpatialObjectType *>( this->ProcessObject::GetOutput(0) );
-  soOutput->Set( output.GetPointer() );
+  //soOutput->Set( output.GetPointer() );
 
   typedef typename SpatialObject< TDimension >::ChildrenListType
     ChildrenListType;
@@ -115,30 +115,21 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
 template< class TTransformType, unsigned int TDimension >
 void
 PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
-::Transform( SpatialObject< TDimension > * inputSO,
+::Transform( const SpatialObject< TDimension > * inputSO,
   SpatialObject< TDimension > * outputSO )
 {
   // We make the copy and sub-sample if it is a tube.
-  PointBasedType * inputSOAsPointBased = dynamic_cast< PointBasedType * >(
-    inputSO );
+  const PointBasedType * inputSOAsPointBased =
+    dynamic_cast< const PointBasedType * >( inputSO );
   if( inputSOAsPointBased != NULL )
     {
     PointBasedType * outputSOAsPointBased = dynamic_cast< PointBasedType * >(
       outputSO );
 
-    Point<double, TDimension> inputObjectPoint;
     Point<double, TDimension> worldPoint;
     Point<double, TDimension> transformedWorldPoint;
-    Point<double, TDimension> inputPoint;
-    Point<double, TDimension> outputPoint;
 
-    inputSOAsPointBased->Update();
-
-    typename PointBasedType::TransformType::Pointer inputObjectToParentTransform =
-      inputSOAsPointBased->GetObjectToParentTransform();
-
-    typename PointBasedType::TransformType::Pointer inputObjectToWorldTransform =
-      inputSOAsPointBased->GetObjectToWorldTransform();
+    //inputSOAsPointBased->Update();
 
     outputSOAsPointBased->CopyInformation( inputSOAsPointBased );
     outputSOAsPointBased->Clear();
@@ -153,14 +144,10 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
       outputSO->SetObjectToParentTransform( tfm );
       }
 
-    inputSOAsPointBased->Update();
+    //inputSOAsPointBased->Update();
 
-    typename PointBasedType::TransformType::Pointer
-      inputInverseObjectToWorldTransform = PointBasedType::TransformType::New();
-    inputSOAsPointBased->GetObjectToWorldTransform()->GetInverse(
-      inputInverseObjectToWorldTransform );
-
-    TubeType * inputSOAsTube = dynamic_cast< TubeType * >( inputSO );
+    const TubeType * inputSOAsTube =
+      dynamic_cast< const TubeType * >( inputSO );
     if( inputSOAsTube != NULL )
       {
       TubeType * outputSOAsTube = dynamic_cast< TubeType * >( outputSO );
@@ -171,73 +158,50 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
 
       while( tubePointIterator != tubePointList.end() )
         {
-        inputPoint = ( *tubePointIterator ).GetPositionInObjectSpace();
-        inputObjectPoint = inputObjectToParentTransform
-          ->TransformPoint( inputPoint );
-        worldPoint = inputObjectToWorldTransform->TransformPoint(
-          inputPoint );
+        worldPoint = ( *tubePointIterator ).GetPositionInWorldSpace();
 
         transformedWorldPoint = m_Transform->TransformPoint( worldPoint );
-
-        outputPoint = outputInverseObjectToWorldTransform->
-          TransformPoint( transformedWorldPoint );
 
         TubeSpatialObjectPoint<TDimension> pnt;
 
         pnt.SetId( tubePointIterator->GetId() );
         pnt.SetColor( tubePointIterator->GetColor() );
 
-        pnt.SetPositionInObjectSpace( outputPoint );
+        pnt.SetPositionInWorldSpace( transformedWorldPoint );
 
         // get both normals
         typename TubeType::CovariantVectorType n1 = tubePointIterator
-          ->GetNormal1InObjectSpace();
+          ->GetNormal1InWorldSpace();
         typename TubeType::CovariantVectorType n2 = tubePointIterator
-          ->GetNormal2InObjectSpace();
+          ->GetNormal2InWorldSpace();
 
         // only try transformation of normals if both are non-zero
         if( !n1.GetVnlVector().is_zero() && !n2.GetVnlVector().is_zero() )
           {
-          n1 = inputObjectToWorldTransform->TransformCovariantVector(
-            n1, inputObjectPoint );
-          n2 = inputObjectToWorldTransform->TransformCovariantVector(
-            n2, inputObjectPoint );
           n1 = m_Transform->TransformCovariantVector( n1, worldPoint );
           n2 = m_Transform->TransformCovariantVector( n2, worldPoint );
-          n1 = outputInverseObjectToWorldTransform
-            ->TransformCovariantVector( n1, transformedWorldPoint );
-          n2 = outputInverseObjectToWorldTransform
-            ->TransformCovariantVector( n2, transformedWorldPoint );
           n1.Normalize();
           n2.Normalize();
-          pnt.SetNormal1InObjectSpace( n1 );
-          pnt.SetNormal2InObjectSpace( n2 );
+          pnt.SetNormal1InWorldSpace( n1 );
+          pnt.SetNormal2InWorldSpace( n2 );
           }
 
         typename TubeType::VectorType tang = tubePointIterator->
-          GetTangentInObjectSpace();
+          GetTangentInWorldSpace();
         if( !tang.GetVnlVector().is_zero() )
           {
-          tang = inputObjectToWorldTransform->TransformVector(
-            tang, inputObjectPoint );
           tang = m_Transform->TransformVector( tang, worldPoint );
-          tang = outputInverseObjectToWorldTransform->
-            TransformVector( tang, transformedWorldPoint );
           tang.Normalize();
-          pnt.SetTangentInObjectSpace( tang );
+          pnt.SetTangentInWorldSpace( tang );
           }
 
         typename TubeType::VectorType radi;
         for( unsigned int i=0; i<TDimension; ++i )
           {
-          radi[i] = tubePointIterator->GetRadiusInObjectSpace();
+          radi[i] = tubePointIterator->GetRadiusInWorldSpace();
           }
-        radi = inputObjectToWorldTransform->TransformVector( radi,
-          inputPoint );
         radi = m_Transform->TransformVector( radi, worldPoint );
-        radi = outputInverseObjectToWorldTransform->
-          TransformVector( radi, worldPoint );
-        pnt.SetRadiusInObjectSpace( radi[0] );
+        pnt.SetRadiusInWorldSpace( radi[0] );
 
         pnt.SetMedialness( ( *tubePointIterator ).GetMedialness() );
         pnt.SetRidgeness( ( *tubePointIterator ).GetRidgeness() );
@@ -250,7 +214,7 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
       }
     else
       {
-      SurfaceType * inputSOAsSurface = dynamic_cast< SurfaceType * >( inputSO );
+      const SurfaceType * inputSOAsSurface = dynamic_cast< const SurfaceType * >( inputSO );
       if( inputSOAsSurface != NULL )
         {
         SurfaceType * outputSOAsSurface = dynamic_cast< SurfaceType * >( 
@@ -262,38 +226,27 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
 
         while( surfacePointIterator != surfacePointList.end() )
           {
-          inputPoint = ( *surfacePointIterator ).GetPositionInObjectSpace();
-          inputObjectPoint = inputObjectToParentTransform
-            ->TransformPoint( inputPoint );
-          worldPoint = inputObjectToWorldTransform->TransformPoint(
-            inputPoint );
+          worldPoint = ( *surfacePointIterator ).GetPositionInWorldSpace();
   
           transformedWorldPoint = m_Transform->TransformPoint( worldPoint );
-  
-          outputPoint = outputInverseObjectToWorldTransform->
-            TransformPoint( transformedWorldPoint );
   
           SurfaceSpatialObjectPoint<TDimension> pnt;
   
           pnt.SetId( surfacePointIterator->GetId() );
           pnt.SetColor( surfacePointIterator->GetColor() );
   
-          pnt.SetPositionInObjectSpace( outputPoint );
+          pnt.SetPositionInWorldSpace( transformedWorldPoint );
   
           // get normals
           typename SurfaceType::CovariantVectorType n1 = surfacePointIterator
-            ->GetNormalInObjectSpace();
+            ->GetNormalInWorldSpace();
   
           // only try transformation of normals if both are non-zero
           if( !n1.GetVnlVector().is_zero() )
             {
-            n1 = inputObjectToWorldTransform->TransformCovariantVector(
-              n1, inputObjectPoint );
             n1 = m_Transform->TransformCovariantVector( n1, worldPoint );
-            n1 = outputInverseObjectToWorldTransform
-              ->TransformCovariantVector( n1, transformedWorldPoint );
             n1.Normalize();
-            pnt.SetNormalInObjectSpace( n1 );
+            pnt.SetNormalInWorldSpace( n1 );
             }
   
           outputSOAsSurface->AddPoint( pnt );
@@ -301,12 +254,12 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
           ++surfacePointIterator;
           }
         }
-      }
-    else
-      {
-      std::cerr <<
-        "WARNING: Transforms currently only applied to Tubes and Surfaces. " 
-        << std::endl;
+      else
+        {
+        std::cerr <<
+          "WARNING: Transforms currently only applied to Tubes and Surfaces. " 
+          << std::endl;
+        }
       }
     }
 }

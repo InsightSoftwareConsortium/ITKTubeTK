@@ -162,7 +162,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
   m_TransformMethodEnum = RIGID_TRANSFORM;
 
-  m_MetricMethodEnum = POINTS_TO_IMAGE_METRIC;
+  m_MetricMethodEnum = IMAGE_INTENSITY_METRIC;
 
   m_FinalMetricValue = 0;
 
@@ -194,7 +194,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   switch( this->GetMetricMethodEnum() )
     {
     default:
-    case POINTS_TO_IMAGE_METRIC:
+    case IMAGE_INTENSITY_METRIC:
         {
         typedef PointBasedSpatialObjectToImageMetric<ObjectDimension, TImage>
           TypedMetricType;
@@ -490,8 +490,8 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   switch( m_MetricMethodEnum )
     {
     default:
-    case POINTS_TO_IMAGE_METRIC:
-      os << indent << "Metric method = Tube to image metric" << std::endl;
+    case IMAGE_INTENSITY_METRIC:
+      os << indent << "Metric method = image intensity metric" << std::endl;
       break;
     }
 }

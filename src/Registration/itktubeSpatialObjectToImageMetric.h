@@ -86,6 +86,12 @@ public:
   /** Image dimension enumeration. */
   static constexpr unsigned int ImageDimension = FixedImageType::ImageDimension;
 
+  typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
+  ImageMaskObjectType;
+
+  typedef SpatialObject< ObjectDimension >
+  SpatialObjectMaskObjectType;
+
   /**  Type of the Transform Base class */
   using TransformType = Transform<CoordinateRepresentationType,
     Self::ObjectDimension, Self::ImageDimension>;
@@ -125,7 +131,7 @@ public:
   itkTypeMacro(SpatialObjectToImageMetric, Object);
 
   /** Get/Set the FixedImage. */
-  void SetFixedImage( const ImageType * fixedImage );
+  void SetFixedImage( const FixedImageType * fixedImage );
   itkGetConstObjectMacro(FixedImage, FixedImageType);
 
   /** Get/Set the MovingSpatialObject */
@@ -136,13 +142,15 @@ public:
   itkSetMacro( SamplingRatio, double );
   itkGetConstMacro( SamplingRatio, double );
 
-  void SetFixedImageMaskObject( const MaskObjectType * maskObject );
-  itkGetConstObjectMacro( FixedImageMaskObject, MaskObjectType );
+  void SetFixedImageMaskObject( const ImageMaskObjectType * maskObject );
+  itkGetConstObjectMacro( FixedImageMaskObject, ImageMaskObjectType );
   itkSetMacro( UseFixedImageMaskObject, bool );
   itkGetMacro( UseFixedImageMaskObject, bool );
 
-  void SetMovingSpatialObjectMaskObject( const MaskObjectType * maskObject );
-  itkGetConstObjectMacro( MovingSpatialObjectMaskObject, MaskObjectType );
+  void SetMovingSpatialObjectMaskObject(
+    const SpatialObjectMaskObjectType * maskObject );
+  itkGetConstObjectMacro( MovingSpatialObjectMaskObject,
+    SpatialObjectMaskObjectType );
   itkSetMacro( UseMovingSpatialObjectMaskObject, bool );
   itkGetMacro( UseMovingSpatialObjectMaskObject, bool );
 
@@ -185,11 +193,12 @@ protected:
 
   ParametersType                  m_LastTransformParameters;
 
-  bool                                  m_UseFixedImageMaskObject;
-  typename MaskObjectType::ConstPointer m_FixedImageMaskObject;
+  bool                                       m_UseFixedImageMaskObject;
+  typename ImageMaskObjectType::ConstPointer m_FixedImageMaskObject;
 
-  bool                                  m_UseMovingSpatialObjectMaskObject;
-  typename MaskObjectType::ConstPointer m_MovingSpatialObjectMaskObject;
+  bool m_UseMovingSpatialObjectMaskObject;
+  typename SpatialObjectMaskObjectType::ConstPointer
+    m_MovingSpatialObjectMaskObject;
 
 };
 

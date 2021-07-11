@@ -124,7 +124,7 @@ private:
   void UpdateLevel( SpatialObject< TDimension > * inputSO,
     SpatialObject< TDimension > * parentSO );
 
-  void Transform( SpatialObject< TDimension > * inputSO,
+  void Transform( const SpatialObject< TDimension > * inputSO,
     SpatialObject< TDimension > * outputSO );
 
   typename TransformType::Pointer              m_Transform;

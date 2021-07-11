@@ -23,7 +23,6 @@ limitations under the License.
 #include <itkImage.h>
 #include <itkTubeSpatialObject.h>
 
-#include "itkAffine3DImageToImageRegistrationMethod.h"
 #include "itkAffineImageToImageRegistrationMethod.h"
 #include "itkAnisotropicSimilarity3DTransform.h"
 #include "itkAnisotropicSimilarityLandmarkBasedTransformInitializer.h"
@@ -44,8 +43,9 @@ limitations under the License.
 //#include "itktubeAnisotropicDiffusiveSparseRegistrationFilter.h"
 #include "itktubeDiffusiveRegistrationFilter.h"
 #include "itktubeDiffusiveRegistrationFilterUtils.h"
-#include "itktubeImageToTubeRigidMetric.h"
-#include "itktubeImageToTubeRigidRegistration.h"
+#include "itktubePointBasedSpatialObjectToImageMetric.h"
+#include "itktubeSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeSpatialObjectToImageRegistrationHelper.h"
 #include "itktubeMeanSquareRegistrationFunction.h"
 #include "itktubeMergeAdjacentImagesFilter.h"
 #include "itktubeTubeAngleOfIncidenceWeightFunction.h"

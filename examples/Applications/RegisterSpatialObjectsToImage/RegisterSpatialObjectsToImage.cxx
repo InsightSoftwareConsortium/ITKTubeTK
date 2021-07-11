@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -21,9 +20,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "RegisterImagesCLP.h"
+#include "RegisterSpatialObjectsToImageCLP.h"
 
-#include "itkImageToImageRegistrationHelper.h"
+#include "itktubeSpatialObjectToImageRegistrationHelper.h"
 
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
@@ -51,8 +50,8 @@ int DoIt( int argc, char * argv[] )
 
   typedef typename itk::Image< TPixelType, TDimension > ImageType;
 
-  typedef typename itk::ImageToImageRegistrationHelper< ImageType >
-    RegistrationType;
+  typedef typename itk::Tube::SpatialObjectToImageRegistrationHelper<
+    TDimension, ImageType > RegistrationType;
 
   typename RegistrationType::Pointer reger = RegistrationType::New();
 
@@ -70,9 +69,9 @@ int DoIt( int argc, char * argv[] )
 
   if( verbosity >= STANDARD )
     {
-    std::cout << "###Loading moving image...";
+    std::cout << "###Loading moving spatial object...";
     }
-  reger->LoadMovingImage( movingImage );
+  reger->LoadMovingSpatialObject( movingSpatialObject );
   if( verbosity >= STANDARD )
     {
     std::cout << "###DONE" << std::endl;
@@ -125,15 +124,6 @@ int DoIt( int argc, char * argv[] )
     reger->SetInitialMethodEnum(
       RegistrationType::INIT_WITH_IMAGE_CENTERS );
     }
-  else if( initialization == "SecondMoments" )
-    {
-    if( verbosity >= STANDARD )
-      {
-      std::cout << "###Initialization: SecondMoments" << std::endl;
-      }
-    reger->SetInitialMethodEnum(
-      RegistrationType::INIT_WITH_SECOND_MOMENTS );
-    }
   else if( initialization == "CentersOfMass" )
     {
     if( verbosity >= STANDARD )
@@ -161,7 +151,6 @@ int DoIt( int argc, char * argv[] )
     reger->SetEnableInitialRegistration( false );
     reger->SetEnableRigidRegistration( false );
     reger->SetEnableAffineRegistration( false );
-    reger->SetEnableBSplineRegistration( false );
     }
   else if( registration == "Initial" )
     {
@@ -172,7 +161,6 @@ int DoIt( int argc, char * argv[] )
     reger->SetEnableInitialRegistration( true );
     reger->SetEnableRigidRegistration( false );
     reger->SetEnableAffineRegistration( false );
-    reger->SetEnableBSplineRegistration( false );
     }
   else if( registration == "Rigid" )
     {
@@ -183,7 +171,6 @@ int DoIt( int argc, char * argv[] )
     reger->SetEnableInitialRegistration( false );
     reger->SetEnableRigidRegistration( true );
     reger->SetEnableAffineRegistration( false );
-    reger->SetEnableBSplineRegistration( false );
     }
   else if( registration == "Affine" )
     {
@@ -194,18 +181,6 @@ int DoIt( int argc, char * argv[] )
     reger->SetEnableInitialRegistration( false );
     reger->SetEnableRigidRegistration( false );
     reger->SetEnableAffineRegistration( true );
-    reger->SetEnableBSplineRegistration( false );
-    }
-  else if( registration == "BSpline" )
-    {
-    if( verbosity >= STANDARD )
-      {
-      std::cout << "###Registration: BSpline" << std::endl;
-      }
-    reger->SetEnableInitialRegistration( false );
-    reger->SetEnableRigidRegistration( false );
-    reger->SetEnableAffineRegistration( false );
-    reger->SetEnableBSplineRegistration( true );
     }
   else if( registration == "PipelineRigid" )
     {
@@ -216,7 +191,6 @@ int DoIt( int argc, char * argv[] )
     reger->SetEnableInitialRegistration( true );
     reger->SetEnableRigidRegistration( true );
     reger->SetEnableAffineRegistration( false );
-    reger->SetEnableBSplineRegistration( false );
     }
   else if( registration == "PipelineAffine" )
     {
@@ -227,73 +201,20 @@ int DoIt( int argc, char * argv[] )
     reger->SetEnableInitialRegistration( true );
     reger->SetEnableRigidRegistration( true );
     reger->SetEnableAffineRegistration( true );
-    reger->SetEnableBSplineRegistration( false );
-    }
-  else if( registration == "PipelineBSpline" )
-    {
-    if( verbosity >= STANDARD )
-      {
-      std::cout << "###Registration: PipelineBSpline" << std::endl;
-      }
-    reger->SetEnableInitialRegistration( true );
-    reger->SetEnableRigidRegistration( true );
-    reger->SetEnableAffineRegistration( true );
-    reger->SetEnableBSplineRegistration( true );
     }
 
-  if( metric == "NormCorr" )
+  if( metric == "ImageIntensityMetric" )
     {
     if( verbosity >= STANDARD )
       {
-      std::cout << "###Metric: NormalizedCorrelation" << std::endl;
+      std::cout << "###Metric: ImageIntensityMetric" << std::endl;
       }
     reger->SetRigidMetricMethodEnum( RegistrationType
                                      ::OptimizedRegistrationMethodType
-                                     ::NORMALIZED_CORRELATION_METRIC );
+                                     ::IMAGE_INTENSITY_METRIC );
     reger->SetAffineMetricMethodEnum( RegistrationType
                                       ::OptimizedRegistrationMethodType
-                                      ::NORMALIZED_CORRELATION_METRIC );
-    reger->SetBSplineMetricMethodEnum( RegistrationType
-                                       ::OptimizedRegistrationMethodType
-                                       ::NORMALIZED_CORRELATION_METRIC );
-    }
-  else if( metric == "MeanSqrd" )
-    {
-    if( verbosity >= STANDARD )
-      {
-      std::cout << "###Metric: MeanSquared" << std::endl;
-      }
-    reger->SetRigidMetricMethodEnum( RegistrationType
-                                     ::OptimizedRegistrationMethodType
-                                     ::MEAN_SQUARED_ERROR_METRIC );
-    reger->SetAffineMetricMethodEnum( RegistrationType
-                                      ::OptimizedRegistrationMethodType
-                                      ::MEAN_SQUARED_ERROR_METRIC );
-    reger->SetBSplineMetricMethodEnum( RegistrationType
-                                       ::OptimizedRegistrationMethodType
-                                       ::MEAN_SQUARED_ERROR_METRIC );
-    }
-  else // if( metric == "MattesMI" )
-    {
-    if( verbosity >= STANDARD )
-      {
-      std::cout << "###Metric: MattesMutualInformation" << std::endl;
-      }
-    reger->SetRigidMetricMethodEnum( RegistrationType
-                                     ::OptimizedRegistrationMethodType
-                                     ::MATTES_MI_METRIC );
-    reger->SetAffineMetricMethodEnum( RegistrationType
-                                      ::OptimizedRegistrationMethodType
-                                      ::MATTES_MI_METRIC );
-    reger->SetBSplineMetricMethodEnum( RegistrationType
-                                       ::OptimizedRegistrationMethodType
-                                       ::MATTES_MI_METRIC );
-    }
-
-  reger->SetSampleFromOverlap( sampleFromOverlap );
-  if( verbosity >= STANDARD )
-    {
-    std::cout << "###sampleFromOverlap: " << sampleFromOverlap << std::endl;
+                                      ::IMAGE_INTENSITY_METRIC );
     }
 
   typedef typename itk::ImageFileReader<
@@ -338,43 +259,42 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  // reger->SetSampleIntensityPortion( sampleIntensityPortion );
-  // if ( verbosity >= STANDARD )
-  //   {
-  //   std::cout << "###sampleIntensityPortion: "
-  //     << sampleIntensityPortion << std::endl;
-  //   }
-  // if( regionOfInterest.size() == 2*TDimension )
-  //   {
-  //   reger->SetRegionOfInterest( regionOfInterest );
-  //   if ( verbosity >= STANDARD )
-  //     {
-  //     std::cout << "###regionOfInterest: ";
-  //     std::cout << "    ###point1: ";
-  //     for( unsigned int i=0; i< TDimension; i++ )
-  //       {
-  //       std::cout << regionOfInterest[i] << " ";
-  //       }
-  //     std::cout << "    ###point2: ";
-  //     for( unsigned int i=0; i< TDimension; i++ )
-  //       {
-  //       std::cout << regionOfInterest[i+TDimension] << " ";
-  //       }
-  //     std::cout << std::endl;
-  //     }
-  //   }
-  // else if( regionOfInterest.size() > 0 )
-  //   {
-  //   std::cerr <<
-  //     "Error: region of interest does not contain two bounding points"
-  //     << std::endl;
-  //   return EXIT_FAILURE;
-  //   }
 
-  reger->SetMinimizeMemory( minimizeMemory );
-  if( verbosity >= STANDARD )
+  if( movingImageMask != "" )
     {
-    std::cout << "###MinimizeMemory: " << minimizeMemory << std::endl;
+    reger->SetUseMovingImageMaskObject( true );
+
+    typename ImageReader::Pointer reader = ImageReader::New();
+    reader->SetFileName( movingImageMask );
+    try
+      {
+      reader->Update();
+      }
+    catch( itk::ExceptionObject & exception )
+      {
+      std::cerr << "Exception caught while loading moving image mask."
+        << std::endl;
+      std::cerr << exception << std::endl;
+      return EXIT_FAILURE;
+      }
+
+    typename ImageMaskSpatialObject::Pointer mask =
+      ImageMaskSpatialObject::New();
+    mask->SetImage( reader->GetOutput() );
+    reger->SetMovingImageMaskObject( mask );
+
+    if( verbosity >= STANDARD )
+      {
+      std::cout << "###useMovingImageMaskObject: true" << std::endl;
+      }
+    }
+  else
+    {
+    reger->SetUseMovingImageMaskObject( false );
+    if( verbosity >= STANDARD )
+      {
+      std::cout << "###useMovingImageMaskObject: false" << std::endl;
+      }
     }
 
   reger->SetRandomNumberSeed( randomNumberSeed );
@@ -393,13 +313,6 @@ int DoIt( int argc, char * argv[] )
       << std::endl;
     }
 
-  reger->SetBSplineMaxIterations( bsplineMaxIterations );
-  if( verbosity >= STANDARD )
-    {
-    std::cout << "###BSplineMaxIterations: " << bsplineMaxIterations
-      << std::endl;
-    }
-
   reger->SetRigidSamplingRatio( rigidSamplingRatio );
   if( verbosity >= STANDARD )
     {
@@ -410,56 +323,6 @@ int DoIt( int argc, char * argv[] )
   if( verbosity >= STANDARD )
     {
     std::cout << "###AffineSamplingRatio: " << affineSamplingRatio
-      << std::endl;
-    }
-  reger->SetBSplineSamplingRatio( bsplineSamplingRatio );
-  if( verbosity >= STANDARD )
-    {
-    std::cout << "###BSplineSamplingRatio: " << bsplineSamplingRatio
-      << std::endl;
-    }
-
-  /** not sure */
-  if( interpolation == "NearestNeighbor" )
-    {
-    reger->SetRigidInterpolationMethodEnum( RegistrationType
-      ::OptimizedRegistrationMethodType::NEAREST_NEIGHBOR_INTERPOLATION );
-    reger->SetAffineInterpolationMethodEnum( RegistrationType
-      ::OptimizedRegistrationMethodType::NEAREST_NEIGHBOR_INTERPOLATION );
-    reger->SetBSplineInterpolationMethodEnum( RegistrationType
-      ::OptimizedRegistrationMethodType::NEAREST_NEIGHBOR_INTERPOLATION );
-    }
-  else if( interpolation == "Linear" )
-    {
-    reger->SetRigidInterpolationMethodEnum( RegistrationType
-      ::OptimizedRegistrationMethodType::LINEAR_INTERPOLATION );
-    reger->SetAffineInterpolationMethodEnum( RegistrationType
-      ::OptimizedRegistrationMethodType::LINEAR_INTERPOLATION );
-    reger->SetBSplineInterpolationMethodEnum( RegistrationType
-      ::OptimizedRegistrationMethodType::LINEAR_INTERPOLATION );
-    }
-  else if( interpolation == "BSpline" )
-    {
-    reger->SetRigidInterpolationMethodEnum( RegistrationType
-      ::OptimizedRegistrationMethodType::BSPLINE_INTERPOLATION );
-    reger->SetAffineInterpolationMethodEnum( RegistrationType
-      ::OptimizedRegistrationMethodType::BSPLINE_INTERPOLATION );
-    reger->SetBSplineInterpolationMethodEnum( RegistrationType
-      ::OptimizedRegistrationMethodType::BSPLINE_INTERPOLATION );
-    }
-  if( verbosity >= STANDARD )
-    {
-    std::cout << "###RigidInterpolationMethod: " << interpolation
-      << std::endl;
-    }
-  if( verbosity >= STANDARD )
-    {
-    std::cout << "###AffineInterpolationMethod: " << interpolation
-      << std::endl;
-    }
-  if( verbosity >= STANDARD )
-    {
-    std::cout << "###BSplineInterpolationMethod: " << interpolation
       << std::endl;
     }
 
@@ -489,13 +352,6 @@ int DoIt( int argc, char * argv[] )
     {
     std::cout << "###ExpectedSkewMagnitude: " << expectedSkew
       << std::endl;
-    }
-
-  reger->SetBSplineControlPointPixelSpacing( controlPointSpacing );
-  if( verbosity >= STANDARD )
-    {
-    std::cout << "###ExpectedBSplineControlPointPixelSpacing: "
-      << controlPointSpacing << std::endl;
     }
 
   try
@@ -530,25 +386,7 @@ int DoIt( int argc, char * argv[] )
     typename ImageType::ConstPointer resultImage;
     try
       {
-      if( interpolation == "NearestNeighbor" )
-        {
-        resultImage = reger->ResampleImage( RegistrationType
-          ::OptimizedRegistrationMethodType
-          ::NEAREST_NEIGHBOR_INTERPOLATION,
-          NULL, NULL, NULL, 0, resampledImagePortion );
-        }
-      else if( interpolation == "Linear" )
-        {
-        resultImage = reger->ResampleImage( RegistrationType
-          ::OptimizedRegistrationMethodType::LINEAR_INTERPOLATION,
-          NULL, NULL, NULL, 0, resampledImagePortion );
-        }
-      else if( interpolation == "BSpline" )
-        {
-        resultImage = reger->ResampleImage( RegistrationType
-          ::OptimizedRegistrationMethodType::BSPLINE_INTERPOLATION,
-          NULL, NULL, NULL, 0, resampledImagePortion );
-        }
+      resultImage = reger->ResampleImage( NULL, NULL, resampledPortion );
       }
     catch( itk::ExceptionObject & exception )
       {
@@ -567,6 +405,8 @@ int DoIt( int argc, char * argv[] )
 
     try
       {
+      typedef itk::SpatialObjectWriter< TDimension > SOWriterType;
+      typename SOWriterType::Pointer soWriter
       reger->SaveImage( resampledImage, resultImage );
       }
     catch( itk::ExceptionObject & exception )

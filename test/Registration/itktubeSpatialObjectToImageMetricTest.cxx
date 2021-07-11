@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -21,7 +20,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeImageToTubeRigidMetric.h"
+#include "itktubeSpatialObjectToImageMetric.h"
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 
 #include <itkImageFileReader.h>
@@ -29,12 +28,12 @@ limitations under the License.
 
 /**
  *  This test exercised the metric evaluation methods in the
- *  itktubeImageToTubeRigidMetric class. The distance between
+ *  itktubeSpatialObjectToImageMetric class. The distance between
  *  a 3D binary images ( 32x32x32 ) and a .tre image is computed and check with
  *  the reference for the metric.
  */
 
-int itktubeImageToTubeRigidMetricTest( int argc, char * argv[] )
+int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
 {
   if( argc < 4 )
     {
@@ -58,8 +57,8 @@ int itktubeImageToTubeRigidMetricTest( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType >               ImageReaderType;
   typedef itk::SpatialObjectReader< TubeDimension >       TubeNetReaderType;
 
-  typedef itk::tube::ImageToTubeRigidMetric< ImageType, TubeNetType,
-    TubeType >                                            MetricType;
+  typedef itk::tube::SpatialObjectToImageMetric< 3, ImageType >
+                                                          MetricType;
   typedef MetricType::TransformType                       TransformType;
 
   // read image ( fixedImage )

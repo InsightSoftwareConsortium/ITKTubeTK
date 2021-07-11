@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -21,7 +20,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeImageToTubeRigidMetric.h"
+#include "itktubeSpatialObjectToImageMetricPerformanceTest.h"
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 
 #include <itkImageFileReader.h>
@@ -35,7 +34,7 @@ limitations under the License.
  *  a 3D binary images ( 32x32x32 ) and a .tre image is computed.
  */
 
-int itktubeImageToTubeRigidMetricPerformanceTest( int argc, char * argv[] )
+int itktubeSpatialObjectToImageMetricPerformanceTest( int argc, char * argv[] )
 {
   if( argc < 4 )
     {

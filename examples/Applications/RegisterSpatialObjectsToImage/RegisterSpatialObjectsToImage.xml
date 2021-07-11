@@ -20,20 +20,20 @@
       <channel>input</channel>
       <index>1</index>
       <description>The objects to be registered to the fixed image</description>
-    </image>
-    <image>
+    </file>
+    <file>
       <name>resampledSpatialObject</name>
       <label>Resample Spatial Object</label>
       <channel>output</channel>
       <longflag>resampledSpatialObject</longflag>
       <description>Registration results</description>
       <default/>
-    </image>
+    </file>
     <float>
-      <name>resampledImagePortion</name>
-      <label>Resample image portion</label>
+      <name>resampledPortion</name>
+      <label>Resample portion</label>
       <channel>input</channel>
-      <longflag>resampledImagePortion</longflag>
+      <longflag>resampledPortion</longflag>
       <description>Only apply a portion of the transform.  This scalar enables, for example, 1/2 of the transform magnitude to be applied.</description>
       <default>1.0</default>
     </float>
@@ -44,7 +44,7 @@
     <transform fileExtensions=".txt">
       <name>loadTransform</name>
       <label>Load transform</label>
-      <description>Load a transform that is immediately applied to the moving image</description>
+      <description>Load a transform that is immediately applied to the moving spatial object</description>
       <longflag>loadTransform</longflag>
       <channel>input</channel>
       <default/>
@@ -52,7 +52,7 @@
     <boolean>
       <name>invertLoadedTransform</name>
       <label>Invert loaded transform</label>
-      <description>Invert the loaded transform before applying it to the moving image</description>
+      <description>Invert the loaded transform before applying it to the moving spatial object</description>
       <longflag>invertLoadedTransform</longflag>
       <channel>input</channel>
       <default>false</default>
@@ -65,14 +65,6 @@
       <channel>output</channel>
       <default/>
     </transform>
-    <image type="vector">
-      <name>saveDisplacementField</name>
-      <label>Displacement Field</label>
-      <channel>output</channel>
-      <longflag>saveDisplacementField</longflag>
-      <description>Save displacement field result from registration</description>
-      <default/>
-    </image>
     <boolean>
       <name>skipInitialRandomSearch</name>
       <description>Skips initial random search (skips the evolutionary optimizer) during the registration process and uses only the gradient optimizer</description>
@@ -88,7 +80,6 @@
       <element>Landmarks</element>
       <element>ImageCenters</element>
       <element>CentersOfMass</element>
-      <element>SecondMoments</element>
       <default>CentersOfMass</default>
     </string-enumeration>
     <string-enumeration>
@@ -100,21 +91,17 @@
       <element>Initial</element>
       <element>Rigid</element>
       <element>Affine</element>
-      <element>BSpline</element>
       <element>PipelineRigid</element>
       <element>PipelineAffine</element>
-      <element>PipelineBSpline</element>
       <default>PipelineAffine</default>
     </string-enumeration>
     <string-enumeration>
       <name>metric</name>
-      <description>Method to quantify image match</description>
+      <description>Method to quantify object-to-image match</description>
       <label>Metric</label>
       <longflag>metric</longflag>
-      <element>MattesMI</element>
-      <element>NormCorr</element>
-      <element>MeanSqrd</element>
-      <default>MattesMI</default>
+      <element>ImageIntensityMetric</element>
+      <default>ImageIntensityMetric</default>
     </string-enumeration>
     <float>
       <name>expectedOffset</name>
@@ -144,13 +131,6 @@
       <longflag>expectedSkew</longflag>
       <default>0.01</default>
     </float>
-    <float>
-      <name>expectedDeformation</name>
-      <description>Expected control point movement for BSplines</description>
-      <label>Expected Deformation magnitude</label>
-      <longflag>expectedDeformation</longflag>
-      <default>2</default>
-    </float>
   </parameters>
   <parameters advanced="true">
     <label>Advanced Registration Parameters</label>
@@ -165,19 +145,19 @@
       <element>Verbose</element>
       <default>Standard</default>
     </string-enumeration>
-    <boolean>
-      <name>sampleFromOverlap</name>
-      <description>Limit metric evaluation to the fixed image region overlapped by the moving image</description>
-      <label>Sample from fixed/moving overlap</label>
-      <longflag>sampleFromOverlap</longflag>
-      <default>false</default>
-    </boolean>
     <image type="label">
       <name>fixedImageMask</name>
       <label>Fixed Image Mask</label>
       <channel>input</channel>
       <longflag>fixedImageMask</longflag>
       <description>Image which defines a mask for the fixed image</description>
+    </image>
+    <image type="label">
+      <name>movingImageMask</name>
+      <label>Moving Image Mask</label>
+      <channel>input</channel>
+      <longflag>movingImageMask</longflag>
+      <description>Image which defines a mask for the moving image</description>
     </image>
     <integer>
       <name>randomNumberSeed</name>
@@ -193,23 +173,6 @@
       <longflag>numberOfThreads</longflag>
       <default>0</default>
     </integer>
-    <boolean>
-      <name>minimizeMemory</name>
-      <description>Reduce the amount of memory required at the cost of increased computation time</description>
-      <label>Minimize memory</label>
-      <longflag>minimizeMemory</longflag>
-      <default>false</default>
-    </boolean>
-    <string-enumeration>
-      <name>interpolation</name>
-      <description>Method for interpolation within the optimization process</description>
-      <label>Interpolation</label>
-      <longflag>interpolation</longflag>
-      <element>NearestNeighbor</element>
-      <element>Linear</element>
-      <element>BSpline</element>
-      <default>Linear</default>
-    </string-enumeration>
   </parameters>
   <parameters advanced="true">
     <label>Advanced Initial Registration Parameters</label>
@@ -264,30 +227,5 @@
       <longflag>affineSamplingRatio</longflag>
       <default>0.02</default>
     </float>
-  </parameters>
-  <parameters advanced="true">
-    <label>Advanced BSpline Registration Parameters</label>
-    <description>Parameters that determine how registration is performed</description>
-    <integer>
-      <name>bsplineMaxIterations</name>
-      <description>Maximum number of bspline optimization iterations</description>
-      <label>BSpline Max Iterations</label>
-      <longflag>bsplineMaxIterations</longflag>
-      <default>20</default>
-    </integer>
-    <float>
-      <name>bsplineSamplingRatio</name>
-      <description>Portion of the image to use in computing the metric during BSpline registration</description>
-      <label>BSpline sampling ratio</label>
-      <longflag>bsplineSamplingRatio</longflag>
-      <default>0.10</default>
-    </float>
-    <integer>
-      <name>controlPointSpacing</name>
-      <description>Number of pixels between control points</description>
-      <label>Control point spacing (pixels)</label>
-      <longflag>controlPointSpacing</longflag>
-      <default>40</default>
-    </integer>
   </parameters>
 </executable>

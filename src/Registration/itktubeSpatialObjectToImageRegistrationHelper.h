@@ -102,14 +102,10 @@ public:
   typedef typename OptimizedRegistrationMethodType::MetricMethodEnumType
     MetricMethodEnumType;
 
-  typedef typename OptimizedRegistrationMethodType::InterpolationMethodEnumType
-    InterpolationMethodEnumType;
-
   enum InitialMethodEnumType { INIT_WITH_NONE,
                                INIT_WITH_CURRENT_RESULTS,
                                INIT_WITH_IMAGE_CENTERS,
                                INIT_WITH_CENTERS_OF_MASS,
-                               INIT_WITH_SECOND_MOMENTS,
                                INIT_WITH_LANDMARKS };
 
   enum RegistrationStageEnumType { PRE_STAGE,
@@ -239,7 +235,6 @@ public:
   itkBooleanMacro( EnableAffineRegistration );
 
   void SetRegistration( RegistrationMethodEnumType reg );
-  void SetInterpolation( InterpolationMethodEnumType interp );
   void SetMetric( MetricMethodEnumType metric );
 
   // **************
@@ -336,10 +331,6 @@ public:
   itkSetMacro( RigidMetricMethodEnum, MetricMethodEnumType );
   itkGetConstMacro( RigidMetricMethodEnum, MetricMethodEnumType );
 
-  itkSetMacro( RigidInterpolationMethodEnum, InterpolationMethodEnumType );
-  itkGetConstMacro( RigidInterpolationMethodEnum,
-    InterpolationMethodEnumType );
-
   itkGetConstObjectMacro( RigidTransform, RigidTransformType );
   itkGetMacro( RigidMetricValue, double );
 
@@ -358,10 +349,6 @@ public:
   itkSetMacro( AffineMetricMethodEnum, MetricMethodEnumType );
   itkGetConstMacro( AffineMetricMethodEnum, MetricMethodEnumType );
 
-  itkSetMacro( AffineInterpolationMethodEnum, InterpolationMethodEnumType );
-  itkGetConstMacro( AffineInterpolationMethodEnum,
-    InterpolationMethodEnumType );
-
   itkGetConstObjectMacro( AffineTransform, AffineTransformType );
   itkGetMacro( AffineMetricValue, double );
 
@@ -371,8 +358,7 @@ protected:
   virtual ~SpatialObjectToImageRegistrationHelper( void );
 
   void PrintSelfHelper( std::ostream & os, Indent indent,
-    const std::string & basename, MetricMethodEnumType metric,
-    InterpolationMethodEnumType interpolation ) const;
+    const std::string & basename, MetricMethodEnumType metric ) const;
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
@@ -454,7 +440,6 @@ private:
 
   typename RigidTransformType::Pointer    m_RigidTransform;
   MetricMethodEnumType                    m_RigidMetricMethodEnum;
-  InterpolationMethodEnumType             m_RigidInterpolationMethodEnum;
 
   double m_RigidMetricValue;
 
@@ -465,7 +450,6 @@ private:
 
   typename AffineTransformType::Pointer   m_AffineTransform;
   MetricMethodEnumType                    m_AffineMetricMethodEnum;
-  InterpolationMethodEnumType             m_AffineInterpolationMethodEnum;
 
   double m_AffineMetricValue;
 

@@ -20,7 +20,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeImageToTubeRigidRegistration.h"
+#include "itktubeSpatialObjectToImageRegistrationTest.h"
+
 #include "itktubeTubeToTubeTransformFilter.h"
 #include "itktubeTubeExponentialResolutionWeightFunction.h"
 #include "itktubeTubePointWeightsCalculator.h"
@@ -32,7 +33,7 @@ limitations under the License.
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkSpatialObjectWriter.h>
 
-int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
+int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
 {
   if( argc < 4 )
     {

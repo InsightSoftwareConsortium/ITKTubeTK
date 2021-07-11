@@ -77,7 +77,7 @@ public:
                                  AFFINE_TRANSFORM,
                                  BSPLINE_TRANSFORM };
 
-  enum MetricMethodEnumType { POINTS_TO_IMAGE_METRIC };
+  enum MetricMethodEnumType { IMAGE_INTENSITY_METRIC };
 
   //
   // Methods from Superclass

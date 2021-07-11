@@ -105,7 +105,8 @@ ResampleTubesFilter< VDimension >
 ::ApplyDisplacementFieldTransform( typename
   TubeGroupType::TransformType::Pointer outputTransform )
 {
-  const TubeGroupType * inputTubeGroup = this->GetInput();
+  typename TubeGroupType::Pointer tmpTubes;
+  tmpTubes = m_InputSpatialObject;
 
   /** Typedefs for Displacement field tranform filter.    */
   typedef itk::tube::PointBasedSpatialObjectTransformFilter<
@@ -120,14 +121,15 @@ ResampleTubesFilter< VDimension >
   // Create the filter and apply
  typename DisplacementFieldTransformFilterType::Pointer filter =
    DisplacementFieldTransformFilterType::New();
-  filter->SetInput( inputTubeGroup );
+  filter->SetInput( tmpTubes );
   filter->SetTransform( transform );
   filter->SetOutputObjectToParentTransform(
     outputTransform.GetPointer() );
   filter->GraftOutput( this->GetOutput() );
   filter->Update();
+  tmpTubes = static_cast< TubeGroupType * >(filter->GetOutput());
 
-  return filter->GetOutput();
+  return tmpTubes;
 }
 
 //--------------------------------------------------------------------------
@@ -168,7 +170,7 @@ ResampleTubesFilter< VDimension >
     filter->SetOutputObjectToParentTransform( outputTransform );
     filter->GraftOutput( this->GetOutput() );
     filter->Update();
-    tmpTubes = filter->GetOutput();
+    tmpTubes = static_cast< TubeGroupType * >( filter->GetOutput() );
     }
   return tmpTubes;
 }
@@ -180,7 +182,8 @@ ResampleTubesFilter< VDimension >
 ::ApplyIdentityAffineTransform( typename
   TubeGroupType::TransformType::Pointer outputTransform )
 {
-  const TubeGroupType * inputTubeGroup = this->GetInput();
+  typename TubeGroupType::Pointer tmpTubes;
+  tmpTubes = m_InputSpatialObject;
 
   /** Typedefs for Affine Transform */
   typedef itk::AffineTransform< double, VDimension >
@@ -196,13 +199,15 @@ ResampleTubesFilter< VDimension >
 
   typename AffineTransformFilterType::Pointer filter =
     AffineTransformFilterType::New();
-  filter->SetInput( inputTubeGroup );
+  filter->SetInput( tmpTubes );
   filter->SetTransform( identityAffineTransform );
   filter->SetOutputObjectToParentTransform( outputTransform );
   filter->GraftOutput( this->GetOutput() );
   filter->Update();
 
-  return filter->GetOutput();
+  tmpTubes = static_cast< TubeGroupType * >(filter->GetOutput());
+
+  return tmpTubes;
 }
 
 //--------------------------------------------------------------------------

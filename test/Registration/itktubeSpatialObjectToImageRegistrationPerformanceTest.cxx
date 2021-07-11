@@ -20,7 +20,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeImageToTubeRigidRegistration.h"
+#include "itktubeSpatialObjectToImageRegistration.h"
 
 #include <itkImageFileReader.h>
 #include <itkMemoryProbesCollectorBase.h>
@@ -85,7 +85,7 @@ public:
 
 }; // End class CommandIterationUpdate
 
-int itktubeImageToTubeRigidRegistrationPerformanceTest( int argc, char * argv[] )
+int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * argv[] )
 {
   if( argc < 4 )
     {

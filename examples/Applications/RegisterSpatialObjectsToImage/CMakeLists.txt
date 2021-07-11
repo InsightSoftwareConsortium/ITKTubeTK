@@ -20,7 +20,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME RegisterTubesToImage )
+set( MODULE_NAME RegisterSpatialObjectsToImage )
 
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}

@@ -101,7 +101,7 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-::SetFixedImageMaskObject( const MaskObjectType * maskObject )
+::SetFixedImageMaskObject( const ImageMaskObjectType * maskObject )
 {
   if( this->m_FixedImageMaskObject.GetPointer() != maskObject )
     {
@@ -123,7 +123,8 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-::SetMovingSpatialObjectMaskObject( const MaskObjectType * maskObject )
+::SetMovingSpatialObjectMaskObject( const SpatialObjectMaskObjectType *
+  maskObject )
 {
   if( this->m_MovingSpatialObjectMaskObject.GetPointer() != maskObject )
     {

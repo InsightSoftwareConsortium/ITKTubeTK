@@ -163,11 +163,12 @@ private:
   typename ImageType::ConstPointer              m_FixedImage;
   typename SpatialObjectType::ConstPointer      m_MovingSpatialObject;
 
-  bool                                   m_UseFixedImageMaskObject;
-  typename MaskObjectType::ConstPointer  m_FixedImageMaskObject;
+  bool                                          m_UseFixedImageMaskObject;
+  typename ImageMaskObjectType::ConstPointer    m_FixedImageMaskObject;
 
-  bool                                   m_UseMovingSpatialObjectMaskObject;
-  typename MaskObjectType::ConstPointer  m_MovingSpatialObjectMaskObject;
+  bool m_UseMovingSpatialObjectMaskObject;
+  typename SpatialObjectMaskObjectType::ConstPointer
+       m_MovingSpatialObjectMaskObject;
 
   bool m_ReportProgress;
 

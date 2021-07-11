@@ -35,10 +35,10 @@ itk_add_test( NAME tubeRegistrationHeaderTest
 
 set( tubeRegistrationTests_SRCS
   tubeRegistrationPrintTest.cxx
-  itktubeImageToTubeRigidMetricPerformanceTest.cxx
-  itktubeImageToTubeRigidMetricTest.cxx
-  itktubeImageToTubeRigidRegistrationPerformanceTest.cxx
-  itktubeImageToTubeRigidRegistrationTest.cxx
+  itktubeSpatialObjectToImageMetricPerformanceTest.cxx
+  itktubeSpatialObjectToImageMetricTest.cxx
+  itktubeSpatialObjectToImageRegistrationPerformanceTest.cxx
+  itktubeSpatialObjectToImageRegistrationTest.cxx
   itktubePointsToImageTest.cxx
   itktubeSyntheticTubeImageGenerationTest.cxx
   itktubeTubeAngleOfIncidenceWeightFunctionTest.cxx
@@ -81,21 +81,21 @@ itk_add_test(
       1 )
 
 itk_add_test(
-  NAME itktubeImageToTubeRigidRegistrationTest
+  NAME itktubeSpatialObjectToImageRegistrationTest
   COMMAND tubeRegistrationTestDriver
-    itktubeImageToTubeRigidRegistrationTest
+    itktubeSpatialObjectToImageRegistrationTest
       DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
       DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
-      ${ITK_TEST_OUTPUT_DIR}/itktubeImageToTubeRigidRegistrationOutputTube.tre
-      ${ITK_TEST_OUTPUT_DIR}/itktubeImageToTubeRigidRegistrationOutputImage.mha )
+      ${ITK_TEST_OUTPUT_DIR}/itktubeSpatialObjectToImageRegistrationOutputTube.tre
+      ${ITK_TEST_OUTPUT_DIR}/itktubeSpatialObjectToImageRegistrationOutputImage.mha )
 
 itk_add_test(
-  NAME itktubeImageToTubeRigidRegistrationPerformanceTest
+  NAME itktubeSpatialObjectToImageRegistrationPerformanceTest
   COMMAND tubeRegistrationTestDriver
-    itktubeImageToTubeRigidRegistrationPerformanceTest
+    itktubeSpatialObjectToImageRegistrationPerformanceTest
       DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
       DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
-      ${ITK_TEST_OUTPUT_DIR}/itktubeImageToTubeRigidRegistrationPerformance )
+      ${ITK_TEST_OUTPUT_DIR}/itktubeSpatialObjectToImageRegistrationPerformance )
 
 if( TubeTK_USE_VTK )
   itk_add_test(
@@ -165,28 +165,28 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/Branch-truth-new-points.mha )
 
 itk_add_test(
-  NAME itktubeImageToTubeRigidMetricTest1
+  NAME itktubeSpatialObjectToImageMetricTest1
   COMMAND tubeRegistrationTestDriver
-    itktubeImageToTubeRigidMetricTest
+    itktubeSpatialObjectToImageMetricTest
       DATA{${TubeTK_DATA_ROOT}/SyntheticVesselTubeImage.mha}
       DATA{${TubeTK_DATA_ROOT}/SyntheticVesselTubeManuallyModified.tre}
       2.30028 )
 
 itk_add_test(
-  NAME itktubeImageToTubeRigidMetricTest2
+  NAME itktubeSpatialObjectToImageMetricTest2
   COMMAND tubeRegistrationTestDriver
-    itktubeImageToTubeRigidMetricTest
+    itktubeSpatialObjectToImageMetricTest
       DATA{${TubeTK_DATA_ROOT}/SyntheticTransformedVesselTubeImage.mha}
       DATA{${TubeTK_DATA_ROOT}/SyntheticVesselTubeManuallyModified.tre}
       0.0739628 )
 
 itk_add_test(
-  NAME itktubeImageToTubeRigidMetricPerformanceTest
+  NAME itktubeSpatialObjectToImageMetricPerformanceTest
   COMMAND tubeRegistrationTestDriver
-    itktubeImageToTubeRigidMetricPerformanceTest
+    itktubeSpatialObjectToImageMetricPerformanceTest
       DATA{${TubeTK_DATA_ROOT}/SyntheticVesselTubeImage.mha}
       DATA{${TubeTK_DATA_ROOT}/SyntheticVesselTubeManuallyModified.tre}
-      ${ITK_TEST_OUTPUT_DIR}/itkImageToTubeRigidMetricPerformance.txt )
+      ${ITK_TEST_OUTPUT_DIR}/itkSpatialObjectToImageMetricPerformance.txt )
 
 itk_add_test(
   NAME itktubeSyntheticTubeImageGenerationTest

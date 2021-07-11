@@ -33,7 +33,7 @@ namespace tube
 
 /** Constructor */
 template <unsigned int ObjectDimension, typename TFixedImage>
-SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::SpatialObjectToImageMetric()
+SpatialObjectToImageMetric<ObjectDimension, TFixedImage>::SpatialObjectToImageMetric()
 
 {
   m_FixedImage = nullptr;          // has to be provided by the user.
@@ -57,7 +57,7 @@ SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::SpatialObjectToIm
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageMetric<ObjectDimension, TImage>
-::SetFixedImage( const ImageType * fixedImage )
+::SetFixedImage( const FixedImageType * fixedImage )
 {
   if( this->m_FixedImage.GetPointer() != fixedImage )
     {
@@ -72,7 +72,7 @@ SpatialObjectToImageMetric<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageMetric<ObjectDimension, TImage>
-::SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject )
+::SetMovingSpatialObject( const MovingSpatialObjectType * movingSpatialObject )
 {
   this->m_MovingSpatialObject = movingSpatialObject;
 
@@ -96,7 +96,7 @@ SpatialObjectToImageMetric<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageMetric<ObjectDimension, TImage>
-::SetFixedImageMaskObject( const MaskObjectType * maskObject )
+::SetFixedImageMaskObject( const ImageMaskObjectType * maskObject )
 {
   if( this->m_FixedImageMaskObject.GetPointer() != maskObject )
     {
@@ -118,7 +118,8 @@ SpatialObjectToImageMetric<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageMetric<ObjectDimension, TImage>
-::SetMovingSpatialObjectMaskObject( const MaskObjectType * maskObject )
+::SetMovingSpatialObjectMaskObject(
+  const SpatialObjectMaskObjectType * maskObject )
 {
   if( this->m_MovingSpatialObjectMaskObject.GetPointer() != maskObject )
     {
@@ -138,9 +139,9 @@ SpatialObjectToImageMetric<ObjectDimension, TImage>
 }
 
 /** Return the number of parameters required by the Transform */
-template <typename TMovingSpatialObject, typename TFixedImage>
+template <unsigned int ObjectDimension, typename TFixedImage>
 unsigned int
-SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::GetNumberOfParameters() const
+SpatialObjectToImageMetric<ObjectDimension, TFixedImage>::GetNumberOfParameters() const
 {
   if (!m_Transform)
   {
@@ -153,9 +154,9 @@ SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::GetNumberOfParame
  * Initialize
  */
 
-template <typename TMovingSpatialObject, typename TFixedImage>
+template <unsigned int ObjectDimension, typename TFixedImage>
 void
-SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::Initialize()
+SpatialObjectToImageMetric<ObjectDimension, TFixedImage>::Initialize()
 {
   if (!m_Transform)
   {
@@ -184,9 +185,9 @@ SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::Initialize()
 }
 
 /** PrintSelf */
-template <typename TMovingSpatialObject, typename TFixedImage>
+template <unsigned int ObjectDimension, typename TFixedImage>
 void
-SpatialObjectToImageMetric<TMovingSpatialObject, TFixedImage>::PrintSelf(std::ostream & os, Indent indent) const
+SpatialObjectToImageMetric<ObjectDimension, TFixedImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
   os << indent << "Moving Spatial Object: "

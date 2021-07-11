@@ -27,11 +27,6 @@ limitations under the License.
 
 #include "itktubePointBasedSpatialObjectTransformFilter.h"
 
-#include "itkInterpolateImageFunction.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkWindowedSincInterpolateImageFunction.h"
-
 #include "itkTransformFileReader.h"
 #include "itkTransformFileWriter.h"
 
@@ -106,8 +101,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   m_RigidTransform = NULL;
   m_RigidMetricMethodEnum =
     OptimizedRegistrationMethodType::POINTS_TO_IMAGE_METRIC;
-  m_RigidInterpolationMethodEnum =
-    OptimizedRegistrationMethodType::LINEAR_INTERPOLATION;
   m_RigidMetricValue = 0.0;
 
   // Affine
@@ -117,8 +110,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   m_AffineTransform = NULL;
   m_AffineMetricMethodEnum =
     OptimizedRegistrationMethodType::POINTS_TO_IMAGE_METRIC;
-  m_AffineInterpolationMethodEnum =
-    OptimizedRegistrationMethodType::LINEAR_INTERPOLATION;
   m_AffineMetricValue = 0.0;
 
 }
@@ -269,15 +260,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
-::SetInterpolation( InterpolationMethodEnumType interp )
-{
-  this->SetRigidInterpolationMethodEnum( interp );
-  this->SetAffineInterpolationMethodEnum( interp );
-}
-
-template <unsigned int ObjectDimension, class TImage>
-void
-SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SetMetric( MetricMethodEnumType metric )
 {
   this->SetRigidMetricMethodEnum( metric );
@@ -359,7 +341,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       }
     }
   regAff->SetMetricMethodEnum( m_AffineMetricMethodEnum );
-  regAff->SetInterpolationMethodEnum( m_AffineInterpolationMethodEnum );
 
   typename AffineTransformType::ParametersType scales;
   scales.set_size( 7 );
@@ -438,7 +419,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       }
     }
   regAff->SetMetricMethodEnum( m_AffineMetricMethodEnum );
-  regAff->SetInterpolationMethodEnum( m_AffineInterpolationMethodEnum );
 
   typename AffineTransformType::ParametersType scales;
   scales.set_size( 12 );
@@ -622,7 +602,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
         }
       }
     regRigid->SetMetricMethodEnum( m_RigidMetricMethodEnum );
-    regRigid->SetInterpolationMethodEnum( m_RigidInterpolationMethodEnum );
     typename RigidTransformType::ParametersType scales;
     if( ImageDimension == 2 )
       {
@@ -795,8 +774,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 typename TGroupSpatialObjectType::ConstPointer
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
-::GetFinalMovingSpatialObject( InterpolationMethodEnumType interpolationMethod,
-  PixelType defaultPixelValue)
+::GetFinalMovingSpatialObject( void )
 {
   return ResampleSpatialObject();
 }
@@ -923,8 +901,7 @@ void
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::PrintSelfHelper( std::ostream & os, Indent indent,
                    const std::string & basename,
-                   MetricMethodEnumType metric,
-                   InterpolationMethodEnumType interpolation ) const
+                   MetricMethodEnumType metric ) const
 {
   switch( metric )
     {
@@ -937,31 +914,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       break;
     }
   os << indent << std::endl;
-
-  switch( interpolation )
-    {
-    case OptimizedRegistrationMethodType::NEAREST_NEIGHBOR_INTERPOLATION:
-      os << indent << basename
-        << " Interpolation Method = NEAREST_NEIGHBOR_INTERPOLATION"
-        << std::endl;
-      break;
-    case OptimizedRegistrationMethodType::LINEAR_INTERPOLATION:
-      os << indent << basename
-        << " Interpolation Method = LINEAR_INTERPOLATION" << std::endl;
-      break;
-    case OptimizedRegistrationMethodType::BSPLINE_INTERPOLATION:
-      os << indent << basename
-        << " Interpolation Method = BSPLINE_INTERPOLATION" << std::endl;
-      break;
-    case OptimizedRegistrationMethodType::SINC_INTERPOLATION:
-      os << indent << basename
-        << " Interpolation Method = SINC_INTERPOLATION" << std::endl;
-      break;
-    default:
-      os << indent << basename
-        << " Interpolation Method = UNKNOWN" << std::endl;
-      break;
-    }
 }
 
 template <unsigned int ObjectDimension, class TImage>
@@ -1126,8 +1078,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     << std::endl;
   os << indent << "Rigid Max Iterations = " << m_RigidMaxIterations
     << std::endl;
-  PrintSelfHelper( os, indent, "Rigid", m_RigidMetricMethodEnum,
-                   m_RigidInterpolationMethodEnum );
+  PrintSelfHelper( os, indent, "Rigid", m_RigidMetricMethodEnum );
   os << indent << std::endl;
   if( m_RigidTransform.IsNotNull() )
     {
@@ -1144,8 +1095,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     << std::endl;
   os << indent << "Affine Max Iterations = " << m_AffineMaxIterations
     << std::endl;
-  PrintSelfHelper( os, indent, "Affine", m_AffineMetricMethodEnum,
-    m_AffineInterpolationMethodEnum );
+  PrintSelfHelper( os, indent, "Affine", m_AffineMetricMethodEnum );
   os << indent << std::endl;
   if( m_AffineTransform.IsNotNull() )
     {
