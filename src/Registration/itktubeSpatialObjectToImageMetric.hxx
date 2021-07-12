@@ -85,17 +85,6 @@ SpatialObjectToImageMetric<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageMetric<ObjectDimension, TImage>
-::SetFixedImageRegionOfInterest( const PointType & point1,
-  const PointType & point2 )
-{
-  m_FixedImageRegionOfInterestPoint1 = point1;
-  m_FixedImageRegionOfInterestPoint2 = point2;
-  m_UseFixedImageRegionOfInterest = true;
-}
-
-template <unsigned int ObjectDimension, class TImage>
-void
-SpatialObjectToImageMetric<ObjectDimension, TImage>
 ::SetFixedImageMaskObject( const ImageMaskObjectType * maskObject )
 {
   if( this->m_FixedImageMaskObject.GetPointer() != maskObject )

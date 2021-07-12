@@ -100,7 +100,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   m_RigidMaxIterations = 1000;
   m_RigidTransform = NULL;
   m_RigidMetricMethodEnum =
-    OptimizedRegistrationMethodType::POINTS_TO_IMAGE_METRIC;
+    OptimizedRegistrationMethodType::IMAGE_INTENSITY_METRIC;
   m_RigidMetricValue = 0.0;
 
   // Affine
@@ -109,7 +109,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   m_AffineMaxIterations = 500;
   m_AffineTransform = NULL;
   m_AffineMetricMethodEnum =
-    OptimizedRegistrationMethodType::POINTS_TO_IMAGE_METRIC;
+    OptimizedRegistrationMethodType::IMAGE_INTENSITY_METRIC;
   m_AffineMetricValue = 0.0;
 
 }
@@ -129,8 +129,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     {
     this->m_FixedImage = fixedImage;
 
-    this->ProcessObject::SetNthInput(0, m_FixedImage);
-
     this->Modified();
 
     m_CompletedStage = PRE_STAGE;
@@ -149,8 +147,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     {
     this->m_MovingSpatialObject = movingSpatialObject;
 
-    this->ProcessObject::SetNthInput(1, m_MovingSpatialObject);
-
     this->Modified();
 
     m_CompletedStage = PRE_STAGE;
@@ -163,7 +159,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
-::SetFixedImageMaskObject( const MaskObjectType * maskObject )
+::SetFixedImageMaskObject( const ImageMaskObjectType * maskObject )
 {
   if( this->m_FixedImageMaskObject.GetPointer() != maskObject )
     {
@@ -185,7 +181,8 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 template <unsigned int ObjectDimension, class TImage>
 void
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
-::SetMovingSpatialObjectMaskObject( const MaskObjectType * maskObject )
+::SetMovingSpatialObjectMaskObject( const SpatialObjectMaskObjectType *
+  maskObject )
 {
   if( this->m_MovingSpatialObjectMaskObject.GetPointer() != maskObject )
     {
@@ -532,9 +529,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       case INIT_WITH_CENTERS_OF_MASS:
         regInit->SetNumberOfMoments( 1 );
         break;
-      case INIT_WITH_SECOND_MOMENTS:
-        regInit->SetNumberOfMoments( 2 );
-        break;
       case INIT_WITH_LANDMARKS:
         regInit->SetUseLandmarks( true );
         regInit->SetFixedLandmarks( m_FixedLandmarks );
@@ -681,7 +675,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       && portion == 1.0
       && m_CompletedResampling )
     {
-    return m_CurrentMovingSpatialObject;
+    return m_CurrentMovingSpatialObject.GetPointer();
     }
 
   bool doLoaded = false;
@@ -702,7 +696,8 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       break;
     }
 
-  typename SpatialObject::ConstPointer inputSO = m_CurrentMovingSpatialObject;
+  typename SpatialObjectType::ConstPointer inputSO =
+    m_CurrentMovingSpatialObject;
   if( movingSpatialObject != NULL )
     {
     inputSO = movingSpatialObject;
@@ -772,7 +767,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 }
 
 template <unsigned int ObjectDimension, class TImage>
-typename TGroupSpatialObjectType::ConstPointer
+const SpatialObject<ObjectDimension> *
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::GetFinalMovingSpatialObject( void )
 {
@@ -905,8 +900,8 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 {
   switch( metric )
     {
-    case OptimizedRegistrationMethodType::POINTS_TO_IMAGE_METRIC:
-      os << indent << basename << " Metric Method = POINTS_TO_IMAGE_METRIC"
+    case OptimizedRegistrationMethodType::IMAGE_INTENSITY_METRIC:
+      os << indent << basename << " Metric Method = IMAGE_INTENSITY_METRIC"
         << std::endl;
       break;
     default:
@@ -927,7 +922,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     {
     os << indent << "Fixed Image = " << m_FixedImage << std::endl;
     }
-  if( m_MovingImage.IsNotNull() )
+  if( m_MovingSpatialObject.IsNotNull() )
     {
     os << indent << "Moving SpatialObject = " << m_MovingSpatialObject << std::endl;
     }
@@ -1051,11 +1046,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     case INIT_WITH_CENTERS_OF_MASS:
       os << indent
         << "Initial Registration Enum = INIT_WITH_CENTERS_OF_MASS"
-        << std::endl;
-      break;
-    case INIT_WITH_SECOND_MOMENTS:
-      os << indent
-        << "Initial Registration Enum = INIT_WITH_SECOND_MOMENTS"
         << std::endl;
       break;
     default:

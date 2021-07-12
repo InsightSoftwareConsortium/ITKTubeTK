@@ -24,6 +24,8 @@ limitations under the License.
 #define __itktubeSpatialObjectToImageRegistrationMethod_h
 
 #include "itkSpatialObject.h"
+#include "itkDataobjectDecorator.h"
+
 
 namespace itk
 {
@@ -65,26 +67,24 @@ public:
                        TImage::ImageDimension );
 
   typedef Transform<double, ObjectDimension,
-                    itkGetStaticConstMacro( ImageDimension )>
-  TransformType;
+          itkGetStaticConstMacro( ImageDimension )>  TransformType;
 
-  typedef DataObjectDecorator<TransformType> TransformOutputType;
+  typedef DataObjectDecorator<TransformType>         TransformOutputType;
 
-  typedef typename DataObject::Pointer DataObjectPointer;
-  typedef Superclass::DataObjectPointerArraySizeType
-                                       DataObjectPointerArraySizeType;
+  typedef typename DataObject::Pointer               DataObjectPointer;
+  typedef Superclass::DataObjectPointerArraySizeType DataObjectPointerArraySizeType;
 
-  typedef SpatialObject<ObjectDimension> SpatialObjectType;
-  typedef TImage                         ImageType;
+  typedef SpatialObject<ObjectDimension>             SpatialObjectType;
+  typedef TImage                                     ImageType;
 
-  typedef typename SpatialObjectType::PointType SpatialObjectPointType;
-  typedef typename ImageType::PointType         PointType;
+  typedef typename SpatialObjectType::PointType      SpatialObjectPointType;
+  typedef typename ImageType::PointType              PointType;
 
   typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
-  ImageMaskObjectType;
+                                                     ImageMaskObjectType;
 
   typedef SpatialObject< ObjectDimension >
-  SpatialObjectMaskObjectType;
+                                                     SpatialObjectMaskObjectType;
 
   //
   // Custom Methods
@@ -132,12 +132,12 @@ protected:
    * however, must invoke this method in the base class. */
   void GenerateData( void ) override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
-
   /** Provide derived classes with access to the Transform member
    * variable. */
   itkSetObjectMacro( Transform, TransformType );
   itkGetModifiableObjectMacro( Transform, TransformType );
+
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   using Superclass::MakeOutput;
   virtual DataObjectPointer  MakeOutput( DataObjectPointerArraySizeType

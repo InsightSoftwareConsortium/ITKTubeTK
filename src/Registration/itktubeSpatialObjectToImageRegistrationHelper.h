@@ -26,13 +26,13 @@ limitations under the License.
 #include "itkImage.h"
 #include "itkCommand.h"
 
-#include "itkSpatialObjectToImageRegistrationMethod.h"
-#include "itkInitialSpatialObjectToImageRegistrationMethod.h"
-#include "itkOptimizedSpatialObjectToImageRegistrationMethod.h"
-#include "itkRigidSpatialObjectToImageRegistrationMethod.h"
-#include "itkAffineSpatialObjectToImageRegistrationMethod.h"
-#include "itkScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.h"
-#include "itkScaleSkewVersor3DSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeInitialSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeOptimizedSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeRigidSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeAffineSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeScaleSkewVersor3DSpatialObjectToImageRegistrationMethod.h"
 
 namespace itk
 {
@@ -84,11 +84,11 @@ public:
   typedef AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     AffineRegistrationMethodType;
 
-  typedef ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<
-    ObjectDimension, TImage>   Affine2DRegistrationMethodType;
+  typedef ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TImage>
+    Affine2DRegistrationMethodType;
 
-  typedef ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<
-    ObjectDimension, TImage> Affine3DRegistrationMethodType;
+  typedef ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>
+    Affine3DRegistrationMethodType;
 
   //
   // Typedefs for the parameters of the registration methods
@@ -207,7 +207,7 @@ public:
     double portion = 1.0 );
 
   // Returns the moving image resampled into the space of the fixed image
-  typename SpatialObjectType::ConstPointer  GetFinalMovingSpatialObject( void );
+  const SpatialObjectType * GetFinalMovingSpatialObject( void );
 
   // **************
   // **************
@@ -410,7 +410,7 @@ private:
   RegistrationStageEnumType m_CompletedStage;
   bool                      m_CompletedResampling;
 
-  typename SpatialObjectType::ConstPointer m_CurrentMovingGSpatialObject;
+  typename SpatialObjectType::ConstPointer m_CurrentMovingSpatialObject;
   typename MatrixTransformType::Pointer    m_CurrentMatrixTransform;
 
   typename SpatialObjectType::ConstPointer m_LoadedTransformResampledSpatialObject;

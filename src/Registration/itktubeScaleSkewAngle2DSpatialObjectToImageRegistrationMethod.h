@@ -54,6 +54,7 @@ public:
   itkNewMacro( Self );
 
   itkStaticConstMacro( ImageDimension, unsigned int, 2 );
+  itkStaticConstMacro( ObjectDimension, unsigned int, 2 );
 
   //
   // Typedefs from Superclass

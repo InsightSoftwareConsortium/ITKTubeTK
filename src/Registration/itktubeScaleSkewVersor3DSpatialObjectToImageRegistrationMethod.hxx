@@ -32,8 +32,8 @@ namespace itk
 namespace tube
 {
 
-template <unsigned int ObjectDimension, class TImage>
-ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
+template <class TImage>
+ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>
 ::ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod( void )
 {
   this->SetTransform( ScaleSkewVersor3DTransformType::New() );
@@ -81,15 +81,15 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->SetTransformMethodEnum( Superclass::AFFINE_TRANSFORM );
 }
 
-template <unsigned int ObjectDimension, class TImage>
-ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
+template <class TImage>
+ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>
 ::~ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod( void )
 {
 }
 
-template <unsigned int ObjectDimension, class TImage>
+template <class TImage>
 void
-ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
+ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>
 ::GenerateData( void )
 {
   // Set the center of rotation
@@ -98,25 +98,25 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   Superclass::GenerateData();
 }
 
-template <unsigned int ObjectDimension, class TImage>
-typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
-* ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
+template <class TImage>
+typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>::TransformType
+* ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>
 ::GetTypedTransform( void )
 {
   return static_cast<TransformType  *>( Superclass::GetTransform() );
 }
 
-template <unsigned int ObjectDimension, class TImage>
-const typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
-* ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
+template <class TImage>
+const typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>::TransformType
+* ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>
 ::GetTypedTransform( void ) const
 {
   return static_cast<const TransformType  *>( Superclass::GetTransform() );
 }
 
-template <unsigned int ObjectDimension, class TImage>
-typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::AffineTransformPointer
-ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
+template <class TImage>
+typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>::AffineTransformPointer
+ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>
 ::GetAffineTransform( void ) const
 {
   AffineTransformPointer trans = AffineTransformType::New();
@@ -131,9 +131,9 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   return trans;
 }
 
-template <unsigned int ObjectDimension, class TImage>
+template <class TImage>
 void
-ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
+ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>
 ::SetInitialTransformParametersFromAffineTransform(
   const AffineTransformType * tfm )
 {
@@ -141,9 +141,9 @@ ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->SetInitialTransformParameters( tfm->GetParameters() );
 }
 
-template <unsigned int ObjectDimension, class TImage>
+template <class TImage>
 void
-ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
+ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf(os, indent);

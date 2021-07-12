@@ -23,10 +23,13 @@ limitations under the License.
 #ifndef itktubeSpatialObjectToImageMetric_h
 #define itktubeSpatialObjectToImageMetric_h
 
-#include "itkSingleValuedCostFunction.h"
-#include "itkMinimumMaximumImageCalculator.h"
-#include "vnl/vnl_vector_fixed.h"
 #include "itkTransform.h"
+
+#include "itkSpatialObject.h"
+
+#include "itkSingleValuedCostFunction.h"
+
+#include "vnl/vnl_vector_fixed.h"
 
 namespace itk
 {
@@ -89,8 +92,7 @@ public:
   typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
   ImageMaskObjectType;
 
-  typedef SpatialObject< ObjectDimension >
-  SpatialObjectMaskObjectType;
+  typedef SpatialObject< ObjectDimension > SpatialObjectMaskObjectType;
 
   /**  Type of the Transform Base class */
   using TransformType = Transform<CoordinateRepresentationType,
@@ -135,7 +137,8 @@ public:
   itkGetConstObjectMacro(FixedImage, FixedImageType);
 
   /** Get/Set the MovingSpatialObject */
-  void SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject );
+  void SetMovingSpatialObject( const MovingSpatialObjectType *
+    movingSpatialObject );
   itkGetConstObjectMacro(MovingSpatialObject, MovingSpatialObjectType);
 
   /** Set/Get the point sampling ratio / portion. */

@@ -23,11 +23,11 @@ limitations under the License.
 #ifndef __itktubeOptimizedSpatialObjectToImageRegistrationMethod_txx
 #define __itktubeOptimizedSpatialObjectToImageRegistrationMethod_txx
 
-#include "itkOptimizedSpatialObjectToImageRegistrationMethod.h"
+#include "itkSpatialObjectToImageRegistrationFramework.h"
 
-#include "itkPointBasedSpatialObjectToImageMetric.h"
-
-#include "itkSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeOptimizedSpatialObjectToImageRegistrationMethod.h"
+#include "itktubePointBasedSpatialObjectToImageMetric.h"
 
 #include "itkRealTimeClock.h"
 
@@ -136,10 +136,10 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::OptimizedSpatialObjectToImageRegistrationMethod( void )
 {
   m_InitialTransformParameters = TransformParametersType(1);
-  m_InitialTransformParameters.Fill( 0.0f ); \
+  m_InitialTransformParameters.Fill( 0.0f );
 
   m_InitialTransformFixedParameters = TransformParametersType(1);
-  m_InitialTransformFixedParameters.Fill( 0.0f ); \
+  m_InitialTransformFixedParameters.Fill( 0.0f );
 
   m_LastTransformParameters = TransformParametersType(1);
   m_LastTransformParameters.Fill( 0.0f );
@@ -157,8 +157,6 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   m_SamplingRatio = 0.01;
 
   m_TargetError = 0.00001;
-
-  m_RandomNumberSeed = 0;
 
   m_TransformMethodEnum = RIGID_TRANSFORM;
 
@@ -204,29 +202,15 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
         }
       break;
     }
-  if( m_RandomNumberSeed != 0 )
-    {
-    metric->ReinitializeSeed( m_RandomNumberSeed );
-    }
-  else
-    {
-    metric->ReinitializeSeed();
-    }
 
   typename ImageType::ConstPointer fixedImage = this->GetFixedImage();
-  typename ImageType::ConstPointer movingSpatialObject = this->GetMovingSpatialObject();
+  typename SpatialObjectType::ConstPointer movingSpatialObject =
+    this->GetMovingSpatialObject();
 
   metric->SetFixedImage( fixedImage );
   metric->SetMovingSpatialObject( movingSpatialObject );
 
   metric->SetSamplingRatio( m_SamplingRatio );
-
-  metric->SetUseFixedImageRegionOfInterest( this->GetUseFixedImageRegionOfInterest() );
-  if( this->GetUseFixedImageRegionOfInterest() )
-    {
-    metric->SetFixedImageRegionOfInterestPoint1( this->GetFixedImageRegionOfInterestPoint1() );
-    metric->SetFixedImageRegionOfInterestPoint2( this->GetFixedImageRegionOfInterestPoint2() );
-    }
 
   metric->SetUseFixedImageMaskObject( this->GetUseFixedImageMaskObject() );
   if( this->GetUseFixedImageMaskObject() )
@@ -263,8 +247,6 @@ void
 OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::Optimize( MetricType * metric )
 {
-  typedef SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage> RegType;
-
   if( m_UseEvolutionaryOptimization )
     {
     if( this->GetReportProgress() )
@@ -300,19 +282,36 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       evoOpt->AddObserver( IterationEvent(), command );
       }
 
-    typename RegType::Pointer reg = RegType::New();
-    typename ImageType::ConstPointer fixedImage = this->GetFixedImage();
-    typename SpatialObjectType::ConstPointer movingSpatialObject =
-      this->GetMovingSpatialObject();
-    reg->SetFixedImage( fixedImage );
-    reg->SetMovingSpatialObject( movingSpatialObject );
-    reg->SetFixedImageRegion( this->GetFixedImage()
-                              ->GetLargestPossibleRegion() );
-    reg->SetTransform( this->GetTransform() );
-    reg->SetInitialTransformParameters(
-      this->GetInitialTransformParameters() );
-    reg->SetMetric( metric );
-    reg->SetOptimizer( evoOpt );
+      this->GetMultiThreader()->SetNumberOfWorkUnits(this->GetNumberOfWorkUnits());
+  this->m_Metric->SetNumberOfWorkUnits(this->GetNumberOfWorkUnits());
+  m_Metric->SetMovingImage(m_MovingImage);
+  m_Metric->SetFixedImage(m_FixedImage);
+  m_Metric->SetTransform(m_Transform);
+  m_Metric->SetInterpolator(m_Interpolator);
+
+  m_Metric->Initialize();
+
+  // Setup the optimizer
+  m_Optimizer->SetCostFunction(m_Metric);
+m_Optimizer->SetInitialPosition(m_InitialTransformParameters);
+try
+  {
+    // do the optimization
+    m_Optimizer->StartOptimization();
+  }
+  catch (ExceptionObject & err)
+  {
+    // An error has occurred in the optimization.
+    // Update the parameters
+    m_LastTransformParameters = m_Optimizer->GetCurrentPosition();
+
+    // Pass exception to caller
+    throw err;
+  }
+
+  // get the results
+  m_LastTransformParameters = m_Optimizer->GetCurrentPosition();
+  m_Transform->SetParameters(m_LastTransformParameters);
 
     try
       {

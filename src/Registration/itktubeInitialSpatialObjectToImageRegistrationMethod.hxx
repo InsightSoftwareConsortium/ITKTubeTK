@@ -56,8 +56,6 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 {
 }
 
-/** Only the GenerateData() method should be overloaded. The Update() method
- * must not be overloaded */
 template <unsigned int ObjectDimension, class TImage>
 void
 InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
@@ -166,27 +164,25 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
   //typedef SpatialObjectRegionMomentsCalculator<TImage> MomentsCalculatorType;
 
-  typename SpatialObjectType::AffineTransformType::Pointer newTransform;
-  newTransform = SpatialObjectType::AffineTransformType::New();
+  typename TransformType::Pointer newTransform = TransformType::New();
   newTransform->SetIdentity();
 
   if( this->m_ComputeCenterOfRotationOnly ||
     this->m_NumberOfMoments == 0 )
     {
     //  Moving image info
-    typename SpatialObjectType::BoundingBoxType             bbox;
+    typedef SpatialObjectType::BoundingBoxType              BoundingBoxType;
+    typename BoundingBoxType::ConstPointer                  bbox;
+    typename BoundingBoxType::PointType                     minPnt;
+    typename BoundingBoxType::PointType                     maxPnt;
     Point<double, ObjectDimension>                          movingCenterPoint;
-    typename SpatialObjectType::BoundingBoxType::PointType  minPnt;
-    typename SpatialObjectType::BoundingBoxType::PointType  maxPnt;
 
-    if( m_MovingSpatialObjectMask.IsNotNull() )
+    if( this->GetMovingSpatialObjectMaskObject() != nullptr )
       {
-      this->GetMovingSpatialObjectMask()->Update();
-      bbox = this->GetMovingSpatialObjectMask()->GetMyBoundingBoxInWorldSpace();
+      bbox = this->GetMovingSpatialObjectMaskObject()->GetMyBoundingBoxInWorldSpace();
       }
     else
       {
-      this->GetMovingSpatialObject()->Update();
       bbox = this->GetMovingSpatialObject()->GetMyBoundingBoxInWorldSpace();
       }
 
@@ -205,14 +201,14 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       {
       //  Fixed image info
       Point<double, ImageDimension>     fixedCenterPoint;
-      if( m_FixedSpatialObjectMask.IsNotNull() )
+      if( this->GetFixedImageMaskObject() != nullptr )
         {
-        typename SpatialObjectType::BoundingBoxType             bbox;
-        typename SpatialObjectType::BoundingBoxType::PointType  minPnt;
-        typename SpatialObjectType::BoundingBoxType::PointType  maxPnt;
+        typedef SpatialObjectType::BoundingBoxType              BoundingBoxType;
+        typename BoundingBoxType::ConstPointer                  bbox;
+        typename BoundingBoxType::PointType                     minPnt;
+        typename BoundingBoxType::PointType                     maxPnt;
     
-        this->GetFixedSpatialObjectMask()->Update();
-        bbox = this->GetFixedSpatialObjectMask()->GetMyBoundingBoxInWorldSpace();
+        bbox = this->GetFixedImageMaskObject()->GetMyBoundingBoxInWorldSpace();
         minPnt = bbox->GetMinimum();
         maxPnt = bbox->GetMaximum();
         for( unsigned int i = 0; i < ObjectDimension; i++ )

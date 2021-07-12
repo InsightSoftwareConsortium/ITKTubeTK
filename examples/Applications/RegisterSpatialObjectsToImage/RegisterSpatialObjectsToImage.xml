@@ -153,10 +153,10 @@
       <description>Image which defines a mask for the fixed image</description>
     </image>
     <image type="label">
-      <name>movingImageMask</name>
-      <label>Moving Image Mask</label>
+      <name>movingSpatialObjectMask</name>
+      <label>Moving SpatialObject Mask</label>
       <channel>input</channel>
-      <longflag>movingImageMask</longflag>
+      <longflag>movingSpatialObjectMask</longflag>
       <description>Image which defines a mask for the moving image</description>
     </image>
     <integer>

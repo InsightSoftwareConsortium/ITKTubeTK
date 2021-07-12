@@ -48,7 +48,7 @@ namespace tube
  * \warning ( Derivative )
  */
 
-template< unsigned int ObjectDimension, class TFixedImage, class  >
+template< unsigned int ObjectDimension, class TFixedImage >
 class PointBasedSpatialObjectToImageMetric
   : public SpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 {
@@ -77,7 +77,7 @@ public:
 
   typedef PointBasedSpatialObject< ObjectDimension >
                                                    PointBasedSpatialObjectType;
-  typedef typename PointBasedSpatialObjectType::PointType
+  typedef typename PointBasedSpatialObjectType::SpatialObjectPointType
                                                    SpatialObjectPointType;
   typedef typename PointBasedSpatialObjectType::SpatialObjectPointListType
                                                    SpatialObjectPointListType;
@@ -85,11 +85,11 @@ public:
   typedef std::vector< double >                    PointWeightListType;
 
   typedef TubeSpatialObject< ObjectDimension >     TubeType;
-  typedef typename TubeType::PointType             TubePointType;
+  typedef typename TubeType::TubePointType         TubePointType;
   typedef typename TubeType::TubePointListType     TubePointListType;
 
-  typedef SurfacSpatialObject< ObjectDimension >     SurfaceType;
-  typedef typename SurfaceType::PointType            SurfacePointType;
+  typedef SurfaceSpatialObject< ObjectDimension >    SurfaceType;
+  typedef typename SurfaceType::SurfacePointType     SurfacePointType;
   typedef typename SurfaceType::SurfacePointListType SurfacePointListType;
 
   typedef typename Superclass::ParametersType      ParametersType;
@@ -186,8 +186,8 @@ protected:
   bool IsValidFixedPoint( const OutputPointType & outputPoint ) const;
 
   typename SpatialObjectType::ChildrenListType *
-    GetPointBasedChildren( SpatialObjectType::Pointer & parentSO,
-      SpatialObjectType::ChildrenListType * childrenSO=nullptr ) const;
+    GetPointBasedChildren( typename SpatialObjectType::Pointer & parentSO,
+      typename SpatialObjectType::ChildrenListType * childrenSO=nullptr ) const;
 
 private:
 
@@ -207,7 +207,7 @@ private:
   double     m_TubeSamplingRadiusMin;
   double     m_TubeSamplingRadiusMax;
 
-  PointType  m_CenterOfRotation;
+  InputPointType  m_CenterOfRotation;
 
   /** Points with no tangets or normals */
   SpatialObjectPointListType m_SubsampledPoints;

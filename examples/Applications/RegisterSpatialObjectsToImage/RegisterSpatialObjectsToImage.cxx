@@ -24,6 +24,12 @@ limitations under the License.
 
 #include "itktubeSpatialObjectToImageRegistrationHelper.h"
 
+#include "itkImage.h"
+#include "itkImageFileReader.h"
+#include "itkSpatialObjectReader.h"
+#include "itkSpatialObjectWriter.h"
+#include "itkMultiThreaderBase.h"
+
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
@@ -36,6 +42,7 @@ int DoIt( int argc, char * argv[] )
 {
 
   PARSE_ARGS;
+
 
   enum VerboseLevelEnum { SILENT, STANDARD, VERBOSE };
   VerboseLevelEnum verbosity = SILENT;
@@ -50,10 +57,15 @@ int DoIt( int argc, char * argv[] )
 
   typedef typename itk::Image< TPixelType, TDimension > ImageType;
 
-  typedef typename itk::Tube::SpatialObjectToImageRegistrationHelper<
+  typedef itk::ImageFileReader< ImageType  > ImageReaderType;
+  typedef itk::SpatialObjectReader< TDimension, float > SpatialObjectReaderType;
+
+  typedef typename itk::tube::SpatialObjectToImageRegistrationHelper<
     TDimension, ImageType > RegistrationType;
 
   typename RegistrationType::Pointer reger = RegistrationType::New();
+
+  typedef typename RegistrationType::SpatialObjectType SpatialObjectType;
 
   reger->SetReportProgress( true );
 
@@ -61,7 +73,10 @@ int DoIt( int argc, char * argv[] )
     {
     std::cout << "###Loading fixed image...";
     }
-  reger->LoadFixedImage( fixedImage );
+  typename ImageReaderType::Pointer imgReader = ImageReaderType::New();
+  imgReader->SetFileName( fixedImage );
+  imgReader->Update();
+  reger->SetFixedImage( imgReader->GetOutput() );
   if( verbosity >= STANDARD )
     {
     std::cout << "###DONE" << std::endl;
@@ -71,7 +86,11 @@ int DoIt( int argc, char * argv[] )
     {
     std::cout << "###Loading moving spatial object...";
     }
-  reger->LoadMovingSpatialObject( movingSpatialObject );
+  typename SpatialObjectReaderType::Pointer soReader =
+    SpatialObjectReaderType::New();
+  soReader->SetFileName( movingSpatialObject );
+  soReader->Update();
+  reger->SetMovingSpatialObject( soReader->GetOutput() );
   if( verbosity >= STANDARD )
     {
     std::cout << "###DONE" << std::endl;
@@ -260,12 +279,12 @@ int DoIt( int argc, char * argv[] )
     }
 
 
-  if( movingImageMask != "" )
+  if( movingSpatialObjectMask != "" )
     {
-    reger->SetUseMovingImageMaskObject( true );
+    reger->SetUseMovingSpatialObjectMaskObject( true );
 
     typename ImageReader::Pointer reader = ImageReader::New();
-    reader->SetFileName( movingImageMask );
+    reader->SetFileName( movingSpatialObjectMask );
     try
       {
       reader->Update();
@@ -281,19 +300,19 @@ int DoIt( int argc, char * argv[] )
     typename ImageMaskSpatialObject::Pointer mask =
       ImageMaskSpatialObject::New();
     mask->SetImage( reader->GetOutput() );
-    reger->SetMovingImageMaskObject( mask );
+    reger->SetMovingSpatialObjectMaskObject( mask );
 
     if( verbosity >= STANDARD )
       {
-      std::cout << "###useMovingImageMaskObject: true" << std::endl;
+      std::cout << "###useMovingSpatialObjectMaskObject: true" << std::endl;
       }
     }
   else
     {
-    reger->SetUseMovingImageMaskObject( false );
+    reger->SetUseMovingSpatialObjectMaskObject( false );
     if( verbosity >= STANDARD )
       {
-      std::cout << "###useMovingImageMaskObject: false" << std::endl;
+      std::cout << "###useMovingSpatialObjectMaskObject: false" << std::endl;
       }
     }
 
@@ -377,16 +396,17 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  if( resampledImage.size() > 1 )
+  if( resampledSpatialObject.size() > 1 )
     {
     if( verbosity >= STANDARD )
       {
       std::cout << "###Resampling..." << std::endl;
       }
-    typename ImageType::ConstPointer resultImage;
+    typename SpatialObjectType::ConstPointer resultSpatialObject;
     try
       {
-      resultImage = reger->ResampleImage( NULL, NULL, resampledPortion );
+      resultSpatialObject = reger->ResampleSpatialObject( NULL, NULL,
+        resampledPortion );
       }
     catch( itk::ExceptionObject & exception )
       {
@@ -406,8 +426,11 @@ int DoIt( int argc, char * argv[] )
     try
       {
       typedef itk::SpatialObjectWriter< TDimension > SOWriterType;
-      typename SOWriterType::Pointer soWriter
-      reger->SaveImage( resampledImage, resultImage );
+      typename SOWriterType::Pointer soWriter =
+        SOWriterType::New();
+      soWriter->SetFileName( resampledSpatialObject );
+      soWriter->SetInput( resultSpatialObject );
+      soWriter->Update();
       }
     catch( itk::ExceptionObject & exception )
       {
@@ -445,25 +468,6 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  if( saveDisplacementField.size() > 1 )
-    {
-    try
-      {
-      reger->SaveDisplacementField( saveDisplacementField );
-      }
-    catch( itk::ExceptionObject & exception )
-      {
-      std::cerr << "Exception caught during helper class transform saving."
-                << exception << std::endl;
-      return EXIT_FAILURE;
-      }
-    catch( ... )
-      {
-      std::cerr << "Uncaught exception during helper class saving."
-                << std::endl;
-      return EXIT_FAILURE;
-      }
-    }
   return EXIT_SUCCESS;
 }
 

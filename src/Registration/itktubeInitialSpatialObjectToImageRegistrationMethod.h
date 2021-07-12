@@ -56,6 +56,8 @@ public:
   //
   // Typedefs from Superclass
   //
+  typedef Superclass::SpatialObjectType           SpatialObjectType;
+
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
 

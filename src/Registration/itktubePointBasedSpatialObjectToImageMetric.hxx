@@ -237,7 +237,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 template< unsigned int ObjectDimension, class TFixedImage >
 void
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
-::SubsamplePoints( void ) 
+::ComputeSubsampledPoints( void ) 
 {
   unsigned int maxPointCount = this->GetMaximumNumberOfPoints();
 
@@ -385,8 +385,8 @@ template< unsigned int ObjectDimension, class TFixedImage >
 typename
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >::SpatialObjectType::ChildrenListType*
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
-::GetPointBasedChildren( SpatialObjectType::Pointer & parentSO, 
-  SpatialObjectType::ChildrenListType * childrenSO ) const
+::GetPointBasedChildren( typename SpatialObjectType::Pointer & parentSO, 
+  typename SpatialObjectType::ChildrenListType * childrenSO ) const
 {
   if( parentSO.IsNull() )
   {
@@ -451,7 +451,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   auto tubePointWeightIter = m_SubsampledTubePointsWeights.begin();
   while( tubePointIter != m_SubsampledTubePoints.end() )
     {
-    if( this->IsValidMovingPoint( inputPoint )
+    if( this->IsValidMovingPoint( inputPoint ) )
       {
       const InputPointType inputPoint = tubePointIter->GetPositionInWorldSpace();
       OutputPointType currentPoint;
@@ -513,7 +513,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   auto surfacePointWeightIter = m_SubsampledSurfacePointsWeights.begin();
   while( surfacePointIter != m_SubsampledSurfacePoints.end() )
     {
-    if( this->IsValidMovingPoint( inputPoint )
+    if( this->IsValidMovingPoint( inputPoint ) )
       {
       const InputPointType inputPoint =
         surfacePointIter->GetPositionInWorldSpace();
@@ -558,7 +558,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   auto pointWeightIter = m_SubsampledPointsWeights.begin();
   while( pointIter != m_SubsampledSurfacePoints.end() )
     {
-    if( this->IsValidMovingPoint( inputPoint )
+    if( this->IsValidMovingPoint( inputPoint ) )
       {
       const InputPointType inputPoint =
         pointIter->GetPositionInWorldSpace();
