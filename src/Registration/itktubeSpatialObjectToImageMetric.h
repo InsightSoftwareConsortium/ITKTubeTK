@@ -141,10 +141,6 @@ public:
     movingSpatialObject );
   itkGetConstObjectMacro(MovingSpatialObject, MovingSpatialObjectType);
 
-  /** Set/Get the point sampling ratio / portion. */
-  itkSetMacro( SamplingRatio, double );
-  itkGetConstMacro( SamplingRatio, double );
-
   void SetFixedImageMaskObject( const ImageMaskObjectType * maskObject );
   itkGetConstObjectMacro( FixedImageMaskObject, ImageMaskObjectType );
   itkSetMacro( UseFixedImageMaskObject, bool );
@@ -199,9 +195,9 @@ protected:
   bool                                       m_UseFixedImageMaskObject;
   typename ImageMaskObjectType::ConstPointer m_FixedImageMaskObject;
 
-  bool m_UseMovingSpatialObjectMaskObject;
+  bool                                       m_UseMovingSpatialObjectMaskObject;
   typename SpatialObjectMaskObjectType::ConstPointer
-    m_MovingSpatialObjectMaskObject;
+                                             m_MovingSpatialObjectMaskObject;
 
 };
 

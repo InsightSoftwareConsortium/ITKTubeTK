@@ -63,7 +63,7 @@ SpatialObjectToImageMetric<ObjectDimension, TImage>
     {
     this->m_FixedImage = fixedImage;
 
-    this->ProcessObject::SetNthInput(0, const_cast<ImageType *>( fixedImage ) );
+    //this->ProcessObject::SetNthInput(0, const_cast<ImageType *>( fixedImage ) );
 
     this->Modified();
     }
@@ -76,8 +76,8 @@ SpatialObjectToImageMetric<ObjectDimension, TImage>
 {
   this->m_MovingSpatialObject = movingSpatialObject;
 
-  this->ProcessObject::SetNthInput(1, const_cast<SpatialObjectType *>(
-      m_MovingSpatialObject ) );
+  //this->ProcessObject::SetNthInput(1, const_cast<SpatialObjectType *>(
+      //m_MovingSpatialObject ) );
 
   this->Modified();
 }

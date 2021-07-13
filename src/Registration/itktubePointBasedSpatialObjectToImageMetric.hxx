@@ -24,6 +24,7 @@ limitations under the License.
 #define __itktubePointBasedSpatialObjectToImageMetric_hxx
 
 #include "itktubePointBasedSpatialObjectToImageMetric.h"
+#include "itktubeNJetImageFunction.h"
 
 namespace itk
 {
@@ -443,7 +444,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   transformCopy->SetFixedParameters( this->m_Transform->GetFixedParameters() );
   transformCopy->SetParameters( parameters );
 
-  typename NJetImageFunction< FixedImageType >::Pointer imFunc =
+  NJetImageFunction< FixedImageType >::Pointer imFunc =
     NJetImageFunction< FixedImageType >::New();
   imFunc->SetInput( m_FixedImage );
 
@@ -639,14 +640,14 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   vnl_vector<double> n1T( ObjectDimension );
   vnl_vector<double> n2T( ObjectDimension );
 
-  int totalNumberOfPoints = m_SubsampledPoints.GetSize()
-    + m_SubsampledTubePoints.GetSize() + m_SubsampledSurfacePoints.GetSize();
+  int totalNumberOfPoints = m_SubsampledPoints.size()
+    + m_SubsampledTubePoints.size() + m_SubsampledSurfacePoints.size();
 
-  std::vector< OutputPointType > FixedPointListType;
+  typedef std::vector< OutputPointType > FixedPointListType;
   FixedPointListType fixedPoints;
   fixedPoints.reserve( totalNumberOfPoints );
 
-  typedef std::vector< outputVectorType > FixedPointDerivListType;
+  typedef std::vector< OutputVectorType > FixedPointDerivListType;
   FixedPointDerivListType  fixedPointsDerivs;
   fixedPointsDerivs.reserve( totalNumberOfPoints );
 
@@ -654,10 +655,11 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     NJetImageFunction< FixedImageType >::New();
   imFunc->SetInput( m_FixedImage );
 
-  typename PointWeightListType::const_iterator pointWeightIter;
+  typename PointWeightListType::const_iterator pointWeightIter
+    = m_SubsampledTubePointsWeights.begin();
   typename TubePointListType::const_iterator pointIter =
-    m_TubePointList.begin();
-  while( pointIter != m_TubePointList.end() )
+    m_SubsampledTubePoints.begin();
+  while( pointIter != m_SubsampledTubePoints.end() )
     {
     InputPointType inputPoint = pointIter->GetPositionInWorldSpace();
     OutputPointType currentPoint = transformCopy->TransformPoint( inputPoint );

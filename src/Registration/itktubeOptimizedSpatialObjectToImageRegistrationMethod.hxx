@@ -23,8 +23,6 @@ limitations under the License.
 #ifndef __itktubeOptimizedSpatialObjectToImageRegistrationMethod_txx
 #define __itktubeOptimizedSpatialObjectToImageRegistrationMethod_txx
 
-#include "itkSpatialObjectToImageRegistrationFramework.h"
-
 #include "itktubeSpatialObjectToImageRegistrationMethod.h"
 #include "itktubeOptimizedSpatialObjectToImageRegistrationMethod.h"
 #include "itktubePointBasedSpatialObjectToImageMetric.h"
@@ -198,6 +196,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
           TypedMetricType;
 
         typename TypedMetricType::Pointer typedMetric = TypedMetricType::New();
+        typedMetric->SetSamplingRatio( m_SamplingRatio );
         metric = typedMetric;
         }
       break;
@@ -209,8 +208,6 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
   metric->SetFixedImage( fixedImage );
   metric->SetMovingSpatialObject( movingSpatialObject );
-
-  metric->SetSamplingRatio( m_SamplingRatio );
 
   metric->SetUseFixedImageMaskObject( this->GetUseFixedImageMaskObject() );
   if( this->GetUseFixedImageMaskObject() )
@@ -225,6 +222,8 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     metric->SetMovingSpatialObjectMaskObject(
       this->GetMovingSpatialObjectMaskObject() );
     }
+
+  metric->Initialize();
 
   try
     {
@@ -247,7 +246,7 @@ void
 OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::Optimize( MetricType * metric )
 {
-  if( m_UseEvolutionaryOptimization )
+  if( m_UseEvolutionaryOptimization && this->GetMaxIterations() > 0 )
     {
     if( this->GetReportProgress() )
       {
@@ -282,175 +281,115 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       evoOpt->AddObserver( IterationEvent(), command );
       }
 
-      this->GetMultiThreader()->SetNumberOfWorkUnits(this->GetNumberOfWorkUnits());
-  this->m_Metric->SetNumberOfWorkUnits(this->GetNumberOfWorkUnits());
-  m_Metric->SetMovingImage(m_MovingImage);
-  m_Metric->SetFixedImage(m_FixedImage);
-  m_Metric->SetTransform(m_Transform);
-  m_Metric->SetInterpolator(m_Interpolator);
-
-  m_Metric->Initialize();
-
-  // Setup the optimizer
-  m_Optimizer->SetCostFunction(m_Metric);
-m_Optimizer->SetInitialPosition(m_InitialTransformParameters);
-try
-  {
-    // do the optimization
-    m_Optimizer->StartOptimization();
-  }
-  catch (ExceptionObject & err)
-  {
-    // An error has occurred in the optimization.
-    // Update the parameters
-    m_LastTransformParameters = m_Optimizer->GetCurrentPosition();
-
-    // Pass exception to caller
-    throw err;
-  }
-
-  // get the results
-  m_LastTransformParameters = m_Optimizer->GetCurrentPosition();
-  m_Transform->SetParameters(m_LastTransformParameters);
-
+    evoOpt->SetCostFunction(metric);
+    evoOpt->SetInitialPosition(m_InitialTransformParameters);
     try
       {
-      reg->Update();
+      evoOpt->StartOptimization();
       }
-    catch( ... )
+    catch (...)
       {
-      std::cout << "Exception caught in evolutionary registration."
+      std::cout << "Exception caught during evolutionary registration."
                 << std::endl;
       std::cout << "Continuing using best values..." << std::endl;
+      std::cout << "  Pos = " << evoOpt->GetCurrentPosition()
+                << std::endl << std::endl;
       }
 
-    if( reg->GetLastTransformParameters().size() !=
+    if( evoOpt->GetCurrentPosition().size() !=
       this->GetTransform()->GetNumberOfParameters() )
       {
-      this->GetTransform()->SetParametersByValue(
-        this->GetInitialTransformParameters() );
+      this->SetLastTransformParameters( this->GetInitialTransformParameters() );
       }
     else
       {
-      this->GetTransform()->SetParametersByValue(
-        reg->GetLastTransformParameters() );
+      this->SetLastTransformParameters( evoOpt->GetCurrentPosition() );
       }
+    this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
+    m_FinalMetricValue = metric->GetValue( m_LastTransformParameters );
+    }
+  else
+    {
+    this->SetLastTransformParameters( this->GetInitialTransformParameters() );
+    this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
+    m_FinalMetricValue = 0;
+    }
 
-    m_FinalMetricValue = reg->GetOptimizer()->GetValue(
-      this->GetTransform()->GetParameters() );
+  if( this->GetReportProgress() )
+    {
+    std::cout << "EVOLUTIONARY END" << std::endl;
+    }
 
-    this->SetLastTransformParameters(
-      this->GetTransform()->GetParameters() );
-
+  if( this->GetMaxIterations() > 0 )
+    {
     if( this->GetReportProgress() )
       {
-      std::cout << "EVOLUTIONARY END" << std::endl;
+      std::cout << "GRADIENT START" << std::endl;
       }
+  
+    typedef FRPROptimizer GradOptimizerType;
+    GradOptimizerType::Pointer gradOpt = GradOptimizerType::New();
+  
+    gradOpt->SetMaximize( false );
+    gradOpt->SetCatchGetValueException( true );
+    gradOpt->SetMetricWorstPossibleValue( 100 );
+    gradOpt->SetStepLength( 0.25 );
+    gradOpt->SetStepTolerance( this->GetTargetError() );
+    gradOpt->SetMaximumIteration( this->GetMaxIterations() );
+    gradOpt->SetMaximumLineIteration( 10 );
+    gradOpt->SetScales( this->GetTransformParametersScales() );
+    gradOpt->SetUseUnitLengthGradient(true);
+    gradOpt->SetToFletchReeves();
+  
+    if( this->GetReportProgress() )
+      {
+      typedef SpatialObjectToImageRegistrationViewer ViewerCommandType;
+      typename ViewerCommandType::Pointer command = ViewerCommandType::New();
+      if( this->GetTransform()->GetNumberOfParameters() > 16 )
+        {
+        command->SetDontShowParameters( true );
+        }
+      gradOpt->AddObserver( IterationEvent(), command );
+      }
+    if( this->GetObserver() )
+      {
+      gradOpt->AddObserver( IterationEvent(), this->GetObserver() );
+      }
+  
+    gradOpt->SetCostFunction(metric);
+    gradOpt->SetInitialPosition(m_InitialTransformParameters);
+    try
+      {
+      gradOpt->StartOptimization();
+      }
+    catch( ... )
+      {
+      std::cout << "Exception caught during gradient registration."
+                << std::endl;
+      std::cout << "Continuing using best values..." << std::endl;
+      std::cout << "  Pos = " << gradOpt->GetCurrentPosition()
+                << std::endl << std::endl;
+      }
+
+    if( gradOpt->GetCurrentPosition().size() !=
+      this->GetTransform()->GetNumberOfParameters() )
+      {
+      this->SetLastTransformParameters( this->GetInitialTransformParameters() );
+      }
+    else
+      {
+      this->SetLastTransformParameters( gradOpt->GetCurrentPosition() );
+      }
+    this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
+    m_FinalMetricValue = metric->GetValue( m_LastTransformParameters );
     }
   else
     {
-    this->GetTransform()->SetParametersByValue(
-      this->GetInitialTransformParameters() );
+    this->SetLastTransformParameters( this->GetInitialTransformParameters() );
+    this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
+    m_FinalMetricValue = 0;
     }
 
-  if( this->GetReportProgress() )
-    {
-    std::cout << "GRADIENT START" << std::endl;
-    }
-
-  typedef FRPROptimizer GradOptimizerType;
-  GradOptimizerType::Pointer gradOpt = GradOptimizerType::New();
-
-  gradOpt->SetMaximize( false );
-  gradOpt->SetCatchGetValueException( true );
-  gradOpt->SetMetricWorstPossibleValue( 100 );
-  gradOpt->SetStepLength( 0.25 );
-  gradOpt->SetStepTolerance( this->GetTargetError() );
-  gradOpt->SetMaximumIteration( this->GetMaxIterations() );
-  gradOpt->SetMaximumLineIteration( 10 );
-  gradOpt->SetScales( this->GetTransformParametersScales() );
-  gradOpt->SetUseUnitLengthGradient(true);
-  gradOpt->SetToFletchReeves();
-
-  if( this->GetReportProgress() )
-    {
-    typedef SpatialObjectToImageRegistrationViewer ViewerCommandType;
-    typename ViewerCommandType::Pointer command = ViewerCommandType::New();
-    if( this->GetTransform()->GetNumberOfParameters() > 16 )
-      {
-      command->SetDontShowParameters( true );
-      }
-    gradOpt->AddObserver( IterationEvent(), command );
-    }
-  if( this->GetObserver() )
-    {
-    gradOpt->AddObserver( IterationEvent(), this->GetObserver() );
-    }
-
-  typename RegType::Pointer reg = RegType::New();
-  typename ImageType::ConstPointer fixedImage = this->GetFixedImage();
-  typename ImageType::ConstPointer movingSpatialObject =
-    this->GetMovingSpatialObject();
-  reg->SetFixedImage( fixedImage );
-  reg->SetMovingSpatialObject( movingSpatialObject );
-  reg->SetFixedImageRegion( this->GetFixedImage()
-    ->GetLargestPossibleRegion() );
-  reg->SetTransform( this->GetTransform() );
-  reg->SetInitialTransformParameters(
-    this->GetTransform()->GetParameters() );
-  reg->SetMetric( metric );
-  reg->SetOptimizer( gradOpt );
-
-  bool failure = false;
-  try
-    {
-    reg->Update();
-    }
-  catch( itk::ExceptionObject & excep )
-    {
-    std::cout << "Exception caught during gradient registration."
-              << excep << std::endl;
-    std::cout << "Continuing using best values..." << std::endl;
-    std::cout << "  Pos = " << reg->GetLastTransformParameters()
-              << std::endl << std::endl;
-    if( reg->GetLastTransformParameters().size()
-        != reg->GetInitialTransformParameters().size() )
-      {
-      std::cout << "  Invalid position, using initial parameters." << std::endl;
-      failure = true;
-      }
-    }
-  catch( ... )
-    {
-    std::cout << "Exception caught in gradient registration."
-              << std::endl;
-    std::cout << "Continuing using best values..." << std::endl;
-    std::cout << "  Pos = " << reg->GetLastTransformParameters()
-              << std::endl << std::endl;
-    if( reg->GetLastTransformParameters().size()
-        != reg->GetInitialTransformParameters().size() )
-      {
-      std::cout << "  Invalid position, using initial parameters." << std::endl;
-      failure = true;
-      }
-    }
-
-  if( failure )
-    {
-    m_FinalMetricValue = reg->GetOptimizer()->GetValue(
-        reg->GetInitialTransformParameters() );
-    this->SetLastTransformParameters( reg->GetInitialTransformParameters() );
-    this->GetTransform()->SetParametersByValue(
-      this->GetInitialTransformParameters() );
-    }
-  else
-    {
-    m_FinalMetricValue = reg->GetOptimizer()->GetValue(
-        reg->GetLastTransformParameters() );
-    this->SetLastTransformParameters( reg->GetLastTransformParameters() );
-    this->GetTransform()->SetParametersByValue(
-      this->GetLastTransformParameters() );
-    }
 
   if( this->GetReportProgress() )
     {
