@@ -20,14 +20,19 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeSpatialObjectToImageRegistration.h"
+#include "itktubeSpatialObjectToImageRegistrationHelper.h"
+#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 
 #include <itkImageFileReader.h>
+#include <itkSpatialObjectReader.h>
+
 #include <itkMemoryProbesCollectorBase.h>
 #include <itkMersenneTwisterRandomVariateGenerator.h>
 #include <itkRecursiveGaussianImageFilter.h>
-#include <itkSpatialObjectReader.h>
 #include <itkTimeProbesCollectorBase.h>
+
+#include <itkGradientDescentOptimizer.h>
+#include <itkOnePlusOneEvolutionaryOptimizer.h>
 
 //  The following section of code implements a Command observer
 //  used to monitor the evolution of the registration process.
@@ -53,8 +58,8 @@ protected:
   std::ofstream measuresFileStream;
 
 public:
-  typedef itk::GradientDescentOptimizer OptimizerType;
-  typedef const OptimizerType *         OptimizerPointer;
+  typedef itk::OnePlusOneEvolutionaryOptimizer EvoOptimizerType;
+  typedef itk::GradientDescentOptimizer GradOptimizerType;
 
   void Execute( itk::Object *caller, const itk::EventObject & event ) override
     {
@@ -64,8 +69,6 @@ public:
   void Execute( const itk::Object * object, const itk::EventObject & event )
     override
     {
-    OptimizerPointer optimizer =
-      dynamic_cast< OptimizerPointer >( object );
     if( !( itk::IterationEvent().CheckEvent( &event ) ) )
       {
       return;
@@ -73,8 +76,20 @@ public:
 
     if( measuresFileStream.is_open() )
       {
-      measuresFileStream << optimizer->GetCurrentIteration() << ";";
-      measuresFileStream << optimizer->GetValue() << std::endl;
+      typename EvoOptimizerType::ConstPointer evoOptimizer =
+        dynamic_cast< const EvoOptimizerType * >( object );
+      typename GradOptimizerType::ConstPointer gradOptimizer =
+        dynamic_cast< const GradOptimizerType * >( object );
+      if(evoOptimizer.IsNotNull())
+        {
+        measuresFileStream << evoOptimizer->GetCurrentIteration() << ";";
+        measuresFileStream << evoOptimizer->GetValue() << std::endl;
+        } 
+      else if(gradOptimizer.IsNotNull())
+        {
+        measuresFileStream << gradOptimizer->GetCurrentIteration() << ";";
+        measuresFileStream << gradOptimizer->GetValue() << std::endl;
+        }
       }
     }
 
@@ -101,8 +116,8 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
   typedef itk::SpatialObjectReader<3>                    TubeNetReaderType;
   typedef itk::Image<double, 3>                          ImageType;
   typedef itk::ImageFileReader<ImageType>                ImageReaderType;
-  typedef itk::tube::ImageToTubeRigidRegistration<ImageType, TubeNetType, TubeType>
-                                                         RegistrationMethodType;
+  typedef itk::tube::SpatialObjectToImageRegistrationHelper<3, ImageType>
+                                                         RegistrationHelperType;
 
   // read image
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
@@ -182,30 +197,15 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
   randGenerator->Initialize( 137593424 );
 
 
-  RegistrationMethodType::Pointer registrationMethod =
-    RegistrationMethodType::New();
+  RegistrationHelperType::Pointer registrationHelper =
+    RegistrationHelperType::New();
 
-  registrationMethod->SetFixedImage( blurFilters[2]->GetOutput() );
-  registrationMethod->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
+  registrationHelper->SetFixedImage( blurFilters[2]->GetOutput() );
+  registrationHelper->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
 
   // Set Optimizer parameters.
-  RegistrationMethodType::OptimizerType::Pointer optimizer =
-    registrationMethod->GetOptimizer();
-  RegistrationMethodType::OptimizerType::ScalesType parameterScales( 6 );
-  parameterScales[0] = 30.0;
-  parameterScales[1] = 30.0;
-  parameterScales[2] = 30.0;
-  parameterScales[3] = 1.0;
-  parameterScales[4] = 1.0;
-  parameterScales[5] = 1.0;
-  optimizer->SetScales( parameterScales );
-  itk::GradientDescentOptimizer * gradientDescentOptimizer =
-    dynamic_cast< itk::GradientDescentOptimizer * >( optimizer.GetPointer() );
-  if( gradientDescentOptimizer )
-    {
-    gradientDescentOptimizer->SetLearningRate( 0.1 );
-    gradientDescentOptimizer->SetNumberOfIterations( 1000 );
-    }
+  registrationHelper->SetExpectedOffsetMagnitude(3);
+  registrationHelper->SetRigidMaxIterations(1000);
 
 
   // Add a time probe
@@ -233,18 +233,17 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
     memorymeter.Start( "Registration" );
     chronometer.Start( "Registration" );
 
-    registrationMethod->Initialize();
+    registrationHelper->Initialize();
 
     // Create the Command observer and register it with the optimizer.
     //
     CommandIterationUpdate::Pointer observer = CommandIterationUpdate::New();
     observer->SetFileName( valuesFile );
 
-    registrationMethod->GetOptimizer()->
-      AddObserver( itk::IterationEvent(), observer );
+    registrationHelper->SetObserver( observer );
 
     // Launch Registration
-    registrationMethod->Update();
+    registrationHelper->Update();
 
     chronometer.Stop( "Registration" );
     memorymeter.Stop( "Registration" );
@@ -252,10 +251,6 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
     // Report the time and memory taken by the registration
     chronometer.Report( measuresFile );
     memorymeter.Report( measuresFile );
-
-    std::cout << "Optimizer stop condition = "
-              << registrationMethod->GetOptimizer()->GetStopConditionDescription()
-              << std::endl;
     }
   catch( itk::ExceptionObject & err )
     {

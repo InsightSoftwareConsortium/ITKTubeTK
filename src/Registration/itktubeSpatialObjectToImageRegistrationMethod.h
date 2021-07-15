@@ -23,9 +23,9 @@ limitations under the License.
 #ifndef __itktubeSpatialObjectToImageRegistrationMethod_h
 #define __itktubeSpatialObjectToImageRegistrationMethod_h
 
+#include "itkCommand.h"
 #include "itkSpatialObject.h"
 #include "itkDataobjectDecorator.h"
-
 
 namespace itk
 {

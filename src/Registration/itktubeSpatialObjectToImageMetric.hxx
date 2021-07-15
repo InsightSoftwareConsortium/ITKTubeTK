@@ -42,14 +42,11 @@ SpatialObjectToImageMetric<ObjectDimension, TFixedImage>::SpatialObjectToImageMe
 
   m_Transform = nullptr;           // has to be provided by the user.
 
-  m_UseFixedSpatialObjectMaskObject = false;
-  m_FixedSpatialObjectMaskObject = nullptr;
+  m_UseFixedImageMaskObject = false;
+  m_FixedImageMaskObject = nullptr;
   
   m_UseMovingSpatialObjectMaskObject = false;
   m_MovingSpatialObjectMaskObject = nullptr;
-
-  m_MatchMeasure = 0;
-  m_MatchMeasureDerivatives.fill(0);
 
   m_LastTransformParameters.fill(0);
 }

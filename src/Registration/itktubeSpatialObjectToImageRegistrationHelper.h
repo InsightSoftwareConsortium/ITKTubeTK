@@ -242,6 +242,7 @@ public:
   // **************
   itkSetMacro( UseEvolutionaryOptimization, bool );
   itkGetMacro( UseEvolutionaryOptimization, bool );
+
   // **************
   // Specify the expected magnitudes within the transform.  Used to
   //   guide the operating space of the optimizers
@@ -352,6 +353,9 @@ public:
   itkGetConstObjectMacro( AffineTransform, AffineTransformType );
   itkGetMacro( AffineMetricValue, double );
 
+  itkSetObjectMacro( Observer, Command );
+  itkGetModifiableObjectMacro( Observer, Command );
+
 protected:
 
   SpatialObjectToImageRegistrationHelper( void );
@@ -452,6 +456,8 @@ private:
   MetricMethodEnumType                    m_AffineMetricMethodEnum;
 
   double m_AffineMetricValue;
+
+  Command::Pointer m_Observer;
 
 };
 

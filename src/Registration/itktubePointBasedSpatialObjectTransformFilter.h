@@ -99,7 +99,7 @@ public:
     SpatialObjectToSpatialObjectFilter );
 
   /** Set the Transformation */
-  itkSetObjectMacro( Transform, TransformType );
+  itkSetConstObjectMacro( Transform, TransformType );
 
   /** Set the Object to Parent transform for the output tubes */
   itkSetObjectMacro( OutputObjectToParentTransform, SpatialObjectTransformType );
@@ -127,7 +127,7 @@ private:
   void Transform( const SpatialObject< TDimension > * inputSO,
     SpatialObject< TDimension > * outputSO );
 
-  typename TransformType::Pointer              m_Transform;
+  typename TransformType::ConstPointer              m_Transform;
 
   typename SpatialObjectTransformType::Pointer m_OutputObjectToParentTransform;
 

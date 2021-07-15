@@ -99,13 +99,13 @@ public:
     Self::ObjectDimension, Self::ImageDimension>;
 
   using TransformPointer = typename TransformType::Pointer;
-  using InputPointType = typename TransformType::InputPointType;
-  using OutputPointType = typename TransformType::OutputPointType;
+  using MovingPointType = typename TransformType::InputPointType;
+  using FixedPointType = typename TransformType::OutputPointType;
   using TransformParametersType = typename TransformType::ParametersType;
   using TransformJacobianType = typename TransformType::JacobianType;
 
-  using InputVectorType = vnl_vector_fixed<double, Self::ObjectDimension>;
-  using OutputVectorType = vnl_vector_fixed<double, Self::ImageDimension>;
+  using MovingVectorType = vnl_vector_fixed<double, Self::ObjectDimension>;
+  using FixedVectorType = vnl_vector_fixed<double, Self::ImageDimension>;
 
   /**  Type of the match measure */
   using MeasureType = Superclass::MeasureType;
@@ -186,9 +186,6 @@ protected:
   FixedImageConstPointer          m_FixedImage;
 
   mutable TransformPointer        m_Transform;
-
-  MeasureType                     m_MatchMeasure{ 0 };
-  DerivativeType                  m_MatchMeasureDerivatives;
 
   ParametersType                  m_LastTransformParameters;
 

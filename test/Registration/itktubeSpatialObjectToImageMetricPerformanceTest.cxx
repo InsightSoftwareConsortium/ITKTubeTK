@@ -20,13 +20,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeSpatialObjectToImageMetricPerformanceTest.h"
+#include "itktubePointBasedSpatialObjectToImageMetric.h"
+
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 
 #include <itkImageFileReader.h>
 #include <itkMemoryProbesCollectorBase.h>
 #include <itkSpatialObjectReader.h>
 #include <itkTimeProbesCollectorBase.h>
+#include <itkComposeScaleSkewVersor3DTransform.h>
 
 /**
  *  This test exercised the metric evaluation methods in the
@@ -49,15 +51,14 @@ int itktubeSpatialObjectToImageMetricPerformanceTest( int argc, char * argv[] )
 
   typedef itk::Image<double, 3>                             Image3DType;
   typedef itk::TubeSpatialObject<3>                         TubeType;
-  typedef itk::GroupSpatialObject<3>                        TubeNetType;
+  typedef itk::GroupSpatialObject<3>                        GroupType;
 
   typedef itk::ImageFileReader<Image3DType>                 ImageReaderType;
-  typedef itk::SpatialObjectReader<3>                       TubeNetReaderType;
+  typedef itk::SpatialObjectReader<3>                       SOReaderType;
 
-  typedef itk::tube::ImageToTubeRigidMetric<Image3DType, TubeNetType, TubeType >
+  typedef itk::tube::PointBasedSpatialObjectToImageMetric<3, Image3DType >
                                                             MetricType;
-  typedef MetricType::InterpolatorType                      InterpolatorType;
-  typedef MetricType::TransformType                         TransformType;
+  typedef itk::ComposeScaleSkewVersor3DTransform<double>    TransformType;
 
   // read image ( fixedImage )
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
@@ -73,7 +74,7 @@ int itktubeSpatialObjectToImageMetricPerformanceTest( int argc, char * argv[] )
     }
 
   // read tube ( spatialObject )
-  TubeNetReaderType::Pointer tubeReader = TubeNetReaderType::New();
+  SOReaderType::Pointer tubeReader = SOReaderType::New();
   tubeReader->SetFileName( argv[2] );
   try
     {
@@ -86,7 +87,7 @@ int itktubeSpatialObjectToImageMetricPerformanceTest( int argc, char * argv[] )
     }
 
   // subsample points in vessel
-  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
+  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< GroupType, TubeType >
     SubSampleTubeNetFilterType;
   SubSampleTubeNetFilterType::Pointer subSampleTubeNetFilter =
     SubSampleTubeNetFilterType::New();
@@ -108,14 +109,12 @@ int itktubeSpatialObjectToImageMetricPerformanceTest( int argc, char * argv[] )
   MetricType::Pointer metric = MetricType::New();
   metric->SetExtent( 3 );
 
-  InterpolatorType::Pointer interpolator = InterpolatorType::New();
   TransformType::Pointer transform = TransformType::New();
   TransformType::ParametersType parameters = transform->GetParameters();
 
   metric->SetFixedImage( imageReader->GetOutput() );
   metric->SetMovingSpatialObject ( subSampleTubeNetFilter->GetOutput() );
-  metric->SetInterpolator( interpolator );
-  metric->SetTransform( transform );
+  metric->SetTransform( transform.GetPointer() );
 
   // Add a time probe
   itk::TimeProbesCollectorBase chronometer;

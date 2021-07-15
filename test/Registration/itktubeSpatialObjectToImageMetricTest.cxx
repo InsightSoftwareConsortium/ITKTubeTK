@@ -20,11 +20,12 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeSpatialObjectToImageMetric.h"
+#include "itktubePointBasedSpatialObjectToImageMetric.h"
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 
 #include <itkImageFileReader.h>
 #include <itkSpatialObjectReader.h>
+#include <itkComposeScaleSkewVersor3DTransform.h>
 
 /**
  *  This test exercised the metric evaluation methods in the
@@ -57,9 +58,9 @@ int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType >               ImageReaderType;
   typedef itk::SpatialObjectReader< TubeDimension >       TubeNetReaderType;
 
-  typedef itk::tube::SpatialObjectToImageMetric< 3, ImageType >
+  typedef itk::tube::PointBasedSpatialObjectToImageMetric< 3, ImageType >
                                                           MetricType;
-  typedef MetricType::TransformType                       TransformType;
+  typedef itk::ComposeScaleSkewVersor3DTransform< double >       TransformType;
 
   // read image ( fixedImage )
   ImageReaderType::Pointer imageReader = ImageReaderType::New();

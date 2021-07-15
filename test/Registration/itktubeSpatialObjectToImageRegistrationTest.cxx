@@ -20,11 +20,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeSpatialObjectToImageRegistrationTest.h"
+#include "itktubeSpatialObjectToImageRegistrationHelper.h"
 
-#include "itktubeTubeToTubeTransformFilter.h"
-#include "itktubeTubeExponentialResolutionWeightFunction.h"
-#include "itktubeTubePointWeightsCalculator.h"
+#include "itktubePointBasedSpatialObjectTransformFilter.h"
+
+#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -32,6 +32,7 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkSpatialObjectWriter.h>
+#include <itkComposeScaleSkewVersor3DTransform.h>
 
 int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
 {
@@ -55,15 +56,15 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   typedef double            FloatType;
 
   typedef itk::TubeSpatialObject< Dimension >            TubeType;
-  typedef itk::GroupSpatialObject< Dimension >           TubeTreeType;
-  typedef itk::SpatialObjectReader< Dimension >          TubeTreeReaderType;
+  typedef itk::GroupSpatialObject< Dimension >           GroupType;
+  typedef itk::SpatialObjectReader< Dimension >          SOReaderType;
   typedef itk::Image< FloatType, Dimension >             ImageType;
   typedef itk::ImageFileReader< ImageType >              ImageReaderType;
   typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
-  typedef itk::tube::ImageToTubeRigidRegistration< ImageType, TubeTreeType, TubeType >
-                                                         RegistrationMethodType;
-  typedef RegistrationMethodType::TransformType          TransformType;
-  typedef itk::tube::TubeToTubeTransformFilter< TransformType, Dimension >
+  typedef itk::tube::SpatialObjectToImageRegistrationHelper< 3, ImageType >
+                                                         RegistrationHelperType;
+  typedef itk::ComposeScaleSkewVersor3DTransform< double > TransformType;
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
 
   std::cout << "start" << std::endl;
@@ -98,7 +99,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
     }
 
   // read vessel
-  TubeTreeReaderType::Pointer vesselReader = TubeTreeReaderType::New();
+  SOReaderType::Pointer vesselReader = SOReaderType::New();
   vesselReader->SetFileName( inputVessel );
   try
     {
@@ -112,7 +113,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
 
   std::cout << "subsample" << std::endl;
   // subsample points in vessel
-  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeTreeType, TubeType >
+  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< GroupType, TubeType >
     SubSampleTubeTreeFilterType;
   SubSampleTubeTreeFilterType::Pointer subSampleTubeTreeFilter =
     SubSampleTubeTreeFilterType::New();
@@ -129,44 +130,17 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
     }
 
 
-  std::cout << "weight func" << std::endl;
-  typedef itk::tube::Function::TubeExponentialResolutionWeightFunction<
-    TubeType::TubePointType, double >                WeightFunctionType;
-  typedef RegistrationMethodType::FeatureWeightsType PointWeightsType;
-  WeightFunctionType::Pointer weightFunction = WeightFunctionType::New();
-  typedef itk::tube::TubePointWeightsCalculator< Dimension,
-    TubeType, WeightFunctionType,
-    PointWeightsType > PointWeightsCalculatorType;
-  PointWeightsCalculatorType::Pointer resolutionWeightsCalculator
-    = PointWeightsCalculatorType::New();
-  resolutionWeightsCalculator->SetTubeTreeSpatialObject(
-    subSampleTubeTreeFilter->GetOutput() );
-  resolutionWeightsCalculator->SetPointWeightFunction( weightFunction );
-  resolutionWeightsCalculator->Compute();
-  PointWeightsType pointWeights = resolutionWeightsCalculator->GetPointWeights();
+  RegistrationHelperType::Pointer registrationHelper =
+    RegistrationHelperType::New();
 
-  RegistrationMethodType::Pointer registrationMethod =
-    RegistrationMethodType::New();
-
-  registrationMethod->SetFixedImage( blurFilters[2]->GetOutput() );
-  registrationMethod->SetMovingSpatialObject( subSampleTubeTreeFilter->GetOutput() );
-  registrationMethod->SetFeatureWeights( pointWeights );
-
-  // Set Optimizer parameters.
-  RegistrationMethodType::OptimizerType::Pointer optimizer =
-    registrationMethod->GetOptimizer();
-  itk::GradientDescentOptimizer * gradientDescentOptimizer =
-    dynamic_cast< itk::GradientDescentOptimizer * >( optimizer.GetPointer() );
-  if( gradientDescentOptimizer )
-    {
-    gradientDescentOptimizer->SetLearningRate( 0.1 );
-    gradientDescentOptimizer->SetNumberOfIterations( 40 );
-    }
+  registrationHelper->SetFixedImage( blurFilters[2]->GetOutput() );
+  registrationHelper->SetMovingSpatialObject( subSampleTubeTreeFilter->GetOutput() );
+  registrationHelper->SetRegistration(RegistrationHelperType::RegistrationMethodEnumType::RIGID);
 
   try
     {
-    registrationMethod->Initialize();
-    registrationMethod->Update();
+    registrationHelper->Initialize();
+    registrationHelper->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -175,11 +149,10 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
     }
 
   // validate the registration result
-  TransformType::Pointer outputTransform =
-    dynamic_cast<TransformType *>( registrationMethod->GetTransform() );
-  const TransformType::ParametersType lastParameters =
-    registrationMethod->GetLastTransformParameters();
-  outputTransform->SetParameters( lastParameters );
+  TransformType::ConstPointer outputTransform =
+    dynamic_cast<const TransformType *>( registrationHelper->GetCurrentMatrixTransform() );
+  TransformType::ParametersType lastParameters =
+    outputTransform->GetParameters();
 
   TransformType::Pointer inverseTransform = TransformType::New();
   outputTransform->GetInverse( inverseTransform );
@@ -224,7 +197,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   // Transform the input tubes.
   TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
   transformFilter->SetInput( vesselReader->GetGroup() );
-  transformFilter->SetTransform( outputTransform );
+  transformFilter->SetTransform( outputTransform.GetPointer() );
   std::cout << "Outputting transformed tubes...";
   try
     {
@@ -238,8 +211,8 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   std::cout << " done.\n";
 
   // Write the transformed tube to file.
-  typedef itk::SpatialObjectWriter< Dimension > TubeTreeWriterType;
-  TubeTreeWriterType::Pointer tubesWriter = TubeTreeWriterType::New();
+  typedef itk::SpatialObjectWriter< Dimension > SOWriterType;
+  SOWriterType::Pointer tubesWriter = SOWriterType::New();
   tubesWriter->SetInput( transformFilter->GetOutput() );
   tubesWriter->SetFileName( outputTubes );
   try
@@ -252,7 +225,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
     result = EXIT_FAILURE;
     }
 
-  typedef itk::SpatialObjectToImageFilter< TubeTreeType, ImageType>
+  typedef itk::SpatialObjectToImageFilter< GroupType, ImageType>
                                               SpatialObjectToImageFilterType;
   SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
     SpatialObjectToImageFilterType::New();
@@ -271,7 +244,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   spacing[2] = spacing[2] * decimationFactor;
 
   std::cout << "Converting transformed vessel model into a binary image ... ";
-  vesselToImageFilter->SetInput( transformFilter->GetOutput() );
+  vesselToImageFilter->SetInput( dynamic_cast< const GroupType *>(transformFilter->GetOutput()) );
   vesselToImageFilter->SetSize( size );
   vesselToImageFilter->SetSpacing( spacing );
   vesselToImageFilter->SetOrigin( img->GetOrigin() );

@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -20,7 +19,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#include "itktubeTubeToTubeTransformFilter.h"
+#include "itktubePointBasedSpatialObjectTransformFilter.h"
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -31,7 +30,7 @@ limitations under the License.
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkSpatialObjectWriter.h>
 
-int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
+int itktubePointBasedSpatialObjectTransformFilterTest( int argc, char * argv[] )
 {
 
   if( argc < 12 )
@@ -45,16 +44,16 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typedef itk::GroupSpatialObject<3>                      TubeNetType;
-  typedef itk::SpatialObjectReader<3>                     TubeNetReaderType;
-  typedef itk::SpatialObjectWriter<3>                     TubeNetWriterType;
+  typedef itk::GroupSpatialObject<3>                      GroupType;
+  typedef itk::SpatialObjectReader<3>                     SOReaderType;
+  typedef itk::SpatialObjectWriter<3>                     SOWriterType;
   typedef itk::Euler3DTransform<double>                   TransformType;
 
-  typedef itk::tube::TubeToTubeTransformFilter<TransformType,3>
-    TubeTransformFilterType;
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter<TransformType,3>
+    TransformFilterType;
 
   // read in vessel
-  TubeNetReaderType::Pointer reader = TubeNetReaderType::New();
+  SOReaderType::Pointer reader = SOReaderType::New();
   reader->SetFileName( argv[1] );
 
   try
@@ -120,8 +119,8 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
     translation[2] << std::endl;
 
   // create transform filter
-  TubeTransformFilterType::Pointer transformFilter =
-    TubeTransformFilterType::New();
+  TransformFilterType::Pointer transformFilter =
+    TransformFilterType::New();
   transformFilter->SetInput( reader->GetGroup() );
   transformFilter->SetTransform( transform );
 
@@ -136,7 +135,7 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
     }
 
   // write vessel
-  TubeNetWriterType::Pointer writer = TubeNetWriterType::New();
+  SOWriterType::Pointer writer = SOWriterType::New();
   writer->SetFileName( argv[2] );
   writer->SetInput( transformFilter->GetOutput() );
 
@@ -161,12 +160,12 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
     imageReader->SetFileName( argv[3] );
     imageReader->Update();
 
-    typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType>
+    typedef itk::SpatialObjectToImageFilter<GroupType, ImageType>
       SpatialObjectToImageFilterType;
     SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
       SpatialObjectToImageFilterType::New();
 
-    vesselToImageFilter->SetInput( transformFilter->GetOutput() );
+    vesselToImageFilter->SetInput( dynamic_cast< GroupType * >(transformFilter->GetOutput()) );
     vesselToImageFilter->SetSize(
       imageReader->GetOutput()->GetLargestPossibleRegion().GetSize() );
     vesselToImageFilter->SetOrigin( imageReader->GetOutput()->GetOrigin() );

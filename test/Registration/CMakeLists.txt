@@ -41,12 +41,7 @@ set( tubeRegistrationTests_SRCS
   itktubeSpatialObjectToImageRegistrationTest.cxx
   itktubePointsToImageTest.cxx
   itktubeSyntheticTubeImageGenerationTest.cxx
-  itktubeTubeAngleOfIncidenceWeightFunctionTest.cxx
-  itktubeTubeExponentialResolutionWeightFunctionTest.cxx
-  itktubeTubeParametricExponentialResolutionWeightFunctionTest.cxx
-  itktubeTubeParametricExponentialWithBoundsResolutionWeightFunctionTest.cxx
-  itktubeTubePointWeightsCalculatorTest.cxx
-  itktubeTubeToTubeTransformFilterTest.cxx )
+  itktubePointBasedSpatialObjectTransformFilterTest.cxx )
 
 if( TubeTK_USE_VTK )
   list( APPEND tubeRegistrationTests_SRCS
@@ -67,16 +62,16 @@ itk_add_test( NAME tubeRegistrationPrintTest
     tubeRegistrationPrintTest )
 
 itk_add_test(
-  NAME itktubeTubeToTubeTransformFilterTest
+  NAME itktubePointBasedSpatialObjectTransformFilterTest
   COMMAND tubeRegistrationTestDriver
     --compare
-      DATA{${TubeTK_DATA_ROOT}/itktubeTubeToTubeTransformFilter.mha}
-      ${ITK_TEST_OUTPUT_DIR}/itktubeTubeToTubeTransformFilter.mha
-    itktubeTubeToTubeTransformFilterTest
+      DATA{${TubeTK_DATA_ROOT}/itktubePointBasedSpatialObjectTransformFilter.mha}
+      ${ITK_TEST_OUTPUT_DIR}/itktubePointBasedSpatialObjectTransformFilter.mha
+    itktubePointBasedSpatialObjectTransformFilterTest
       DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
-      ${ITK_TEST_OUTPUT_DIR}/itktubeTubeToTubeTransformFilter.tre
+      ${ITK_TEST_OUTPUT_DIR}/itktubePointBasedSpatialObjectTransformFilter.tre
       DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
-      ${ITK_TEST_OUTPUT_DIR}/itktubeTubeToTubeTransformFilter.mha
+      ${ITK_TEST_OUTPUT_DIR}/itktubePointBasedSpatialObjectTransformFilter.mha
       0.2 0.1 0.1 5 -5 5
       1 )
 
@@ -197,36 +192,3 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/SyntheticVesselTubeImage.mha
       DATA{${TubeTK_DATA_ROOT}/SyntheticVesselTubeManuallyModified.tre}
       ${ITK_TEST_OUTPUT_DIR}/SyntheticTransformedVesselTubeImage.mha )
-
-itk_add_test(
-  NAME itktubeTubeExponentialResolutionWeightFunctionTest
-  COMMAND tubeRegistrationTestDriver
-    itktubeTubeExponentialResolutionWeightFunctionTest
-      ${ITK_TEST_OUTPUT_DIR}/itktubeExponentialResolutionWeightFunctionTest.csv )
-
-itk_add_test(
-  NAME
-    itktubeTubeParametricExponentialResolutionWeightFunctionTest
-  COMMAND tubeRegistrationTestDriver
-    itktubeTubeParametricExponentialResolutionWeightFunctionTest
-      ${ITK_TEST_OUTPUT_DIR}/itktubeParametricExponentialResolutionWeightFunctionTest.csv )
-
-itk_add_test(
-  NAME
-    itktubeTubeParametricExponentialWithBoundsResolutionWeightFunctionTest
-  COMMAND tubeRegistrationTestDriver
-    itktubeTubeParametricExponentialWithBoundsResolutionWeightFunctionTest
-      ${ITK_TEST_OUTPUT_DIR}/itktubeParametricExponentialWithBoundsResolutionWeightFunctionTest.csv )
-
-itk_add_test(
-  NAME itktubeTubePointWeightsCalculatorTest
-  COMMAND tubeRegistrationTestDriver
-    itktubeTubePointWeightsCalculatorTest
-      ${ITK_TEST_OUTPUT_DIR}/itktubePointWeightsCalculatorTest.csv )
-
-itk_add_test(
-  NAME itktubeTubeAngleOfIncidenceWeightFunctionTest
-  COMMAND tubeRegistrationTestDriver
-    itktubeTubeAngleOfIncidenceWeightFunctionTest
-      DATA{${TubeTK_DATA_ROOT}/AlmostMaxInhale01.vessels.tre}
-      ${ITK_TEST_OUTPUT_DIR}/itktubeAngleOfIncidenceWeightFunctionTest )

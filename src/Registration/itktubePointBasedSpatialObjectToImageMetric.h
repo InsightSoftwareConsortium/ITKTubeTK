@@ -65,37 +65,44 @@ public:
     TFixedImage::ImageDimension );
 
   typedef TFixedImage                              FixedImageType;
-  typedef SpatialObject< ObjectDimension >         SpatialObjectType;
+  typedef SpatialObject< ObjectDimension >         MovingSpatialObjectType;
 
   /**  Type of the Transform Base class */
   typedef typename Superclass::TransformType       TransformType;
   typedef typename TransformType::Pointer          TransformPointer;
-  typedef typename TransformType::InputPointType   InputPointType;
-  typedef typename TransformType::OutputPointType  OutputPointType;
   typedef typename TransformType::ParametersType   TransformParametersType;
   typedef typename TransformType::JacobianType     TransformJacobianType;
+
+  typedef typename Superclass::MovingPointType     MovingPointType;
+  typedef typename Superclass::FixedPointType      FixedPointType;
 
   typedef PointBasedSpatialObject< ObjectDimension >
                                                    PointBasedSpatialObjectType;
   typedef typename PointBasedSpatialObjectType::SpatialObjectPointType
-                                                   SpatialObjectPointType;
-  typedef typename PointBasedSpatialObjectType::SpatialObjectPointListType
-                                                   SpatialObjectPointListType;
+                                                   PointBasedSpatialObjectPointType;
 
-  typedef std::vector< double >                    PointWeightListType;
+  typedef PointBasedSpatialObject< ObjectDimension >
+                                                   SingularType;
+  typedef typename SingularType::SpatialObjectPointType
+                                                   SingularPointType;
+  typedef typename SingularType::SpatialObjectPointListType
+                                                   SingularPointListType;
+  typedef std::vector< double >                    SingularPointWeightListType;
 
   typedef TubeSpatialObject< ObjectDimension >     TubeType;
   typedef typename TubeType::TubePointType         TubePointType;
   typedef typename TubeType::TubePointListType     TubePointListType;
+  typedef std::vector< double >                    TubePointWeightListType;
 
   typedef SurfaceSpatialObject< ObjectDimension >    SurfaceType;
   typedef typename SurfaceType::SurfacePointType     SurfacePointType;
   typedef typename SurfaceType::SurfacePointListType SurfacePointListType;
+  typedef std::vector< double >                      SurfacePointWeightListType;
 
   typedef typename Superclass::ParametersType      ParametersType;
   typedef typename Superclass::MeasureType         MeasureType;
-  typedef typename Superclass::InputVectorType     InputVectorType;
-  typedef typename Superclass::OutputVectorType    OutputVectorType;
+  typedef typename Superclass::FixedVectorType     FixedVectorType;
+  typedef typename Superclass::MovingVectorType    MovingVectorType;
   typedef typename Superclass::DerivativeType      DerivativeType;
 
   /** Run-time type information ( and related methods ). */
@@ -108,16 +115,14 @@ public:
   /** Initialize the metric */
   void Initialize( void ) override;
 
+  /** Get the Value for SingleValue Optimizers */
+  MeasureType GetValue( const ParametersType & parameters ) const override;
+
   /** Get the Derivatives of the Match Measure */
-  const DerivativeType & GetDerivative( const ParametersType &
-    parameters ) const;
   void GetDerivative( const ParametersType & parameters,
     DerivativeType & derivative ) const override;
 
-  /** Get the Value for SingleValue Optimizers */
-  MeasureType  GetValue( const ParametersType & parameters ) const override;
-
-  /** Get Value and Derivatives for MultipleValuedOptimizers */
+  /** Get the Value And Derivative for SingleValue Optimizers */
   void GetValueAndDerivative( const ParametersType & parameters,
     MeasureType & Value, DerivativeType  & Derivative ) const override;
 
@@ -148,20 +153,20 @@ public:
   void ComputeSubsampledPoints( void );
   void ComputeSubsampledPointsWeights( void );
 
-  itkSetMacro( SubsampledPoints, SpatialObjectPointListType );
-  itkGetConstMacro( SubsampledPoints, SpatialObjectPointListType );
-  itkSetMacro( SubsampledPointsWeights, PointWeightListType );
-  itkGetConstMacro( SubsampledPointsWeights, PointWeightListType );
+  itkSetMacro( SubsampledSingularPoints, SingularPointListType );
+  itkGetConstMacro( SubsampledSingularPoints, SingularPointListType );
+  itkSetMacro( SubsampledSingularPointsWeights, SingularPointWeightListType );
+  itkGetConstMacro( SubsampledSingularPointsWeights, SingularPointWeightListType );
   
   itkSetMacro( SubsampledTubePoints, TubePointListType );
   itkGetConstMacro( SubsampledTubePoints, TubePointListType );
-  itkSetMacro( SubsampledTubePointsWeights, PointWeightListType );
-  itkGetConstMacro( SubsampledTubePointsWeights, PointWeightListType );
+  itkSetMacro( SubsampledTubePointsWeights, TubePointWeightListType );
+  itkGetConstMacro( SubsampledTubePointsWeights, TubePointWeightListType );
   
   itkSetMacro( SubsampledSurfacePoints, SurfacePointListType );
   itkGetConstMacro( SubsampledSurfacePoints, SurfacePointListType );
-  itkSetMacro( SubsampledSurfacePointsWeights, PointWeightListType );
-  itkGetConstMacro( SubsampledSurfacePointsWeights, PointWeightListType );
+  itkSetMacro( SubsampledSurfacePointsWeights, SurfacePointWeightListType );
+  itkGetConstMacro( SubsampledSurfacePointsWeights, SurfacePointWeightListType );
   
   TransformPointer GetTransform( void ) const
     { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
@@ -182,12 +187,12 @@ protected:
 
   bool IsValidMovingPoint( const TubePointType & inputPoint ) const;
   bool IsValidMovingPoint( const SurfacePointType & inputPoint ) const;
-  bool IsValidMovingPoint( const SpatialObjectPointType & inputPoint ) const;
-  bool IsValidFixedPoint( const OutputPointType & outputPoint ) const;
+  bool IsValidMovingPoint( const SingularPointType & inputPoint ) const;
+  bool IsValidFixedPoint( const FixedPointType & fixedPoint ) const;
 
-  typename SpatialObjectType::ChildrenListType *
-    GetPointBasedChildren( typename SpatialObjectType::Pointer & parentSO,
-      typename SpatialObjectType::ChildrenListType * childrenSO=nullptr ) const;
+  typename MovingSpatialObjectType::ChildrenConstListType *
+    GetPointBasedChildren( typename MovingSpatialObjectType::ConstPointer & parentSO,
+      typename MovingSpatialObjectType::ChildrenConstListType * childrenSO=nullptr ) const;
 
 private:
 
@@ -207,19 +212,19 @@ private:
   double     m_TubeSamplingRadiusMin;
   double     m_TubeSamplingRadiusMax;
 
-  InputPointType  m_CenterOfRotation;
+  MovingPointType  m_CenterOfRotation;
 
   /** Points with no tangets or normals */
-  SpatialObjectPointListType m_SubsampledPoints;
-  PointWeightListType        m_SubsampledPointsWeights;
+  SingularPointListType       m_SubsampledSingularPoints;
+  SingularPointWeightListType m_SubsampledSingularPointsWeights;
 
   /** Points with one tangent and two normals */
   TubePointListType          m_SubsampledTubePoints;
-  PointWeightListType        m_SubsampledTubePointsWeights;
+  TubePointWeightListType    m_SubsampledTubePointsWeights;
 
   /** Points with one normal */
   SurfacePointListType       m_SubsampledSurfacePoints;
-  PointWeightListType        m_SubsampledSurfacePointsWeights;
+  SurfacePointWeightListType m_SubsampledSurfacePointsWeights;
 
 }; // End class PointBasedSpatialObjectToImageMetric
 

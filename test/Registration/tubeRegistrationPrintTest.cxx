@@ -48,12 +48,7 @@ limitations under the License.
 #include "itktubeSpatialObjectToImageRegistrationHelper.h"
 #include "itktubeMeanSquareRegistrationFunction.h"
 #include "itktubeMergeAdjacentImagesFilter.h"
-#include "itktubeTubeAngleOfIncidenceWeightFunction.h"
-#include "itktubeTubeExponentialResolutionWeightFunction.h"
-#include "itktubeTubeParametricExponentialResolutionWeightFunction.h"
-#include "itktubeTubeParametricExponentialWithBoundsResolutionWeightFunction.h"
-#include "itktubeTubePointWeightsCalculator.h"
-#include "itktubeTubeToTubeTransformFilter.h"
+#include "itktubePointBasedSpatialObjectTransformFilter.h"
 
 int tubeRegistrationPrintTest( int itkNotUsed( argc ), char * itkNotUsed(
   argv )[] )

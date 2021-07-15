@@ -108,10 +108,10 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   m_AffineTargetError = 0.0001;
   m_AffineMaxIterations = 500;
   m_AffineTransform = NULL;
-  m_AffineMetricMethodEnum =
-    OptimizedRegistrationMethodType::IMAGE_INTENSITY_METRIC;
+  m_AffineMetricMethodEnum = OptimizedRegistrationMethodType::IMAGE_INTENSITY_METRIC;
   m_AffineMetricValue = 0.0;
 
+  m_Observer = nullptr;
 }
 
 template <unsigned int ObjectDimension, class TImage>
@@ -307,10 +307,12 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     std::cout << "*** AFFINE REGISTRATION ***" << std::endl;
     }
 
-  std::cout << "Start affine" << std::endl;
-
   typename Affine2DRegistrationMethodType::Pointer regAff
     = Affine2DRegistrationMethodType::New();
+  if( this->GetObserver() )
+    {
+    regAff->SetObserver( this->GetObserver() );
+    }
   regAff->SetRandomNumberSeed( m_RandomNumberSeed );
   regAff->SetReportProgress( m_ReportProgress );
   regAff->SetMovingSpatialObject( m_CurrentMovingSpatialObject );
@@ -389,6 +391,10 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 
   typename Affine3DRegistrationMethodType::Pointer regAff =
     Affine3DRegistrationMethodType::New();
+  if( this->GetObserver() )
+    {
+    regAff->SetObserver( this->GetObserver() );
+    }
   regAff->SetRandomNumberSeed( m_RandomNumberSeed );
   regAff->SetReportProgress( m_ReportProgress );
   regAff->SetMovingSpatialObject( m_CurrentMovingSpatialObject );
@@ -499,6 +505,10 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 
   typename InitialRegistrationMethodType::Pointer regInit =
     InitialRegistrationMethodType::New();
+  if( this->GetObserver() )
+    {
+    regInit->SetObserver( this->GetObserver() );
+    }
   regInit->SetReportProgress( m_ReportProgress );
   regInit->SetMovingSpatialObject( m_CurrentMovingSpatialObject );
   regInit->SetFixedImage( m_FixedImage );
@@ -568,8 +578,12 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       std::cout << "*** RIGID REGISTRATION ***" << std::endl;
       }
 
-    typename RigidRegistrationMethodType::Pointer regRigid;
-    regRigid = RigidRegistrationMethodType::New();
+    typename RigidRegistrationMethodType::Pointer regRigid =
+     RigidRegistrationMethodType::New();
+    if( this->GetObserver() )
+      {
+      regRigid->SetObserver( this->GetObserver() );
+      }
     regRigid->SetRandomNumberSeed( m_RandomNumberSeed );
     if( !m_UseEvolutionaryOptimization )
       {
