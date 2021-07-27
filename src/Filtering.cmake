@@ -52,7 +52,7 @@ set( TubeTK_Filtering_H_Files
   Filtering/itktubeSpatialObjectToSpatialObjectFilter.h
   Filtering/itktubeStructureTensorRecursiveGaussianImageFilter.h
   Filtering/itktubeSubSampleTubeSpatialObjectFilter.h
-  Filtering/itktubeSubSampleTubeTreeSpatialObjectFilter.h
+  Filtering/itktubeSubSampleSpatialObjectFilter.h
   Filtering/itktubeSymmetricEigenVectorAnalysisImageFilter.h
   Filtering/itktubeTortuositySpatialObjectFilter.h
   Filtering/itktubeTubeEnhancingDiffusion2DImageFilter.h
@@ -94,7 +94,7 @@ set( TubeTK_Filtering_HXX_Files
   Filtering/itktubeSpatialObjectToSpatialObjectFilter.hxx
   Filtering/itktubeStructureTensorRecursiveGaussianImageFilter.hxx
   Filtering/itktubeSubSampleTubeSpatialObjectFilter.hxx
-  Filtering/itktubeSubSampleTubeTreeSpatialObjectFilter.hxx
+  Filtering/itktubeSubSampleSpatialObjectFilter.hxx
   Filtering/itktubeTortuositySpatialObjectFilter.h
   Filtering/itktubeTubeEnhancingDiffusion2DImageFilter.hxx
   Filtering/itktubeTubeSpatialObjectToDensityImageFilter.hxx

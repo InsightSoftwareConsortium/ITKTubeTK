@@ -24,7 +24,7 @@ limitations under the License.
 
 #include "itktubePointBasedSpatialObjectTransformFilter.h"
 
-#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
+#include "itktubeSubSampleSpatialObjectFilter.h"
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -41,30 +41,30 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
     std::cerr << "Missing Parameters: "
               << argv[0]
               << " Input_Image "
-              << " Input_Vessel"
+              << " Input_Group"
               << " Output_Tubes"
               << " Output_Image"
               << std::endl;
     return EXIT_FAILURE;
     }
   const char * inputImage = argv[1];
-  const char * inputVessel = argv[2];
+  const char * inputGroup = argv[2];
   const char * outputTubes = argv[3];
   const char * outputImage = argv[4];
 
-  enum { Dimension = 3 };
+  enum { ObjectDimension = 3 };
   typedef double            FloatType;
 
-  typedef itk::TubeSpatialObject< Dimension >            TubeType;
-  typedef itk::GroupSpatialObject< Dimension >           GroupType;
-  typedef itk::SpatialObjectReader< Dimension >          SOReaderType;
-  typedef itk::Image< FloatType, Dimension >             ImageType;
+  typedef itk::TubeSpatialObject< ObjectDimension >            TubeType;
+  typedef itk::GroupSpatialObject< ObjectDimension >           GroupType;
+  typedef itk::SpatialObjectReader< ObjectDimension >          SOReaderType;
+  typedef itk::Image< FloatType, ObjectDimension >             ImageType;
   typedef itk::ImageFileReader< ImageType >              ImageReaderType;
   typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
   typedef itk::tube::SpatialObjectToImageRegistrationHelper< 3, ImageType >
                                                          RegistrationHelperType;
   typedef itk::ComposeScaleSkewVersor3DTransform< double > TransformType;
-  typedef itk::tube::PointBasedSpatialObjectTransformFilter< TransformType, Dimension >
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter< TransformType, ObjectDimension >
                                                          TubeTransformFilterType;
 
   std::cout << "start" << std::endl;
@@ -77,8 +77,8 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   // this enlarges the convergence zone.
   typedef itk::RecursiveGaussianImageFilter<ImageType, ImageType>
                                                            GaussianBlurFilterType;
-  GaussianBlurFilterType::Pointer blurFilters[Dimension];
-  for( unsigned int ii = 0; ii < Dimension; ++ii )
+  GaussianBlurFilterType::Pointer blurFilters[ObjectDimension];
+  for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
     {
     blurFilters[ii] = GaussianBlurFilterType::New();
     blurFilters[ii]->SetSigma( 2.0 );
@@ -98,12 +98,12 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  // read vessel
-  SOReaderType::Pointer vesselReader = SOReaderType::New();
-  vesselReader->SetFileName( inputVessel );
+  // read group
+  SOReaderType::Pointer groupReader = SOReaderType::New();
+  groupReader->SetFileName( inputGroup );
   try
     {
-    vesselReader->Update();
+    groupReader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -113,15 +113,14 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
 
   std::cout << "subsample" << std::endl;
   // subsample points in vessel
-  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< GroupType, TubeType >
-    SubSampleTubeTreeFilterType;
-  SubSampleTubeTreeFilterType::Pointer subSampleTubeTreeFilter =
-    SubSampleTubeTreeFilterType::New();
-  subSampleTubeTreeFilter->SetInput( vesselReader->GetGroup() );
-  subSampleTubeTreeFilter->SetSampling( 20 );
+  typedef itk::tube::SubSampleSpatialObjectFilter< ObjectDimension > SubSampleFilterType;
+  SubSampleFilterType::Pointer subSampleFilter =
+    SubSampleFilterType::New();
+  subSampleFilter->SetInput( groupReader->GetGroup() );
+  subSampleFilter->SetSampling( 20 );
   try
     {
-    subSampleTubeTreeFilter->Update();
+    subSampleFilter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -134,7 +133,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
     RegistrationHelperType::New();
 
   registrationHelper->SetFixedImage( blurFilters[2]->GetOutput() );
-  registrationHelper->SetMovingSpatialObject( subSampleTubeTreeFilter->GetOutput() );
+  registrationHelper->SetMovingSpatialObject( subSampleFilter->GetOutput() );
   registrationHelper->SetRegistration(RegistrationHelperType::RegistrationMethodEnumType::RIGID);
 
   try
@@ -157,8 +156,8 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   TransformType::Pointer inverseTransform = TransformType::New();
   outputTransform->GetInverse( inverseTransform );
 
-  itk::Matrix< double, Dimension, Dimension > rotationMatrix;
-  itk::Vector< double, Dimension > translation;
+  itk::Matrix< double, ObjectDimension, ObjectDimension > rotationMatrix;
+  itk::Vector< double, ObjectDimension > translation;
   rotationMatrix = outputTransform->GetMatrix();
   translation = outputTransform->GetTranslation();
 
@@ -196,7 +195,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
 
   // Transform the input tubes.
   TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
-  transformFilter->SetInput( vesselReader->GetGroup() );
+  transformFilter->SetInput( groupReader->GetGroup() );
   transformFilter->SetTransform( outputTransform.GetPointer() );
   std::cout << "Outputting transformed tubes...";
   try
@@ -211,7 +210,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   std::cout << " done.\n";
 
   // Write the transformed tube to file.
-  typedef itk::SpatialObjectWriter< Dimension > SOWriterType;
+  typedef itk::SpatialObjectWriter< ObjectDimension > SOWriterType;
   SOWriterType::Pointer tubesWriter = SOWriterType::New();
   tubesWriter->SetInput( transformFilter->GetOutput() );
   tubesWriter->SetFileName( outputTubes );

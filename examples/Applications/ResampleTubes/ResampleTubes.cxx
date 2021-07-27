@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -39,14 +38,16 @@ limitations under the License.
 #include "ResampleTubesCLP.h"
 
 template< unsigned int Dimension >
-void WriteOutput( typename itk::GroupSpatialObject<Dimension>::Pointer
-  tubesGroup, const char * fileName )
+void WriteOutput( const itk::SpatialObject<Dimension> * soOutputP,
+ const char * fileName )
 {
   typedef itk::SpatialObjectWriter< Dimension > SpatialObjectWriterType;
 
+  typename itk::SpatialObject<Dimension>::ConstPointer soOutput = soOutputP;
+
   typename SpatialObjectWriterType::Pointer writer =
     SpatialObjectWriterType::New();
-  writer->SetInput( tubesGroup );
+  writer->SetInput( soOutput );
   writer->SetFileName( fileName );
   writer->Update();
 }
@@ -56,9 +57,10 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef itk::tube::ResampleTubesFilter< Dimension > FilterType;
+  typedef itk::tube::ResampleTubesFilter<Dimension> FilterType;
+  typedef itk::GroupSpatialObject<Dimension> GroupType;
+
   typename FilterType::Pointer filter = FilterType::New();
-  typedef typename FilterType::TubeGroupType   GroupSpatialObjectType;
 
   double progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
@@ -70,8 +72,7 @@ int DoIt( int argc, char * argv[] )
 
   // Read in the tubes
   timeCollector.Start( "Read tubes" );
-  typename GroupSpatialObjectType::Pointer tubesGroup =
-    GroupSpatialObjectType::New();
+  typename GroupType::Pointer inputGroup = GroupType::New();
 
   typedef itk::SpatialObjectReader< Dimension > SpatialObjectReaderType;
   typename SpatialObjectReaderType::Pointer reader =
@@ -79,39 +80,12 @@ int DoIt( int argc, char * argv[] )
   reader->SetFileName( inputTubeFile.c_str() );
   reader->Update();
 
-  tubesGroup = reader->GetGroup();
-  if( tubesGroup.IsNotNull() )
-    {
-    /*
-    if( true )
-      {
-      typedef typename FilterType::TubeSpatialObjectType TubeSpatialObjectType;
-      char soTypeName[80];
-      strcpy( soTypeName, "TubeSpatialObject" );
-      typename TubeSpatialObjectType::ChildrenListPointer tubeList =
-        tubesGroup->GetChildren( tubesGroup->GetMaximumDepth(),
-          soTypeName );
-      typename TubeSpatialObjectType::ChildrenListType::iterator it =
-        tubeList->begin();
-      while( it != tubeList->end() )
-        {
-        auto itP = static_cast<TubeSpatialObjectType *>(it->GetPointer())
-          ->GetPoints().rbegin();
-        std::cout << "o1   " << itP->GetPositionInObjectSpace() << std::endl;
-        ++itP;
-        std::cout << "o2   " << itP->GetPositionInObjectSpace() << std::endl;
-        ++itP;
-        std::cout << "o3   " << itP->GetPositionInObjectSpace() << std::endl;
-        ++it;
-        }
-      tubeList->clear();
-      delete tubeList;
-      }
-    */
+  inputGroup = reader->GetGroup();
+  inputGroup->Update();
 
-    tubesGroup->Update();
-    filter->SetInput( tubesGroup );
-    filter->SetInputSpatialObject( tubesGroup );
+  if( inputGroup.IsNotNull() )
+    {
+    filter->SetInput( inputGroup );
     }
   else
     {
@@ -171,9 +145,6 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Run Filter" );
   filter->Update();
   timeCollector.Stop( "Run Filter" );
-
-  //std::cout << "Output # of children = "
-    //<< filter->GetOutput()->GetNumberOfChildren() << std::endl;
 
   progress = 0.9;
   progressReporter.Report( progress );

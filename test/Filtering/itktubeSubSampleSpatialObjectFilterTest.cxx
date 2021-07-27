@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -21,12 +20,12 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
+#include "itktubeSubSampleSpatialObjectFilter.h"
 
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectWriter.h>
 
-int itktubeSubSampleTubeTreeSpatialObjectFilterTest( int argc, char * argv[] )
+int itktubeSubSampleSpatialObjectFilterTest( int argc, char * argv[] )
 {
   if( argc < 3 )
     {
@@ -62,16 +61,15 @@ int itktubeSubSampleTubeTreeSpatialObjectFilterTest( int argc, char * argv[] )
     << std::endl;
 
   // Sub-sample the tube tree.
-  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< GroupSpatialObjectType,
-    TubeSpatialObjectType >
-      SubSampleTubeTreeFilterType;
-  SubSampleTubeTreeFilterType::Pointer subSampleTubeTreeFilter =
-    SubSampleTubeTreeFilterType::New();
-  subSampleTubeTreeFilter->SetInput( reader->GetGroup() );
+  typedef itk::tube::SubSampleSpatialObjectFilter<>
+      SubSampleFilterType;
+  SubSampleFilterType::Pointer subSampleFilter =
+    SubSampleFilterType::New();
+  subSampleFilter->SetInput( reader->GetGroup() );
 
   const unsigned int sampling = 100;
-  subSampleTubeTreeFilter->SetSampling( sampling );
-  if( subSampleTubeTreeFilter->GetSampling() != sampling )
+  subSampleFilter->SetSampling( sampling );
+  if( subSampleFilter->GetSampling() != sampling )
     {
     std::cerr << "Sampling did not get set correctly." << std::endl;
     return EXIT_FAILURE;
@@ -81,12 +79,12 @@ int itktubeSubSampleTubeTreeSpatialObjectFilterTest( int argc, char * argv[] )
   typedef itk::SpatialObjectWriter< Dimension > WriterType;
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputTubeNetwork );
-  writer->SetInput( subSampleTubeTreeFilter->GetOutput() );
+  writer->SetInput( subSampleFilter->GetOutput() );
   try
     {
     // Currently, there is a bug in the SpatialObjectWriter that it does not do
     // a pipeline update on its inputs.
-    subSampleTubeTreeFilter->Update();
+    subSampleFilter->Update();
     writer->Update();
     }
   catch( itk::ExceptionObject & error )

@@ -20,11 +20,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeSubSampleTubeSpatialObjectFilter_h
-#define __itktubeSubSampleTubeSpatialObjectFilter_h
+#ifndef __itktubeSubSampleSpatialObjectFilter_h
+#define __itktubeSubSampleSpatialObjectFilter_h
 
-#include "itkTubeSpatialObject.h"
 #include "itktubeSpatialObjectFilter.h"
+#include "itkTubeSpatialObject.h"
 
 namespace itk
 {
@@ -32,63 +32,71 @@ namespace itk
 namespace tube
 {
 
-/** \class SubSampleTubeSpatialObjectFilter
- * \brief Sub-sample points from a tube.
+/** \class SubSampleSpatialObjectFilter
+ * \brief Sub-sample objects within a SpatialObject hierarchy.
  *
- * The input tube are sub-sampled by the \c Sampling
- * ( an integer greater or equal to one ).  The beginning and end
- * points of the tube are always included.
- *
- * \sa SubSampleTubeTreeSpatialObjectFilter
+ * The input to this SpatialObjectFilter can be a single SpatialObject
+ * or a hierarchy of SpatialObject's that contain objects to be sub-sampled.
+ * All supported SpatialObjects in the output hierarchy will be sub-sampled by
+ * the \c Sampling factor.  Non-supported spatial objects are passed to the
+ * output unchanged.
  */
-template< unsigned int ObjectDimension >
-class SubSampleTubeSpatialObjectFilter
+template< unsigned int ObjectDimension=3 >
+class SubSampleSpatialObjectFilter
   : public SpatialObjectFilter< ObjectDimension >
 {
 public:
   /** Standard class typedefs. */
-  typedef SubSampleTubeSpatialObjectFilter          Self;
+  typedef SubSampleSpatialObjectFilter              Self;
   typedef SpatialObjectFilter< ObjectDimension >    Superclass;
   typedef SmartPointer< Self >                      Pointer;
   typedef SmartPointer< const Self >                ConstPointer;
 
-  typedef TubeSpatialObject<ObjectDimension>        TubeSpatialObjectType;
+  typedef SpatialObject<ObjectDimension>            SpatialObjectType;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro( SubSampleTubeSpatialObjectFilter,
+  itkTypeMacro( SubSampleSpatialObjectFilter,
     SpatialObjectFilter );
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
   /** Set the sampling factor.  The output points taken every sampling
-   * factor from the input points. */
-  itkSetClampMacro( Sampling, SizeValueType, 1,
-    NumericTraits< SizeValueType >::max() );
+  * factor from the input points. */
+  itkSetClampMacro( Sampling, SizeValueType, 1, NumericTraits<
+    SizeValueType >::max() );
   itkGetConstMacro( Sampling, SizeValueType );
 
 protected:
-  SubSampleTubeSpatialObjectFilter( void );
-  virtual ~SubSampleTubeSpatialObjectFilter( void );
+  typedef TubeSpatialObject< ObjectDimension > TubeSpatialObjectType;
+
+  SubSampleSpatialObjectFilter( void );
+  virtual ~SubSampleSpatialObjectFilter( void );
 
   virtual void GenerateData( void ) override;
 
+  /** Sub-sample at the at a given level, then sub-sample their
+  * children. */
+  virtual void SubSampleLevel( const SpatialObjectType * input,
+    typename SpatialObjectType::Pointer output, bool graftOutput=false );
+
 private:
   // purposely not implemented
-  SubSampleTubeSpatialObjectFilter( const Self & );
+  SubSampleSpatialObjectFilter( const Self & );
+
   // purposely not implemented
   void operator=( const Self & );
 
   SizeValueType m_Sampling;
 
-}; // End class SubSampleTubeSpatialObjectFilter
+}; // End class SubSampleSpatialObjectFilter
 
 } // End namespace tube
 
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeSubSampleTubeSpatialObjectFilter.hxx"
+#include "itktubeSubSampleSpatialObjectFilter.hxx"
 #endif
 
-#endif // End !defined( __itktubeSubSampleTubeSpatialObjectFilter_h )
+#endif // End !defined( __itktubeSubSampleSpatialObjectFilter_h )

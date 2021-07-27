@@ -48,7 +48,7 @@ set( tubeFilteringTests_SRCS
   itktubeStructureTensorRecursiveGaussianImageFilterTest.cxx
   itktubeStructureTensorRecursiveGaussianImageFilterTestNew.cxx
   itktubeSubSampleTubeSpatialObjectFilterTest.cxx
-  itktubeSubSampleTubeTreeSpatialObjectFilterTest.cxx
+  itktubeSubSampleSpatialObjectFilterTest.cxx
   itktubeTortuositySpatialObjectFilterTest.cxx
   itktubeTubeEnhancingDiffusion2DImageFilterTest.cxx
   tubeTubeMathFiltersTest.cxx )
@@ -179,11 +179,11 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/itkSubSampleTubeSpatialObjectFilterTest.tre )
 
 itk_add_test(
-  NAME itktubeSubSampleTubeTreeSpatialObjectFilterTest
+  NAME itktubeSubSampleSpatialObjectFilterTest
   COMMAND tubeFilteringTestDriver
-    itktubeSubSampleTubeTreeSpatialObjectFilterTest
+    itktubeSubSampleSpatialObjectFilterTest
       DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
-      ${ITK_TEST_OUTPUT_DIR}/itkSubSampleTubeTreeSpatialObjectFilterTest.tre )
+      ${ITK_TEST_OUTPUT_DIR}/itkSubSampleSpatialObjectFilterTest.tre )
 
 itk_add_test(
   NAME itktubeTubeEnhancingDiffusion2DImageFilterTest

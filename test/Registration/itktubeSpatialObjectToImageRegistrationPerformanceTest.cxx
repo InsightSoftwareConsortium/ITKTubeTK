@@ -21,7 +21,7 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeSpatialObjectToImageRegistrationHelper.h"
-#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
+#include "itktubeSubSampleSpatialObjectFilter.h"
 
 #include <itkImageFileReader.h>
 #include <itkSpatialObjectReader.h>
@@ -106,14 +106,14 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
-              << " Input_Image " << "Input_Vessel " << "Output_Results"
+              << " Input_Image " << "Input_group " << "Output_Results"
               << std::endl;
     return EXIT_FAILURE;
     }
 
   typedef itk::TubeSpatialObject< 3 >                    TubeType;
-  typedef itk::GroupSpatialObject<3>                     TubeNetType;
-  typedef itk::SpatialObjectReader<3>                    TubeNetReaderType;
+  typedef itk::GroupSpatialObject<3>                     GroupType;
+  typedef itk::SpatialObjectReader<3>                    GroupReaderType;
   typedef itk::Image<double, 3>                          ImageType;
   typedef itk::ImageFileReader<ImageType>                ImageReaderType;
   typedef itk::tube::SpatialObjectToImageRegistrationHelper<3, ImageType>
@@ -161,12 +161,12 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
     return EXIT_FAILURE;
     }
 
-  // read vessel
-  TubeNetReaderType::Pointer vesselReader = TubeNetReaderType::New();
-  vesselReader->SetFileName( argv[2] );
+  // read group
+  GroupReaderType::Pointer groupReader = GroupReaderType::New();
+  groupReader->SetFileName( argv[2] );
   try
     {
-    vesselReader->Update();
+    groupReader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -174,16 +174,16 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
     return EXIT_FAILURE;
     }
 
-  // subsample points in vessel
-  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
-    SubSampleTubeNetFilterType;
-  SubSampleTubeNetFilterType::Pointer subSampleTubeNetFilter =
-    SubSampleTubeNetFilterType::New();
-  subSampleTubeNetFilter->SetInput( vesselReader->GetGroup() );
-  subSampleTubeNetFilter->SetSampling( 30 );
+  // subsample points in group
+  typedef itk::tube::SubSampleSpatialObjectFilter<>
+    SubSampleFilterType;
+  SubSampleFilterType::Pointer subSampleFilter =
+    SubSampleFilterType::New();
+  subSampleFilter->SetInput( groupReader->GetGroup() );
+  subSampleFilter->SetSampling( 30 );
   try
     {
-    subSampleTubeNetFilter->Update();
+    subSampleFilter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -191,7 +191,7 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
     return EXIT_FAILURE;
     }
 
-  // register the vessel and the image
+  // register the group and the image
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer randGenerator
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
   randGenerator->Initialize( 137593424 );
@@ -201,7 +201,7 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
     RegistrationHelperType::New();
 
   registrationHelper->SetFixedImage( blurFilters[2]->GetOutput() );
-  registrationHelper->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
+  registrationHelper->SetMovingSpatialObject( subSampleFilter->GetOutput() );
 
   // Set Optimizer parameters.
   registrationHelper->SetExpectedOffsetMagnitude(3);

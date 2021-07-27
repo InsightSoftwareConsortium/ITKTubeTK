@@ -153,19 +153,19 @@ public:
   void ComputeSubsampledPoints( void );
   void ComputeSubsampledPointsWeights( void );
 
-  itkSetMacro( SubsampledSingularPoints, SingularPointListType );
+  //itkSetMacro( SubsampledSingularPoints, SingularPointListType );
   itkGetConstMacro( SubsampledSingularPoints, SingularPointListType );
-  itkSetMacro( SubsampledSingularPointsWeights, SingularPointWeightListType );
+  //itkSetMacro( SubsampledSingularPointsWeights, SingularPointWeightListType );
   itkGetConstMacro( SubsampledSingularPointsWeights, SingularPointWeightListType );
   
-  itkSetMacro( SubsampledTubePoints, TubePointListType );
+  //itkSetMacro( SubsampledTubePoints, TubePointListType );
   itkGetConstMacro( SubsampledTubePoints, TubePointListType );
-  itkSetMacro( SubsampledTubePointsWeights, TubePointWeightListType );
+  //itkSetMacro( SubsampledTubePointsWeights, TubePointWeightListType );
   itkGetConstMacro( SubsampledTubePointsWeights, TubePointWeightListType );
   
-  itkSetMacro( SubsampledSurfacePoints, SurfacePointListType );
+  //itkSetMacro( SubsampledSurfacePoints, SurfacePointListType );
   itkGetConstMacro( SubsampledSurfacePoints, SurfacePointListType );
-  itkSetMacro( SubsampledSurfacePointsWeights, SurfacePointWeightListType );
+  //itkSetMacro( SubsampledSurfacePointsWeights, SurfacePointWeightListType );
   itkGetConstMacro( SubsampledSurfacePointsWeights, SurfacePointWeightListType );
   
   TransformPointer GetTransform( void ) const

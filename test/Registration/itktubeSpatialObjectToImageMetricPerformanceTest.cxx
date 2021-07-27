@@ -22,7 +22,7 @@ limitations under the License.
 
 #include "itktubePointBasedSpatialObjectToImageMetric.h"
 
-#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
+#include "itktubeSubSampleSpatialObjectFilter.h"
 
 #include <itkImageFileReader.h>
 #include <itkMemoryProbesCollectorBase.h>
@@ -87,15 +87,15 @@ int itktubeSpatialObjectToImageMetricPerformanceTest( int argc, char * argv[] )
     }
 
   // subsample points in vessel
-  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< GroupType, TubeType >
-    SubSampleTubeNetFilterType;
-  SubSampleTubeNetFilterType::Pointer subSampleTubeNetFilter =
-    SubSampleTubeNetFilterType::New();
-  subSampleTubeNetFilter->SetInput( tubeReader->GetGroup() );
-  subSampleTubeNetFilter->SetSampling( 30 );
+  typedef itk::tube::SubSampleSpatialObjectFilter<>
+    SubSampleFilterType;
+  SubSampleFilterType::Pointer subSampleFilter =
+    SubSampleFilterType::New();
+  subSampleFilter->SetInput( tubeReader->GetGroup() );
+  subSampleFilter->SetSampling( 30 );
   try
     {
-    subSampleTubeNetFilter->Update();
+    subSampleFilter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -113,7 +113,7 @@ int itktubeSpatialObjectToImageMetricPerformanceTest( int argc, char * argv[] )
   TransformType::ParametersType parameters = transform->GetParameters();
 
   metric->SetFixedImage( imageReader->GetOutput() );
-  metric->SetMovingSpatialObject ( subSampleTubeNetFilter->GetOutput() );
+  metric->SetMovingSpatialObject ( subSampleFilter->GetOutput() );
   metric->SetTransform( transform.GetPointer() );
 
   // Add a time probe

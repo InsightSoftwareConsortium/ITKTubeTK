@@ -58,24 +58,24 @@ void
 PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
 ::GenerateData( void )
 {
+  SpatialObject<TDimension>::ConstPointer inputSO = this->GetInput();
+  SpatialObject<TDimension>::Pointer outputSO = this->GetOutput();
 
-  typename SpatialObjectType::Pointer output = this->GetInput()->Clone();
-  this->Transform( this->GetInput(), output );
+  Transform(inputSO, outputSO);
 
-  SpatialObjectType * soOutput =
-    static_cast<SpatialObjectType *>( this->ProcessObject::GetOutput(0) );
-  //soOutput->Set( output.GetPointer() );
-
-  typedef typename SpatialObject< TDimension >::ChildrenListType
-    ChildrenListType;
-  ChildrenListType * children = this->GetInput()->GetChildren();
-  typename ChildrenListType::const_iterator it = children->begin();
+  typedef typename SpatialObject< TDimension >::ChildrenConstListType
+    ChildrenConstListType;
+  ChildrenConstListType * children = this->GetInput()->GetConstChildren();
+  typename ChildrenConstListType::iterator it = children->begin();
   while( it != children->end() )
     {
-    this->UpdateLevel( *it, output );
+    SpatialObject<TDimension>::Pointer tmpSO = (*it)->Clone();
+    this->UpdateLevel( *it, outputSO );
     ++it;
     }
   delete children;
+
+  this->GraftOutput( outputSO );
 }
 
 /**
@@ -84,19 +84,12 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
 template< class TTransformType, unsigned int TDimension >
 void
 PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
-::UpdateLevel( SpatialObject< TDimension > * inputSO,
+::UpdateLevel( const SpatialObject< TDimension > * inputSO,
   SpatialObject< TDimension > * parentSO )
 {
-  typename SpatialObject< TDimension >::Pointer outputSO =
-    inputSO->Clone();
-  if( outputSO.IsNull() )
-    {
-    itkExceptionMacro( << "Could not create an instance of "
-      << outputSO->GetTypeName() << ". The usual cause of this error is not"
-      << "registering the SpatialObject with SpatialFactory." );
-    }
+  SpatialObject<TDimension>::Pointer outputSO = inputSO->Clone();
 
-  this->Transform( inputSO, outputSO );
+  Transform(inputSO, outputSO);
 
   parentSO->AddChild( outputSO );
 
@@ -113,154 +106,234 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
 }
 
 template< class TTransformType, unsigned int TDimension >
-void
+bool
 PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
 ::Transform( const SpatialObject< TDimension > * inputSO,
   SpatialObject< TDimension > * outputSO )
 {
-  // We make the copy and sub-sample if it is a tube.
+
+  const TubeType * inputSOAsTube =
+    dynamic_cast< const TubeSpatialObject<TDimension> * >(inputSO);
+  if( inputSOAsTube != nullptr )
+  {
+    TubeSpatialObject< TDimension > * outputSOAsTube =
+      dynamic_cast<TubeSpatialObject<TDimension>*>(outputSO);
+    this->TransformTube( inputSOAsTube, outputSOAsTube );
+    return true;
+  }
+
+  const SurfaceType * inputSOAsSurface =
+    dynamic_cast< const SurfaceSpatialObject<TDimension> * >(inputSO);
+  if( inputSOAsSurface != nullptr )
+  {
+    SurfaceSpatialObject< TDimension > * outputSOAsSurface =
+      dynamic_cast<SurfaceSpatialObject<TDimension>*>(outputSO);
+    this->TransformSurface( inputSOAsSurface, outputSOAsSurface );
+    return true;
+  }
+
   const PointBasedType * inputSOAsPointBased =
-    dynamic_cast< const PointBasedType * >( inputSO );
-  if( inputSOAsPointBased != NULL )
+    dynamic_cast< const PointBasedSpatialObject<TDimension> * >(inputSO);
+  if( inputSOAsPointBased != nullptr )
+  {
+    PointBasedSpatialObject< TDimension > * outputSOAsPointBased =
+      dynamic_cast<PointBasedSpatialObject<TDimension>*>(outputSO);
+    this->TransformPointBased( inputSOAsPointBased, outputSOAsPointBased );
+    return true;
+  }
+
+  return false;
+}
+
+template< class TTransformType, unsigned int TDimension >
+void
+PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
+::TransformPointBased( const PointBasedSpatialObject< TDimension > * inputSO,
+  PointBasedSpatialObject< TDimension > * outputSO )
+{
+  Point<double, TDimension> objectPoint;
+  Point<double, TDimension> transformedObjectPoint;
+
+  outputSO->CopyInformation( inputSO );
+  outputSO->Clear();
+
+  if( m_OutputObjectToParentTransform.IsNotNull() )
     {
-    PointBasedType * outputSOAsPointBased = dynamic_cast< PointBasedType * >(
-      outputSO );
+    typename SpatialObjectTransformType::Pointer tfm =
+      SpatialObjectTransformType::New();
+    tfm->SetIdentity();
+    tfm->SetMatrix( m_OutputObjectToParentTransform->GetMatrix() );
+    tfm->SetOffset( m_OutputObjectToParentTransform->GetOffset() );
+    outputSO->SetObjectToParentTransform( tfm );
+    }
 
-    Point<double, TDimension> worldPoint;
-    Point<double, TDimension> transformedWorldPoint;
+  typedef typename PointBasedType::SpatialObjectPointListType SpatialObjectPointListType;
+  SpatialObjectPointListType pointBasedPointList = inputSO->GetPoints();
+  typename SpatialObjectPointListType::const_iterator pointBasedPointIterator =
+    pointBasedPointList.begin();
 
-    //inputSOAsPointBased->Update();
+  while( pointBasedPointIterator != pointBasedPointList.end() )
+    {
+    objectPoint = ( *pointBasedPointIterator ).GetPositionInObjectSpace();
+ 
+    transformedObjectPoint = m_Transform->TransformPoint( objectPoint );
+ 
+    SpatialObjectPoint<TDimension> pnt;
+ 
+    pnt.SetId( pointBasedPointIterator->GetId() );
+    pnt.SetColor( pointBasedPointIterator->GetColor() );
+ 
+    pnt.SetPositionInObjectSpace( transformedObjectPoint );
+ 
+    outputSO->AddPoint( pnt );
+ 
+    ++pointBasedPointIterator;
+    }
+}
 
-    outputSOAsPointBased->CopyInformation( inputSOAsPointBased );
-    outputSOAsPointBased->Clear();
+template< class TTransformType, unsigned int TDimension >
+void
+PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
+::TransformTube( const TubeSpatialObject< TDimension > * inputSO,
+  TubeSpatialObject< TDimension > * outputSO )
+{
+  Point<double, TDimension> objectPoint;
+  Point<double, TDimension> transformedObjectPoint;
 
-    if( m_OutputObjectToParentTransform.IsNotNull() )
+  outputSO->Clear();
+  outputSO->CopyInformation( inputSO );
+
+  if( m_OutputObjectToParentTransform.IsNotNull() )
+    {
+    typename SpatialObjectTransformType::Pointer tfm =
+      SpatialObjectTransformType::New();
+    tfm->SetIdentity();
+    tfm->SetMatrix( m_OutputObjectToParentTransform->GetMatrix() );
+    tfm->SetOffset( m_OutputObjectToParentTransform->GetOffset() );
+    outputSO->SetObjectToParentTransform( tfm );
+    }
+
+  typedef typename TubeType::TubePointListType      TubePointListType;
+  TubePointListType tubePointList = inputSO->GetPoints();
+  typename TubePointListType::const_iterator tubePointIterator =
+    tubePointList.begin();
+
+  while( tubePointIterator != tubePointList.end() )
+    {
+    objectPoint = ( *tubePointIterator ).GetPositionInObjectSpace();
+
+    transformedObjectPoint = m_Transform->TransformPoint( objectPoint );
+
+    TubeSpatialObjectPoint<TDimension> pnt;
+
+    pnt.SetId( tubePointIterator->GetId() );
+    pnt.SetColor( tubePointIterator->GetColor() );
+
+    pnt.SetSpatialObject(outputSO);
+
+    pnt.SetPositionInObjectSpace( transformedObjectPoint );
+
+    // get both normals
+    typename TubeType::CovariantVectorType n1 = tubePointIterator
+      ->GetNormal1InObjectSpace();
+    typename TubeType::CovariantVectorType n2 = tubePointIterator
+      ->GetNormal2InObjectSpace();
+
+    // only try transformation of normals if both are non-zero
+    if( !n1.GetVnlVector().is_zero() && !n2.GetVnlVector().is_zero() )
       {
-      typename SpatialObjectTransformType::Pointer tfm =
-        SpatialObjectTransformType::New();
-      tfm->SetIdentity();
-      tfm->SetMatrix( m_OutputObjectToParentTransform->GetMatrix() );
-      tfm->SetOffset( m_OutputObjectToParentTransform->GetOffset() );
-      outputSO->SetObjectToParentTransform( tfm );
+      n1 = m_Transform->TransformCovariantVector( n1, objectPoint );
+      n2 = m_Transform->TransformCovariantVector( n2, objectPoint );
+      n1.Normalize();
+      n2.Normalize();
+      pnt.SetNormal1InObjectSpace( n1 );
+      pnt.SetNormal2InObjectSpace( n2 );
       }
 
-    //inputSOAsPointBased->Update();
-
-    const TubeType * inputSOAsTube =
-      dynamic_cast< const TubeType * >( inputSO );
-    if( inputSOAsTube != NULL )
+    typename TubeType::VectorType tang = tubePointIterator->
+      GetTangentInObjectSpace();
+    if( !tang.GetVnlVector().is_zero() )
       {
-      TubeType * outputSOAsTube = dynamic_cast< TubeType * >( outputSO );
-      typedef typename TubeType::TubePointListType      TubePointListType;
-      TubePointListType tubePointList = inputSOAsTube->GetPoints();
-      typename TubePointListType::const_iterator tubePointIterator =
-        tubePointList.begin();
-
-      while( tubePointIterator != tubePointList.end() )
-        {
-        worldPoint = ( *tubePointIterator ).GetPositionInWorldSpace();
-
-        transformedWorldPoint = m_Transform->TransformPoint( worldPoint );
-
-        TubeSpatialObjectPoint<TDimension> pnt;
-
-        pnt.SetId( tubePointIterator->GetId() );
-        pnt.SetColor( tubePointIterator->GetColor() );
-
-        pnt.SetPositionInWorldSpace( transformedWorldPoint );
-
-        // get both normals
-        typename TubeType::CovariantVectorType n1 = tubePointIterator
-          ->GetNormal1InWorldSpace();
-        typename TubeType::CovariantVectorType n2 = tubePointIterator
-          ->GetNormal2InWorldSpace();
-
-        // only try transformation of normals if both are non-zero
-        if( !n1.GetVnlVector().is_zero() && !n2.GetVnlVector().is_zero() )
-          {
-          n1 = m_Transform->TransformCovariantVector( n1, worldPoint );
-          n2 = m_Transform->TransformCovariantVector( n2, worldPoint );
-          n1.Normalize();
-          n2.Normalize();
-          pnt.SetNormal1InWorldSpace( n1 );
-          pnt.SetNormal2InWorldSpace( n2 );
-          }
-
-        typename TubeType::VectorType tang = tubePointIterator->
-          GetTangentInWorldSpace();
-        if( !tang.GetVnlVector().is_zero() )
-          {
-          tang = m_Transform->TransformVector( tang, worldPoint );
-          tang.Normalize();
-          pnt.SetTangentInWorldSpace( tang );
-          }
-
-        typename TubeType::VectorType radi;
-        for( unsigned int i=0; i<TDimension; ++i )
-          {
-          radi[i] = tubePointIterator->GetRadiusInWorldSpace();
-          }
-        radi = m_Transform->TransformVector( radi, worldPoint );
-        pnt.SetRadiusInWorldSpace( radi[0] );
-
-        pnt.SetMedialness( ( *tubePointIterator ).GetMedialness() );
-        pnt.SetRidgeness( ( *tubePointIterator ).GetRidgeness() );
-        pnt.SetBranchness( ( *tubePointIterator ).GetBranchness() );
-
-        outputSOAsTube->AddPoint( pnt );
-
-        ++tubePointIterator;
-        }
+      tang = m_Transform->TransformVector( tang, objectPoint );
+      tang.Normalize();
+      pnt.SetTangentInObjectSpace( tang );
       }
-    else
+
+    typename TubeType::VectorType radi;
+    for( unsigned int i=0; i<TDimension; ++i )
       {
-      const SurfaceType * inputSOAsSurface = dynamic_cast< const SurfaceType * >( inputSO );
-      if( inputSOAsSurface != NULL )
-        {
-        SurfaceType * outputSOAsSurface = dynamic_cast< SurfaceType * >( 
-          outputSO );
-        typedef typename SurfaceType::SurfacePointListType SurfacePointListType;
-        SurfacePointListType surfacePointList = inputSOAsSurface->GetPoints();
-        typename SurfacePointListType::const_iterator surfacePointIterator =
-          surfacePointList.begin();
-
-        while( surfacePointIterator != surfacePointList.end() )
-          {
-          worldPoint = ( *surfacePointIterator ).GetPositionInWorldSpace();
-  
-          transformedWorldPoint = m_Transform->TransformPoint( worldPoint );
-  
-          SurfaceSpatialObjectPoint<TDimension> pnt;
-  
-          pnt.SetId( surfacePointIterator->GetId() );
-          pnt.SetColor( surfacePointIterator->GetColor() );
-  
-          pnt.SetPositionInWorldSpace( transformedWorldPoint );
-  
-          // get normals
-          typename SurfaceType::CovariantVectorType n1 = surfacePointIterator
-            ->GetNormalInWorldSpace();
-  
-          // only try transformation of normals if both are non-zero
-          if( !n1.GetVnlVector().is_zero() )
-            {
-            n1 = m_Transform->TransformCovariantVector( n1, worldPoint );
-            n1.Normalize();
-            pnt.SetNormalInWorldSpace( n1 );
-            }
-  
-          outputSOAsSurface->AddPoint( pnt );
-  
-          ++surfacePointIterator;
-          }
-        }
-      else
-        {
-        std::cerr <<
-          "WARNING: Transforms currently only applied to Tubes and Surfaces. " 
-          << std::endl;
-        }
+      radi[i] = tubePointIterator->GetRadiusInObjectSpace();
       }
+    radi = m_Transform->TransformVector( radi, objectPoint );
+    pnt.SetRadiusInObjectSpace( radi[0] );
+
+    pnt.SetMedialness( ( *tubePointIterator ).GetMedialness() );
+    pnt.SetRidgeness( ( *tubePointIterator ).GetRidgeness() );
+    pnt.SetBranchness( ( *tubePointIterator ).GetBranchness() );
+
+    outputSO->AddPoint( pnt );
+
+    ++tubePointIterator;
+    }
+}
+
+
+template< class TTransformType, unsigned int TDimension >
+void
+PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
+::TransformSurface( const SurfaceSpatialObject< TDimension > * inputSO,
+  SurfaceSpatialObject< TDimension > * outputSO )
+{
+  // We make the copy and sub-sample if it is a tube.
+  Point<double, TDimension> objectPoint;
+  Point<double, TDimension> transformedObjectPoint;
+
+  outputSO->CopyInformation( inputSO );
+  outputSO->Clear();
+
+  if( m_OutputObjectToParentTransform.IsNotNull() )
+    {
+    typename SpatialObjectTransformType::Pointer tfm =
+      SpatialObjectTransformType::New();
+    tfm->SetIdentity();
+    tfm->SetMatrix( m_OutputObjectToParentTransform->GetMatrix() );
+    tfm->SetOffset( m_OutputObjectToParentTransform->GetOffset() );
+    outputSO->SetObjectToParentTransform( tfm );
+    }
+
+  typedef typename SurfaceType::SurfacePointListType SurfacePointListType;
+  SurfacePointListType surfacePointList = inputSO->GetPoints();
+  typename SurfacePointListType::const_iterator surfacePointIterator =
+    surfacePointList.begin();
+
+  while( surfacePointIterator != surfacePointList.end() )
+    {
+    objectPoint = ( *surfacePointIterator ).GetPositionInObjectSpace();
+ 
+    transformedObjectPoint = m_Transform->TransformPoint( objectPoint );
+ 
+    SurfaceSpatialObjectPoint<TDimension> pnt;
+ 
+    pnt.SetId( surfacePointIterator->GetId() );
+    pnt.SetColor( surfacePointIterator->GetColor() );
+ 
+    pnt.SetPositionInObjectSpace( transformedObjectPoint );
+ 
+    // get normals
+    typename SurfaceType::CovariantVectorType n1 = surfacePointIterator
+      ->GetNormalInObjectSpace();
+ 
+    // only try transformation of normals if both are non-zero
+    if( !n1.GetVnlVector().is_zero() )
+      {
+      n1 = m_Transform->TransformCovariantVector( n1, objectPoint );
+      n1.Normalize();
+      pnt.SetNormalInObjectSpace( n1 );
+      }
+ 
+    outputSO->AddPoint( pnt );
+ 
+    ++surfacePointIterator;
     }
 }
 

@@ -21,7 +21,7 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubePointBasedSpatialObjectToImageMetric.h"
-#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
+#include "itktubeSubSampleSpatialObjectFilter.h"
 
 #include <itkImageFileReader.h>
 #include <itkSpatialObjectReader.h>
@@ -49,14 +49,13 @@ int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
 
   typedef double            FloatType;
   static const unsigned int ImageDimension = 3;
-  static const unsigned int TubeDimension = 3;
+  static const unsigned int ObjectDimension = 3;
 
   typedef itk::Image< FloatType, ImageDimension >         ImageType;
-  typedef itk::TubeSpatialObject< TubeDimension >         TubeType;
-  typedef itk::GroupSpatialObject< TubeDimension >        TubeNetType;
+  typedef itk::GroupSpatialObject< ObjectDimension >      GroupType;
 
   typedef itk::ImageFileReader< ImageType >               ImageReaderType;
-  typedef itk::SpatialObjectReader< TubeDimension >       TubeNetReaderType;
+  typedef itk::SpatialObjectReader< ObjectDimension >     GroupReaderType;
 
   typedef itk::tube::PointBasedSpatialObjectToImageMetric< 3, ImageType >
                                                           MetricType;
@@ -75,12 +74,12 @@ int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  // read tube ( spatialObject )
-  TubeNetReaderType::Pointer tubeReader = TubeNetReaderType::New();
-  tubeReader->SetFileName( argv[2] );
+  // read group ( spatialObject )
+  GroupReaderType::Pointer groupReader = GroupReaderType::New();
+  groupReader->SetFileName( argv[2] );
   try
     {
-    tubeReader->Update();
+    groupReader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -89,15 +88,15 @@ int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
     }
 
   // subsample points in vessel
-  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
-    SubSampleTubeNetFilterType;
-  SubSampleTubeNetFilterType::Pointer subSampleTubeNetFilter =
-    SubSampleTubeNetFilterType::New();
-  subSampleTubeNetFilter->SetInput( tubeReader->GetGroup() );
-  subSampleTubeNetFilter->SetSampling( 30 );
+  typedef itk::tube::SubSampleSpatialObjectFilter<>
+    SubSampleFilterType;
+  SubSampleFilterType::Pointer subSampleFilter =
+    SubSampleFilterType::New();
+  subSampleFilter->SetInput( groupReader->GetGroup() );
+  subSampleFilter->SetSampling( 30 );
   try
     {
-    subSampleTubeNetFilter->Update();
+    subSampleFilter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -115,7 +114,7 @@ int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
   TransformType::ParametersType parameters = transform->GetParameters();
 
   metric->SetFixedImage( imageReader->GetOutput() );
-  metric->SetMovingSpatialObject ( subSampleTubeNetFilter->GetOutput() );
+  metric->SetMovingSpatialObject ( subSampleFilter->GetOutput() );
   metric->SetTransform( transform );
   try
     {

@@ -184,7 +184,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
         ++pIter;
         }
       }
-    else if( currentSurface != NULL )
+    else if( currentSurface != nullptr )
       {
       const typename SurfaceType::SurfacePointListType & currentPoints =
         currentSurface->GetPoints();
@@ -672,6 +672,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       return false;
       }
     }
+  return true;
 }
 
 template< unsigned int ObjectDimension, class TFixedImage >
@@ -688,6 +689,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       return false;
       }
     }
+  return true;
 }
 
 template< unsigned int ObjectDimension, class TFixedImage >
@@ -704,6 +706,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       return false;
       }
     }
+  return true;
 }
 
 template< unsigned int ObjectDimension, class TFixedImage >
@@ -718,6 +721,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       return false;
       }
     }
+  return true;
 }
 
 } // End namespace tube

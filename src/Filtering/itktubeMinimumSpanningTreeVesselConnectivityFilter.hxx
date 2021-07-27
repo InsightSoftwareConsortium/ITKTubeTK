@@ -376,7 +376,6 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   TubePointerType inputRootTube = m_TubeIdToObjectMap[rootTubeId];
   TubePointerType rootTube = inputRootTube->Clone();
 
-  // TODO: make CopyInformation of itk::SpatialObject do this
   rootTube->GetObjectToParentTransform()->SetFixedParameters(
     inputRootTube->GetObjectToParentTransform()->GetFixedParameters() );
   rootTube->GetObjectToParentTransform()->SetParameters(
@@ -399,6 +398,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       }
     }
   outputTubeGroup->AddChild( rootTube );
+  rootTube->Update();
 
   // recusrively process all children in increasing order of connection weight
   int numChildren = 0;
@@ -424,7 +424,6 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     // get tube object
     TubePointerType curTube = eTop.targetTube->Clone();
 
-    // TODO: make CopyInformation of itk::SpatialObject do this
     curTube->GetObjectToParentTransform()->SetFixedParameters(
       eTop.targetTube->GetObjectToParentTransform()->GetFixedParameters() );
     curTube->GetObjectToParentTransform()->SetParameters(
@@ -488,10 +487,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
   // initialize output and copy metadata from input
   outputTubeGroup->Clear();
-
   outputTubeGroup->CopyInformation( inputTubeGroup );
 
-  // TODO: make CopyInformation of itk::SpatialObject do this
   outputTubeGroup->GetObjectToParentTransform()->SetFixedParameters(
     inputTubeGroup->GetObjectToParentTransform()->GetFixedParameters() );
   outputTubeGroup->GetObjectToParentTransform()->SetParameters(
@@ -531,7 +528,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     }
   else
     {
-    // push all tubes into a priority queue with outDegree as priotiry
+    // push all tubes into a priority queue with outDegree as priority
     for( typename TubeAdjacencyListGraphType::const_iterator
       itV = m_TubeGraph.begin(); itV != m_TubeGraph.end(); ++itV )
       {
@@ -597,7 +594,6 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       {
       TubePointerType curTube = pCurSourceTube->Clone();
 
-      // TODO: make CopyInformation of itk::SpatialObject do this
       curTube->GetObjectToParentTransform()->SetFixedParameters(
         pCurSourceTube->GetObjectToParentTransform()->GetFixedParameters() );
       curTube->GetObjectToParentTransform()->SetParameters(
@@ -622,6 +618,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     {
     AddRemainingTubes();
     }
+  TubeGroupType * outputTubeGroup = this->GetOutput();
+  outputTubeGroup->Update();
 }
 
 template< unsigned int VDimension >
