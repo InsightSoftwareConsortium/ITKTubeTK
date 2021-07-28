@@ -45,14 +45,14 @@ namespace tube
  * \brief Computes connectivity between tubes in a TRE file
  *
  */
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 class MinimumSpanningTreeVesselConnectivityFilter
   : public SpatialObjectToSpatialObjectFilter<
-    GroupSpatialObject< VDimension >, GroupSpatialObject< VDimension > >
+    GroupSpatialObject< ObjectDimension >, GroupSpatialObject< ObjectDimension > >
 {
 public:
   /** Standard class typedefs. */
-  typedef GroupSpatialObject< VDimension >      TubeGroupType;
+  typedef GroupSpatialObject< ObjectDimension >      TubeGroupType;
 
   typedef MinimumSpanningTreeVesselConnectivityFilter
                                                 Self;
@@ -61,7 +61,7 @@ public:
   typedef SmartPointer< Self >                  Pointer;
   typedef SmartPointer< const Self >            ConstPointer;
 
-  typedef TubeSpatialObject< VDimension > TubeType;
+  typedef TubeSpatialObject< ObjectDimension > TubeType;
   typedef typename TubeType::Pointer            TubePointerType;
   typedef typename TubeType::ConstPointer       TubeConstPointerType;
   typedef itk::IndexValueType                   TubeIdType;
