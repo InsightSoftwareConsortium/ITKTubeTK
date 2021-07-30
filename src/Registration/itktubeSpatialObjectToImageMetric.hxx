@@ -182,6 +182,26 @@ SpatialObjectToImageMetric<ObjectDimension, TFixedImage>::PrintSelf(std::ostream
   os << indent << "Transform:    " << m_Transform.GetPointer() << std::endl;
   os << indent << "Last Transform parameters = " << m_LastTransformParameters
     << std::endl;
+  if(m_UseMovingSpatialObjectMaskObject)
+    {
+    os << indent << "Use Moving Spatial Object Mask Object: True" << std::endl;
+    }
+  else
+    {
+    os << indent << "Use Moving Spatial Object Mask Object: False" << std::endl;
+    }
+  os << indent << "Moving Spatial Object Mask Object: "
+    << m_MovingSpatialObjectMaskObject.GetPointer() << std::endl;
+  if(m_UseFixedImageMaskObject)
+    {
+    os << indent << "Use Fixed Image Mask Object: True" << std::endl;
+    }
+  else
+    {
+    os << indent << "Use Fixed Image Mask Object: False" << std::endl;
+    }
+  os << indent << "Fixed Image Mask Object: "
+    << m_FixedImageMaskObject.GetPointer() << std::endl;
 }
 
 } // end namespace tube
