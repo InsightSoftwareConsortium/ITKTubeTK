@@ -82,12 +82,12 @@ public:
                                                    PointBasedSpatialObjectPointType;
 
   typedef PointBasedSpatialObject< ObjectDimension >
-                                                   SingularType;
-  typedef typename SingularType::SpatialObjectPointType
-                                                   SingularPointType;
-  typedef typename SingularType::SpatialObjectPointListType
-                                                   SingularPointListType;
-  typedef std::vector< double >                    SingularPointWeightListType;
+                                                   BlobType;
+  typedef typename BlobType::SpatialObjectPointType
+                                                   BlobPointType;
+  typedef typename BlobType::SpatialObjectPointListType
+                                                   BlobPointListType;
+  typedef std::vector< double >                    BlobPointWeightListType;
 
   typedef TubeSpatialObject< ObjectDimension >     TubeType;
   typedef typename TubeType::TubePointType         TubePointType;
@@ -153,10 +153,10 @@ public:
   void ComputeSubsampledPoints( void );
   void ComputeSubsampledPointsWeights( void );
 
-  //itkSetMacro( SubsampledSingularPoints, SingularPointListType );
-  itkGetConstMacro( SubsampledSingularPoints, SingularPointListType );
-  //itkSetMacro( SubsampledSingularPointsWeights, SingularPointWeightListType );
-  itkGetConstMacro( SubsampledSingularPointsWeights, SingularPointWeightListType );
+  //itkSetMacro( SubsampledBlobPoints, BlobPointListType );
+  itkGetConstMacro( SubsampledBlobPoints, BlobPointListType );
+  //itkSetMacro( SubsampledBlobPointsWeights, BlobPointWeightListType );
+  itkGetConstMacro( SubsampledBlobPointsWeights, BlobPointWeightListType );
   
   //itkSetMacro( SubsampledTubePoints, TubePointListType );
   itkGetConstMacro( SubsampledTubePoints, TubePointListType );
@@ -187,11 +187,11 @@ protected:
 
   bool IsValidMovingPoint( const TubePointType & inputPoint ) const;
   bool IsValidMovingPoint( const SurfacePointType & inputPoint ) const;
-  bool IsValidMovingPoint( const SingularPointType & inputPoint ) const;
+  bool IsValidMovingPoint( const BlobPointType & inputPoint ) const;
   bool IsValidFixedPoint( const FixedPointType & fixedPoint ) const;
 
   typename MovingSpatialObjectType::ChildrenConstListType *
-    GetPointBasedChildren( typename MovingSpatialObjectType::ConstPointer & parentSO,
+    GetPointBasedChildren( const MovingSpatialObjectType * parentSO,
       typename MovingSpatialObjectType::ChildrenConstListType * childrenSO=nullptr ) const;
 
 private:
@@ -215,8 +215,8 @@ private:
   MovingPointType  m_CenterOfRotation;
 
   /** Points with no tangets or normals */
-  SingularPointListType       m_SubsampledSingularPoints;
-  SingularPointWeightListType m_SubsampledSingularPointsWeights;
+  BlobPointListType          m_SubsampledBlobPoints;
+  BlobPointWeightListType    m_SubsampledBlobPointsWeights;
 
   /** Points with one tangent and two normals */
   TubePointListType          m_SubsampledTubePoints;

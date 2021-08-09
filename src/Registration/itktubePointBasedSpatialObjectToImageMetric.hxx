@@ -47,8 +47,8 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 
   m_CenterOfRotation.Fill( 0.0 );
 
-  m_SubsampledSingularPoints.clear();
-  m_SubsampledSingularPointsWeights.clear();
+  m_SubsampledBlobPoints.clear();
+  m_SubsampledBlobPointsWeights.clear();
   m_SubsampledTubePoints.clear();
   m_SubsampledTubePointsWeights.clear();
   m_SubsampledSurfacePoints.clear();
@@ -71,6 +71,9 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     {
     itkExceptionMacro( << "No tube/image net plugged in." );
     }
+  this->ComputeSubsampledPoints();
+  this->ComputeSubsampledPointsWeights();
+  this->ComputeCenterOfRotation();
 }
 
 
@@ -83,19 +86,19 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   m_MaximumNumberOfTubePoints = 0;
   m_MaximumNumberOfSurfacePoints = 0;
 
-  typename PointBasedSpatialObjectType::ChildrenListType * pbsoList =
+  typename PointBasedSpatialObjectType::ChildrenConstListType * pbsoList =
     this->GetPointBasedChildren( m_MovingSpatialObject );
-  typename PointBasedSpatialObjectType::ChildrenListType::const_iterator
+  typename PointBasedSpatialObjectType::ChildrenConstListType::const_iterator
     pbsoIter;
   for( pbsoIter = pbsoList->begin(); pbsoIter != pbsoList->end();
     ++pbsoIter )
     {
-    TubeType* currentTube =
-      dynamic_cast<TubeType*>((*pbsoIter).GetPointer());
-    SurfaceType* currentSurface =
-      dynamic_cast<SurfaceType*>((*pbsoIter).GetPointer());
-    PointBasedSpatialObjectType* currentSingular =
-      dynamic_cast<SingularObjectType*>((*pbsoIter).GetPointer());
+    const TubeType* currentTube =
+      dynamic_cast<const TubeType*>((*pbsoIter).GetPointer());
+    const SurfaceType* currentSurface =
+      dynamic_cast<const SurfaceType*>((*pbsoIter).GetPointer());
+    const PointBasedSpatialObjectType* currentBlob =
+      dynamic_cast<const BlobType*>((*pbsoIter).GetPointer());
     if( currentTube != nullptr )
       {
       const typename TubeType::TubePointListType & currentPoints =
@@ -126,8 +129,8 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       }
     else
       {
-      const typename SingularType::SpatialObjectPointListType &
-        currentPoints = currentSingular->GetPoints();
+      const typename BlobType::SpatialObjectPointListType &
+        currentPoints = currentBlob->GetPoints();
       auto pIter = currentPoints.begin();
       while( pIter != currentPoints.end() )
         {
@@ -163,7 +166,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       dynamic_cast<const TubeType*>((*pbsoIter).GetPointer());
     const SurfaceType* currentSurface =
       dynamic_cast<const SurfaceType*>((*pbsoIter).GetPointer());
-    const PointBasedSpatialObjectType* currentSingular =
+    const PointBasedSpatialObjectType* currentBlob =
       dynamic_cast<const PointBasedSpatialObjectType*>((*pbsoIter).GetPointer());
     if( currentTube != nullptr )
       {
@@ -205,8 +208,8 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       }
     else
       {
-      const typename SingularType::SpatialObjectPointListType &
-        currentPoints = currentSingular->GetPoints();
+      const typename BlobType::SpatialObjectPointListType &
+        currentPoints = currentBlob->GetPoints();
       auto pIter = currentPoints.begin();
       while( pIter != currentPoints.end() )
         {
@@ -238,12 +241,14 @@ void
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::ComputeSubsampledPoints( void ) 
 {
+  std::cout << "ComputeSubSampledPoints" << std::endl;
+
   unsigned int maxPointCount = this->GetMaximumNumberOfPoints();
 
   unsigned int targetPointCount = maxPointCount * m_SamplingRatio;
   
-  m_SubsampledSingularPoints.clear();
-  m_SubsampledSingularPointsWeights.clear();
+  m_SubsampledBlobPoints.clear();
+  m_SubsampledBlobPointsWeights.clear();
   m_SubsampledTubePoints.clear();
   m_SubsampledTubePointsWeights.clear();
   m_SubsampledSurfacePoints.clear();
@@ -251,7 +256,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 
   unsigned int pointCount = 0;
   typename PointBasedSpatialObjectType::ChildrenConstListType * pbsoList =
-    this->GetPointBasedSpatialObjects();
+    this->GetPointBasedChildren( m_MovingSpatialObject );
   auto pbsoIter = pbsoList->begin();
   while( pbsoIter != pbsoList->end() )
     {
@@ -259,11 +264,10 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       dynamic_cast<const TubeType*>((*pbsoIter).GetPointer());
     const SurfaceType* currentSurface =
       dynamic_cast<const SurfaceType*>((*pbsoIter).GetPointer());
-    const PointBasedSpatialObjectType* currentSingular =
-      dynamic_cast<const SingularType*>((*pbsoIter).GetPointer());
+    const PointBasedSpatialObjectType* currentBlob =
+      dynamic_cast<const BlobType*>((*pbsoIter).GetPointer());
     unsigned int preCount;
     unsigned int postCount;
-    PointIteratorType pointIter = currentPoints.begin();
     if( currentTube != nullptr )
       {
       const TubePointListType & currentPoints = currentTube->GetPoints();
@@ -302,12 +306,12 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       }
     else
       {
-      const SingularPointListType & currentPoints = currentSingular->GetPoints();
+      const BlobPointListType & currentPoints = currentBlob->GetPoints();
       auto pointIter = currentPoints.begin();
       while( pointIter != currentPoints.end() )
         {
-        m_SubsampledSingularPoints.push_back( *pointIter );
-        m_SubsampledSingularPointsWeights.push_back(1);
+        m_SubsampledBlobPoints.push_back( *pointIter );
+        m_SubsampledBlobPointsWeights.push_back(1);
         preCount = pointCount * m_SamplingRatio;
         postCount = preCount;
         while( preCount == postCount && pointIter != currentPoints.end() )
@@ -328,6 +332,7 @@ void
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::ComputeSubsampledPointsWeights( void ) 
 {
+  std::cout << "ComputeSubSampledPointsWeights" << std::endl;
   m_SubsampledTubePointsWeights.clear();
   auto tubePointIter = m_SubsampledTubePoints.begin();
   while( tubePointIter != m_SubsampledTubePoints.end() )
@@ -369,11 +374,11 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     m_SubsampledSurfacePointsWeights.push_back( 1 );
     ++surfacePointIter;
   }
-  m_SubsampledSingularPointsWeights.clear();
-  auto pointIter = m_SubsampledSingularPoints.begin();
-  while( pointIter != m_SubsampledSingularPoints.end() )
+  m_SubsampledBlobPointsWeights.clear();
+  auto pointIter = m_SubsampledBlobPoints.begin();
+  while( pointIter != m_SubsampledBlobPoints.end() )
   {
-    m_SubsampledSingularPointsWeights.push_back( 1 );
+    m_SubsampledBlobPointsWeights.push_back( 1 );
     ++pointIter;
   }
 }
@@ -382,10 +387,11 @@ template< unsigned int ObjectDimension, class TFixedImage >
 typename
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >::MovingSpatialObjectType::ChildrenConstListType*
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
-::GetPointBasedChildren( typename MovingSpatialObjectType::ConstPointer & parentSO, 
+::GetPointBasedChildren( const MovingSpatialObjectType * parentSO, 
   typename MovingSpatialObjectType::ChildrenConstListType * childrenSO ) const
 {
-  if( parentSO.IsNull() )
+  std::cout << "GetPointBasedChildren" << std::endl;
+  if( parentSO == NULL )
   {
     return childrenSO;
   }
@@ -500,6 +506,8 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   {
     value /= weightSum;
   }
+
+  std::cout << "GetValue : " << parameters << " = " << value << std::endl;
 
   return value;
 }
@@ -695,7 +703,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 template< unsigned int ObjectDimension, class TFixedImage >
 bool
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
-::IsValidMovingPoint( const SingularPointType & pnt ) const
+::IsValidMovingPoint( const BlobPointType & pnt ) const
 {
   if( m_MovingSpatialObjectMaskObject.IsNotNull() &&
     m_UseMovingSpatialObjectMaskObject )
