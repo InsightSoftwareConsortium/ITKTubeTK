@@ -257,9 +257,11 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   unsigned int pointCount = 0;
   typename PointBasedSpatialObjectType::ChildrenConstListType * pbsoList =
     this->GetPointBasedChildren( m_MovingSpatialObject );
+  std::cout << "Children = " << pbsoList->size() << std::endl;
   auto pbsoIter = pbsoList->begin();
   while( pbsoIter != pbsoList->end() )
     {
+    std::cout << (*pbsoIter)->GetTypeName() << std::endl;
     const TubeType* currentTube =
       dynamic_cast<const TubeType*>((*pbsoIter).GetPointer());
     const SurfaceType* currentSurface =
@@ -270,10 +272,12 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     unsigned int postCount;
     if( currentTube != nullptr )
       {
+      std::cout << "Tube" << std::endl;
       const TubePointListType & currentPoints = currentTube->GetPoints();
       auto pointIter = currentPoints.begin();
       while( pointIter != currentPoints.end() )
         {
+        std::cout << pointIter->GetPositionInObjectSpace() << std::endl;
         m_SubsampledTubePoints.push_back( *pointIter );
         m_SubsampledTubePointsWeights.push_back(1);
         preCount = pointCount * m_SamplingRatio;
@@ -285,6 +289,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
           postCount = pointCount * m_SamplingRatio;
           }
         }
+      std::cout << "npoints = " << m_SubsampledTubePoints.size() << std::endl;
       }
     else if( currentSurface != nullptr )
       {
@@ -458,12 +463,15 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     = m_SubsampledTubePointsWeights.begin();
   typename TubePointListType::const_iterator pointIter =
     m_SubsampledTubePoints.begin();
+  std::cout << "npoints = " << m_SubsampledTubePoints.size() << std::endl;
   while( pointIter != m_SubsampledTubePoints.end() )
   {
     MovingPointType movingPoint = pointIter->GetPositionInWorldSpace();
     FixedPointType fixedPoint = transformCopy->TransformPoint( movingPoint );
+    std::cout << movingPoint << " : " << fixedPoint << std::endl;
     if( this->IsValidFixedPoint( fixedPoint ) )
     {
+      std::cout << "   Valid" << std::endl;
       double radius = pointIter->GetRadiusInWorldSpace();
       radius = radius * m_Kappa;
       MovingPointType radiusPoint;
