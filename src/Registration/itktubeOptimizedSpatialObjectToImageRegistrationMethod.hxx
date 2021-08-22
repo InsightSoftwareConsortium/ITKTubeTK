@@ -175,6 +175,7 @@ void
 OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
 {
+  std::cout << "ORM: GenerateData" << std::endl;
   if( this->GetReportProgress() )
     {
     std::cout << "UPDATE START" << std::endl;
@@ -223,8 +224,10 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       this->GetMovingSpatialObjectMaskObject() );
     }
 
+  std::cout << "ORM: GenerateData: Metric Init" << std::endl;
   metric->Initialize();
 
+  std::cout << "ORM: GenerateData: Optimize" << std::endl;
   try
     {
     this->Optimize(metric);

@@ -155,6 +155,7 @@ void
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::ComputeCenterOfRotation( void )
 {
+  std::cout << "ComputeCenterOfRotation" << std::endl;
   unsigned int pointCount = 0;
 
   typename PointBasedSpatialObjectType::ChildrenConstListType * pbsoList =
@@ -233,6 +234,8 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     {
     this->m_CenterOfRotation[ii] /= pointCount;
     }
+
+  std::cout << "...Done" << std::endl;
 }
 
 
@@ -241,9 +244,9 @@ void
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::ComputeSubsampledPoints( void ) 
 {
-  std::cout << "ComputeSubSampledPoints" << std::endl;
-
   unsigned int maxPointCount = this->GetMaximumNumberOfPoints();
+  std::cout << "ComputeSubsampledPoints: nPoints = " << maxPointCount
+    << std::endl;
 
   unsigned int targetPointCount = maxPointCount * m_SamplingRatio;
   
@@ -257,73 +260,126 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   unsigned int pointCount = 0;
   typename PointBasedSpatialObjectType::ChildrenConstListType * pbsoList =
     this->GetPointBasedChildren( m_MovingSpatialObject );
-  std::cout << "Children = " << pbsoList->size() << std::endl;
+  std::string oName = m_MovingSpatialObject->GetTypeName();
+  if (oName.find("Tube") != std::string::npos ||
+      oName.find("Surface") != std::string::npos ||
+      oName.find("Blob") != std::string::npos ||
+      oName.find("Point") != std::string::npos)
+  {
+    pbsoList->push_front( m_MovingSpatialObject.GetPointer() );
+  }
   auto pbsoIter = pbsoList->begin();
   while( pbsoIter != pbsoList->end() )
     {
-    std::cout << (*pbsoIter)->GetTypeName() << std::endl;
+    std::string cName = (*pbsoIter)->GetTypeName();
+    std::cout << "   Processing object type = " << cName << std::endl;
     const TubeType* currentTube =
       dynamic_cast<const TubeType*>((*pbsoIter).GetPointer());
     const SurfaceType* currentSurface =
       dynamic_cast<const SurfaceType*>((*pbsoIter).GetPointer());
     const PointBasedSpatialObjectType* currentBlob =
       dynamic_cast<const BlobType*>((*pbsoIter).GetPointer());
-    unsigned int preCount;
-    unsigned int postCount;
     if( currentTube != nullptr )
       {
-      std::cout << "Tube" << std::endl;
+      std::cout << "   Processing as tube." << std::endl;
       const TubePointListType & currentPoints = currentTube->GetPoints();
+      double stepCount = currentPoints.size() * m_SamplingRatio;
+      double endCount = stepCount/2.0;
+      if (stepCount > currentPoints.size()/2)
+        {
+        stepCount = currentPoints.size()/2;
+        endCount = stepCount/2.0;
+        }
+      else if (stepCount < 1)
+        {
+        stepCount = 1;
+        endCount = 1;
+        }
+      unsigned int count = 0;
       auto pointIter = currentPoints.begin();
+      for (unsigned int count=0; pointIter!=currentPoints.end()
+        && count<endCount; ++count)
+        {
+        ++pointIter;
+        }
       while( pointIter != currentPoints.end() )
         {
-        std::cout << pointIter->GetPositionInObjectSpace() << std::endl;
         m_SubsampledTubePoints.push_back( *pointIter );
         m_SubsampledTubePointsWeights.push_back(1);
-        preCount = pointCount * m_SamplingRatio;
-        postCount = preCount;
-        while( preCount == postCount && pointIter != currentPoints.end() )
+        endCount = static_cast<int>(count/stepCount) * stepCount + stepCount;
+        while( count < endCount && pointIter != currentPoints.end() )
           {
           ++pointIter;
-          ++pointCount;
-          postCount = pointCount * m_SamplingRatio;
+          ++count;
           }
         }
-      std::cout << "npoints = " << m_SubsampledTubePoints.size() << std::endl;
+      std::cout << "   ...done" << std::endl;
       }
     else if( currentSurface != nullptr )
       {
       const SurfacePointListType & currentPoints = currentSurface->GetPoints();
+      double stepCount = currentPoints.size() * m_SamplingRatio;
+      double endCount = stepCount/2.0;
+      if (stepCount > currentPoints.size()/2)
+        {
+        stepCount = currentPoints.size()/2;
+        endCount = stepCount/2.0;
+        }
+      else if (stepCount < 1)
+        {
+        stepCount = 1;
+        endCount = 1;
+        }
+      unsigned int count = 0;
       auto pointIter = currentPoints.begin();
+      for (unsigned int count=0; pointIter!=currentPoints.end()
+        && count<endCount; ++count)
+        {
+        ++pointIter;
+        }
       while( pointIter != currentPoints.end() )
         {
         m_SubsampledSurfacePoints.push_back( *pointIter );
         m_SubsampledSurfacePointsWeights.push_back(1);
-        preCount = pointCount * m_SamplingRatio;
-        postCount = preCount;
-        while( preCount == postCount && pointIter != currentPoints.end() )
+        endCount = static_cast<int>(count/stepCount) * stepCount + stepCount;
+        while( count < endCount && pointIter != currentPoints.end() )
           {
           ++pointIter;
-          ++pointCount;
-          postCount = pointCount * m_SamplingRatio;
+          ++count;
           }
         }
       }
-    else
+    else if( currentBlob != nullptr )
       {
       const BlobPointListType & currentPoints = currentBlob->GetPoints();
+      double stepCount = currentPoints.size() * m_SamplingRatio;
+      double endCount = stepCount/2.0;
+      if (stepCount > currentPoints.size()/2)
+        {
+        stepCount = currentPoints.size()/2;
+        endCount = stepCount/2.0;
+        }
+      else if (stepCount < 1)
+        {
+        stepCount = 1;
+        endCount = 1;
+        }
+      unsigned int count = 0;
       auto pointIter = currentPoints.begin();
+      for (unsigned int count=0; pointIter!=currentPoints.end()
+        && count<endCount; ++count)
+        {
+        ++pointIter;
+        }
       while( pointIter != currentPoints.end() )
         {
         m_SubsampledBlobPoints.push_back( *pointIter );
         m_SubsampledBlobPointsWeights.push_back(1);
-        preCount = pointCount * m_SamplingRatio;
-        postCount = preCount;
-        while( preCount == postCount && pointIter != currentPoints.end() )
+        endCount = static_cast<int>(count/stepCount) * stepCount + stepCount;
+        while( count < endCount && pointIter != currentPoints.end() )
           {
           ++pointIter;
-          ++pointCount;
-          postCount = pointCount * m_SamplingRatio;
+          ++count;
           }
         }
       }
@@ -337,7 +393,7 @@ void
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::ComputeSubsampledPointsWeights( void ) 
 {
-  std::cout << "ComputeSubSampledPointsWeights" << std::endl;
+  std::cout << "ComputeSubsampledPointsWeights" << std::endl;
   m_SubsampledTubePointsWeights.clear();
   auto tubePointIter = m_SubsampledTubePoints.begin();
   while( tubePointIter != m_SubsampledTubePoints.end() )
@@ -386,6 +442,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     m_SubsampledBlobPointsWeights.push_back( 1 );
     ++pointIter;
   }
+  std::cout << "...Done" << std::endl;
 }
 
 template< unsigned int ObjectDimension, class TFixedImage >
@@ -395,12 +452,10 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::GetPointBasedChildren( const MovingSpatialObjectType * parentSO, 
   typename MovingSpatialObjectType::ChildrenConstListType * childrenSO ) const
 {
-  std::cout << "GetPointBasedChildren" << std::endl;
-  if( parentSO == NULL )
+  if( parentSO == nullptr )
   {
     return childrenSO;
   }
-
   if( childrenSO == nullptr )
   {
     childrenSO = new MovingSpatialObjectType::ChildrenConstListType;
@@ -410,7 +465,11 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   auto it = tmpChildren->begin();
   while (it != tmpChildren->end())
   {
-    if (dynamic_cast< const PointBasedSpatialObjectType * >((*it).GetPointer()) != nullptr)
+    std::string oName = (*it)->GetTypeName();
+    if (oName.find("Tube") != std::string::npos ||
+        oName.find("Surface") != std::string::npos ||
+        oName.find("Blob") != std::string::npos ||
+        oName.find("Point") != std::string::npos)
     {
       childrenSO->push_back(*it);
     }
@@ -463,15 +522,12 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     = m_SubsampledTubePointsWeights.begin();
   typename TubePointListType::const_iterator pointIter =
     m_SubsampledTubePoints.begin();
-  std::cout << "npoints = " << m_SubsampledTubePoints.size() << std::endl;
   while( pointIter != m_SubsampledTubePoints.end() )
   {
     MovingPointType movingPoint = pointIter->GetPositionInWorldSpace();
     FixedPointType fixedPoint = transformCopy->TransformPoint( movingPoint );
-    std::cout << movingPoint << " : " << fixedPoint << std::endl;
     if( this->IsValidFixedPoint( fixedPoint ) )
     {
-      std::cout << "   Valid" << std::endl;
       double radius = pointIter->GetRadiusInWorldSpace();
       radius = radius * m_Kappa;
       MovingPointType radiusPoint;
