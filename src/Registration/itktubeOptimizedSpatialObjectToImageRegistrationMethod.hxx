@@ -209,6 +209,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
   metric->SetFixedImage( fixedImage );
   metric->SetMovingSpatialObject( movingSpatialObject );
+  metric->SetTransform(this->GetTransform());
 
   metric->SetUseFixedImageMaskObject( this->GetUseFixedImageMaskObject() );
   if( this->GetUseFixedImageMaskObject() )
@@ -264,9 +265,10 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     evoOpt->SetEpsilon( this->GetTargetError() );
     evoOpt->Initialize( 0.1 );
     evoOpt->SetCatchGetValueException( true );
-    evoOpt->SetMetricWorstPossibleValue( 100 );
+    evoOpt->SetMetricWorstPossibleValue( 9999999 );
     evoOpt->SetScales( this->GetTransformParametersScales() );
     evoOpt->SetMaximumIteration( this->GetMaxIterations() );
+    evoOpt->SetMaximize( false );
 
     if( this->GetObserver() )
       {
@@ -325,7 +327,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
   if( this->GetMaxIterations() > 0 )
     {
-    if( this->GetReportProgress() )
+    //if( this->GetReportProgress() )
       {
       std::cout << "GRADIENT START" << std::endl;
       }
@@ -335,7 +337,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   
     gradOpt->SetMaximize( false );
     gradOpt->SetCatchGetValueException( true );
-    gradOpt->SetMetricWorstPossibleValue( 100 );
+    gradOpt->SetMetricWorstPossibleValue( 9999999 );
     gradOpt->SetStepLength( 0.25 );
     gradOpt->SetStepTolerance( this->GetTargetError() );
     gradOpt->SetMaximumIteration( this->GetMaxIterations() );
@@ -344,7 +346,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     gradOpt->SetUseUnitLengthGradient(true);
     gradOpt->SetToFletchReeves();
   
-    if( this->GetReportProgress() )
+    //if( this->GetReportProgress() )
       {
       typedef SpatialObjectToImageRegistrationViewer ViewerCommandType;
       typename ViewerCommandType::Pointer command = ViewerCommandType::New();

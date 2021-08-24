@@ -155,7 +155,6 @@ void
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::ComputeCenterOfRotation( void )
 {
-  std::cout << "ComputeCenterOfRotation" << std::endl;
   unsigned int pointCount = 0;
 
   typename PointBasedSpatialObjectType::ChildrenConstListType * pbsoList =
@@ -234,8 +233,6 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     {
     this->m_CenterOfRotation[ii] /= pointCount;
     }
-
-  std::cout << "...Done" << std::endl;
 }
 
 
@@ -245,8 +242,6 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::ComputeSubsampledPoints( void ) 
 {
   unsigned int maxPointCount = this->GetMaximumNumberOfPoints();
-  std::cout << "ComputeSubsampledPoints: nPoints = " << maxPointCount
-    << std::endl;
 
   unsigned int targetPointCount = maxPointCount * m_SamplingRatio;
   
@@ -272,7 +267,6 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   while( pbsoIter != pbsoList->end() )
     {
     std::string cName = (*pbsoIter)->GetTypeName();
-    std::cout << "   Processing object type = " << cName << std::endl;
     const TubeType* currentTube =
       dynamic_cast<const TubeType*>((*pbsoIter).GetPointer());
     const SurfaceType* currentSurface =
@@ -281,8 +275,9 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       dynamic_cast<const BlobType*>((*pbsoIter).GetPointer());
     if( currentTube != nullptr )
       {
-      std::cout << "   Processing as tube." << std::endl;
       const TubePointListType & currentPoints = currentTube->GetPoints();
+      TubeType * mutableTube = const_cast< TubeType * >( currentTube );
+      mutableTube->ComputeTangentsAndNormals();
       double stepCount = currentPoints.size() * m_SamplingRatio;
       double endCount = stepCount/2.0;
       if (stepCount > currentPoints.size()/2)
@@ -313,7 +308,6 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
           ++count;
           }
         }
-      std::cout << "   ...done" << std::endl;
       }
     else if( currentSurface != nullptr )
       {
@@ -393,7 +387,6 @@ void
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::ComputeSubsampledPointsWeights( void ) 
 {
-  std::cout << "ComputeSubsampledPointsWeights" << std::endl;
   m_SubsampledTubePointsWeights.clear();
   auto tubePointIter = m_SubsampledTubePoints.begin();
   while( tubePointIter != m_SubsampledTubePoints.end() )
@@ -442,7 +435,6 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     m_SubsampledBlobPointsWeights.push_back( 1 );
     ++pointIter;
   }
-  std::cout << "...Done" << std::endl;
 }
 
 template< unsigned int ObjectDimension, class TFixedImage >
@@ -498,7 +490,6 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 
   itkDebugMacro( << "**** Get Value ****" );
   itkDebugMacro( << "Parameters = " << parameters );
-
   double value = 0;
 
   double weightSum = 0;
@@ -509,6 +500,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   LightObject::Pointer anotherTransform = this->m_Transform->CreateAnother();
   TransformType * transformCopy =
     static_cast< TransformType * >( anotherTransform.GetPointer() );
+  std::cout << "TransformCopy = " << *transformCopy << std::endl;
   transformCopy->SetFixedParameters( this->m_Transform->GetFixedParameters() );
   transformCopy->SetParameters( parameters );
 
@@ -559,7 +551,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       {
         value += imFunc->Evaluate( fixedPoint, n1v, fixedScale );
       }
-      value = *pointWeightIter * imFunc->GetMostRecentIntensity();
+      value += *pointWeightIter * imFunc->GetMostRecentIntensity();
       weightSum += *pointWeightIter;
     }
     ++pointIter;
@@ -573,7 +565,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 
   std::cout << "GetValue : " << parameters << " = " << value << std::endl;
 
-  return value;
+  return -value;
 }
 
 template< unsigned int ObjectDimension, class TFixedImage >
@@ -685,43 +677,50 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       tM = *pointWeightIter * tM;
       biasV += tM;
 
+      value += *pointWeightIter * imFunc->GetMostRecentIntensity();
+
       weightSum += *pointWeightIter;
     }
     ++pointIter;
     ++pointWeightIter;
   }
 
-  VnlMatrixType biasVI = vnl_matrix_inverse< double >( biasV ).inverse();
-
-  derivative.fill(0);
-
-  auto fixedPointsIter = fixedPoints.begin();
-  auto fixedPointsDerivsIter = fixedPointsDerivs.begin();
-  while( fixedPointsIter != fixedPoints.end() )
-  {
-    FixedPointType fixedPoint = *fixedPointsIter;
-
-    VnlVectorType dXT = (*fixedPointsDerivsIter);
-
-    dXT = dXT * biasVI;
-
-    typename TransformType::JacobianType jacobian;
-    m_Transform->ComputeJacobianWithRespectToParameters( fixedPoint,
-      jacobian );
-
-    for( unsigned int p = 0; p<m_Transform->GetNumberOfParameters(); ++p)
+  if( weightSum > 0 )
     {
-      for( unsigned int d=0; d<ImageDimension; ++d)
-      {
-        derivative[p] += jacobian[p][d] * dXT[d];
-      }
-    }
+    value = - value / weightSum;
 
-    ++fixedPointsIter;
-    ++fixedPointsDerivsIter;
+    VnlMatrixType biasVI = vnl_matrix_inverse< double >( biasV ).inverse();
+
+    derivative.fill(0);
+
+    auto fixedPointsIter = fixedPoints.begin();
+    auto fixedPointsDerivsIter = fixedPointsDerivs.begin();
+    while( fixedPointsIter != fixedPoints.end() )
+    {
+      FixedPointType fixedPoint = *fixedPointsIter;
+  
+      VnlVectorType dXT = (*fixedPointsDerivsIter);
+  
+      dXT = dXT * biasVI;
+  
+      typename TransformType::JacobianType jacobian;
+      m_Transform->ComputeJacobianWithRespectToParameters( fixedPoint,
+        jacobian );
+  
+      for( unsigned int p = 0; p<m_Transform->GetNumberOfParameters(); ++p)
+      {
+        for( unsigned int d=0; d<ImageDimension; ++d)
+        {
+          derivative[p] += jacobian[d][p] * -dXT[d];
+        }
+      }
+  
+      ++fixedPointsIter;
+      ++fixedPointsDerivsIter;
+    }
   }
 }
-
+  
 template< unsigned int ObjectDimension, class TFixedImage >
 bool
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
