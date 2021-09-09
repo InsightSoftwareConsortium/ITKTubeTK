@@ -31,6 +31,8 @@ limitations under the License.
 
 #include "itktubeTubeExtractor.h"
 
+#include <itktubeLimitedMinimumMaximumImageFilter.h>
+
 #include <itkImageRegionConstIterator.h>
 #include <itkImageRegionConstIteratorWithIndex.h>
 #include <itkMinimumMaximumImageCalculator.h>
@@ -182,6 +184,22 @@ TubeExtractor<TInputImage>
     }
 
   return this->m_RidgeExtractor->GetDataMin();
+}
+
+
+template< class TInputImage >
+void
+TubeExtractor<TInputImage>
+::SetDataMinMaxLimits( double limitMin, double limitMax )
+{
+  typedef LimitedMinimumMaximumImageFilter<ImageType> MinMaxFilterType;
+  typename MinMaxFilterType::Pointer minMaxFilter = MinMaxFilterType::New();
+  minMaxFilter->SetInput( this->GetInputImage() );
+  minMaxFilter->SetMinimumLimit( limitMin );
+  minMaxFilter->SetMaximumLimit( limitMax );
+  minMaxFilter->Update();
+  this->SetDataMin( minMaxFilter->GetMinimum() );
+  this->SetDataMax( minMaxFilter->GetMaximum() );
 }
 
 /**

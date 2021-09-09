@@ -156,6 +156,7 @@ RidgeExtractor<TInputImage>
   m_FailureCodeCount.fill( 0 );
 
   m_Tube = nullptr;
+  m_TubeMaskImage == nullptr;
 }
 
 /**
@@ -1306,7 +1307,6 @@ RidgeExtractor<TInputImage>
         double radiusMin = m_RadiusExtractor->GetRadiusMin();
         double radiusMax = m_RadiusExtractor->GetRadiusMax();
         double radiusStep = m_RadiusExtractor->GetRadiusStep();
-        double radiusTolerance = m_RadiusExtractor->GetRadiusTolerance();
         std::vector< TubePointType > points;
         for( unsigned int i=0; i<ImageDimension; i++ )
           {
@@ -1327,8 +1327,7 @@ RidgeExtractor<TInputImage>
         tmpTube->SetPoints( points );
         tmpTube->ComputeTangentsAndNormals();
         if( m_RadiusExtractor->GetPointVectorOptimalRadius( points,
-          m_DynamicScaleUsed, radiusMin, radiusMax, radiusStep,
-          radiusTolerance ) )
+          m_DynamicScaleUsed, radiusMin, radiusMax, radiusStep ) )
           {
           m_DynamicScaleUsed = ( tmpPoint.GetRadiusInObjectSpace()
             + m_DynamicScaleUsed ) / 2;
@@ -1759,14 +1758,28 @@ RidgeExtractor<TInputImage>
     TubePointType tmpPoint;
     typename TubePointType::PointType tubeX;
     typename TubePointType::VectorType tubeV;
+    typename TubePointType::CovariantVectorType tubeCV1;
+    typename TubePointType::CovariantVectorType tubeCV2;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       tubeX[i] = lX[i];
       lT[i] = m_XHEVect( i, ImageDimension-1 );
       tubeV[i] = lT[i];
+      lN(i,0) = m_XHEVect( i, 0 );
+      lN(i,1) = m_XHEVect( i, 1 );
+      tubeCV1[i] = lN(i,0);
+      if( ImageDimension > 2 )
+        {
+        tubeCV2[i] = lN(i,1);
+        }
       }
     tmpPoint.SetPositionInObjectSpace( tubeX );
     tmpPoint.SetTangentInObjectSpace( tubeV );
+    tmpPoint.SetNormal1InObjectSpace( tubeCV1 );
+    if( ImageDimension > 2 )
+      {
+      tmpPoint.SetNormal2InObjectSpace( tubeCV2 );
+      }
     tmpPoint.SetIntensity( m_XVal );
     tmpPoint.SetRidgeness( m_XRidgeness );
     tmpPoint.SetRoundness( m_XRoundness );
@@ -1776,11 +1789,10 @@ RidgeExtractor<TInputImage>
     double radiusMin = m_RadiusExtractor->GetRadiusMin();
     double radiusMax = m_RadiusExtractor->GetRadiusMax();
     double radiusStep = m_RadiusExtractor->GetRadiusStep();
-    double radiusTolerance = m_RadiusExtractor->GetRadiusTolerance();
     std::vector< TubePointType > points;
     points.push_back( tmpPoint );
     if( !m_RadiusExtractor->GetPointVectorOptimalRadius( points,
-      scale0, radiusMin, radiusMax, radiusStep, radiusTolerance ) )
+      scale0, radiusMin, radiusMax, radiusStep ) )
       {
       if( this->GetDebug() && m_StatusCallBack )
         {

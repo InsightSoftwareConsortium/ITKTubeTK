@@ -500,7 +500,6 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   LightObject::Pointer anotherTransform = this->m_Transform->CreateAnother();
   TransformType * transformCopy =
     static_cast< TransformType * >( anotherTransform.GetPointer() );
-  std::cout << "TransformCopy = " << *transformCopy << std::endl;
   transformCopy->SetFixedParameters( this->m_Transform->GetFixedParameters() );
   transformCopy->SetParameters( parameters );
 
@@ -545,13 +544,12 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
         Vector<double,ImageDimension> n2v;
         n2v.SetVnlVector(n2.GetVnlVector());
         n2T = n2.GetVnlVector();
-        value += imFunc->Evaluate( fixedPoint, n1v, n2v, fixedScale );
+        value += *pointWeightIter * imFunc->Evaluate( fixedPoint, n1v, n2v, fixedScale );
       }
       else
       {
-        value += imFunc->Evaluate( fixedPoint, n1v, fixedScale );
+        value += *pointWeightIter * imFunc->Evaluate( fixedPoint, n1v, fixedScale );
       }
-      value += *pointWeightIter * imFunc->GetMostRecentIntensity();
       weightSum += *pointWeightIter;
     }
     ++pointIter;

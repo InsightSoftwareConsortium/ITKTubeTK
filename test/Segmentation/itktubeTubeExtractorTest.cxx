@@ -74,6 +74,13 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
   unsigned int numTubes = tubeList->size();
   std::cout << "Number of tubes = " << numTubes << std::endl;
 
+  auto tubeIter = tubeList->begin();
+  while(tubeIter != tubeList->end())
+    {
+    static_cast<TubeType *>(tubeIter->GetPointer())->ComputeTangentsAndNormals();
+    ++tubeIter;
+    }
+
   typedef itk::Statistics::MersenneTwisterRandomVariateGenerator
     RandGenType;
   RandGenType::Pointer rndGen = RandGenType::New();
@@ -160,6 +167,7 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
     tubeOp->SetExtractBoundMinInIndexSpace( minX );
     tubeOp->SetExtractBoundMaxInIndexSpace( maxX );
 
+    /*
     if( pnt->GetRadiusInObjectSpace() > 1 )
       {
       tubeOp->SetRadiusInObjectSpace( 0.8 * pnt->GetRadiusInObjectSpace() );
@@ -167,7 +175,7 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
     else
       {
       tubeOp->SetRadiusInObjectSpace( 0.5 );
-      }
+      } */
 
 
     ImageType::PointType pntX1 = pntX;
@@ -310,5 +318,6 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
+  std::cout << "SUCCESS" << std::endl;
   return EXIT_SUCCESS;
 }

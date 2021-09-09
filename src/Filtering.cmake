@@ -42,6 +42,7 @@ set( TubeTK_Filtering_H_Files
   Filtering/itktubeGaussianDerivativeFilter.h
   Filtering/itktubeGaussianDerivativeImageSource.h
   Filtering/itktubeInverseIntensityImageFilter.h
+  Filtering/itktubeLimitedMinimumMaximumImageFilter.h
   Filtering/itktubeMinimumSpanningTreeVesselConnectivityFilter.h
   Filtering/itktubePadImageFilter.h
   Filtering/itktubeRegionFromReferenceImageFilter.h
@@ -84,6 +85,7 @@ set( TubeTK_Filtering_HXX_Files
   Filtering/itktubeGaussianDerivativeFilter.hxx
   Filtering/itktubeGaussianDerivativeImageSource.hxx
   Filtering/itktubeInverseIntensityImageFilter.hxx
+  Filtering/itktubeLimitedMinimumMaximumImageFilter.hxx
   Filtering/itktubeMinimumSpanningTreeVesselConnectivityFilter.hxx
   Filtering/itktubePadImageFilter.hxx
   Filtering/itktubeRegionFromReferenceImageFilter.hxx

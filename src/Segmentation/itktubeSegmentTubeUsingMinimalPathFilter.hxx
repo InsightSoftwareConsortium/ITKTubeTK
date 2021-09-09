@@ -245,7 +245,6 @@ SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
       radiusExtractor->SetRadiusMin( 0.2 );
       radiusExtractor->SetRadiusMax( m_MaxRadius );
       radiusExtractor->SetRadiusStep( m_StepSizeForRadiusEstimation );
-      radiusExtractor->SetRadiusTolerance( 0.025 );
       radiusExtractor->SetDebug( false );
       radiusExtractor->ExtractRadii( pTube );
       }

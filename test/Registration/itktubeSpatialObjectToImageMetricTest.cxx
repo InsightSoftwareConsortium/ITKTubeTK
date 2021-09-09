@@ -74,7 +74,6 @@ int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  std::cout << "HERE0" << std::endl;
   // read group ( spatialObject )
   GroupReaderType::Pointer groupReader = GroupReaderType::New();
   groupReader->SetFileName( argv[2] );
@@ -104,7 +103,6 @@ int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
     std::cerr << "Exception caught: " << err << std::endl;
     return EXIT_FAILURE;
     }
-  std::cout << "HERE1" << std::endl;
 
   //------------------------------------------------------------------
   // Compute the metric for a 3D image susampled at 1/30
@@ -118,7 +116,6 @@ int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
   metric->SetFixedImage( imageReader->GetOutput() );
   metric->SetMovingSpatialObject ( subSampleFilter->GetOutput() );
   metric->SetTransform( transform );
-  std::cout << "HERE2" << std::endl;
   try
     {
     metric->Initialize();
@@ -130,7 +127,6 @@ int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  std::cout << "HERE3" << std::endl;
   const double epsilonReg = 0.05; // Delta threshold on the measure checking.
   MetricType::MeasureType value = metric->GetValue( parameters );
   if( value < ( std::atof( argv[3] ) - epsilonReg ) ||

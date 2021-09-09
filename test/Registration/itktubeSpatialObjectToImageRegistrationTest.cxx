@@ -63,7 +63,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
   typedef itk::tube::SpatialObjectToImageRegistrationHelper< 3, ImageType >
                                                          RegistrationHelperType;
-  typedef itk::ComposeScaleSkewVersor3DTransform< double > TransformType;
+  typedef RegistrationHelperType::MatrixTransformType    TransformType;
   typedef itk::tube::PointBasedSpatialObjectTransformFilter< TransformType, ObjectDimension >
                                                          TubeTransformFilterType;
 
@@ -149,7 +149,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
 
   // validate the registration result
   TransformType::ConstPointer outputTransform =
-    dynamic_cast<const TransformType *>( registrationHelper->GetCurrentMatrixTransform() );
+    registrationHelper->GetCurrentMatrixTransform();
   TransformType::ParametersType lastParameters =
     outputTransform->GetParameters();
 
