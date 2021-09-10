@@ -196,7 +196,7 @@ protected:
 
   double GetProfileMaxDistance();
   double GetProfileBinNumber( double x );
-  double GetProfileBinMaxRadius( double i );
+  double GetProfileBinRadius( double i );
 
   itkGetMacro( ProfileBinCount, std::vector< double > );
   itkGetMacro( ProfileBinValue, std::vector< double > );
