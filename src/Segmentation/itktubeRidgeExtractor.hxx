@@ -1764,13 +1764,13 @@ RidgeExtractor<TInputImage>
       {
       tubeX[i] = lX[i];
       lT[i] = m_XHEVect( i, ImageDimension-1 );
-      tubeV[i] = lT[i];
+      tubeV[i] = m_XHEVect( i, ImageDimension-1 );
       lN(i,0) = m_XHEVect( i, 0 );
-      lN(i,1) = m_XHEVect( i, 1 );
-      tubeCV1[i] = lN(i,0);
+      tubeCV1[i] = m_XHEVect( i, 0 );
       if( ImageDimension > 2 )
         {
-        tubeCV2[i] = lN(i,1);
+        lN(i,1) = m_XHEVect( i, 1 );
+        tubeCV2[i] = m_XHEVect( i, 1 );
         }
       }
     tmpPoint.SetPositionInObjectSpace( tubeX );

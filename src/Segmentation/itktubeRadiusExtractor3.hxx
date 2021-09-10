@@ -90,12 +90,12 @@ public:
     double v = this->GetValue(p);
     for( unsigned int i=0; i<m_Data->size(); ++i )
       {
-      double expV = exp(-p[2]*(i+p[3]));
+      double expV = exp(-p[2]*(i-p[3]));
       double denom = 1 + expV;
       d[0] += - 2 * p[0] + (2 * p[1])/denom;
       d[1] +=  2 * (p[0]-(p[1]/denom)) / denom;
-      d[2] += -(2*p[1]*(p[0]-(p[1]/denom))*(-p[3]-i)*expV)/(denom*denom);
-      d[3] += (2*p[1]*p[2]*(p[0]-(p[1]/denom))*expV)/(denom*denom);
+      d[2] += -(2*p[1]*(p[0]-(p[1]/denom))*(p[3]-i)*expV)/(denom*denom);
+      d[3] += -(2*p[1]*p[2]*(p[0]-(p[1]/denom))*expV)/(denom*denom);
       }
     d[0] /= m_Data->size();
     d[1] /= m_Data->size();
@@ -492,7 +492,7 @@ RadiusExtractor3<TInputImage>
       done = true;
       }
     }
-  std::cout << "Kernel = ";
+  //std::cout << "Kernel = ";
   for(unsigned int i=0; i<m_ProfileNumberOfBins; ++i )
     {
     if( m_ProfileBinCount[i] > 0 )
@@ -506,9 +506,9 @@ RadiusExtractor3<TInputImage>
         m_ProfileBinValue[i] = m_ProfileBinValue[i-1];
         }
       }
-    std::cout << m_ProfileBinValue[i] << "(" << m_ProfileBinCount[i] << ") ";
+    //std::cout << m_ProfileBinValue[i] << "(" << m_ProfileBinCount[i] << ") ";
     }
-  std::cout << std::endl;
+  //std::cout << std::endl;
   if(m_ProfileBinValue[0] == 0)
     {
     m_ProfileBinValue[0] = m_ProfileBinValue[1];
@@ -554,7 +554,7 @@ RadiusExtractor3<TInputImage>
         }
       if( sum == 0 )
         {
-        std::cout << "Single point kernel, setting tangent and normals." << std::endl;
+        std::cout << "WARNING: Single point kernel, setting tangent and normals." << std::endl;
         kernPnt->SetTangentInObjectSpace(v);
         kernPnt->SetNormal1InObjectSpace(cv);
         if( ImageDimension > 2 )
@@ -566,7 +566,7 @@ RadiusExtractor3<TInputImage>
         }
       else
         {
-        std::cout << "Single point kernel, setting tangent." << std::endl;
+        std::cout << "WARNING: Single point kernel, setting tangent." << std::endl;
         kernPnt->SetTangentInObjectSpace(v);
         }
       }
@@ -577,7 +577,7 @@ RadiusExtractor3<TInputImage>
       }
     if( sum == 0 )
       {
-      std::cout << "Single point kernel, resetting normal 1" << std::endl;
+      std::cout << "WARNING: Single point kernel, resetting normal 1" << std::endl;
       kernPnt->SetNormal1InObjectSpace(cv);
       }
     if( ImageDimension > 2 )
@@ -589,7 +589,7 @@ RadiusExtractor3<TInputImage>
         }
       if( sum == 0 )
         {
-        std::cout << "Single point kernel, resetting normal 2" << std::endl;
+        std::cout << "WARNING: Single point kernel, resetting normal 2" << std::endl;
         kernPnt->SetNormal2InObjectSpace(cv);
         }
       }
@@ -654,8 +654,6 @@ RadiusExtractor3<TInputImage>
   double rMax = this->GetRadiusMax();
 
   m_KernelOptimalRadius = this->GetRadiusStart();
-  std::cout << "Starting r = " << m_KernelOptimalRadius << std::endl;
-  std::cout << "Starting r bin num = " << this->GetProfileBinNumber(m_KernelOptimalRadius) << std::endl;
 
   typedef OnePlusOneEvolutionaryOptimizer OptimizerType;
   OptimizerType::Pointer opt = OptimizerType::New();
@@ -692,7 +690,7 @@ RadiusExtractor3<TInputImage>
   opt->StartOptimization();
 
   params = opt->GetCurrentPosition();
-  std::cout << "Params = " << params << std::endl;
+  //std::cout << "Params = " << params << std::endl;
 
   m_KernelOptimalRadius = this->GetProfileBinRadius(params[3]);
   m_KernelOptimalRadiusMedialness = opt->GetCurrentCost();
@@ -711,8 +709,8 @@ RadiusExtractor3<TInputImage>
     }
   */
 
-  std::cout << "   Winner : r = " << m_KernelOptimalRadius << " : vVal = "
-    << m_KernelOptimalRadiusMedialness << std::endl;
+  //std::cout << "   Winner : r = " << m_KernelOptimalRadius << " : vVal = "
+    //<< m_KernelOptimalRadiusMedialness << std::endl;
 
   switch( m_RadiusCorrectionFunction )
     {
