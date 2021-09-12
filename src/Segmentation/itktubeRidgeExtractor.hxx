@@ -826,7 +826,7 @@ RidgeExtractor<TInputImage>
       pnt.SetCurvature( curvature );
       pnt.SetIntensity( intensity );
       pnt.SetLevelness( levelness );
-      pnt.SetRadiusInObjectSpace( this->GetScale() );
+      pnt.SetRadiusInObjectSpace( m_RadiusExtractor->GetRadiusStart() );
       pnt.SetMedialness( 0 );
       pnt.SetBranchness( 0 );
       pnts.push_back( pnt );
@@ -1237,31 +1237,27 @@ RidgeExtractor<TInputImage>
     pnt.SetId( tubePointCount );
     typename TubePointType::PointType tubeX;
     typename TubePointType::VectorType tubeT;
-    typename TubePointType::CovariantVectorType tubeN;
+    typename TubePointType::CovariantVectorType tubeN1;
+    typename TubePointType::CovariantVectorType tubeN2;
     ContinuousIndexType tubeXI;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       tubeXI[i] = lXIV[i];
       tubeT[i] = m_XHEVect(i,ImageDimension-1);
-      if( i < ImageDimension-1 )
+      tubeN1[i] = m_XHEVect(i,0);
+      if( ImageDimension > 2 )
         {
-        for( unsigned int j=0; j<ImageDimension; j++ )
-          {
-          tubeN[j] = m_XHEVect( j, i );
-          }
-        if( i == 0 )
-          {
-          pnt.SetNormal1InObjectSpace( tubeN );
-          pnt.SetAlpha1( m_XHEVal[0] );
-          }
-        else if( i == 1 )
-          {
-          pnt.SetNormal2InObjectSpace( tubeN );
-          pnt.SetAlpha2( m_XHEVal[1] );
-          }
+        tubeN2[i] = m_XHEVect(i,1);
         }
       }
     pnt.SetTangentInObjectSpace( tubeT );
+    pnt.SetNormal1InObjectSpace( tubeN1 );
+    pnt.SetAlpha1( m_XHEVal[0] );
+    if( ImageDimension > 2 )
+      {
+      pnt.SetNormal2InObjectSpace( tubeN2 );
+      pnt.SetAlpha2( m_XHEVal[1] );
+      }
     m_InputImage->TransformContinuousIndexToPhysicalPoint( tubeXI, tubeX );
     pnt.SetPositionInObjectSpace( tubeX );
     pnt.SetRidgeness( ridgeness );
@@ -1269,7 +1265,7 @@ RidgeExtractor<TInputImage>
     pnt.SetCurvature( curvature );
     pnt.SetIntensity( intensity );
     pnt.SetLevelness( levelness );
-    pnt.SetRadiusInObjectSpace( this->GetScale() );
+    pnt.SetRadiusInObjectSpace( m_RadiusExtractor->GetRadiusStart() );
     pnt.SetMedialness( 0 );
     pnt.SetBranchness( 0 );
     pnts.push_back( pnt );
@@ -1293,44 +1289,48 @@ RidgeExtractor<TInputImage>
           std::cout << "Ridge: TraverseOW: DynamicScale" << std::endl;
           }
 
-        TubePointType tmpPoint;
-        tmpPoint.SetRadiusInObjectSpace( this->GetScale() );
-        tmpPoint.SetTangentInObjectSpace( pnt.GetTangentInObjectSpace() );
-        tmpPoint.SetNormal1InObjectSpace( pnt.GetNormal1InObjectSpace() );
-        tmpPoint.SetNormal1InObjectSpace( pnt.GetNormal2InObjectSpace() );
-        tmpPoint.SetRidgeness( ridgeness );
-        tmpPoint.SetRoundness( roundness );
-        tmpPoint.SetCurvature( curvature );
-        tmpPoint.SetIntensity( intensity );
-        tmpPoint.SetLevelness( levelness );
-        m_RadiusExtractor->SetRadiusStart( this->GetScale() );
+        int pntsSize = pnts.size();
+        unsigned int minTubeSize = m_RadiusExtractor->GetKernelNumberOfPoints() * m_RadiusExtractor->GetKernelPointStep();
+        int startP = pntsSize - minTubeSize;
+        int endP = pntsSize - 1;
+        int stepP = m_RadiusExtractor->GetKernelPointStep();
+        if( startP < 0 )
+        {
+          if(pntsSize < static_cast<int>(m_RadiusExtractor->GetKernelNumberOfPoints()*3))
+            {
+            startP = endP;
+            }
+          else
+            {
+            startP = 0;
+            endP = pntsSize-1;
+            stepP = pntsSize / (m_RadiusExtractor->GetKernelNumberOfPoints()-1);
+            }
+        }
+        std::vector< TubePointType > points;
+        points.clear();
+        int p = startP;
+        while(p <= endP)
+          {
+          TubePointType tmpPoint;
+          tmpPoint.SetPositionInObjectSpace( pnts[p].GetPositionInObjectSpace() );
+          tmpPoint.SetTangentInObjectSpace( pnts[p].GetTangentInObjectSpace() );
+          tmpPoint.SetNormal1InObjectSpace( pnts[p].GetNormal1InObjectSpace() );
+          if(ImageDimension>2)
+            {
+            tmpPoint.SetNormal2InObjectSpace( pnts[p].GetNormal2InObjectSpace() );
+            }
+          tmpPoint.SetRadiusInObjectSpace( m_DynamicScaleUsed );
+          points.push_back( tmpPoint );
+          p += stepP;
+          }
         double radiusMin = m_RadiusExtractor->GetRadiusMin();
         double radiusMax = m_RadiusExtractor->GetRadiusMax();
         double radiusStep = m_RadiusExtractor->GetRadiusStep();
-        std::vector< TubePointType > points;
-        for( unsigned int i=0; i<ImageDimension; i++ )
-          {
-          tubeXI[i] = pXIV[i];
-          }
-        m_InputImage->TransformContinuousIndexToPhysicalPoint( tubeXI, tubeX );
-        tmpPoint.SetPositionInObjectSpace( tubeX );
-        points.push_back( tmpPoint );
-        for( unsigned int i=0; i<ImageDimension; i++ )
-          {
-          tubeXI[i] = ( pXIV[i] + lXIV[i] ) / 2;
-          }
-        m_InputImage->TransformContinuousIndexToPhysicalPoint( tubeXI, tubeX );
-        tmpPoint.SetPositionInObjectSpace( tubeX );
-        points.push_back( tmpPoint );
-        points.push_back( pnt );
-        typename TubeType::Pointer tmpTube = TubeType::New();
-        tmpTube->SetPoints( points );
-        tmpTube->ComputeTangentsAndNormals();
         if( m_RadiusExtractor->GetPointVectorOptimalRadius( points,
           m_DynamicScaleUsed, radiusMin, radiusMax, radiusStep ) )
           {
-          m_DynamicScaleUsed = ( tmpPoint.GetRadiusInObjectSpace()
-            + m_DynamicScaleUsed ) / 2;
+          m_DynamicScaleUsed = ( this->GetScale() + m_DynamicScaleUsed ) / 2;
           }
         if( m_StatusCallBack )
           {
@@ -1339,7 +1339,7 @@ RidgeExtractor<TInputImage>
             m_DynamicScaleUsed );
           m_StatusCallBack( s, NULL, 0 );
           }
-        else if( this->GetDebug() || verbose )
+        if( this->GetDebug() || verbose )
           {
           std::cout << "Dynamic Scale = " << m_DynamicScaleUsed
             << std::endl;
@@ -1785,14 +1785,15 @@ RidgeExtractor<TInputImage>
     tmpPoint.SetRoundness( m_XRoundness );
     tmpPoint.SetCurvature( m_XCurvature );
     tmpPoint.SetLevelness( m_XLevelness );
-    tmpPoint.SetRadiusInObjectSpace( scale0 );
+    tmpPoint.SetRadiusInObjectSpace( m_RadiusExtractor->GetRadiusStart() );
     double radiusMin = m_RadiusExtractor->GetRadiusMin();
     double radiusMax = m_RadiusExtractor->GetRadiusMax();
     double radiusStep = m_RadiusExtractor->GetRadiusStep();
     std::vector< TubePointType > points;
     points.push_back( tmpPoint );
+    double r0 = m_RadiusExtractor->GetRadiusStart();
     if( !m_RadiusExtractor->GetPointVectorOptimalRadius( points,
-      scale0, radiusMin, radiusMax, radiusStep ) )
+      r0, radiusMin, radiusMax, radiusStep ) )
       {
       if( this->GetDebug() && m_StatusCallBack )
         {
@@ -1803,7 +1804,7 @@ RidgeExtractor<TInputImage>
       }
     else
       {
-      m_DynamicScaleUsed = ( tmpPoint.GetRadiusInObjectSpace() + this->GetScale() ) / 2;
+      m_DynamicScaleUsed = ( r0 + scale0 ) / 2;
       }
 
     SetScale( m_DynamicScaleUsed );
