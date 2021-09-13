@@ -826,7 +826,7 @@ RidgeExtractor<TInputImage>
       pnt.SetCurvature( curvature );
       pnt.SetIntensity( intensity );
       pnt.SetLevelness( levelness );
-      pnt.SetRadiusInObjectSpace( m_RadiusExtractor->GetRadiusStart() );
+      pnt.SetRadiusInObjectSpace(this->GetScale());
       pnt.SetMedialness( 0 );
       pnt.SetBranchness( 0 );
       pnts.push_back( pnt );
@@ -1265,7 +1265,7 @@ RidgeExtractor<TInputImage>
     pnt.SetCurvature( curvature );
     pnt.SetIntensity( intensity );
     pnt.SetLevelness( levelness );
-    pnt.SetRadiusInObjectSpace( m_RadiusExtractor->GetRadiusStart() );
+    pnt.SetRadiusInObjectSpace(this->GetScale());
     pnt.SetMedialness( 0 );
     pnt.SetBranchness( 0 );
     pnts.push_back( pnt );
