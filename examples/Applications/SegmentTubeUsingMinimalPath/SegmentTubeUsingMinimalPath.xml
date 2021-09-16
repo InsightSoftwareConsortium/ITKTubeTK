@@ -89,13 +89,6 @@
       <longflag>maxRadius</longflag>
       <default>6</default>
     </double>
-    <double>
-      <name>StepRadius</name>
-      <label>Step Size</label>
-      <description>Step size for radius estimation.</description>
-      <longflag>stepRadius</longflag>
-      <default>0.05</default>
-    </double>
   </parameters>
   <parameters advanced="true">
     <label>Algorithm Parameters</label>

@@ -97,7 +97,6 @@ public:
   /*Set radius extraction parameters. */
   tubeWrapSetMacro( StartRadius, double, Filter );
   tubeWrapSetMacro( MaxRadius, double, Filter );
-  tubeWrapSetMacro( StepSizeForRadiusEstimation, double, Filter );
   tubeWrapGetMacro( CostAssociatedWithExtractedTube, double, Filter );
   /* Get the extracted minimum path tube */
   tubeWrapGetMacro( Output, TubeGroupPointer, Filter );

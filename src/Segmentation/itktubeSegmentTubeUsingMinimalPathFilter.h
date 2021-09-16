@@ -95,8 +95,6 @@ public:
   itkGetMacro( StartRadius, double );
   itkSetMacro( MaxRadius, double );
   itkGetMacro( MaxRadius, double );
-  itkSetMacro( StepSizeForRadiusEstimation, double );
-  itkGetMacro( StepSizeForRadiusEstimation, double );
   itkGetMacro( CostAssociatedWithExtractedTube, double );
   itkSetMacro( CostAssociatedWithExtractedTube, double );
   /** Sets the input tubes */
@@ -135,7 +133,6 @@ private:
   double                            m_OptimizerStepLengthRelax;
   double                            m_StartRadius;
   double                            m_MaxRadius;
-  double                            m_StepSizeForRadiusEstimation;
   double                            m_CostAssociatedWithExtractedTube;
   TubeGroupPointer                  m_Output;
 

@@ -99,7 +99,6 @@ int DoIt( int argc, char * argv[] )
       filter->SetRadiusImage( reader->GetOutput() );
       filter->SetStartRadius( StartRadius );
       filter->SetMaxRadius( MaxRadius );
-      filter->SetStepSizeForRadiusEstimation( StepRadius );
       }
     catch( itk::ExceptionObject & err )
       {

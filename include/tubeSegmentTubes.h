@@ -261,9 +261,6 @@ public:
   tubeWrapSetMacro( RadiusStart, double, RadiusFilter );
   tubeWrapGetMacro( RadiusStart, double, RadiusFilter );
 
-  tubeWrapSetMacro( RadiusStep, double, RadiusFilter );
-  tubeWrapGetMacro( RadiusStep, double, RadiusFilter );
-
   tubeWrapSetMacro( MinMedialness, double, RadiusFilter );
   tubeWrapGetMacro( MinMedialness, double, RadiusFilter );
   tubeWrapSetMacro( MinMedialnessStart, double, RadiusFilter );

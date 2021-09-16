@@ -92,10 +92,6 @@ public:
   typedef vnl_matrix< double >                               MatrixType;
 
 
-  typedef enum { RADIUS_CORRECTION_NONE, RADIUS_CORRECTION_FOR_BINARY_IMAGE,
-    RADIUS_CORRECTION_FOR_CTA, RADIUS_CORRECTION_FOR_MRA }
-    RadiusCorrectionFunctionType;
-
   /**
    * Set the input image */
   void SetInputImage( typename InputImageType::Pointer inputImage );
@@ -136,14 +132,6 @@ public:
   double GetRadiusStart()
     { return this->GetRadiusStartInIndexSpace() * m_Spacing; }
 
-  /** Set Radius step size when searching */
-  itkSetMacro( RadiusStepInIndexSpace, double );
-  itkGetMacro( RadiusStepInIndexSpace, double );
-  void SetRadiusStep( double r )
-    { this->SetRadiusStepInIndexSpace( r / m_Spacing ); }
-  double GetRadiusStep()
-    { return this->GetRadiusStepInIndexSpace() * m_Spacing; }
-
   /** Set ThreshMedialness */
   itkSetMacro( MinMedialness, double );
   itkGetMacro( MinMedialness, double );
@@ -162,8 +150,7 @@ public:
   bool GetPointVectorOptimalRadius( std::vector< TubePointType > & points,
     double & r0,
     double rMin,
-    double rMax,
-    double rStep );
+    double rMax );
 
   void SetKernelNumberOfPoints( unsigned int _numPoints );
   itkGetMacro( KernelNumberOfPoints, unsigned int );
@@ -180,8 +167,6 @@ public:
   void SetIdleCallBack( bool ( *idleCallBack )( void ) );
   void SetStatusCallBack( void ( *statusCallBack )( const char *,
       const char *, int ) );
-
-  double GetKernelMedialness( double r );
 
 protected:
 
@@ -201,9 +186,7 @@ protected:
   itkGetMacro( ProfileBinCount, std::vector< double > );
   itkGetMacro( ProfileBinValue, std::vector< double > );
 
-  double GetKernelBranchness( double r );
-
-  bool UpdateKernelOptimalRadius( void );
+  bool OptimizeKernelRadius( void );
   itkGetMacro( KernelOptimalRadius, double );
   itkGetMacro( KernelOptimalRadiusMedialness, double );
   itkGetMacro( KernelOptimalRadiusBranchness, double );
@@ -229,10 +212,6 @@ private:
   double                                  m_RadiusStartInIndexSpace;
   double                                  m_RadiusMinInIndexSpace;
   double                                  m_RadiusMaxInIndexSpace;
-  double                                  m_RadiusStepInIndexSpace;
-
-  double                                  m_RadiusCorrectionScale;
-  RadiusCorrectionFunctionType            m_RadiusCorrectionFunction;
 
   double                                  m_MinMedialness;
   double                                  m_MinMedialnessStart;

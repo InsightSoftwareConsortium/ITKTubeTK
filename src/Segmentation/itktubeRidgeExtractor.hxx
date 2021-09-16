@@ -826,7 +826,7 @@ RidgeExtractor<TInputImage>
       pnt.SetCurvature( curvature );
       pnt.SetIntensity( intensity );
       pnt.SetLevelness( levelness );
-      pnt.SetRadiusInObjectSpace(this->GetScale());
+      pnt.SetRadiusInObjectSpace(0);
       pnt.SetMedialness( 0 );
       pnt.SetBranchness( 0 );
       pnts.push_back( pnt );
@@ -1265,7 +1265,7 @@ RidgeExtractor<TInputImage>
     pnt.SetCurvature( curvature );
     pnt.SetIntensity( intensity );
     pnt.SetLevelness( levelness );
-    pnt.SetRadiusInObjectSpace(this->GetScale());
+    pnt.SetRadiusInObjectSpace(0);
     pnt.SetMedialness( 0 );
     pnt.SetBranchness( 0 );
     pnts.push_back( pnt );
@@ -1290,13 +1290,15 @@ RidgeExtractor<TInputImage>
           }
 
         int pntsSize = pnts.size();
-        unsigned int minTubeSize = m_RadiusExtractor->GetKernelNumberOfPoints() * m_RadiusExtractor->GetKernelPointStep();
+        unsigned int minTubeSize = m_RadiusExtractor->GetKernelNumberOfPoints()
+          * m_RadiusExtractor->GetKernelPointStep();
         int startP = pntsSize - minTubeSize;
         int endP = pntsSize - 1;
         int stepP = m_RadiusExtractor->GetKernelPointStep();
         if( startP < 0 )
         {
-          if(pntsSize < static_cast<int>(m_RadiusExtractor->GetKernelNumberOfPoints()*3))
+          if(pntsSize <
+            static_cast<int>(m_RadiusExtractor->GetKernelNumberOfPoints()*3))
             {
             startP = endP;
             }
@@ -1326,9 +1328,8 @@ RidgeExtractor<TInputImage>
           }
         double radiusMin = m_RadiusExtractor->GetRadiusMin();
         double radiusMax = m_RadiusExtractor->GetRadiusMax();
-        double radiusStep = m_RadiusExtractor->GetRadiusStep();
         if( m_RadiusExtractor->GetPointVectorOptimalRadius( points,
-          m_DynamicScaleUsed, radiusMin, radiusMax, radiusStep ) )
+          m_DynamicScaleUsed, radiusMin, radiusMax ) )
           {
           m_DynamicScaleUsed = ( this->GetScale() + m_DynamicScaleUsed ) / 2;
           }
@@ -1788,12 +1789,11 @@ RidgeExtractor<TInputImage>
     tmpPoint.SetRadiusInObjectSpace( m_RadiusExtractor->GetRadiusStart() );
     double radiusMin = m_RadiusExtractor->GetRadiusMin();
     double radiusMax = m_RadiusExtractor->GetRadiusMax();
-    double radiusStep = m_RadiusExtractor->GetRadiusStep();
     std::vector< TubePointType > points;
     points.push_back( tmpPoint );
     double r0 = m_RadiusExtractor->GetRadiusStart();
     if( !m_RadiusExtractor->GetPointVectorOptimalRadius( points,
-      r0, radiusMin, radiusMax, radiusStep ) )
+      r0, radiusMin, radiusMax ) )
       {
       if( this->GetDebug() && m_StatusCallBack )
         {

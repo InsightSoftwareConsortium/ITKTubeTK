@@ -710,7 +710,6 @@ TubeExtractor<TInputImage>
       if( useRadiiList )
         {
         this->SetRadiusInObjectSpace( *seedRadiusIter );
-        std::cout << "   Radius = " << *seedRadiusIter << std::endl;
         ++seedRadiusIter;
         }
   
