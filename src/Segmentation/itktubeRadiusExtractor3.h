@@ -92,10 +92,6 @@ public:
   typedef vnl_matrix< double >                               MatrixType;
 
 
-  typedef enum { RADIUS_CORRECTION_NONE, RADIUS_CORRECTION_FOR_BINARY_IMAGE,
-    RADIUS_CORRECTION_FOR_CTA, RADIUS_CORRECTION_FOR_MRA }
-    RadiusCorrectionFunctionType;
-
   /**
    * Set the input image */
   void SetInputImage( typename InputImageType::Pointer inputImage );
@@ -136,22 +132,6 @@ public:
   double GetRadiusStart()
     { return this->GetRadiusStartInIndexSpace() * m_Spacing; }
 
-  /** Set Radius step size when searching */
-  itkSetMacro( RadiusStepInIndexSpace, double );
-  itkGetMacro( RadiusStepInIndexSpace, double );
-  void SetRadiusStep( double r )
-    { this->SetRadiusStepInIndexSpace( r / m_Spacing ); }
-  double GetRadiusStep()
-    { return this->GetRadiusStepInIndexSpace() * m_Spacing; }
-
-  /** Set Radius tolerance when searching */
-  itkSetMacro( RadiusToleranceInIndexSpace, double );
-  itkGetMacro( RadiusToleranceInIndexSpace, double );
-  void SetRadiusTolerance( double r )
-    { this->SetRadiusToleranceInIndexSpace( r / m_Spacing ); }
-  double GetRadiusTolerance()
-    { return this->GetRadiusToleranceInIndexSpace() * m_Spacing; }
-
   /** Set ThreshMedialness */
   itkSetMacro( MinMedialness, double );
   itkGetMacro( MinMedialness, double );
@@ -170,21 +150,16 @@ public:
   bool GetPointVectorOptimalRadius( std::vector< TubePointType > & points,
     double & r0,
     double rMin,
-    double rMax,
-    double rStep,
-    double rTolerance );
+    double rMax );
 
-  void SetNumKernelPoints( unsigned int _numPoints );
-  itkGetMacro( NumKernelPoints, unsigned int );
+  void SetKernelNumberOfPoints( unsigned int _numPoints );
+  itkGetMacro( KernelNumberOfPoints, unsigned int );
 
   itkGetMacro( KernelPointStep, unsigned int );
   itkSetMacro( KernelPointStep, unsigned int );
 
   itkGetMacro( KernelStep, unsigned int );
   itkSetMacro( KernelStep, unsigned int );
-
-  itkGetMacro( KernelExtent, double );
-  itkSetMacro( KernelExtent, double );
 
   /** Calculate Radii */
   bool ExtractRadii( TubeType * tube, bool verbose=false );
@@ -193,29 +168,28 @@ public:
   void SetStatusCallBack( void ( *statusCallBack )( const char *,
       const char *, int ) );
 
-  double GetKernelMedialness( double r );
-
 protected:
 
   RadiusExtractor3( void );
   virtual ~RadiusExtractor3( void );
 
-  void GenerateKernel( void );
+  void GenerateKernelProfile( void );
 
   void SetKernelTubePoints( const std::vector< TubePointType > & tubePoints );
   std::vector< TubePointType > & GetKernelTubePoints( void )
    { return m_KernelTube->GetPoints(); };
 
-  itkGetMacro( KernelCount, std::vector< double > );
-  itkGetMacro( KernelValue, std::vector< double > );
+  double GetProfileMaxDistance();
+  double GetProfileBinNumber( double x );
+  double GetProfileBinRadius( double i );
 
-  double GetKernelBranchness( double r );
+  itkGetMacro( ProfileBinCount, std::vector< double > );
+  itkGetMacro( ProfileBinValue, std::vector< double > );
 
-  bool UpdateKernelOptimalRadius( void );
+  bool OptimizeKernelRadius( void );
   itkGetMacro( KernelOptimalRadius, double );
   itkGetMacro( KernelOptimalRadiusMedialness, double );
   itkGetMacro( KernelOptimalRadiusBranchness, double );
-
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
@@ -238,24 +212,19 @@ private:
   double                                  m_RadiusStartInIndexSpace;
   double                                  m_RadiusMinInIndexSpace;
   double                                  m_RadiusMaxInIndexSpace;
-  double                                  m_RadiusStepInIndexSpace;
-  double                                  m_RadiusToleranceInIndexSpace;
-
-  double                                  m_RadiusCorrectionScale;
-  RadiusCorrectionFunctionType            m_RadiusCorrectionFunction;
 
   double                                  m_MinMedialness;
   double                                  m_MinMedialnessStart;
 
   typename TubeType::Pointer              m_KernelTube;
-  unsigned int                            m_NumKernelPoints;
+  unsigned int                            m_KernelNumberOfPoints;
 
   unsigned int                            m_KernelPointStep;
   unsigned int                            m_KernelStep;
-  double                                  m_KernelExtent;
 
-  std::vector< double >                   m_KernelCount;
-  std::vector< double >                   m_KernelValue;
+  unsigned int                            m_ProfileNumberOfBins;
+  std::vector< double >                   m_ProfileBinCount;
+  std::vector< double >                   m_ProfileBinValue;
 
   double                                  m_KernelOptimalRadius;
   double                                  m_KernelOptimalRadiusMedialness;

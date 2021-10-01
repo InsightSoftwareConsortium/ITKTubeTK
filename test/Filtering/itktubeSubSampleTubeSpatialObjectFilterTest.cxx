@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -39,11 +38,11 @@ int itktubeSubSampleTubeSpatialObjectFilterTest( int argc, char * argv[] )
   const char * inputTubeNetwork = argv[1];
   const char * outputTubeNetwork = argv[2];
 
-  enum { Dimension = 3 };
-  typedef itk::TubeSpatialObject< Dimension >   TubeSpatialObjectType;
-  typedef itk::GroupSpatialObject< Dimension >  GroupSpatialObjectType;
+  enum { ObjectDimension = 3 };
+  typedef itk::TubeSpatialObject< ObjectDimension >   TubeSpatialObjectType;
+  typedef itk::GroupSpatialObject< ObjectDimension >  GroupSpatialObjectType;
 
-  typedef itk::SpatialObjectReader< Dimension >  ReaderType;
+  typedef itk::SpatialObjectReader< ObjectDimension >  ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputTubeNetwork );
   try
@@ -74,7 +73,7 @@ int itktubeSubSampleTubeSpatialObjectFilterTest( int argc, char * argv[] )
       dynamic_cast< TubeSpatialObjectType * >( ( *it ).GetPointer() );
     if( pointBasedSpatialObject )
       {
-      typedef itk::tube::SubSampleTubeSpatialObjectFilter< TubeSpatialObjectType >
+      typedef itk::tube::SubSampleTubeSpatialObjectFilter< ObjectDimension >
         SubSampleFilterType;
       SubSampleFilterType::Pointer subSampleFilter = SubSampleFilterType::New();
       const unsigned int samplingFactor = 5;
@@ -95,7 +94,7 @@ int itktubeSubSampleTubeSpatialObjectFilterTest( int argc, char * argv[] )
     }
 
 
-  typedef itk::SpatialObjectWriter< Dimension > WriterType;
+  typedef itk::SpatialObjectWriter< ObjectDimension > WriterType;
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputTubeNetwork );
   writer->SetInput( output );

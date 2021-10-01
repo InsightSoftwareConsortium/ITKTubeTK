@@ -64,6 +64,8 @@ CropTubesFilter< VDimension >
   TubeGroupType* pTargetTubeGroup = this->GetOutput();
 
   pTargetTubeGroup->CopyInformation( pSourceTubeGroup );
+  pTargetTubeGroup->SetId( pSourceTubeGroup->GetId() );
+  pTargetTubeGroup->SetParentId( pSourceTubeGroup->GetParentId() );
   pTargetTubeGroup->Update();
 
   int targetTubeId=0;

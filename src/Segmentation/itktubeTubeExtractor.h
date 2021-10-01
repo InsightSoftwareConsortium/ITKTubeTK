@@ -150,6 +150,10 @@ public:
   double GetDataMax( void );
 
   /**
+   * Set Data Limits - values outside of these limits are ignored */
+  void SetDataMinMaxLimits( double limitMin, double limitMax );
+
+  /**
    * Set the border within the image edges that vessels cannot enter */
   void SetBorderInIndexSpace( int border );
   /**

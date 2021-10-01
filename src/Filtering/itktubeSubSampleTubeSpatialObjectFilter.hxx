@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -32,32 +31,39 @@ namespace itk
 namespace tube
 {
 
-template< class TTubeSpatialObject >
-SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
+template< unsigned int ObjectDimension >
+SubSampleTubeSpatialObjectFilter< ObjectDimension >
 ::SubSampleTubeSpatialObjectFilter( void )
   : m_Sampling( 1 )
 {
 }
 
-template< class TTubeSpatialObject >
-SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
+template< unsigned int ObjectDimension >
+SubSampleTubeSpatialObjectFilter< ObjectDimension >
 ::~SubSampleTubeSpatialObjectFilter( void )
 {
 }
 
 
-template< class TTubeSpatialObject >
+template< unsigned int ObjectDimension >
 void
-SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
+SubSampleTubeSpatialObjectFilter< ObjectDimension >
 ::GenerateData( void )
 {
-  TubeSpatialObjectType * output = this->GetOutput();
-  const TubeSpatialObjectType * input = this->GetInput();
-  output->CopyInformation( input );
+  typename const TubeSpatialObjectType * input =
+    dynamic_cast<const TubeSpatialObjectType *>( this->GetInput() );
+  if (input == nullptr)
+  {
+    std::cerr << "Error: tube passed to SubSampleTubes is not a tube." << std::endl;
+    return;
+  }
+  typename TubeSpatialObjectType::Pointer output =
+    dynamic_cast<TubeSpatialObjectType *>( this->GetOutput() );
 
   typedef typename TubeSpatialObjectType::TubePointListType TubePointListType;
   const TubePointListType & inputPoints = input->GetPoints();
   TubePointListType & outputPoints = output->GetPoints();
+
   const unsigned int numberOfInputPoints = inputPoints.size();
   unsigned int numberOfOutputPoints;
   if( this->m_Sampling == 1 )
@@ -82,6 +88,8 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
   outputPoints[numberOfOutputPoints - 1] = inputPoints[numberOfInputPoints - 1];
 
   output->RemoveDuplicatePointsInObjectSpace();
+
+  this->GraftOutput( output );
 }
 
 } // End namespace tube

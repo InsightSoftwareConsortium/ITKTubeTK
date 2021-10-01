@@ -42,6 +42,7 @@ set( TubeTK_Filtering_H_Files
   Filtering/itktubeGaussianDerivativeFilter.h
   Filtering/itktubeGaussianDerivativeImageSource.h
   Filtering/itktubeInverseIntensityImageFilter.h
+  Filtering/itktubeLimitedMinimumMaximumImageFilter.h
   Filtering/itktubeMinimumSpanningTreeVesselConnectivityFilter.h
   Filtering/itktubePadImageFilter.h
   Filtering/itktubeRegionFromReferenceImageFilter.h
@@ -52,7 +53,7 @@ set( TubeTK_Filtering_H_Files
   Filtering/itktubeSpatialObjectToSpatialObjectFilter.h
   Filtering/itktubeStructureTensorRecursiveGaussianImageFilter.h
   Filtering/itktubeSubSampleTubeSpatialObjectFilter.h
-  Filtering/itktubeSubSampleTubeTreeSpatialObjectFilter.h
+  Filtering/itktubeSubSampleSpatialObjectFilter.h
   Filtering/itktubeSymmetricEigenVectorAnalysisImageFilter.h
   Filtering/itktubeTortuositySpatialObjectFilter.h
   Filtering/itktubeTubeEnhancingDiffusion2DImageFilter.h
@@ -84,6 +85,7 @@ set( TubeTK_Filtering_HXX_Files
   Filtering/itktubeGaussianDerivativeFilter.hxx
   Filtering/itktubeGaussianDerivativeImageSource.hxx
   Filtering/itktubeInverseIntensityImageFilter.hxx
+  Filtering/itktubeLimitedMinimumMaximumImageFilter.hxx
   Filtering/itktubeMinimumSpanningTreeVesselConnectivityFilter.hxx
   Filtering/itktubePadImageFilter.hxx
   Filtering/itktubeRegionFromReferenceImageFilter.hxx
@@ -94,7 +96,7 @@ set( TubeTK_Filtering_HXX_Files
   Filtering/itktubeSpatialObjectToSpatialObjectFilter.hxx
   Filtering/itktubeStructureTensorRecursiveGaussianImageFilter.hxx
   Filtering/itktubeSubSampleTubeSpatialObjectFilter.hxx
-  Filtering/itktubeSubSampleTubeTreeSpatialObjectFilter.hxx
+  Filtering/itktubeSubSampleSpatialObjectFilter.hxx
   Filtering/itktubeTortuositySpatialObjectFilter.h
   Filtering/itktubeTubeEnhancingDiffusion2DImageFilter.hxx
   Filtering/itktubeTubeSpatialObjectToDensityImageFilter.hxx

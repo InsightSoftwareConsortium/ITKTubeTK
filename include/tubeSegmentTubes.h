@@ -105,6 +105,9 @@ public:
   tubeWrapSetMacro( DataMax, double, Filter );
   tubeWrapGetMacro( DataMax, double, Filter );
 
+  void SetDataMinMaxLimits( double minLimit, double maxLimit )
+  { return this->m_Filter->SetDataMinMaxLimits( minLimit, maxLimit ); };
+
   tubeWrapForceSetMacro( BorderInIndexSpace, int, Filter );
 
   tubeWrapSetConstReferenceMacro( ExtractBoundMinInIndexSpace, IndexType,
@@ -258,25 +261,16 @@ public:
   tubeWrapSetMacro( RadiusStart, double, RadiusFilter );
   tubeWrapGetMacro( RadiusStart, double, RadiusFilter );
 
-  tubeWrapSetMacro( RadiusStep, double, RadiusFilter );
-  tubeWrapGetMacro( RadiusStep, double, RadiusFilter );
-
-  tubeWrapSetMacro( RadiusTolerance, double, RadiusFilter );
-  tubeWrapGetMacro( RadiusTolerance, double, RadiusFilter );
-
   tubeWrapSetMacro( MinMedialness, double, RadiusFilter );
   tubeWrapGetMacro( MinMedialness, double, RadiusFilter );
   tubeWrapSetMacro( MinMedialnessStart, double, RadiusFilter );
   tubeWrapGetMacro( MinMedialnessStart, double, RadiusFilter );
 
-  tubeWrapSetMacro( NumKernelPoints, unsigned int, RadiusFilter );
-  tubeWrapGetMacro( NumKernelPoints, unsigned int, RadiusFilter );
+  tubeWrapSetMacro( KernelNumberOfPoints, unsigned int, RadiusFilter );
+  tubeWrapGetMacro( KernelNumberOfPoints, unsigned int, RadiusFilter );
 
   tubeWrapSetMacro( KernelPointStep, unsigned int, RadiusFilter );
   tubeWrapGetMacro( KernelPointStep, unsigned int, RadiusFilter );
-
-  tubeWrapSetMacro( KernelExtent, double, RadiusFilter );
-  tubeWrapGetMacro( KernelExtent, double, RadiusFilter );
 
   bool ExtractRadii( TubeType * tube )
   { return m_RadiusFilter->ExtractRadii( tube ); };

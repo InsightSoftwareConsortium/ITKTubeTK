@@ -2,8 +2,7 @@
 
    Library:   TubeTK
 
-   Copyright 2010 Kitware Inc. 28 Corporate Drive,
-   Clifton Park, NY, 12065, USA.
+   Copyright Kitware Inc.
 
    All rights reserved.
 
@@ -24,12 +23,11 @@
 #ifndef __itktubeResampleTubesFilter_h
 #define __itktubeResampleTubesFilter_h
 
-#include "itkGroupSpatialObject.h"
+#include "itkSpatialObject.h"
 #include "itkImage.h"
 #include <itkDisplacementFieldTransform.h>
-#include "itktubeSpatialObjectToSpatialObjectFilter.h"
-#include "itkTubeSpatialObject.h"
-#include "itktubeTubeToTubeTransformFilter.h"
+#include "itktubeSpatialObjectFilter.h"
+#include "itktubePointBasedSpatialObjectTransformFilter.h"
 #include "itkTransformBase.h"
 namespace itk
 {
@@ -40,27 +38,24 @@ namespace tube
  * \brief resamples a given tube spatial object.
  *
  */
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 class ResampleTubesFilter
-  : public SpatialObjectToSpatialObjectFilter<
-    GroupSpatialObject< VDimension >, GroupSpatialObject< VDimension > >
+  : public SpatialObjectFilter< ObjectDimension >
 {
 public:
   /** Standard class typedefs. */
-  typedef itk::GroupSpatialObject< VDimension > TubeGroupType;
-  typedef itk::TubeSpatialObject< VDimension >  TubeSpatialObjectType;
+  typedef itk::SpatialObject< ObjectDimension >      SpatialObjectType;
 
-  typedef ResampleTubesFilter< VDimension >     Self;
-  typedef SpatialObjectToSpatialObjectFilter< TubeGroupType, TubeGroupType >
-                                                Superclass;
+  typedef ResampleTubesFilter< ObjectDimension >     Self;
+  typedef SpatialObjectFilter< ObjectDimension >     Superclass;
   typedef SmartPointer< Self >                  Pointer;
   typedef SmartPointer< const Self >            ConstPointer;
 
   typedef char                                  PixelType;
-  typedef itk::Image< PixelType, VDimension >   ImageType;
+  typedef itk::Image< PixelType, ObjectDimension >   ImageType;
 
   /** Typedefs for Displacement field tranform.    */
-  typedef itk::DisplacementFieldTransform< double, VDimension >
+  typedef itk::DisplacementFieldTransform< double, ObjectDimension >
     DisplacementFieldTransformType;
   typedef typename DisplacementFieldTransformType::DisplacementFieldType
     DisplacementFieldType;
@@ -71,7 +66,7 @@ public:
 
   /** Run-time type information ( and related methods ).   */
   itkTypeMacro( ResampleTubesFilter,
-                SpatialObjectToSpatialObjectFilter );
+                SpatialObjectFilter );
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -87,8 +82,6 @@ public:
   /** Set/Get  use Inverse Transform */
   itkSetMacro( UseInverseTransform, bool );
   itkGetMacro( UseInverseTransform, bool );
-
-  itkSetObjectMacro( InputSpatialObject, TubeGroupType );
 
   void SetDisplacementField( DisplacementFieldType* field );
   void SetReadTransformList( const BaseTransformListType* tList );
@@ -112,16 +105,15 @@ private:
   bool                                    m_UseInverseTransform;
   const BaseTransformListType*            m_ReadTransformList;
   typename DisplacementFieldType::Pointer m_DisplacementField;
-  typename TubeGroupType::Pointer         m_InputSpatialObject;
 
   void ReadImageTransform
-    ( typename TubeGroupType::TransformType::Pointer &outputTransform );
-  typename TubeGroupType::Pointer ApplyDisplacementFieldTransform
-    ( typename TubeGroupType::TransformType::Pointer outputTransform );
-  typename TubeGroupType::Pointer ApplyInputTransform
-    ( typename TubeGroupType::TransformType::Pointer outputTransform );
-  typename TubeGroupType::Pointer ApplyIdentityAffineTransform
-    ( typename TubeGroupType::TransformType::Pointer outputTransform );
+    ( typename SpatialObjectType::TransformType::Pointer & outputTransform );
+  typename SpatialObjectType::Pointer ApplyDisplacementFieldTransform
+    ( typename SpatialObjectType::TransformType::ConstPointer & outputTransform );
+  typename SpatialObjectType::Pointer ApplyInputTransform
+    ( typename SpatialObjectType::TransformType::ConstPointer & outputTransform );
+  typename SpatialObjectType::Pointer ApplyIdentityAffineTransform
+    ( typename SpatialObjectType::TransformType::ConstPointer & outputTransform );
 }; // End class ResampleTubesFilter
 
 } // End namespace tube

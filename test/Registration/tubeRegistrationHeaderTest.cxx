@@ -23,7 +23,6 @@ limitations under the License.
 #include <itkImage.h>
 #include <itkTubeSpatialObject.h>
 
-#include "itkAffine3DImageToImageRegistrationMethod.h"
 #include "itkAffineImageToImageRegistrationMethod.h"
 #include "itkAnisotropicSimilarity3DTransform.h"
 #include "itkAnisotropicSimilarityLandmarkBasedTransformInitializer.h"
@@ -44,16 +43,18 @@ limitations under the License.
 //#include "itktubeAnisotropicDiffusiveSparseRegistrationFilter.h"
 #include "itktubeDiffusiveRegistrationFilter.h"
 #include "itktubeDiffusiveRegistrationFilterUtils.h"
-#include "itktubeImageToTubeRigidMetric.h"
-#include "itktubeImageToTubeRigidRegistration.h"
+#include "itktubeInitialSpatialObjectToImageRegistrationMethod.h"
 #include "itktubeMeanSquareRegistrationFunction.h"
 #include "itktubeMergeAdjacentImagesFilter.h"
-#include "itktubeTubeAngleOfIncidenceWeightFunction.h"
-#include "itktubeTubeExponentialResolutionWeightFunction.h"
-#include "itktubeTubeParametricExponentialResolutionWeightFunction.h"
-#include "itktubeTubeParametricExponentialWithBoundsResolutionWeightFunction.h"
-#include "itktubeTubePointWeightsCalculator.h"
-#include "itktubeTubeToTubeTransformFilter.h"
+#include "itktubeOptimizedSpatialObjectToImageRegistrationMethod.h"
+#include "itktubePointBasedSpatialObjectToImageMetric.h"
+#include "itktubePointBasedSpatialObjectTransformFilter.h"
+#include "itktubeRigidSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeScaleSkewVersor3DSpatialObjectToImageRegistrationMethod.h"
+#include "itktubeSpatialObjectToImageMetric.h"
+#include "itktubeSpatialObjectToImageRegistrationHelper.h"
+#include "itktubeSpatialObjectToImageRegistrationMethod.h"
 
 int tubeRegistrationHeaderTest( int itkNotUsed( argc ), char * itkNotUsed(
   argv )[] )

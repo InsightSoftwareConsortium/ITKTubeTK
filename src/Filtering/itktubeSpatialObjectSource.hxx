@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -45,8 +44,6 @@ SpatialObjectSource< TOutputSpatialObject >
     this->MakeOutput( 0 ).GetPointer() );
   this->ProcessObject::SetNumberOfRequiredOutputs( 1 );
   this->ProcessObject::SetNthOutput( 0, output.GetPointer() );
-
-  itk::OutputWindow::SetInstance( itk::TextOutput::New() );
 }
 
 

@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -24,7 +23,8 @@ limitations under the License.
 #ifndef __itktubeSubSampleTubeSpatialObjectFilter_h
 #define __itktubeSubSampleTubeSpatialObjectFilter_h
 
-#include "itktubeSpatialObjectToSpatialObjectFilter.h"
+#include "itkTubeSpatialObject.h"
+#include "itktubeSpatialObjectFilter.h"
 
 namespace itk
 {
@@ -41,24 +41,22 @@ namespace tube
  *
  * \sa SubSampleTubeTreeSpatialObjectFilter
  */
-template< class TTubeSpatialObject >
+template< unsigned int ObjectDimension >
 class SubSampleTubeSpatialObjectFilter
-  : public SpatialObjectToSpatialObjectFilter< TTubeSpatialObject,
-    TTubeSpatialObject >
+  : public SpatialObjectFilter< ObjectDimension >
 {
 public:
   /** Standard class typedefs. */
-  typedef SubSampleTubeSpatialObjectFilter  Self;
-  typedef SpatialObjectToSpatialObjectFilter< TTubeSpatialObject,
-    TTubeSpatialObject >                    Superclass;
-  typedef SmartPointer< Self >              Pointer;
-  typedef SmartPointer< const Self >        ConstPointer;
+  typedef SubSampleTubeSpatialObjectFilter          Self;
+  typedef SpatialObjectFilter< ObjectDimension >    Superclass;
+  typedef SmartPointer< Self >                      Pointer;
+  typedef SmartPointer< const Self >                ConstPointer;
 
-  typedef TTubeSpatialObject TubeSpatialObjectType;
+  typedef TubeSpatialObject<ObjectDimension>        TubeSpatialObjectType;
 
   /** Run-time type information ( and related methods ).   */
   itkTypeMacro( SubSampleTubeSpatialObjectFilter,
-    SpatialObjectToSpatialObjectFilter );
+    SpatialObjectFilter );
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

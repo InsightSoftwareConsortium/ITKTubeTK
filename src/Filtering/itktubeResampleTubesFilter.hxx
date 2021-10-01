@@ -2,8 +2,7 @@
 
    Library:   TubeTK
 
-   Copyright 2010 Kitware Inc. 28 Corporate Drive,
-   Clifton Park, NY, 12065, USA.
+   Copyright Kitware Inc.
 
    All rights reserved.
 
@@ -31,10 +30,9 @@
 #include "itkMath.h"
 
 #include "tubeMacro.h"
-#include "tubeTubeMathFilters.h"
-#include "tubeMatrixMath.h"
 
-#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
+#include "itkTubeSpatialObject.h"
+#include "itktubeSubSampleSpatialObjectFilter.h"
 
 namespace itk
 {
@@ -42,56 +40,56 @@ namespace tube
 {
 
 //--------------------------------------------------------------------------
-template< unsigned int VDimension >
-ResampleTubesFilter< VDimension >
+template< unsigned int ObjectDimension >
+ResampleTubesFilter< ObjectDimension >
 ::ResampleTubesFilter( void )
 {
   m_UseInverseTransform = false;
-  m_MatchImage = NULL;
-  m_DisplacementField = NULL;
-  m_ReadTransformList = NULL;
+  m_MatchImage = nullptr;
+  m_DisplacementField = nullptr;
+  m_ReadTransformList = nullptr;
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int VDimension >
-ResampleTubesFilter< VDimension >
+template< unsigned int ObjectDimension >
+ResampleTubesFilter< ObjectDimension >
 ::~ResampleTubesFilter( void )
 {
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-ResampleTubesFilter< VDimension >
+ResampleTubesFilter< ObjectDimension >
 ::SetDisplacementField( DisplacementFieldType * field )
 {
   m_DisplacementField = field;
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-ResampleTubesFilter< VDimension >
+ResampleTubesFilter< ObjectDimension >
 ::SetReadTransformList( const BaseTransformListType * tList )
 {
   m_ReadTransformList = tList;
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-ResampleTubesFilter< VDimension >
-::ReadImageTransform( typename TubeGroupType::TransformType::Pointer &
+ResampleTubesFilter< ObjectDimension >
+::ReadImageTransform( typename SpatialObjectType::TransformType::Pointer &
   outputTransform )
 {
   typename ImageType::PointType origin = m_MatchImage->GetOrigin();
   typename ImageType::DirectionType directions =
     m_MatchImage->GetDirection();
 
-  outputTransform = TubeGroupType::TransformType::New();
+  outputTransform = SpatialObjectType::TransformType::New();
   outputTransform->SetIdentity();
-  itk::Vector< double, VDimension > offset;
-  for( unsigned int i = 0; i < VDimension; ++i )
+  itk::Vector< double, ObjectDimension > offset;
+  for( unsigned int i = 0; i < ObjectDimension; ++i )
     {
     offset[i] = origin[i];
     }
@@ -100,17 +98,17 @@ ResampleTubesFilter< VDimension >
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int VDimension >
-typename itk::GroupSpatialObject< VDimension >::Pointer
-ResampleTubesFilter< VDimension >
+template< unsigned int ObjectDimension >
+typename itk::SpatialObject< ObjectDimension >::Pointer
+ResampleTubesFilter< ObjectDimension >
 ::ApplyDisplacementFieldTransform( typename
-  TubeGroupType::TransformType::Pointer outputTransform )
+  SpatialObjectType::TransformType::ConstPointer & outputTransform )
 {
-  const TubeGroupType * inputTubeGroup = this->GetInput();
+  typename SpatialObjectType::ConstPointer inSO = this->GetInput();
 
   /** Typedefs for Displacement field tranform filter.    */
-  typedef itk::tube::TubeToTubeTransformFilter<
-    DisplacementFieldTransformType, VDimension >
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter<
+    DisplacementFieldTransformType, ObjectDimension >
     DisplacementFieldTransformFilterType;
 
   // Create new transform
@@ -121,36 +119,37 @@ ResampleTubesFilter< VDimension >
   // Create the filter and apply
  typename DisplacementFieldTransformFilterType::Pointer filter =
    DisplacementFieldTransformFilterType::New();
-  filter->SetInput( inputTubeGroup );
+  filter->SetInput( inSO );
   filter->SetTransform( transform );
   filter->SetOutputObjectToParentTransform(
     outputTransform.GetPointer() );
-  filter->GraftOutput( this->GetOutput() );
   filter->Update();
 
-  return filter->GetOutput();
+  this->GraftOutput( filter->GetOutput() );
+
+  return this->GetOutput();
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int VDimension >
-typename itk::GroupSpatialObject< VDimension >::Pointer
-ResampleTubesFilter< VDimension >
-::ApplyInputTransform( typename TubeGroupType::TransformType::Pointer
+template< unsigned int ObjectDimension >
+typename itk::SpatialObject< ObjectDimension >::Pointer
+ResampleTubesFilter< ObjectDimension >
+::ApplyInputTransform( typename SpatialObjectType::TransformType::ConstPointer &
   outputTransform )
 {
-  typename TubeGroupType::Pointer tmpTubes;
-  tmpTubes = m_InputSpatialObject;
+  typename SpatialObjectType::ConstPointer inSO = this->GetInput();
 
   /** Typedefs for transform read from a file    */
-  typedef itk::MatrixOffsetTransformBase< double, VDimension, VDimension >
+  typedef itk::MatrixOffsetTransformBase< double, ObjectDimension, ObjectDimension >
     MatrixOffsetTransformType;
-  typedef itk::tube::TubeToTubeTransformFilter< MatrixOffsetTransformType,
-    VDimension >
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter<
+    MatrixOffsetTransformType,
+    ObjectDimension >
     MatrixOffsetTransformFilterType;
 
   BaseTransformListType::const_iterator tListIt;
-  for( tListIt = m_ReadTransformList->begin();
-    tListIt != m_ReadTransformList->end(); ++tListIt )
+  tListIt = m_ReadTransformList->begin();
+  while( tListIt != m_ReadTransformList->end() )
     {
     typename MatrixOffsetTransformType::Pointer transform = dynamic_cast<
       MatrixOffsetTransformType * >( ( *tListIt ).GetPointer() );
@@ -163,30 +162,34 @@ ResampleTubesFilter< VDimension >
       transform = ( MatrixOffsetTransformType * )ivT.GetPointer();
       }
 
-    filter->SetInput( tmpTubes );
+    filter->SetInput( inSO );
     filter->SetTransform( transform );
     filter->SetOutputObjectToParentTransform( outputTransform );
-    filter->GraftOutput( this->GetOutput() );
     filter->Update();
-    tmpTubes = filter->GetOutput();
+
+    inSO = filter->GetOutput();
+    this->GraftOutput( filter->GetOutput() );
+    ++tListIt;
     }
-  return tmpTubes;
+
+  return this->GetOutput();
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int VDimension >
-typename itk::GroupSpatialObject< VDimension >::Pointer
-ResampleTubesFilter< VDimension >
+template< unsigned int ObjectDimension >
+typename itk::SpatialObject< ObjectDimension >::Pointer
+ResampleTubesFilter< ObjectDimension >
 ::ApplyIdentityAffineTransform( typename
-  TubeGroupType::TransformType::Pointer outputTransform )
+  SpatialObjectType::TransformType::ConstPointer & outputTransform )
 {
-  const TubeGroupType * inputTubeGroup = this->GetInput();
+  typename SpatialObjectType::ConstPointer inSO = this->GetInput();
 
   /** Typedefs for Affine Transform */
-  typedef itk::AffineTransform< double, VDimension >
+  typedef itk::AffineTransform< double, ObjectDimension >
     AffineTransformType;
-  typedef itk::tube::TubeToTubeTransformFilter< AffineTransformType,
-    VDimension >
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter<
+    AffineTransformType,
+    ObjectDimension >
     AffineTransformFilterType;
 
   typename AffineTransformType::Pointer identityAffineTransform =
@@ -195,129 +198,93 @@ ResampleTubesFilter< VDimension >
 
   typename AffineTransformFilterType::Pointer filter =
     AffineTransformFilterType::New();
-  filter->SetInput( inputTubeGroup );
+  filter->SetInput( inSO );
   filter->SetTransform( identityAffineTransform );
   filter->SetOutputObjectToParentTransform( outputTransform );
-  filter->GraftOutput( this->GetOutput() );
   filter->Update();
 
-  return filter->GetOutput();
+  this->GraftOutput( filter->GetOutput() );
+
+  return this->GetOutput();
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-ResampleTubesFilter< VDimension >
+ResampleTubesFilter< ObjectDimension >
 ::GenerateData( void )
 {
-  const TubeGroupType * inputTubeGroup = this->GetInput();
-  typename TubeGroupType::Pointer tmpTubeGroup = nullptr;
-  /*
-  if( true )
-    {
-    char soTypeName[80];
-    strcpy( soTypeName, "TubeSpatialObject" );
-    typename TubeSpatialObjectType::ChildrenListPointer tubeList =
-      inputTubeGroup->GetChildren( inputTubeGroup->GetMaximumDepth(),
-        soTypeName );
-    typename TubeSpatialObjectType::ChildrenListType::iterator it =
-      tubeList->begin();
-    while( it != tubeList->end() )
-      {
-      auto itP = static_cast<TubeSpatialObjectType *>(it->GetPointer())
-        ->GetPoints().rbegin();
-      std::cout << "o1   " << itP->GetPositionInObjectSpace() << std::endl;
-      ++itP;
-      std::cout << "o2   " << itP->GetPositionInObjectSpace() << std::endl;
-      ++itP;
-      std::cout << "o3   " << itP->GetPositionInObjectSpace() << std::endl;
-      ++it;
-      }
-    tubeList->clear();
-    delete tubeList;
-    }
-  */
+  typename SpatialObjectType::ConstPointer inSO = this->GetInput();
 
-  typename TubeGroupType::TransformType::Pointer outputTransform;
+  typename SpatialObjectType::Pointer outSO = this->GetOutput();
+
+  typename SpatialObjectType::TransformType::ConstPointer outputTransformConst;
   if( m_MatchImage )
     {
+    typename SpatialObjectType::TransformType::Pointer outputTransform;
     this->ReadImageTransform( outputTransform );
+    outputTransformConst = outputTransform.GetPointer();
     }
   else
     {
-    char soTypeName[80];
-    strcpy( soTypeName, "TubeSpatialObject" );
-    typename TubeSpatialObjectType::ChildrenListPointer tubeList =
-      inputTubeGroup->GetChildren( inputTubeGroup->GetMaximumDepth(),
-      soTypeName );
-    ( *( tubeList->begin() ) )->Update();
-    outputTransform = ( *( tubeList->begin() ) )->
-      GetObjectToWorldTransform();
-    tubeList->clear();
-    delete tubeList;
+    outputTransformConst = inSO->GetObjectToWorldTransform();
     }
 
+  bool outSOUpdated = false;
   if( m_DisplacementField )
     {
-    tmpTubeGroup = this->ApplyDisplacementFieldTransform( outputTransform );
+    outSO = this->ApplyDisplacementFieldTransform( outputTransformConst );
+    outSOUpdated = true;
     }
   else if( m_ReadTransformList )
     {
-    tmpTubeGroup = this->ApplyInputTransform( outputTransform );
+    outSO = this->ApplyInputTransform( outputTransformConst );
+    outSOUpdated = true;
     }
   else if( m_MatchImage )
     {
-    tmpTubeGroup = this->ApplyIdentityAffineTransform( outputTransform );
+    outSO = this->ApplyIdentityAffineTransform( outputTransformConst );
+    outSOUpdated = true;
     }
 
   if( m_SamplingFactor != 1 )
     {
     /** Typedefs for Sub samppling filter     */
-    typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeGroupType,
-      TubeSpatialObjectType > SubSampleTubeTreeFilterType;
+    typedef itk::tube::SubSampleSpatialObjectFilter<ObjectDimension>
+      SubSampleFilterType;
 
-    typename SubSampleTubeTreeFilterType::Pointer subSampleTubeTreeFilter =
-      SubSampleTubeTreeFilterType::New();
-    if( tmpTubeGroup.IsNotNull() )
+    typename SubSampleFilterType::Pointer subSampleFilter =
+      SubSampleFilterType::New();
+    if(outSOUpdated)
       {
-      subSampleTubeTreeFilter->SetInput( tmpTubeGroup );
+      subSampleFilter->SetInput( outSO );
       }
     else
       {
-      subSampleTubeTreeFilter->SetInput( inputTubeGroup );
+      subSampleFilter->SetInput( inSO );
+      subSampleFilter->GraftOutput( outSO );
       }
+    subSampleFilter->SetSampling( m_SamplingFactor );
 
-    subSampleTubeTreeFilter->SetSampling( m_SamplingFactor );
-
-    subSampleTubeTreeFilter->GraftOutput( this->GetOutput() );
     try
       {
-      subSampleTubeTreeFilter->Update();
+      subSampleFilter->Update();
       }
     catch( const std::exception &e )
       {
       std::cout << e.what();
       return;
       }
-    //this->GraftOutput( subSampleTubeTreeFilter->GetOutput() );
-    tmpTubeGroup = subSampleTubeTreeFilter->GetOutput();
+
+    this->GraftOutput( subSampleFilter->GetOutput() );
+    outSO = subSampleFilter->GetOutput();
     }
-  this->GraftOutput( tmpTubeGroup );
-  /*
-  char soTypeName[80];
-  strcpy( soTypeName, "TubeSpatialObject" );
-  typename TubeSpatialObjectType::ChildrenListPointer inTubeList =
-    inputTubeGroup->GetChildren( inputTubeGroup->GetMaximumDepth(),
-      soTypeName );
-  typename TubeSpatialObjectType::ChildrenListPointer outTubeList =
-    tmpTubeGroup->GetChildren( tmpTubeGroup->GetMaximumDepth(),
-      soTypeName );*/
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-ResampleTubesFilter< VDimension >
+ResampleTubesFilter< ObjectDimension >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os, indent );

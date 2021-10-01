@@ -20,7 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#include "itktubeTubeToTubeTransformFilter.h"
+#include "itktubePointBasedSpatialObjectTransformFilter.h"
 
 #include <itkImageFileWriter.h>
 #include <itkMetaDataObject.h>
@@ -54,13 +54,13 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
   typedef itk::ImageRegionIteratorWithIndex< Image3DType >  Image3DIteratorType;
   typedef itk::TubeSpatialObject<3>                         TubeType;
   typedef itk::TubeSpatialObjectPoint<3>                    TubePointType;
-  typedef itk::GroupSpatialObject<3>                        TubeNetType;
+  typedef itk::GroupSpatialObject<3>                        GroupType;
 
-  typedef itk::SpatialObjectToImageFilter< TubeNetType, Image3DType >
+  typedef itk::SpatialObjectToImageFilter< GroupType, Image3DType >
     SpatialObjectToImageFilterType;
   typedef itk::Euler3DTransform<double>
     TransformType;
-  typedef itk::tube::TubeToTubeTransformFilter<TransformType, 3>
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter<TransformType, 3>
     TubeTransformFilterType;
 
   typedef itk::ImageFileWriter<Image3DType>                 ImageWriterType;
@@ -166,7 +166,7 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
     tube->GetPoints().push_back( point );
     }
 
-  TubeNetType::Pointer group = TubeNetType::New();
+  GroupType::Pointer group = GroupType::New();
   group->AddChild( tube );
 
   std::cout << "Write tubeFile: " << argv[2] << std::endl;
@@ -220,8 +220,8 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
   std::cout << "Transform and Convert the tube into an Image..." << std::endl;
 
   // read tube ( spatialObject )
-  typedef itk::SpatialObjectReader<3> TubeNetReaderType;
-  TubeNetReaderType::Pointer tubeReader = TubeNetReaderType::New();
+  typedef itk::SpatialObjectReader<3> SOReaderType;
+  SOReaderType::Pointer tubeReader = SOReaderType::New();
   std::cout << "Read VesselTube: " << argv[4] << std::endl;
   tubeReader->SetFileName( argv[4] );
   try
@@ -282,7 +282,7 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
 
   SpatialObjectToImageFilterType::Pointer imageFilterTransform =
     SpatialObjectToImageFilterType::New();
-  imageFilterTransform->SetInput( transformFilter->GetOutput() );
+  imageFilterTransform->SetInput( static_cast<const GroupType*>(transformFilter->GetOutput()) );
   imageFilterTransform->SetSize( imageSize );
   imageFilterTransform->SetOrigin( origin );
   imageFilterTransform->Update();

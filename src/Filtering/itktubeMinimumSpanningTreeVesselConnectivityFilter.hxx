@@ -39,8 +39,8 @@ namespace tube
 {
 
 //----------------------------------------------------------------------------
-template< unsigned int VDimension >
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+template< unsigned int ObjectDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::MinimumSpanningTreeVesselConnectivityFilter( void )
 {
   m_MaxTubeDistanceToRadiusRatio = 2.0;
@@ -50,8 +50,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 }
 
 //----------------------------------------------------------------------------
-template< unsigned int VDimension >
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+template< unsigned int ObjectDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::~MinimumSpanningTreeVesselConnectivityFilter( void )
 {
   m_RootTubeIdList.clear();
@@ -59,18 +59,18 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   m_TubeIdToObjectMap.clear();
 }
 
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 bool
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::GraphEdgeType
 ::operator>( const GraphEdgeType & rhs ) const
 {
   return weight > rhs.weight;
 }
 
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 bool
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::ConnectionPointType
 ::operator>( const ConnectionPointType & rhs ) const
 {
@@ -84,9 +84,9 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     }
 }
 
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 bool
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::TubePQElementType
 ::operator<( const TubePQElementType & rhs ) const
 {
@@ -100,26 +100,26 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     }
 }
 
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::SetRootTubeIdList( const TubeIdListType & rootTubeIdList )
 {
   m_RootTubeIdList = rootTubeIdList;
 }
 
-template< unsigned int VDimension >
-const typename MinimumSpanningTreeVesselConnectivityFilter< VDimension >::
+template< unsigned int ObjectDimension >
+const typename MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >::
 TubeIdListType &
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::GetRootTubeIdList( void ) const
 {
   return m_RootTubeIdList;
 }
 
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::BuildTubeGraph( void )
 {
   const TubeGroupType * inputTubeGroup = this->GetInput();
@@ -334,9 +334,9 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   delete pTubeList;
 }
 
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::VisitTube( TubePointerType pTube )
 {
   TubeIdType tubeId = pTube->GetId();
@@ -359,9 +359,9 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     }
 }
 
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::RunMinimumSpanningTree( TubeIdType rootTubeId )
 {
   TubeGroupType * outputTubeGroup = this->GetOutput();
@@ -376,7 +376,6 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   TubePointerType inputRootTube = m_TubeIdToObjectMap[rootTubeId];
   TubePointerType rootTube = inputRootTube->Clone();
 
-  // TODO: make CopyInformation of itk::SpatialObject do this
   rootTube->GetObjectToParentTransform()->SetFixedParameters(
     inputRootTube->GetObjectToParentTransform()->GetFixedParameters() );
   rootTube->GetObjectToParentTransform()->SetParameters(
@@ -399,6 +398,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       }
     }
   outputTubeGroup->AddChild( rootTube );
+  rootTube->Update();
 
   // recusrively process all children in increasing order of connection weight
   int numChildren = 0;
@@ -424,7 +424,6 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     // get tube object
     TubePointerType curTube = eTop.targetTube->Clone();
 
-    // TODO: make CopyInformation of itk::SpatialObject do this
     curTube->GetObjectToParentTransform()->SetFixedParameters(
       eTop.targetTube->GetObjectToParentTransform()->GetFixedParameters() );
     curTube->GetObjectToParentTransform()->SetParameters(
@@ -478,9 +477,9 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   ++m_numOutputConnectedComponents;
 }
 
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::ComputeTubeConnectivity( void )
 {
   const TubeGroupType * inputTubeGroup = this->GetInput();
@@ -488,10 +487,9 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
   // initialize output and copy metadata from input
   outputTubeGroup->Clear();
-
   outputTubeGroup->CopyInformation( inputTubeGroup );
+  outputTubeGroup->SetId( inputTubeGroup->GetId() );
 
-  // TODO: make CopyInformation of itk::SpatialObject do this
   outputTubeGroup->GetObjectToParentTransform()->SetFixedParameters(
     inputTubeGroup->GetObjectToParentTransform()->GetFixedParameters() );
   outputTubeGroup->GetObjectToParentTransform()->SetParameters(
@@ -523,7 +521,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       TubePQElementType epTube;
       epTube.tubeId = *itRootTubeId;
       epTube.outDegree = m_TubeGraph[epTube.tubeId].size();
-      ::tube::TubeMathFilters< VDimension > tubeMath;
+      ::tube::TubeMathFilters< ObjectDimension > tubeMath;
       tubeMath.SetInputTube( m_TubeIdToObjectMap[epTube.tubeId] );
       epTube.tubeLength = tubeMath.ComputeTubeLength();
       maxpqVOutDegree.push( epTube );
@@ -531,14 +529,14 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     }
   else
     {
-    // push all tubes into a priority queue with outDegree as priotiry
+    // push all tubes into a priority queue with outDegree as priority
     for( typename TubeAdjacencyListGraphType::const_iterator
       itV = m_TubeGraph.begin(); itV != m_TubeGraph.end(); ++itV )
       {
       TubePQElementType epTube;
       epTube.tubeId = itV->first;
       epTube.outDegree = itV->second.size();
-      ::tube::TubeMathFilters< VDimension > tubeMath;
+      ::tube::TubeMathFilters< ObjectDimension > tubeMath;
       tubeMath.SetInputTube( m_TubeIdToObjectMap[epTube.tubeId] );
       epTube.tubeLength = tubeMath.ComputeTubeLength();
       if( m_RemoveOrphanTubes && epTube.outDegree == 0 )
@@ -566,11 +564,13 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
   tubeDebugMacro( << "Number of output connected components = "
     <<  m_numOutputConnectedComponents );
+  outputTubeGroup->FixIdValidity();
+  this->GraftOutput(outputTubeGroup);
 }
 
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::AddRemainingTubes( void )
 {
   const TubeGroupType * inputTubeGroup = this->GetInput();
@@ -597,7 +597,6 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       {
       TubePointerType curTube = pCurSourceTube->Clone();
 
-      // TODO: make CopyInformation of itk::SpatialObject do this
       curTube->GetObjectToParentTransform()->SetFixedParameters(
         pCurSourceTube->GetObjectToParentTransform()->GetFixedParameters() );
       curTube->GetObjectToParentTransform()->SetParameters(
@@ -609,11 +608,13 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       outputTubeGroup->AddChild( curTube );
       }
     }
+  outputTubeGroup->FixIdValidity();
+  this->GraftOutput(outputTubeGroup);
 }
 
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::GenerateData( void )
 {
   BuildTubeGraph();
@@ -624,9 +625,9 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     }
 }
 
-template< unsigned int VDimension >
+template< unsigned int ObjectDimension >
 void
-MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+MinimumSpanningTreeVesselConnectivityFilter< ObjectDimension >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os, indent );

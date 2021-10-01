@@ -734,7 +734,7 @@ Derivative( const PointType& point, const VectorType & v1,
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point,
     cIndex ) )
     {
-    itkWarningMacro( << "Cannot convert point to continuous index." );
+    itkWarningMacro( << "Point is outside of image: " << point );
     d.Fill( 0 );
     return 0.0;
     }

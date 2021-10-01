@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -26,8 +25,6 @@ limitations under the License.
 
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
 
-#include <itkTextOutput.h>
-
 namespace itk
 {
 
@@ -40,8 +37,6 @@ TOutputSpatialObject >
 ::SpatialObjectToSpatialObjectFilter( void )
 {
   this->SetNumberOfRequiredInputs( 1 );
-
-  itk::OutputWindow::SetInstance( itk::TextOutput::New() );
 }
 
 
