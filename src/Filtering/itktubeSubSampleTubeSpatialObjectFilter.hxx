@@ -50,7 +50,7 @@ void
 SubSampleTubeSpatialObjectFilter< ObjectDimension >
 ::GenerateData( void )
 {
-  typename const TubeSpatialObjectType * input =
+  const TubeSpatialObjectType * input =
     dynamic_cast<const TubeSpatialObjectType *>( this->GetInput() );
   if (input == nullptr)
   {

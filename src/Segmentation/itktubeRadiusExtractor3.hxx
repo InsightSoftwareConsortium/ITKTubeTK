@@ -103,7 +103,7 @@ public:
     d[3] /= m_Data->size();
     }
 
-  unsigned int GetNumberOfParameters(void) const
+  unsigned int GetNumberOfParameters(void) const override
     {
       return 4;
     }
