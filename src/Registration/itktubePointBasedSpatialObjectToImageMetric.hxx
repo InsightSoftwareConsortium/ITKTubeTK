@@ -87,7 +87,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   m_MaximumNumberOfSurfacePoints = 0;
 
   typename PointBasedSpatialObjectType::ChildrenConstListType * pbsoList =
-    this->GetPointBasedChildren( m_MovingSpatialObject );
+    this->GetPointBasedChildren( this->m_MovingSpatialObject );
   typename PointBasedSpatialObjectType::ChildrenConstListType::const_iterator
     pbsoIter;
   for( pbsoIter = pbsoList->begin(); pbsoIter != pbsoList->end();
@@ -158,7 +158,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   unsigned int pointCount = 0;
 
   typename PointBasedSpatialObjectType::ChildrenConstListType * pbsoList =
-    this->GetPointBasedChildren( m_MovingSpatialObject );
+    this->GetPointBasedChildren( this->m_MovingSpatialObject );
   auto pbsoIter = pbsoList->begin();
   while( pbsoIter != pbsoList->end() )
   {
@@ -254,14 +254,14 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 
   unsigned int pointCount = 0;
   typename PointBasedSpatialObjectType::ChildrenConstListType * pbsoList =
-    this->GetPointBasedChildren( m_MovingSpatialObject );
-  std::string oName = m_MovingSpatialObject->GetTypeName();
+    this->GetPointBasedChildren( this->m_MovingSpatialObject );
+  std::string oName = this->m_MovingSpatialObject->GetTypeName();
   if (oName.find("Tube") != std::string::npos ||
       oName.find("Surface") != std::string::npos ||
       oName.find("Blob") != std::string::npos ||
       oName.find("Point") != std::string::npos)
   {
-    pbsoList->push_front( m_MovingSpatialObject.GetPointer() );
+    pbsoList->push_front( this->m_MovingSpatialObject.GetPointer() );
   }
   auto pbsoIter = pbsoList->begin();
   while( pbsoIter != pbsoList->end() )
@@ -450,7 +450,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   }
   if( childrenSO == nullptr )
   {
-    childrenSO = new MovingSpatialObjectType::ChildrenConstListType;
+    childrenSO = new typename MovingSpatialObjectType::ChildrenConstListType;
   }
 
   auto tmpChildren = parentSO->GetConstChildren();
@@ -503,9 +503,9 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   transformCopy->SetFixedParameters( this->m_Transform->GetFixedParameters() );
   transformCopy->SetParameters( parameters );
 
-  NJetImageFunction< FixedImageType >::Pointer imFunc =
+  typename NJetImageFunction< FixedImageType >::Pointer imFunc =
     NJetImageFunction< FixedImageType >::New();
-  imFunc->SetInputImage( m_FixedImage );
+  imFunc->SetInputImage( this->m_FixedImage );
 
   VnlVectorType n1T, n2T;
 
@@ -599,9 +599,9 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   transformCopy->SetFixedParameters( this->m_Transform->GetFixedParameters() );
   transformCopy->SetParameters( parameters );
 
-  NJetImageFunction< FixedImageType >::Pointer imFunc =
+  typename NJetImageFunction< FixedImageType >::Pointer imFunc =
     NJetImageFunction< FixedImageType >::New();
-  imFunc->SetInputImage( m_FixedImage );
+  imFunc->SetInputImage( this->m_FixedImage );
 
   VnlMatrixType biasV;
   VnlVectorType n1T, n2T;
@@ -702,7 +702,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       dXT = dXT * biasVI;
   
       typename TransformType::JacobianType jacobian;
-      m_Transform->ComputeJacobianWithRespectToParameters( fixedPoint,
+      this->m_Transform->ComputeJacobianWithRespectToParameters( fixedPoint,
         jacobian );
   
       for( unsigned int p = 0; p<m_Transform->GetNumberOfParameters(); ++p)
@@ -732,8 +732,8 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       return false;
       }
     }
-  if( m_MovingSpatialObjectMaskObject.IsNotNull() &&
-    m_UseMovingSpatialObjectMaskObject )
+  if( this->m_MovingSpatialObjectMaskObject.IsNotNull() &&
+    this->m_UseMovingSpatialObjectMaskObject )
     {
     if( !m_MovingSpatialObjectMaskObject->IsInsideInWorldSpace(
       pnt.GetPositionInWorldSpace() ) )
@@ -749,8 +749,8 @@ bool
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::IsValidMovingPoint( const SurfacePointType & pnt ) const
 {
-  if( m_MovingSpatialObjectMaskObject.IsNotNull() &&
-    m_UseMovingSpatialObjectMaskObject )
+  if( this->m_MovingSpatialObjectMaskObject.IsNotNull() &&
+    this->m_UseMovingSpatialObjectMaskObject )
     {
     if( !m_MovingSpatialObjectMaskObject->IsInsideInWorldSpace(
       pnt.GetPositionInWorldSpace() ) )
@@ -766,8 +766,8 @@ bool
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::IsValidMovingPoint( const BlobPointType & pnt ) const
 {
-  if( m_MovingSpatialObjectMaskObject.IsNotNull() &&
-    m_UseMovingSpatialObjectMaskObject )
+  if( this->m_MovingSpatialObjectMaskObject.IsNotNull() &&
+    this->m_UseMovingSpatialObjectMaskObject )
     {
     if( !m_MovingSpatialObjectMaskObject->IsInsideInWorldSpace(
       pnt.GetPositionInWorldSpace() ) )
@@ -783,7 +783,8 @@ bool
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::IsValidFixedPoint( const FixedPointType & pnt ) const
 {
-  if( m_FixedImageMaskObject.IsNotNull() && m_UseFixedImageMaskObject )
+  if( this->m_FixedImageMaskObject.IsNotNull() &&
+    this->m_UseFixedImageMaskObject )
     {
     if( !m_FixedImageMaskObject->IsInsideInWorldSpace( pnt ) )
       {

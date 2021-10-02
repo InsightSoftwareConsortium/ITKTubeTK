@@ -96,7 +96,7 @@ public:
 
   /**  Type of the Transform Base class */
   using TransformType = Transform<CoordinateRepresentationType,
-    Self::ObjectDimension, Self::ImageDimension>;
+    ObjectDimension, ImageDimension>;
 
   using TransformPointer = typename TransformType::Pointer;
   using MovingPointType = typename TransformType::InputPointType;
