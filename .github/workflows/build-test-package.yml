@@ -5,7 +5,7 @@ on: [push,pull_request]
 env:
   ITKMinimalPathExtraction-git-tag: v1.2.0
   vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
-  itk-git-tag: v5.2.1.post1
+  itk-git-tag: v5.3rc01
 
 jobs:
   build-test-cxx:
