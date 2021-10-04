@@ -705,7 +705,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       this->m_Transform->ComputeJacobianWithRespectToParameters( fixedPoint,
         jacobian );
   
-      for( unsigned int p = 0; p<m_Transform->GetNumberOfParameters(); ++p)
+      for( unsigned int p = 0; p<this->m_Transform->GetNumberOfParameters(); ++p)
       {
         for( unsigned int d=0; d<ImageDimension; ++d)
         {
@@ -735,7 +735,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   if( this->m_MovingSpatialObjectMaskObject.IsNotNull() &&
     this->m_UseMovingSpatialObjectMaskObject )
     {
-    if( !m_MovingSpatialObjectMaskObject->IsInsideInWorldSpace(
+    if( !this->m_MovingSpatialObjectMaskObject->IsInsideInWorldSpace(
       pnt.GetPositionInWorldSpace() ) )
       {
       return false;
@@ -752,7 +752,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   if( this->m_MovingSpatialObjectMaskObject.IsNotNull() &&
     this->m_UseMovingSpatialObjectMaskObject )
     {
-    if( !m_MovingSpatialObjectMaskObject->IsInsideInWorldSpace(
+    if( !this->m_MovingSpatialObjectMaskObject->IsInsideInWorldSpace(
       pnt.GetPositionInWorldSpace() ) )
       {
       return false;
@@ -769,7 +769,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   if( this->m_MovingSpatialObjectMaskObject.IsNotNull() &&
     this->m_UseMovingSpatialObjectMaskObject )
     {
-    if( !m_MovingSpatialObjectMaskObject->IsInsideInWorldSpace(
+    if( !this->m_MovingSpatialObjectMaskObject->IsInsideInWorldSpace(
       pnt.GetPositionInWorldSpace() ) )
       {
       return false;
@@ -786,7 +786,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   if( this->m_FixedImageMaskObject.IsNotNull() &&
     this->m_UseFixedImageMaskObject )
     {
-    if( !m_FixedImageMaskObject->IsInsideInWorldSpace( pnt ) )
+    if( !this->m_FixedImageMaskObject->IsInsideInWorldSpace( pnt ) )
       {
       return false;
       }
