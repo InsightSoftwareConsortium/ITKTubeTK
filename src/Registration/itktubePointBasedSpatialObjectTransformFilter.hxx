@@ -25,6 +25,7 @@ limitations under the License.
 
 #include "itktubePointBasedSpatialObjectTransformFilter.h"
 
+#include <itkSpatialObject.h>
 #include <itkSpatialObjectFactory.h>
 
 namespace itk
@@ -58,8 +59,8 @@ void
 PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
 ::GenerateData( void )
 {
-  SpatialObject<TDimension>::ConstPointer inputSO = this->GetInput();
-  SpatialObject<TDimension>::Pointer outputSO = this->GetOutput();
+  typename SpatialObject<TDimension>::ConstPointer inputSO = this->GetInput();
+  typename SpatialObject<TDimension>::Pointer outputSO = this->GetOutput();
 
   Transform(inputSO, outputSO);
 
@@ -69,7 +70,7 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
   typename ChildrenConstListType::iterator it = children->begin();
   while( it != children->end() )
     {
-    SpatialObject<TDimension>::Pointer tmpSO = (*it)->Clone();
+    typename SpatialObject<TDimension>::Pointer tmpSO = (*it)->Clone();
     this->UpdateLevel( *it, outputSO );
     ++it;
     }
@@ -87,7 +88,7 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
 ::UpdateLevel( const SpatialObject< TDimension > * inputSO,
   SpatialObject< TDimension > * parentSO )
 {
-  SpatialObject<TDimension>::Pointer outputSO = inputSO->Clone();
+  typename SpatialObject<TDimension>::Pointer outputSO = inputSO->Clone();
 
   Transform(inputSO, outputSO);
 
