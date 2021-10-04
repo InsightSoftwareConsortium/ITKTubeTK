@@ -25,6 +25,7 @@ limitations under the License.
 
 #include "itktubePointBasedSpatialObjectTransformFilter.h"
 
+#include <itkSpatialObject.h>
 #include <itkSpatialObjectFactory.h>
 
 namespace itk

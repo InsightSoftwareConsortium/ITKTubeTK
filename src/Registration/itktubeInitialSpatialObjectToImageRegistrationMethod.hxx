@@ -171,7 +171,7 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     this->m_NumberOfMoments == 0 )
     {
     //  Moving image info
-    typedef SpatialObjectType::BoundingBoxType              BoundingBoxType;
+    typedef typename SpatialObjectType::BoundingBoxType     BoundingBoxType;
     typename BoundingBoxType::ConstPointer                  bbox;
     typename BoundingBoxType::PointType                     minPnt;
     typename BoundingBoxType::PointType                     maxPnt;
@@ -203,7 +203,7 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       Point<double, ImageDimension>     fixedCenterPoint;
       if( this->GetFixedImageMaskObject() != nullptr )
         {
-        typedef SpatialObjectType::BoundingBoxType              BoundingBoxType;
+        typedef typename SpatialObjectType::BoundingBoxType     BoundingBoxType;
         typename BoundingBoxType::ConstPointer                  bbox;
         typename BoundingBoxType::PointType                     minPnt;
         typename BoundingBoxType::PointType                     maxPnt;
