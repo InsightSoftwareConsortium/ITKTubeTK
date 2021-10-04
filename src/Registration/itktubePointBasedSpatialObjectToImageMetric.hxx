@@ -687,7 +687,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     {
     value = - value / weightSum;
 
-    VnlMatrixType biasVI = vnl_matrix_inverse< double >( biasV ).inverse();
+    VnlMatrixType biasVI = vnl_matrix_inverse< double >( biasV ).inverse().as_ref();
 
     derivative.fill(0);
 
