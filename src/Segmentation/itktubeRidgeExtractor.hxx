@@ -156,7 +156,7 @@ RidgeExtractor<TInputImage>
   m_FailureCodeCount.fill( 0 );
 
   m_Tube = nullptr;
-  m_TubeMaskImage == nullptr;
+  m_TubeMaskImage = nullptr;
 }
 
 /**

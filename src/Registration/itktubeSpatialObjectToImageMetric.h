@@ -96,7 +96,7 @@ public:
 
   /**  Type of the Transform Base class */
   using TransformType = Transform<CoordinateRepresentationType,
-    Self::ObjectDimension, Self::ImageDimension>;
+    ObjectDimension, ImageDimension>;
 
   using TransformPointer = typename TransformType::Pointer;
   using MovingPointType = typename TransformType::InputPointType;
@@ -104,7 +104,7 @@ public:
   using TransformParametersType = typename TransformType::ParametersType;
   using TransformJacobianType = typename TransformType::JacobianType;
 
-  using MovingVectorType = vnl_vector_fixed<double, Self::ObjectDimension>;
+  using MovingVectorType = vnl_vector_fixed<double, ObjectDimension>;
   using FixedVectorType = vnl_vector_fixed<double, Self::ImageDimension>;
 
   /**  Type of the match measure */

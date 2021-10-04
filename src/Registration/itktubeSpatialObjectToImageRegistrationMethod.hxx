@@ -45,7 +45,7 @@ SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   this->ProcessObject::SetNthOutput( 0, transformDecorator.GetPointer() );
 
   this->m_RegistrationNumberOfWorkUnits = this->GetNumberOfWorkUnits();
-  this->GetMultiThreader()->SetNumberOfWorkUnits( this->m_RegistrationNumberOfWorkUnits );
+  this->SetNumberOfWorkUnits( this->m_RegistrationNumberOfWorkUnits );
 
   this->m_FixedImage = 0;
   this->m_MovingSpatialObject = 0;

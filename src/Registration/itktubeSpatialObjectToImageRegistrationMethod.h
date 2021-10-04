@@ -25,7 +25,7 @@ limitations under the License.
 
 #include "itkCommand.h"
 #include "itkSpatialObject.h"
-#include "itkDataobjectDecorator.h"
+#include "itkDataObjectDecorator.h"
 
 namespace itk
 {
