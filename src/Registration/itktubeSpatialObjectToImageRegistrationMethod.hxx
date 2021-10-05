@@ -215,7 +215,7 @@ void
 SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::Initialize( void )
 {
-  this->GetMultiThreader()->SetNumberOfWorkUnits( m_RegistrationNumberOfWorkUnits );
+  this->SetNumberOfWorkUnits( m_RegistrationNumberOfWorkUnits );
 
   if( m_Transform.IsNull() )
     {
