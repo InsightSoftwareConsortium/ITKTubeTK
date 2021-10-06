@@ -592,7 +592,7 @@ EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
   // EVALUATE
   if( m_UseProjection )
     {
-    return EvaluateAtContinuousIndex( cIndex, scale );
+    m_MostRecentIntensity = EvaluateAtContinuousIndex( cIndex, scale );
     }
   else
     {
@@ -615,9 +615,8 @@ EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
 
     m_MostRecentIntensity =  ( val0 + 0.5455*val1 + 0.5455*val2 )
       / ( 1+2*0.5455 ) / 2;
-
-    return m_MostRecentIntensity;
     }
+  return m_MostRecentIntensity;
 }
 
 
@@ -630,7 +629,7 @@ EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
   // EVALUATE
   if( m_UseProjection )
     {
-    return EvaluateAtContinuousIndex( cIndex, scale );
+    m_MostRecentIntensity = EvaluateAtContinuousIndex( cIndex, scale );
     }
   else
     {
@@ -663,9 +662,8 @@ EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
 
     m_MostRecentIntensity =
       ( 2*val0 + 0.5455*( val1+val2+val3+val4 ) )/( 2+4*0.5455 ) / 2;
-
-    return m_MostRecentIntensity;
     }
+  return m_MostRecentIntensity;
 }
 
 template< class TInputImage >

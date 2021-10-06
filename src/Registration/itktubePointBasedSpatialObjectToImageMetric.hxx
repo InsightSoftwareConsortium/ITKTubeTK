@@ -561,9 +561,9 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
     value /= weightSum;
   }
 
-  std::cout << "GetValue : " << parameters << " = " << value << std::endl;
+  //std::cout << "GetValue : " << parameters << " = " << -value << std::endl;
 
-  return -value;
+  return -value;  // - to invert image so registration is minimization
 }
 
 template< unsigned int ObjectDimension, class TFixedImage >
@@ -653,6 +653,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
         tM = tM + outer_product( n2T, n2T );
         Vector<double, ImageDimension> tmpDeriv;
         imFunc->Derivative( fixedPoint, n1v, n2v, fixedScale, tmpDeriv );
+        value += *pointWeightIter * imFunc->Evaluate( fixedPoint, n1v, n2v, fixedScale );
         fixedDeriv.fill(0);
         for( unsigned int ii = 0; ii < ImageDimension; ++ii )
         {
@@ -664,6 +665,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       {
         Vector<double, ImageDimension> tmpDeriv;
         imFunc->Derivative( fixedPoint, n1v, fixedScale, tmpDeriv );
+        value += *pointWeightIter * imFunc->Evaluate( fixedPoint, n1v, fixedScale );
         fixedDeriv.fill(0);
         for( unsigned int ii = 0; ii < ImageDimension; ++ii )
         {
@@ -675,7 +677,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       tM = *pointWeightIter * tM;
       biasV += tM;
 
-      value += *pointWeightIter * imFunc->GetMostRecentIntensity();
+      //value += *pointWeightIter * imFunc->GetMostRecentIntensity();
 
       weightSum += *pointWeightIter;
     }
@@ -685,7 +687,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 
   if( weightSum > 0 )
     {
-    value = - value / weightSum;
+    value = -value / weightSum;  // - to invert image
 
     VnlMatrixType biasVI = vnl_matrix_inverse< double >( biasV.as_ref() ).inverse();
 
@@ -709,7 +711,9 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       {
         for( unsigned int d=0; d<ImageDimension; ++d)
         {
-          derivative[p] += jacobian[d][p] * -dXT[d];
+          derivative[p] -= jacobian[d][p] * dXT[d]; // - to invert image
+                                                    // so registration is
+                                                    // minimization.
         }
       }
   
@@ -717,6 +721,9 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       ++fixedPointsDerivsIter;
     }
   }
+  //std::cout << "GetValueAndDerive : " << parameters << " = "
+  //          << -value << std::endl;
+  //std::cout << "                    " << derivative << std::endl;
 }
   
 template< unsigned int ObjectDimension, class TFixedImage >
@@ -783,6 +790,11 @@ bool
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::IsValidFixedPoint( const FixedPointType & pnt ) const
 {
+  FixedImageType::IndexType indx;
+  if( !this->m_FixedImage->TransformPhysicalPointToIndex(pnt, indx) )
+    {
+    return false;
+    }
   if( this->m_FixedImageMaskObject.IsNotNull() &&
     this->m_UseFixedImageMaskObject )
     {
