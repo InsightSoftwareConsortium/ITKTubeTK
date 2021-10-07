@@ -478,7 +478,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     this->Initialize();
     }
 
-  std::cout << "HERE" << std::endl;
   if( m_EnableLoadedRegistration
       && m_LoadedMatrixTransform.IsNotNull() )
     {
@@ -499,7 +498,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     m_CurrentMatrixTransform = 0;
     }
 
-  std::cout << "HERE1" << std::endl;
   if( this->GetReportProgress() )
     {
     std::cout << "*** INITIAL REGISTRATION ***" << std::endl;
@@ -528,7 +526,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       regInit->SetMovingSpatialObjectMaskObject( m_MovingSpatialObjectMaskObject );
       }
     }
-  std::cout << "HERE2" << std::endl;
   if( m_EnableInitialRegistration )
     {
     switch( m_InitialMethodEnum )
@@ -551,7 +548,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       default:
         break;
       }
-    std::cout << "RH: Update: InitialReg" << std::endl;
     regInit->Update();
     m_InitialTransform = regInit->GetAffineTransform();
     }
@@ -570,7 +566,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       }
     }
 
-  std::cout << "RH: Update: Init done" << std::endl;
   m_CurrentMatrixTransform = m_InitialTransform;
 
   m_CompletedStage = INIT_STAGE;
@@ -578,7 +573,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 
   if( m_EnableRigidRegistration )
     {
-    std::cout << "RH: Update: registration" << std::endl;
     if( this->GetReportProgress() )
       {
       std::cout << "*** RIGID REGISTRATION ***" << std::endl;
@@ -642,7 +636,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
       }
     regRigid->SetTransformParametersScales( scales );
 
-    std::cout << "RH: Update: set transform parameters scales" << std::endl;
     if( m_CurrentMatrixTransform.IsNotNull() )
       {
       regRigid->GetTypedTransform()->SetCenter(
@@ -657,9 +650,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
         regRigid->GetTypedTransform()->GetParameters() );
       }
 
-    std::cout << "RH: Update: update" << std::endl;
     regRigid->Update();
-    std::cout << "RH: Update: update done" << std::endl;
 
     m_RigidTransform = RigidTransformType::New();
     m_RigidTransform->SetFixedParameters(
@@ -678,11 +669,8 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     m_CompletedResampling = false;
     }
 
-  std::cout << "RH: Update: done" << std::endl;
-
   if( m_EnableAffineRegistration )
     {
-    std::cout << "RH: Update: affine" << std::endl;
     this->AffineRegND<ImageDimension>();
     }
 }
@@ -764,13 +752,11 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
         aTrans->GetParameters();
       typename MatrixTransformType::ParametersType tmpParams =
         tmpTrans->GetParameters();
-      std::cout << "Original params = " << aTransParams << std::endl;
       for( unsigned int p=0; p<tmpParams.size(); ++p )
         {
         tmpParams[p] = tmpParams[p] + portion * (aTransParams[p]-tmpParams[p]);
         }
       tmpTrans->SetParameters( tmpParams );
-      std::cout << "portion params = " << tmpParams << std::endl;
       }
     else
       {
@@ -874,7 +860,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   m_LoadedMatrixTransform->SetOffset( tfm.GetOffset() );
   if( invert )
     {
-    std::cout << "GetInverseTransform" << std::endl;
     typename MatrixTransformType::Pointer invTfm = MatrixTransformType::New();
     m_LoadedMatrixTransform->GetInverse( invTfm );
     m_LoadedMatrixTransform = invTfm;

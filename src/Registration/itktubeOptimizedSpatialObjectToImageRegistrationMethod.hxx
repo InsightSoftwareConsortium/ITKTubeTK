@@ -175,7 +175,6 @@ void
 OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::GenerateData( void )
 {
-  std::cout << "ORM: GenerateData" << std::endl;
   if( this->GetReportProgress() )
     {
     std::cout << "UPDATE START" << std::endl;
@@ -225,10 +224,8 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       this->GetMovingSpatialObjectMaskObject() );
     }
 
-  std::cout << "ORM: GenerateData: Metric Init" << std::endl;
   metric->Initialize();
 
-  std::cout << "ORM: GenerateData: Optimize" << std::endl;
   try
     {
     this->Optimize(metric);
@@ -250,84 +247,98 @@ void
 OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 ::Optimize( MetricType * metric )
 {
-  if( m_UseEvolutionaryOptimization && this->GetMaxIterations() > 0 )
+  if( this->GetMaxIterations() > 0 )
     {
-    if( this->GetReportProgress() )
+    if( m_UseEvolutionaryOptimization )
       {
-      std::cout << "EVOLUTIONARY START" << std::endl;
-      }
-
-    typedef OnePlusOneEvolutionaryOptimizer EvoOptimizerType;
-    EvoOptimizerType::Pointer evoOpt = EvoOptimizerType::New();
-
-    evoOpt->SetNormalVariateGenerator( Statistics::NormalVariateGenerator
-                                       ::New() );
-    evoOpt->SetEpsilon( this->GetTargetError() );
-    evoOpt->Initialize( 0.1 );
-    evoOpt->SetCatchGetValueException( true );
-    evoOpt->SetMetricWorstPossibleValue( 9999999 );
-    evoOpt->SetScales( this->GetTransformParametersScales() );
-    evoOpt->SetMaximumIteration( this->GetMaxIterations() );
-    evoOpt->SetMaximize( false );
-
-    if( this->GetObserver() )
-      {
-      evoOpt->AddObserver( IterationEvent(), this->GetObserver() );
-      }
-
-    if( this->GetReportProgress() )
-      {
-      typedef SpatialObjectToImageRegistrationViewer ViewerCommandType;
-      typename ViewerCommandType::Pointer command = ViewerCommandType::New();
-      if( this->GetTransform()->GetNumberOfParameters() > 16 )
+      if( this->GetReportProgress() )
         {
-        command->SetDontShowParameters( true );
+        std::cout << "EVOLUTIONARY START" << std::endl;
         }
-      evoOpt->AddObserver( IterationEvent(), command );
-      }
-
-    evoOpt->SetCostFunction(metric);
-    evoOpt->SetInitialPosition(m_InitialTransformParameters);
-    try
-      {
-      evoOpt->StartOptimization();
-      }
-    catch (...)
-      {
-      std::cout << "Exception caught during evolutionary registration."
-                << std::endl;
-      std::cout << "Continuing using best values..." << std::endl;
-      std::cout << "  Pos = " << evoOpt->GetCurrentPosition()
-                << std::endl << std::endl;
-      }
-
-    if( evoOpt->GetCurrentPosition().size() !=
-      this->GetTransform()->GetNumberOfParameters() )
-      {
-      this->SetLastTransformParameters( this->GetInitialTransformParameters() );
+  
+      typedef OnePlusOneEvolutionaryOptimizer EvoOptimizerType;
+      EvoOptimizerType::Pointer evoOpt = EvoOptimizerType::New();
+  
+      evoOpt->SetNormalVariateGenerator( Statistics::NormalVariateGenerator
+                                         ::New() );
+      evoOpt->SetEpsilon( this->GetTargetError() );
+      evoOpt->Initialize( 0.1 );
+      evoOpt->SetCatchGetValueException( true );
+      evoOpt->SetMetricWorstPossibleValue( 0 );
+      evoOpt->SetScales( this->GetTransformParametersScales() );
+      evoOpt->SetMaximumIteration( this->GetMaxIterations() * 0.75 );
+  
+      if( this->GetObserver() )
+        {
+        evoOpt->AddObserver( IterationEvent(), this->GetObserver() );
+        }
+  
+      if( this->GetReportProgress() )
+        {
+        typedef SpatialObjectToImageRegistrationViewer ViewerCommandType;
+        typename ViewerCommandType::Pointer command = ViewerCommandType::New();
+        if( this->GetTransform()->GetNumberOfParameters() > 16 )
+          {
+          command->SetDontShowParameters( true );
+          }
+        evoOpt->AddObserver( IterationEvent(), command );
+        }
+  
+      evoOpt->SetCostFunction(metric);
+      evoOpt->SetInitialPosition(m_InitialTransformParameters);
+      try
+        {
+        evoOpt->StartOptimization();
+        }
+      catch (...)
+        {
+        std::cout << "Exception caught during evolutionary registration."
+                  << std::endl;
+        std::cout << "Continuing using best values..." << std::endl;
+        std::cout << "  Pos = " << evoOpt->GetCurrentPosition()
+                  << std::endl << std::endl;
+        }
+  
+      if( evoOpt->GetCurrentPosition().size() ==
+        this->GetTransform()->GetNumberOfParameters() )
+        {
+        bool valid = true;
+        for(unsigned int i=0; i<evoOpt->GetCurrentPosition().size(); ++i)
+          {
+          if(evoOpt->GetCurrentPosition()[i] != evoOpt->GetCurrentPosition()[i])
+            {
+            valid = false;
+            break;
+            }
+          }
+        if( valid )
+          {
+          this->SetLastTransformParameters( evoOpt->GetCurrentPosition() );
+          this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
+          m_FinalMetricValue = metric->GetValue( m_LastTransformParameters );
+          }
+        else
+          {
+          std::cerr << "Error: Invalid Evolutionalry final parameters"
+            << std::endl;
+          this->SetLastTransformParameters( m_InitialTransformParameters );
+          this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
+          m_FinalMetricValue = 0;
+          }
+        }
+      if( this->GetReportProgress() )
+        {
+        std::cout << "EVOLUTIONARY END" << std::endl;
+        }
       }
     else
       {
-      this->SetLastTransformParameters( evoOpt->GetCurrentPosition() );
+      this->SetLastTransformParameters( m_InitialTransformParameters );
+      this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
+      m_FinalMetricValue = 0;
       }
-    this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
-    m_FinalMetricValue = metric->GetValue( m_LastTransformParameters );
-    }
-  else
-    {
-    this->SetLastTransformParameters( this->GetInitialTransformParameters() );
-    this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
-    m_FinalMetricValue = 0;
-    }
 
-  if( this->GetReportProgress() )
-    {
-    std::cout << "EVOLUTIONARY END" << std::endl;
-    }
-
-  if( this->GetMaxIterations() > 0 )
-    {
-    //if( this->GetReportProgress() )
+    if( this->GetReportProgress() )
       {
       std::cout << "GRADIENT START" << std::endl;
       }
@@ -335,15 +346,14 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     typedef FRPROptimizer GradOptimizerType;
     GradOptimizerType::Pointer gradOpt = GradOptimizerType::New();
   
-    gradOpt->SetMaximize( false );
     gradOpt->SetCatchGetValueException( true );
-    gradOpt->SetMetricWorstPossibleValue( 9999999 );
-    gradOpt->SetStepLength( 0.25 );
+    gradOpt->SetMetricWorstPossibleValue( 0 );
+    gradOpt->SetStepLength( 0.1 );
     gradOpt->SetStepTolerance( this->GetTargetError() );
-    gradOpt->SetMaximumIteration( this->GetMaxIterations() );
+    gradOpt->SetMaximumIteration( this->GetMaxIterations() * 0.25 / 10 );
     gradOpt->SetMaximumLineIteration( 10 );
     gradOpt->SetScales( this->GetTransformParametersScales() );
-    gradOpt->SetUseUnitLengthGradient(true);
+    gradOpt->SetUseUnitLengthGradient(false);
     gradOpt->SetToFletchReeves();
   
     //if( this->GetReportProgress() )
@@ -362,7 +372,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       }
   
     gradOpt->SetCostFunction(metric);
-    gradOpt->SetInitialPosition(m_InitialTransformParameters);
+    gradOpt->SetInitialPosition(m_LastTransformParameters);
     try
       {
       gradOpt->StartOptimization();
@@ -376,29 +386,41 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
                 << std::endl << std::endl;
       }
 
-    if( gradOpt->GetCurrentPosition().size() !=
+    if( gradOpt->GetCurrentPosition().size() ==
       this->GetTransform()->GetNumberOfParameters() )
       {
-      this->SetLastTransformParameters( this->GetInitialTransformParameters() );
+      bool valid = true;
+      for(unsigned int i=0; i<gradOpt->GetCurrentPosition().size(); ++i)
+        {
+        if(gradOpt->GetCurrentPosition()[i] != gradOpt->GetCurrentPosition()[i])
+          {
+          valid = false;
+          break;
+          }
+        }
+      if( valid )
+        {
+        this->SetLastTransformParameters( gradOpt->GetCurrentPosition() );
+        this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
+        m_FinalMetricValue = metric->GetValue( m_LastTransformParameters );
+        }
+      else
+        {
+        this->SetLastTransformParameters( m_InitialTransformParameters );
+        this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
+        m_FinalMetricValue = 0;
+        }
       }
-    else
+    if( this->GetReportProgress() )
       {
-      this->SetLastTransformParameters( gradOpt->GetCurrentPosition() );
+      std::cout << "GRADIENT END" << std::endl;
       }
-    this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
-    m_FinalMetricValue = metric->GetValue( m_LastTransformParameters );
     }
   else
     {
-    this->SetLastTransformParameters( this->GetInitialTransformParameters() );
+    this->SetLastTransformParameters( m_InitialTransformParameters );
     this->GetTransform()->SetParametersByValue( m_LastTransformParameters );
     m_FinalMetricValue = 0;
-    }
-
-
-  if( this->GetReportProgress() )
-    {
-    std::cout << "GRADIENT END" << std::endl;
     }
 }
 

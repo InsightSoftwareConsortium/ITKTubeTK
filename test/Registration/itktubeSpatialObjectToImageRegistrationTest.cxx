@@ -67,7 +67,6 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   typedef itk::tube::PointBasedSpatialObjectTransformFilter< TransformType, ObjectDimension >
                                                          TubeTransformFilterType;
 
-  std::cout << "start" << std::endl;
   // read image
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
   imageReader->SetFileName( inputImage );
@@ -111,7 +110,6 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  std::cout << "subsample" << std::endl;
   // subsample points in vessel
   typedef itk::tube::SubSampleSpatialObjectFilter< ObjectDimension > SubSampleFilterType;
   SubSampleFilterType::Pointer subSampleFilter =
@@ -174,12 +172,10 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   std::cout << indent << translation[0] << " "
     << translation[1] << " " << translation[2] << std::endl;
 
-  double knownResult[] = { 0.00697,
-    -0.0049,
-    0.0052,
-    -1.8605,
-    -0.2859,
-    -0.9287 };
+  double knownResult[] = { 1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0
+    };
   int result = EXIT_SUCCESS;
   std::cout << "Parameters: " << std::endl;
   for( unsigned int ii = 0; ii < 6; ++ii )
