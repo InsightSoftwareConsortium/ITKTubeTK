@@ -790,7 +790,7 @@ bool
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::IsValidFixedPoint( const FixedPointType & pnt ) const
 {
-  FixedImageType::IndexType indx;
+  typename FixedImageType::IndexType indx;
   if( !this->m_FixedImage->TransformPhysicalPointToIndex(pnt, indx) )
     {
     return false;
