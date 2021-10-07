@@ -201,7 +201,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version: [36, 37, 38, 39]
+        python-version: [37, 38, 39]
         include:
           - itk-python-git-tag: "v5.3rc01"
             c-compiler: "gcc"
@@ -254,16 +254,16 @@ jobs:
       run: |
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
-        ln -s -f -T /ITKPythonPackage/ITK-cp36-cp36m-manylinux2014_x64 /work/ITK-cp36-cp36m-manylinux2014_x64
+        ln -s -f -T /ITKPythonPackage/ITK-cp37-cp37m-manylinux2014_x86_64 /work/ITK-cp37-cp37m-manylinux2014_x86_64
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
-        export ITK_DIR="/work/ITK-cp36-cp36m-manylinux2014_x64"
+        export ITK_DIR="/work/ITK-cp37-cp37m-manylinux2014_x86_64"
         echo "itk_dir = ${ITK_DIR}"
         ls -la /work
         git clone https://github.com/Slicer/SlicerExecutionModel
         mkdir -p SlicerExecutionModel-build
         cd SlicerExecutionModel-build
         cmake -DCMAKE_BUILD_TYPE:STRING=Release \
-          -DITK_DIR=/work/ITK-cp36-cp36m-manylinux2014_x64 \
+          -DITK_DIR=/work/ITK-cp37-cp37m-manylinux2014_x86_64 \
           -GNinja \
           ../SlicerExecutionModel
         ninja
@@ -393,7 +393,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version-minor: [6, 7, 8, 9]
+        python-version-minor: [7, 8, 9]
         include:
           - itk-python-git-tag: "v5.3rc01"
             c-compiler: "cl.exe"
