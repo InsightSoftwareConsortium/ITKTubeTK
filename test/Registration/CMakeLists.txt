@@ -165,7 +165,7 @@ itk_add_test(
     itktubeSpatialObjectToImageMetricTest
       DATA{${TubeTK_DATA_ROOT}/SyntheticVesselTubeImage.mha}
       DATA{${TubeTK_DATA_ROOT}/SyntheticVesselTubeManuallyModified.tre}
-      -0.0801461 )
+      -0.400731 )
 
 itk_add_test(
   NAME itktubeSpatialObjectToImageMetricTest2

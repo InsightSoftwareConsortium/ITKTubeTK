@@ -44,6 +44,7 @@ jobs:
         sudo apt-get install -y libgl1-mesa-glx
         sudo apt-get install -y libglvnd-core-dev
         sudo apt-get install -y freeglut3-dev
+        sudo apt-get install -y libtbb-dev
 
     - name: Install build dependencies
       run: |
@@ -229,6 +230,7 @@ jobs:
         sudo apt-get install -y libgl1-mesa-glx
         sudo apt-get install -y libglvnd-core-dev
         sudo apt-get install -y freeglut3-dev
+        sudo apt-get install -y libtbb-dev
 
         python -m pip install --upgrade pip
         python -m pip install ninja
