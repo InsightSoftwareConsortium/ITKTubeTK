@@ -29,4 +29,4 @@ itk_add_test(
   COMMAND ${PROJ_EXE}
     DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
     DATA{${TubeTK_DATA_ROOT}/tube.tre}
-    ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.h5 )
+    --saveTransform ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.h5 )
