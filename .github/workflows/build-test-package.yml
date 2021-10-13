@@ -258,6 +258,7 @@ jobs:
         #!/bin/sh
         ln -s -f -T /ITKPythonPackage/ITK-cp39-cp39-manylinux2014_x64 /work/ITK-cp39-cp39-manylinux2014_x64
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
+        ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
         export ITK_DIR="/work/ITK-cp39-cp39-manylinux2014_x64"
         echo "itk_dir = $ITK_DIR"
         ls -la /work
