@@ -39,12 +39,12 @@ jobs:
     - name: Set up OpenGL
       if: matrix.os == 'ubuntu-18.04'
       run: |
-        sudo apt-get update
-        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev
-        sudo apt-get install -y libgl1-mesa-glx
-        sudo apt-get install -y libglvnd-core-dev
-        sudo apt-get install -y freeglut3-dev
-        sudo apt-get install -y libtbb-dev
+        sudo apt-get -o Acquire::Retries=3 update
+        sudo apt-get -o Acquire::Retries=3 install -y libglu1-mesa-dev mesa-common-dev
+        sudo apt-get -o Acquire::Retries=3 install -y libgl1-mesa-glx
+        sudo apt-get -o Acquire::Retries=3 install -y libglvnd-core-dev
+        sudo apt-get -o Acquire::Retries=3 install -y freeglut3-dev
+        sudo apt-get -o Acquire::Retries=3 install -y libtbb-dev
 
     - name: Install build dependencies
       run: |
@@ -226,11 +226,12 @@ jobs:
 
     - name: 'Fetch build script'
       run: |
-        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev
-        sudo apt-get install -y libgl1-mesa-glx
-        sudo apt-get install -y libglvnd-core-dev
-        sudo apt-get install -y freeglut3-dev
-        sudo apt-get install -y libtbb-dev
+        sudo apt-get -o Acquire::Retries=3 update
+        sudo apt-get -o Acquire::Retries=3 install -y libglu1-mesa-dev mesa-common-dev
+        sudo apt-get -o Acquire::Retries=3 install -y libgl1-mesa-glx
+        sudo apt-get -o Acquire::Retries=3 install -y libglvnd-core-dev
+        sudo apt-get -o Acquire::Retries=3 install -y freeglut3-dev
+        sudo apt-get -o Acquire::Retries=3 install -y libtbb-dev
 
         python -m pip install --upgrade pip
         python -m pip install ninja
