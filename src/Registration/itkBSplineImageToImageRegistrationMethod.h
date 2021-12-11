@@ -55,8 +55,7 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int, TImage::ImageDimension );
 
   // Overrides the superclass' TransformType typedef
-  typedef BSplineTransform<double, itkGetStaticConstMacro( ImageDimension ),
-    itkGetStaticConstMacro( ImageDimension )>
+  typedef BSplineTransform<double, itkGetStaticConstMacro( ImageDimension ), 3>
       BSplineTransformType;
 
   typedef typename BSplineTransformType::Pointer BSplineTransformPointer;
