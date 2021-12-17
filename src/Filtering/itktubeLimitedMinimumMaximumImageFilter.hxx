@@ -17,7 +17,6 @@
  *=========================================================================*/
 #ifndef itktubeLimitedMinimumMaximumImageFilter_hxx
 #define itktubeLimitedMinimumMaximumImageFilter_hxx
-#include "itktubeLimitedMinimumMaximumImageFilter.h"
 
 
 #include "itkImageScanlineIterator.h"

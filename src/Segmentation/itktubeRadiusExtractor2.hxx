@@ -28,7 +28,6 @@ limitations under the License.
 #ifndef __itktubeRadiusExtractor2_hxx
 #define __itktubeRadiusExtractor2_hxx
 
-#include "itktubeRadiusExtractor2.h"
 
 #include "tubeMessage.h"
 #include "tubeMatrixMath.h"

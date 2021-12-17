@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeEnhanceEdgesUsingDiffusion_hxx
 #define __tubeEnhanceEdgesUsingDiffusion_hxx
 
-#include "tubeEnhanceEdgesUsingDiffusion.h"
 
 namespace tube
 {

@@ -18,7 +18,6 @@
 #ifndef __tubeSegmentTubes_hxx
 #define __tubeSegmentTubes_hxx
 
-#include "tubeSegmentTubes.h"
 
 
 namespace tube

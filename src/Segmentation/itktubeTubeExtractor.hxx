@@ -29,7 +29,6 @@ limitations under the License.
 #ifndef __itktubeTubeExtractor_hxx
 #define __itktubeTubeExtractor_hxx
 
-#include "itktubeTubeExtractor.h"
 
 #include <itktubeLimitedMinimumMaximumImageFilter.h>
 

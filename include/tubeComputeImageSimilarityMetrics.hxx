@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeComputeImageSimilarityMetrics_hxx
 #define __tubeComputeImageSimilarityMetrics_hxx
 
-#include "tubeComputeImageSimilarityMetrics.h"
 
 namespace tube
 {

@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeCVTImageFilter_hxx
 #define __itktubeCVTImageFilter_hxx
 
-#include "itktubeCVTImageFilter.h"
 
 #include <itkDanielssonDistanceMapImageFilter.h>
 #include <itkMersenneTwisterRandomVariateGenerator.h>

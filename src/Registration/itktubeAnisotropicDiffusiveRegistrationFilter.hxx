@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeAnisotropicDiffusiveRegistrationFilter_hxx
 #define __itktubeAnisotropicDiffusiveRegistrationFilter_hxx
 
-#include "itktubeAnisotropicDiffusiveRegistrationFilter.h"
 
 #include "itktubeDiffusiveRegistrationFilterUtils.h"
 

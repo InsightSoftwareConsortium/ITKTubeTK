@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeConvertImagesToCSV_hxx
 #define __tubeConvertImagesToCSV_hxx
 
-#include "tubeConvertImagesToCSV.h"
 
 
 namespace tube

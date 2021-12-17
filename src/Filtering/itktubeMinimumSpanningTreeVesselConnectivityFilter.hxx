@@ -23,7 +23,6 @@
 #ifndef __itktubeMinimumSpanningTreeVesselConnectivityFilter_hxx
 #define __itktubeMinimumSpanningTreeVesselConnectivityFilter_hxx
 
-#include "itktubeMinimumSpanningTreeVesselConnectivityFilter.h"
 #include "tubeMatrixMath.h"
 #include "itkMath.h"
 #include "tubeMacro.h"

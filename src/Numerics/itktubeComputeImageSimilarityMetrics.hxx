@@ -30,7 +30,6 @@ limitations under the License.
 #include <itkNormalizeImageFilter.h>
 
 // TubeTK includes
-#include "itktubeComputeImageSimilarityMetrics.h"
 
 namespace itk
 {

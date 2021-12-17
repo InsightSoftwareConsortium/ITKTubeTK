@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeComputeTrainingMaskFilter_hxx
 #define __itktubeComputeTrainingMaskFilter_hxx
 
-#include "itktubeComputeTrainingMaskFilter.h"
 
 namespace itk
 {

@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeImageMath_hxx
 #define __tubeImageMath_hxx
 
-#include "tubeImageMath.h"
 
 namespace tube
 {

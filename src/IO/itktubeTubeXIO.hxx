@@ -25,7 +25,6 @@ limitations under the License.
 
 #include <cmath>
 
-#include "itktubeTubeXIO.h"
 
 #include "tubeStringUtilities.h"
 #include "metaUtils.h"

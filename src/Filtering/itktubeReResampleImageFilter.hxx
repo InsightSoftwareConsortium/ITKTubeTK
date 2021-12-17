@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeReResampleImageFilter_hxx
 #define __itktubeReResampleImageFilter_hxx
 
-#include "itktubeReResampleImageFilter.h"
 
 namespace itk
 {

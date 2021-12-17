@@ -18,7 +18,6 @@
 #ifndef __itkImageRegionSplitter_hxx
 #define __itkImageRegionSplitter_hxx
 
-#include "itkImageRegionSplitter.h"
 #include <cmath>
 
 namespace itk

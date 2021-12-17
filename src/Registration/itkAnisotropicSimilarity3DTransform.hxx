@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itkAnisotropicSimilarity3DTransform_txx
 #define __itkAnisotropicSimilarity3DTransform_txx
 
-#include "itkAnisotropicSimilarity3DTransform.h"
 #include "vnl/vnl_math.h"
 #include "vnl/vnl_det.h"
 

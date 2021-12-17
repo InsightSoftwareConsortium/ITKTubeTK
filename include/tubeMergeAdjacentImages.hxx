@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __tubeMergeAdjacentImages_hxx
 #define __tubeMergeAdjacentImages_hxx
 
-#include "tubeMergeAdjacentImages.h"
 
 namespace tube
 {

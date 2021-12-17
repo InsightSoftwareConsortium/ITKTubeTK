@@ -17,7 +17,6 @@
 #ifndef __itktubeFFTGaussianDerivativeIFFTFilter_hxx
 #define __itktubeFFTGaussianDerivativeIFFTFilter_hxx
 
-#include "itktubeFFTGaussianDerivativeIFFTFilter.h"
 #include "itktubeGaussianDerivativeImageSource.h"
 #include "itktubePadImageFilter.h"
 #include "itktubeRegionFromReferenceImageFilter.h"

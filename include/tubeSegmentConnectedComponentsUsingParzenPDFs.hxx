@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeSegmentConnectedComponentsUsingParzenPDFs_hxx
 #define __tubeSegmentConnectedComponentsUsingParzenPDFs_hxx
 
-#include "tubeSegmentConnectedComponentsUsingParzenPDFs.h"
 
 namespace tube
 {

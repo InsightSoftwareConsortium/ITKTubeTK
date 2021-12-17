@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeTubeSpatialObjectToDensityImageFilter_hxx
 #define __itktubeTubeSpatialObjectToDensityImageFilter_hxx
 
-#include "itktubeTubeSpatialObjectToDensityImageFilter.h"
 
 /** Constructor */
 template< class TDensityImageType, class TRadiusImageType,

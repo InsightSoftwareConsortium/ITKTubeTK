@@ -19,7 +19,6 @@
 #ifndef __itktubeConvertImagesToCSVFilter_hxx
 #define __itktubeConvertImagesToCSVFilter_hxx
 
-#include "itktubeConvertImagesToCSVFilter.h"
 
 namespace itk
 {

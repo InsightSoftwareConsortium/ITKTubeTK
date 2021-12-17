@@ -18,7 +18,6 @@
 #ifndef __tubeCropTubes_hxx
 #define __tubeCropTubes_hxx
 
-#include "tubeCropTubes.h"
 
 
 namespace tube
