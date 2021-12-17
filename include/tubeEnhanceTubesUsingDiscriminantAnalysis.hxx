@@ -18,7 +18,6 @@
 #ifndef __tubeEnhanceTubesUsingDiscriminantAnalysis_hxx
 #define __tubeEnhanceTubesUsingDiscriminantAnalysis_hxx
 
-#include "tubeEnhanceTubesUsingDiscriminantAnalysis.h"
 
 
 namespace tube

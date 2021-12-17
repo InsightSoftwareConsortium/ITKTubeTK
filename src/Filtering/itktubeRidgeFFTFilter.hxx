@@ -21,7 +21,6 @@
 
 #include "tubetkConfigure.h"
 
-#include "itktubeRidgeFFTFilter.h"
 #include "itktubeFFTGaussianDerivativeIFFTFilter.h"
 
 #include "tubeMatrixMath.h"

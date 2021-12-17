@@ -31,7 +31,6 @@ limitations under the License.
 
 // TubeTK includes
 #include "itkGeneralizedDistanceTransformImageFilter.h"
-#include "itktubeMergeAdjacentImagesFilter.h"
 
 namespace itk
 {

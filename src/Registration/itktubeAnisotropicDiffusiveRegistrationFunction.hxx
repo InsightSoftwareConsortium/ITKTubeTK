@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeAnisotropicDiffusiveRegistrationFunction_hxx
 #define __itktubeAnisotropicDiffusiveRegistrationFunction_hxx
 
-#include "itktubeAnisotropicDiffusiveRegistrationFunction.h"
 
 namespace itk
 {

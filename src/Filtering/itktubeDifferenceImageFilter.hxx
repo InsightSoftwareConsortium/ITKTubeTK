@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeDifferenceImageFilter_hxx
 #define __itktubeDifferenceImageFilter_hxx
 
-#include "itktubeDifferenceImageFilter.h"
 
 #include <itkImageRegionIterator.h>
 #include <itkNeighborhoodAlgorithm.h>

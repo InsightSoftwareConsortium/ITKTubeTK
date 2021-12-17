@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeComputeTubeMeasures_hxx
 #define __tubeComputeTubeMeasures_hxx
 
-#include "tubeComputeTubeMeasures.h"
 
 namespace tube
 {

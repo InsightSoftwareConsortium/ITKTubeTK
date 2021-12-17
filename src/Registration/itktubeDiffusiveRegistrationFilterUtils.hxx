@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeDiffusiveRegistrationFilterUtils_hxx
 #define __itktubeDiffusiveRegistrationFilterUtils_hxx
 
-#include "itktubeDiffusiveRegistrationFilterUtils.h"
 
 #include <itkMinimumMaximumImageCalculator.h>
 #include <itkResampleImageFilter.h>

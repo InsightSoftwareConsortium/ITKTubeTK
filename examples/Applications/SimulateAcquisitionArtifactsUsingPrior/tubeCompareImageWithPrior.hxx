@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __tubeCompareImageWithPrior_hxx
 #define __tubeCompareImageWithPrior_hxx
 
-#include "tubeCompareImageWithPrior.h"
 
 #include "../CLI/tubeCLIFilterWatcher.h"
 #include "../CLI/tubeCLIProgressReporter.h"

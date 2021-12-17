@@ -24,7 +24,6 @@ limitations under the License.
 #define __itktubeOptimizedSpatialObjectToImageRegistrationMethod_txx
 
 #include "itktubeSpatialObjectToImageRegistrationMethod.h"
-#include "itktubeOptimizedSpatialObjectToImageRegistrationMethod.h"
 #include "itktubePointBasedSpatialObjectToImageMetric.h"
 
 #include "itkRealTimeClock.h"

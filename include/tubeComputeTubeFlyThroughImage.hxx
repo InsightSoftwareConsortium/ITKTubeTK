@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeComputeTubeFlyThroughImage_hxx
 #define __tubeComputeTubeFlyThroughImage_hxx
 
-#include "tubeComputeTubeFlyThroughImage.h"
 
 namespace tube
 {

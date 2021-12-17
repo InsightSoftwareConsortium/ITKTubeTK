@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter_hxx
 #define __itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter_hxx
 
-#include "itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
 
 #include <itkFixedArray.h>
 #include <itkImageFileWriter.h>

@@ -17,7 +17,6 @@
 #ifndef __itktubeSmoothingRecursiveGaussianImageFilter_hxx
 #define __itktubeSmoothingRecursiveGaussianImageFilter_hxx
 
-#include "itktubeSmoothingRecursiveGaussianImageFilter.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkProgressAccumulator.h"
 

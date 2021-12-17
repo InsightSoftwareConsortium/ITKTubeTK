@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeShrinkImageWithBlending_hxx
 #define __tubeShrinkImageWithBlending_hxx
 
-#include "tubeShrinkImageWithBlending.h"
 
 namespace tube {
 

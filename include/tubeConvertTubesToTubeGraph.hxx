@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeConvertTubesToTubeGraph_hxx
 #define __tubeConvertTubesToTubeGraph_hxx
 
-#include "tubeConvertTubesToTubeGraph.h"
 
 namespace tube
 {

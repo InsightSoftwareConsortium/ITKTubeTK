@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeTubeExtractorIO_hxx
 #define __itktubeTubeExtractorIO_hxx
 
-#include "itktubeTubeExtractorIO.h"
 
 namespace itk
 {

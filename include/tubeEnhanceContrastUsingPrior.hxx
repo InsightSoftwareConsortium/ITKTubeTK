@@ -18,7 +18,6 @@
 #ifndef __tubeEnhanceContrastUsingPrior_hxx
 #define __tubeEnhanceContrastUsingPrior_hxx
 
-#include "tubeEnhanceContrastUsingPrior.h"
 
 namespace tube
 {

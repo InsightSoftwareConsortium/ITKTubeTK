@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeObjectDocumentToImageFilter_hxx
 #define __itktubeObjectDocumentToImageFilter_hxx
 
-#include "itktubeObjectDocumentToImageFilter.h"
 
 namespace itk
 {

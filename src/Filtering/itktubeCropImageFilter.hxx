@@ -18,7 +18,6 @@
 #ifndef __itktubeCropImageFilter_hxx
 #define __itktubeCropImageFilter_hxx
 
-#include "itktubeCropImageFilter.h"
 
 namespace itk
 {

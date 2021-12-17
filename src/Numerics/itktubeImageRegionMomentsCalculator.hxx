@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeImageRegionMomentsCalculator_hxx
 #define __itktubeImageRegionMomentsCalculator_hxx
 
-#include "itktubeImageRegionMomentsCalculator.h"
 
 #include <itkImageRegionConstIteratorWithIndex.h>
 

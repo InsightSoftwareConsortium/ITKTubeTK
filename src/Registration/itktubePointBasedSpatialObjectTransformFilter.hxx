@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubePointBasedSpatialObjectTransformFilter_hxx
 #define __itktubePointBasedSpatialObjectTransformFilter_hxx
 
-#include "itktubePointBasedSpatialObjectTransformFilter.h"
 
 #include <itkSpatialObject.h>
 #include <itkSpatialObjectFactory.h>

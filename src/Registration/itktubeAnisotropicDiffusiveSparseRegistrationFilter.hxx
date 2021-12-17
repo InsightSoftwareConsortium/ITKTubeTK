@@ -24,7 +24,6 @@ limitations under the License.
 #define __itktubeAnisotropicDiffusiveSparseRegistrationFilter_hxx
 
 
-#include "itktubeAnisotropicDiffusiveSparseRegistrationFilter.h"
 
 #include "itktubeDiffusiveRegistrationFilterUtils.h"
 #include "tubeTubeMathFilters.h"

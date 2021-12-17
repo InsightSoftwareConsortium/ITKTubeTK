@@ -18,7 +18,6 @@
 #ifndef __tubeRegisterImages_hxx
 #define __tubeRegisterImages_hxx
 
-#include "tubeRegisterImages.h"
 
 namespace tube
 {

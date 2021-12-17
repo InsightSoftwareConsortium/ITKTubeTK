@@ -27,7 +27,6 @@ limitations under the License.
 #include "itkImageRegionIterator.h"
 
 // TubeTK includes
-#include "itktubeComputeImageStatistics.h"
 
 #include <fstream>
 

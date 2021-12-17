@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef itktubeSpatialObjectToImageMetric_hxx
 #define itktubeSpatialObjectToImageMetric_hxx
 
-#include "itktubeSpatialObjectToImageMetric.h"
 
 namespace itk
 {

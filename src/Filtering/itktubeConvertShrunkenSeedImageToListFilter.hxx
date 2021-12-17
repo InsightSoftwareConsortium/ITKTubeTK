@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeConvertShrunkenSeedImageToListFilter_hxx
 #define __itktubeConvertShrunkenSeedImageToListFilter_hxx
 
-#include "itktubeConvertShrunkenSeedImageToListFilter.h"
 
 namespace itk
 {

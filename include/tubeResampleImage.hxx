@@ -18,7 +18,6 @@
 #ifndef __tubeResampleImage_hxx
 #define __tubeResampleImage_hxx
 
-#include "tubeResampleImage.h"
 
 namespace tube
 {

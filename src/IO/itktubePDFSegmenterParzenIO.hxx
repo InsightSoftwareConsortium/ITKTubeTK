@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubePDFSegmenterParzenIO_hxx
 #define __itktubePDFSegmenterParzenIO_hxx
 
-#include "itktubePDFSegmenterParzenIO.h"
 #include "itktubeMetaClassPDF.h"
 #include "metaUtils.h"
 

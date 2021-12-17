@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeTubeSpatialObjectToTubeGraphFilter_hxx
 #define __itktubeTubeSpatialObjectToTubeGraphFilter_hxx
 
-#include "itktubeTubeSpatialObjectToTubeGraphFilter.h"
 
 /** Constructor */
 template< class TPixel, unsigned int Dimension >

@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeAnisotropicEdgeEnhancementDiffusionImageFilter_hxx
 #define __itktubeAnisotropicEdgeEnhancementDiffusionImageFilter_hxx
 
-#include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h"
 
 #include <itkFixedArray.h>
 #include <itkGradientMagnitudeRecursiveGaussianImageFilter.h>

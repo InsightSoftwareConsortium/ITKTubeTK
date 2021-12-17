@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeAnisotropicDiffusionTensorFunction_hxx
 #define __itktubeAnisotropicDiffusionTensorFunction_hxx
 
-#include "itktubeAnisotropicDiffusionTensorFunction.h"
 
 #include <itkTextOutput.h>
 

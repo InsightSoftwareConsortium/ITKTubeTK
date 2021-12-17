@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef itkScaleSkewAngle2DTransform_hxx
 #define itkScaleSkewAngle2DTransform_hxx
 
-#include "itkScaleSkewAngle2DTransform.h"
 #include "itkMath.h"
 
 namespace itk

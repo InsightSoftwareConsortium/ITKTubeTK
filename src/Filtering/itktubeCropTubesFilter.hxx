@@ -23,7 +23,6 @@
 #ifndef __itktubeCropTubesFilter_hxx
 #define __itktubeCropTubesFilter_hxx
 
-#include "itktubeCropTubesFilter.h"
 #include "tubeMacro.h"
 #include "tubeTubeMathFilters.h"
 

@@ -25,7 +25,6 @@
 
 #include <iterator>
 
-#include "itktubeResampleTubesFilter.h"
 
 #include "itkMath.h"
 

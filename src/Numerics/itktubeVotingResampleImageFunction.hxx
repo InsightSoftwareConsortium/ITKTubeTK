@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeVotingResampleImageFunction_hxx
 #define __itktubeVotingResampleImageFunction_hxx
 
-#include "itktubeVotingResampleImageFunction.h"
 
 #include <itkConstNeighborhoodIterator.h>
 #include <itkNeighborhood.h>

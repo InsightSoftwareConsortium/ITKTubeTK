@@ -22,7 +22,6 @@ limitations under the License.
 #ifndef __tubeSegmentUsingOtsuThreshold_hxx
 #define __tubeSegmentUsingOtsuThreshold_hxx
 
-#include "tubeSegmentUsingOtsuThreshold.h"
 
 namespace tube
 {

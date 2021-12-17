@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeTortuositySpatialObjectFilter_hxx
 #define __itktubeTortuositySpatialObjectFilter_hxx
 
-#include "itktubeTortuositySpatialObjectFilter.h"
 
 #include "itkSampleToHistogramFilter.h"
 #include "itkListSample.h"

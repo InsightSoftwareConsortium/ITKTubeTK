@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeSegmentBinaryImageSkeleton3D_hxx
 #define __tubeSegmentBinaryImageSkeleton3D_hxx
 
-#include "tubeSegmentBinaryImageSkeleton3D.h"
 
 namespace tube
 {

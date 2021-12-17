@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeRidgeSeedFilter_hxx
 #define __itktubeRidgeSeedFilter_hxx
 
-#include "itktubeRidgeSeedFilter.h"
 
 #include "tubeMatrixMath.h"
 #include "itktubePDFSegmenterParzen.h"

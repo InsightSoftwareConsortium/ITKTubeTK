@@ -25,7 +25,6 @@ limitations under the License.
 #define __itktubeNJetImageFunction_hxx
 
 #include "tubeMatrixMath.h"
-#include "itktubeNJetImageFunction.h"
 
 #include <itkImageRegionConstIterator.h>
 #include <itkImageRegionIteratorWithIndex.h>

@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeInverseIntensityImageFilter_hxx
 #define __itktubeInverseIntensityImageFilter_hxx
 
-#include "itktubeInverseIntensityImageFilter.h"
 
 #include <itkImageRegionIterator.h>
 #include <itkMinimumMaximumImageFilter.h>

@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeContrastCostFunction_hxx
 #define __itktubeContrastCostFunction_hxx
 
-#include "itktubeContrastCostFunction.h"
 
 namespace itk
 {

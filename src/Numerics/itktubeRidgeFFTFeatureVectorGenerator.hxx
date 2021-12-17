@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeRidgeFFTFeatureVectorGenerator_hxx
 #define __itktubeRidgeFFTFeatureVectorGenerator_hxx
 
-#include "itktubeRidgeFFTFeatureVectorGenerator.h"
 #include "itktubeRidgeFFTFilter.h"
 #include "tubeMatrixMath.h"
 

@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeConvertSpatialGraphToImageFilter_hxx
 #define __itktubeConvertSpatialGraphToImageFilter_hxx
 
-#include "itktubeConvertSpatialGraphToImageFilter.h"
 
 namespace itk
 {

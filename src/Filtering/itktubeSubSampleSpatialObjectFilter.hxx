@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeSubSampleSpatialObjectFilter_hxx
 #define __itktubeSubSampleSpatialObjectFilter_hxx
 
-#include "itktubeSubSampleSpatialObjectFilter.h"
 
 #include "itktubeSubSampleTubeSpatialObjectFilter.h"
 
