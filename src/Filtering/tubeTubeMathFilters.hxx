@@ -391,7 +391,7 @@ ComputeTubeRegions( const ImageType * referenceImage )
   tubeToImageFilter->SetUseRadius(false);
   tubeToImageFilter->SetBuildRadiusImage(true);
   tubeToImageFilter->SetBuildTangentImage(false);
-  tubeToImageFilter->SetReferenceImage<const ImageType>( referenceImage );
+  tubeToImageFilter->SetReferenceImage( referenceImage );
   tubeToImageFilter->Update();
 
   m_TubePointIdImage = tubeToImageFilter->GetOutput();
