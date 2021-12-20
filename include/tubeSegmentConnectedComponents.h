@@ -74,6 +74,9 @@ public:
   itkSetObjectMacro( SeedMask, SeedMaskType );
   itkGetModifiableObjectMacro( SeedMask, SeedMaskType );
 
+  itkSetMacro( KeepOnlyLargestComponent, bool );
+  itkGetMacro( KeepOnlyLargestComponent, bool );
+
   void Update( void ) override;
 
   tubeWrapGetConstObjectMacro( Output, ImageType, Filter );
@@ -97,6 +100,8 @@ private:
   typename SeedMaskType::Pointer                  m_SeedMask;
   double                                          m_MinimumVolume;
   unsigned int                                    m_NumberOfComponents;
+
+  bool                                            m_KeepOnlyLargestComponent;
 
 };
 

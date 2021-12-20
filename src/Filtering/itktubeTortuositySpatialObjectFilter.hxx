@@ -355,7 +355,7 @@ TortuositySpatialObjectFilter< TTubeSpatialObject >
     }
 
   this->m_NumberOfPoints = processedInput->GetPoints().size();
-  this->m_TubeID = processedInput->GetId();
+  this->m_TubeId = processedInput->GetId();
   if( ipm )
     {
     this->m_InflectionPoints.SetSize( this->m_NumberOfPoints );

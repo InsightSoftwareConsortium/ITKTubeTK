@@ -311,7 +311,7 @@ private:
 
   /** Vessel parameters */
   size_t                         m_NumberOfPoints;
-  int                            m_TubeID;
+  int                            m_TubeId;
 
   /** Vessel-wise Metrics */
   double                         m_AverageRadiusMetric;

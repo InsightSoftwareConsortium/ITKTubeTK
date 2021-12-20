@@ -41,7 +41,8 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   m_BuildRadiusImage = false;
   m_BuildTangentImage = false;
 
-  m_ColorByTubeID = false;
+  m_ColorByTubeId = true;
+  m_ColorByPointId = false;
   m_ColorByRadius = false;
   m_ColorByRidgeness = false;
   m_ColorByMedialness = false;
@@ -147,9 +148,11 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
     region.SetSize( this->m_Size );
     }
 
-  typename OutputImageType::IndexType index;
-  index.Fill( 0 );
-  region.SetIndex( index );
+#if ITK_VERSION_MAJOR >= 5 
+#if ITK_VERSION_MINOR > 3
+  region.SetIndex( this->m_Index );
+#endif
+#endif
 
   OutputImage->SetRegions( region );
   OutputImage->SetSpacing( this->m_Spacing );
@@ -198,6 +201,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   typedef typename ChildrenListType::iterator ChildrenIteratorType;
   ChildrenIteratorType TubeIterator = tubeList->begin();
 
+  typename OutputImageType::IndexType index;
   typename OutputImageType::IndexType index2;
 
   while( TubeIterator != tubeList->end() )
@@ -230,9 +234,17 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
       if( IsInside )
         {
         double val = 1;
-        if( m_ColorByTubeID )
+        if( m_ColorByTubeId )
           {
           val = tube->GetId();
+          }
+        else if( m_ColorByPointId )
+          {
+          val = tube->GetId();
+          if(tubePoint->GetId() > 0)
+            {
+            val += 1.0/(tubePoint->GetId()+1);
+            }
           }
         else if( m_ColorByRadius )
           {
@@ -291,59 +303,32 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
         // Radius Image and Density image with radius
         if( m_UseRadius )
           {
-          typename TubePointType::PointType radius;
-          radius.Fill( tubePoint->GetRadiusInWorldSpace() );
+          RadiusPixelType radius = tubePoint->GetRadiusInWorldSpace();
 
           if( m_BuildRadiusImage )
             {
-            m_RadiusImage->SetPixel( index,
-                                  static_cast<RadiusPixelType>( radius[0] ) );
+            m_RadiusImage->SetPixel( index, radius );
             }
 
-          typename OutputImageType::IndexType radiusI;
+          ContinuousIndexType radiusI;
           for( unsigned int i = 0; i < ObjectDimension; i++ )
             {
-            radiusI[i] = radius[i] / this->m_Spacing[i];
-            }
-          double rStep[ObjectDimension];
-          for( unsigned int i = 0; i < ObjectDimension; i++ )
-            {
-            double s = radiusI[i] / 2;
-
-            while( s >= 1 )
+            radiusI[i] = radius / this->m_Spacing[i];
+            if(radiusI[i] < 0.25)
               {
-              s /= 2;
+              radiusI[i] = 0.25;
               }
-            if( s < 0.5 )
-              {
-              s = 0.5;
-              }
-
-            rStep[i] = s;
             }
 
           if( ObjectDimension == 2 )
             {
-            double epsilon = 0.00001;
-            if( radiusI[0] > 0 )
+            for( double x=-radiusI[0]; x<=radiusI[0]; x += 0.5 )
               {
-              epsilon = rStep[0] / radiusI[0] / 2;
-              }
-            for( double x=-radiusI[0]; x<=radiusI[0]; x+=rStep[0] )
-              {
-              double xr = epsilon;
-              if( radiusI[0] > 0 )
+              double xr = x / radiusI[0];
+              for( double y=-radiusI[1]; y<=radiusI[1]; y += 0.5 )
                 {
-                xr = x / radiusI[0];
-                }
-              for( double y=-radiusI[1]; y<=radiusI[1]; y+=rStep[1] )
-                {
-                double yr = epsilon;
-                if( radiusI[1] > 0 )
-                  {
-                  yr = y / radiusI[1];
-                  }
-                if( ( (xr*xr)+(yr*yr) ) <= 1+epsilon )
+                double yr = y / radiusI[1];
+                if( ( (xr*xr)+(yr*yr) ) <= 1 )
                   // test  inside the sphere
                   {
                   index2[0]=( long )( pointI[0]+x+0.5 );
@@ -362,7 +347,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                       }
                     if( m_BuildRadiusImage )
                       {
-                      m_RadiusImage->SetPixel( index2, radius[0] );
+                      m_RadiusImage->SetPixel( index2, radius );
                       }
                     }
                   }
@@ -371,33 +356,16 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
             }
           else if( ObjectDimension == 3 )
             {
-            double epsilon = 0.00001;
-            if( radiusI[0] > 0 )
+            for( double x=-radiusI[0]; x<=radiusI[0]; x+=0.5 )
               {
-              epsilon = rStep[0] / radiusI[0] / 2;
-              }
-            for( double x=-radiusI[0]; x<=radiusI[0]; x+=rStep[0] )
-              {
-              double xr = epsilon;
-              if( radiusI[0] > 0 )
+              double xr = x / radiusI[0];
+              for( double y=-radiusI[1]; y<=radiusI[1]; y+=0.5 )
                 {
-                xr = x / radiusI[0];
-                }
-              for( double y=-radiusI[1]; y<=radiusI[1]; y+=rStep[1] )
-                {
-                double yr = epsilon;
-                if( radiusI[1] > 0 )
+                double yr = y / radiusI[1];
+                for( double z=-radiusI[2]; z<=radiusI[2]; z+=0.5 )
                   {
-                  yr = y / radiusI[1];
-                  }
-                for( double z=-radiusI[2]; z<=radiusI[2]; z+=rStep[2] )
-                  {
-                  double zr = epsilon;
-                  if( radiusI[2] > 0 )
-                    {
-                    zr = z / radiusI[2];
-                    }
-                  if( ( (xr*xr) + (yr*yr) +(zr*zr) ) <= 1+epsilon )
+                  double zr = z / radiusI[2];
+                  if( ( (xr*xr) + (yr*yr) +(zr*zr) ) <= 1 )
                     {
                     index2[0]=( long )( pointI[0]+x+0.5 );
                     index2[1]=( long )( pointI[1]+y+0.5 );
@@ -418,7 +386,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                         }
                       if( m_BuildRadiusImage )
                         {
-                        m_RadiusImage->SetPixel( index2, radius[0] );
+                        m_RadiusImage->SetPixel( index2, radius );
                         }
                       }
                     }

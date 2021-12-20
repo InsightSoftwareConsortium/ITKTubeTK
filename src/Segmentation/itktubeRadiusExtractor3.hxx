@@ -75,6 +75,10 @@ public:
     for( unsigned int i=0; i<m_Data->size(); ++i )
       {
       double tf = (*m_Data)[i] - (p[0]-(p[1]/(1+exp(-p[2]*(i-p[3])))));
+      if( isnan(tf) )
+        {
+        tf = 1;
+        }
       err += tf * tf;
       }
     err = std::sqrt(err/m_Data->size());
@@ -101,6 +105,13 @@ public:
     d[1] /= m_Data->size();
     d[2] /= m_Data->size();
     d[3] /= m_Data->size();
+    for( unsigned int i=0; i<4; ++i )
+      {
+      if( isnan(d[i]) )
+        {
+        d[i] = 0;
+        }
+      }
     }
 
   unsigned int GetNumberOfParameters(void) const override
@@ -745,6 +756,7 @@ RadiusExtractor3<TInputImage>
     this->GenerateKernelProfile();
     this->OptimizeKernelRadius();
     this->RecordOptimaAtTubePoints( p, tube );
+    rStart = (rStart0 + m_KernelOptimalRadius) / 2;
     if( verbose )
       {
       std::cout << p << " : x = "
@@ -774,6 +786,7 @@ RadiusExtractor3<TInputImage>
     this->GenerateKernelProfile();
     this->OptimizeKernelRadius();
     this->RecordOptimaAtTubePoints( p, tube );
+    rStart = (rStart0 + m_KernelOptimalRadius) / 2;
     if( verbose )
       {
       std::cout << p << " : x = "
@@ -861,7 +874,7 @@ RadiusExtractor3<TInputImage>
   double r1 = this->GetKernelOptimalRadius();
   double m1 = this->GetKernelOptimalRadiusMedialness();
   double b1 = this->GetKernelOptimalRadiusBranchness();
-  if( tube->GetPoints()[midNum].GetRadiusInObjectSpace() != 0 )
+  if( tube->GetPoints()[midNum].GetRadiusInObjectSpace() > 0 )
   {
     r1 = (r1 + tube->GetPoints()[midNum].GetRadiusInObjectSpace())/2.0;
     m1 = (m1 + tube->GetPoints()[midNum].GetMedialness())/2.0;
@@ -877,7 +890,7 @@ RadiusExtractor3<TInputImage>
   double r0 = tube->GetPoints()[ startP ].GetRadiusInObjectSpace();
   double m0 = tube->GetPoints()[ startP ].GetMedialness();
   double b0 = tube->GetPoints()[ startP ].GetBranchness();
-  if( r0 == 0 )
+  if( r0 <= 0 )
     {
     r0 = r1;
     m0 = m1;
@@ -892,14 +905,20 @@ RadiusExtractor3<TInputImage>
   double r2 = tube->GetPoints()[ endP ].GetRadiusInObjectSpace();
   double m2 = tube->GetPoints()[ endP ].GetMedialness();
   double b2 = tube->GetPoints()[ endP ].GetBranchness();
-  if( r2 == 0 )
+  if( r2 <= 0 )
     {
     r2 = r1;
     m2 = m1;
     b2 = b1;
     }
 
+  double rMin = this->GetRadiusMin();
   double rMax = this->GetRadiusMax();
+  if( r0 < rMin || r1 < rMin || r2 < rMin )
+    {
+    std::cout << "ERROR: Max r exceeded." << r0 << ", " << r1 << ", " << r2
+      << std::endl;
+    }
   if( r0 > rMax || r1 > rMax || r2 > rMax )
     {
     std::cout << "ERROR: Max r exceeded." << r0 << ", " << r1 << ", " << r2
@@ -913,6 +932,14 @@ RadiusExtractor3<TInputImage>
       if( midNum != startP )
         {
         d = static_cast< double >( midNum - p ) / ( midNum - startP );
+        if( d < 0 )
+          {
+          d = 0;
+          }
+        if( d > 1 )
+          {
+          d = 1;
+          }
         }
       tube->GetPoints()[ p ].SetRadiusInObjectSpace( d * r0 + ( 1 - d ) * r1 );
       tube->GetPoints()[ p ].SetMedialness( d * m0 + ( 1 - d ) * m1 );
@@ -924,6 +951,14 @@ RadiusExtractor3<TInputImage>
       if( midNum != endP )
         {
         d = static_cast< double >( p - midNum ) / ( endP - midNum );
+        if( d < 0 )
+          {
+          d = 0;
+          }
+        if( d > 1 )
+          {
+          d = 1;
+          }
         }
       tube->GetPoints()[ p ].SetRadiusInObjectSpace( d * r2 + ( 1 - d ) * r1 );
       tube->GetPoints()[ p ].SetMedialness( d * m2 + ( 1 - d ) * m1 );

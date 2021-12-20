@@ -23,6 +23,11 @@ limitations under the License.
 #define __tubeTubeMathFilters_hxx
 
 #include "itkNumericTraits.h"
+#include "itkImageRegionIterator.h"
+#include "itkDanielssonDistanceMapImageFilter.h"
+
+#include "tubeImageMathFilters.h"
+#include "itktubeTubeSpatialObjectToImageFilter.h"
 
 namespace tube
 {
@@ -33,7 +38,13 @@ TubeMathFilters()
 {
   m_InputTubeGroup = nullptr;
   m_InputTube = nullptr;
+
   m_CurrentTubeId = -1;
+
+  m_TubePointIdImage = nullptr;
+  m_TubeRadiusImage = nullptr;
+  m_TubeDistanceImage = nullptr;
+  m_TubeDirectionImage = nullptr;
 }
 
 template< unsigned int DimensionT, class ImagePixelT >
@@ -45,20 +56,34 @@ TubeMathFilters< DimensionT, ImagePixelT >::
 template< unsigned int DimensionT, class ImagePixelT >
 void
 TubeMathFilters< DimensionT, ImagePixelT >::
-SetInputTubeGroup( typename TubeGroupType::Pointer & inputTubeGroup )
+SetInputTubeGroup( TubeGroupType * inputTubeGroup )
 {
   m_InputTubeGroup = inputTubeGroup;
   m_InputTube = nullptr;
+
+  m_CurrentTubeId = -1;
+
+  m_TubePointIdImage = nullptr;
+  m_TubeRadiusImage = nullptr;
+  m_TubeDistanceImage = nullptr;
+  m_TubeDirectionImage = nullptr;
 }
 
 template< unsigned int DimensionT, class ImagePixelT >
 void
 TubeMathFilters< DimensionT, ImagePixelT >::
-SetInputTube( typename TubeType::Pointer & inputTube )
+SetInputTube( TubeType * inputTube )
 {
   m_InputTube = inputTube;
   m_InputTubeGroup = TubeGroupType::New();
   m_InputTubeGroup->AddChild( m_InputTube );
+
+  m_CurrentTubeId = -1;
+
+  m_TubePointIdImage = nullptr;
+  m_TubeRadiusImage = nullptr;
+  m_TubeDistanceImage = nullptr;
+  m_TubeDirectionImage = nullptr;
 }
 
 template< unsigned int DimensionT, class ImagePixelT >
@@ -96,8 +121,85 @@ SetUseAllTubes( )
 template< unsigned int DimensionT, class ImagePixelT >
 void
 TubeMathFilters< DimensionT, ImagePixelT >::
+SetPointValues( std::string propertyId, double val, double blend )
+{
+  typename TubeType::ChildrenListType::iterator tubeIterator;
+  typename TubeType::ChildrenListPointer inputTubeList =
+    m_InputTubeGroup->GetChildren( m_InputTubeGroup->GetMaximumDepth(),
+    "Tube" );
+  for( tubeIterator = inputTubeList->begin(); tubeIterator !=
+    inputTubeList->end(); tubeIterator++ )
+    {
+    typename TubeType::Pointer inputTube = ( ( TubeType * )( tubeIterator->
+      GetPointer() ) );
+
+    if( m_CurrentTubeId == -1 || inputTube->GetId() == m_CurrentTubeId )
+      {
+      inputTube->Update();
+
+      unsigned int pointListSize = inputTube->GetNumberOfPoints();
+      for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum )
+        {
+        TubePointType * currentPoint = static_cast< TubePointType * >(
+          inputTube->GetPoint( pointNum ) );
+
+        if( propertyId == "Ridgeness" )
+          {
+          if( blend != 1 )
+            {
+            double val2 = currentPoint->GetRidgeness();
+            val = val * blend + (1 - blend) * val2;
+            }
+          currentPoint->SetRidgeness( val );
+          }
+        else if( propertyId == "Medialness" )
+          {
+          if( blend != 1 )
+            {
+            double val2 = currentPoint->GetMedialness();
+            val = val * blend + (1 - blend) * val2;
+            }
+          currentPoint->SetMedialness( val );
+          }
+        else if( propertyId == "Branchness" )
+          {
+          if( blend != 1 )
+            {
+            double val2 = currentPoint->GetBranchness();
+            val = val * blend + (1 - blend) * val2;
+            }
+          currentPoint->SetBranchness( val );
+          }
+        else if( propertyId == "Radius" )
+          {
+          if( blend != 1 )
+            {
+            double val2 = currentPoint->GetRadiusInObjectSpace();
+            val = val * blend + (1 - blend) * val2;
+            }
+          currentPoint->SetRadiusInObjectSpace( val );
+          }
+        else
+          {
+          if( blend != 1 )
+            {
+            double val2 = currentPoint->GetTagScalarValue( propertyId );
+            val = val * blend + (1 - blend) * val2;
+            }
+          currentPoint->SetTagScalarValue( propertyId, val );
+          }
+        }
+      }
+    }
+  inputTubeList->clear();
+  delete inputTubeList;
+}
+
+template< unsigned int DimensionT, class ImagePixelT >
+void
+TubeMathFilters< DimensionT, ImagePixelT >::
 SetPointValuesFromImage(
-  typename itk::Image< ImagePixelT, DimensionT>::Pointer & inputImage,
+  const itk::Image< ImagePixelT, DimensionT> * inputImage,
   std::string propertyId, double blend )
 {
   typename TubeType::ChildrenListType::iterator tubeIterator;
@@ -189,7 +291,7 @@ template< unsigned int DimensionT, class ImagePixelT >
 void
 TubeMathFilters< DimensionT, ImagePixelT >::
 SetPointValuesFromImageMean( 
-  typename itk::Image< ImagePixelT, DimensionT>::Pointer & inputImage,
+  const itk::Image< ImagePixelT, DimensionT> * inputImage,
   std::string propertyId )
 {
   typename TubeType::ChildrenListType::iterator tubeIterator;
@@ -272,13 +374,348 @@ SetPointValuesFromImageMean(
 template< unsigned int DimensionT, class ImagePixelT >
 void
 TubeMathFilters< DimensionT, ImagePixelT >::
+ComputeTubeRegions( const ImageType * referenceImage )
+{
+  this->RenumberTubes();
+  this->RenumberPoints();
+
+  std::cout << "Computing Tube Regions" << std::endl;
+
+  std::cout << "   Rendering Tube Centerlines" << std::endl;
+  typedef itk::tube::TubeSpatialObjectToImageFilter< DimensionT,
+    FloatImageType > TubeToImageFilterType;
+  TubeToImageFilterType::Pointer tubeToImageFilter =
+    TubeToImageFilterType::New();
+  tubeToImageFilter->SetInput( m_InputTubeGroup );
+  tubeToImageFilter->SetColorByPointId(true);
+  tubeToImageFilter->SetUseRadius(false);
+  tubeToImageFilter->SetBuildRadiusImage(true);
+  tubeToImageFilter->SetBuildTangentImage(false);
+  tubeToImageFilter->SetReferenceImage<const ImageType>( referenceImage );
+  tubeToImageFilter->Update();
+
+  m_TubePointIdImage = tubeToImageFilter->GetOutput();
+  m_TubeRadiusImage  = tubeToImageFilter->GetRadiusImage();
+
+  std::cout << "   Computing Tube Distance Maps" << std::endl;
+  typedef itk::DanielssonDistanceMapImageFilter< FloatImageType, FloatImageType>
+    DanielssonFilterType;
+  typename DanielssonFilterType::Pointer distF = DanielssonFilterType::New();
+  distF->SetInput( m_TubePointIdImage );
+  distF->SetUseImageSpacing( true );
+  distF->SetInputIsBinary( true );
+  distF->Update();
+
+  m_TubeDistanceImage  = distF->GetDistanceMap();
+  m_TubeDirectionImage = distF->GetVectorDistanceMap();
+  std::cout << "   Done." << std::endl;
+}
+
+//------------------------------------------------------------------------
+template< unsigned int DimensionT, class ImagePixelT >
+void
+TubeMathFilters< DimensionT, ImagePixelT >::
+SetPointValuesFromTubeRegions(
+  const itk::Image< ImagePixelT, DimensionT> * inputImage,
+  const std::string & propertyId,
+  double minRFactor, double maxRFactor )
+{
+  std::cout << "Setting Tube Point Values from Regions." << std::endl;
+  this->SetPointValues( propertyId, 0 );
+
+  typedef itk::ImageRegionIterator<VectorImageType>   VectorImageIteratorType;
+  typedef itk::ImageRegionIterator<FloatImageType>    FloatImageIteratorType;
+
+  FloatImageIteratorType itDistImage( m_TubeDistanceImage,
+      m_TubeDistanceImage->GetLargestPossibleRegion() );
+  itDistImage.GoToBegin();
+
+  VectorImageIteratorType itDirImage( m_TubeDirectionImage,
+      m_TubeDirectionImage->GetLargestPossibleRegion() );
+  itDirImage.GoToBegin();
+
+  std::cout << "   Allocating accumulator images." << std::endl;
+  FloatImageType::Pointer imVal = FloatImageType::New();
+  imVal->CopyInformation( m_TubeDistanceImage );
+  imVal->SetRegions( m_TubeDistanceImage->GetLargestPossibleRegion() );
+  imVal->Allocate();
+  imVal->FillBuffer(0);
+
+  FloatImageType::Pointer imCount = FloatImageType::New();
+  imCount->CopyInformation( m_TubeDistanceImage );
+  imCount->SetRegions( m_TubeDistanceImage->GetLargestPossibleRegion() );
+  imCount->Allocate();
+  imCount->FillBuffer(0);
+
+  TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
+    m_InputTubeGroup->GetMaximumDepth(), "Tube" );
+
+  unsigned int lastIndex = 1;
+  unsigned int maxIndex =
+    imVal->GetLargestPossibleRegion().GetSize()[DimensionT-1];
+  std::cout << "   Parsing regions." << std::endl;
+  while( !itDirImage.IsAtEnd() )
+    {
+    double dist = itDistImage.Value();
+
+    typename VectorImageType::IndexType index = itDirImage.GetIndex();
+    VectorPixelType v = itDirImage.Value();
+
+    typename VectorImageType::IndexType tubeIndex;
+    for( unsigned int i = 0; i < DimensionT; i++ )
+      {
+      tubeIndex[i] = index[i] + v[i];
+      }
+
+    double val = inputImage->GetPixel( index );
+
+    if( val != 0 )
+      {
+      std::cout << tubeIndex << " = " << val << std::endl;
+      }
+ 
+    if( imVal->GetLargestPossibleRegion().IsInside(tubeIndex) )
+      {
+      imVal->SetPixel(tubeIndex, imVal->GetPixel(tubeIndex)+val);
+      imCount->SetPixel(tubeIndex, imCount->GetPixel(tubeIndex)+1);
+      }
+
+    ++itDistImage;
+    ++itDirImage;
+    }
+
+  FloatImageIteratorType itId( m_TubePointIdImage,
+    m_TubePointIdImage->GetLargestPossibleRegion() );
+  FloatImageIteratorType itVal( imVal, imVal->GetLargestPossibleRegion() );
+  FloatImageIteratorType itCount( imCount, imCount->GetLargestPossibleRegion() );
+
+  itId.GoToBegin();
+  itVal.GoToBegin();
+  itCount.GoToBegin();
+
+  lastIndex = 1;
+  std::cout << "   Storing results." << std::endl;
+  while( !itId.IsAtEnd() )
+    {
+    if( itCount.Value() != 0 )
+      {
+      double pointId = itId.Value();
+
+      double val = itVal.Value() / itCount.Value();
+
+      typename VectorImageType::IndexType index = itVal.GetIndex();
+      if( index[DimensionT-1] != lastIndex )
+        {
+        std::cout << "  Slice = " << index[DimensionT-1] << " of " << maxIndex
+          << std::endl;
+        lastIndex = index[DimensionT-1];
+        }
+
+      int tube = static_cast<int>(pointId);
+      int point = 0;
+      if( pointId - tube != 0 )
+        {
+        point = static_cast<int>(1 / (pointId-tube))-1;
+        }
+
+      if( val != 0 )
+        {
+        static int lcount = 0;
+        if( lcount < 100 )
+          {
+          std::cout << tube << ", " << point << " = " << val << std::endl;
+          lcount++;
+          }
+        }
+
+      typename TubeType::ChildrenListType::iterator tubeIterator;
+      tubeIterator = inputTubeList->begin();
+      for(int tubeI=0; tubeI<tube; ++tubeI)
+        {
+        ++tubeIterator;
+        }
+      typename TubeType::Pointer curTube = dynamic_cast< TubeType * >(
+        tubeIterator->GetPointer() );
+
+      TubePointType * currentPoint = static_cast< TubePointType * >(
+        curTube->GetPoint( point ) );
+      if( propertyId == "Ridgeness" )
+        {
+        currentPoint->SetRidgeness(val);
+        }
+      else if( propertyId == "Medialness" )
+        {
+        currentPoint->SetMedialness(val);
+        }
+      else if( propertyId == "Branchness" )
+        {
+        currentPoint->SetBranchness(val);
+        }
+      else if( propertyId == "Radius" )
+        {
+        currentPoint->SetRadiusInObjectSpace(val);
+        }
+      else
+        {
+        currentPoint->SetTagScalarValue( propertyId, val );
+        }
+      }
+    ++itId;
+    ++itVal;
+    ++itCount;
+    }
+  inputTubeList->clear();
+  delete inputTubeList;
+}
+
+
+//------------------------------------------------------------------------
+template< unsigned int DimensionT, class ImagePixelT >
+void
+TubeMathFilters< DimensionT, ImagePixelT >::
+SetPointValuesFromTubeRadius(
+  const itk::Image< ImagePixelT, DimensionT> * inputImage,
+  const std::string & propertyId,
+  double minRFactor, double maxRFactor )
+{
+  this->SetPointValues( propertyId, 0 );
+
+  typedef itk::ContinuousIndex<double, DimensionT> ContinuousIndexType;
+
+  // Get the list of tubes
+  char tubeName[] = "Tube";
+  TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
+    m_InputTubeGroup->GetMaximumDepth(), "Tube" );
+
+  typename TubeGroupType::ChildrenListType::iterator tubeIterator =
+    inputTubeList->begin();
+
+  ContinuousIndexType pointI;
+  typename FloatImageType::IndexType index;
+  typename FloatImageType::IndexType index2;
+  while( tubeIterator != inputTubeList->end() )
+    {
+    TubeType * tube = ( TubeType * )tubeIterator->GetPointer();
+
+    tube->Update();
+
+    for( unsigned int k=0; k < tube->GetNumberOfPoints(); k++ )
+      {
+      typedef typename TubeType::TubePointType TubePointType;
+      TubePointType * tubePoint = dynamic_cast<TubePointType *>(
+        tube->GetPoint( k ) );
+      inputImage->TransformPhysicalPointToContinuousIndex(
+        tubePoint->GetPositionInWorldSpace(),
+        pointI );
+      for( unsigned int i=0; i<DimensionT; i++ )
+        {
+        index[i] = ( long int )( pointI[i]+0.5 );
+        }
+      double val = 0;
+      unsigned int count = 0;
+      if( inputImage->GetLargestPossibleRegion().IsInside( index ) )
+        {
+        double radius = tubePoint->GetRadiusInWorldSpace();
+        ContinuousIndexType radiusI;
+        ContinuousIndexType maxRadiusI;
+        for( unsigned int i = 0; i < DimensionT; i++ )
+          {
+          maxRadiusI[i] = (maxRFactor * radius) / inputImage->GetSpacing()[i];
+          radiusI[i] = radius / inputImage->GetSpacing()[i];
+          if(radiusI[i] < 0.25)
+            {
+            radiusI[i] = 0.25;
+            }
+          }
+
+        if( DimensionT == 2 )
+          {
+          for( double x=-maxRadiusI[0]; x<=maxRadiusI[0]; x += 0.5 )
+            {
+            for( double y=-maxRadiusI[1]; y<=maxRadiusI[1]; y += 0.5 )
+              {
+              index2[0]=( long )( pointI[0]+x+0.5 );
+              index2[1]=( long )( pointI[1]+y+0.5 );
+              if( inputImage->GetLargestPossibleRegion().IsInside( index2 ) )
+                {
+                double dist = m_TubeDistanceImage->GetPixel(index2);
+                if( dist >= minRFactor && dist <= maxRFactor )
+                  {
+                  val += inputImage->GetPixel(index2);
+                  ++count;
+                  }
+                }
+              }
+            }
+          }
+        else if( DimensionT == 3 )
+          {
+          for( double x=-maxRadiusI[0]; x<=maxRadiusI[0]; x+=0.5 )
+            {
+            for( double y=-maxRadiusI[1]; y<=maxRadiusI[1]; y+=0.5 )
+              {
+              for( double z=-maxRadiusI[2]; z<=maxRadiusI[2]; z+=0.5 )
+                {
+                index2[0]=( long )( pointI[0]+x+0.5 );
+                index2[1]=( long )( pointI[1]+y+0.5 );
+                index2[2]=( long )( pointI[2]+z+0.5 );
+                if( inputImage->GetLargestPossibleRegion().IsInside( index2 ) )
+                  {
+                  double dist = m_TubeDistanceImage->GetPixel(index2);
+                  if( dist >= minRFactor && dist <= maxRFactor )
+                    {
+                    val += inputImage->GetPixel(index2);
+                    ++count;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      if( count > 0 )
+        {
+        val /= count;
+        if( propertyId == "Ridgeness" )
+          {
+          tubePoint->SetRidgeness(val);
+          }
+        else if( propertyId == "Medialness" )
+          {
+          tubePoint->SetMedialness(val);
+          }
+        else if( propertyId == "Branchness" )
+          {
+          tubePoint->SetBranchness(val);
+          }
+        else if( propertyId == "Radius" )
+          {
+          tubePoint->SetRadiusInObjectSpace(val);
+          }
+        else
+          {
+          tubePoint->SetTagScalarValue( propertyId, val );
+          }
+        }
+      }
+    ++tubeIterator;
+    }
+  inputTubeList->clear();
+  delete inputTubeList;
+} 
+
+
+//------------------------------------------------------------------------
+template< unsigned int DimensionT, class ImagePixelT >
+void
+TubeMathFilters< DimensionT, ImagePixelT >::
 FillGapToParent( double stepSize )
 {
-  TubeListPointerType tubeList = m_InputTubeGroup->GetChildren(
+  TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
     m_InputTubeGroup->GetMaximumDepth(), "Tube" );
 
   for( typename TubeGroupType::ChildrenListType::iterator itCurTube =
-    tubeList->begin(); itCurTube != tubeList->end(); ++itCurTube )
+    inputTubeList->begin(); itCurTube != inputTubeList->end(); ++itCurTube )
     {
     typename TubeType::Pointer curTube = dynamic_cast< TubeType * >(
       itCurTube->GetPointer() );
@@ -291,7 +728,7 @@ FillGapToParent( double stepSize )
         {
         //find parent target tube
         for( typename TubeGroupType::ChildrenListType::iterator itTubes =
-          tubeList->begin(); itTubes != tubeList->end(); ++itTubes )
+          inputTubeList->begin(); itTubes != inputTubeList->end(); ++itTubes )
           {
           typename TubeType::Pointer tube = dynamic_cast< TubeType * >(
             itTubes->GetPointer() );
@@ -362,6 +799,8 @@ FillGapToParent( double stepSize )
         }
       }
     }
+  inputTubeList->clear();
+  delete inputTubeList;
 }
 
 //------------------------------------------------------------------------
@@ -420,11 +859,11 @@ SmoothTube( double h, SmoothTubeFunctionEnum smoothFunction )
     return;
     }
 
-  TubeListPointerType tubeList = m_InputTubeGroup->GetChildren(
+  TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
     m_InputTubeGroup->GetMaximumDepth(), "Tube" );
 
   for( typename TubeGroupType::ChildrenListType::iterator itCurTube =
-    tubeList->begin(); itCurTube != tubeList->end(); ++itCurTube )
+    inputTubeList->begin(); itCurTube != inputTubeList->end(); ++itCurTube )
     {
     typename TubeType::Pointer curTube = dynamic_cast< TubeType * >(
       itCurTube->GetPointer() );
@@ -570,8 +1009,236 @@ SmoothTube( double h, SmoothTubeFunctionEnum smoothFunction )
       curTube->ComputeTangentsAndNormals();
       }
     }
-  tubeList->clear();
-  delete tubeList;
+  inputTubeList->clear();
+  delete inputTubeList;
+}
+
+
+/**
+ * Smooth a tube */
+template< unsigned int DimensionT, class ImagePixelT >
+void
+TubeMathFilters< DimensionT, ImagePixelT >::
+SmoothTubeProperty( const std::string & propertyId,
+  double h, SmoothTubeFunctionEnum smoothFunction )
+{
+  if( h <= 0 )
+    {
+    return;
+    }
+
+  TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
+    m_InputTubeGroup->GetMaximumDepth(), "Tube" );
+
+  for( typename TubeGroupType::ChildrenListType::iterator itCurTube =
+    inputTubeList->begin(); itCurTube != inputTubeList->end(); ++itCurTube )
+    {
+    typename TubeType::Pointer curTube = dynamic_cast< TubeType * >(
+      itCurTube->GetPointer() );
+    if( m_CurrentTubeId == -1 || curTube->GetId() == m_CurrentTubeId )
+      {
+      typename TubeType::TubePointListType::iterator pointItr;
+      typename TubeType::TubePointListType::iterator tmpPointItr;
+
+      typename TubeType::TubePointListType::iterator beginItr = curTube->GetPoints().begin();
+      typename TubeType::TubePointListType::iterator endItr = curTube->GetPoints().end();
+
+      typename TubeType::TubePointListType newPointList;
+
+      std::vector< double > w;
+      int wSize = 0;
+
+      // Calculate the weighing window w
+      if( smoothFunction == SMOOTH_TUBE_USING_INDEX_AVERAGE )
+        {
+        int maxIndex = static_cast< int >( h );
+        wSize = 2 * maxIndex + 1;
+        w.resize( wSize, 1.0 );
+        }
+      else
+        {
+        // Standard Deviation
+        double sigma = h;
+        // Consider the points until 3*sigma
+        int maxIndex = static_cast< int >( 3*sigma );
+        wSize = 2 * maxIndex + 1;
+        w.resize( wSize, 0.0 );
+        for( int i = 0; i <= maxIndex; i++ )
+          {
+          // The multiplication term 1/sigma*sqrt( 2*pi ) isn't necessary
+          // since we normalize at the end by the sum of w
+          w[maxIndex+i] = exp( -i*i/( 2.0*sigma*sigma ) );
+          w[maxIndex-i] = w[maxIndex+i];
+          }
+        }
+  
+      // Apply the weighing window
+      int count = 0;
+      unsigned int pointDimension = TubeType::ObjectDimension;
+      for( pointItr = beginItr; pointItr != endItr; ++pointItr )
+        {
+        typename TubeType::TubePointType newPoint = *pointItr;
+
+        double wTotal = 0;
+
+        typename TubeType::PointType avgPropertyPoint;
+        typename TubeType::VectorType avgPropertyVector;
+        typename TubeType::CovariantVectorType avgPropertyCoVector;
+        avgPropertyPoint.Fill( 0 );
+        avgPropertyVector.Fill( 0 );
+        avgPropertyCoVector.Fill( 0 );
+
+        double avgPropertyValue = 0;
+
+        tmpPointItr = pointItr;
+        int wCenter = ( wSize-1 )/2;
+  
+        // Place the tmpPointItr at the beginning of the window
+        tmpPointItr -= std::min( count, wCenter );
+  
+        // Place the window iterator so that the window center
+        // is aligned to the current point.
+        int pos = std::max( wCenter - count, 0 );
+  
+        // Compute the average over the window, weighing with w
+        while( pos < wSize && tmpPointItr != endItr )
+          {
+          if( propertyId == "Position" )
+            {
+            for( unsigned int j=0; j<pointDimension; ++j )
+              {
+              avgPropertyPoint[j] += w[pos] * tmpPointItr->GetPositionInObjectSpace()[j];
+              }
+            }
+          else if( propertyId == "Tangent" )
+            {
+            for( unsigned int j=0; j<pointDimension; ++j )
+              {
+              avgPropertyVector[j] += w[pos] * tmpPointItr->GetTangentInObjectSpace()[j];
+              }
+            }
+          else if( propertyId == "Normal1" )
+            {
+            for( unsigned int j=0; j<pointDimension; ++j )
+              {
+              avgPropertyCoVector[j] += w[pos] * tmpPointItr->GetNormal1InObjectSpace()[j];
+              }
+            }
+          else if( propertyId == "Normal2" )
+            {
+            for( unsigned int j=0; j<pointDimension; ++j )
+              {
+              avgPropertyCoVector[j] += w[pos] * tmpPointItr->GetNormal2InObjectSpace()[j];
+              }
+            }
+          else if( propertyId == "Intensity" )
+            {
+            avgPropertyValue += w[pos] * tmpPointItr->GetIntensity();
+            }
+          else if( propertyId == "Radius" )
+            {
+            avgPropertyValue += w[pos] * tmpPointItr->GetRadiusInObjectSpace();
+            }
+          else if( propertyId == "Medialness" )
+            {
+            avgPropertyValue += w[pos] * tmpPointItr->GetMedialness();
+            }
+          else if( propertyId == "Ridgeness" )
+            {
+            avgPropertyValue += w[pos] * tmpPointItr->GetRidgeness();
+            }
+          else if( propertyId == "Roundness" )
+            {
+            avgPropertyValue += w[pos] * tmpPointItr->GetRoundness();
+            }
+          else if( propertyId == "Curvature" )
+            {
+            avgPropertyValue += w[pos] * tmpPointItr->GetCurvature();
+            }
+          else if( propertyId == "Levelness" )
+            {
+            avgPropertyValue += w[pos] * tmpPointItr->GetLevelness();
+            }
+          else
+            {
+            avgPropertyValue += w[pos] * tmpPointItr->GetTagScalarValue(
+              propertyId );
+            }
+
+          wTotal += w[pos];
+          ++pos;
+          ++tmpPointItr;
+          }
+  
+        // Divide by sum of weights -> finish average
+        if( wTotal > 0 )
+          {
+          for( unsigned int i=0; i<pointDimension; ++i )
+            {
+            avgPropertyPoint[i] /= wTotal;
+            avgPropertyVector[i] /= wTotal;
+            avgPropertyCoVector[i] /= wTotal;
+            }
+          avgPropertyValue /= wTotal;
+
+          if( propertyId == "Position" )
+            {
+            newPoint.SetPositionInObjectSpace( avgPropertyPoint );
+            }
+          else if( propertyId == "Tangent" )
+            {
+            newPoint.SetTangentInObjectSpace( avgPropertyVector );
+            }
+          else if( propertyId == "Normal1" )
+            {
+            newPoint.SetNormal1InObjectSpace( avgPropertyCoVector );
+            }
+          else if( propertyId == "Normal2" )
+            {
+            newPoint.SetNormal2InObjectSpace( avgPropertyCoVector );
+            }
+          else if( propertyId == "Intensity" )
+            {
+            newPoint.SetIntensity( avgPropertyValue );
+            }
+          else if( propertyId == "Radius" )
+            {
+            newPoint.SetRadiusInObjectSpace( avgPropertyValue );
+            }
+          else if( propertyId == "Medialness" )
+            {
+            newPoint.SetMedialness( avgPropertyValue );
+            }
+          else if( propertyId == "Ridgeness" )
+            {
+            newPoint.SetRidgeness( avgPropertyValue );
+            }
+          else if( propertyId == "Roundness" )
+            {
+            newPoint.SetRoundness( avgPropertyValue );
+            }
+          else if( propertyId == "Curvature" )
+            {
+            newPoint.SetCurvature( avgPropertyValue );
+            }
+          else if( propertyId == "Levelness" )
+            {
+            newPoint.SetLevelness( avgPropertyValue );
+            }
+          else
+            {
+            newPoint.SetTagScalarValue( propertyId, avgPropertyValue );
+            }
+          }
+        newPointList.push_back( newPoint );
+        ++count;
+        }
+    
+      curTube->SetPoints( newPointList );
+      }
+    }
+  inputTubeList->clear();
+  delete inputTubeList;
 }
 
 /**
@@ -587,11 +1254,11 @@ SubsampleTube( int N )
     return;
     }
 
-  TubeListPointerType tubeList = m_InputTubeGroup->GetChildren(
+  TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
     m_InputTubeGroup->GetMaximumDepth(), "Tube" );
 
   for( typename TubeGroupType::ChildrenListType::iterator itCurTube =
-    tubeList->begin(); itCurTube != tubeList->end(); ++itCurTube )
+    inputTubeList->begin(); itCurTube != inputTubeList->end(); ++itCurTube )
     {
     typename TubeType::Pointer curTube = dynamic_cast< TubeType * >(
       itCurTube->GetPointer() );
@@ -625,8 +1292,8 @@ SubsampleTube( int N )
       }
     }
 
-  tubeList->clear();
-  delete tubeList;
+  inputTubeList->clear();
+  delete inputTubeList;
 }
     
 /**
@@ -636,12 +1303,12 @@ double
 TubeMathFilters< DimensionT, ImagePixelT >::
 ComputeTubeLength( void )
 {
-  TubeListPointerType tubeList = m_InputTubeGroup->GetChildren(
+  TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
     m_InputTubeGroup->GetMaximumDepth(), "Tube" );
 
   double tubeLength = 0;
   for( typename TubeGroupType::ChildrenListType::iterator itCurTube =
-    tubeList->begin(); itCurTube != tubeList->end(); ++itCurTube )
+    inputTubeList->begin(); itCurTube != inputTubeList->end(); ++itCurTube )
     {
     typename TubeType::Pointer curTube = dynamic_cast< TubeType * >(
       itCurTube->GetPointer() );
@@ -674,22 +1341,46 @@ ComputeTubeLength( void )
       }
     }
     
+  inputTubeList->clear();
+  delete inputTubeList;
+
   return tubeLength;
 }
 
 
 /**
- * Compute tube length */
+ * Assign each point in a tube a unique (sequential) Id */
+template< unsigned int DimensionT, class ImagePixelT >
+void
+TubeMathFilters< DimensionT, ImagePixelT >::
+RenumberTubes( void )
+{
+  TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
+    m_InputTubeGroup->GetMaximumDepth(), "Tube" );
+
+  unsigned int tubeCount = 0;
+  for( typename TubeGroupType::ChildrenListType::iterator itCurTube =
+    inputTubeList->begin(); itCurTube != inputTubeList->end(); ++itCurTube )
+    {
+    (*itCurTube)->SetId( tubeCount++ );
+    }
+  inputTubeList->clear();
+  delete inputTubeList;
+}
+
+
+/**
+ * Assign each point in a tube a unique (sequential) Id */
 template< unsigned int DimensionT, class ImagePixelT >
 void
 TubeMathFilters< DimensionT, ImagePixelT >::
 RenumberPoints( void )
 {
-  TubeListPointerType tubeList = m_InputTubeGroup->GetChildren(
+  TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
     m_InputTubeGroup->GetMaximumDepth(), "Tube" );
 
   for( typename TubeGroupType::ChildrenListType::iterator itCurTube =
-    tubeList->begin(); itCurTube != tubeList->end(); ++itCurTube )
+    inputTubeList->begin(); itCurTube != inputTubeList->end(); ++itCurTube )
     {
     typename TubeType::Pointer curTube = dynamic_cast< TubeType * >(
       itCurTube->GetPointer() );
@@ -711,6 +1402,8 @@ RenumberPoints( void )
       //curTube->SetPoints( tubePointsList );
       }
     }
+  inputTubeList->clear();
+  delete inputTubeList;
 }
 
 } // End namespace tube

@@ -51,7 +51,25 @@ ReadTubeFile( const char * fileName )
 
   typename SpatialObjectReaderType::GroupType::Pointer group =
     reader->GetGroup();
-  group->Update();
+  try
+    {
+    group->Update();
+    }
+  catch( const itk::ExceptionObject & e )
+    {
+    std::cout << "ITK Error:" << std::endl;
+    std::cout << e.GetDescription() << std::endl;
+    }
+  catch( const std::exception & e )
+    {
+    std::cout << "STD Error:" << std::endl;
+    std::cout << e.what() << std::endl;
+    }
+  catch(...)
+    {
+    std::cout << "Unknown error." << std::endl;
+    }
+
   return group;
 }
 
@@ -59,13 +77,32 @@ template< unsigned int DimensionT >
 void WriteTubeFile( typename itk::GroupSpatialObject< DimensionT >::Pointer
   object, const char * fileName )
 {
+  std::cout << "Writing" << std::endl;
   typedef itk::SpatialObjectWriter< DimensionT > SpatialObjectWriterType;
 
   typename SpatialObjectWriterType::Pointer writer =
     SpatialObjectWriterType::New();
   writer->SetInput( object );
   writer->SetFileName( fileName );
-  writer->Update();
+  try 
+    {
+    writer->Update();
+    }
+  catch( const itk::ExceptionObject & e )
+    {
+    std::cout << "ITK Error:" << std::endl;
+    std::cout << e.GetDescription() << std::endl;
+    }
+  catch( const std::exception & e )
+    {
+    std::cout << "STD Error:" << std::endl;
+    std::cout << e.what() << std::endl;
+    }
+  catch(...)
+    {
+    std::cout << "Unknown error." << std::endl;
+    }
+
 }
 
 template< class PixelT, unsigned int DimensionT >
@@ -77,7 +114,24 @@ ReadImageFile( const char * fileName )
 
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
   reader->SetFileName( fileName );
-  reader->Update();
+  try 
+    {
+    reader->Update();
+    }
+  catch( const itk::ExceptionObject & e )
+    {
+    std::cout << "ITK Error:" << std::endl;
+    std::cout << e.GetDescription() << std::endl;
+    }
+  catch( const std::exception & e )
+    {
+    std::cout << "STD Error:" << std::endl;
+    std::cout << e.what() << std::endl;
+    }
+  catch(...)
+    {
+    std::cout << "Unknown error." << std::endl;
+    }
 
   return reader->GetOutput();
 }
@@ -138,13 +192,49 @@ int DoIt( MetaCommand & command )
         command.GetValueAsString( *it, "value" ) );
       inputTubes = filter.GetOutputTubeGroup();
       }
+    else if( it->name == "LoadPointValuesFromTubeRegions" )
+      {
+      static bool first = true;
+      std::cout << "Load Values From Regions" << std::endl;
+      typedef itk::Image< float, DimensionT > ImageType;
+      typename ImageType::Pointer valueImage = ReadImageFile< float,
+        DimensionT >( command.GetValueAsString( *it, "filename" ).c_str() );
+      if( first )
+        {
+        first = false;
+        filter.ComputeTubeRegions(valueImage);
+        }
+      filter.SetPointValuesFromTubeRegions( valueImage,
+        command.GetValueAsString( *it, "value" ),
+        command.GetValueAsFloat( *it, "minRadiusFactor" ),
+        command.GetValueAsFloat( *it, "maxRadiusFactor" ) );
+      inputTubes = filter.GetOutputTubeGroup();
+      }
+    else if( it->name == "LoadPointValuesFromTubeRadius" )
+      {
+      static bool first = true;
+      std::cout << "Load Values From Radius" << std::endl;
+      typedef itk::Image< float, DimensionT > ImageType;
+      typename ImageType::Pointer valueImage = ReadImageFile< float,
+        DimensionT >( command.GetValueAsString( *it, "filename" ).c_str() );
+      if( first )
+        {
+        first = false;
+        filter.ComputeTubeRegions(valueImage);
+        }
+      filter.SetPointValuesFromTubeRadius( valueImage,
+        command.GetValueAsString( *it, "value" ),
+        command.GetValueAsFloat( *it, "minRadiusFactor" ),
+        command.GetValueAsFloat( *it, "maxRadiusFactor" ) );
+      inputTubes = filter.GetOutputTubeGroup();
+      }
     else if( it->name == "Delete" )
       {
-      ::tube::Message( "Delete" );
+      ::tube::Message( "Delete Not Implemented" );
       }
     else if( it->name == "Reverse" )
       {
-      ::tube::Message( "Reverse" );
+      ::tube::Message( "Reverse Not Implemented" );
       }
     else if( it->name == "FillGapsInTree" )
       {
@@ -184,6 +274,12 @@ int DoIt( MetaCommand & command )
       std::cout << "Smooth" << std::endl;
       double sigma = command.GetValueAsFloat( *it, "Sigma" );
       filter.SmoothTube( sigma );
+      inputTubes = filter.GetOutputTubeGroup();
+      }
+    else if( it->name == "RenumberTubes" )
+      {
+      std::cout << "RenumberTubes" << std::endl;
+      filter.RenumberTubes();
       inputTubes = filter.GetOutputTubeGroup();
       }
     else if( it->name == "RenumberPoints" )
@@ -338,6 +434,32 @@ int main( int argc, char * argv[] )
   command.AddOptionField( "LoadPointValuesFromImageMean", "filename",
     MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
 
+  command.SetOption( "LoadPointValuesFromTubeRegions", "p", false,
+    "Set tube point values as averages in regions that are closest to them." );
+  command.AddOptionField( "LoadPointValuesFromTubeRegions", "value",
+    MetaCommand::STRING, true, "",
+    "Ridgeness, Medialness, Branchness, Radius, <NewVarName>",
+    MetaCommand::DATA_IN );
+  command.AddOptionField( "LoadPointValuesFromTubeRegions", "filename",
+    MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
+  command.AddOptionField( "LoadPointValuesFromTubeRegions", "minRadiusFactor",
+    MetaCommand::FLOAT, true );
+  command.AddOptionField( "LoadPointValuesFromTubeRegions", "maxRadiusFactor",
+    MetaCommand::FLOAT, true );
+
+  command.SetOption( "LoadPointValuesFromTubeRadius", "P", false,
+    "Set tube point values as averages in regions that are closest to them." );
+  command.AddOptionField( "LoadPointValuesFromTubeRadius", "value",
+    MetaCommand::STRING, true, "",
+    "Ridgeness, Medialness, Branchness, Radius, <NewVarName>",
+    MetaCommand::DATA_IN );
+  command.AddOptionField( "LoadPointValuesFromTubeRadius", "filename",
+    MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
+  command.AddOptionField( "LoadPointValuesFromTubeRadius", "minRadiusFactor",
+    MetaCommand::FLOAT, true );
+  command.AddOptionField( "LoadPointValuesFromTubeRadius", "maxRadiusFactor",
+    MetaCommand::FLOAT, true );
+
   command.SetOption( "FillGapsInTubeTree", "f", false,
     "Connects the parent and child tube if they have a gap inbetween,"
     " by interpolating the path inbetween." );
@@ -353,6 +475,9 @@ int main( int argc, char * argv[] )
 
   command.SetOption( "RenumberPoints", "r", false,
     "Assigned points sequential numbers for Id." );
+
+  command.SetOption( "RenumberTubes", "R", false,
+    "Assigned tubes sequential numbers for Id." );
 
   command.SetOption( "ComputeTangentsAndNormals", "n", false,
     "Compute current tube's tangents and normals from point sequence." );
