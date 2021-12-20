@@ -120,7 +120,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
       << std::endl;
     std::cout << "   Reverting to an incorrect method to compute region."
       << std::endl;
-    SizeType size;
+    typename OutputImageType::SizeType size;
 
     typename SuperClass::InputSpatialObjectType::BoundingBoxType::PointType
       maxPoint;

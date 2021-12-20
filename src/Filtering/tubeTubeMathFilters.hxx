@@ -384,7 +384,7 @@ ComputeTubeRegions( const ImageType * referenceImage )
   std::cout << "   Rendering Tube Centerlines" << std::endl;
   typedef itk::tube::TubeSpatialObjectToImageFilter< DimensionT,
     FloatImageType > TubeToImageFilterType;
-  TubeToImageFilterType::Pointer tubeToImageFilter =
+  typename TubeToImageFilterType::Pointer tubeToImageFilter =
     TubeToImageFilterType::New();
   tubeToImageFilter->SetInput( m_InputTubeGroup );
   tubeToImageFilter->SetColorByPointId(true);
@@ -435,13 +435,13 @@ SetPointValuesFromTubeRegions(
   itDirImage.GoToBegin();
 
   std::cout << "   Allocating accumulator images." << std::endl;
-  FloatImageType::Pointer imVal = FloatImageType::New();
+  typename FloatImageType::Pointer imVal = FloatImageType::New();
   imVal->CopyInformation( m_TubeDistanceImage );
   imVal->SetRegions( m_TubeDistanceImage->GetLargestPossibleRegion() );
   imVal->Allocate();
   imVal->FillBuffer(0);
 
-  FloatImageType::Pointer imCount = FloatImageType::New();
+  typename FloatImageType::Pointer imCount = FloatImageType::New();
   imCount->CopyInformation( m_TubeDistanceImage );
   imCount->SetRegions( m_TubeDistanceImage->GetLargestPossibleRegion() );
   imCount->Allocate();
