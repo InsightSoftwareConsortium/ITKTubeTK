@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeTubeEnhancingDiffusion2DImageFilter_hxx
 #define __itktubeTubeEnhancingDiffusion2DImageFilter_hxx
 
-#include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
 
 #include <itkCastImageFilter.h>
 #include <itkConstShapedNeighborhoodIterator.h>

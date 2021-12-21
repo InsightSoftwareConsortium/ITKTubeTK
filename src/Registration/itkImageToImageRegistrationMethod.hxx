@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __ImageToImageRegistrationMethod_txx
 #define __ImageToImageRegistrationMethod_txx
 
-#include "itkImageToImageRegistrationMethod.h"
 
 namespace itk
 {

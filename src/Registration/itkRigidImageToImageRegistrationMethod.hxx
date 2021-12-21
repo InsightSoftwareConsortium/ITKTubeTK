@@ -18,7 +18,6 @@
 #ifndef __RigidImageToImageRegistrationMethod_txx
 #define __RigidImageToImageRegistrationMethod_txx
 
-#include "itkRigidImageToImageRegistrationMethod.h"
 #include "vnl/vnl_inverse.h"
 
 namespace itk

@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeComputeImageStatistics_hxx
 #define __tubeComputeImageStatistics_hxx
 
-#include "tubeComputeImageStatistics.h"
 
 namespace tube
 {

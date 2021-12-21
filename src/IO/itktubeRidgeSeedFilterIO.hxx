@@ -22,7 +22,6 @@ limitations under the License.
 #ifndef __itktubeRidgeSeedFilterIO_hxx
 #define __itktubeRidgeSeedFilterIO_hxx
 
-#include "itktubeRidgeSeedFilterIO.h"
 #include "itktubePDFSegmenterParzenIO.h"
 
 namespace itk

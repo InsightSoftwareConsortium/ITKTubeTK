@@ -18,7 +18,6 @@
 #ifndef __itktubeSegmentTubeUsingMinimalPathFilter_hxx
 #define __itktubeSegmentTubeUsingMinimalPathFilter_hxx
 
-#include "itktubeSegmentTubeUsingMinimalPathFilter.h"
 
 // MinimalPathExtraction Imports
 #include "itkSpeedFunctionToPathFilter.h"

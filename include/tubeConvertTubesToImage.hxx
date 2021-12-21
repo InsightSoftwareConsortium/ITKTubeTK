@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeConvertTubesToImage_hxx
 #define __tubeConvertTubesToImage_hxx
 
-#include "tubeConvertTubesToImage.h"
 
 namespace tube
 {

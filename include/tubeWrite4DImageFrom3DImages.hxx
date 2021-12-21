@@ -23,7 +23,6 @@ limitations under the License.
 #define __tubeWrite4DImageFrom3DImages_hxx
 
 
-#include "tubeWrite4DImageFrom3DImages.h"
 
 #include "tubeMessage.h"
 

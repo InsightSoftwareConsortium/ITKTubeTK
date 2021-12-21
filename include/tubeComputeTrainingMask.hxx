@@ -22,7 +22,6 @@ limitations under the License.
 #ifndef __tubeComputeTrainingMask_hxx
 #define __tubeComputeTrainingMask_hxx
 
-#include "tubeComputeTrainingMask.h"
 
 namespace tube {
 

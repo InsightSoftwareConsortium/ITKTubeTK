@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeShrinkWithBlendingImageFilter_hxx
 #define __itktubeShrinkWithBlendingImageFilter_hxx
 
-#include "itktubeShrinkWithBlendingImageFilter.h"
 
 #include "itkConstNeighborhoodIterator.h"
 #include "itkImageRegionConstIteratorWithIndex.h"

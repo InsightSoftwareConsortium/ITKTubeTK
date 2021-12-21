@@ -18,7 +18,6 @@
 #ifndef __tubeComputeBinaryImageSimilarityMetrics_hxx
 #define __tubeComputeBinaryImageSimilarityMetrics_hxx
 
-#include "tubeComputeBinaryImageSimilarityMetrics.h"
 
 namespace tube
 {

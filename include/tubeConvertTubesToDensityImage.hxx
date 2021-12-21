@@ -18,7 +18,6 @@
 #ifndef __tubeConvertTubesToDensityImage_hxx
 #define __tubeConvertTubesToDensityImage_hxx
 
-#include "tubeConvertTubesToDensityImage.h"
 
 namespace tube
 {

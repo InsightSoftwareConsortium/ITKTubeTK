@@ -31,7 +31,6 @@ limitations under the License.
 #include <algorithm>
 #include <math.h>
 
-#include "itktubeRadiusExtractor3.h"
 
 #include "tubeMessage.h"
 #include "tubeMatrixMath.h"

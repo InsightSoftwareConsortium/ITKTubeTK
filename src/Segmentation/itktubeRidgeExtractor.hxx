@@ -31,7 +31,6 @@ limitations under the License.
 
 #include "tubeMessage.h"
 #include "tubeMatrixMath.h"
-#include "itktubeRidgeExtractor.h"
 
 #include <itkImageRegionIterator.h>
 #include <itkMinimumMaximumImageFilter.h>

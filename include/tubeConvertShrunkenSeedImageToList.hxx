@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeConvertShrunkenSeedImageToList_hxx
 #define __tubeConvertShrunkenSeedImageToList_hxx
 
-#include "tubeConvertShrunkenSeedImageToList.h"
 
 
 namespace tube

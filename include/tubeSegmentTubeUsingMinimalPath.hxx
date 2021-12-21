@@ -18,7 +18,6 @@
 #ifndef __tubeSegmentTubeUsingMinimalPath_hxx
 #define __tubeSegmentTubeUsingMinimalPath_hxx
 
-#include "tubeSegmentTubeUsingMinimalPath.h"
 
 namespace tube
 {

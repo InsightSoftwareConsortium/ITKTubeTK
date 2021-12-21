@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubePDFSegmenterParzen_hxx
 #define __itktubePDFSegmenterParzen_hxx
 
-#include "itktubePDFSegmenterParzen.h"
 #include "itktubeVectorImageToListGenerator.h"
 
 #include <itkBinaryBallStructuringElement.h>

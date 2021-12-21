@@ -24,7 +24,6 @@ limitations under the License.
 
 #include <iostream>
 
-#include "itktubeBinaryThinningImageFilter3D.h"
 #include "itkImageRegionConstIterator.h"
 #include "itkImageRegionIterator.h"
 #include "itkNeighborhoodIterator.h"

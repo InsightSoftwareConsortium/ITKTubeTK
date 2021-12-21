@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeTubeSpatialObjectToImageFilter_hxx
 #define __itktubeTubeSpatialObjectToImageFilter_hxx
 
-#include "itktubeTubeSpatialObjectToImageFilter.h"
 
 #include <itkImageRegionIteratorWithIndex.h>
 

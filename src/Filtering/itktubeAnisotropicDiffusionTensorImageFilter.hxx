@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itktubeAnisotropicDiffusionTensorImageFilter_hxx
 #define __itktubeAnisotropicDiffusionTensorImageFilter_hxx
 
-#include "itktubeAnisotropicDiffusionTensorImageFilter.h"
 
 #include "itktubeAnisotropicDiffusionTensorFunction.h"
 

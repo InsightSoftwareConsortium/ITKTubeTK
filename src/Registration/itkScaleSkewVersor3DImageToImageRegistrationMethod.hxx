@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itkScaleSkewVersor3DImageToImageRegistrationMethod_txx
 #define __itkScaleSkewVersor3DImageToImageRegistrationMethod_txx
 
-#include "itkScaleSkewVersor3DImageToImageRegistrationMethod.h"
 
 namespace itk
 {

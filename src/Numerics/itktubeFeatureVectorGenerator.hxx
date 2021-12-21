@@ -25,7 +25,6 @@ limitations under the License.
 #define __itktubeFeatureVectorGenerator_hxx
 
 
-#include "itktubeFeatureVectorGenerator.h"
 
 #include "tubeMatrixMath.h"
 

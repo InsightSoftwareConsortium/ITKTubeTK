@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeCropImage_hxx
 #define __tubeCropImage_hxx
 
-#include "tubeCropImage.h"
 
 
 namespace tube

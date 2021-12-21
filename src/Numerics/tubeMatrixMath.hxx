@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeMatrixMath_hxx
 #define __tubeMatrixMath_hxx
 
-#include "tubeMatrixMath.h"
 
 #include <vnl/algo/vnl_symmetric_eigensystem.h>
 #include <vnl/algo/vnl_real_eigensystem.h>

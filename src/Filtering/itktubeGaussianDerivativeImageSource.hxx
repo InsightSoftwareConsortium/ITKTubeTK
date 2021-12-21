@@ -18,7 +18,6 @@
 #ifndef __itktubeGaussianDerivativeImageSource_hxx
 #define __itktubeGaussianDerivativeImageSource_hxx
 
-#include "itktubeGaussianDerivativeImageSource.h"
 #include <itkGaussianSpatialFunction.h>
 #include <itkImageRegionIterator.h>
 #include <itkObjectFactory.h>

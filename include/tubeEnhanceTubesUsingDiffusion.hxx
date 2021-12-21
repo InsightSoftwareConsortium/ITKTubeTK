@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __tubeEnhanceTubesUsingDiffusion_hxx
 #define __tubeEnhanceTubesUsingDiffusion_hxx
 
-#include "tubeEnhanceTubesUsingDiffusion.h"
 
 #include <vector>
 

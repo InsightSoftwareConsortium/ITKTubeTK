@@ -22,7 +22,6 @@ limitations under the License.
 #ifndef __tubeSegmentConnectedComponents_hxx
 #define __tubeSegmentConnectedComponents_hxx
 
-#include "tubeSegmentConnectedComponents.h"
 
 namespace tube
 {

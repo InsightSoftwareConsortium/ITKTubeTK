@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __itkAffineImageToImageRegistrationMethod_txx
 #define __itkAffineImageToImageRegistrationMethod_txx
 
-#include "itkAffineImageToImageRegistrationMethod.h"
 
 namespace itk
 {

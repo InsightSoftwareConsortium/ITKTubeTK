@@ -18,7 +18,6 @@
 #ifndef __itktubePadImageFilter_hxx
 #define __itktubePadImageFilter_hxx
 
-#include "itktubePadImageFilter.h"
 #include "itkProgressAccumulator.h"
 #include "itkNumericTraits.h"
 #include "itkConstantPadImageFilter.h"

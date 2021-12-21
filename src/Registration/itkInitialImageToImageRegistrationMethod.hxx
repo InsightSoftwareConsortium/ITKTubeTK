@@ -23,7 +23,6 @@ limitations under the License.
 #ifndef __InitialImageToImageRegistrationMethod_txx
 #define __InitialImageToImageRegistrationMethod_txx
 
-#include "itkInitialImageToImageRegistrationMethod.h"
 
 #include "itkImageRegionMomentsCalculator.h"
 

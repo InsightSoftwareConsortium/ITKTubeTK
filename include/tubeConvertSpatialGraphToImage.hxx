@@ -18,7 +18,6 @@
 #ifndef __tubeConvertSpatialGraphToImage_hxx
 #define __tubeConvertSpatialGraphToImage_hxx
 
-#include "tubeConvertSpatialGraphToImage.h"
 
 namespace tube
 {

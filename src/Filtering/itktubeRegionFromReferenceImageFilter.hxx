@@ -18,7 +18,6 @@
 #ifndef __itktubeRegionFromReferenceImageFilter_hxx
 #define __itktubeRegionFromReferenceImageFilter_hxx
 
-#include "itktubeRegionFromReferenceImageFilter.h"
 
 namespace itk {
 
