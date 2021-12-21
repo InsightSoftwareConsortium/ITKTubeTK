@@ -14,7 +14,7 @@ except ImportError:
     #include_dirs=[np.get_include()],
 setup(
     name='itk-tubetk',
-    version='1.0.0',
+    version='1.0.1',
     author='Stephen R. Aylward',
     author_email='stephen.aylward@kitware.com',
     packages=['itk'],
@@ -46,7 +46,7 @@ setup(
     url=r'https://itk.org/',
     install_requires=[
         r'numpy',
-        r'itk>=5.2.1.post1',
+        r'itk>=5.3rc2.post1',
         r'itk-minimalpathextraction>=1.2.0'
     ]
     )
