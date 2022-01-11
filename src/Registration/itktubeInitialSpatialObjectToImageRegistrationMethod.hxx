@@ -202,11 +202,6 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       Point<double, ImageDimension>     fixedCenterPoint;
       if( this->GetFixedImageMaskObject() != nullptr )
         {
-        typedef typename SpatialObjectType::BoundingBoxType     BoundingBoxType;
-        typename BoundingBoxType::ConstPointer                  bbox;
-        typename BoundingBoxType::PointType                     minPnt;
-        typename BoundingBoxType::PointType                     maxPnt;
-    
         bbox = this->GetFixedImageMaskObject()->GetMyBoundingBoxInWorldSpace();
         minPnt = bbox->GetMinimum();
         maxPnt = bbox->GetMaximum();
