@@ -312,7 +312,6 @@ RadiusExtractor3<TInputImage>
 {
   i = fabs(i);
 
-  double maxR = this->GetRadiusMax() - this->GetRadiusMin();
   double profileMaxDistance = this->GetProfileMaxDistance();
 
   double x = pow( i, 1.6 ) / pow( m_ProfileNumberOfBins, 1.6 )
@@ -330,7 +329,6 @@ RadiusExtractor3<TInputImage>
 {
   x = fabs(x);
 
-  double maxR = this->GetRadiusMax() - this->GetRadiusMin();
   double profileMaxDistance = this->GetProfileMaxDistance();
 
   x -= this->GetRadiusMin();
@@ -349,7 +347,6 @@ RadiusExtractor3<TInputImage>
   IndexType minXIndex;
   IndexType maxXIndex;
 
-  double maxR = this->GetRadiusMax();
   double profileMaxDistance = this->GetProfileMaxDistance();
   double profileMaxIndex = profileMaxDistance/m_Spacing;
 
@@ -613,9 +610,6 @@ bool
 RadiusExtractor3<TInputImage>
 ::OptimizeKernelRadius( void )
 {
-  double rMin = this->GetRadiusMin();
-  double rMax = this->GetRadiusMax();
-
   m_KernelOptimalRadius = this->GetRadiusStart();
 
   typedef FRPROptimizer OptimizerType;
