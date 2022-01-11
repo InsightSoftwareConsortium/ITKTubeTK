@@ -90,7 +90,6 @@ public:
     d[1] = 0;
     d[2] = 0;
     d[3] = 0;
-    double v = this->GetValue(p);
     for( unsigned int i=0; i<m_Data->size(); ++i )
       {
       double expV = exp(-p[2]*(i-p[3]));
@@ -402,8 +401,8 @@ RadiusExtractor3<TInputImage>
         / ( m_DataMax - m_DataMin );
       if( val >= 0 && val < 1 )
         {
-        PointType p;
-        m_InputImage->TransformIndexToPhysicalPoint( xIndex, p );
+        PointType point;
+        m_InputImage->TransformIndexToPhysicalPoint( xIndex, point );
   
         unsigned int pntCount = 0;
         pntIter = m_KernelTube->GetPoints().begin();
@@ -415,7 +414,7 @@ RadiusExtractor3<TInputImage>
         minTangentPnt = m_KernelTube->GetPoints().end();
         while( pntIter != m_KernelTube->GetPoints().end() )
           {
-          VectorType pDiff = p - pntIter->GetPositionInObjectSpace();
+          VectorType pDiff = point - pntIter->GetPositionInObjectSpace();
           double d1 = 0;
           for( unsigned int i = 0; i < ImageDimension; ++i )
             {
@@ -434,7 +433,7 @@ RadiusExtractor3<TInputImage>
         if( minTangentPnt != m_KernelTube->GetPoints().end())
           {
           double d1 = 0;
-          VectorType pDiff = p - minTangentPnt->GetPositionInObjectSpace();
+          VectorType pDiff = point - minTangentPnt->GetPositionInObjectSpace();
           for( unsigned int i = 0; i < ImageDimension; ++i )
             {
             double tf = pDiff[i] * minTangentPnt->GetNormal1InObjectSpace()[i];
