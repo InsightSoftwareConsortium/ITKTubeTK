@@ -575,8 +575,6 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<
 
       typedef typename VersorRigid3DTransformType::VersorType
         VersorType;
-      typedef typename VersorRigid3DTransformType::MatrixType
-        MatrixType;
 
       VersorType versor;
       transform->SetIdentity();
