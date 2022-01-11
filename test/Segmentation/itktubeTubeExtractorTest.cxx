@@ -74,11 +74,9 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
   unsigned int numTubes = tubeList->size();
   std::cout << "Number of tubes = " << numTubes << std::endl;
 
-  auto tubeIter = tubeList->begin();
-  while(tubeIter != tubeList->end())
+  for (auto tubeIter = tubeList->begin(); tubeIter != tubeList->end(); ++tubeIter)
     {
     static_cast<TubeType *>(tubeIter->GetPointer())->ComputeTangentsAndNormals();
-    ++tubeIter;
     }
 
   typedef itk::Statistics::MersenneTwisterRandomVariateGenerator
