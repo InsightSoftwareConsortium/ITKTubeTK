@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -53,17 +52,17 @@ public:
 
   /** Standard class typedefs. */
   typedef TubeSpatialObjectToImageFilter                 Self;
-  typedef SpatialObjectToImageFilter< SpatialObject<ObjectDimension>,
+  typedef SpatialObjectToImageFilter< SpatialObject< ObjectDimension >,
                                       TOutputImage>      SuperClass;
   typedef SmartPointer< Self >                           Pointer;
   typedef SmartPointer< const Self >                     ConstPointer;
 
   /** Tube class typedef */
   typedef TOutputImage                                   OutputImageType;
+
   typedef SpatialObject<ObjectDimension>                 SpatialObjectType;
   typedef typename SpatialObjectType::ChildrenListType   ChildrenListType;
   typedef TubeSpatialObject<ObjectDimension>             TubeType;
-  typedef typename TOutputImage::SizeType                SizeType;
 
   typedef TRadiusImage                                   RadiusImage;
   typedef typename TRadiusImage::Pointer                 RadiusImagePointer;
@@ -103,7 +102,8 @@ public:
   itkSetMacro( Cumulative, bool );
   itkGetMacro( Cumulative, bool );
 
-  itkSetMacro( ColorByTubeID, bool );
+  itkSetMacro( ColorByTubeId, bool );
+  itkSetMacro( ColorByPointId, bool );
   itkSetMacro( ColorByRadius, bool );
   itkSetMacro( ColorByRidgeness, bool );
   itkSetMacro( ColorByMedialness, bool );
@@ -113,7 +113,8 @@ public:
   itkSetMacro( ColorByRoundness, bool );
   itkSetMacro( ColorByIntensity, bool );
 
-  itkGetMacro( ColorByTubeID, bool );
+  itkGetMacro( ColorByTubeId, bool );
+  itkGetMacro( ColorByPointId, bool );
   itkGetMacro( ColorByRadius, bool );
   itkGetMacro( ColorByRidgeness, bool );
   itkGetMacro( ColorByMedialness, bool );
@@ -138,7 +139,8 @@ protected:
     os << indent << "m_BuildTangentImage: " << m_UseRadius << std::endl;
     os << indent << "m_UseRadius: " << m_UseRadius << std::endl;
     os << indent << "m_Cumulative: " << m_Cumulative << std::endl;
-    os << indent << "m_ColorByTubeID: " << m_ColorByTubeID << std::endl;
+    os << indent << "m_ColorByTubeId: " << m_ColorByTubeId << std::endl;
+    os << indent << "m_ColorByPointId: " << m_ColorByPointId << std::endl;
     os << indent << "m_ColorByRadius: " << m_ColorByRadius << std::endl;
     os << indent << "m_ColorByRidgeness: " << m_ColorByRidgeness << std::endl;
     os << indent << "m_ColorByMedialness: " << m_ColorByMedialness << std::endl;
@@ -156,7 +158,8 @@ private:
   bool        m_UseRadius;
   bool        m_Cumulative;
 
-  bool        m_ColorByTubeID;
+  bool        m_ColorByTubeId;
+  bool        m_ColorByPointId;
   bool        m_ColorByRadius;
   bool        m_ColorByRidgeness;
   bool        m_ColorByMedialness;

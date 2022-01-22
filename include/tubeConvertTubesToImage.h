@@ -69,7 +69,8 @@ public:
   tubeWrapSetMacro( UseRadius, bool, Filter );
   tubeWrapGetMacro( UseRadius, bool, Filter );
 
-  tubeWrapSetMacro( ColorByTubeID, bool, Filter );
+  tubeWrapSetMacro( ColorByTubeId, bool, Filter );
+  tubeWrapSetMacro( ColorByPointId, bool, Filter );
   tubeWrapSetMacro( ColorByRadius, bool, Filter );
   tubeWrapSetMacro( ColorByRidgeness, bool, Filter );
   tubeWrapSetMacro( ColorByMedialness, bool, Filter );
@@ -79,7 +80,8 @@ public:
   tubeWrapSetMacro( ColorByRoundness, bool, Filter );
   tubeWrapSetMacro( ColorByIntensity, bool, Filter );
 
-  tubeWrapGetMacro( ColorByTubeID, bool, Filter );
+  tubeWrapGetMacro( ColorByTubeId, bool, Filter );
+  tubeWrapGetMacro( ColorByPointId, bool, Filter );
   tubeWrapGetMacro( ColorByRadius, bool, Filter );
   tubeWrapGetMacro( ColorByRidgeness, bool, Filter );
   tubeWrapGetMacro( ColorByMedialness, bool, Filter );

@@ -36,6 +36,8 @@ SegmentConnectedComponents< TImage, TSeedMask >
 
   m_MinimumVolume = 0;
   m_NumberOfComponents = 0;
+
+  m_KeepOnlyLargestComponent = false;
 }
 
 template< class TImage, class TSeedMask >
@@ -51,31 +53,12 @@ SegmentConnectedComponents< TImage, TSeedMask >
 
   typename ImageType::Pointer curConnComp = m_Filter->GetOutput();
 
-  itk::ImageRegionConstIterator< ImageType > inputIter( m_Filter->GetInput(),
-    m_Filter->GetInput()->GetLargestPossibleRegion() );
-  inputIter.GoToBegin();
   itk::ImageRegionIterator< ImageType > iter( curConnComp,
     curConnComp->GetLargestPossibleRegion() );
-  iter.GoToBegin();
-
-  while( !iter.IsAtEnd() )
-    {
-    if( inputIter.Get() == 0 )
-      {
-      iter.Set( 0 );
-      }
-    else
-      {
-      unsigned int c = iter.Get();
-      iter.Set( c+1 );
-      }
-    ++inputIter;
-    ++iter;
-    }
 
   unsigned int numObjects = m_Filter->GetObjectCount()+1;
   std::vector< bool > cSize( numObjects, true );
-  if( m_MinimumVolume > 0 )
+  if( m_MinimumVolume > 0 || m_KeepOnlyLargestComponent )
     {
     // compute the size ( number of pixels ) of each connected component
     iter.GoToBegin();
@@ -90,6 +73,17 @@ SegmentConnectedComponents< TImage, TSeedMask >
       ++iter;
       }
 
+    unsigned int largestComponentCount = cPixelCount[1];
+    unsigned int largestComponent = 1;
+    for( unsigned int c = 2; c<numObjects; ++c )
+      {
+      if( cPixelCount[c] > largestComponentCount )
+        {
+        largestComponent = c;
+        largestComponentCount = cPixelCount[c];
+        }
+      }
+
     // compute voxelVolume
     double voxelVolume = 1;
     for( unsigned int i = 0; i < ImageDimension; i++ )
@@ -97,9 +91,10 @@ SegmentConnectedComponents< TImage, TSeedMask >
       voxelVolume *= m_Filter->GetInput()->GetSpacing()[i];
       }
     double minimumVoxelCount = m_MinimumVolume / voxelVolume;
-    for( unsigned int c = 0; c<numObjects; ++c )
+    for( unsigned int c = 1; c<numObjects; ++c )
       {
-      if( cPixelCount[c] < minimumVoxelCount )
+      if( cPixelCount[c] < minimumVoxelCount || 
+        ( m_KeepOnlyLargestComponent && c != largestComponent ) )
         {
         cSize[c] = false;
         --m_NumberOfComponents;
