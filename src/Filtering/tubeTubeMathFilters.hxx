@@ -379,9 +379,6 @@ ComputeTubeRegions( const ImageType * referenceImage )
   this->RenumberTubes();
   this->RenumberPoints();
 
-  std::cout << "Computing Tube Regions" << std::endl;
-
-  std::cout << "   Rendering Tube Centerlines" << std::endl;
   typedef itk::tube::TubeSpatialObjectToImageFilter< DimensionT,
     FloatImageType > TubeToImageFilterType;
   typename TubeToImageFilterType::Pointer tubeToImageFilter =
@@ -397,7 +394,6 @@ ComputeTubeRegions( const ImageType * referenceImage )
   m_TubePointIdImage = tubeToImageFilter->GetOutput();
   m_TubeRadiusImage  = tubeToImageFilter->GetRadiusImage();
 
-  std::cout << "   Computing Tube Distance Maps" << std::endl;
   typedef itk::DanielssonDistanceMapImageFilter< FloatImageType, FloatImageType>
     DanielssonFilterType;
   typename DanielssonFilterType::Pointer distF = DanielssonFilterType::New();
@@ -408,7 +404,6 @@ ComputeTubeRegions( const ImageType * referenceImage )
 
   m_TubeDistanceImage  = distF->GetDistanceMap();
   m_TubeDirectionImage = distF->GetVectorDistanceMap();
-  std::cout << "   Done." << std::endl;
 }
 
 //------------------------------------------------------------------------
@@ -420,9 +415,9 @@ SetPointValuesFromTubeRegions(
   const std::string & propertyId,
   double minRFactor, double maxRFactor )
 {
-  std::cout << "Setting Tube Point Values from Regions." << std::endl;
   this->SetPointValues( propertyId, 0 );
 
+  typedef itk::ImageRegionConstIterator<ImageType>    ImageConstIteratorType;
   typedef itk::ImageRegionIterator<VectorImageType>   VectorImageIteratorType;
   typedef itk::ImageRegionIterator<FloatImageType>    FloatImageIteratorType;
 
@@ -434,7 +429,10 @@ SetPointValuesFromTubeRegions(
       m_TubeDirectionImage->GetLargestPossibleRegion() );
   itDirImage.GoToBegin();
 
-  std::cout << "   Allocating accumulator images." << std::endl;
+  ImageConstIteratorType itInputImage( inputImage,
+      inputImage->GetLargestPossibleRegion() );
+  itInputImage.GoToBegin();
+
   typename FloatImageType::Pointer imVal = FloatImageType::New();
   imVal->CopyInformation( m_TubeDistanceImage );
   imVal->SetRegions( m_TubeDistanceImage->GetLargestPossibleRegion() );
@@ -453,11 +451,8 @@ SetPointValuesFromTubeRegions(
   unsigned int lastIndex = 1;
   unsigned int maxIndex =
     imVal->GetLargestPossibleRegion().GetSize()[DimensionT-1];
-  std::cout << "   Parsing regions." << std::endl;
   while( !itDirImage.IsAtEnd() )
     {
-    double dist = itDistImage.Value();
-
     typename VectorImageType::IndexType index = itDirImage.GetIndex();
     VectorPixelType v = itDirImage.Value();
 
@@ -467,21 +462,23 @@ SetPointValuesFromTubeRegions(
       tubeIndex[i] = index[i] + v[i];
       }
 
-    double val = inputImage->GetPixel( index );
-
-    if( val != 0 )
-      {
-      std::cout << tubeIndex << " = " << val << std::endl;
-      }
- 
     if( imVal->GetLargestPossibleRegion().IsInside(tubeIndex) )
       {
-      imVal->SetPixel(tubeIndex, imVal->GetPixel(tubeIndex)+val);
-      imCount->SetPixel(tubeIndex, imCount->GetPixel(tubeIndex)+1);
+      double val = itInputImage.Value();
+
+      double dist = itDistImage.Value();
+      double r = m_TubeRadiusImage->GetPixel(tubeIndex);
+      double rFactor = dist/r;
+      if( rFactor>=minRFactor && rFactor<=maxRFactor)
+        {
+        imVal->SetPixel(tubeIndex, imVal->GetPixel(tubeIndex)+val);
+        imCount->SetPixel(tubeIndex, imCount->GetPixel(tubeIndex)+1);
+        }
       }
 
     ++itDistImage;
     ++itDirImage;
+    ++itInputImage;
     }
 
   FloatImageIteratorType itId( m_TubePointIdImage,
@@ -494,7 +491,6 @@ SetPointValuesFromTubeRegions(
   itCount.GoToBegin();
 
   lastIndex = 1;
-  std::cout << "   Storing results." << std::endl;
   while( !itId.IsAtEnd() )
     {
     if( itCount.Value() != 0 )
@@ -506,8 +502,6 @@ SetPointValuesFromTubeRegions(
       typename VectorImageType::IndexType index = itVal.GetIndex();
       if( index[DimensionT-1] != lastIndex )
         {
-        std::cout << "  Slice = " << index[DimensionT-1] << " of " << maxIndex
-          << std::endl;
         lastIndex = index[DimensionT-1];
         }
 
@@ -516,16 +510,6 @@ SetPointValuesFromTubeRegions(
       if( pointId - tube != 0 )
         {
         point = static_cast<int>(1 / (pointId-tube))-1;
-        }
-
-      if( val != 0 )
-        {
-        static int lcount = 0;
-        if( lcount < 100 )
-          {
-          std::cout << tube << ", " << point << " = " << val << std::endl;
-          lcount++;
-          }
         }
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
@@ -638,8 +622,8 @@ SetPointValuesFromTubeRadius(
               index2[1]=( long )( pointI[1]+y+0.5 );
               if( inputImage->GetLargestPossibleRegion().IsInside( index2 ) )
                 {
-                double dist = m_TubeDistanceImage->GetPixel(index2);
-                if( dist >= minRFactor && dist <= maxRFactor )
+                double rFactor = m_TubeDistanceImage->GetPixel(index2)/radius;
+                if( rFactor >= minRFactor && rFactor <= maxRFactor )
                   {
                   val += inputImage->GetPixel(index2);
                   ++count;
@@ -661,8 +645,8 @@ SetPointValuesFromTubeRadius(
                 index2[2]=( long )( pointI[2]+z+0.5 );
                 if( inputImage->GetLargestPossibleRegion().IsInside( index2 ) )
                   {
-                  double dist = m_TubeDistanceImage->GetPixel(index2);
-                  if( dist >= minRFactor && dist <= maxRFactor )
+                  double rFactor = m_TubeDistanceImage->GetPixel(index2)/radius;
+                  if( rFactor >= minRFactor && rFactor <= maxRFactor )
                     {
                     val += inputImage->GetPixel(index2);
                     ++count;

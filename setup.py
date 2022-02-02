@@ -46,7 +46,7 @@ setup(
     url=r'https://itk.org/',
     install_requires=[
         r'numpy',
-        r'itk>=5.3rc2.post1',
+        r'itk>=5.3rc3',
         r'itk-minimalpathextraction>=1.2.0'
     ]
     )
