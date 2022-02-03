@@ -258,7 +258,7 @@ jobs:
         echo "***work***"
         ls -la /work
         echo "***itk***"
-        ls -la /work/ITK-cp39-cp39-manylinux2014_x64
+        ls -la /work/ITK-cp39-cp39-manylinux2014_x64/*
         git clone https://github.com/Slicer/SlicerExecutionModel
         mkdir -p SlicerExecutionModel-build
         cd SlicerExecutionModel-build
