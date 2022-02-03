@@ -257,6 +257,10 @@ jobs:
         export
         echo "***work***"
         ls -la /work
+        echo "***itkpythonpackage***"
+        ls -la /ITKPythonPackage
+        echo "***itkpythonpackage itk***"
+        ls -la /ITKPythonPackage/ITK-cp39-cp39-manylinux2014_x64/*
         echo "***itk***"
         ls -la /work/ITK-cp39-cp39-manylinux2014_x64/*
         git clone https://github.com/Slicer/SlicerExecutionModel
