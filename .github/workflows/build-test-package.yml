@@ -253,8 +253,12 @@ jobs:
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
         export ITK_DIR="/work/ITK-cp39-cp39-manylinux2014_x64"
+        echo "***env***"
         export
+        echo "***work***"
         ls -la /work
+        echo "***itk***"
+        ls -la /work/ITK-cp39-cp39-manylinux2014_x64
         git clone https://github.com/Slicer/SlicerExecutionModel
         mkdir -p SlicerExecutionModel-build
         cd SlicerExecutionModel-build
