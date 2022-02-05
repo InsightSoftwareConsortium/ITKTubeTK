@@ -198,7 +198,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version: [37, 38, 39]
+        python-version: [38, 39]
         include:
           - itk-python-git-tag: "v5.3rc03"
             c-compiler: "gcc"
