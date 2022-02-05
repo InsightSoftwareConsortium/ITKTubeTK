@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -27,17 +26,17 @@ limitations under the License.
 namespace tube
 {
 
-template< class TInputImage, class TOutputImage >
-ImageMath< TInputImage, TOutputImage >
+template< class TInputImage >
+ImageMath< TInputImage >
 ::ImageMath( void )
 {
   m_HistogramBinMin = 0;
   m_HistogramBinSize = 0;
 }
 
-template< class TInputImage, class TOutputImage >
+template< class TInputImage >
 void
-ImageMath< TInputImage, TOutputImage >
+ImageMath< TInputImage >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
