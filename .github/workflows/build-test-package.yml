@@ -214,8 +214,8 @@ jobs:
         # Workaround for
         #     https://github.com/actions/virtual-environments/issues/709
         df -h
-        sudo swapoff -a
-        sudo rm -f /swapfile
+        #sudo swapoff -a
+        #sudo rm -f /swapfile
         sudo apt-get clean
         sudo rm -rf "/usr/local/share/boost"
         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
