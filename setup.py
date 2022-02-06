@@ -44,12 +44,12 @@ setup(
     license='Apache',
     keywords='ITK InsightToolkit Tubes Vessels Nerves Ultrasound MRI CT Medical',
     url=r'https://github.com/InsightSoftwareConsortium/ITKTubeTK/',
-    project_urls=[
-        'Issue Tracker = https://github.com/InsightSoftwareConsortium/ITKTubeTK/issues',
-        'Testing Data = https://data.kitware.com/#collection/5888b7d38d777f4f3f3085a8/folder/58a3abf08d777f0721a65b16',
-        'Dashboard = https://open.cdash.org/index.php?project=TubeTK',
-        'ITK = https://itk.org'
-        ],
+    project_urls={
+        'Dashboard': 'https://open.cdash.org/index.php?project=TubeTK',
+        'Issue Tracker': 'https://github.com/InsightSoftwareConsortium/ITKTubeTK/issues',
+        'Testing Data': 'https://data.kitware.com/#collection/5888b7d38d777f4f3f3085a8/folder/58a3abf08d777f0721a65b16',
+        'ITK': 'https://itk.org',
+        },
     install_requires=[
         r'numpy',
         r'itk>=5.3rc3',
