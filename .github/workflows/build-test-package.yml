@@ -195,6 +195,7 @@ jobs:
 
   build-linux-python-packages:
     runs-on: ubuntu-20.04
+    timeout-minutes: 300
     strategy:
       max-parallel: 1
       matrix:
