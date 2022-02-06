@@ -290,9 +290,15 @@ jobs:
         chmod +x ./git-configure-build-vtk.sh
         /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-vtk.sh
 
+    - name: 'Set Swap Space'
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 10
+
     - name: 'Build 🐍 Python 📦 package TubeTK'
       timeout-minutes: 400
       run: |
+        df
         export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
 
