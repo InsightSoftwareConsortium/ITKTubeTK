@@ -14,14 +14,15 @@ except ImportError:
     #include_dirs=[np.get_include()],
 setup(
     name='itk-tubetk',
-    version='1.0.1',
+    version='1.1rc01',
     author='Stephen R. Aylward',
     author_email='stephen.aylward@kitware.com',
     packages=['itk'],
     package_dir={'itk': 'itk'},
     download_url=r'https://github.com/InsightSoftwareConsortium/ITKTubeTK',
     description=r'An open-source toolkit, led by Kitware, Inc., for the segmentation, registration, and analysis of tubes and surfaces in images.',
-    long_description='TubeTK is an open-source toolkit for the segmentation, registration, and analysis of tubes and surfaces in images.',
+    long_description=file: setup_readme.md
+    long_description_content_type=text/markdown
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
@@ -35,15 +36,20 @@ setup(
         "Topic :: Scientific/Engineering :: Medical Science Apps.",
         "Topic :: Scientific/Engineering :: Information Analysis",
         "Topic :: Software Development :: Libraries",
-        "Operating System :: Android",
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX",
         "Operating System :: Unix",
         "Operating System :: MacOS"
         ],
     license='Apache',
-    keywords='ITK InsightToolkit',
-    url=r'https://itk.org/',
+    keywords='ITK InsightToolkit Tubes Vessels Nerves Ultrasound MRI CT Medical',
+    url=r'https://github.com/InsightSoftwareConsortium/ITKTubeTK/',
+    project_urls=[
+        'Issue Tracker = https://github.com/InsightSoftwareConsortium/ITKTubeTK/issues',
+        'Testing Data = https://data.kitware.com/#collection/5888b7d38d777f4f3f3085a8/folder/58a3abf08d777f0721a65b16',
+        'Dashboard = https://open.cdash.org/index.php?project=TubeTK',
+        'ITK = https://itk.org'
+        ]
     install_requires=[
         r'numpy',
         r'itk>=5.3rc3',
