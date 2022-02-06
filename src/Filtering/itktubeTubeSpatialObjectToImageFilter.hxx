@@ -40,7 +40,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   m_BuildRadiusImage = false;
   m_BuildTangentImage = false;
 
-  m_ColorByTubeId = true;
+  m_ColorByTubeId = false;
   m_ColorByPointId = false;
   m_ColorByRadius = false;
   m_ColorByRidgeness = false;
