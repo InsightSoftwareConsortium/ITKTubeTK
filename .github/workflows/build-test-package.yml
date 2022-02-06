@@ -195,7 +195,7 @@ jobs:
 
   build-linux-python-packages:
     runs-on: ubuntu-20.04
-    timeout-minutes: 400
+    timeout-minutes: 500
     strategy:
       max-parallel: 1
       matrix:
@@ -291,6 +291,7 @@ jobs:
         /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-vtk.sh
 
     - name: 'Build 🐍 Python 📦 package TubeTK'
+      timeout-minutes: 400
       run: |
         export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
