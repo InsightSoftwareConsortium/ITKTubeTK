@@ -195,10 +195,11 @@ jobs:
 
   build-linux-python-packages:
     runs-on: ubuntu-20.04
+    timeout-minutes: 500
     strategy:
       max-parallel: 1
       matrix:
-        python-version: [37, 38, 39]
+        python-version: [39]
         include:
           - itk-python-git-tag: "v5.3rc03"
             c-compiler: "gcc"
@@ -213,10 +214,13 @@ jobs:
         # Workaround for
         #     https://github.com/actions/virtual-environments/issues/709
         df -h
-        sudo swapoff -a
-        sudo rm -f /swapfile
+        sudo apt-get remove -y '^dotnet-.*'
+        sudo apt-get remove -y '^llvm-.*'
+        sudo apt-get remove -y '^php-.*'
+        sudo apt-get autoremove -y
         sudo apt-get clean
         sudo rm -rf "/usr/local/share/boost"
+        sudo rm -rf "/usr/share/dotnet"
         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
         df -h
 
@@ -249,15 +253,15 @@ jobs:
       run: |
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
-        ln -s -f -T /ITKPythonPackage/ITK-cp37-cp37m-manylinux2014_x64 /work/ITK-cp37-cp37m-manylinux2014_x64
+        ln -s -f -T /ITKPythonPackage/ITK-cp39-cp39-manylinux2014_x64 /work/ITK-cp39-cp39-manylinux2014_x64
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
-        export ITK_DIR="/work/ITK-cp37-cp37m-manylinux2014_x64"
+        export ITK_DIR="/work/ITK-cp39-cp39-manylinux2014_x64"
         git clone https://github.com/Slicer/SlicerExecutionModel
         mkdir -p SlicerExecutionModel-build
         cd SlicerExecutionModel-build
         cmake -DCMAKE_BUILD_TYPE:STRING=Release \
-          -DITK_DIR=/work/ITK-cp37-cp37m-manylinux2014_x64 \
+          -DITK_DIR=/work/ITK-cp39-cp39-manylinux2014_x64 \
           -GNinja \
           ../SlicerExecutionModel
         ninja
@@ -289,8 +293,15 @@ jobs:
         chmod +x ./git-configure-build-vtk.sh
         /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-vtk.sh
 
+    - name: 'Set Swap Space'
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 10
+
     - name: 'Build 🐍 Python 📦 package TubeTK'
+      timeout-minutes: 400
       run: |
+        df -h
         export ITK_PACKAGE_VERSION=${{ matrix.itk-python-git-tag }}
         ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
 

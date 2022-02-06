@@ -39,7 +39,7 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TInputImage, class TOutputImage=TInputImage >
+template< class TInputImage >
 class ImageMath:
   public itk::ProcessObject
 {
@@ -54,7 +54,7 @@ public:
 
   typedef TInputImage                                InputImageType;
   typedef typename FilterType::ImageType             ImageType;
-  typedef TOutputImage                               OutputImageType;
+  typedef TInputImage                                OutputImageType;
 
   typedef itk::Image< unsigned char, TInputImage::ImageDimension> ImageTypeUChar;
   typedef itk::Image< short, TInputImage::ImageDimension>         ImageTypeShort;
@@ -82,7 +82,7 @@ public:
 
   /** Get current result */
   OutputImageType * GetOutput( void )
-  { typedef itk::CastImageFilter< ImageType,OutputImageType > CastFilterType;
+  { typedef itk::CastImageFilter< ImageType,InputImageType > CastFilterType;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( m_Filter.GetOutput() );
     castFilter->Update();
