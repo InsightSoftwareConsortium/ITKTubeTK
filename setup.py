@@ -21,8 +21,8 @@ setup(
     package_dir={'itk': 'itk'},
     download_url=r'https://github.com/InsightSoftwareConsortium/ITKTubeTK',
     description=r'An open-source toolkit, led by Kitware, Inc., for the segmentation, registration, and analysis of tubes and surfaces in images.',
-    long_description=file: setup_readme.md
-    long_description_content_type=text/markdown
+    long_description='file:setup_readme.md',
+    long_description_content_type='text/markdown',
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
@@ -49,7 +49,7 @@ setup(
         'Testing Data = https://data.kitware.com/#collection/5888b7d38d777f4f3f3085a8/folder/58a3abf08d777f0721a65b16',
         'Dashboard = https://open.cdash.org/index.php?project=TubeTK',
         'ITK = https://itk.org'
-        ]
+        ],
     install_requires=[
         r'numpy',
         r'itk>=5.3rc3',
