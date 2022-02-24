@@ -199,15 +199,8 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version: [36, 37, 38, 39]
+        python-version: [37, 38, 39]
         include:
-          - python-version: 36
-            itk-package: "ITK-cp36-cp36m-manylinux2014_x64"
-            itk-python-git-tag: "v5.3rc03"
-            c-compiler: "gcc"
-            cxx-compiler: "g++"
-            cmake-build-type: "Release"
-          - python-version: 38
           - python-version: 37
             itk-package: "ITK-cp37-cp37m-manylinux2014_x64"
             itk-python-git-tag: "v5.3rc03"
