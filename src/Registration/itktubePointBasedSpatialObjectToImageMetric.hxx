@@ -289,13 +289,13 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
         stepCount = 1;
         endCount = 1;
         }
-      unsigned int count = 0;
       auto pointIter = currentPoints.begin();
       for (unsigned int count=0; pointIter!=currentPoints.end()
         && count<endCount; ++count)
         {
         ++pointIter;
         }
+      unsigned int count = 0;
       while( pointIter != currentPoints.end() )
         {
         m_SubsampledTubePoints.push_back( *pointIter );
@@ -323,13 +323,13 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
         stepCount = 1;
         endCount = 1;
         }
-      unsigned int count = 0;
       auto pointIter = currentPoints.begin();
       for (unsigned int count=0; pointIter!=currentPoints.end()
         && count<endCount; ++count)
         {
         ++pointIter;
         }
+      unsigned int count = 0;
       while( pointIter != currentPoints.end() )
         {
         m_SubsampledSurfacePoints.push_back( *pointIter );
@@ -357,13 +357,13 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
         stepCount = 1;
         endCount = 1;
         }
-      unsigned int count = 0;
       auto pointIter = currentPoints.begin();
       for (unsigned int count=0; pointIter!=currentPoints.end()
         && count<endCount; ++count)
         {
         ++pointIter;
         }
+      unsigned int count = 0;
       while( pointIter != currentPoints.end() )
         {
         m_SubsampledBlobPoints.push_back( *pointIter );
@@ -484,7 +484,6 @@ typename PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >::M
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::GetValue( const ParametersType & parameters ) const
 {
-  typedef vnl_matrix_fixed<double, ImageDimension, ImageDimension> VnlMatrixType;
   typedef vnl_vector_fixed<double, ImageDimension> VnlVectorType;
 
   itkDebugMacro( << "**** Get Value ****" );

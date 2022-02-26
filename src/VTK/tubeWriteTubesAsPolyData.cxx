@@ -63,9 +63,6 @@ Update()
 {
   const unsigned int Dimension = 3;
 
-  typedef itk::TubeSpatialObject< Dimension >       TubeSpatialObjectType;
-  typedef itk::GroupSpatialObject< Dimension >      GroupSpatialObjectType;
-
   m_GroupSpatialObject->Update();
 
   char childName[] = "Tube";
@@ -176,8 +173,6 @@ Update()
   std::list<vtkDoubleArray *> extraPointData;
   TubeSpatialObjectType * tube =
     static_cast< TubeSpatialObjectType * >( tubeList->begin()->GetPointer() );
-  unsigned int numExtra =
-    tube->GetPoints().begin()->GetTagScalarDictionary().size();
   auto pntDictIt = tube->GetPoints().begin()->GetTagScalarDictionary().begin();
   auto pntDictItEnd = tube->GetPoints().begin()->GetTagScalarDictionary().end();
   vtkDoubleArray * extraPointField;

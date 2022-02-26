@@ -52,7 +52,6 @@ int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
   static const unsigned int ObjectDimension = 3;
 
   typedef itk::Image< FloatType, ImageDimension >         ImageType;
-  typedef itk::GroupSpatialObject< ObjectDimension >      GroupType;
 
   typedef itk::ImageFileReader< ImageType >               ImageReaderType;
   typedef itk::SpatialObjectReader< ObjectDimension >     GroupReaderType;
