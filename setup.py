@@ -11,6 +11,10 @@ except ImportError:
     print('  python -m pip install scikit-build')
     sys.exit(1)
 
+from pathlib import Path
+this_directory = Path(__file__).parent
+setup_readme_text = (this_directory / "setup_readme.md").read_text()
+
     #include_dirs=[np.get_include()],
 setup(
     name='itk-tubetk',
@@ -21,7 +25,7 @@ setup(
     package_dir={'itk': 'itk'},
     download_url=r'https://github.com/InsightSoftwareConsortium/ITKTubeTK',
     description=r'An open-source toolkit, led by Kitware, Inc., for the segmentation, registration, and analysis of tubes and surfaces in images.',
-    long_description='file:setup_readme.md',
+    long_description=setup_readme_text,
     long_description_content_type='text/markdown',
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
