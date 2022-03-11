@@ -896,7 +896,7 @@ DiffusiveRegistrationFilter
   str.ValidTimeStepList.resize( threadCount );
   for( int i = 0; i < threadCount; ++i )
     {
-    str.ValidTimeStepList[i] = 0; // false
+    str.ValidTimeStepList[i] = false;
     }
 
   // Multithread the execution
@@ -996,7 +996,7 @@ DiffusiveRegistrationFilter
         splitTensorDerivativeRegion, splitScalarDerivativeRegion,
         splitStoppingCriterionMaskImageRegion,
         str->UpdateMetricsIntermediate[threadId], threadId );
-    str->ValidTimeStepList[threadId] = 1; // True
+    str->ValidTimeStepList[threadId] = true;
     }
 
   return ITK_THREAD_RETURN_DEFAULT_VALUE;
