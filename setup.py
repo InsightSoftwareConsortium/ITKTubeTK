@@ -13,7 +13,7 @@ except ImportError:
 
 from pathlib import Path
 this_directory = Path(__file__).parent
-setup_readme_text = (this_directory / "setup_readme.md").read_text()
+setup_readme_text = (this_directory / "setup-readme.md").read_text()
 
     #include_dirs=[np.get_include()],
 setup(
