@@ -201,16 +201,22 @@ jobs:
       max-parallel: 1
       matrix:
         python-version: [37, 38, 39]
-        c-compiler: "gcc"
-        cxx-compiler: "g++"
-        cmake-build-type: "Release"
         include:
           - python-version: 37
             itk-package: "ITK-cp37-cp37m-manylinux2014_x64"
+            c-compiler: "gcc"
+            cxx-compiler: "g++"
+            cmake-build-type: "Release"
           - python-version: 38
             itk-package: "ITK-cp38-cp38-manylinux2014_x64"
+            c-compiler: "gcc"
+            cxx-compiler: "g++"
+            cmake-build-type: "Release"
           - python-version: 39
             itk-package: "ITK-cp39-cp39-manylinux2014_x64"
+            c-compiler: "gcc"
+            cxx-compiler: "g++"
+            cmake-build-type: "Release"
 
     steps:
     - uses: actions/checkout@v2
