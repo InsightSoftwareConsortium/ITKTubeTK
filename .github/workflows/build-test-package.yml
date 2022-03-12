@@ -6,7 +6,7 @@ env:
   vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
   itk-git-tag: "master"
   itk-wheel-tag: "v5.3rc03"
-  itk-minimalpathextraction-git-tag: v1.2.0
+  itk-minimalpathextraction-git-tag: "v1.2.0"
 
 jobs:
   build-test-cxx:
@@ -32,6 +32,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
