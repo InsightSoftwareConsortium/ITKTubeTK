@@ -273,7 +273,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   str.ValidTimeStepList.resize( threadCount );
   for( ThreadIdType i =0; i < threadCount; ++i )
     {
-    str.ValidTimeStepList[i] = 0;
+    str.ValidTimeStepList[i] = false;
     }
 
   // Multithread the execution
@@ -318,7 +318,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     str->TimeStepList[threadId]
       = str->Filter->ThreadedCalculateChange( splitRegion,
         splitDiffusionimageRegion, threadId );
-    str->ValidTimeStepList[threadId] = 1;
+    str->ValidTimeStepList[threadId] = true;
     }
 
   return ITK_THREAD_RETURN_DEFAULT_VALUE;

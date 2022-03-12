@@ -815,7 +815,7 @@ private:
     OutputImagePointer OutputImage;
     TimeStepType TimeStep;
     TimeStepType *TimeStepList;
-    itk::uint8_t *ValidTimeStepList;
+    itk::BooleanStdVectorType *ValidTimeStepList;
     }; // End struct DenseFDThreadStruct
 
   /** Structure for passing information into static callback methods.  Used
@@ -841,7 +841,7 @@ private:
     DiffusiveRegistrationFilter *Filter;
     TimeStepType TimeStep;
     std::vector< TimeStepType > TimeStepList;
-    std::vector< itk::uint8_t > ValidTimeStepList;
+    itk::BooleanStdVectorType ValidTimeStepList;
     UpdateMetricsIntermediateStruct *UpdateMetricsIntermediate;
     }; // End struct CalculateChangeGradientThreadStruct
 

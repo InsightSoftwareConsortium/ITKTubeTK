@@ -199,7 +199,7 @@ private:
     AnisotropicDiffusionTensorImageFilter *Filter;
     TimeStepType TimeStep;
     std::vector< TimeStepType > TimeStepList;
-    std::vector< itk::uint8_t > ValidTimeStepList;
+    itk::BooleanStdVectorType ValidTimeStepList;
 
     }; // End struct DenseFDThreadStruct
 
