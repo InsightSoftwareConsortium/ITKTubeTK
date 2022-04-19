@@ -40,6 +40,7 @@ ReResampleImageFilter( void )
   m_Spacing.clear();
   m_Origin.clear();
   m_Index.clear();
+  m_Size.clear();
   m_ResampleFactor.clear();
   m_MakeIsotropic = false;
   m_MakeHighResIso = false;
@@ -85,6 +86,7 @@ Update( void )
     }
   outDirection = inDirection;
 
+  bool updateSize = true;
   if( m_MatchImage )
     {
     outSpacing = m_MatchImage->GetSpacing();
@@ -92,6 +94,7 @@ Update( void )
     outDirection = m_MatchImage->GetDirection();
     outSize = m_MatchImage->GetLargestPossibleRegion().GetSize();
     outIndex = m_MatchImage->GetLargestPossibleRegion().GetIndex();
+    updateSize = false;
     }
 
   if( m_Origin.size() > 0 )
@@ -107,6 +110,14 @@ Update( void )
       {
       outIndex[i] = m_Index[i];
       }
+    }
+  if( m_Size.size() > 0 )
+    {
+    for( unsigned int i = 0; i < VDimension; i++ )
+      {
+      outSize[i] = m_Size[i];
+      }
+    updateSize = false;
     }
   if( m_Spacing.size() > 0 )
     {
@@ -163,7 +174,7 @@ Update( void )
       }
     }
 
-  if( !m_MatchImage )
+  if( updateSize )
     {
     std::vector< double > outResampleFactor;
     outResampleFactor.resize( VDimension );
@@ -251,6 +262,14 @@ ReResampleImageFilter< TPixel, VDimension >::
 SetIndex( std::vector<int> i )
 {
   m_Index = i;
+}
+
+template< class TPixel, unsigned int VDimension >
+void
+ReResampleImageFilter< TPixel, VDimension >::
+SetSize( std::vector<int> i )
+{
+  m_Size = i;
 }
 
 template< class TPixel, unsigned int VDimension >

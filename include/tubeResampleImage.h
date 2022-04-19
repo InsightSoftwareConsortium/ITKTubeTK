@@ -100,6 +100,9 @@ public:
   /** Set Output Index */
   tubeWrapForceSetMacro( Index, std::vector<int>, Filter );
 
+  /** Set Output Index */
+  tubeWrapForceSetMacro( Size, std::vector<int>, Filter );
+
   /** Set Output Resample Factor */
   tubeWrapForceSetMacro( ResampleFactor, std::vector<double>, Filter );
 

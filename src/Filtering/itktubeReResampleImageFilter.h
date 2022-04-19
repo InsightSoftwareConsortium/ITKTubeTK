@@ -96,6 +96,9 @@ public:
   /** Set Output Index */
   void SetIndex( std::vector<int> i );
 
+  /** Set Output Size */
+  void SetSize( std::vector<int> i );
+
   /** Set Output Resample Factor */
   void SetResampleFactor( std::vector<double> rf );
 
@@ -127,6 +130,7 @@ private:
   std::vector<double>                    m_Spacing;
   std::vector<double>                    m_Origin;
   std::vector<int>                       m_Index;
+  std::vector<int>                       m_Size;
   std::vector<double>                    m_ResampleFactor;
   bool                                   m_MakeIsotropic;
   bool                                   m_MakeHighResIso;
