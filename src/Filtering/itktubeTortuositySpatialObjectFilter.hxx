@@ -651,7 +651,7 @@ TortuositySpatialObjectFilter< TTubeSpatialObject >
     for( size_t i = 0; i < this->m_CurvatureScalar.size(); ++i )
       {
       MeasurementVectorType mv;
-      mv = this->m_CurvatureScalar[i];
+      mv[0] = this->m_CurvatureScalar[i];
       sample->PushBack( mv );
       }
 

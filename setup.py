@@ -56,7 +56,7 @@ setup(
         },
     install_requires=[
         r'numpy',
-        r'itk>=5.3rc3',
+        r'itk>=5.3rc4',
         r'itk-minimalpathextraction>=1.2.0'
     ]
     )
