@@ -998,7 +998,7 @@ DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
   // VALUE AND DERIVATIVE
   if( m_UseProjection )
     {
-    val = DerivativeAtContinuousIndex( cIndex, val, scale, d );
+    val = DerivativeAtContinuousIndex( cIndex, scale, d );
     double dp0 = 0;
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {

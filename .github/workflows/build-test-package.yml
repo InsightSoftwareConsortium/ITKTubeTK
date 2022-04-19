@@ -5,7 +5,7 @@ on: [push,pull_request]
 env:
   vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
   itk-git-tag: "master"
-  itk-wheel-tag: "v5.3rc03"
+  itk-wheel-tag: "v5.3rc04"
   itk-minimalpathextraction-git-tag: "v1.2.0"
 
 jobs:
@@ -453,7 +453,7 @@ jobs:
       run: |
         pushd ..\..\im
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        set PATH="C:\P\grep;%PATH%"
+        set PATH=C:\P\grep;%PATH%
         dir C:\Python3${{ matrix.python-version-minor }}-x64\
         dir C:\Python3${{ matrix.python-version-minor }}-x64\Scripts
         dir C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\cmake
