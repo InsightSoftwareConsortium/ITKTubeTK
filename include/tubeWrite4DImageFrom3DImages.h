@@ -66,7 +66,7 @@ public:
 
   /** Set the index'th output image slice */
   void SetNthInputImage( unsigned int outputIndex,
-    const typename InputImageType::Pointer & img);
+    const InputImageType * img);
 
   itkSetMacro( FileName, std::string );
 

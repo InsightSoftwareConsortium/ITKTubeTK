@@ -62,7 +62,7 @@ template< class InputImageT >
 void
 Write4DImageFrom3DImages< InputImageT >::
 SetNthInputImage( unsigned int outputIndex,
-  const typename InputImageType::Pointer & img )
+  const InputImageType * img )
 {
   if( m_OutputImage == nullptr )
     {
@@ -89,6 +89,11 @@ SetNthInputImage( unsigned int outputIndex,
     outSize[3] = m_NumberOfInputImages;
     outSpacing[3] = 1;
     outIndex[3] = 0;
+    for( unsigned int j=0; j<3; ++j )
+      {
+      outDirection(3, j) = 0;
+      }
+    outDirection(3, 3) = 1;
 
     typename OutputImageType::RegionType outRegion;
     outRegion.SetSize( outSize );
