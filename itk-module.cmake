@@ -36,6 +36,7 @@ itk_module( TubeTK
     ITKStatistics
     ITKSpatialObjects
     ITKTransform
+    ITKThresholding
     ITKVTK
     MinimalPathExtraction
   COMPILE_DEPENDS
