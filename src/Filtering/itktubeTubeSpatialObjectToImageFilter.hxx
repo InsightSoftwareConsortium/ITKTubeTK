@@ -299,14 +299,25 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
           m_TangentImage->SetPixel( index, tp );
           }
 
+        if( m_BuildRadiusImage )
+          {
+          RadiusPixelType radius = tubePoint->GetRadiusInWorldSpace();
+          m_RadiusImage->SetPixel( index, radius );
+          }
+
         // Radius Image and Density image with radius
         if( m_UseRadius )
           {
           RadiusPixelType radius = tubePoint->GetRadiusInWorldSpace();
 
-          if( m_BuildRadiusImage )
+          TangentPixelType tp;
+          if( m_BuildTangentImage )
             {
-            m_RadiusImage->SetPixel( index, radius );
+            typename TubeType::VectorType t = tubePoint->GetTangentInWorldSpace();
+            for( unsigned int tpind = 0;tpind<ObjectDimension;tpind++ )
+              {
+              tp[tpind] = t[tpind];
+              }
             }
 
           ContinuousIndexType radiusI;
@@ -348,6 +359,11 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                       {
                       m_RadiusImage->SetPixel( index2, radius );
                       }
+                    if( m_BuildTangentImage )
+                      {
+                      m_TangentImage->SetPixel( index2, tp );
+                      }
+
                     }
                   }
                 }
@@ -386,6 +402,10 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                       if( m_BuildRadiusImage )
                         {
                         m_RadiusImage->SetPixel( index2, radius );
+                        }
+                      if( m_BuildTangentImage )
+                        {
+                        m_TangentImage->SetPixel( index2, tp );
                         }
                       }
                     }

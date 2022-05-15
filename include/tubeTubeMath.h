@@ -55,6 +55,7 @@ public:
   typedef typename FilterType::TubeGroupType         TubeGroupType;
   typedef typename FilterType::TubeType              TubeType;
   typedef typename FilterType::ImageType             ImageType;
+  typedef typename FilterType::FloatImageType        FloatImageType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -95,6 +96,13 @@ public:
 
   void ComputeTubeRegions( const ImageType * referenceImage )
   { m_Filter.ComputeTubeRegions(referenceImage); this->Modified(); };
+
+  FloatImageType * GetTubeRadiusImage()
+  { return m_Filter.GetTubeRadiusImage(); }
+  FloatImageType * GetTubePointIdImage()
+  { return m_Filter.GetTubePointIdImage(); }
+  FloatImageType * GetTubeDistanceImage()
+  { return m_Filter.GetTubeDistanceImage(); }
 
   void SetPointValuesFromTubeRegions( const ImageType * inputImage,
     const std::string & propertyId, double minRFactor=1, double maxRFactor=3 )

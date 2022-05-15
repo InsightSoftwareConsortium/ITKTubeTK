@@ -73,6 +73,10 @@ public:
 
   void ComputeTubeRegions( const ImageType * referenceImage );
 
+  itkGetObjectMacro( TubeRadiusImage, FloatImageType );
+  itkGetObjectMacro( TubePointIdImage, FloatImageType );
+  itkGetObjectMacro( TubeDistanceImage, FloatImageType );
+
   void SetPointValuesFromTubeRegions(
     const ImageType * inputImage,
     const std::string & propertyId,
