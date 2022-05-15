@@ -221,12 +221,8 @@ SetPointValuesFromImage(
         {
         TubePointType * currentPoint = static_cast< TubePointType * >(
           inputTube->GetPoint( pointNum ) );
-        typename TubeType::PointType pointIndex;
-        pointIndex = currentPoint->GetPositionInObjectSpace();
-
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetObjectToWorldTransform()->TransformPoint(
-          pointIndex );
+        pointWorld = currentPoint->GetPositionInWorldSpace();
 
         typename ImageType::IndexType imageIndex;
         double val = 0;
@@ -266,10 +262,10 @@ SetPointValuesFromImage(
           {
           if( blend != 1 )
             {
-            double val2 = currentPoint->GetRadiusInObjectSpace();
+            double val2 = currentPoint->GetRadiusInWorldSpace();
             val = val * blend + (1 - blend) * val2;
             }
-          currentPoint->SetRadiusInObjectSpace( val );
+          currentPoint->SetRadiusInWorldSpace( val );
           }
         else
           {
@@ -316,12 +312,8 @@ SetPointValuesFromImageMean(
         {
         TubePointType * currentPoint = static_cast< TubePointType * >(
           inputTube->GetPoint( pointNum ) );
-        typename TubeType::PointType pointIndex;
-        pointIndex = currentPoint->GetPositionInObjectSpace();
-
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetObjectToWorldTransform()->TransformPoint(
-          pointIndex );
+        pointWorld = currentPoint->GetPositionInWorldSpace();
 
         typename ImageType::IndexType imageIndex;
         if( inputImage->TransformPhysicalPointToIndex( pointWorld,
@@ -336,12 +328,8 @@ SetPointValuesFromImageMean(
         {
         TubePointType * currentPoint = static_cast< TubePointType * >(
           inputTube->GetPoint( pointNum ) );
-        typename TubeType::PointType pointIndex;
-        pointIndex = currentPoint->GetPositionInObjectSpace();
-
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetObjectToWorldTransform()->TransformPoint(
-          pointIndex );
+        pointWorld = currentPoint->GetPositionInWorldSpace();
 
         if( propertyId == "Ridgeness" )
           {
@@ -400,6 +388,7 @@ ComputeTubeRegions( const ImageType * referenceImage )
   distF->SetInput( m_TubePointIdImage );
   distF->SetUseImageSpacing( true );
   distF->SetInputIsBinary( true );
+  distF->SetSquaredDistance( false );
   distF->Update();
 
   m_TubeDistanceImage  = distF->GetDistanceMap();
@@ -445,34 +434,35 @@ SetPointValuesFromTubeRegions(
   imCount->Allocate();
   imCount->FillBuffer(0);
 
-  TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
-    m_InputTubeGroup->GetMaximumDepth(), "Tube" );
-
-  unsigned int lastIndex = 1;
   unsigned int maxIndex =
     imVal->GetLargestPossibleRegion().GetSize()[DimensionT-1];
   while( !itDirImage.IsAtEnd() )
     {
-    typename VectorImageType::IndexType index = itDirImage.GetIndex();
-    VectorPixelType v = itDirImage.Value();
-
-    typename VectorImageType::IndexType tubeIndex;
-    for( unsigned int i = 0; i < DimensionT; i++ )
+    double val = itInputImage.Value();
+    if( val != 0 )
       {
-      tubeIndex[i] = index[i] + v[i];
-      }
-
-    if( imVal->GetLargestPossibleRegion().IsInside(tubeIndex) )
-      {
-      double val = itInputImage.Value();
-
-      double dist = itDistImage.Value();
-      double r = m_TubeRadiusImage->GetPixel(tubeIndex);
-      double rFactor = dist/r;
-      if( rFactor>=minRFactor && rFactor<=maxRFactor)
+      typename VectorImageType::IndexType index = itDirImage.GetIndex();
+      VectorPixelType v = itDirImage.Value();
+  
+      typename VectorImageType::IndexType tubeIndex;
+      for( unsigned int i = 0; i < DimensionT; i++ )
         {
-        imVal->SetPixel(tubeIndex, imVal->GetPixel(tubeIndex)+val);
-        imCount->SetPixel(tubeIndex, imCount->GetPixel(tubeIndex)+1);
+        tubeIndex[i] = index[i] + v[i];
+        }
+
+      if( imVal->GetLargestPossibleRegion().IsInside(tubeIndex) )
+        {
+        double r = m_TubeRadiusImage->GetPixel(tubeIndex);
+        if( r != 0 )
+          {
+          double dist = itDistImage.Value();
+          double rFactor = dist/r;
+          if( rFactor>=minRFactor && rFactor<=maxRFactor)
+            {
+            imVal->SetPixel(tubeIndex, imVal->GetPixel(tubeIndex)+val);
+            imCount->SetPixel(tubeIndex, imCount->GetPixel(tubeIndex)+1);
+            }
+          }
         }
       }
 
@@ -481,72 +471,66 @@ SetPointValuesFromTubeRegions(
     ++itInputImage;
     }
 
-  FloatImageIteratorType itId( m_TubePointIdImage,
-    m_TubePointIdImage->GetLargestPossibleRegion() );
   FloatImageIteratorType itVal( imVal, imVal->GetLargestPossibleRegion() );
   FloatImageIteratorType itCount( imCount, imCount->GetLargestPossibleRegion() );
 
-  itId.GoToBegin();
-  itVal.GoToBegin();
   itCount.GoToBegin();
-
-  lastIndex = 1;
-  while( !itId.IsAtEnd() )
+  itVal.GoToBegin();
+  while( !itCount.IsAtEnd() )
     {
-    if( itCount.Value() != 0 )
+    double count = itCount.Value();
+    if( count != 0 )
       {
-      double pointId = itId.Value();
-
-      double val = itVal.Value() / itCount.Value();
-
-      typename VectorImageType::IndexType index = itVal.GetIndex();
-      if( index[DimensionT-1] != lastIndex )
-        {
-        lastIndex = index[DimensionT-1];
-        }
-
-      int tube = static_cast<int>(pointId);
-      int point = 0;
-      if( pointId - tube != 0 )
-        {
-        point = static_cast<int>(1 / (pointId-tube))-1;
-        }
-
-      typename TubeType::ChildrenListType::iterator tubeIterator;
-      tubeIterator = inputTubeList->begin();
-      for(int tubeI=0; tubeI<tube; ++tubeI)
-        {
-        ++tubeIterator;
-        }
-      typename TubeType::Pointer curTube = dynamic_cast< TubeType * >(
-        tubeIterator->GetPointer() );
-
-      TubePointType * currentPoint = static_cast< TubePointType * >(
-        curTube->GetPoint( point ) );
-      if( propertyId == "Ridgeness" )
-        {
-        currentPoint->SetRidgeness(val);
-        }
-      else if( propertyId == "Medialness" )
-        {
-        currentPoint->SetMedialness(val);
-        }
-      else if( propertyId == "Branchness" )
-        {
-        currentPoint->SetBranchness(val);
-        }
-      else if( propertyId == "Radius" )
-        {
-        currentPoint->SetRadiusInObjectSpace(val);
-        }
-      else
-        {
-        currentPoint->SetTagScalarValue( propertyId, val );
-        }
+      double val = itVal.Value() / count;
+      itVal.Set(val);
       }
-    ++itId;
-    ++itVal;
     ++itCount;
+    ++itVal;
+    }
+
+  TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
+    m_InputTubeGroup->GetMaximumDepth(), "Tube" );
+  typename TubeType::ChildrenListType::iterator tubeIterator =
+    inputTubeList->begin();
+  while( tubeIterator!=inputTubeList->end() )
+    {
+    typename TubeType::Pointer curTube = dynamic_cast< TubeType * >(
+      tubeIterator->GetPointer() );
+    typename TubePointListType::iterator itTubePoints =
+      curTube->GetPoints().begin();
+    while( itTubePoints!=curTube->GetPoints().end() )
+      {
+      TubePointType * currentPoint = static_cast< TubePointType * >(
+        &(*itTubePoints) );
+      typename TubePointType::PointType pnt = currentPoint->GetPositionInWorldSpace();
+      typename FloatImageType::IndexType indx;
+      if( inputImage->TransformPhysicalPointToIndex( pnt, indx ) )
+        {
+        double val = imVal->GetPixel(indx);
+        if( propertyId == "Ridgeness" )
+          {
+          currentPoint->SetRidgeness(val);
+          }
+        else if( propertyId == "Medialness" )
+          {
+          currentPoint->SetMedialness(val);
+          }
+        else if( propertyId == "Branchness" )
+          {
+          currentPoint->SetBranchness(val);
+          }
+        else if( propertyId == "Radius" )
+          {
+          currentPoint->SetRadiusInObjectSpace(val);
+          }
+        else
+          {
+          currentPoint->SetTagScalarValue( propertyId, val );
+          }
+        }
+      ++itTubePoints;
+      }
+    ++tubeIterator;
     }
   inputTubeList->clear();
   delete inputTubeList;
