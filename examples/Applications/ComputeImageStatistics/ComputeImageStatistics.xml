@@ -4,7 +4,7 @@
   <title>Compute Image Statistics Using Mask (TubeTK)</title>
   <description>Compute image statistics for each region indicated in a mask file.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url>https://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
   <contributor>Stephen R. Aylward (Kitware)</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>

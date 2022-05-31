@@ -4,7 +4,7 @@
   <title>Compute Pseudo-Probability of Tube Points (TubeTK)</title>
   <description>Takes all points of the input tubes, maps them into the space of the mean Euclidean distance image, and outputs the distance values at those points.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url>https://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
   <contributor>Stephen R. Aylward, Roland Kwitt (Kitware)</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>

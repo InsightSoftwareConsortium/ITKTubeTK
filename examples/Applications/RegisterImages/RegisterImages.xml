@@ -4,7 +4,7 @@
   <title>RegisterImages (TubeTK)</title>
   <description>Provides rigid, affine, and BSpline registration methods via a simple GUI</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url>http://www.slicer.org/slicerWiki/index.php/Documentation/4.2/Modules/ExpertAutomatedRegistration</documentation-url>
+  <documentation-url>https://www.slicer.org/slicerWiki/index.php/Documentation/4.2/Modules/ExpertAutomatedRegistration</documentation-url>
   <license/>
   <contributor>Stephen R Aylward (Kitware), Casey B Goodlett (Kitware)</contributor>
   <acknowledgements>This work is part of the National Alliance for Medical Image Computing (NAMIC), funded by the National Institutes of Health through the NIH Roadmap for Medical Research, Grant U54 EB005149.</acknowledgements>

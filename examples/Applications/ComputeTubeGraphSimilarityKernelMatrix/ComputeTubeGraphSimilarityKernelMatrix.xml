@@ -4,7 +4,7 @@
   <title>Tube Graph Kernel (TubeTK)</title>
   <description>Computes a (p.d.) kernel matrix K of similarity values between two collections of input graphs. Given a list A of N graphs and a list B of M graphs, the K(i,j)-th entry of K contains the similarity value among the i-th graph of A and the j-th graph of B. K will eventually be a N x M matrix.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url>https://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
   <contributor>Roland Kwitt, Stephen R. Aylward (Kitware)</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>

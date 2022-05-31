@@ -10,7 +10,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    https://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -118,7 +118,7 @@ namespace itk
 * A Generalized Squared Euclidean Distance Transform with Voronoi Maps
 * King B., Doker R., Meier S., Shin H., Galanski M.
 * Department of Diagnostic Radiology, Hannover, Medical School, Germany
-* http://hdl.handle.net/1926/196
+* https://hdl.handle.net/1926/196
 *
 * \ingroup ImageFeatureExtraction
 */

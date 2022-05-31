@@ -11,7 +11,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#       http://www.apache.org/licenses/LICENSE-2.0
+#       https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -148,7 +148,7 @@ def permutation_testing(bas,ncv,npt,trnb,tstb):
 
 
 def f1_score(tp,fp,tn,fn):
-    """ Computes F1-score, see http://en.wikipedia.org/wiki/F1_score
+    """ Computes F1-score, see https://en.wikipedia.org/wiki/F1_score
 
     :param tp: True positives  (TP)
     :param fp: False positives (FP)
@@ -175,7 +175,7 @@ def split_confusion_matrix(cm):
     """ Split confusion matrix into it's parts.
 
     :param cm: 2x2 numpy confusion matrix
-    :return: (TP,FP,TN,FN), see http://en.wikipedia.org/wiki/Confusion_matrix
+    :return: (TP,FP,TN,FN), see https://en.wikipedia.org/wiki/Confusion_matrix
     """
 
     assert cm.shape == (2,2), "Only binary classifiers supported!"

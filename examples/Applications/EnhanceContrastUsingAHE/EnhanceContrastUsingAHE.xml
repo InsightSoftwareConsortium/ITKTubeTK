@@ -4,7 +4,7 @@
   <title>Compute Contrast Image Using Adaptive Histogram Equalization (TubeTK)</title>
   <description>Apply adaptive histogram equalization to an image</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url>https://public.kitware.com/Wiki/TubeTK</documentation-url>
   <documentation-url/>
   <license>Apache 2.0</license>
   <contributor>Stephen R. Aylward (Kitware)</contributor>

@@ -4,7 +4,7 @@
   <title>ConvertImagesToCSV (TubeTK)</title>
   <description>For each non-zero pixel in the mask, output that pixel's values from the other images to a CSV file.</description>
   <version>1.0</version>
-  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url>https://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
   <contributor>Stephen@Aylward.org</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>

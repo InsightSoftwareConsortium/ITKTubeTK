@@ -117,9 +117,9 @@ Where:
 ```
 
 #### Algorithm:
-[Dan Mueller](http://www.insight-journal.org/browse/publication/213)
+[Dan Mueller](https://www.insight-journal.org/browse/publication/213)
 
 ----
 *This file is part of [TubeTK](http://www.tubetk.org). TubeTK is developed by
-[Kitware, Inc.](http://www.kitware.com) and licensed under the
-[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).*
+[Kitware, Inc.](https://www.kitware.com) and licensed under the
+[Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).*
