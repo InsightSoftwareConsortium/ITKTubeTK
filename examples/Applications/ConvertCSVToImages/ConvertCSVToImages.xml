@@ -4,7 +4,7 @@
   <title>ConvertCSVToImages (TubeTK)</title>
   <description>Generate an image for each column in the CSV file, storing their values in sequence in each of the non-zero pixels in the mask.</description>
   <version>1.0</version>
-  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url>https://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
   <contributor>Stephen@Aylward.org</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>

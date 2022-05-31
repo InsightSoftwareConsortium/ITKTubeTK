@@ -4,7 +4,7 @@
   <title>Segment Connected Components Using Parzen PDFs (TubeTK)</title>
   <description>Given multiple, registered images and foreground and background masks, computes multivariate PDFs for inside and outside classes, and then performs competitive region growing.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url>https://public.kitware.com/Wiki/TubeTK</documentation-url>
   <documentation-url/>
   <license>Apache 2.0</license>
   <contributor>Stephen R. Aylward (Kitware)</contributor>

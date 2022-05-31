@@ -11,7 +11,7 @@ Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -146,8 +146,8 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
   // Try to add the metaData about the vessel object subtype
   // There is currently some issues on it with ITK.
   // See:
-  // http://www.itk.org/Wiki/ITK/Examples/Broken/SimpleOperations/MetaDataDictionary
-  // http://public.kitware.com/Bug/view.php?id=12329#bugnotes
+  // https://www.itk.org/Wiki/ITK/Examples/Broken/SimpleOperations/MetaDataDictionary
+  // https://public.kitware.com/Bug/view.php?id=12329#bugnotes
   itk::MetaDataDictionary& tubeMetaDictionary = tube->GetMetaDataDictionary();
   itk::EncapsulateMetaData<std::string>( tubeMetaDictionary,
                                          "ObjectSubType",

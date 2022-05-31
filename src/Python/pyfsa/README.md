@@ -19,10 +19,10 @@ Requirements
 ------------
 
 - **networkx**, available at
-  [http://networkx.github.io](http://networkx.github.io)
+  [https://networkx.github.io](https://networkx.github.io)
 - **scikit-learn**, available at
-  [http://scikit-learn.org/stable/](http://scikit-learn.org/stable/)
-- **numpy**, available at [http://www.numpy.org](http://www.numpy.org)
+  [https://scikit-learn.org/stable/](https://scikit-learn.org/stable/)
+- **numpy**, available at [https://www.numpy.org](https://www.numpy.org)
 
 Fine-Structure Analysis
 -----------------------
@@ -50,7 +50,7 @@ Example - Classifying MUTAG graphs
 ----------------------------------
 
 In this example, we show how to use the BoW discriminant classifier to classify
-a popular mutagenity dataset (MUTAG, http://www.predictive-toxicology.org) with
+a popular mutagenity dataset (MUTAG, https://www.predictive-toxicology.org) with
 188 graphs. The graphs represent chemical compounds that are labeled as either
 having a mutagenic effect on the Gram-negative bacterium *Salmonella
 typhimurium* or not (125 positive, 63 negative).

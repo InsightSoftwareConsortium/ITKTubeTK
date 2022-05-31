@@ -4,7 +4,7 @@
   <title>Coherence Enhancing Anisotropic Diffusion (TubeTK)</title>
   <description>Performs coherence enhancing anisotropic diffusion: smooths flow-like structures (ex. vessels/tubes). Strong smoothing is performed in the direction of least intensity contrast (i.e. parallel to the tube). Implemented as described in Mendrik et al., Noise reduction in computed tomography scans using 3-D anisotropic diffusion with continuous switch, IEEE Transactions on Medical Imaging, 28(10), pp. 1585-1594, 2009.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url>https://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
   <contributor>Danielle F. Pace, Andinet Enquobahrie, Hua Yang, Stephen R. Aylward (Kitware)</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>

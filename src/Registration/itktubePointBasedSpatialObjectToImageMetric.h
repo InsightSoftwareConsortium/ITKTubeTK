@@ -10,7 +10,7 @@ Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,7 +41,7 @@ namespace tube
  * \brief Computes similarity between two objects to be registered
  * The metric implemented here corresponds to the following paper:
  * \link
- * http://www.cs.unc.edu/Research/MIDAG/pubs/papers/MICCAI01-aylwardVReg.pdf
+ * https://www.cs.unc.edu/Research/MIDAG/pubs/papers/MICCAI01-aylwardVReg.pdf
  * The metric is based on the fact that vessel centerlines are scaled
  * intensity ridges in the image.
  *

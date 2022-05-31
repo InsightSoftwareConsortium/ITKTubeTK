@@ -4,7 +4,7 @@
   <title>Enhance Image Using Discriminant Analysis (TubeTK)</title>
   <description>Given multiple, registered images and foreground and background masks, computes a LDA (nClasses-1) + PCA space for separating the classes, and generates the LDA and PCA instances of the images.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url>https://public.kitware.com/Wiki/TubeTK</documentation-url>
   <documentation-url/>
   <license>Apache 2.0</license>
   <contributor>Stephen R. Aylward (Kitware)</contributor>

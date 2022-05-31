@@ -7,7 +7,7 @@
   Version:   $Revision: 1.12 $
 
   Copyright ( c ) Insight Software Consortium. All rights reserved.
-  See http://www.itk.org/HTML/Copyright.htm for details.
+  See https://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR

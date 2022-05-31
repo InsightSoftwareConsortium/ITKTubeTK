@@ -4,7 +4,7 @@
   <title>Build image from tubes (TubeTK)</title>
   <description>Computes a binary image from tubes</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url>https://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
   <contributor>Stephen R. Aylward, Roland Kwitt, Kitware</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>

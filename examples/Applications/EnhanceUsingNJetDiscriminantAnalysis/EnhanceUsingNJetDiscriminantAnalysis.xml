@@ -4,7 +4,7 @@
   <title>Enhance Image Using NJet Measures Fed into Discriminant Analysis (TubeTK)</title>
   <description>Given an image and foreground and background masks, computes multiscale Jet (0, 1, and 2 order) features at each pixel, performs a multivariate LDA or PCA for separating the classes, and generates the LDA/PCA instances of the images.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url>https://public.kitware.com/Wiki/TubeTK</documentation-url>
   <documentation-url/>
   <license>Apache 2.0</license>
   <contributor>Stephen R. Aylward (Kitware)</contributor>

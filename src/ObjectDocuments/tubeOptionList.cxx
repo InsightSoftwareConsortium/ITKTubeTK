@@ -11,7 +11,7 @@ Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,7 +30,7 @@ Date:      $Date: 2004/05/06 13:45:52 $
 Version:   $Revision: 1.1 $
 
 Copyright ( c ) 2002 Insight Consortium. All rights reserved.
-See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+See ITKCopyright.txt or https://www.itk.org/HTML/Copyright.htm for details.
 
 This software is distributed WITHOUT ANY WARRANTY; without even
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR

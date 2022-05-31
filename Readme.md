@@ -12,7 +12,7 @@ Available in C++ and Python for Linux, Windows, and MacOS.
 Overview
 --------
 
-TubeTK is an open-source toolkit for the segmentation, registration, and analysis of tubes and surfaces in images, developed by [Kitware, Inc.](http://www.kitware.com)
+TubeTK is an open-source toolkit for the segmentation, registration, and analysis of tubes and surfaces in images, developed by [Kitware, Inc.](https://www.kitware.com)
 
 Tubes and surfaces, as generalized 1D and 2D manifolds in N-dimensional images, are essential components in a variety of image analysis tasks. Instances of tubular structures in images include blood vessels in magnetic resonance angiograms and b-mode ultrasound images, wires in microscopy images of integrated circuits, roads in aerial photographs, and nerves in confocal microscopy.
 
@@ -131,11 +131,11 @@ If you find TubeTK to be useful for your work, please cite the following publica
 
 The development of TubeTK has been supported, in part, by the following grants:
 
-* [NCI](http://www.cancer.gov/) under award numbers R01CA138419, R01CA170665, R43CA165621, and R44CA143234;
-* [NIBIB](http://www.nibib.nih.gov) (NBIB) of the National Institutes of Health (NIH) under award numbers R01EB014955, R41EB015775, R43EB016621, and U54EB005149;
-* [NIBIB](http://www.nibib.nih.gov) and [NIGMS](http://www.nigms.nih.gov) R01EB021396;
-* [NINDS](http://www.ninds.nih.gov) R42NS086295 and R41NS081792;
-* [Defense Advanced Research Projects Agency](http://www.darpa.mil) (DARPA) under the TRUST program.
+* [NCI](https://www.cancer.gov/) under award numbers R01CA138419, R01CA170665, R43CA165621, and R44CA143234;
+* [NIBIB](https://www.nibib.nih.gov) (NBIB) of the National Institutes of Health (NIH) under award numbers R01EB014955, R41EB015775, R43EB016621, and U54EB005149;
+* [NIBIB](https://www.nibib.nih.gov) and [NIGMS](https://www.nigms.nih.gov) R01EB021396;
+* [NINDS](https://www.ninds.nih.gov) R42NS086295 and R41NS081792;
+* [Defense Advanced Research Projects Agency](https://www.darpa.mil) (DARPA) under the TRUST program.
 
 License
 -------

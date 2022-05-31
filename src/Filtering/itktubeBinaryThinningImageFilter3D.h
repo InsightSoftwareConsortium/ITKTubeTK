@@ -9,7 +9,7 @@ Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -58,7 +58,7 @@ namespace tube {
 *
 * \author Hanno Homann, Oxford University, Wolfson Medical Vision Lab, UK.
 * 
-* Originally available via Insight Journal: http://hdl.handle.net/1926/1292
+* Originally available via Insight Journal: https://hdl.handle.net/1926/1292
 * and made available under the Creative Commons Attirubtion License v3.0
 * https://creativecommons.org/licenses/by/3.0/legalcode
 *

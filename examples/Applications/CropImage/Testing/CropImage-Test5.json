@@ -3,7 +3,7 @@
   "Category" : "TubeTK",
   "Contributor" : "Stephen R. Aylward (Kitware)",
   "Description" : "Extract a hyper-rectangular region from an image.",
-  "DocumentationURL" : "http://public.kitware.com/Wiki/TubeTK",
+  "DocumentationURL" : "https://public.kitware.com/Wiki/TubeTK",
   "License" : "Apache 2.0",
   "ParameterGroups" :
   [

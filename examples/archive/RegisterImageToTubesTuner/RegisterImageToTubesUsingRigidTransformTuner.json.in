@@ -3,7 +3,7 @@
   "Category" : "TubeTK",
   "Contributor" : "Matthew McCormick (Kitware)",
   "Description" : "Registration of a vessel to its location within an image.",
-  "DocumentationURL" : "http://public.kitware.com/Wiki/TubeTK",
+  "DocumentationURL" : "https://public.kitware.com/Wiki/TubeTK",
   "License" : "Apache 2.0",
   "ParameterGroups" :
   [
