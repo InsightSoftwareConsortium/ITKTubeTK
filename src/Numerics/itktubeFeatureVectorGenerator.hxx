@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -52,6 +51,11 @@ FeatureVectorGenerator< TImage >
   m_UpdateWhitenStatisticsOnUpdate = false;
   m_WhitenMean.clear();
   m_WhitenStdDev.clear();
+
+  m_UseFeatureAddition = false;
+  m_UseFeatureSubtraction = false;
+  m_UseFeatureMultiplication = false;
+  m_UseFeatureRatio = false;
 }
 
 template< class TImage >
@@ -240,7 +244,7 @@ typename FeatureVectorGenerator< TImage >::FeatureValueType
 FeatureVectorGenerator< TImage >
 ::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
 {
-  if( m_WhitenStdDev.size() > 0 &&
+  if( m_WhitenStdDev.size() > fNum &&
     m_WhitenStdDev[fNum] > 0 )
     {
     return static_cast< FeatureValueType >(

@@ -57,10 +57,10 @@ public:
   typedef typename GaussianDerivativeImageSourceType::SigmasType
                                               SigmasType;
 
-  itkSetMacro( Orders, OrdersType& );
+  itkSetMacro( Orders, OrdersType );
   itkGetConstReferenceMacro( Orders, OrdersType );
 
-  itkSetMacro( Sigmas, SigmasType& );
+  itkSetMacro( Sigmas, SigmasType );
   itkGetConstReferenceMacro( Sigmas, SigmasType );
 
   virtual void GenerateNJet( typename OutputImageType::Pointer & D,

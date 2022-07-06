@@ -68,6 +68,7 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_Skeletonize = true;
 
   m_UseIntensityOnly = false;
+  m_UseFeatureMath = false;
 
   m_TrainClassifier = true;
 
@@ -425,6 +426,7 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_PDFSegmenter->SetInputLabelMap( m_SeedFeatureGenerator->GetLabelMap() );
 
   m_RidgeFeatureGenerator->SetUseIntensityOnly( m_UseIntensityOnly );
+  m_RidgeFeatureGenerator->SetUseFeatureMath( m_UseFeatureMath );
 
   //timeCollector.Start( "RidgeSeedFilter FeatureGenerator" );
   m_RidgeFeatureGenerator->Update();

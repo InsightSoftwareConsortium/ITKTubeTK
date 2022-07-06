@@ -150,6 +150,8 @@ protected:
   BasisFeatureVectorGenerator( void );
   virtual ~BasisFeatureVectorGenerator( void );
 
+  virtual void UpdateWhitenStatistics( void ) override;
+
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:

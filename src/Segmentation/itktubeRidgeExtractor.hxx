@@ -132,6 +132,7 @@ RidgeExtractor<TInputImage>
   m_MinCurvatureStart = 0.0;
   m_MinLevelness = 0.3;
   m_MinLevelnessStart = 0.2;
+  m_MinLength = 2.0/m_StepX;
   m_MaxRecoveryAttempts = 4;
 
   m_SplineValueFunc = new RidgeExtractorSplineValue<TInputImage>( this );
@@ -1883,14 +1884,7 @@ RidgeExtractor<TInputImage>
     std::cout << "End traversing the other way" << std::endl;
     }
 
-  // return to user defaults
-  SetScale( scaleOriginal );
-  if( m_RadiusExtractor )
-    {
-    m_RadiusExtractor->SetRadiusStart( radiusOriginal );
-    }
-
-  if( m_Tube->GetPoints().size() < 2.0/m_StepX )
+  if( m_Tube->GetPoints().size() < m_MinLength )
     {
     if( m_StatusCallBack )
       {
@@ -1899,6 +1893,13 @@ RidgeExtractor<TInputImage>
     DeleteTube( m_Tube );
     m_Tube = NULL;
     return nullptr;
+    }
+
+  // return to user defaults
+  SetScale( scaleOriginal );
+  if( m_RadiusExtractor )
+    {
+    m_RadiusExtractor->SetRadiusStart( radiusOriginal );
     }
 
   if( verbose || this->GetDebug() )

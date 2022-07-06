@@ -31,7 +31,7 @@ limitations under the License.
 #include <itkBinaryErodeImageFilter.h>
 #include <itkConnectedThresholdImageFilter.h>
 #include <itkCurvatureAnisotropicDiffusionImageFilter.h>
-#include <itkRecursiveGaussianImageFilter.h>
+#include <itkDiscreteGaussianImageFilter.h>
 #include <itkThresholdImageFilter.h>
 #include <itkHistogram.h>
 #include <itkHistogramToProbabilityImageFilter.h>
@@ -157,7 +157,6 @@ void
 PDFSegmenterParzen< TImage, TLabelMap >
 ::GeneratePDFs( void )
 {
-  //std::cout << "GeneratePDFs" << std::endl;
   if( !this->m_SampleUpToDate )
     {
     this->GenerateSample();
@@ -181,7 +180,6 @@ PDFSegmenterParzen< TImage, TLabelMap >
 
   VectorDoubleType histogramBinMax;
 
-  //std::cout << "Init" << std::endl;
   histogramBinMax.resize( numFeatures );
   for( unsigned int i = 0; i < numFeatures; i++ )
     {
@@ -303,7 +301,6 @@ PDFSegmenterParzen< TImage, TLabelMap >
         {
         double tailReject = totalInClass[c] * ( m_OutlierRejectPortion /
           2.0 );
-        //std::cout << "Class tail = " << tailReject << std::endl;
         for( unsigned int i = 0; i < numFeatures; i++ )
           {
           count = 0;
@@ -495,26 +492,20 @@ PDFSegmenterParzen< TImage, TLabelMap >
   //
   if( true )
     {
-    typedef itk::RecursiveGaussianImageFilter<
+    typedef itk::DiscreteGaussianImageFilter<
       HistogramImageType, HistogramImageType > HistogramBlurGenType;
 
     for( unsigned int c = 0; c < numClasses; c++ )
       {
       if( m_HistogramSmoothingStandardDeviation > 0 )
         {
-        for( unsigned int dir=0; dir<numFeatures; ++dir )
-          {
-          typename HistogramBlurGenType::Pointer blurFilter =
-            HistogramBlurGenType::New();
-          blurFilter->SetInput( m_InClassHistogram[c] );
-          blurFilter->SetSigma( m_HistogramSmoothingStandardDeviation *
-            m_InClassHistogram[c]->GetSpacing()[dir] );
-          blurFilter->SetDirection( dir );
-          blurFilter->SetZeroOrder();
-          blurFilter->SetNormalizeAcrossScale( false );
-          blurFilter->Update();
-          m_InClassHistogram[c] = blurFilter->GetOutput();
-          }
+        typename HistogramBlurGenType::Pointer blurFilter =
+          HistogramBlurGenType::New();
+        blurFilter->SetInput( m_InClassHistogram[c] );
+        blurFilter->SetSigma( m_HistogramSmoothingStandardDeviation );
+        blurFilter->SetUseImageSpacing( false );
+        blurFilter->Update();
+        m_InClassHistogram[c] = blurFilter->GetOutput();
 
         typedef itk::ThresholdImageFilter< HistogramImageType >
           ThresholdFilterType;

@@ -130,7 +130,7 @@ protected:
 
   virtual void GenerateOutputInformation() override;
 
-  void GenerateData() override;
+  virtual void GenerateData() override;
 
 private:
   GaussianDerivativeImageSource( const GaussianDerivativeImageSource & );

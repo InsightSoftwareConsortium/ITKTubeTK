@@ -155,7 +155,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 template< typename TInputImage, typename TOutputImage >
 void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::GenerateData()
+::Update()
 {
   if( m_LastInputImage != this->GetInput() )
     {

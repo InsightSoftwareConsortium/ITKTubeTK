@@ -75,7 +75,8 @@ public:
   //
   enum TransformMethodEnumType { RIGID_TRANSFORM,
                                  AFFINE_TRANSFORM,
-                                 BSPLINE_TRANSFORM };
+                                 PERSPECITVE_RIGID_TRANSFORM,
+                                 PERSPECITVE_AFFINE_TRANSFORM };
 
   enum MetricMethodEnumType { IMAGE_INTENSITY_METRIC };
 

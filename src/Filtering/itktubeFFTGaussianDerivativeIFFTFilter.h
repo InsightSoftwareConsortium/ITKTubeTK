@@ -73,6 +73,8 @@ public:
     std::vector< typename TOutputImage::Pointer > & Dx,
     std::vector< typename TOutputImage::Pointer > & Dxx ) override;
 
+  void Update() override;
+
 protected:
   typedef ForwardFFTImageFilter< RealImageType >          FFTFilterType;
 
@@ -95,7 +97,6 @@ protected:
   void ComputeConvolvedImageFFT();
   void ComputeConvolvedImage();
 
-  void GenerateData() override;
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 

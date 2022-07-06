@@ -88,6 +88,14 @@
       <flag>i</flag>
       <default>false</default>
     </boolean>
+    <boolean>
+      <name>useFeatureMath</name>
+      <label>Use Feature Math</label>
+      <description>Use additional features based on linear combination of image features</description>
+      <longflag>useFeatureMath</longflag>
+      <flag>m</flag>
+      <default>false</default>
+    </boolean>
   </parameters>
   <parameters>
     <label>Application</label>

@@ -63,13 +63,31 @@ unsigned int
 NJetFeatureVectorGenerator< TImage >
 ::GetNumberOfFeatures( void ) const
 {
-  const unsigned int featuresPerImage = m_ZeroScales.size()
+  unsigned int featuresPerImage = m_ZeroScales.size()
     + ( m_FirstScales.size()*( ImageDimension+1 ) )
     + ( m_SecondScales.size()*( ImageDimension+1 ) )
     + m_RidgeScales.size() * 4;
 
-  const unsigned int numFeatures = this->GetNumberOfInputImages()
-    * featuresPerImage;
+  unsigned int augmentedFeaturesPerImage = featuresPerImage;
+  if( this->m_UseFeatureAddition )
+    {
+    augmentedFeaturesPerImage += (featuresPerImage*(featuresPerImage-1))/2;
+    }
+  if( this->m_UseFeatureSubtraction )
+    {
+    augmentedFeaturesPerImage += (featuresPerImage*(featuresPerImage-1))/2;
+    }
+  if( this->m_UseFeatureMultiplication )
+    {
+    augmentedFeaturesPerImage += (featuresPerImage*(featuresPerImage-1))/2;
+    }
+  if( this->m_UseFeatureRatio )
+    {
+    augmentedFeaturesPerImage += (featuresPerImage*(featuresPerImage-1))/2;
+    }
+
+  unsigned int numFeatures = this->GetNumberOfInputImages()
+    * augmentedFeaturesPerImage;
 
   return numFeatures;
 }
@@ -137,19 +155,72 @@ NJetFeatureVectorGenerator< TImage >
       }
     }
 
-  if( numFeatures != featureCount )
-    {
-    std::cerr << "BUG: featureCount != Expected number of features"
-      << std::endl;
-    }
-
-  for( unsigned int i=0; i<numFeatures; ++i )
+  // Only need to normalize image-based measures.  The subsequence math
+  // measures utilize the normalized image-based measures, so they will be
+  // nearly normalized as a result.
+  for( unsigned int i=0; i<featureCount; ++i )
     {
     if( this->GetWhitenStdDev( i ) > 0 )
       {
       featureVector[i] = ( featureVector[i] - this->GetWhitenMean( i ) )
         / this->GetWhitenStdDev( i );
       }
+    }
+
+  unsigned int imageFeatureCount = featureCount;
+  if( this->m_UseFeatureAddition )
+    {
+    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
+      {
+      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
+        {
+        featureVector[featureCount++] = featureVector[f0]+featureVector[f1];
+        }
+      }
+    }
+  if( this->m_UseFeatureSubtraction )
+    {
+    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
+      {
+      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
+        {
+        featureVector[featureCount++] = featureVector[f0]-featureVector[f1];
+        }
+      }
+    }
+  if( this->m_UseFeatureMultiplication )
+    {
+    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
+      {
+      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
+        {
+        featureVector[featureCount++] = featureVector[f0]*featureVector[f1];
+        }
+      }
+    }
+  if( this->m_UseFeatureRatio )
+    {
+    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
+      {
+      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
+        {
+        if( featureVector[f0]+featureVector[f1] != 0 )
+          {
+          featureVector[featureCount++] =
+            featureVector[f0]/(featureVector[f0]+featureVector[f1]);
+          }
+        else
+          {
+          featureVector[featureCount++] = 0;
+          }
+        }
+      }
+    }
+
+  if( numFeatures != featureCount )
+    {
+    std::cerr << "BUG: featureCount != Expected number of features"
+      << std::endl;
     }
 
   return featureVector;
@@ -281,6 +352,80 @@ NJetFeatureVectorGenerator< TImage >
         }
       }
     }
+
+  unsigned int imageFeatureCount = featureCount;
+  if( this->m_UseFeatureAddition )
+    {
+    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
+      {
+      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
+        {
+        if( featureCount == fNum )
+          {
+          double v0 = this->GetFeatureVectorValue( indx, f0 );
+          double v1 = this->GetFeatureVectorValue( indx, f1 );
+          return v0+v1;
+          }
+        featureCount++;
+        }
+      }
+    }
+  if( this->m_UseFeatureSubtraction )
+    {
+    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
+      {
+      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
+        {
+        if( featureCount == fNum )
+          {
+          double v0 = this->GetFeatureVectorValue( indx, f0 );
+          double v1 = this->GetFeatureVectorValue( indx, f1 );
+          return v0-v1;
+          }
+        featureCount++;
+        }
+      }
+    }
+  if( this->m_UseFeatureMultiplication )
+    {
+    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
+      {
+      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
+        {
+        if( featureCount == fNum )
+          {
+          double v0 = this->GetFeatureVectorValue( indx, f0 );
+          double v1 = this->GetFeatureVectorValue( indx, f1 );
+          return v0*v1;
+          }
+        featureCount++;
+        }
+      }
+    }
+  if( this->m_UseFeatureRatio )
+    {
+    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
+      {
+      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
+        {
+        if( featureCount == fNum )
+          {
+          double v0 = this->GetFeatureVectorValue( indx, f0 );
+          double v1 = this->GetFeatureVectorValue( indx, f1 );
+          if( v0+v1 != 0 )
+            {
+            return v0/(v0+v1);
+            }
+          else
+            {
+            return 0;
+            }
+          }
+        featureCount++;
+        }
+      }
+    }
+
   itkExceptionMacro( << "Requested non-existent FeatureVectorValue." );
 }
 

@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -31,7 +30,7 @@ limitations under the License.
 #include <itkBinaryErodeImageFilter.h>
 #include <itkConnectedThresholdImageFilter.h>
 #include <itkCurvatureAnisotropicDiffusionImageFilter.h>
-#include <itkSmoothingRecursiveGaussianImageFilter.h>
+#include <itkDiscreteGaussianImageFilter.h>
 #include <itkThresholdImageFilter.h>
 #include <itkNormalizeToConstantImageFilter.h>
 #include <itkImage.h>
@@ -489,7 +488,7 @@ PDFSegmenterBase< TImage, TLabelMap >
 
   if( m_ProbabilityImageSmoothingStandardDeviation > 0 )
     {
-    typedef itk::SmoothingRecursiveGaussianImageFilter<
+    typedef itk::DiscreteGaussianImageFilter<
       ProbabilityImageType, ProbabilityImageType > ProbImageFilterType;
     typename ProbImageFilterType::Pointer probImageFilter;
 
@@ -893,7 +892,6 @@ PDFSegmenterBase< TImage, TLabelMap >
       }
     }
 
-  std::cout << "done" << std::endl;
   m_ClassProbabilityImagesUpToDate = true;
 }
 
