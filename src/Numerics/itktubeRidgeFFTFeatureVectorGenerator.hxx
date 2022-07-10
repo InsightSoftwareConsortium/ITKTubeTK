@@ -29,7 +29,7 @@ limitations under the License.
 #include <itkImage.h>
 #include <itkSubtractImageFilter.h>
 #include <itkDiscreteGaussianImageFilter.h>
-#include <itkNormalizeImageFilter.h>
+#include <itkStatisticsImageFilter.h>
 
 #include <limits>
 
@@ -132,17 +132,17 @@ RidgeFFTFeatureVectorGenerator< TImage >
 {
   unsigned int numFeatureImages = m_FeatureImageList.size();
 
-  typedef itk::NormalizeImageFilter< FeatureImageType, FeatureImageType >
-    NormFilterType;
-  for( unsigned int i=0; i<numFeatureImages; ++i )
+  this->m_WhitenMean.resize(numFeatureImages);
+  this->m_WhitenStdDev.resize(numFeatureImages);
+  typedef itk::StatisticsImageFilter<FeatureImageType> StatsFilterType;
+  for( unsigned int f=0; f<numFeatureImages; ++f )
     {
-    typename NormFilterType::Pointer normFilter = NormFilterType::New();
-    normFilter->SetInput(m_FeatureImageList[i]);
-    normFilter->Update();
-    m_FeatureImageList[i] = normFilter->GetOutput();
+    typename StatsFilterType::Pointer stats = StatsFilterType::New();
+    stats->SetInput( m_FeatureImageList[f] );
+    stats->Update();
+    m_WhitenMean[f] = stats->GetMean();
+    m_WhitenStdDev[f] = stats->GetSigma();
     }
-  this->m_WhitenMean.clear();
-  this->m_WhitenStdDev.clear();
 }
 
 template< class TImage >
@@ -168,7 +168,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
   unsigned int numFeaturesPerScale = this->GetNumberOfImageFeaturesPerScale();
   unsigned int optScaleFeat = 1;
   unsigned int feat = 0;
-  for( unsigned int img=0; img<m_InputImageList.size(); ++img )
+  for( unsigned int img=0; img<this->m_InputImageList.size(); ++img )
     {
     unsigned int imageFirstFeat = feat;
     if( m_UseIntensityOnly )
@@ -278,6 +278,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
   unsigned int imageFeatureCount = this->GetNumberOfImageFeatures();
 
   unsigned int numFeatures = this->GetNumberOfFeatures();
+
   FeatureVectorType featureVector( numFeatures );
 
   for( unsigned int f=0; f<imageFeatureCount; ++f )
@@ -292,7 +293,8 @@ RidgeFFTFeatureVectorGenerator< TImage >
       if( this->m_WhitenStdDev.size() > f &&
         this->m_WhitenStdDev[f] > 0 )
         {
-        featureVector[f] = (featureVector[f]-m_WhitenMean[f]) / m_WhitenStdDev[f];
+        featureVector[f] = (featureVector[f]-this->m_WhitenMean[f])
+          / this->m_WhitenStdDev[f];
         }
       }
     }
@@ -346,15 +348,15 @@ RidgeFFTFeatureVectorGenerator< TImage >
       }
     }
 
-  if( m_WhitenStdDev.size() > imageFeatureCount )
+  if( this->m_WhitenStdDev.size() > imageFeatureCount )
     {
     for( unsigned int f=imageFeatureCount; f<featureCount; ++f )
       {
-      if( m_WhitenStdDev.size() > f &&
-        m_WhitenStdDev[f] > 0 )
+      if( this->m_WhitenStdDev.size() > f &&
+        this->m_WhitenStdDev[f] > 0 )
         {
-        featureVector[f] = (featureVector[f]-m_WhitenMean[f])
-          / m_WhitenStdDev[f];
+        featureVector[f] = (featureVector[f] - this->m_WhitenMean[f])
+          / this->m_WhitenStdDev[f];
         }
       }
     }

@@ -39,6 +39,8 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   m_ConvolvedImage = NULL;
 
   this->m_LastInputImage = NULL;
+
+  this->DynamicMultiThreadingOff();
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -155,7 +157,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 template< typename TInputImage, typename TOutputImage >
 void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::Update()
+::GenerateData()
 {
   if( m_LastInputImage != this->GetInput() )
     {

@@ -168,6 +168,8 @@ Read( const char * _headerName )
 
   m_RidgeSeedFilter->SetUseIntensityOnly(
     seedReader.GetUseIntensityOnly() );
+  m_RidgeSeedFilter->SetUseFeatureMath(
+    seedReader.GetUseFeatureMath() );
 
   m_RidgeSeedFilter->SetRidgeId( seedReader.GetRidgeId() );
   m_RidgeSeedFilter->SetBackgroundId( seedReader.GetBackgroundId() );
@@ -232,6 +234,8 @@ Write( const char * _headerName )
 
   seedWriter.SetUseIntensityOnly(
     m_RidgeSeedFilter->GetUseIntensityOnly() );
+  seedWriter.SetUseFeatureMath(
+    m_RidgeSeedFilter->GetUseFeatureMath() );
 
   seedWriter.SetRidgeId( m_RidgeSeedFilter->GetRidgeId() );
   seedWriter.SetBackgroundId( m_RidgeSeedFilter->GetBackgroundId() );

@@ -2,8 +2,7 @@
 #
 # Library:   TubeTK
 #
-# Copyright 2010 Kitware Inc. 28 Corporate Drive,
-# Clifton Park, NY, 12065, USA.
+# Copyright Kitware Inc.
 #
 # All rights reserved.
 #
@@ -36,6 +35,7 @@ itk_add_test(
     --unknownId 0
     --tubeScales 0.18,0.36
     --saveDiscriminantInfo ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mrs
+    --saveFeatureImages ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.basis
     --labelmap DATA{${TubeTK_DATA_ROOT}/im0001.vk.mask.crop.mha}
     DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
     ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1_Output.mha )
@@ -74,6 +74,7 @@ itk_add_test(
   COMMAND ${PROJ_EXE}
     --loadDiscriminantInfo ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test1.mrs
     --saveDiscriminantInfo ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.mrs
+    --saveFeatureImages ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2.basis
     DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
     ${ITK_TEST_OUTPUT_DIR}/${MODULE_NAME}Test2_Output.mha )
 set_tests_properties( ${MODULE_NAME}-Test2 PROPERTIES DEPENDS

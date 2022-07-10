@@ -64,6 +64,7 @@ public:
   MetaRidgeSeed(
     const RidgeSeedScalesType & _ridgeScales,
     const bool _useIntensityOnly,
+    const bool _useFeatureMath,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
     const ValueListType & _inputWhitenMeans,
@@ -84,6 +85,7 @@ public:
   bool InitializeEssential(
     const RidgeSeedScalesType & _ridgeScales,
     const bool _useIntensityOnly,
+    const bool _useFeatureMath,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
     const ValueListType & _inputWhitenMeans,
@@ -97,6 +99,9 @@ public:
 
   void SetUseIntensityOnly( bool _useIntensityOnly );
   bool GetUseIntensityOnly( void ) const;
+
+  void SetUseFeatureMath( bool _useFeatureMath );
+  bool GetUseFeatureMath( void ) const;
 
   void  SetPDFFileName( const std::string & _pdfFileName );
   const std::string & GetPDFFileName( void ) const;
@@ -138,6 +143,7 @@ protected:
   bool  M_Read( void );
 
   bool   m_UseIntensityOnly;
+  bool   m_UseFeatureMath;
 
   int    m_RidgeId;
   int    m_BackgroundId;

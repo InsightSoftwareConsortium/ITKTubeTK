@@ -753,15 +753,43 @@ void
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::UpdateWhitenStatistics( void )
 {
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
   const unsigned int numInputFeatures =
     m_InputFeatureVectorGenerator->GetNumberOfFeatures();
 
-  this->m_WhitenMean.resize(numInputFeatures);
-  this->m_WhitenStdDev.resize(numInputFeatures);
-  for( unsigned int i=0; i<numInputFeatures; ++i )
+  this->m_WhitenMean.resize(numFeatures);
+  this->m_WhitenStdDev.resize(numFeatures);
+
+  VectorType tmpMean;
+  tmpMean.set_size( numFeatures );
+
+  VectorType tmpVariance;
+  tmpVariance.set_size( numFeatures );
+
+  VectorType vBasis;
+  VectorType covCol;
+  for( unsigned int v=0; v<numFeatures; ++v )
     {
-    this->m_WhitenMean[i] = 0;
-    this->m_WhitenStdDev[i] = m_BasisValues[i];
+    vBasis = this->GetBasisVector(v);
+    tmpMean[v] = 0;
+    tmpVariance[v] = 0;
+    for( unsigned int f0 = 0; f0 < numInputFeatures; f0++ )
+      {
+      tmpMean[v] += vBasis[f0] * m_GlobalMean[f0];
+      covCol = m_GlobalCovariance.get_column(f0);
+      double tf = 0;
+      for( unsigned int f1 = 0; f1 < numInputFeatures; f1++ )
+        {
+        tf += vBasis[f1] * covCol[f1];
+        }
+      tmpVariance[v] += fabs(tf);
+      }
+    }
+
+  for( unsigned int i=0; i<numFeatures; ++i )
+    {
+    this->m_WhitenMean[i] = tmpMean[i];
+    this->m_WhitenStdDev[i] = sqrt(tmpVariance[i]);
     }
 }
 
