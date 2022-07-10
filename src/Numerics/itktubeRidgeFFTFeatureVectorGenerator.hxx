@@ -140,8 +140,8 @@ RidgeFFTFeatureVectorGenerator< TImage >
     typename StatsFilterType::Pointer stats = StatsFilterType::New();
     stats->SetInput( m_FeatureImageList[f] );
     stats->Update();
-    m_WhitenMean[f] = stats->GetMean();
-    m_WhitenStdDev[f] = stats->GetSigma();
+    this->m_WhitenMean[f] = stats->GetMean();
+    this->m_WhitenStdDev[f] = stats->GetSigma();
     }
 }
 
@@ -189,7 +189,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
             DiffFilterType;
           typename DiffFilterType::Pointer diffFilter = DiffFilterType::New();
           diffFilter->SetInput1(m_FeatureImageList[feat-1]);
-          diffFilter->SetInput2(m_InputImageList[img]);
+          diffFilter->SetInput2(this->m_InputImageList[img]);
           diffFilter->Update();
           m_FeatureImageList[feat++] = diffFilter->GetOutput();
           }
