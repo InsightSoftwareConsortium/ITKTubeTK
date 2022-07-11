@@ -18,7 +18,7 @@ setup_readme_text = (this_directory / "setup-readme.md").read_text()
     #include_dirs=[np.get_include()],
 setup(
     name='itk-tubetk',
-    version='1.2.1',
+    version='1.3',
     author='Stephen R. Aylward',
     author_email='stephen.aylward@kitware.com',
     packages=['itk'],
