@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -73,6 +72,8 @@ public:
     std::vector< typename TOutputImage::Pointer > & Dx,
     std::vector< typename TOutputImage::Pointer > & Dxx ) override;
 
+  void GenerateData() override;
+
 protected:
   typedef ForwardFFTImageFilter< RealImageType >          FFTFilterType;
 
@@ -95,7 +96,6 @@ protected:
   void ComputeConvolvedImageFFT();
   void ComputeConvolvedImage();
 
-  void GenerateData() override;
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 

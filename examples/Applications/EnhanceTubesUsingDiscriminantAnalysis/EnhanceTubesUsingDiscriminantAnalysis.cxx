@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -146,6 +145,7 @@ int DoIt( int argc, char * argv[] )
     tubeFilter->SetTrainClassifier( true );
 
     tubeFilter->SetUseIntensityOnly( useIntensityOnly );
+    tubeFilter->SetUseFeatureMath( useFeatureMath );
     tubeFilter->SetSeedTolerance( seedTolerance );
     }
 

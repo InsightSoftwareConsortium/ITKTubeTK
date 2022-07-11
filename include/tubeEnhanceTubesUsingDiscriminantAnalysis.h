@@ -155,6 +155,9 @@ public:
   tubeWrapSetMacro( UseIntensityOnly, bool, Filter );
   tubeWrapGetMacro( UseIntensityOnly, bool, Filter );
 
+  tubeWrapSetMacro( UseFeatureMath, bool, Filter );
+  tubeWrapGetMacro( UseFeatureMath, bool, Filter );
+
   tubeWrapSetMacro( TrainClassifier, bool, Filter );
   tubeWrapGetMacro( TrainClassifier, bool, Filter );
 

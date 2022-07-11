@@ -77,6 +77,9 @@ public:
                                                      FeatureImageListType;
 
   //
+  virtual unsigned int GetNumberOfImageFeaturesPerScale( void ) const;
+  virtual unsigned int GetNumberOfImageFeatures( void ) const;
+  virtual unsigned int GetNumberOfMathFeatures( void ) const;
   virtual unsigned int GetNumberOfFeatures( void ) const override;
 
   void SetScales( const RidgeScalesType & scales );
@@ -101,7 +104,7 @@ protected:
   RidgeFFTFeatureVectorGenerator( void );
   virtual ~RidgeFFTFeatureVectorGenerator( void );
 
-  virtual void UpdateWhitenStatistics( void );
+  virtual void UpdateWhitenStatistics( void ) override;
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 

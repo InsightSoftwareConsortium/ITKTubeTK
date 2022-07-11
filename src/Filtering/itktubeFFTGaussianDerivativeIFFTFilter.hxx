@@ -39,6 +39,8 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   m_ConvolvedImage = NULL;
 
   this->m_LastInputImage = NULL;
+
+  this->DynamicMultiThreadingOff();
 }
 
 template< typename TInputImage, typename TOutputImage >

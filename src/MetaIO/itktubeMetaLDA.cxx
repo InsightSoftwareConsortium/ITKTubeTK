@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -598,6 +597,12 @@ void MetaLDA
   const int nDimsRecNum = MET_GetFieldRecordNumber( "NDims", &m_Fields );
 
   mF = new MET_FieldRecordType();
+  MET_InitReadField( mF, "NBasis", MET_INT, true );
+  m_Fields.push_back( mF );
+
+  const int nBasisRecNum = MET_GetFieldRecordNumber( "NBasis", &m_Fields );
+
+  mF = new MET_FieldRecordType();
   MET_InitReadField( mF, "NPCABasis", MET_INT, true );
   m_Fields.push_back( mF );
 
@@ -625,12 +630,12 @@ void MetaLDA
 
   mF = new MET_FieldRecordType();
   MET_InitReadField( mF, "OutputWhitenMeans", MET_FLOAT_ARRAY, false,
-    nDimsRecNum );
+    nBasisRecNum );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType();
   MET_InitReadField( mF, "OutputWhitenStdDevs", MET_FLOAT_ARRAY, false,
-    nDimsRecNum );
+    nBasisRecNum );
   m_Fields.push_back( mF );
 }
 
@@ -640,11 +645,18 @@ void MetaLDA
   std::strcpy( m_FormTypeName, "LDA" );
   MetaForm::M_SetupWriteFields();
 
+  const unsigned int nDims = m_LDAValues.size();
+
   MET_FieldRecordType * mF = new MET_FieldRecordType();
-  MET_InitWriteField( mF, "NDims", MET_INT, m_LDAValues.size() );
+  MET_InitWriteField( mF, "NDims", MET_INT, nDims );
   m_Fields.push_back( mF );
 
-  const unsigned int nDims = m_LDAValues.size();
+  const unsigned int nBasis = m_NumberOfPCABasisToUseAsFeatures +
+    m_NumberOfLDABasisToUseAsFeatures; 
+
+  mF = new MET_FieldRecordType();
+  MET_InitWriteField( mF, "NBasis", MET_INT, nBasis );
+  m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType();
   MET_InitWriteField( mF, "NPCABasis", MET_INT,
@@ -706,26 +718,26 @@ void MetaLDA
     {
     double tf[4096];
     mF = new MET_FieldRecordType();
-    for( unsigned int i = 0; i < tfCount; i++ )
+    for( unsigned int i = 0; i < tfCount && i < nBasis; i++ )
       {
       tf[i] = m_OutputWhitenMeans[i];
       }
-    for( unsigned int i = tfCount; i < nDims; i++ )
+    for( unsigned int i = tfCount; i < nBasis; i++ )
       {
       tf[i] = 0;
       }
 
-    MET_InitWriteField( mF, "OutputWhitenMeans", MET_FLOAT_ARRAY, nDims,
+    MET_InitWriteField( mF, "OutputWhitenMeans", MET_FLOAT_ARRAY, nBasis,
       tf );
     m_Fields.push_back( mF );
 
     mF = new MET_FieldRecordType();
-    for( unsigned int i = 0; i < tfCount; i++ )
+    for( unsigned int i = 0; i < tfCount && i < nBasis; i++ )
       {
       tf[i] = m_OutputWhitenStdDevs[i];
       }
 
-    MET_InitWriteField( mF, "OutputWhitenStdDevs", MET_FLOAT_ARRAY, nDims,
+    MET_InitWriteField( mF, "OutputWhitenStdDevs", MET_FLOAT_ARRAY, nBasis,
       tf );
     m_Fields.push_back( mF );
     }
@@ -764,12 +776,25 @@ bool MetaLDA
     m_LDAMatrix.fill( 0 );
     m_InputWhitenMeans.resize( nDims );
     m_InputWhitenStdDevs.resize( nDims );
-    m_OutputWhitenMeans.resize( nDims );
-    m_OutputWhitenStdDevs.resize( nDims );
     }
   else
     {
     std::cout << "MetaLDA: M_Read: Error: NDims required."
+                        << std::endl;
+    return false;
+    }
+
+  unsigned int nBasis = 0;
+  mF = MET_GetFieldRecord( "NBasis", &m_Fields );
+  if( mF && mF->defined )
+    {
+    nBasis = ( unsigned int )mF->value[0];
+    m_OutputWhitenMeans.resize( nBasis );
+    m_OutputWhitenStdDevs.resize( nBasis );
+    }
+  else
+    {
+    std::cout << "MetaLDA: M_Read: Error: NBasis required."
                         << std::endl;
     return false;
     }
@@ -848,7 +873,7 @@ bool MetaLDA
   mF = MET_GetFieldRecord( "OutputWhitenMeans", &m_Fields );
   if( mF && mF->defined )
     {
-    for( unsigned int i = 0; i < nDims; i++ )
+    for( unsigned int i = 0; i < nBasis; i++ )
       {
       m_OutputWhitenMeans[i] = ( double )mF->value[i];
       }
@@ -861,7 +886,7 @@ bool MetaLDA
   mF = MET_GetFieldRecord( "OutputWhitenStdDevs", &m_Fields );
   if( mF && mF->defined )
     {
-    for( unsigned int i = 0; i < nDims; i++ )
+    for( unsigned int i = 0; i < nBasis; i++ )
       {
       m_OutputWhitenStdDevs[i] = ( double )mF->value[i];
       }

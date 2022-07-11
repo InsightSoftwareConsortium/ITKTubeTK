@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -583,8 +582,22 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     {
     for( unsigned int j = i; j < numInputFeatures; j++ )
       {
-      m_GlobalCovariance[i][j] = ( globalCount / ( globalCount - 1 ) )
-        * m_GlobalCovariance[i][j];
+      if( globalCount > 1 )
+        {
+        m_GlobalCovariance[i][j] = ( globalCount / ( globalCount - 1 ) )
+          * m_GlobalCovariance[i][j];
+        }
+      else
+        {
+        if( i != j )
+          {
+          m_GlobalCovariance[i][j] = 0;
+          }
+        else
+          {
+          m_GlobalCovariance[i][j] = 1;
+          }
+        }
       m_GlobalCovariance[j][i] = m_GlobalCovariance[i][j];
       for( unsigned int c = 0; c < numClasses; c++ )
         {
@@ -592,13 +605,19 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
           {
           m_ObjectCovarianceList[c][i][j] = ( countList[c]
             / ( countList[c] - 1 ) ) * m_ObjectCovarianceList[c][i][j];
-          m_ObjectCovarianceList[c][j][i] = m_ObjectCovarianceList[c][i][j];
           }
         else
           {
-          m_ObjectCovarianceList[c][i][j] = 0;
-          m_ObjectCovarianceList[c][j][i] = 0;
+          if( i != j )
+            {
+            m_ObjectCovarianceList[c][i][j] = 0;
+            }
+          else
+            {
+            m_ObjectCovarianceList[c][i][j] = 1;
+            }
           }
+        m_ObjectCovarianceList[c][j][i] = m_ObjectCovarianceList[c][i][j];
         }
       }
     }
@@ -726,6 +745,51 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   if( this->GetUpdateWhitenStatisticsOnUpdate() )
     {
     this->UpdateWhitenStatistics();
+    }
+}
+
+template< class TImage, class TLabelMap >
+void
+BasisFeatureVectorGenerator< TImage, TLabelMap >
+::UpdateWhitenStatistics( void )
+{
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
+  const unsigned int numInputFeatures =
+    m_InputFeatureVectorGenerator->GetNumberOfFeatures();
+
+  this->m_WhitenMean.resize(numFeatures);
+  this->m_WhitenStdDev.resize(numFeatures);
+
+  VectorType tmpMean;
+  tmpMean.set_size( numFeatures );
+
+  VectorType tmpVariance;
+  tmpVariance.set_size( numFeatures );
+
+  VectorType vBasis;
+  VectorType covCol;
+  for( unsigned int v=0; v<numFeatures; ++v )
+    {
+    vBasis = this->GetBasisVector(v);
+    tmpMean[v] = 0;
+    tmpVariance[v] = 0;
+    for( unsigned int f0 = 0; f0 < numInputFeatures; f0++ )
+      {
+      tmpMean[v] += vBasis[f0] * m_GlobalMean[f0];
+      covCol = m_GlobalCovariance.get_column(f0);
+      double tf = 0;
+      for( unsigned int f1 = 0; f1 < numInputFeatures; f1++ )
+        {
+        tf += vBasis[f1] * covCol[f1];
+        }
+      tmpVariance[v] += fabs(tf);
+      }
+    }
+
+  for( unsigned int i=0; i<numFeatures; ++i )
+    {
+    this->m_WhitenMean[i] = tmpMean[i];
+    this->m_WhitenStdDev[i] = sqrt(tmpVariance[i]);
     }
 }
 

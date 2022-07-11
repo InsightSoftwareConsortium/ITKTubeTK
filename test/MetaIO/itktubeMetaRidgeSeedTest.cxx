@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -61,7 +60,7 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
   mrs1.SetOutputWhitenMeans( ws );
   mrs1.SetOutputWhitenStdDevs( wm );
   mrs1.SetRidgeSeedScales( scales );
-  mrs1.SetPDFFileName( "test.pdf" );
+  mrs1.SetPDFFileName( "MetaRidgeSeedTest.rsf" );
   if( mrs1.GetLDAValues() != v || mrs1.GetLDAMatrix() != m
     || mrs1.GetRidgeSeedScales() != scales )
     {
@@ -74,6 +73,8 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
   mrs1.SetRidgeId( 256 );
   mrs1.SetSeedTolerance( 0.5 );
   mrs1.SetSkeletonize( false );
+  mrs1.SetUseIntensityOnly( true );
+  mrs1.SetUseFeatureMath( true );
 
   itk::tube::MetaRidgeSeed mrs2( mrs1 );
   if( mrs2.GetLDAValues() != mrs1.GetLDAValues()
@@ -83,6 +84,8 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
     || mrs2.GetOutputWhitenMeans() != mrs1.GetOutputWhitenMeans()
     || mrs2.GetOutputWhitenStdDevs() != mrs1.GetOutputWhitenStdDevs()
     || mrs2.GetRidgeSeedScales() != mrs1.GetRidgeSeedScales()
+    || mrs2.GetUseIntensityOnly() != mrs1.GetUseIntensityOnly()
+    || mrs2.GetUseFeatureMath() != mrs1.GetUseFeatureMath()
     || mrs2.GetPDFFileName() != mrs1.GetPDFFileName() )
     {
     std::cout << "LDA values do not match after copy constructor"
@@ -123,8 +126,8 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  itk::tube::MetaRidgeSeed mrs3( scales, true, v, m, wm, ws, ws, wm,
-    "test.pdf" );
+  itk::tube::MetaRidgeSeed mrs3( scales, true, true, v, m, wm, ws, ws, wm,
+    "MetaRidgeSeedTest.rsf" );
   if( mrs3.GetLDAValues() != mrs1.GetLDAValues()
     || mrs3.GetLDAMatrix() != mrs1.GetLDAMatrix()
     || mrs3.GetInputWhitenMeans() != mrs1.GetInputWhitenMeans()
@@ -132,7 +135,9 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
     || mrs3.GetOutputWhitenMeans() != mrs1.GetOutputWhitenMeans()
     || mrs3.GetOutputWhitenStdDevs() != mrs1.GetOutputWhitenStdDevs()
     || mrs3.GetRidgeSeedScales() != scales
-    || strcmp( mrs3.GetPDFFileName().c_str(), "test.pdf" ) )
+    || mrs3.GetUseIntensityOnly() != true
+    || mrs3.GetUseFeatureMath() != true
+    || strcmp( mrs3.GetPDFFileName().c_str(), "MetaRidgeSeedTest.rsf" ) )
     {
     std::cout << "LDA values do not match after explicit constructor"
       << std::endl;
@@ -146,9 +151,11 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
     || mrs4.GetLDAMatrix() != mrs1.GetLDAMatrix()
     || mrs4.GetInputWhitenMeans() != mrs1.GetInputWhitenMeans()
     || mrs4.GetInputWhitenStdDevs() != mrs1.GetInputWhitenStdDevs()
-    || mrs4.GetOutputWhitenMeans() != mrs1.GetOutputWhitenMeans()
-    || mrs4.GetOutputWhitenStdDevs() != mrs1.GetOutputWhitenStdDevs()
+    || mrs4.GetOutputWhitenMeans()[0] != mrs1.GetOutputWhitenMeans()[0]
+    || mrs4.GetOutputWhitenStdDevs()[0] != mrs1.GetOutputWhitenStdDevs()[0]
     || mrs4.GetRidgeSeedScales() != scales
+    || mrs4.GetUseIntensityOnly() != mrs1.GetUseIntensityOnly()
+    || mrs4.GetUseFeatureMath() != mrs1.GetUseFeatureMath()
     || mrs4.GetPDFFileName() != mrs1.GetPDFFileName() )
     {
     std::cout << "LDA values do not match after write/read constructor"
@@ -157,16 +164,18 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
     }
 
   itk::tube::MetaRidgeSeed mrs5;
-  mrs5.InitializeEssential( scales, true, v, m, wm, ws, ws, wm,
-    "test.pdf" );
+  mrs5.InitializeEssential( scales, true, true, v, m, wm, ws, ws, wm,
+    "MetaRidgeSeedTest.rsf" );
   if( mrs5.GetLDAValues() != mrs1.GetLDAValues()
     || mrs5.GetLDAMatrix() != mrs1.GetLDAMatrix()
     || mrs5.GetInputWhitenMeans() != mrs1.GetInputWhitenMeans()
     || mrs5.GetInputWhitenStdDevs() != mrs1.GetInputWhitenStdDevs()
-    || mrs5.GetOutputWhitenMeans() != mrs1.GetOutputWhitenMeans()
-    || mrs5.GetOutputWhitenStdDevs() != mrs1.GetOutputWhitenStdDevs()
+    || mrs5.GetOutputWhitenMeans()[0] != mrs1.GetOutputWhitenMeans()[0]
+    || mrs5.GetOutputWhitenStdDevs()[0] != mrs1.GetOutputWhitenStdDevs()[0]
     || mrs5.GetRidgeSeedScales() != scales
-    || strcmp( mrs5.GetPDFFileName().c_str(), "test.pdf" ) )
+    || mrs5.GetUseIntensityOnly() != mrs1.GetUseIntensityOnly()
+    || mrs5.GetUseFeatureMath() != mrs1.GetUseFeatureMath()
+    || strcmp( mrs5.GetPDFFileName().c_str(), "MetaRidgeSeedTest.rsf" ) )
     {
     std::cout << "LDA values don't match after InitializeEssential"
       << std::endl;
@@ -185,10 +194,12 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
     || mrs5.GetLDAMatrix() != mrs1.GetLDAMatrix()
     || mrs5.GetInputWhitenMeans() != mrs1.GetInputWhitenMeans()
     || mrs5.GetInputWhitenStdDevs() != mrs1.GetInputWhitenStdDevs()
-    || mrs5.GetOutputWhitenMeans() != mrs1.GetOutputWhitenMeans()
-    || mrs5.GetOutputWhitenStdDevs() != mrs1.GetOutputWhitenStdDevs()
+    || mrs5.GetOutputWhitenMeans()[0] != mrs1.GetOutputWhitenMeans()[0]
+    || mrs5.GetOutputWhitenStdDevs()[0] != mrs1.GetOutputWhitenStdDevs()[0]
     || mrs5.GetRidgeSeedScales() != scales
-    || strcmp( mrs5.GetPDFFileName().c_str(), "test.pdf" ) )
+    || mrs5.GetUseIntensityOnly() != mrs1.GetUseIntensityOnly()
+    || mrs5.GetUseFeatureMath() != mrs1.GetUseFeatureMath()
+    || strcmp( mrs5.GetPDFFileName().c_str(), "MetaRidgeSeedTest.rsf" ) )
     {
     std::cout << "LDA values do not match after read" << std::endl;
     return EXIT_FAILURE;

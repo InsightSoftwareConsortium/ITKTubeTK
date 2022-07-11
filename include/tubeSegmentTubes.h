@@ -222,6 +222,9 @@ public:
   tubeWrapSetMacro( MinLevelnessStart, double, RidgeFilter );
   tubeWrapGetMacro( MinLevelnessStart, double, RidgeFilter );
 
+  tubeWrapSetMacro( MinLength, int, RidgeFilter );
+  tubeWrapGetMacro( MinLength, int, RidgeFilter );
+
   tubeWrapSetMacro( Scale, double, RidgeFilter );
   tubeWrapGetMacro( Scale, double, RidgeFilter );
 

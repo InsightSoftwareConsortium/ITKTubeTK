@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -60,6 +59,8 @@ int itktubeMetaNJetLDATest( int argc, char * argv[] )
     }
 
   itk::tube::MetaNJetLDA mlda1;
+  mlda1.SetNumberOfLDABasisToUseAsFeatures( 4 );
+  mlda1.SetNumberOfPCABasisToUseAsFeatures( 6 );
   mlda1.SetLDAValues( v );
   mlda1.SetLDAMatrix( m );
   mlda1.SetInputWhitenMeans( wm );

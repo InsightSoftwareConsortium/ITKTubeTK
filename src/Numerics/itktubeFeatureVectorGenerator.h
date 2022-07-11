@@ -92,6 +92,23 @@ public:
   void   SetWhitenStdDev( unsigned int num, double stdDev );
   double GetWhitenStdDev( unsigned int num ) const;
 
+  void SetUseFeatureMath( bool useFeatureMath )
+    {
+    m_UseFeatureAddition = useFeatureMath;
+    m_UseFeatureSubtraction = useFeatureMath;
+    m_UseFeatureMultiplication = useFeatureMath;
+    m_UseFeatureRatio = useFeatureMath;
+    }
+
+  itkSetMacro( UseFeatureAddition, bool );
+  itkGetMacro( UseFeatureAddition, bool );
+  itkSetMacro( UseFeatureSubtraction, bool );
+  itkGetMacro( UseFeatureSubtraction, bool );
+  itkSetMacro( UseFeatureMultiplication, bool );
+  itkGetMacro( UseFeatureMultiplication, bool );
+  itkSetMacro( UseFeatureRatio, bool );
+  itkGetMacro( UseFeatureRatio, bool );
+
   virtual unsigned int GetNumberOfFeatures( void ) const;
 
   virtual FeatureVectorType GetFeatureVector(
@@ -112,7 +129,15 @@ protected:
 
   ImageListType                   m_InputImageList;
 
-  void UpdateWhitenStatistics( void );
+  bool                            m_UseFeatureAddition;
+  bool                            m_UseFeatureSubtraction;
+  bool                            m_UseFeatureMultiplication;
+  bool                            m_UseFeatureRatio;
+
+  ValueListType                   m_WhitenMean;
+  ValueListType                   m_WhitenStdDev;
+
+  virtual void UpdateWhitenStatistics( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
@@ -124,8 +149,6 @@ private:
 
   //  Data
   bool                            m_UpdateWhitenStatisticsOnUpdate;
-  ValueListType                   m_WhitenMean;
-  ValueListType                   m_WhitenStdDev;
 
 }; // End class FeatureVectorGenerator
 

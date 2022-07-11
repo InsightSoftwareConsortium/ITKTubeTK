@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -73,6 +72,7 @@ MetaRidgeSeed::
 MetaRidgeSeed(
   const RidgeSeedScalesType & _ridgeSeedScales,
   bool _useIntensityOnly,
+  bool _useFeatureMath,
   const LDAValuesType & _ldaValues,
   const LDAMatrixType & _ldaMatrix,
   const ValueListType & _inputWhitenMeans,
@@ -88,7 +88,7 @@ MetaRidgeSeed(
 
   Clear();
 
-  InitializeEssential( _ridgeSeedScales, _useIntensityOnly,
+  InitializeEssential( _ridgeSeedScales, _useIntensityOnly, _useFeatureMath,
     _ldaValues, _ldaMatrix, _inputWhitenMeans,
     _inputWhitenStdDevs, _outputWhitenMeans, _outputWhitenStdDevs,
     _pdfFileName );
@@ -112,6 +112,9 @@ PrintInfo() const
   std::cout << "UseIntensityOnly = "
     << ( m_UseIntensityOnly ? "True" : "False" ) << std::endl;
 
+  std::cout << "UseFeatureMath = "
+    << ( m_UseFeatureMath ? "True" : "False" ) << std::endl;
+
   std::cout << "RidgeId = " << m_RidgeId << std::endl;
 
   std::cout << "BackgroundId = " << m_BackgroundId << std::endl;
@@ -131,6 +134,7 @@ CopyInfo( const MetaRidgeSeed & _lda )
 
   SetRidgeSeedScales( _lda.GetRidgeSeedScales() );
   SetUseIntensityOnly( _lda.GetUseIntensityOnly() );
+  SetUseFeatureMath( _lda.GetUseFeatureMath() );
   SetPDFFileName( _lda.GetPDFFileName() );
   SetRidgeId( _lda.GetRidgeId() );
   SetUnknownId( _lda.GetUnknownId() );
@@ -154,6 +158,7 @@ Clear( void )
   m_RidgeSeedScales.clear();
 
   m_UseIntensityOnly = false;
+  m_UseFeatureMath = false;
 
   m_PDFFileName.clear();
 
@@ -162,12 +167,16 @@ Clear( void )
   m_UnknownId = 0;
   m_SeedTolerance = 1;
   m_Skeletonize = true;
+
+  this->m_NumberOfLDABasisToUseAsFeatures = 1;
+  this->m_NumberOfPCABasisToUseAsFeatures = 3;
 }
 
 bool MetaRidgeSeed::
 InitializeEssential(
   const RidgeSeedScalesType & _ridgeSeedScales,
   bool _useIntensityOnly,
+  bool _useFeatureMath,
   const LDAValuesType & _ldaValues,
   const LDAMatrixType & _ldaMatrix,
   const ValueListType & _inputWhitenMeans,
@@ -188,6 +197,7 @@ InitializeEssential(
   SetRidgeSeedScales( _ridgeSeedScales );
 
   SetUseIntensityOnly( _useIntensityOnly );
+  SetUseFeatureMath( _useFeatureMath );
 
   SetPDFFileName( _pdfFileName );
 
@@ -236,6 +246,28 @@ GetUseIntensityOnly( void ) const
     }
 
   return m_UseIntensityOnly;
+}
+
+void MetaRidgeSeed::
+SetUseFeatureMath( bool _UseFeatureMath )
+{
+  if( META_DEBUG )
+    {
+    std::cout << "MetaRidgeSeed: SetUseFeatureMath" << std::endl;
+    }
+
+  m_UseFeatureMath = _UseFeatureMath;
+}
+
+bool MetaRidgeSeed::
+GetUseFeatureMath( void ) const
+{
+  if( META_DEBUG )
+    {
+    std::cout << "MetaRidgeSeed: GetUseFeatureMath" << std::endl;
+    }
+
+  return m_UseFeatureMath;
 }
 
 void MetaRidgeSeed::
@@ -485,7 +517,7 @@ ReadStream( std::ifstream * _stream )
 
   m_ReadStream = NULL;
 
-  InitializeEssential( m_RidgeSeedScales, m_UseIntensityOnly,
+  InitializeEssential( m_RidgeSeedScales, m_UseIntensityOnly, m_UseFeatureMath,
     m_LDAValues, m_LDAMatrix, m_InputWhitenMeans,
     m_InputWhitenStdDevs, m_OutputWhitenMeans, m_OutputWhitenStdDevs,
     m_PDFFileName );
@@ -586,6 +618,10 @@ M_SetupReadFields( void )
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "UseFeatureMath", MET_STRING, true );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "PDFFileName", MET_STRING, true );
   m_Fields.push_back( mF );
 
@@ -642,6 +678,17 @@ M_SetupWriteFields( void )
     else
       {
       MET_InitWriteField( mF, "UseIntensityOnly", MET_STRING, 5, "False" );
+      }
+    m_Fields.push_back( mF );
+
+    mF = new MET_FieldRecordType;
+    if( m_UseFeatureMath )
+      {
+      MET_InitWriteField( mF, "UseFeatureMath", MET_STRING, 4, "True" );
+      }
+    else
+      {
+      MET_InitWriteField( mF, "UseFeatureMath", MET_STRING, 5, "False" );
       }
     m_Fields.push_back( mF );
 
@@ -730,6 +777,17 @@ M_Read( void )
   else
     {
     m_UseIntensityOnly = false;
+    }
+
+  mF = MET_GetFieldRecord( "UseFeatureMath", &m_Fields );
+  if( ( ( char * )( mF->value ) )[0] == 'T'
+    || ( ( char * )( mF->value ) ) [0] == 't' )
+    {
+    m_UseFeatureMath = true;
+    }
+  else
+    {
+    m_UseFeatureMath = false;
     }
 
   mF = MET_GetFieldRecord( "PDFFileName", &m_Fields );
