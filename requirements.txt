@@ -1,5 +1,0 @@
-itkWidgets
-jupyter
-notebook
-numpy
-scipy

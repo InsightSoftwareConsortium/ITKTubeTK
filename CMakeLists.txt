@@ -23,7 +23,7 @@ cmake_minimum_required(VERSION 3.10.2)
 
 project( TubeTK )
 
-set( TubeTK_VERSION 1.3 )
+set( TubeTK_VERSION 1.3.1 )
 
 if(NOT ITK_SOURCE_DIR)
   include(itk-module-init.cmake)
@@ -77,7 +77,6 @@ endif()
 ####
 if( ITK_WRAP_PYTHON )
   find_package( PythonInterp )
-  find_package( PythonLibs REQUIRED )
   find_package( NumPy REQUIRED )
   mark_as_advanced( NUMPY_INCLUDE_DIR )
 endif()
