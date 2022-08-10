@@ -6,7 +6,7 @@ env:
   vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
   itk-git-tag: "master"
   itk-wheel-tag: "v5.3rc04.post2"
-  itk-minimalpathextraction-git-tag: "v1.2.2"
+  itk-minimalpathextraction-git-tag: "v1.2.3"
 
 jobs:
   build-test-cxx:
