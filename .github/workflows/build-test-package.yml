@@ -266,6 +266,10 @@ jobs:
         ln -s -f -T /ITKPythonPackage/${{ matrix.itk-package }} /work/${{ matrix.itk-package }}
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
+        echo "/work"
+        ls -la /work
+        echo "/ITKPythonPackage"
+        ls -la /ITKPythonPackage
         export ITK_DIR="/work/${{ matrix.itk-package }}"
         git clone https://github.com/Slicer/SlicerExecutionModel
         mkdir -p SlicerExecutionModel-build
