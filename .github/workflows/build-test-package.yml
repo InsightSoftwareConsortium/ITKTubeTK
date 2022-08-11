@@ -203,17 +203,17 @@ jobs:
         python-version: [37, 38, 39]
         include:
           - python-version: 37
-            itk-package: "ITK-cp37-cp37m-manylinux2014_x64"
+            itk-package: "ITK-cp37-cp37m-manylinux_2_28_x64"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
           - python-version: 38
-            itk-package: "ITK-cp38-cp38-manylinux2014_x64"
+            itk-package: "ITK-cp38-cp38-manylinux_2_28_x64"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
           - python-version: 39
-            itk-package: "ITK-cp39-cp39-manylinux2014_x64"
+            itk-package: "ITK-cp39-cp39-manylinux_2_28_x64"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
