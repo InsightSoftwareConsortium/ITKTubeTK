@@ -23,7 +23,7 @@ cmake_minimum_required(VERSION 3.10.2)
 
 project( TubeTK )
 
-set( TubeTK_VERSION 1.3.1 )
+set( TubeTK_VERSION 1.3.2 )
 
 if(NOT ITK_SOURCE_DIR)
   include(itk-module-init.cmake)
