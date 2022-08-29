@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -69,21 +68,9 @@ NJetFeatureVectorGenerator< TImage >
     + m_RidgeScales.size() * 4;
 
   unsigned int augmentedFeaturesPerImage = featuresPerImage;
-  if( this->m_UseFeatureAddition )
+  if( this->m_UseFeatureMath)
     {
-    augmentedFeaturesPerImage += (featuresPerImage*(featuresPerImage-1))/2;
-    }
-  if( this->m_UseFeatureSubtraction )
-    {
-    augmentedFeaturesPerImage += (featuresPerImage*(featuresPerImage-1))/2;
-    }
-  if( this->m_UseFeatureMultiplication )
-    {
-    augmentedFeaturesPerImage += (featuresPerImage*(featuresPerImage-1))/2;
-    }
-  if( this->m_UseFeatureRatio )
-    {
-    augmentedFeaturesPerImage += (featuresPerImage*(featuresPerImage-1))/2;
+    augmentedFeaturesPerImage += 4*(featuresPerImage*(featuresPerImage-1))/2;
     }
 
   unsigned int numFeatures = this->GetNumberOfInputImages()
@@ -155,9 +142,6 @@ NJetFeatureVectorGenerator< TImage >
       }
     }
 
-  // Only need to normalize image-based measures.  The subsequence math
-  // measures utilize the normalized image-based measures, so they will be
-  // nearly normalized as a result.
   for( unsigned int i=0; i<featureCount; ++i )
     {
     if( this->GetWhitenStdDev( i ) > 0 )
@@ -168,59 +152,48 @@ NJetFeatureVectorGenerator< TImage >
     }
 
   unsigned int imageFeatureCount = featureCount;
-  if( this->m_UseFeatureAddition )
+  if( this->m_UseFeatureMath )
     {
+    int offset = (imageFeatureCount*(imageFeatureCount-1))/2;
     for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
       {
+      double tf0 = featureVector[f0];
+      double tf0a = fabs(tf0);
       for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
         {
-        featureVector[featureCount++] = featureVector[f0]+featureVector[f1];
-        }
-      }
-    }
-  if( this->m_UseFeatureSubtraction )
-    {
-    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
-      {
-      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
-        {
-        featureVector[featureCount++] = featureVector[f0]-featureVector[f1];
-        }
-      }
-    }
-  if( this->m_UseFeatureMultiplication )
-    {
-    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
-      {
-      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
-        {
-        featureVector[featureCount++] = featureVector[f0]*featureVector[f1];
-        }
-      }
-    }
-  if( this->m_UseFeatureRatio )
-    {
-    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
-      {
-      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
-        {
-        if( featureVector[f0]+featureVector[f1] != 0 )
+        double tf1 = featureVector[f1];
+        double tf1a = fabs(tf1);
+        featureVector[featureCount] = (tf0+tf1)/2;
+        featureVector[featureCount+offset] = (tf0-tf1)/2;
+        featureVector[featureCount+2*offset] = sqrt(fabs(tf0*tf1));
+        if( tf0a+tf1a != 0 )
           {
-          featureVector[featureCount++] =
-            featureVector[f0]/(featureVector[f0]+featureVector[f1]);
+          featureVector[featureCount+3*offset] = (tf0+tf1) / (tf0a+tf1a);
           }
         else
           {
-          featureVector[featureCount++] = 0;
+          featureVector[featureCount+3*offset] = 0;
+          }
+        featureCount++;
+        }
+      }
+    featureCount = imageFeatureCount + 4*offset;
+    if( this->m_WhitenStdDev.size() > imageFeatureCount )
+      {
+      unsigned int count = featureCount;
+      if( count < this->m_WhitenStdDev.size() )
+        {
+        count = this->m_WhitenStdDev.size();
+        }
+      for( unsigned int f=imageFeatureCount; f<count; ++f )
+        {
+        if( this->m_WhitenStdDev[f] > 0 )
+          {
+          featureVector[f] = (featureVector[f] - this->m_WhitenMean[f])
+            / this->m_WhitenStdDev[f];
           }
         }
       }
-    }
-
-  if( numFeatures != featureCount )
-    {
-    std::cerr << "BUG: featureCount != Expected number of features"
-      << std::endl;
     }
 
   return featureVector;
@@ -354,8 +327,9 @@ NJetFeatureVectorGenerator< TImage >
     }
 
   unsigned int imageFeatureCount = featureCount;
-  if( this->m_UseFeatureAddition )
+  if( this->m_UseFeatureMath )
     {
+    int offset = (imageFeatureCount*(imageFeatureCount-1))/2;
     for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
       {
       for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
@@ -366,49 +340,19 @@ NJetFeatureVectorGenerator< TImage >
           double v1 = this->GetFeatureVectorValue( indx, f1 );
           return v0+v1;
           }
-        featureCount++;
-        }
-      }
-    }
-  if( this->m_UseFeatureSubtraction )
-    {
-    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
-      {
-      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
-        {
-        if( featureCount == fNum )
+        if( featureCount+offset == fNum )
           {
           double v0 = this->GetFeatureVectorValue( indx, f0 );
           double v1 = this->GetFeatureVectorValue( indx, f1 );
           return v0-v1;
           }
-        featureCount++;
-        }
-      }
-    }
-  if( this->m_UseFeatureMultiplication )
-    {
-    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
-      {
-      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
-        {
-        if( featureCount == fNum )
+        if( featureCount+2*offset == fNum )
           {
           double v0 = this->GetFeatureVectorValue( indx, f0 );
           double v1 = this->GetFeatureVectorValue( indx, f1 );
           return v0*v1;
           }
-        featureCount++;
-        }
-      }
-    }
-  if( this->m_UseFeatureRatio )
-    {
-    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
-      {
-      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
-        {
-        if( featureCount == fNum )
+        if( featureCount+3*offset == fNum )
           {
           double v0 = this->GetFeatureVectorValue( indx, f0 );
           double v1 = this->GetFeatureVectorValue( indx, f1 );

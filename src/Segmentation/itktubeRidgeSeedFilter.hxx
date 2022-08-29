@@ -59,6 +59,7 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_RidgeId = 255;
   m_BackgroundId = 127;
   m_UnknownId = 0;
+  m_IgnoreId = 64;
 
   m_SeedTolerance = 1.0;
 
@@ -436,6 +437,7 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_PDFSegmenter->SetObjectId( m_RidgeId );
   m_PDFSegmenter->AddObjectId( m_BackgroundId );
   m_PDFSegmenter->SetVoidId( m_UnknownId );
+  m_PDFSegmenter->SetIgnoreId( m_IgnoreId );
 
   m_PDFSegmenter->SetObjectPDFWeight( 0, m_SeedTolerance );
 
@@ -471,10 +473,12 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   m_PDFSegmenter->ClassifyImages();
 
+  std::cout << "Set label map" << std::endl;
   m_SeedFeatureGenerator->SetLabelMap( tmpLabelMap );
 
   m_LabelMap = m_PDFSegmenter->GetOutputLabelMap();
 
+  std::cout << "Iterate" << std::endl;
   itk::ImageRegionIterator< LabelMapType > resultIter(
     m_LabelMap, m_LabelMap->GetLargestPossibleRegion() );
   while( !resultIter.IsAtEnd() )
@@ -490,8 +494,9 @@ RidgeSeedFilter< TImage, TLabelMap >
     ++resultIter;
     }
 
-  if( m_Skeletonize )
+  if( false ) // m_Skeletonize )
     {
+    std::cout << "Skeletonize" << std::endl;
     typedef itk::BinaryThinningImageFilter< LabelMapType, LabelMapType >
       FilterType;
 
@@ -502,6 +507,7 @@ RidgeSeedFilter< TImage, TLabelMap >
     m_LabelMap = filter->GetOutput();
     filter->Update();
     }
+  std::cout << "Classify Done" << std::endl;
 }
 
 template< class TImage, class TLabelMap >

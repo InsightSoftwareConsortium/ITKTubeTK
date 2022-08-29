@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -92,22 +91,8 @@ public:
   void   SetWhitenStdDev( unsigned int num, double stdDev );
   double GetWhitenStdDev( unsigned int num ) const;
 
-  void SetUseFeatureMath( bool useFeatureMath )
-    {
-    m_UseFeatureAddition = useFeatureMath;
-    m_UseFeatureSubtraction = useFeatureMath;
-    m_UseFeatureMultiplication = useFeatureMath;
-    m_UseFeatureRatio = useFeatureMath;
-    }
-
-  itkSetMacro( UseFeatureAddition, bool );
-  itkGetMacro( UseFeatureAddition, bool );
-  itkSetMacro( UseFeatureSubtraction, bool );
-  itkGetMacro( UseFeatureSubtraction, bool );
-  itkSetMacro( UseFeatureMultiplication, bool );
-  itkGetMacro( UseFeatureMultiplication, bool );
-  itkSetMacro( UseFeatureRatio, bool );
-  itkGetMacro( UseFeatureRatio, bool );
+  itkSetMacro( UseFeatureMath, bool );
+  itkGetMacro( UseFeatureMath, bool );
 
   virtual unsigned int GetNumberOfFeatures( void ) const;
 
@@ -129,10 +114,7 @@ protected:
 
   ImageListType                   m_InputImageList;
 
-  bool                            m_UseFeatureAddition;
-  bool                            m_UseFeatureSubtraction;
-  bool                            m_UseFeatureMultiplication;
-  bool                            m_UseFeatureRatio;
+  bool                            m_UseFeatureMath;
 
   ValueListType                   m_WhitenMean;
   ValueListType                   m_WhitenStdDev;

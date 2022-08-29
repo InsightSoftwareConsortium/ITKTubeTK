@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -164,6 +163,8 @@ public:
   itkGetMacro( BackgroundId, ObjectIdType );
   itkSetMacro( UnknownId, ObjectIdType );
   itkGetMacro( UnknownId, ObjectIdType );
+  itkSetMacro( IgnoreId, ObjectIdType );
+  itkGetMacro( IgnoreId, ObjectIdType );
 
   itkSetMacro( SeedTolerance, double );
   itkGetMacro( SeedTolerance, double );
@@ -212,6 +213,7 @@ private:
   ObjectIdType   m_RidgeId;
   ObjectIdType   m_BackgroundId;
   ObjectIdType   m_UnknownId;
+  ObjectIdType   m_IgnoreId;
 
   double         m_SeedTolerance;
 
