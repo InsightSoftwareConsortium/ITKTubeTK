@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -85,15 +84,21 @@ ComputeTrainingMaskFilter< TInputImage, TLabelMap >
 template< class TInputImage, class TLabelMap >
 void
 ComputeTrainingMaskFilter< TInputImage, TLabelMap >
-::ApplyDilateMorphologyFilter( typename ImageType::Pointer &input, int size )
+::ApplyDilateMorphologyFilter( typename ImageType::Pointer & input, int size )
 {
-  for( int r = 0; r<size; r++ )
-    {
-    m_Dilate->SetInput( input );
-    m_Dilate->Update();
-    input=m_Dilate->GetOutput();
-    input->DisconnectPipeline();
-    }
+  m_Ball.SetRadius( size );
+  m_Ball.CreateStructuringElement();
+
+  m_Dilate->SetObjectValue( 1 );
+  m_Dilate->SetKernel( m_Ball );
+
+  m_Dilate->SetInput( input );
+  m_Dilate->Update();
+
+  input = m_Dilate->GetOutput();
+
+  input->DisconnectPipeline();
+
   return;
 }
 
