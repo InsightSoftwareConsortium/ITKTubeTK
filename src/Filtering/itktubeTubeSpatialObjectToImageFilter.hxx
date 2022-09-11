@@ -203,6 +203,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   typename OutputImageType::IndexType index;
   typename OutputImageType::IndexType index2;
 
+  TangentPixelType tp;
   while( TubeIterator != tubeList->end() )
     {
     TubeType * tube = ( TubeType * )TubeIterator->GetPointer();
@@ -291,7 +292,6 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
           {
           // Convert the tangent type to the actual tangent image pixel type
           typename TubeType::VectorType t = tubePoint->GetTangentInWorldSpace();
-          TangentPixelType tp;
           for( unsigned int tpind = 0;tpind<ObjectDimension;tpind++ )
             {
             tp[tpind] = t[tpind];
@@ -310,7 +310,6 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
           {
           RadiusPixelType radius = tubePoint->GetRadiusInWorldSpace();
 
-          TangentPixelType tp;
           if( m_BuildTangentImage )
             {
             typename TubeType::VectorType t = tubePoint->GetTangentInWorldSpace();

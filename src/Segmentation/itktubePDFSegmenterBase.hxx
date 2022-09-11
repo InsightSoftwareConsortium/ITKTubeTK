@@ -501,7 +501,6 @@ PDFSegmenterBase< TImage, TLabelMap >
     delete probIt[c];
     }
 
-  std::cout << "Smoothing" << std::endl;
   if( m_ProbabilityImageSmoothingStandardDeviation > 0 )
     {
     typedef itk::SmoothingRecursiveGaussianImageFilter<
@@ -530,7 +529,6 @@ PDFSegmenterBase< TImage, TLabelMap >
       m_ProbabilityImageVector[c] = thresholdProbImageFilter->GetOutput();
       }
     }
-  std::cout << "Smoothing Done" << std::endl;
 
   //
   //  Create label image
@@ -552,7 +550,6 @@ PDFSegmenterBase< TImage, TLabelMap >
 
   if( !m_ForceClassification )
     {
-    std::cout << "Force classification" << std::endl;
     for( unsigned int c = 0; c < numClasses; c++ )
       {
       // For this class, label all pixels for which it is the most
@@ -560,7 +557,6 @@ PDFSegmenterBase< TImage, TLabelMap >
       itk::ImageRegionIteratorWithIndex<LabelMapType> labelIt(
         tmpLabelImage, tmpLabelImage->GetLargestPossibleRegion() );
       labelIt.GoToBegin();
-      std::cout << "Label pixels for class " << c << std::endl;
       while( !labelIt.IsAtEnd() )
         {
         labelImageIndex = labelIt.GetIndex();
@@ -595,7 +591,6 @@ PDFSegmenterBase< TImage, TLabelMap >
         ++labelIt;
         }
 
-      std::cout << "Connected Threshold" << std::endl;
       typedef itk::ConnectedThresholdImageFilter<LabelMapType,
         LabelMapType> ConnectedFilterType;
       typename ConnectedFilterType::Pointer insideConnecter =
@@ -617,7 +612,6 @@ PDFSegmenterBase< TImage, TLabelMap >
 
       if( !m_ReclassifyObjectLabels )
         {
-        std::cout << "Reclassify" << std::endl;
         // The pixels with maximum probability for the current
         // class are all set to 128 before the update of the
         // ConnectedThresholdImageFilter, so if the input label
@@ -679,7 +673,6 @@ PDFSegmenterBase< TImage, TLabelMap >
           }
         }
 
-      std::cout << "InsideConnecter" << std::endl;
       insideConnecter->SetInput( tmpLabelImage );
       insideConnecter->SetLower( 64 );
       insideConnecter->SetUpper( 194 );
@@ -687,7 +680,6 @@ PDFSegmenterBase< TImage, TLabelMap >
       insideConnecter->Update();
       tmpLabelImage = insideConnecter->GetOutput();
 
-      std::cout << "Holes" << std::endl;
       //
       // Fill holes
       //
@@ -713,7 +705,6 @@ PDFSegmenterBase< TImage, TLabelMap >
       //
       // Erode
       //
-      std::cout << "Erode" << std::endl;
       typedef BinaryBallStructuringElement< LabelMapPixelType,
         InputImageType::ImageDimension >             StructuringElementType;
       typedef BinaryErodeImageFilter< LabelMapType, LabelMapType,
@@ -754,7 +745,6 @@ PDFSegmenterBase< TImage, TLabelMap >
       //
       if( true ) // creating a local context to limit memory footprint
         {
-        std::cout << "Connected Threshold 2" << std::endl;
         typedef itk::ConnectedThresholdImageFilter<LabelMapType,
           LabelMapType> ConnectedLabelMapFilterType;
 
@@ -788,7 +778,6 @@ PDFSegmenterBase< TImage, TLabelMap >
       //
       // Dilate back to original size
       //
-      std::cout << "Dilate" << std::endl;
       if( erodeRadius > 0 )
         {
         if( m_DilateFirst )
@@ -814,7 +803,6 @@ PDFSegmenterBase< TImage, TLabelMap >
         }
 
       // Merge with input mask
-      std::cout << "Merge" << std::endl;
       typedef itk::ImageRegionIterator< LabelMapType >
         LabelMapIteratorType;
       LabelMapIteratorType itOutLM( m_OutputLabelMap,
@@ -872,13 +860,10 @@ PDFSegmenterBase< TImage, TLabelMap >
         ++itOutLM;
         ++itLabel;
         }
-      std::cout << "Merge Done" << std::endl;
       }
-    std::cout << "Force classification Done" << std::endl;
     }
   else
     {
-    std::cout << "Merge (no force)" << std::endl;
     // Merge with input mask
     typedef itk::ImageRegionIteratorWithIndex< LabelMapType >
       LabelMapIteratorType;
@@ -932,7 +917,6 @@ PDFSegmenterBase< TImage, TLabelMap >
         }
       ++itOutLM;
       }
-    std::cout << "Merge (no force) Done" << std::endl;
     }
 
 

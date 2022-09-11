@@ -240,10 +240,6 @@ void
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::ComputeSubsampledPoints( void ) 
 {
-  unsigned int maxPointCount = this->GetMaximumNumberOfPoints();
-
-  unsigned int targetPointCount = maxPointCount * m_SamplingRatio;
-  
   m_SubsampledBlobPoints.clear();
   m_SubsampledBlobPointsWeights.clear();
   m_SubsampledTubePoints.clear();
@@ -251,7 +247,6 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
   m_SubsampledSurfacePoints.clear();
   m_SubsampledSurfacePointsWeights.clear();
 
-  unsigned int pointCount = 0;
   typename PointBasedSpatialObjectType::ChildrenConstListType * pbsoList =
     this->GetPointBasedChildren( this->m_MovingSpatialObject );
   std::string oName = this->m_MovingSpatialObject->GetTypeName();
@@ -523,7 +518,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       radiusPoint.Fill(radius);
       FixedPointType fixedRadiusPoint =
         transformCopy->TransformPoint( radiusPoint );
-      double fixedScale = radiusPoint[0];
+      double fixedScale = fixedRadiusPoint[0];
       for( unsigned int i=1; i<ImageDimension; ++i )
       {
         fixedScale += radiusPoint[i];
@@ -628,7 +623,7 @@ PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
       radiusPoint.Fill(radius);
       FixedPointType fixedRadiusPoint =
         transformCopy->TransformPoint( radiusPoint );
-      double fixedScale = radiusPoint[0];
+      double fixedScale = fixedRadiusPoint[0];
       for( unsigned int i=1; i<ImageDimension; ++i )
       {
         fixedScale += radiusPoint[i];

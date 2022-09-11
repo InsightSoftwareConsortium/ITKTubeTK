@@ -138,8 +138,6 @@ void
 RidgeFFTFeatureVectorGenerator< TImage >
 ::Update( void )
 {
-
-  unsigned int numFeatures = this->GetNumberOfFeatures();
   unsigned int numImageFeatures = this->GetNumberOfImageFeatures();
 
   typename FeatureImageType::RegionType region =
