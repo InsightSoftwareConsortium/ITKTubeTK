@@ -202,10 +202,10 @@ public:
   itkGetMacro( MinLevelnessStart, double );
 
   /** Set Length Threshold */
-  itkSetMacro( MinLength, int );
+  itkSetMacro( MinLength, unsigned int );
 
   /** Get Length Threshold */
-  itkGetMacro( MinLength, int );
+  itkGetMacro( MinLength, unsigned int );
 
 
   /** Set Extract Bound Minimum */
@@ -408,7 +408,7 @@ private:
   double                                             m_MinLevelness;
   double                                             m_MinLevelnessStart;
 
-  int                                                m_MinLength;
+  unsigned int                                       m_MinLength;
 
   // current location
   PointType                                          m_X;

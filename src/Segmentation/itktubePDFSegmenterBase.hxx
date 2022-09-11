@@ -30,7 +30,7 @@ limitations under the License.
 #include <itkBinaryErodeImageFilter.h>
 #include <itkConnectedThresholdImageFilter.h>
 #include <itkCurvatureAnisotropicDiffusionImageFilter.h>
-#include <itkDiscreteGaussianImageFilter.h>
+#include <itkSmoothingRecursiveGaussianImageFilter.h>
 #include <itkThresholdImageFilter.h>
 #include <itkNormalizeToConstantImageFilter.h>
 #include <itkImage.h>
@@ -69,6 +69,7 @@ PDFSegmenterBase< TImage, TLabelMap >
 
   m_ObjectIdList.clear();
   m_VoidId = std::numeric_limits< LabelMapPixelType >::max();
+  m_IgnoreId = std::numeric_limits< LabelMapPixelType >::max();
   m_PDFWeightList.clear();
 
   m_DilateFirst = false;
@@ -302,38 +303,41 @@ PDFSegmenterBase< TImage, TLabelMap >
   while( !itInLabelMap.IsAtEnd() )
     {
     int val = itInLabelMap.Get();
-    indx = itInLabelMap.GetIndex();
-    fv = this->m_FeatureVectorGenerator->GetFeatureVector( indx );
-    for( unsigned int i = 0; i < numFeatures; i++ )
+    if( val != m_IgnoreId && val != m_VoidId )
       {
-      v[i] = fv[i];
-      }
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      v[numFeatures+i] = indx[i];
-      }
-    if( val != prevVal )
-      {
-      found = false;
-      prevVal = val;
-      for( unsigned int c = 0; c < numClasses; c++ )
+      indx = itInLabelMap.GetIndex();
+      fv = this->m_FeatureVectorGenerator->GetFeatureVector( indx );
+      for( unsigned int i = 0; i < numFeatures; i++ )
         {
-        if( val == m_ObjectIdList[c] )
+        v[i] = fv[i];
+        }
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        v[numFeatures+i] = indx[i];
+        }
+      if( val != prevVal )
+        {
+        found = false;
+        prevVal = val;
+        for( unsigned int c = 0; c < numClasses; c++ )
           {
-          found = true;
-          prevVal = val;
-          prevC = c;
-          break;
+          if( val == m_ObjectIdList[c] )
+            {
+            found = true;
+            prevVal = val;
+            prevC = c;
+            break;
+            }
           }
         }
-      }
-    if( found )
-      {
-      m_InClassList[prevC].push_back( v );
-      }
-    else if( !found && val != m_VoidId )
-      {
-      m_OutClassList.push_back( v );
+      if( found )
+        {
+        m_InClassList[prevC].push_back( v );
+        }
+      else
+        {
+        m_OutClassList.push_back( v );
+        }
       }
     ++itInLabelMap;
     }
@@ -465,19 +469,30 @@ PDFSegmenterBase< TImage, TLabelMap >
 
   FeatureVectorType fv;
   typename LabelMapType::IndexType indx;
+  unsigned int ignoredCount = 0;
   while( !itInLabelMap.IsAtEnd() )
     {
-    indx = itInLabelMap.GetIndex();
-    fv = m_FeatureVectorGenerator->GetFeatureVector( indx );
-
-    ProbabilityVectorType probV = this->GetProbabilityVector( fv );
-    for( unsigned int c=0; c<numClasses; ++c )
+    int val = itInLabelMap.Get();
+    if( val != m_IgnoreId )
       {
-      probIt[c]->Set( m_PDFWeightList[c] * probV[c] );
-
-      ++( *( probIt[c] ) );
+      indx = itInLabelMap.GetIndex();
+      fv = m_FeatureVectorGenerator->GetFeatureVector( indx );
+  
+      ProbabilityVectorType probV = this->GetProbabilityVector( fv );
+      for( unsigned int c=0; c<numClasses; ++c )
+        {
+        probIt[c]->Set( m_PDFWeightList[c] * probV[c] );
+        ++( *( probIt[c] ) );
+        }
       }
-
+    else
+      {
+      ++ignoredCount;
+      for( unsigned int c=0; c<numClasses; ++c )
+        {
+        ++( *( probIt[c] ) );
+        }
+      }
     ++itInLabelMap;
     }
 
@@ -488,7 +503,7 @@ PDFSegmenterBase< TImage, TLabelMap >
 
   if( m_ProbabilityImageSmoothingStandardDeviation > 0 )
     {
-    typedef itk::DiscreteGaussianImageFilter<
+    typedef itk::SmoothingRecursiveGaussianImageFilter<
       ProbabilityImageType, ProbabilityImageType > ProbImageFilterType;
     typename ProbImageFilterType::Pointer probImageFilter;
 
@@ -545,22 +560,29 @@ PDFSegmenterBase< TImage, TLabelMap >
       while( !labelIt.IsAtEnd() )
         {
         labelImageIndex = labelIt.GetIndex();
-        bool maxPC = true;
-        double maxP = m_ProbabilityImageVector[c]->GetPixel(
-          labelImageIndex );
-        for( unsigned int oc = 0; oc < numClasses; oc++ )
+        if( labelIt.Get() != m_IgnoreId )
           {
-          if( oc != c &&
-              m_ProbabilityImageVector[oc]->GetPixel( labelImageIndex )
-              > maxP )
+          bool maxPC = true;
+          double maxP = m_ProbabilityImageVector[c]->GetPixel(
+            labelImageIndex );
+          for( unsigned int oc = 0; oc < numClasses; oc++ )
             {
-            maxPC = false;
-            break;
+            if( oc != c &&
+                m_ProbabilityImageVector[oc]->GetPixel( labelImageIndex )
+                > maxP )
+              {
+              maxPC = false;
+              break;
+              }
             }
-          }
-        if( maxPC )
-          {
-          labelIt.Set( 128 );
+          if( maxPC )
+            {
+            labelIt.Set( 128 );
+            }
+          else
+            {
+            labelIt.Set( 0 );
+            }
           }
         else
           {
@@ -793,42 +815,45 @@ PDFSegmenterBase< TImage, TLabelMap >
 
       while( !itOutLM.IsAtEnd() )
         {
-        //itOutLM.Set( itOutLM.Get() );
-        if( itLabel.Get() == 255 )
+        ObjectIdType outId = itOutLM.Get();
+        if( outId != m_IgnoreId )
           {
-          if( itOutLM.Get() == m_VoidId
-            || ( m_ReclassifyObjectLabels && m_ReclassifyNotObjectLabels ) )
+          if( itLabel.Get() == 255 )
             {
-            itOutLM.Set( m_ObjectIdList[c] );
-            }
-          else
-            {
-            if( m_ReclassifyObjectLabels || m_ReclassifyNotObjectLabels )
+            if( itOutLM.Get() == m_VoidId
+              || ( m_ReclassifyObjectLabels && m_ReclassifyNotObjectLabels ) )
               {
-              bool isObjectId = false;
-              for( unsigned int oc = 0; oc < numClasses; oc++ )
+              itOutLM.Set( m_ObjectIdList[c] );
+              }
+            else
+              {
+              if( m_ReclassifyObjectLabels || m_ReclassifyNotObjectLabels )
                 {
-                if( itOutLM.Get() == m_ObjectIdList[oc] )
+                bool isObjectId = false;
+                for( unsigned int oc = 0; oc < numClasses; oc++ )
                   {
-                  isObjectId = true;
-                  break;
+                  if( itOutLM.Get() == m_ObjectIdList[oc] )
+                    {
+                    isObjectId = true;
+                    break;
+                    }
                   }
-                }
-              if( ( isObjectId && m_ReclassifyObjectLabels ) ||
-                  ( !isObjectId && m_ReclassifyNotObjectLabels ) )
-                {
-                itOutLM.Set( m_ObjectIdList[c] );
+                if( ( isObjectId && m_ReclassifyObjectLabels ) ||
+                    ( !isObjectId && m_ReclassifyNotObjectLabels ) )
+                  {
+                  itOutLM.Set( m_ObjectIdList[c] );
+                  }
                 }
               }
             }
-          }
-        else
-          {
-          if( itOutLM.Get() == m_ObjectIdList[c] )
+          else
             {
-            if( m_ReclassifyObjectLabels )
+            if( itOutLM.Get() == m_ObjectIdList[c] )
               {
-              itOutLM.Set( m_VoidId );
+              if( m_ReclassifyObjectLabels )
+                {
+                itOutLM.Set( m_VoidId );
+                }
               }
             }
           }
@@ -848,49 +873,52 @@ PDFSegmenterBase< TImage, TLabelMap >
 
     while( !itOutLM.IsAtEnd() )
       {
-      //itOutLM.Set( itOutLM.Get() );
-      labelImageIndex = itOutLM.GetIndex();
-      unsigned int maxPC = 0;
-      double maxP = m_ProbabilityImageVector[0]->GetPixel(
-        labelImageIndex );
-      for( unsigned int c = 1; c < numClasses; c++ )
+      if( itOutLM.Get() != m_IgnoreId )
         {
-        double p = m_ProbabilityImageVector[c]->GetPixel(
+        labelImageIndex = itOutLM.GetIndex();
+        unsigned int maxPC = 0;
+        double maxP = m_ProbabilityImageVector[0]->GetPixel(
           labelImageIndex );
-        if( p > maxP )
+        for( unsigned int c = 1; c < numClasses; c++ )
           {
-          maxP = p;
-          maxPC = c;
-          }
-        }
-      if( itOutLM.Get() == m_VoidId
-        || ( m_ReclassifyObjectLabels && m_ReclassifyNotObjectLabels ) )
-        {
-        itOutLM.Set( m_ObjectIdList[maxPC] );
-        }
-      else
-        {
-        if( m_ReclassifyObjectLabels || m_ReclassifyNotObjectLabels )
-          {
-          bool isObjectId = false;
-          for( unsigned int oc = 0; oc < numClasses; oc++ )
+          double p = m_ProbabilityImageVector[c]->GetPixel(
+            labelImageIndex );
+          if( p > maxP )
             {
-            if( itOutLM.Get() == m_ObjectIdList[oc] )
-              {
-              isObjectId = true;
-              break;
-              }
+            maxP = p;
+            maxPC = c;
             }
-          if( ( isObjectId && m_ReclassifyObjectLabels ) ||
-              ( !isObjectId && m_ReclassifyNotObjectLabels ) )
+          }
+        if( itOutLM.Get() == m_VoidId
+          || ( m_ReclassifyObjectLabels && m_ReclassifyNotObjectLabels ) )
+          {
+          itOutLM.Set( m_ObjectIdList[maxPC] );
+          }
+        else
+          {
+          if( m_ReclassifyObjectLabels || m_ReclassifyNotObjectLabels )
             {
-            itOutLM.Set( m_ObjectIdList[maxPC] );
+            bool isObjectId = false;
+            for( unsigned int oc = 0; oc < numClasses; oc++ )
+              {
+              if( itOutLM.Get() == m_ObjectIdList[oc] )
+                {
+                isObjectId = true;
+                break;
+                }
+              }
+            if( ( isObjectId && m_ReclassifyObjectLabels ) ||
+                ( !isObjectId && m_ReclassifyNotObjectLabels ) )
+              {
+              itOutLM.Set( m_ObjectIdList[maxPC] );
+              }
             }
           }
         }
       ++itOutLM;
       }
     }
+
 
   m_ClassProbabilityImagesUpToDate = true;
 }
@@ -900,19 +928,13 @@ void
 PDFSegmenterBase< TImage, TLabelMap >
 ::Update( void )
 {
-  //itk::TimeProbesCollectorBase timeCollector;
 
-  //timeCollector.Start( "PDFSegmenterBase Generate Sample" );
   this->GenerateSample();
   if( m_BalanceClassSampleSize )
     {
     BalanceClassSampleSize();
     }
-  //timeCollector.Stop( "PDFSegmenterBase Generate Sample" );
-  //timeCollector.Start( "PDFSegmenterBase Generate PDFs" );
   this->GeneratePDFs();
-  //timeCollector.Stop( "PDFSegmenterBase Generate PDFs" );
-  //timeCollector.Report();
 }
 
 template< class TImage, class TLabelMap >

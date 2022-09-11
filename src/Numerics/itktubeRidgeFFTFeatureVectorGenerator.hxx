@@ -91,21 +91,9 @@ RidgeFFTFeatureVectorGenerator< TImage >
   unsigned int imageFeatures = this->GetNumberOfImageFeatures();
 
   unsigned int mathFeatures = 0;
-  if( this->m_UseFeatureAddition )
+  if( this->m_UseFeatureMath )
     {
-    mathFeatures += (imageFeatures*(imageFeatures-1))/2;
-    }
-  if( this->m_UseFeatureSubtraction )
-    {
-    mathFeatures += (imageFeatures*(imageFeatures-1))/2;
-    }
-  if( this->m_UseFeatureMultiplication )
-    {
-    mathFeatures += (imageFeatures*(imageFeatures-1))/2;
-    }
-  if( this->m_UseFeatureRatio )
-    {
-    mathFeatures += (imageFeatures*(imageFeatures-1))/2;
+    mathFeatures += 4*(imageFeatures*(imageFeatures-1))/2;
     }
 
   unsigned int numFeatures = this->GetNumberOfInputImages() * mathFeatures;
@@ -150,8 +138,6 @@ void
 RidgeFFTFeatureVectorGenerator< TImage >
 ::Update( void )
 {
-
-  unsigned int numFeatures = this->GetNumberOfFeatures();
   unsigned int numImageFeatures = this->GetNumberOfImageFeatures();
 
   typename FeatureImageType::RegionType region =
@@ -299,64 +285,46 @@ RidgeFFTFeatureVectorGenerator< TImage >
       }
     }
   unsigned int featureCount = imageFeatureCount;
-  if( this->m_UseFeatureAddition )
+  if( this->m_UseFeatureMath )
     {
+    int offset = (imageFeatureCount*(imageFeatureCount-1))/2;
     for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
       {
+      double tf0 = featureVector[f0];
+      double tf0a = fabs(tf0);
       for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
         {
-        featureVector[featureCount++] = (featureVector[f0]+featureVector[f1])/2.0;
-        }
-      }
-    }
-  if( this->m_UseFeatureSubtraction )
-    {
-    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
-      {
-      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
-        {
-        featureVector[featureCount++] = (featureVector[f0]-featureVector[f1])/2.0;
-        }
-      }
-    }
-  if( this->m_UseFeatureMultiplication )
-    {
-    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
-      {
-      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
-        {
-        featureVector[featureCount++] = sqrt(fabs(featureVector[f0]*featureVector[f1]));
-        }
-      }
-    }
-  if( this->m_UseFeatureRatio )
-    {
-    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
-      {
-      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
-        {
-        if( fabs(featureVector[f0])+fabs(featureVector[f1]) != 0 )
+        double tf1 = featureVector[f1];
+        double tf1a = fabs(tf1);
+        featureVector[featureCount] = (tf0+tf1)/2;
+        featureVector[featureCount+offset] = (tf0-tf1)/2;
+        featureVector[featureCount+2*offset] = sqrt(fabs(tf0*tf1));
+        if( tf0a+tf1a != 0 )
           {
-          featureVector[featureCount++] = (featureVector[f0]-featureVector[f1])
-            / (fabs(featureVector[f0])+fabs(featureVector[f1]));
+          featureVector[featureCount+3*offset] = (tf0+tf1) / (tf0a+tf1a);
           }
         else
           {
-          featureVector[featureCount++] = 0;
+          featureVector[featureCount+3*offset] = 0;
           }
+        featureCount++;
         }
       }
-    }
-
-  if( this->m_WhitenStdDev.size() > imageFeatureCount )
-    {
-    for( unsigned int f=imageFeatureCount; f<featureCount; ++f )
+    featureCount = imageFeatureCount + 4*offset;
+    if( this->m_WhitenStdDev.size() > imageFeatureCount )
       {
-      if( this->m_WhitenStdDev.size() > f &&
-        this->m_WhitenStdDev[f] > 0 )
+      unsigned int count = featureCount;
+      if( count < this->m_WhitenStdDev.size() )
         {
-        featureVector[f] = (featureVector[f] - this->m_WhitenMean[f])
-          / this->m_WhitenStdDev[f];
+        count = this->m_WhitenStdDev.size();
+        }
+      for( unsigned int f=imageFeatureCount; f<count; ++f )
+        {
+        if( this->m_WhitenStdDev[f] > 0 )
+          {
+          featureVector[f] = (featureVector[f] - this->m_WhitenMean[f])
+            / this->m_WhitenStdDev[f];
+          }
         }
       }
     }

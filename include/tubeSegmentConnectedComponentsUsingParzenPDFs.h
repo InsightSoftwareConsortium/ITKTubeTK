@@ -92,6 +92,9 @@ public:
   tubeWrapSetMacro( VoidId, LabelMapPixelType, Filter );
   tubeWrapGetMacro( VoidId, LabelMapPixelType, Filter );
 
+  tubeWrapSetMacro( IgnoreId, LabelMapPixelType, Filter );
+  tubeWrapGetMacro( IgnoreId, LabelMapPixelType, Filter );
+
   tubeWrapSetMacro( ErodeDilateRadius, unsigned int, Filter );
   tubeWrapGetMacro( ErodeDilateRadius, unsigned int, Filter );
 

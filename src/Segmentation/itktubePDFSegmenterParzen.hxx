@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -218,12 +217,6 @@ PDFSegmenterParzen< TImage, TLabelMap >
     histogramBinMax[i] += buffer;
     m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] ) /
       ( double )( m_HistogramNumberOfBin[i] );
-    //std::cout << "BinMin[" << i << "] = " << m_HistogramBinMin[i]
-      //<< std::endl;
-    //std::cout << "  BinMax[" << i << "] = " << histogramBinMax[i]
-      //<< std::endl;
-    //std::cout << "  BinSize[" << i << "] = " << m_HistogramBinSize[i]
-      //<< std::endl;
     }
 
   std::vector< VectorDoubleType > clipMin;
@@ -317,13 +310,8 @@ PDFSegmenterParzen< TImage, TLabelMap >
                 }
               if( count - prevCount != 0 )
                 {
-                //std::cout << "   binMin = " << b << std::endl;
-                //std::cout << "   count = " << count << std::endl;
-                //std::cout << "   prevcount = " << prevCount << std::endl;
-                //std::cout << "   clipMin = " << clipMin[c][i] << std::endl;
                 clipMin[c][i] += m_HistogramBinSize[i]
                   * ( ( tailReject-prevCount ) / ( count-prevCount ) );
-                //std::cout << "   clipMin = " << clipMin[c][i] << std::endl;
                 }
               break;
               }
@@ -345,10 +333,6 @@ PDFSegmenterParzen< TImage, TLabelMap >
               break;
               }
             }
-          //std::cout << "Class " << c << " : Feature " << i << " : using "
-            //<< clipMin[c][i] << "( " << m_HistogramBinMin[i] << " ) - "
-            //<< clipMax[c][i] << "( " << histogramBinMax[i] << " )"
-            //<< std::endl;
           }
         }
       }
@@ -382,10 +366,6 @@ PDFSegmenterParzen< TImage, TLabelMap >
       histogramBinMax[i] += buffer;
       m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] )
         / ( double )( m_HistogramNumberOfBin[i] );
-      //std::cout << "Feature " << i << " : buffered : "
-        //<< m_HistogramBinMin[i] << " - " << histogramBinMax[i]
-        //<< " = " << m_HistogramBinSize[i] << " * "
-        //<< m_HistogramNumberOfBin[i] << std::endl;
       }
 
     for( unsigned int c = 0; c < numClasses; c++ )

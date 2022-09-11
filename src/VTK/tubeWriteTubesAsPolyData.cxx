@@ -385,6 +385,21 @@ Update()
     tubesCenterlineData->GetPointData()->AddArray( levelness.GetPointer() );
     }
 
+  if( containsAlpha1Info == true )
+    {
+    tubesCenterlineData->GetPointData()->AddArray( alpha1.GetPointer() );
+    }
+
+  if( containsAlpha2Info == true )
+    {
+    tubesCenterlineData->GetPointData()->AddArray( alpha2.GetPointer() );
+    }
+
+  if( containsAlpha3Info == true )
+    {
+    tubesCenterlineData->GetPointData()->AddArray( alpha3.GetPointer() );
+    }
+
   auto extraIt = extraPointData.begin();
   auto extraItEnd = extraPointData.end();
   while( extraIt != extraItEnd )

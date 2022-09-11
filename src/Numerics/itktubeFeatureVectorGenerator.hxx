@@ -52,10 +52,7 @@ FeatureVectorGenerator< TImage >
   m_WhitenMean.clear();
   m_WhitenStdDev.clear();
 
-  m_UseFeatureAddition = false;
-  m_UseFeatureSubtraction = false;
-  m_UseFeatureMultiplication = false;
-  m_UseFeatureRatio = false;
+  m_UseFeatureMath = false;
 }
 
 template< class TImage >

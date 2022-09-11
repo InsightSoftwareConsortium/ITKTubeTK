@@ -691,16 +691,13 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     return m_CurrentMovingSpatialObject.GetPointer();
     }
 
-  bool doLoaded = false;
   bool doMatrix = false;
 
   switch( m_CompletedStage )
     {
     default:
     case PRE_STAGE:
-      break;
     case LOAD_STAGE:
-      doLoaded = true;
       break;
     case INIT_STAGE:
     case RIGID_STAGE:
@@ -715,7 +712,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     {
     inputSO = movingSpatialObject;
 
-    //doLoaded = true;
     //doMatrix = true;
     }
 
@@ -723,7 +719,6 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
     m_CurrentMatrixTransform.GetPointer();
   if( matrixTransform != NULL )
     {
-    doLoaded = false;
     doMatrix = false;
 
     if( matrixTransform != NULL )

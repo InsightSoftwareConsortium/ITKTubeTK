@@ -569,7 +569,6 @@ SetPointValuesFromTubeRadius(
 
     for( unsigned int k=0; k < tube->GetNumberOfPoints(); k++ )
       {
-      typedef typename TubeType::TubePointType TubePointType;
       TubePointType * tubePoint = dynamic_cast<TubePointType *>(
         tube->GetPoint( k ) );
       inputImage->TransformPhysicalPointToContinuousIndex(

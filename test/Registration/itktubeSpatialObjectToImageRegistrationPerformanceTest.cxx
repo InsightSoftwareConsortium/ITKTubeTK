@@ -111,8 +111,6 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
     return EXIT_FAILURE;
     }
 
-  typedef itk::TubeSpatialObject< 3 >                    TubeType;
-  typedef itk::GroupSpatialObject<3>                     GroupType;
   typedef itk::SpatialObjectReader<3>                    GroupReaderType;
   typedef itk::Image<double, 3>                          ImageType;
   typedef itk::ImageFileReader<ImageType>                ImageReaderType;

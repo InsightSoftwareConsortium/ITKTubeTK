@@ -2,8 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Copyright Kitware Inc.
 
 All rights reserved.
 
@@ -115,6 +114,9 @@ public:
   itkSetMacro( VoidId, ObjectIdType );
   itkGetMacro( VoidId, ObjectIdType );
 
+  itkSetMacro( IgnoreId, ObjectIdType );
+  itkGetMacro( IgnoreId, ObjectIdType );
+
   itkSetObjectMacro( InputLabelMap, LabelMapType );
   itkGetModifiableObjectMacro( InputLabelMap, LabelMapType );
 
@@ -206,6 +208,7 @@ protected:
 
   ObjectIdListType    m_ObjectIdList;
   ObjectIdType        m_VoidId;
+  ObjectIdType        m_IgnoreId;
 
   void              * m_ProgressProcessInfo;
   double              m_ProgressFraction;
