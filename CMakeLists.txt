@@ -23,7 +23,7 @@ cmake_minimum_required(VERSION 3.10.2)
 
 project( TubeTK )
 
-set( TubeTK_VERSION 1.3.2 )
+set( TubeTK_VERSION 1.3.3 )
 
 if(NOT ITK_SOURCE_DIR)
   include(itk-module-init.cmake)
@@ -112,9 +112,9 @@ if(TubeTK_USE_VTK)
            "" TubeTK_VTK_INCLUDE_DIRS "${VTK_INCLUDE_DIRS}")
 
   set(TubeTK_EXPORT_CODE_INSTALL "
-  set(VTK_DIR \"${VTK_DIR}\")
-  find_package(VTK REQUIRED)
-  ")
+      set(VTK_DIR \"${VTK_DIR}\")
+      find_package(VTK REQUIRED)
+      ")
 
   set(TubeTK_EXPORT_CODE_BUILD "
   if(NOT ITK_BINARY_DIR)
