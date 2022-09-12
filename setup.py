@@ -18,13 +18,13 @@ setup_readme_text = (this_directory / "setup-readme.md").read_text()
     #include_dirs=[np.get_include()],
 setup(
     name='itk-tubetk',
-    version='1.3.2',
+    version='1.3.3',
     author='Stephen R. Aylward',
     author_email='stephen.aylward@kitware.com',
     packages=['itk'],
     package_dir={'itk': 'itk'},
     download_url=r'https://github.com/InsightSoftwareConsortium/ITKTubeTK',
-    description=r'An open-source toolkit, led by Kitware, Inc., for the segmentation, registration, and analysis of tubes and surfaces in images.',
+    description=r'An open-source toolkit, led by Kitware, Inc., for the segmentation, registration, and analysis of tubes (e.g., blood vessels) in images.',
     long_description=setup_readme_text,
     long_description_content_type='text/markdown',
     classifiers=[
@@ -49,7 +49,7 @@ setup(
     keywords='ITK InsightToolkit Tubes Vessels Nerves Ultrasound MRI CT Medical',
     url=r'https://github.com/InsightSoftwareConsortium/ITKTubeTK/',
     project_urls={
-        'Dashboard': 'https://open.cdash.org/index.php?project=TubeTK',
+        'Github': 'https://github.com/InsightSoftwareConsortium/ITKTubeTK/',
         'Issue Tracker': 'https://github.com/InsightSoftwareConsortium/ITKTubeTK/issues',
         'Testing Data': 'https://data.kitware.com/#collection/5888b7d38d777f4f3f3085a8/folder/58a3abf08d777f0721a65b16',
         'ITK': 'https://itk.org',
