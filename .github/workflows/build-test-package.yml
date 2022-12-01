@@ -417,7 +417,7 @@ jobs:
         path: dist
 
   build-windows-python-packages:
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       max-parallel: 1
       matrix:
