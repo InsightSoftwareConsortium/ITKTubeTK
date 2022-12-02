@@ -3,7 +3,7 @@ name: Build, test, package
 on: [push,pull_request]
 
 env:
-  vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
+  vtk-git-tag: "v9.2.2"
   itk-git-tag: "master"
   itk-wheel-tag: "v5.3.0"
   itk-minimalpathextraction-git-tag: "v1.2.4"
