@@ -75,6 +75,8 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/itktubeRidgeSeedFilterIOTest_Output.mha
       ${ITK_TEST_OUTPUT_DIR}/itktubeRidgeSeedFilterIOTest.mrs
       ${ITK_TEST_OUTPUT_DIR}/itktubeRidgeSeedFilterIOTest_Output2.mha )
+set_tests_properties(itktubeRidgeSeedFilterIOTest
+  PROPERTIES TIMEOUT 10)
 
 itk_add_test( 
   NAME itktubeTubeExtractorIOTest
@@ -83,6 +85,8 @@ itk_add_test(
       DATA{${TubeTK_DATA_ROOT}/TubeExtractorIOTest.mtp}
       ${ITK_TEST_OUTPUT_DIR}/itktubeTubeExtractorIOTest.mtp
       ${ITK_TEST_OUTPUT_DIR}/itktubeTubeExtractorIOTest2.mtp )
+set_tests_properties(itktubeTubeExtractorIOTest
+  PROPERTIES TIMEOUT 10)
 
 itk_add_test( 
   NAME itktubeTubeExtractorIOTest-Compare
@@ -110,6 +114,8 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/itktubeTubeXIOTest.tre
       512 512 393
       )
+set_tests_properties(itktubeTubeXIOTest
+  PROPERTIES TIMEOUT 10)
 
 itk_add_test( 
   NAME itktubeTubeXIOTest-Compare
