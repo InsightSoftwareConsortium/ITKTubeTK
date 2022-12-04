@@ -3,10 +3,10 @@ name: Build, test, package
 on: [push,pull_request]
 
 env:
-  vtk-git-tag: "1681cee3489800373c2e183af2d3ca8552e05940"
-  itk-git-tag: "master"
-  itk-wheel-tag: "v5.3rc04.post2"
-  itk-minimalpathextraction-git-tag: "v1.2.3"
+  vtk-git-tag: "v9.2.2"
+  itk-git-tag: "v5.3.0"
+  itk-wheel-tag: "v5.3.0"
+  itk-minimalpathextraction-git-tag: "v1.2.4"
 
 jobs:
   build-test-cxx:
@@ -14,17 +14,17 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        os: [ubuntu-20.04, windows-2019, macos-10.15]
+        os: [ubuntu-20.04, windows-2022, macos-11]
         include:
           - os: ubuntu-20.04
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
-          - os: windows-2019
+          - os: windows-2022
             c-compiler: "cl.exe"
             cxx-compiler: "cl.exe"
             cmake-build-type: "Release"
-          - os: macos-10.15
+          - os: macos-11
             c-compiler: "clang"
             cxx-compiler: "clang++"
             cmake-build-type: "Release"
@@ -49,7 +49,7 @@ jobs:
         python -m pip install ninja
 
     - name: Get specific version of CMake, Ninja
-      uses: lukka/get-cmake@v3.18.3
+      uses: lukka/get-cmake@v3.22.2
 
     - name: Download VTK
       run: |
@@ -59,7 +59,7 @@ jobs:
         git checkout ${{ env.vtk-git-tag }}
 
     - name: Build VTK
-      if: matrix.os != 'windows-2019'
+      if: matrix.os != 'windows-2022'
       run: |
         cd ..
         mkdir VTK-build
@@ -67,12 +67,12 @@ jobs:
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
         ninja
     - name: Build VTK
-      if: matrix.os == 'windows-2019'
+      if: matrix.os == 'windows-2022'
       run: |
         cd ..
         mkdir VTK-build
         pushd VTK-build
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
         ninja
       shell: cmd
@@ -85,7 +85,7 @@ jobs:
         git checkout ${{ env.itk-git-tag }}
 
     - name: Build ITK
-      if: matrix.os != 'windows-2019'
+      if: matrix.os != 'windows-2022'
       run: |
         cd ..
         mkdir ITK-build
@@ -94,12 +94,12 @@ jobs:
         ninja
 
     - name: Build ITK
-      if: matrix.os == 'windows-2019'
+      if: matrix.os == 'windows-2022'
       run: |
         cd ..
         mkdir ITK-build
         pushd ITK-build
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DModule_MinimalPathExtraction:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../ITK
         ninja
       shell: cmd
@@ -110,7 +110,7 @@ jobs:
         git clone https://github.com/Slicer/SlicerExecutionModel.git
 
     - name: Build SlicerExecutionModel
-      if: matrix.os != 'windows-2019'
+      if: matrix.os != 'windows-2022'
       run: |
         cd ..
         ls
@@ -120,13 +120,13 @@ jobs:
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
         ninja
     - name: Build SlicerExecutionModel
-      if: matrix.os == 'windows-2019'
+      if: matrix.os == 'windows-2022'
       run: |
         cd ..
         set ITK_DIR=%CD%\ITK-build
         mkdir SlicerExecutionModel-build
         pushd SlicerExecutionModel-build
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../SlicerExecutionModel
         ninja
       shell: cmd
@@ -183,14 +183,14 @@ jobs:
         cat dashboard.cmake
 
     - name: Build and test
-      if: matrix.os != 'windows-2019'
+      if: matrix.os != 'windows-2022'
       run: |
         ctest --output-on-failure -j 2 -V -S dashboard.cmake
 
     - name: Build and test
-      if: matrix.os == 'windows-2019'
+      if: matrix.os == 'windows-2022'
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         ctest --output-on-failure -j 2 -V -S dashboard.cmake
       shell: cmd
 
@@ -200,7 +200,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version: [37, 38, 39, 310]
+        python-version: [37, 38, 39, 310, 311]
         include:
           - python-version: 37
             itk-package: "ITK-cp37-cp37m-manylinux_2_28_x64"
@@ -219,6 +219,11 @@ jobs:
             cmake-build-type: "Release"
           - python-version: 310
             itk-package: "ITK-cp310-cp310-manylinux_2_28_x64"
+            c-compiler: "gcc"
+            cxx-compiler: "g++"
+            cmake-build-type: "Release"
+          - python-version: 311
+            itk-package: "ITK-cp311-cp311-manylinux_2_28_x64"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
@@ -331,7 +336,7 @@ jobs:
         path: dist
 
   build-macos-python-packages:
-    runs-on: macos-10.15
+    runs-on: macos-11
     strategy:
       max-parallel: 1
       matrix:
@@ -345,10 +350,10 @@ jobs:
 
     - name: 'Specific XCode version'
       run: |
-        sudo xcode-select -s "/Applications/Xcode_11.7.app"
+        sudo xcode-select -s "/Applications/Xcode_13.2.1.app"
 
     - name: Get specific version of CMake, Ninja
-      uses: lukka/get-cmake@v3.18.3
+      uses: lukka/get-cmake@v3.22.2
 
     - name: 'Fetch build script'
       run: |
@@ -412,11 +417,11 @@ jobs:
         path: dist
 
   build-windows-python-packages:
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       max-parallel: 1
       matrix:
-        python-version-minor: [7, 8, 9, 10]
+        python-version-minor: ["7", "8", "9", "10", "11"]
         include:
           - c-compiler: "cl.exe"
             cxx-compiler: "cl.exe"
@@ -424,7 +429,7 @@ jobs:
 
     steps:
     - name: Get specific version of CMake, Ninja
-      uses: lukka/get-cmake@v3.18.3
+      uses: lukka/get-cmake@v3.22.2
 
     - uses: actions/checkout@v2
       with:
@@ -447,13 +452,25 @@ jobs:
         7z x doxygen-1.8.11.windows.bin.zip -o/c/P/doxygen -aoa -r
         curl -L "https://data.kitware.com/api/v1/file/5bbf87ba8d777f06b91f27d6/download/grep-win.zip" -o "grep-win.zip"
         7z x grep-win.zip -o/c/P/grep -aoa -r
+
+        ITK_PYTHON_PACKAGE_TAG="0f5effc39afbf7cb1ac5ab20faa0996ddb12b34d"
+        echo "Updating ITKPythonPackage build scripts to ${ITK_PYTHON_PACKAGE_TAG}"
+        pushd /c/P/IPP
+        git remote add InsightSoftwareConsortium https://github.com/InsightSoftwareConsortium/ITKPythonPackage.git --tags
+        git fetch InsightSoftwareConsortium
+        git checkout ${ITK_PYTHON_PACKAGE_TAG}
+        git status
+        popd
+
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         pushd ITKMinimalPathExtraction
         git checkout ${{env.itk-minimalpathextraction-git-tag}}
         popd
+
         git clone https://github.com/Kitware/VTK
         pushd VTK
         git checkout ${{env.vtk-git-tag}}
+
         popd
         git clone https://github.com/Slicer/SlicerExecutionModel
 
@@ -461,7 +478,7 @@ jobs:
       shell: cmd
       run: |
         pushd ..\..\im
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         set PATH=C:\P\grep;%PATH%
         dir C:\Python3${{ matrix.python-version-minor }}-x64\
         dir C:\Python3${{ matrix.python-version-minor }}-x64\Scripts

@@ -83,6 +83,8 @@ itk_add_test(
       DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
       ${ITK_TEST_OUTPUT_DIR}/itktubeSpatialObjectToImageRegistrationOutputTube.tre
       ${ITK_TEST_OUTPUT_DIR}/itktubeSpatialObjectToImageRegistrationOutputImage.mha )
+set_tests_properties(itktubeSpatialObjectToImageRegistrationTest
+  PROPERTIES TIMEOUT 15)
 
 itk_add_test(
   NAME itktubeSpatialObjectToImageRegistrationPerformanceTest
@@ -91,6 +93,8 @@ itk_add_test(
       DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
       DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
       ${ITK_TEST_OUTPUT_DIR}/itktubeSpatialObjectToImageRegistrationPerformance )
+set_tests_properties(itktubeSpatialObjectToImageRegistrationPerformanceTest
+  PROPERTIES TIMEOUT 15)
 
 if( TubeTK_USE_VTK )
   itk_add_test(
