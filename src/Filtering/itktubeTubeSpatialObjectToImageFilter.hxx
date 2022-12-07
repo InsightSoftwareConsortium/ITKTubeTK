@@ -204,6 +204,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   typename OutputImageType::IndexType index2;
 
   TangentPixelType tp;
+  tp.Fill(0);
   while( TubeIterator != tubeList->end() )
     {
     TubeType * tube = ( TubeType * )TubeIterator->GetPointer();
