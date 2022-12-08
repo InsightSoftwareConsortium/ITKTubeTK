@@ -63,6 +63,10 @@ protected:
   SpatialObjectFilter( void );
   virtual ~SpatialObjectFilter( void ) {}
 
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const typename Superclass::DataObjectIdentifierType &,
+    itk::DataObject * ) override {};
+
 private:
   // purposely not implemented
   SpatialObjectFilter( const Self & );

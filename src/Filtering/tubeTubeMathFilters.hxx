@@ -434,8 +434,6 @@ SetPointValuesFromTubeRegions(
   imCount->Allocate();
   imCount->FillBuffer(0);
 
-  unsigned int maxIndex =
-    imVal->GetLargestPossibleRegion().GetSize()[DimensionT-1];
   while( !itDirImage.IsAtEnd() )
     {
     double val = itInputImage.Value();
@@ -551,7 +549,6 @@ SetPointValuesFromTubeRadius(
   typedef itk::ContinuousIndex<double, DimensionT> ContinuousIndexType;
 
   // Get the list of tubes
-  char tubeName[] = "Tube";
   TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
     m_InputTubeGroup->GetMaximumDepth(), "Tube" );
 
