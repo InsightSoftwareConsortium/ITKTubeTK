@@ -84,7 +84,7 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/itktubeSpatialObjectToImageRegistrationOutputTube.tre
       ${ITK_TEST_OUTPUT_DIR}/itktubeSpatialObjectToImageRegistrationOutputImage.mha )
 set_tests_properties(itktubeSpatialObjectToImageRegistrationTest
-  PROPERTIES TIMEOUT 15)
+  PROPERTIES TIMEOUT 20)
 
 itk_add_test(
   NAME itktubeSpatialObjectToImageRegistrationPerformanceTest
