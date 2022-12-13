@@ -28,7 +28,7 @@ limitations under the License.
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkRecursiveGaussianImageFilter.h>
+#include <itkSmoothingRecursiveGaussianImageFilter.h>
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkSpatialObjectWriter.h>
@@ -74,26 +74,19 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   // Gaussian blur the original input image to increase the likelihood of vessel
   // spatial object overlapping with the vessel image at their initial alignment.
   // this enlarges the convergence zone.
-  typedef itk::RecursiveGaussianImageFilter<ImageType, ImageType>
+  typedef itk::SmoothingRecursiveGaussianImageFilter<ImageType, ImageType>
                                                            GaussianBlurFilterType;
-  GaussianBlurFilterType::Pointer blurFilters[ObjectDimension];
-  for( unsigned int ii = 0; ii < ObjectDimension; ++ii )
-    {
-    blurFilters[ii] = GaussianBlurFilterType::New();
-    blurFilters[ii]->SetSigma( 2.0 );
-    blurFilters[ii]->SetZeroOrder();
-    blurFilters[ii]->SetDirection( ii );
-    }
-  blurFilters[0]->SetInput( imageReader->GetOutput() );
-  blurFilters[1]->SetInput( blurFilters[0]->GetOutput() );
-  blurFilters[2]->SetInput( blurFilters[1]->GetOutput() );
+  GaussianBlurFilterType::Pointer blurFilter;
+  blurFilter = GaussianBlurFilterType::New();
+  blurFilter->SetInput(imageReader->GetOutput());
+  blurFilter->SetSigma( 4.0 );
   try
     {
-    blurFilters[2]->Update();
+    blurFilter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    std::cerr << "Exception caught: " << err << std::endl;
+    std::cerr << "BlurFilter exception caught: " << err << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -106,7 +99,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    std::cerr << "Exception caught: " << err << std::endl;
+    std::cerr << "GroupReader Exception caught: " << err << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -130,7 +123,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   RegistrationHelperType::Pointer registrationHelper =
     RegistrationHelperType::New();
 
-  registrationHelper->SetFixedImage( blurFilters[2]->GetOutput() );
+  registrationHelper->SetFixedImage( blurFilter->GetOutput() );
   registrationHelper->SetMovingSpatialObject( subSampleFilter->GetOutput() );
   registrationHelper->SetRegistration(RegistrationHelperType::RegistrationMethodEnumType::RIGID);
 

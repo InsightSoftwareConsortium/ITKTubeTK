@@ -86,7 +86,7 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/itktubeTubeExtractorIOTest.mtp
       ${ITK_TEST_OUTPUT_DIR}/itktubeTubeExtractorIOTest2.mtp )
 set_tests_properties(itktubeTubeExtractorIOTest
-  PROPERTIES TIMEOUT 15)
+  PROPERTIES TIMEOUT 20)
 
 itk_add_test( 
   NAME itktubeTubeExtractorIOTest-Compare
@@ -115,7 +115,7 @@ itk_add_test(
       512 512 393
       )
 set_tests_properties(itktubeTubeXIOTest
-  PROPERTIES TIMEOUT 15)
+  PROPERTIES TIMEOUT 20)
 
 itk_add_test( 
   NAME itktubeTubeXIOTest-Compare
