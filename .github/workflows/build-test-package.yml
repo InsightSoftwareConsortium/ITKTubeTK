@@ -252,7 +252,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install ninja
 
-        curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
+        curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/v5.3.0/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
         chmod u+x dockcross-manylinux-download-cache-and-build-module-wheels.sh
 
     - name: 'Git-Configure-Build MinimalPathExtraction'
@@ -360,7 +360,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install ninja
 
-        curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/macpython-download-cache-and-build-module-wheels.sh -O
+        curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/v5.3.0/scripts/macpython-download-cache-and-build-module-wheels.sh -O
         chmod u+x macpython-download-cache-and-build-module-wheels.sh
 
     - name: 'Git-Configure-Build VTK'
