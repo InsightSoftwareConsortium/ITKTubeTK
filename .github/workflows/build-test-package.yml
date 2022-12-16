@@ -252,12 +252,13 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install ninja
 
-        curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
+        curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/${{ env.itk-wheel-tag }}/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
         chmod u+x dockcross-manylinux-download-cache-and-build-module-wheels.sh
 
     - name: 'Git-Configure-Build MinimalPathExtraction'
       run: |
         export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
+        export TARBALL_SPECIALIZATION="-manylinux_2_28"
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         cp ./dockcross-manylinux-download-cache-and-build-module-wheels.sh ./ITKMinimalPathExtraction
         pushd ITKMinimalPathExtraction
@@ -327,6 +328,7 @@ jobs:
       run: |
         df -h
         export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
+        export TARBALL_SPECIALIZATION="-manylinux_2_28"
         ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
 
     - name: Publish Python package as GitHub Artifact
@@ -360,7 +362,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install ninja
 
-        curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/macpython-download-cache-and-build-module-wheels.sh -O
+        curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/${{ env.itk-wheel-tag }}/scripts/macpython-download-cache-and-build-module-wheels.sh -O
         chmod u+x macpython-download-cache-and-build-module-wheels.sh
 
     - name: 'Git-Configure-Build VTK'
