@@ -18,7 +18,7 @@ setup_readme_text = (this_directory / "setup-readme.md").read_text()
     #include_dirs=[np.get_include()],
 setup(
     name='itk-tubetk',
-    version='1.3.4',
+    version='1.3.5',
     author='Stephen R. Aylward',
     author_email='stephen.aylward@kitware.com',
     packages=['itk'],
@@ -57,6 +57,6 @@ setup(
     install_requires=[
         r'numpy',
         r'itk>=5.3.0',
-        r'itk-minimalpathextraction>=1.2.4'
+        r'itk-minimalpathextraction>=1.2.6'
     ]
     )
