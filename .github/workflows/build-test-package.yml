@@ -204,27 +204,27 @@ jobs:
         python-version: [37, 38, 39, 310, 311]
         include:
           - python-version: 37
-            itk-package: "ITK-cp37-cp37m-manylinux"
+            itk-package: "ITK-cp37-cp37m"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
           - python-version: 38
-            itk-package: "ITK-cp38-cp38-manylinux"
+            itk-package: "ITK-cp38-cp38"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
           - python-version: 39
-            itk-package: "ITK-cp39-cp39-manylinux"
+            itk-package: "ITK-cp39-cp39"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
           - python-version: 310
-            itk-package: "ITK-cp310-cp310-manylinux"
+            itk-package: "ITK-cp310-cp310"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
           - python-version: 311
-            itk-package: "ITK-cp311-cp311-manylinux"
+            itk-package: "ITK-cp311-cp311"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
@@ -275,19 +275,19 @@ jobs:
       run: |
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
-        ln -s -f -T /ITKPythonPackage/${{ matrix.itk-package }} /work/${{ matrix.itk-package }}
+        ln -s -f -T /ITKPythonPackage/${{ matrix.itk-package }}${ matrix.tarball }} /work/${{ matrix.itk-package }}${{ matrix.tarball }}
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
         echo "/work"
         ls -la /work
         echo "/ITKPythonPackage"
         ls -la /ITKPythonPackage
-        export ITK_DIR="/work/${{ matrix.itk-package }}"
+        export ITK_DIR="/work/${{ matrix.itk-package }}${{ matrix.tarball }}"
         git clone https://github.com/Slicer/SlicerExecutionModel
         mkdir -p SlicerExecutionModel-build
         cd SlicerExecutionModel-build
         cmake -DCMAKE_BUILD_TYPE:STRING=Release \
-          -DITK_DIR=/work/${{ matrix.itk-package }} \
+          -DITK_DIR=/work/${{ matrix.itk-package }}${{ matrix.tarball }} \
           -GNinja \
           ../SlicerExecutionModel
         ninja
