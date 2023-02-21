@@ -2,11 +2,13 @@ name: Build, test, package
 
 on: [push,pull_request]
 
-env:
+inputs:
   vtk-git-tag: "v9.2.2"
   itk-git-tag: "f0d342e0b81e690194cd3fe993316bca7570402b"
   itk-wheel-tag: "v5.3.0"
   itk-minimalpathextraction-git-tag: "v1.2.6"
+  itk-python-package-tag: "cc3cbd2edd350d193536d78c5f8ee5ace1e6defd"
+  itk-python-package-org: "InsightSoftwareConsortium"
 
 jobs:
   build-test-cxx:
@@ -56,7 +58,7 @@ jobs:
         cd ..
         git clone https://github.com/Kitware/VTK.git
         pushd VTK
-        git checkout ${{ env.vtk-git-tag }}
+        git checkout ${{ inputs.vtk-git-tag }}
 
     - name: Build VTK
       if: matrix.os != 'windows-2022'
@@ -82,7 +84,7 @@ jobs:
         cd ..
         git clone https://github.com/InsightSoftwareConsortium/ITK.git
         pushd ITK
-        git checkout ${{ env.itk-git-tag }}
+        git checkout ${{ inputs.itk-git-tag }}
 
     - name: Build ITK
       if: matrix.os != 'windows-2022'
@@ -139,6 +141,9 @@ jobs:
       shell: bash
       run: |
         operating_system="${{ matrix.os }}"
+        echo "PWD"
+        pwd
+        ls -la .
         cat > dashboard.cmake << EOF
         set(CTEST_SITE "GitHubActions")
         file(TO_CMAKE_PATH "${PWD}/.." CTEST_DASHBOARD_ROOT)
@@ -169,6 +174,10 @@ jobs:
           set(ENV{PATH} "\${CTEST_DASHBOARD_ROOT}/ITK-build/bin;\$ENV{PATH}")
         endif()
         set(dashboard_cache "
+        ITK_LEGACY_REMOVE:BOOL=ON
+        Module_MinimalPathExtraction:BOOL=ON
+        BUILD_SHARED_LIBS:BOOL=ON
+        CMAKE_BUILD_TYPE:STRING=Release
         ITK_DIR:PATH=\${CTEST_DASHBOARD_ROOT}/ITK-build
         VTK_DIR:PATH=\${CTEST_DASHBOARD_ROOT}/VTK-build
         SlicerExecutionModel_DIR:PATH=\${CTEST_DASHBOARD_ROOT}/SlicerExecutionModel-build
@@ -200,31 +209,31 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        tarball: ["-manylinux_2_28", "-manylinux2014", "-manylinux_2_28_aarch64"]
-        python-version: [37, 38, 39, 310, 311]
+        manylinux-platform: ["_2_28-x64", "2014-x64", "_2_28_aarch64"]
+        python-version: ["37", "38", "39", "310", "311"]
         include:
           - python-version: 37
-            itk-package: "ITK-cp37-cp37m"
+            itk-package: "ITK-cp37-cp37m-manylinux"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
           - python-version: 38
-            itk-package: "ITK-cp38-cp38"
+            itk-package: "ITK-cp38-cp38-manylinux"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
           - python-version: 39
-            itk-package: "ITK-cp39-cp39"
+            itk-package: "ITK-cp39-cp39-manylinux"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
           - python-version: 310
-            itk-package: "ITK-cp310-cp310"
+            itk-package: "ITK-cp310-cp310-manylinux"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
           - python-version: 311
-            itk-package: "ITK-cp311-cp311"
+            itk-package: "ITK-cp311-cp311-manylinux"
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
@@ -236,6 +245,7 @@ jobs:
       run: |
         # Workaround for
         #     https://github.com/actions/virtual-environments/issues/709
+        df -h
         sudo apt-get remove -y '^dotnet-.*'
         sudo apt-get remove -y '^llvm-.*'
         sudo apt-get remove -y '^php-.*'
@@ -244,8 +254,9 @@ jobs:
         sudo rm -rf "/usr/local/share/boost"
         sudo rm -rf "/usr/share/dotnet"
         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+        df -h
 
-    - name: 'Fetch build script'
+    - name: 'Install dependencies'
       run: |
         sudo apt-get update
         sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev
@@ -253,17 +264,32 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install ninja
 
-        curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/${{ env.itk-wheel-tag }}/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
+    - name: 'Fetch build script'
+      run: |
+        IPP_DOWNLOAD_GIT_TAG=${{ inputs.itk-python-package-tag }}
+        IPP_DOWNLOAD_ORG=${{ inputs.itk-python-package-org }}
+        curl -L https://raw.githubusercontent.com/${IPP_DOWNLOAD_ORG:=InsightSoftwareConsortium}/ITKPythonPackage/${IPP_DOWNLOAD_GIT_TAG:=master}/scripts/dockcross-manylinux-download-cache-and-build-module-wheels.sh -O
         chmod u+x dockcross-manylinux-download-cache-and-build-module-wheels.sh
 
     - name: 'Git-Configure-Build MinimalPathExtraction'
       run: |
-        export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
-        export TARBALL_SPECIALIZATION=${{ matrix.tarball }}
+        rm -rf dist
+        export ITK_PACKAGE_VERSION=${{ inputs.itk-wheel-tag }}
+        export ITKPYTHONPACKAGE_TAG=${{ inputs.itk-python-package-tag }}
+        export ITKPYTHONPACKAGE_ORG=${{ inputs.itk-python-package-org }}
+        #export ITK_MODULE_PREQ=${{ inputs.itk-module-deps }}
+
+        MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
+        echo "Manylinux platform ${MANYLINUX_PLATFORM}"
+        rm -rf ITKPythonPackage
+        export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
+        export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
+        echo "Building for manylinux specialization ${MANYLINUX_VERSION} and target architecture ${TARGET_ARCH}"
+
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         cp ./dockcross-manylinux-download-cache-and-build-module-wheels.sh ./ITKMinimalPathExtraction
         pushd ITKMinimalPathExtraction
-        git checkout ${{env.itk-minimalpathextraction-git-tag}}
+        git checkout ${{inputs.itk-minimalpathextraction-git-tag}}
         ./dockcross-manylinux-download-cache-and-build-module-wheels.sh cp${{ matrix.python-version }}
         popd
         cp ITKMinimalPathExtraction/include/* include/
@@ -275,19 +301,19 @@ jobs:
       run: |
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
-        ln -s -f -T /ITKPythonPackage/${{ matrix.itk-package }}${{ matrix.tarball }} /work/${{ matrix.itk-package }}${{ matrix.tarball }}
+        echo "/ITKPythonPackage"
+        ls -la /ITKPythonPackage
+        ln -s -f -T /ITKPythonPackage/${{ matrix.itk-package }}${{ matrix.manylinux-platform }} /work/${{ matrix.itk-package }}${{ matrix.manylinux-platform }}
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
         echo "/work"
         ls -la /work
-        echo "/ITKPythonPackage"
-        ls -la /ITKPythonPackage
-        export ITK_DIR="/work/${{ matrix.itk-package }}${{ matrix.tarball }}"
+        export ITK_DIR="/work/${{ matrix.itk-package }}${{ matrix.manylinux-platform }}"
         git clone https://github.com/Slicer/SlicerExecutionModel
         mkdir -p SlicerExecutionModel-build
         cd SlicerExecutionModel-build
         cmake -DCMAKE_BUILD_TYPE:STRING=Release \
-          -DITK_DIR=/work/${{ matrix.itk-package }}${{ matrix.tarball }} \
+          -DITK_DIR=/work/${{ matrix.itk-package }}${{ matrix.manylinux-platform }} \
           -GNinja \
           ../SlicerExecutionModel
         ninja
@@ -303,7 +329,7 @@ jobs:
 
         git clone https://github.com/Kitware/VTK.git
         cd VTK
-        git checkout ${{ env.vtk-git-tag }}
+        git checkout ${{ inputs.vtk-git-tag }}
         cd ..
         mkdir -p VTK-build
         cd VTK-build
@@ -328,8 +354,19 @@ jobs:
       timeout-minutes: 400
       run: |
         df -h
-        export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
-        export TARBALL_SPECIALIZATION=${{ matrix.tarball }}
+        export ITK_PACKAGE_VERSION=${{ inputs.itk-wheel-tag }}
+        export ITKPYTHONPACKAGE_TAG=${{ inputs.itk-python-package-tag }}
+        export ITKPYTHONPACKAGE_ORG=${{ inputs.itk-python-package-org }}
+        #export ITK_MODULE_PREQ=${{ inputs.itk-module-deps }}
+
+        MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
+        echo "Manylinux platform ${MANYLINUX_PLATFORM}"
+        export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
+        export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
+        echo "Building for manylinux specialization ${MANYLINUX_VERSION} and target architecture ${TARGET_ARCH}"
+        # The following was done for MinimalPathExtraction already
+        # ./dockcross-manylinux-download-cache-and-build-module-wheels.sh cp${{ matrix.python-version }}
+        # So we use this script instead
         ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
 
     - name: Publish Python package as GitHub Artifact
@@ -363,17 +400,17 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install ninja
 
-        curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/${{ env.itk-wheel-tag }}/scripts/macpython-download-cache-and-build-module-wheels.sh -O
+        curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/${{ inputs.itk-wheel-tag }}/scripts/macpython-download-cache-and-build-module-wheels.sh -O
         chmod u+x macpython-download-cache-and-build-module-wheels.sh
 
     - name: 'Git-Configure-Build VTK'
       run: |
-        export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
+        export ITK_PACKAGE_VERSION=${{ inputs.itk-wheel-tag }}
         export MACOSX_DEPLOYMENT_TARGET=10.9
 
         git clone https://github.com/Kitware/VTK
         pushd VTK
-        git checkout ${{env.vtk-git-tag}}
+        git checkout ${{inputs.vtk-git-tag}}
         popd
         mkdir VTK-build
         pushd VTK-build
@@ -382,20 +419,20 @@ jobs:
 
     - name: 'Git-Configure-Build MinimalPathExtraction'
       run: |
-        export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
+        export ITK_PACKAGE_VERSION=${{ inputs.itk-wheel-tag }}
         export MACOSX_DEPLOYMENT_TARGET=10.9
 
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         cp ./macpython-download-cache-and-build-module-wheels.sh ITKMinimalPathExtraction/
         pushd ITKMinimalPathExtraction
-        git checkout ${{env.itk-minimalpathextraction-git-tag}}
+        git checkout ${{inputs.itk-minimalpathextraction-git-tag}}
         ./macpython-download-cache-and-build-module-wheels.sh
         popd
         cp ITKMinimalPathExtraction/include/* include/
 
     - name: 'Git-Configure-Build SEM'
       run: |
-        export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
+        export ITK_PACKAGE_VERSION=${{ inputs.itk-wheel-tag }}
         export MACOSX_DEPLOYMENT_TARGET=10.9
 
         #  Can build SEM using any version of python wrapping
@@ -408,7 +445,7 @@ jobs:
 
     - name: 'Build 🐍 Python 📦 package TubeTK'
       run: |
-        export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
+        export ITK_PACKAGE_VERSION=${{ inputs.itk-wheel-tag }}
         export MACOSX_DEPLOYMENT_TARGET=10.9
 
         /Users/svc-dashboard/D/P/ITKPythonPackage/scripts/macpython-build-module-wheels.sh
@@ -449,7 +486,7 @@ jobs:
       run: |
         mv im ../../
         pushd ../../im
-        curl -L "https://github.com/InsightSoftwareConsortium/ITKPythonBuilds/releases/download/${{ env.itk-wheel-tag }}/ITKPythonBuilds-windows.zip" -o "ITKPythonBuilds-windows.zip"
+        curl -L "https://github.com/InsightSoftwareConsortium/ITKPythonBuilds/releases/download/${{ inputs.itk-wheel-tag }}/ITKPythonBuilds-windows.zip" -o "ITKPythonBuilds-windows.zip"
         7z x ITKPythonBuilds-windows.zip -o/c/P -aoa -r
         curl -L "https://data.kitware.com/api/v1/file/5c0ad59d8d777f2179dd3e9c/download" -o "doxygen-1.8.11.windows.bin.zip"
         7z x doxygen-1.8.11.windows.bin.zip -o/c/P/doxygen -aoa -r
@@ -467,12 +504,12 @@ jobs:
 
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         pushd ITKMinimalPathExtraction
-        git checkout ${{env.itk-minimalpathextraction-git-tag}}
+        git checkout ${{inputs.itk-minimalpathextraction-git-tag}}
         popd
 
         git clone https://github.com/Kitware/VTK
         pushd VTK
-        git checkout ${{env.vtk-git-tag}}
+        git checkout ${{inputs.vtk-git-tag}}
 
         popd
         git clone https://github.com/Slicer/SlicerExecutionModel
