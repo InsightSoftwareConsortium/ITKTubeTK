@@ -275,7 +275,7 @@ jobs:
       run: |
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
-        ln -s -f -T /ITKPythonPackage/${{ matrix.itk-package }}${ matrix.tarball }} /work/${{ matrix.itk-package }}${{ matrix.tarball }}
+        ln -s -f -T /ITKPythonPackage/${{ matrix.itk-package }}${{ matrix.tarball }} /work/${{ matrix.itk-package }}${{ matrix.tarball }}
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
         echo "/work"
