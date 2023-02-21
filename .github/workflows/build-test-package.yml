@@ -284,6 +284,7 @@ jobs:
         rm -rf ITKPythonPackage
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
         export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
+        export ITK_MODULE_NO_CLEANUP="true"
         echo "Building for manylinux specialization ${MANYLINUX_VERSION} and target architecture ${TARGET_ARCH}"
 
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
