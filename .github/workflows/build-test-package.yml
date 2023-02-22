@@ -124,9 +124,7 @@ jobs:
         Module_MinimalPathExtraction:BOOL=ON
         BUILD_SHARED_LIBS:BOOL=ON
         CMAKE_BUILD_TYPE:STRING=Release
-        ITK_DIR:PATH=\${CTEST_DASHBOARD_ROOT}/ITK-build
         VTK_DIR:PATH=\${CTEST_DASHBOARD_ROOT}/VTK-build
-        SlicerExecutionModel_DIR:PATH=\${CTEST_DASHBOARD_ROOT}/SlicerExecutionModel-build
         BUILD_TESTING:BOOL=ON
         TubeTK_BUILD_APPLICATIONS:BOOL=OFF
         ")
@@ -137,12 +135,12 @@ jobs:
         EOF
         cat dashboard.cmake
 
-    - name: Build and test
+    - name: Build and test (Mac and Linux)
       if: matrix.os != 'windows-2022'
       run: |
         ctest --output-on-failure -j 2 -V -S dashboard.cmake
 
-    - name: Build and test
+    - name: Build and test (Windows)
       if: matrix.os == 'windows-2022'
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
