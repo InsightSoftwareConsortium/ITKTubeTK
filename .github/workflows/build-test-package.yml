@@ -173,7 +173,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        manylinux-platform: ["_2_28-x64", "2014-x64", "_2_28_aarch64"]
+        manylinux-platform: ["_2_28-x64", "2014-x64", "_2_28-aarch64"]
         python-version: ["37", "38", "39", "310", "311"]
         include:
           - python-version: 37
