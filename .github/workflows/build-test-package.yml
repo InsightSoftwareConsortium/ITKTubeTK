@@ -277,11 +277,12 @@ jobs:
         echo "Manylinux platform ${MANYLINUX_PLATFORM}"
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
         export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
-        export ITK_DIR_NAME= ${{ matrix.itk-package }}${{ MANYLINUX_VERSION }}_${{ TARGET_ARCH }}
+        export ITK_DIR_NAME=${{ matrix.itk-package }}${{ MANYLINUX_VERSION }}_${{ TARGET_ARCH }}
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
         echo "/ITKPythonPackage"
         ls -la /ITKPythonPackage
+        ln -s -f -T /ITKPythonPackage/${{ ITK_DIR_NAME }} /work/${{ ITK_DIR_NAME }}
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
         echo "/work"
