@@ -277,7 +277,7 @@ jobs:
         echo "Manylinux platform ${MANYLINUX_PLATFORM}"
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
         export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
-        export ITK_DIR_NAME=${{ matrix.itk-package }}${{ MANYLINUX_VERSION }}_${{ TARGET_ARCH }}
+        export ITK_DIR_NAME=${{ matrix.itk-package }}${{ MANYLINUX_VERSION }}${{ TARGET_ARCH }}
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
         echo "/ITKPythonPackage"
