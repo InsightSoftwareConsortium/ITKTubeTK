@@ -241,27 +241,25 @@ jobs:
         mv ./ITKMinimalPathExtraction/ITKPythonPackage .
         mv ./ITKMinimalPathExtraction/tools .
 
-    - name: 'Git-Configure-Build SEM'
+    - name: 'Setup Build Env'
       shell: bash
       run: |
+        MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
+        echo "Manylinux platform ${MANYLINUX_PLATFORM}"
+        export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
+        export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
+
+        export ITK_DIR_NAME = ${{ matrix.itk-package }}${{ MANYLINUX_VERSION}}_${{ TARGET_ARCH }}
+
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
         echo "/ITKPythonPackage"
         ls -la /ITKPythonPackage
-        ln -s -f -T /ITKPythonPackage/${{ matrix.itk-package }}${{ matrix.manylinux-platform }} /work/${{ matrix.itk-package }}${{ matrix.manylinux-platform }}
+        ln -s -f -T /ITKPythonPackage/${{ ITK_DIR_NAME }} /work/${{ ITK_DIR_NAME }}
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
         echo "/work"
         ls -la /work
-        export ITK_DIR="/work/${{ matrix.itk-package }}${{ matrix.manylinux-platform }}"
-        git clone https://github.com/Slicer/SlicerExecutionModel
-        mkdir -p SlicerExecutionModel-build
-        cd SlicerExecutionModel-build
-        cmake -DCMAKE_BUILD_TYPE:STRING=Release \
-          -DITK_DIR=/work/${{ matrix.itk-package }}${{ matrix.manylinux-platform }} \
-          -GNinja \
-          ../SlicerExecutionModel
-        ninja
         EOF
         chmod +x ./git-configure-build-sem.sh
         /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-sem.sh
@@ -309,6 +307,7 @@ jobs:
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
         export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
         echo "Building for manylinux specialization ${MANYLINUX_VERSION} and target architecture ${TARGET_ARCH}"
+
         # The following was done for MinimalPathExtraction already
         # ./dockcross-manylinux-download-cache-and-build-module-wheels.sh cp${{ matrix.python-version }}
         # So we use this script instead
