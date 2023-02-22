@@ -60,7 +60,7 @@ jobs:
         pushd VTK
         git checkout ${{ env.vtk-git-tag }}
 
-    - name: Build VTK
+    - name: Build VTK (Mac and Linux)
       if: matrix.os != 'windows-2022'
       run: |
         cd ..
@@ -68,7 +68,8 @@ jobs:
         pushd VTK-build
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -GNinja ../VTK
         ninja
-    - name: Build VTK
+
+    - name: Build VTK (Windows)
       if: matrix.os == 'windows-2022'
       run: |
         cd ..
@@ -104,7 +105,6 @@ jobs:
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DITK_LEGACY_REMOVE:BOOL=ON -DModule_MinimalPathExtraction:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=ON -GNinja ../ITK
         ninja
-
       shell: cmd
 
     - name: Fetch CTest driver script
