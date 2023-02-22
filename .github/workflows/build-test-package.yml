@@ -144,6 +144,10 @@ jobs:
         set(dashboard_no_clean 1)
         set(ENV{CC} ${{ matrix.c-compiler }})
         set(ENV{CXX} ${{ matrix.cxx-compiler }})
+
+        set(ENV{ITK_DIR} "\${CTEST_DASHBOARD_ROOT}/ITK-build")
+        set(ENV{VTK_DIR} "\${CTEST_DASHBOARD_ROOT}/VTK-build")
+
         if(WIN32)
           set(ENV{PATH} "\${CTEST_DASHBOARD_ROOT}/ITK-build/bin;\$ENV{PATH}")
         endif()
@@ -456,11 +460,11 @@ jobs:
         7z x doxygen-1.8.11.windows.bin.zip -o/c/P/doxygen -aoa -r
         curl -L "https://data.kitware.com/api/v1/file/5bbf87ba8d777f06b91f27d6/download/grep-win.zip" -o "grep-win.zip"
         7z x grep-win.zip -o/c/P/grep -aoa -r
-        echo "Updating ITKPythonPackage build scripts to ${env.itk-python-package-tag}"
+        echo "Updating ITKPythonPackage build scripts to ${{env.itk-python-package-tag}}"
         pushd /c/P/IPP
         git remote add InsightSoftwareConsortium https://github.com/InsightSoftwareConsortium/ITKPythonPackage.git --tags
         git fetch InsightSoftwareConsortium
-        git checkout ${env.itk-python-package-tag}
+        git checkout ${{env.itk-python-package-tag}}
         git status
         popd
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
