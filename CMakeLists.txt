@@ -153,8 +153,10 @@ set( TubeTK_ITK_COMPONENTS
   ITKTransform
   ITKTransformIO
   ITKStatistics
-  ITKVTK
   )
+if( TubeTK_USE_VTK )
+  list( APPEND TubeTK_ITK_COMPONENTS ITKVTK )
+endif( TubeTK_USE_VTK )
 
 if( NOT ITK_SOURCE_DIR )
   find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )

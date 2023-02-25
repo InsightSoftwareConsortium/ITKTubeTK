@@ -107,7 +107,8 @@ public:
                                INIT_WITH_IMAGE_CENTERS,
                                INIT_WITH_CENTERS_OF_MASS,
                                INIT_WITH_SECOND_MOMENTS,
-                               INIT_WITH_LANDMARKS };
+                               INIT_WITH_LANDMARKS,
+                               INIT_WITH_LOADED_TRANSFORM };
 
   enum RegistrationStageEnumType { PRE_STAGE,
                                    LOAD_STAGE,

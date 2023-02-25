@@ -409,7 +409,6 @@ ImageToImageRegistrationHelper<TImage>
     std::cout << "*** AFFINE REGISTRATION ***" << std::endl;
     }
 
-  std::cout << "Start affine" << std::endl;
   unsigned long fixedImageNumPixels = m_FixedImage->GetLargestPossibleRegion()
     .GetNumberOfPixels();
 
@@ -434,7 +433,6 @@ ImageToImageRegistrationHelper<TImage>
     {
     regAff->SetUseEvolutionaryOptimization( false );
     }
-  regAff->SetTargetError( m_AffineTargetError );
   if( m_UseFixedImageMaskObject )
     {
     if( m_FixedImageMaskObject.IsNotNull() )
@@ -480,14 +478,14 @@ ImageToImageRegistrationHelper<TImage>
     {
     regAff->GetTypedTransform()->SetCenter(
       m_CurrentMatrixTransform->GetCenter() );
-    //regAff->GetTypedTransform()->SetMatrix(
-      //m_CurrentMatrixTransform->GetMatrix() );
+    regAff->GetTypedTransform()->SetMatrix(
+      m_CurrentMatrixTransform->GetMatrix() );
     regAff->GetTypedTransform()->SetOffset(
       m_CurrentMatrixTransform->GetOffset() );
-    regAff->SetInitialTransformParameters(
-      regAff->GetTypedTransform()->GetParameters() );
     regAff->SetInitialTransformFixedParameters(
       regAff->GetTypedTransform()->GetFixedParameters() );
+    regAff->SetInitialTransformParameters(
+      regAff->GetTypedTransform()->GetParameters() );
     }
 
   regAff->Update();
@@ -537,7 +535,6 @@ ImageToImageRegistrationHelper<TImage>
     {
     regAff->SetUseEvolutionaryOptimization( false );
     }
-  regAff->SetTargetError( m_AffineTargetError );
   if( m_UseFixedImageMaskObject )
     {
     if( m_FixedImageMaskObject.IsNotNull() )
@@ -593,10 +590,12 @@ ImageToImageRegistrationHelper<TImage>
       m_CurrentMatrixTransform->GetMatrix() );
     regAff->GetTypedTransform()->SetOffset(
       m_CurrentMatrixTransform->GetOffset() );
-    regAff->SetInitialTransformParameters(
-      regAff->GetTypedTransform()->GetParameters() );
     regAff->SetInitialTransformFixedParameters(
       regAff->GetTypedTransform()->GetFixedParameters() );
+    regAff->SetInitialTransformParameters(
+      regAff->GetTypedTransform()->GetParameters() );
+    std::cout << "InitialAffineTransform = "
+      << regAff->GetAffineTransform() << std::endl;
     }
 
   regAff->Update();
@@ -690,46 +689,48 @@ ImageToImageRegistrationHelper<TImage>
     }
   if( m_EnableInitialRegistration )
     {
-    switch( m_InitialMethodEnum )
+    if( m_InitialMethodEnum != INIT_WITH_LOADED_TRANSFORM )
       {
-      case INIT_WITH_NONE:
-        regInit->SetComputeCenterOfRotationOnly( true );
-        break;
-      case INIT_WITH_IMAGE_CENTERS:
-        regInit->SetNumberOfMoments( 0 );
-        break;
-      case INIT_WITH_CENTERS_OF_MASS:
-        regInit->SetNumberOfMoments( 1 );
-        break;
-      case INIT_WITH_SECOND_MOMENTS:
-        regInit->SetNumberOfMoments( 2 );
-        break;
-      case INIT_WITH_LANDMARKS:
-        regInit->SetUseLandmarks( true );
-        regInit->SetFixedLandmarks( m_FixedLandmarks );
-        regInit->SetMovingLandmarks( m_MovingLandmarks );
-        break;
-      case INIT_WITH_CURRENT_RESULTS:
-      default:
-        break;
-      }
-    regInit->Update();
-    m_InitialTransform = regInit->GetAffineTransform();
-    }
-  else
-    {
-    if( m_EnableLoadedRegistration
-      && m_LoadedMatrixTransform.IsNotNull()
-      && ! m_LoadedBSplineTransform.IsNotNull() )
-      {
-      m_InitialTransform = m_LoadedMatrixTransform;
-      }
-    else
-      {
-      regInit->SetComputeCenterOfRotationOnly( true );
+      switch( m_InitialMethodEnum )
+        {
+        case INIT_WITH_NONE:
+          regInit->SetComputeCenterOfRotationOnly( true );
+          break;
+        case INIT_WITH_IMAGE_CENTERS:
+          regInit->SetNumberOfMoments( 0 );
+          break;
+        case INIT_WITH_CENTERS_OF_MASS:
+          regInit->SetNumberOfMoments( 1 );
+          break;
+        case INIT_WITH_SECOND_MOMENTS:
+          regInit->SetNumberOfMoments( 2 );
+          break;
+        case INIT_WITH_LANDMARKS:
+          regInit->SetUseLandmarks( true );
+          regInit->SetFixedLandmarks( m_FixedLandmarks );
+          regInit->SetMovingLandmarks( m_MovingLandmarks );
+          break;
+        case INIT_WITH_CURRENT_RESULTS:
+        default:
+          break;
+        }
       regInit->Update();
       m_InitialTransform = regInit->GetAffineTransform();
       }
+    else
+      {
+      if( m_LoadedMatrixTransform.IsNotNull() )
+        {
+        m_InitialTransform = m_LoadedMatrixTransform;
+        std::cout << "InitialTransform = " << m_InitialTransform << std::endl;
+        }
+      }
+    }
+  else
+    {
+    regInit->SetComputeCenterOfRotationOnly( true );
+    regInit->Update();
+    m_InitialTransform = regInit->GetAffineTransform();
     }
 
   m_CurrentMatrixTransform = m_InitialTransform;
