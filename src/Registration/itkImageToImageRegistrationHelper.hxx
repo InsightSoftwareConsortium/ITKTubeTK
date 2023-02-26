@@ -594,8 +594,6 @@ ImageToImageRegistrationHelper<TImage>
       regAff->GetTypedTransform()->GetFixedParameters() );
     regAff->SetInitialTransformParameters(
       regAff->GetTypedTransform()->GetParameters() );
-    std::cout << "InitialAffineTransform = "
-      << regAff->GetAffineTransform() << std::endl;
     }
 
   regAff->Update();
@@ -722,7 +720,6 @@ ImageToImageRegistrationHelper<TImage>
       if( m_LoadedMatrixTransform.IsNotNull() )
         {
         m_InitialTransform = m_LoadedMatrixTransform;
-        std::cout << "InitialTransform = " << m_InitialTransform << std::endl;
         }
       }
     }
@@ -1160,13 +1157,11 @@ ImageToImageRegistrationHelper<TImage>
         aTrans->GetParameters();
       typename MatrixTransformType::ParametersType tmpParams =
         tmpTrans->GetParameters();
-      std::cout << "Original params = " << aTransParams << std::endl;
       for( unsigned int p=0; p<tmpParams.size(); ++p )
         {
         tmpParams[p] = tmpParams[p] + portion * (aTransParams[p]-tmpParams[p]);
         }
       tmpTrans->SetParameters( tmpParams );
-      std::cout << "portion params = " << tmpParams << std::endl;
       }
     else
       {
@@ -1510,7 +1505,10 @@ ImageToImageRegistrationHelper<TImage>
   m_LoadedMatrixTransform->SetOffset( tfm.GetOffset() );
   if( invert )
     {
-    std::cout << "GetInverseTransform" << std::endl;
+    if( this->GetReportProgress() )
+      {
+      std::cout << "GetInverseTransform" << std::endl;
+      }
     typename MatrixTransformType::Pointer invTfm = MatrixTransformType::New();
     m_LoadedMatrixTransform->GetInverse( invTfm );
     m_LoadedMatrixTransform = invTfm;
