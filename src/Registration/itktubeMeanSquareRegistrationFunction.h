@@ -171,9 +171,10 @@ public:
   /** Get the energy mutex lock  */
   void SetEnergy( double energy )
     {
-    m_EnergyCalculationLock.lock();
+#ifndef __wasi__
+    std::lock_guard<std::mutex> mutexHolder(m_EnergyCalculationLock);
+#endif
     this->m_Energy = energy;
-    m_EnergyCalculationLock.unlock();
     }
 
   void SetBackgroundIntensity( MovingImagePixelType intensity )
@@ -226,7 +227,9 @@ private:
   /** Threshold below which two intensity value are assumed to match. */
   double                          m_IntensityDifferenceThreshold;
 
+#ifndef __wasi__
   mutable std::mutex              m_EnergyCalculationLock;
+#endif
 
   MovingImagePixelType            m_BackgroundIntensity;
 

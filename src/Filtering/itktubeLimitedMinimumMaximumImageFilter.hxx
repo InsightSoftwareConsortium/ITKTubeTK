@@ -20,7 +20,9 @@
 
 
 #include "itkImageScanlineIterator.h"
+#ifndef __wasi__
 #include <mutex>
+#endif
 
 #include <vector>
 
@@ -119,7 +121,9 @@ LimitedMinimumMaximumImageFilter<TInputImage>::ThreadedStreamedGenerateData(cons
     it.NextLine();
   }
 
+#ifndef __wasi__
   std::lock_guard<std::mutex> mutexHolder(m_Mutex);
+#endif
   m_ThreadMin = std::min(localMin, m_ThreadMin);
   m_ThreadMax = std::max(localMax, m_ThreadMax);
 }
