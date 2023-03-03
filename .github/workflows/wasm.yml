@@ -21,3 +21,9 @@ jobs:
     - name: Build
       run: |
         npm run build
+
+    - name: Build TypeScript / JavaScript package
+      run: |
+        cd wasm/typescript
+        npm install
+        npm run build
