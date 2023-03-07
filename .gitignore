@@ -25,3 +25,8 @@ Data
 _build
 *.kws
 .ipynb_checkpoints
+
+emscripten-build/
+wasi-build/
+node_modules/
+package-lock.json

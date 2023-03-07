@@ -29,7 +29,9 @@ limitations under the License.
 #include <itkPDEDeformableRegistrationFunction.h>
 
 #include <vector>
+#ifndef __wasi__
 #include <mutex>
+#endif
 
 namespace itk
 {
@@ -381,8 +383,10 @@ private:
   mutable double                        m_RegularizationEnergy;
 
   /** Mutex locks to protect modifications to metric values. */
+#ifndef __wasi__
   mutable std::mutex                    m_MetricCalculationLock;
   mutable std::mutex                    m_EnergyCalculationLock;
+#endif
 
 }; // End class AnisotropicDiffusiveRegistrationFunction
 
