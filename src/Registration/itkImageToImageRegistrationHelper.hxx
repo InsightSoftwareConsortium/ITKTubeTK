@@ -409,7 +409,6 @@ ImageToImageRegistrationHelper<TImage>
     std::cout << "*** AFFINE REGISTRATION ***" << std::endl;
     }
 
-  std::cout << "Start affine" << std::endl;
   unsigned long fixedImageNumPixels = m_FixedImage->GetLargestPossibleRegion()
     .GetNumberOfPixels();
 
@@ -434,7 +433,6 @@ ImageToImageRegistrationHelper<TImage>
     {
     regAff->SetUseEvolutionaryOptimization( false );
     }
-  regAff->SetTargetError( m_AffineTargetError );
   if( m_UseFixedImageMaskObject )
     {
     if( m_FixedImageMaskObject.IsNotNull() )
@@ -480,14 +478,14 @@ ImageToImageRegistrationHelper<TImage>
     {
     regAff->GetTypedTransform()->SetCenter(
       m_CurrentMatrixTransform->GetCenter() );
-    //regAff->GetTypedTransform()->SetMatrix(
-      //m_CurrentMatrixTransform->GetMatrix() );
+    regAff->GetTypedTransform()->SetMatrix(
+      m_CurrentMatrixTransform->GetMatrix() );
     regAff->GetTypedTransform()->SetOffset(
       m_CurrentMatrixTransform->GetOffset() );
-    regAff->SetInitialTransformParameters(
-      regAff->GetTypedTransform()->GetParameters() );
     regAff->SetInitialTransformFixedParameters(
       regAff->GetTypedTransform()->GetFixedParameters() );
+    regAff->SetInitialTransformParameters(
+      regAff->GetTypedTransform()->GetParameters() );
     }
 
   regAff->Update();
@@ -537,7 +535,6 @@ ImageToImageRegistrationHelper<TImage>
     {
     regAff->SetUseEvolutionaryOptimization( false );
     }
-  regAff->SetTargetError( m_AffineTargetError );
   if( m_UseFixedImageMaskObject )
     {
     if( m_FixedImageMaskObject.IsNotNull() )
@@ -593,10 +590,10 @@ ImageToImageRegistrationHelper<TImage>
       m_CurrentMatrixTransform->GetMatrix() );
     regAff->GetTypedTransform()->SetOffset(
       m_CurrentMatrixTransform->GetOffset() );
-    regAff->SetInitialTransformParameters(
-      regAff->GetTypedTransform()->GetParameters() );
     regAff->SetInitialTransformFixedParameters(
       regAff->GetTypedTransform()->GetFixedParameters() );
+    regAff->SetInitialTransformParameters(
+      regAff->GetTypedTransform()->GetParameters() );
     }
 
   regAff->Update();
@@ -690,46 +687,47 @@ ImageToImageRegistrationHelper<TImage>
     }
   if( m_EnableInitialRegistration )
     {
-    switch( m_InitialMethodEnum )
+    if( m_InitialMethodEnum != INIT_WITH_LOADED_TRANSFORM )
       {
-      case INIT_WITH_NONE:
-        regInit->SetComputeCenterOfRotationOnly( true );
-        break;
-      case INIT_WITH_IMAGE_CENTERS:
-        regInit->SetNumberOfMoments( 0 );
-        break;
-      case INIT_WITH_CENTERS_OF_MASS:
-        regInit->SetNumberOfMoments( 1 );
-        break;
-      case INIT_WITH_SECOND_MOMENTS:
-        regInit->SetNumberOfMoments( 2 );
-        break;
-      case INIT_WITH_LANDMARKS:
-        regInit->SetUseLandmarks( true );
-        regInit->SetFixedLandmarks( m_FixedLandmarks );
-        regInit->SetMovingLandmarks( m_MovingLandmarks );
-        break;
-      case INIT_WITH_CURRENT_RESULTS:
-      default:
-        break;
-      }
-    regInit->Update();
-    m_InitialTransform = regInit->GetAffineTransform();
-    }
-  else
-    {
-    if( m_EnableLoadedRegistration
-      && m_LoadedMatrixTransform.IsNotNull()
-      && ! m_LoadedBSplineTransform.IsNotNull() )
-      {
-      m_InitialTransform = m_LoadedMatrixTransform;
-      }
-    else
-      {
-      regInit->SetComputeCenterOfRotationOnly( true );
+      switch( m_InitialMethodEnum )
+        {
+        case INIT_WITH_NONE:
+          regInit->SetComputeCenterOfRotationOnly( true );
+          break;
+        case INIT_WITH_IMAGE_CENTERS:
+          regInit->SetNumberOfMoments( 0 );
+          break;
+        case INIT_WITH_CENTERS_OF_MASS:
+          regInit->SetNumberOfMoments( 1 );
+          break;
+        case INIT_WITH_SECOND_MOMENTS:
+          regInit->SetNumberOfMoments( 2 );
+          break;
+        case INIT_WITH_LANDMARKS:
+          regInit->SetUseLandmarks( true );
+          regInit->SetFixedLandmarks( m_FixedLandmarks );
+          regInit->SetMovingLandmarks( m_MovingLandmarks );
+          break;
+        case INIT_WITH_CURRENT_RESULTS:
+        default:
+          break;
+        }
       regInit->Update();
       m_InitialTransform = regInit->GetAffineTransform();
       }
+    else
+      {
+      if( m_LoadedMatrixTransform.IsNotNull() )
+        {
+        m_InitialTransform = m_LoadedMatrixTransform;
+        }
+      }
+    }
+  else
+    {
+    regInit->SetComputeCenterOfRotationOnly( true );
+    regInit->Update();
+    m_InitialTransform = regInit->GetAffineTransform();
     }
 
   m_CurrentMatrixTransform = m_InitialTransform;
@@ -1159,13 +1157,11 @@ ImageToImageRegistrationHelper<TImage>
         aTrans->GetParameters();
       typename MatrixTransformType::ParametersType tmpParams =
         tmpTrans->GetParameters();
-      std::cout << "Original params = " << aTransParams << std::endl;
       for( unsigned int p=0; p<tmpParams.size(); ++p )
         {
         tmpParams[p] = tmpParams[p] + portion * (aTransParams[p]-tmpParams[p]);
         }
       tmpTrans->SetParameters( tmpParams );
-      std::cout << "portion params = " << tmpParams << std::endl;
       }
     else
       {
@@ -1509,7 +1505,10 @@ ImageToImageRegistrationHelper<TImage>
   m_LoadedMatrixTransform->SetOffset( tfm.GetOffset() );
   if( invert )
     {
-    std::cout << "GetInverseTransform" << std::endl;
+    if( this->GetReportProgress() )
+      {
+      std::cout << "GetInverseTransform" << std::endl;
+      }
     typename MatrixTransformType::Pointer invTfm = MatrixTransformType::New();
     m_LoadedMatrixTransform->GetInverse( invTfm );
     m_LoadedMatrixTransform = invTfm;

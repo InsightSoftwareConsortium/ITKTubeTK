@@ -244,6 +244,10 @@ RegisterImages< TImage >
   {
     m_Filter->SetInitialMethodEnum( FilterType::INIT_WITH_LANDMARKS );
   }
+  else if( !strcmp(initialMethod.c_str(), "INIT_WITH_LOADED_TRANSFORM" ) )
+  {
+    m_Filter->SetInitialMethodEnum( FilterType::INIT_WITH_LOADED_TRANSFORM );
+  }
   else // Default: if( !strcmp(inter.c_str(), "INIT_WITH_NONE" ) )
   {
     m_Filter->SetInitialMethodEnum( FilterType::INIT_WITH_NONE );
@@ -279,6 +283,11 @@ RegisterImages< TImage >
            FilterType::INIT_WITH_LANDMARKS )
   {
     return "INIT_WITH_LANDMARKS";
+  }
+  else if( m_Filter->GetInitialMethodEnum() ==
+           FilterType::INIT_WITH_LOADED_TRANSFORM )
+  {
+    return "INIT_WITH_LOADED_TRANSFORM";
   }
   else // Default: if( !strcmp(inter.c_str(), "INIT_WITH_NONE" ) )
   {
