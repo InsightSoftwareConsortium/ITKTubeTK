@@ -184,6 +184,7 @@ jobs:
       max-parallel: 1
       matrix:
         manylinux-platform: ["_2_28-x64", "2014-x64", "2014-aarch64"]
+        python-version: ["37", "38", "39", "310", "311"]
         include:
           - manylinux-platform: _2_28-x64
             target-arch: x64
@@ -191,8 +192,6 @@ jobs:
             target-arch: x64
           - manylinux-platform: 2014-aarch64
             target-arch: aarch64
-        python-version: ["37", "38", "39", "310", "311"]
-        include:
           - python-version: 37
             itk-package: "ITK-cp37-cp37m-manylinux"
             c-compiler: "gcc"
