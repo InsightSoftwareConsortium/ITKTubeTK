@@ -285,6 +285,8 @@ jobs:
         ls -la /work
         EOF
         chmod +x ./git-configure-build-sem.sh
+        echo "/tmp"
+        ls -la /tmp
         /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-sem.sh
 
     - name: 'Git-Configure-Build VTK'
