@@ -40,7 +40,7 @@ jobs:
       if: matrix.os == 'ubuntu-20.04'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev
+        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev zstd
 
     - name: Install build dependencies
       run: |
@@ -234,7 +234,7 @@ jobs:
     - name: 'Install dependencies'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev
+        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev zstd
 
         python -m pip install --upgrade pip
         python -m pip install ninja
