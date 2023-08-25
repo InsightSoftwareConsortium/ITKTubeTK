@@ -312,7 +312,7 @@ jobs:
         path: |
           ./VTK
           ./VTK-build
-        key: ${{ env.vtk-git-tag }}-${{ matrix.manylinux-platform }}-${{ python-version }}
+        key: ${{ env.vtk-git-tag }}-${{ matrix.manylinux-platform }}-${{ matrix.python-version }}
 
     - name: 'Git-Configure-Build VTK'
       if: steps.cache-vtk-python-linux.output.cache-hit != 'true'
