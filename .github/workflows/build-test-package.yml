@@ -510,7 +510,7 @@ jobs:
         path: |
           ../../im/VTK
           ../../im/VTK-build
-        key: ${{ env.vtk-git-tag }}-${{ python-version-minor }}
+        key: ${{ env.vtk-git-tag }}-${{ matrix.python-version-minor }}
 
     - name: 'Git-Configure-Build VTK'
       if: steps.cache-vtk-python-windows.output.cache-hit != 'true'
