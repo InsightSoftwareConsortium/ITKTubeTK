@@ -57,7 +57,7 @@ jobs:
         path: |
           ./VTK
           ./VTK-build
-        key: ${{ env.vtk-git-tag }}-${{ matrix.os }}
+        key: build-${{ env.vtk-git-tag }}-${{ matrix.os }}
 
     - name: Download VTK
       if: steps.cache-vtk.outputs.cache-hit != 'true'
@@ -312,7 +312,7 @@ jobs:
         path: |
           ./VTK
           ./VTK-build
-        key: ${{ env.vtk-git-tag }}-${{ matrix.manylinux-platform }}-${{ matrix.python-version }}
+        key: linux-${{ env.vtk-git-tag }}-${{ matrix.manylinux-platform }}-${{ matrix.python-version }}
 
     - name: 'Git-Configure-Build VTK'
       if: steps.cache-vtk-python-linux.outputs.cache-hit != 'true'
@@ -403,7 +403,7 @@ jobs:
         path: |
           ./VTK
           ./VTK-build
-        key: ${{ env.vtk-git-tag }}
+        key: mac-${{ env.vtk-git-tag }}
 
     - name: 'Git-Configure-Build VTK'
       if: steps.cache-vtk-python-mac.outputs.cache-hit != 'true'
@@ -510,7 +510,7 @@ jobs:
         path: |
           /c/P/VTK
           /c/P/VTK-build
-        key: ${{ env.vtk-git-tag }}-${{ matrix.python-version-minor }}
+        key: windows-${{ env.vtk-git-tag }}-${{ matrix.python-version-minor }}
 
     - name: 'Git-Configure-Build VTK'
       if: steps.cache-vtk-python-windows.outputs.cache-hit != 'true'
