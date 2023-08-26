@@ -4,14 +4,14 @@
   "description": "npm scripts to generate itk-wasm artifacts.",
   "type": "module",
   "scripts": {
-    "build": "npm run emscripten && npm run bindgen && npm run wasi",
-    "emscripten": "npx itk-wasm -b emscripten-build -i itkwasm/emscripten:20230228-69d0e594 build . -- -DTubeTK_USE_VTK:BOOL=OFF",
-    "bindgen": "npx itk-wasm -b emscripten-build bindgen --output-dir wasm/typescript --package-name itk-tubetk --package-description \"TubeTK is an open-source toolkit for the segmentation, registration, and analysis of tubes and surfaces in images, developed by Kitware, Inc.\" --repository 'https://github.com/InsightSoftwareConsortium/ITKTubeTK'",
-    "wasi": "npx itk-wasm -b wasi-build -i itkwasm/wasi:20230228-69d0e594 build . -- -DTubeTK_USE_VTK:BOOL=OFF",
+    "build": "npm run emscripten && npm run bindgen && npm run wasi && npm run bindgen:typescript",
+    "emscripten": "npx itk-wasm -b emscripten-build -i itkwasm/emscripten:20230825-eb2bf097 build . -- -DTubeTK_USE_VTK:BOOL=OFF",
+    "bindgen:typescript": "npx itk-wasm -b emscripten-build bindgen --output-dir wasm/typescript --package-name @itk-wasm/tubetk --package-description \"TubeTK is an open-source toolkit for the segmentation, registration, and analysis of tubes and surfaces in images, developed by Kitware, Inc.\" --repository 'https://github.com/InsightSoftwareConsortium/ITKTubeTK'",
+    "wasi": "npx itk-wasm -b wasi-build -i itkwasm/wasi:20230825-eb2bf097 build . -- -DTubeTK_USE_VTK:BOOL=OFF",
     "clean": "git clean -fdx -e node_modules"
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "itk-wasm": "^1.0.0-b.82"
+    "itk-wasm": "^1.0.0-b.130"
   }
 }
