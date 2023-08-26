@@ -552,7 +552,7 @@ jobs:
         copy ITKMinimalPathExtraction\include\* include\
 
         set ITK_DIR=C:\P\IPP\ITK-win_3${{ matrix.python-version-minor }}-x64
-        set VTK_DIR=\a\VTK-build-3${{ matrix.python-version-minor }}
+        set VTK_DIR=\a\im\VTK-build-3${{ matrix.python-version-minor }}
         mkdir SlicerExecutionModel-build-3${{ matrix.python-version-minor }}
         pushd SlicerExecutionModel-build-3${{ matrix.python-version-minor }}
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ../SlicerExecutionModel
