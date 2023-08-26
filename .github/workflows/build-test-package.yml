@@ -508,15 +508,15 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          /c/P/VTK
-          /c/P/VTK-build
+          \a\im\VTK
+          \a\im\VTK-build-3${{ matrix.python-version-minor }}
         key: windows-${{ env.vtk-git-tag }}-${{ matrix.python-version-minor }}
 
     - name: 'Git-Configure-Build VTK'
       if: steps.cache-vtk-python-windows.outputs.cache-hit != 'true'
       shell: cmd
       run: |
-        pushd /c/P
+        pushd \a\im
 
         git clone https://github.com/Kitware/VTK
         pushd VTK
@@ -530,8 +530,8 @@ jobs:
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe -m pip install ninja
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe -m pip install cmake
 
-        mkdir VTK-build
-        pushd VTK-build
+        mkdir VTK-build-3${{ matrix.python-version-minor }}
+        pushd VTK-build-3${{ matrix.python-version-minor }}
         C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ..\VTK
         C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\ninja
 
@@ -551,12 +551,10 @@ jobs:
         popd
         copy ITKMinimalPathExtraction\include\* include\
 
-        dir %CD%
-        dir C:\P\IPP
-        dir C:\P\IPP\ITK-win_3${{ matrix.python-version-minor }}-x64
-        #set ITK_DIR=%CD%\ITK-build
-        mkdir SlicerExecutionModel-build
-        pushd SlicerExecutionModel-build
+        set ITK_DIR=C:\P\IPP\ITK-win_3${{ matrix.python-version-minor }}-x64
+        set VTK_DIR=\a\VTK-build-3${{ matrix.python-version-minor }}
+        mkdir SlicerExecutionModel-build-3${{ matrix.python-version-minor }}
+        pushd SlicerExecutionModel-build-3${{ matrix.python-version-minor }}
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ../SlicerExecutionModel
         ninja
         popd
