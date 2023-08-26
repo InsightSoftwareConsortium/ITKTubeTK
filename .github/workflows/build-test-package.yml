@@ -508,21 +508,21 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          ../../im/VTK
-          ../../im/VTK-build
+          /c/P/VTK
+          /c/P/VTK-build
         key: ${{ env.vtk-git-tag }}-${{ matrix.python-version-minor }}
 
     - name: 'Git-Configure-Build VTK'
       if: steps.cache-vtk-python-windows.output.cache-hit != 'true'
       shell: cmd
       run: |
-        pushd ../../im
+        pushd /c/P
 
         git clone https://github.com/Kitware/VTK
         pushd VTK
         git checkout ${{env.vtk-git-tag}}
+        popd
 
-        pushd ..\..\im
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         set PATH=C:\P\grep;%PATH%
         dir C:\Python3${{ matrix.python-version-minor }}-x64\
