@@ -525,9 +525,6 @@ jobs:
 
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         set PATH=C:\P\grep;%PATH%
-        dir C:\Python3${{ matrix.python-version-minor }}-x64\
-        dir C:\Python3${{ matrix.python-version-minor }}-x64\Scripts
-        dir C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\cmake
         set CC=cl.exe
         set CXX=cl.exe
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe -m pip install ninja
@@ -544,9 +541,6 @@ jobs:
         pushd ..\..\im
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         set PATH=C:\P\grep;%PATH%
-        dir C:\Python3${{ matrix.python-version-minor }}-x64\
-        dir C:\Python3${{ matrix.python-version-minor }}-x64\Scripts
-        dir C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\cmake
         set CC=cl.exe
         set CXX=cl.exe
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe -m pip install ninja
@@ -557,7 +551,10 @@ jobs:
         popd
         copy ITKMinimalPathExtraction\include\* include\
 
-        set ITK_DIR=%CD%\ITK-build
+        dir %CD%
+        dir C:\P\IPP
+        dir C:\P\IPP\ITK-win_3${{ matrix.python-version-minor }}-x64
+        #set ITK_DIR=%CD%\ITK-build
         mkdir SlicerExecutionModel-build
         pushd SlicerExecutionModel-build
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ../SlicerExecutionModel
