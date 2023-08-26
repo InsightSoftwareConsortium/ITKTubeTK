@@ -55,8 +55,8 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          ./VTK
-          ./VTK-build
+          ../VTK
+          ../VTK-build
         key: build-${{ env.vtk-git-tag }}-${{ matrix.os }}
 
     - name: Download VTK
@@ -71,6 +71,7 @@ jobs:
       if: matrix.os != 'windows-2022' && steps.cache-vtk.outputs.cache-hit != 'true'
       run: |
         cd ..
+        echo $pwd
         mkdir VTK-build
         pushd VTK-build
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ../VTK
