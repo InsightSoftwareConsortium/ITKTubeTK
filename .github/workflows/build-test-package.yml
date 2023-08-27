@@ -278,6 +278,7 @@ jobs:
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
         export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
         export ITK_DIR_NAME=${{ matrix.itk-package }}${MANYLINUX_VERSION}_${TARGET_ARCH}
+
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
         ln -s -f -T /ITKPythonPackage/${ITK_DIR_NAME} /work/${ITK_DIR_NAME}
@@ -285,9 +286,9 @@ jobs:
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
         EOF
         chmod +x ./git-configure-build-sem.sh
+
         source "./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh"
-        echo ${CONTINER_SOURCE}
-        docker run -v $PWD/ITKPythonPackage:/ITKPythonPackage --rm ${CONTAINER_SOURCE} ./git-configure-build-sem.sh
+        docker run -v $(pwd):/work/ -v $PWD/ITKPythonPackage:/ITKPythonPackage --rm ${CONTAINER_SOURCE} ./git-configure-build-sem.sh
 
     - name: Cache VTK Python Linux
       id: cache-vtk-python-linux
@@ -323,7 +324,7 @@ jobs:
         chmod u+x ./git-configure-build-vtk.sh
         source "./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh"
         echo ${CONTINER_SOURCE}
-        docker run --rm ${CONTAINER_SOURCE} ./git-configure-build-vtk.sh
+        docker run -v $(pwd):/work/ --rm ${CONTAINER_SOURCE} ./git-configure-build-vtk.sh
 
     - name: 'Set Swap Space'
       uses: pierotofy/set-swap-space@master
