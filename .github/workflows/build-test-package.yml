@@ -272,7 +272,7 @@ jobs:
 
     - name: 'Setup Build Env x64'
       shell: bash
-      if: ${{ matrix.target-arch }} == 'x64'
+      if: matrix.target-arch == 'x64'
       run: |
         MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
         echo "Manylinux platform ${MANYLINUX_PLATFORM}"
@@ -290,7 +290,7 @@ jobs:
 
     - name: 'Setup Build Env aarch'
       shell: bash
-      if: ${{ matrix.target-arch }} == 'aarch64'
+      if: matrix.target-arch == 'aarch64'
       run: |
         MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
         echo "Manylinux platform ${MANYLINUX_PLATFORM}"
@@ -317,7 +317,7 @@ jobs:
         key: linux-${{ env.vtk-git-tag }}-${{ matrix.manylinux-platform }}-${{ matrix.python-version }}
 
     - name: 'Git-Configure-Build VTK x64'
-      if: target-arch == 'x64' && steps.cache-vtk-python-linux.outputs.cache-hit != 'true'
+      if: matrix.target-arch == 'x64' && steps.cache-vtk-python-linux.outputs.cache-hit != 'true'
       shell: bash
       run: |
         cat > git-configure-build-vtk.sh << EOF
@@ -341,7 +341,7 @@ jobs:
         /tmp/dockcross-manylinux-x64 ./git-configure-build-vtk.sh
 
     - name: 'Git-Configure-Build VTK aarch64'
-      if: target-arch == 'aarch64' && steps.cache-vtk-python-linux.outputs.cache-hit != 'true'
+      if: matrix.target-arch == 'aarch64' && steps.cache-vtk-python-linux.outputs.cache-hit != 'true'
       shell: bash
       run: |
         cat > git-configure-build-vtk.sh << EOF
