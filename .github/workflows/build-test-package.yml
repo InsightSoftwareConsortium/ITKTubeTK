@@ -286,7 +286,7 @@ jobs:
         EOF
         chmod +x ./git-configure-build-sem.sh
         ./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh
-        docker run --rm ${CONTAINER_SOURCE} -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-sem.sh
+        docker run --rm ${CONTAINER_SOURCE} -v $PWD/ITKPythonPackage:/ITKPythonPackage ./git-configure-build-sem.sh
 
     - name: Cache VTK Python Linux
       id: cache-vtk-python-linux
