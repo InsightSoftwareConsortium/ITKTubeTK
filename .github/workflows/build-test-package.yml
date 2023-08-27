@@ -285,8 +285,9 @@ jobs:
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
         EOF
         chmod +x ./git-configure-build-sem.sh
-        ./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh
-        docker run --rm ${CONTAINER_SOURCE} -v $PWD/ITKPythonPackage:/ITKPythonPackage ./git-configure-build-sem.sh
+        source "./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh"
+        echo ${CONTINER_SOURCE}
+        docker run -v $PWD/ITKPythonPackage:/ITKPythonPackage --rm ${CONTAINER_SOURCE} ./git-configure-build-sem.sh
 
     - name: Cache VTK Python Linux
       id: cache-vtk-python-linux
@@ -320,7 +321,8 @@ jobs:
         ninja
         EOF
         chmod u+x ./git-configure-build-vtk.sh
-        ./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh
+        source "./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh"
+        echo ${CONTINER_SOURCE}
         docker run --rm ${CONTAINER_SOURCE} ./git-configure-build-vtk.sh
 
     - name: 'Set Swap Space'
