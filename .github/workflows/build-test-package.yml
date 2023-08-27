@@ -270,27 +270,8 @@ jobs:
         mv ./ITKMinimalPathExtraction/tools .
         mkdir -p dist
 
-    - name: 'Setup Build Env x64'
+    - name: 'Setup Build Env'
       shell: bash
-      if: matrix.target-arch == 'x64'
-      run: |
-        MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
-        echo "Manylinux platform ${MANYLINUX_PLATFORM}"
-        export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
-        export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
-        export ITK_DIR_NAME=${{ matrix.itk-package }}${MANYLINUX_VERSION}_${TARGET_ARCH}
-        cat > git-configure-build-sem.sh << EOF
-        #!/bin/sh
-        ln -s -f -T /ITKPythonPackage/${ITK_DIR_NAME} /work/${ITK_DIR_NAME}
-        ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
-        ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
-        EOF
-        chmod +x ./git-configure-build-sem.sh
-        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-sem.sh
-
-    - name: 'Setup Build Env aarch'
-      shell: bash
-      if: matrix.target-arch == 'aarch64'
       run: |
         MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
         echo "Manylinux platform ${MANYLINUX_PLATFORM}"
@@ -317,32 +298,7 @@ jobs:
         key: linux-${{ env.vtk-git-tag }}-${{ matrix.manylinux-platform }}-${{ matrix.python-version }}
 
     - name: 'Git-Configure-Build VTK x64'
-      if: matrix.target-arch == 'x64' && steps.cache-vtk-python-linux.outputs.cache-hit != 'true'
-      shell: bash
-      run: |
-        cat > git-configure-build-vtk.sh << EOF
-        #!/bin/sh
-
-        git clone https://github.com/Kitware/VTK.git
-        cd VTK
-        git checkout ${{ env.vtk-git-tag }}
-        cd ..
-        mkdir -p VTK-build
-        cd VTK-build
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" \
-              -DBUILD_TESTING:BOOL=OFF \
-              -DBUILD_SHARED_LIBS:BOOL=OFF \
-              -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" \
-              -DCMAKE_BUILD_TYPE:STRING="Release" \
-              -GNinja \
-              ../VTK
-        ninja
-        EOF
-        chmod u+x ./git-configure-build-vtk.sh
-        /tmp/dockcross-manylinux-x64 ./git-configure-build-vtk.sh
-
-    - name: 'Git-Configure-Build VTK aarch64'
-      if: matrix.target-arch == 'aarch64' && steps.cache-vtk-python-linux.outputs.cache-hit != 'true'
+      if: steps.cache-vtk-python-linux.outputs.cache-hit != 'true'
       shell: bash
       run: |
         cat > git-configure-build-vtk.sh << EOF
