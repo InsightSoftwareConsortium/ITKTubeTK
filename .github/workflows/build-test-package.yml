@@ -338,6 +338,7 @@ jobs:
               ../VTK
         ninja
         EOF
+        chmod u+x ./git-configure-build-vtk.sh
         /tmp/dockcross-manylinux-x64 ./git-configure-build-vtk.sh
 
     - name: 'Git-Configure-Build VTK aarch64'
@@ -362,6 +363,7 @@ jobs:
               ../VTK
         ninja
         EOF
+        chmod u+x ./git-configure-build-vtk.sh
         ./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh
         docker run --rm ${CONTAINER_SOURCE} ./git-configure-build-vtk.sh
 
