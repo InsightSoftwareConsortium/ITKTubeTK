@@ -184,7 +184,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        manylinux-platform: ["_2_28-x64", "2014-x64", "_2_28-aarch64"]
+        manylinux-platform: ["_2_28-aarch64", "_2_28-x64", "2014-x64"]
         python-version: ["38", "39", "310", "311"]
         include:
           - manylinux-platform: _2_28-x64
@@ -288,6 +288,7 @@ jobs:
         chmod +x ./git-configure-build-sem.sh
 
         source "./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh"
+        docker run --privileged --rm tonistiigi/binfmt --install all
         docker run -v $(pwd):/work/ -v $PWD/ITKPythonPackage:/ITKPythonPackage --rm ${CONTAINER_SOURCE} ./git-configure-build-sem.sh
 
     - name: Cache VTK Python Linux
@@ -322,8 +323,9 @@ jobs:
         ninja
         EOF
         chmod u+x ./git-configure-build-vtk.sh
+
         source "./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh"
-        echo ${CONTINER_SOURCE}
+        docker run --privileged --rm tonistiigi/binfmt --install all
         docker run -v $(pwd):/work/ --rm ${CONTAINER_SOURCE} ./git-configure-build-vtk.sh
 
     - name: 'Set Swap Space'
