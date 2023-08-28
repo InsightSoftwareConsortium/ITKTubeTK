@@ -184,7 +184,8 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        manylinux-platform: ["_2_28-aarch64", "_2_28-x64", "2014-x64"]
+        # ["_2_28-aarch64", "_2_28-x64", "2014-x64"]
+        manylinux-platform: ["_2_28-x64", "2014-x64"]
         python-version: ["38", "39", "310", "311"]
         include:
           - manylinux-platform: _2_28-x64
@@ -304,6 +305,11 @@ jobs:
       if: steps.cache-vtk-python-linux.outputs.cache-hit != 'true'
       shell: bash
       run: |
+        MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
+        echo "Manylinux platform ${MANYLINUX_PLATFORM}"
+        export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
+        export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
+
         cat > git-configure-build-vtk.sh << EOF
         #!/bin/sh
 
