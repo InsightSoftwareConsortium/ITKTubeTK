@@ -153,8 +153,8 @@ jobs:
         Module_MinimalPathExtraction:BOOL=ON
         BUILD_SHARED_LIBS:BOOL=ON
         CMAKE_BUILD_TYPE:STRING="Release"
-        ITK_DIR:PATH=\${CTEST_SOURCE_DIRECTORY}/ITK-build
-        VTK_DIR:PATH=\${CTEST_SOURCE_DIRECTORY}/VTK-build
+        ITK_DIR:PATH=${PWD}/ITK-build
+        VTK_DIR:PATH=${PWD}/VTK-build
         BUILD_TESTING:BOOL=ON
         BUILD_EXAMPLES:BOOL=OFF
         TubeTK_BUILD_APPLICATIONS:BOOL=OFF
