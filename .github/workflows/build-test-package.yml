@@ -184,8 +184,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        # ["_2_28-aarch64", "_2_28-x64", "2014-x64"]
-        manylinux-platform: ["_2_28-x64", "2014-x64"]
+        manylinux-platform: ["_2_28-aarch64", "_2_28-x64", "2014-x64"]
         python-version: ["38", "39", "310", "311"]
         include:
           - manylinux-platform: _2_28-x64
@@ -290,7 +289,7 @@ jobs:
 
         source "./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh"
         docker run --privileged --rm tonistiigi/binfmt --install all
-        docker run -v $(pwd):/work/ -v $PWD/ITKPythonPackage:/ITKPythonPackage --rm ${CONTAINER_SOURCE} ./git-configure-build-sem.sh
+        docker run -v $(pwd):/work/ -v $PWD/ITKPythonPackage:/ITKPythonPackage --rm ${CONTAINER_SOURCE} /work/git-configure-build-sem.sh
 
     - name: Cache VTK Python Linux
       id: cache-vtk-python-linux
@@ -332,7 +331,7 @@ jobs:
 
         source "./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh"
         docker run --privileged --rm tonistiigi/binfmt --install all
-        docker run -v $(pwd):/work/ --rm ${CONTAINER_SOURCE} ./git-configure-build-vtk.sh
+        docker run -v $(pwd):/work/ --rm ${CONTAINER_SOURCE} /work/git-configure-build-vtk.sh
 
     - name: 'Set Swap Space'
       uses: pierotofy/set-swap-space@master
