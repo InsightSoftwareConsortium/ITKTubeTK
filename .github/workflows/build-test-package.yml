@@ -184,7 +184,8 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        manylinux-platform: ["_2_28-aarch64", "_2_28-x64", "2014-x64"]
+        #"_2_28-aarch64",
+        manylinux-platform: ["_2_28-x64", "2014-x64"]
         python-version: ["38", "39", "310", "311"]
         include:
           - manylinux-platform: _2_28-x64
@@ -315,8 +316,8 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev zstd
 
-        python3 -m pip install --upgrade pip
-        python3 -m pip install ninja
+        python -m pip install --upgrade pip
+        python -m pip install ninja
 
         git clone https://github.com/Kitware/VTK.git
         cd VTK
