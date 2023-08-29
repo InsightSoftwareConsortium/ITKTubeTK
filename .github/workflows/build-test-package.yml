@@ -184,7 +184,6 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        #"_2_28-aarch64",
         manylinux-platform: ["_2_28-x64", "2014-x64"]
         python-version: ["38", "39", "310", "311"]
         include:
@@ -192,8 +191,6 @@ jobs:
             target-arch: x64
           - manylinux-platform: 2014-x64
             target-arch: x64
-          - manylinux-platform: _2_28-aarch64
-            target-arch: aarch64
           - python-version: 38
             itk-package: "ITK-cp38-cp38-manylinux"
             c-compiler: "gcc"
@@ -229,11 +226,15 @@ jobs:
         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
         df -h
 
+    - name: 'Set Swap Space'
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 10
+
+
     - name: 'Install dependencies'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev zstd
-
         python -m pip install --upgrade pip
         python -m pip install ninja
 
@@ -247,18 +248,17 @@ jobs:
     - name: 'Git-Configure-Build MinimalPathExtraction'
       run: |
         rm -rf dist
+        rm -rf ITKPythonPackage
+
         export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
         export ITKPYTHONPACKAGE_TAG=${{ env.itk-python-package-tag }}
         export ITKPYTHONPACKAGE_ORG=${{ env.itk-python-package-org }}
         #export ITK_MODULE_PREQ=${{ env.itk-module-deps }}
 
         MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
-        echo "Manylinux platform ${MANYLINUX_PLATFORM}"
-        rm -rf ITKPythonPackage
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
         export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
         export ITK_MODULE_NO_CLEANUP="true"
-        echo "Building for manylinux specialization ${MANYLINUX_VERSION} and target architecture ${TARGET_ARCH}"
 
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         cp ./dockcross-manylinux-download-cache-and-build-module-wheels.sh ./ITKMinimalPathExtraction
@@ -266,6 +266,7 @@ jobs:
         git checkout ${{env.itk-minimalpathextraction-git-tag}}
         ./dockcross-manylinux-download-cache-and-build-module-wheels.sh cp${{ matrix.python-version }}
         popd
+
         cp ITKMinimalPathExtraction/include/* include/
         mv ./ITKMinimalPathExtraction/ITKPythonPackage .
         mv ./ITKMinimalPathExtraction/tools .
@@ -275,22 +276,20 @@ jobs:
       shell: bash
       run: |
         MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
-        echo "Manylinux platform ${MANYLINUX_PLATFORM}"
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
         export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
         export ITK_DIR_NAME=${{ matrix.itk-package }}${MANYLINUX_VERSION}_${TARGET_ARCH}
 
-        cat > git-configure-build-sem.sh << EOF
+        cat > git-configure-build-env.sh << EOF
         #!/bin/sh
         ln -s -f -T /ITKPythonPackage/${ITK_DIR_NAME} /work/${ITK_DIR_NAME}
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
         EOF
-        chmod +x ./git-configure-build-sem.sh
+        chmod +x ./git-configure-build-env.sh
 
         source "./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh"
-        docker run --privileged --rm tonistiigi/binfmt --install all
-        docker run -v $(pwd):/work/ -v $PWD/ITKPythonPackage:/ITKPythonPackage --rm ${CONTAINER_SOURCE} /work/git-configure-build-sem.sh
+        docker run -v $(pwd):/work/ -v $PWD/ITKPythonPackage:/ITKPythonPackage --rm ${CONTAINER_SOURCE} /work/git-configure-build-env.sh
 
     - name: Cache VTK Python Linux
       id: cache-vtk-python-linux
@@ -306,19 +305,15 @@ jobs:
       shell: bash
       run: |
         MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
-        echo "Manylinux platform ${MANYLINUX_PLATFORM}"
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
         export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
 
         cat > git-configure-build-vtk.sh << EOF
         #!/bin/sh
-
         sudo apt-get update
         sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev zstd
-
         python -m pip install --upgrade pip
         python -m pip install ninja
-
         git clone https://github.com/Kitware/VTK.git
         cd VTK
         git checkout ${{ env.vtk-git-tag }}
@@ -337,30 +332,20 @@ jobs:
         chmod u+x ./git-configure-build-vtk.sh
 
         source "./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh"
-        docker run --privileged --rm tonistiigi/binfmt --install all
         docker run -v $(pwd):/work/ --rm ${CONTAINER_SOURCE} /work/git-configure-build-vtk.sh
-
-    - name: 'Set Swap Space'
-      uses: pierotofy/set-swap-space@master
-      with:
-        swap-size-gb: 10
 
     - name: 'Build 🐍 Python 📦 package TubeTK'
       timeout-minutes: 400
       run: |
-        df -h
         export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
         export ITKPYTHONPACKAGE_TAG=${{ env.itk-python-package-tag }}
         export ITKPYTHONPACKAGE_ORG=${{ env.itk-python-package-org }}
         #export ITK_MODULE_PREQ=${{ env.itk-module-deps }}
+
         export MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
-        echo "Manylinux platform ${MANYLINUX_PLATFORM}"
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
         export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
-        echo "Building for manylinux specialization ${MANYLINUX_VERSION} and target architecture ${TARGET_ARCH}"
-        # The following was done for MinimalPathExtraction already
-        # ./dockcross-manylinux-download-cache-and-build-module-wheels.sh cp${{ matrix.python-version }}
-        # So we use this script instead
+
         ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
 
     - name: Publish Python package as GitHub Artifact
