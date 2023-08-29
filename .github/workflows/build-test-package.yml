@@ -315,8 +315,8 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev zstd
 
-        python -m pip install --upgrade pip
-        python -m pip install ninja
+        python3 -m pip install --upgrade pip
+        python3 -m pip install ninja
 
         git clone https://github.com/Kitware/VTK.git
         cd VTK
