@@ -281,6 +281,12 @@ jobs:
 
         cat > git-configure-build-sem.sh << EOF
         #!/bin/sh
+        sudo apt-get update
+        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev zstd
+
+        python -m pip install --upgrade pip
+        python -m pip install ninja
+
         ln -s -f -T /ITKPythonPackage/${ITK_DIR_NAME} /work/${ITK_DIR_NAME}
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
@@ -300,7 +306,7 @@ jobs:
           VTK-build
         key: linux-${{ env.vtk-git-tag }}-${{ matrix.manylinux-platform }}-${{ matrix.python-version }}
 
-    - name: 'Git-Configure-Build VTK x64'
+    - name: 'Git-Configure-Build VTK'
       if: steps.cache-vtk-python-linux.outputs.cache-hit != 'true'
       shell: bash
       run: |
