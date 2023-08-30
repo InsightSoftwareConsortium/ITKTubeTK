@@ -29,7 +29,7 @@ jobs:
             cxx-compiler: "clang++"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
@@ -40,7 +40,7 @@ jobs:
       if: matrix.os == 'ubuntu-20.04'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev
+        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev zstd
 
     - name: Install build dependencies
       run: |
@@ -50,26 +50,33 @@ jobs:
     - name: Get specific version of CMake, Ninja
       uses: lukka/get-cmake@v3.22.2
 
+    - name: Cache VTK
+      id: cache-vtk
+      uses: actions/cache@v3
+      with:
+        path: |
+          VTK
+          VTK-build
+        key: build-${{ env.vtk-git-tag }}-${{ matrix.os }}
+
     - name: Download VTK
+      if: steps.cache-vtk.outputs.cache-hit != 'true'
       run: |
-        cd ..
         git clone https://github.com/Kitware/VTK.git
         pushd VTK
         git checkout ${{ env.vtk-git-tag }}
 
     - name: Build VTK (Mac and Linux)
-      if: matrix.os != 'windows-2022'
+      if: matrix.os != 'windows-2022' && steps.cache-vtk.outputs.cache-hit != 'true'
       run: |
-        cd ..
         mkdir VTK-build
         pushd VTK-build
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ../VTK
         ninja
 
     - name: Build VTK (Windows)
-      if: matrix.os == 'windows-2022'
+      if: matrix.os == 'windows-2022' && steps.cache-vtk.outputs.cache-hit != 'true'
       run: |
-        cd ..
         mkdir VTK-build
         pushd VTK-build
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
@@ -79,7 +86,6 @@ jobs:
 
     - name: Download ITK
       run: |
-        cd ..
         git clone https://github.com/InsightSoftwareConsortium/ITK.git
         pushd ITK
         git checkout ${{ env.itk-git-tag }}
@@ -87,7 +93,6 @@ jobs:
     - name: Build ITK (Mac and Linux)
       if: matrix.os != 'windows-2022'
       run: |
-        cd ..
         mkdir ITK-build
         pushd ITK-build
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DITK_LEGACY_REMOVE:BOOL=ON -DModule_MinimalPathExtraction:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -DBUILD_TESTING:BOOL=ON -GNinja ../ITK
@@ -96,7 +101,6 @@ jobs:
     - name: Build ITK (Windows)
       if: matrix.os == 'windows-2022'
       run: |
-        cd ..
         mkdir ITK-build
         pushd ITK-build
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
@@ -111,9 +115,6 @@ jobs:
       shell: bash
       run: |
         operating_system="${{ matrix.os }}"
-        echo "PWD"
-        pwd
-        ls -la .
         cat > dashboard.cmake << EOF
         set(CTEST_SITE "GitHubActions")
         file(TO_CMAKE_PATH "${PWD}/.." CTEST_DASHBOARD_ROOT)
@@ -141,8 +142,8 @@ jobs:
         set(ENV{CC} ${{ matrix.c-compiler }})
         set(ENV{CXX} ${{ matrix.cxx-compiler }})
 
-        set(ENV{ITK_DIR} "\${CTEST_DASHBOARD_ROOT}/ITK-build")
-        set(ENV{VTK_DIR} "\${CTEST_DASHBOARD_ROOT}/VTK-build")
+        set(ENV{ITK_DIR} "\${CTEST_SOURCE_DIRECTORY}/ITK-build")
+        set(ENV{VTK_DIR} "\${CTEST_SOURCE_DIRECTORY}/VTK-build")
 
         if(WIN32)
           set(ENV{PATH} "\${CTEST_DASHBOARD_ROOT}/ITK-build/bin;\$ENV{PATH}")
@@ -152,8 +153,8 @@ jobs:
         Module_MinimalPathExtraction:BOOL=ON
         BUILD_SHARED_LIBS:BOOL=ON
         CMAKE_BUILD_TYPE:STRING="Release"
-        ITK_DIR:PATH=\${CTEST_DASHBOARD_ROOT}/ITK-build
-        VTK_DIR:PATH=\${CTEST_DASHBOARD_ROOT}/VTK-build
+        ITK_DIR:PATH=${PWD}/ITK-build
+        VTK_DIR:PATH=${PWD}/VTK-build
         BUILD_TESTING:BOOL=ON
         BUILD_EXAMPLES:BOOL=OFF
         TubeTK_BUILD_APPLICATIONS:BOOL=OFF
@@ -183,13 +184,13 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        manylinux-platform: ["_2_28-x64", "2014-x64", "_2_28-aarch64"]
-        python-version: ["37", "38", "39", "310", "311"]
+        manylinux-platform: ["_2_28-x64", "2014-x64"]
+        python-version: ["38", "39", "310", "311"]
         include:
-          - python-version: 37
-            itk-package: "ITK-cp37-cp37m-manylinux"
-            c-compiler: "gcc"
-            cxx-compiler: "g++"
+          - manylinux-platform: _2_28-x64
+            target-arch: x64
+          - manylinux-platform: 2014-x64
+            target-arch: x64
           - python-version: 38
             itk-package: "ITK-cp38-cp38-manylinux"
             c-compiler: "gcc"
@@ -208,7 +209,7 @@ jobs:
             cxx-compiler: "g++"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: 'Free up disk space'
       run: |
@@ -225,11 +226,15 @@ jobs:
         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
         df -h
 
+    - name: 'Set Swap Space'
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 10
+
+
     - name: 'Install dependencies'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev
-
         python -m pip install --upgrade pip
         python -m pip install ninja
 
@@ -243,18 +248,17 @@ jobs:
     - name: 'Git-Configure-Build MinimalPathExtraction'
       run: |
         rm -rf dist
+        rm -rf ITKPythonPackage
+
         export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
         export ITKPYTHONPACKAGE_TAG=${{ env.itk-python-package-tag }}
         export ITKPYTHONPACKAGE_ORG=${{ env.itk-python-package-org }}
         #export ITK_MODULE_PREQ=${{ env.itk-module-deps }}
 
         MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
-        echo "Manylinux platform ${MANYLINUX_PLATFORM}"
-        rm -rf ITKPythonPackage
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
         export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
         export ITK_MODULE_NO_CLEANUP="true"
-        echo "Building for manylinux specialization ${MANYLINUX_VERSION} and target architecture ${TARGET_ARCH}"
 
         git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
         cp ./dockcross-manylinux-download-cache-and-build-module-wheels.sh ./ITKMinimalPathExtraction
@@ -262,39 +266,54 @@ jobs:
         git checkout ${{env.itk-minimalpathextraction-git-tag}}
         ./dockcross-manylinux-download-cache-and-build-module-wheels.sh cp${{ matrix.python-version }}
         popd
+
         cp ITKMinimalPathExtraction/include/* include/
         mv ./ITKMinimalPathExtraction/ITKPythonPackage .
         mv ./ITKMinimalPathExtraction/tools .
+        mkdir -p dist
 
     - name: 'Setup Build Env'
       shell: bash
       run: |
         MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
-        echo "Manylinux platform ${MANYLINUX_PLATFORM}"
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
         export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
         export ITK_DIR_NAME=${{ matrix.itk-package }}${MANYLINUX_VERSION}_${TARGET_ARCH}
-        cat > git-configure-build-sem.sh << EOF
+
+        cat > git-configure-build-env.sh << EOF
         #!/bin/sh
-        echo "/ITKPythonPackage"
-        ls -la /ITKPythonPackage
         ln -s -f -T /ITKPythonPackage/${ITK_DIR_NAME} /work/${ITK_DIR_NAME}
         ln -s -f -T /ITKPythonPackage/ITK-source /work/ITK-source
         ln -s -f -T /ITKPythonPackage/oneTBB-prefix /work/oneTBB-prefix
-        echo "/work"
-        ls -la /work
         EOF
-        chmod +x ./git-configure-build-sem.sh
-        echo "/tmp"
-        ls -la /tmp
-        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-sem.sh
+        chmod +x ./git-configure-build-env.sh
+
+        source "./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh"
+        docker run -v $(pwd):/work/ -v $PWD/ITKPythonPackage:/ITKPythonPackage --rm ${CONTAINER_SOURCE} /work/git-configure-build-env.sh
+
+    - name: Cache VTK Python Linux
+      id: cache-vtk-python-linux
+      uses: actions/cache@v3
+      with:
+        path: |
+          VTK
+          VTK-build
+        key: linux-${{ env.vtk-git-tag }}-${{ matrix.manylinux-platform }}-${{ matrix.python-version }}
 
     - name: 'Git-Configure-Build VTK'
+      if: steps.cache-vtk-python-linux.outputs.cache-hit != 'true'
       shell: bash
       run: |
+        MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
+        export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
+        export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
+
         cat > git-configure-build-vtk.sh << EOF
         #!/bin/sh
-
+        sudo apt-get update
+        sudo apt-get install -y libglu1-mesa-dev mesa-common-dev libgl1-mesa-glx libglvnd-core-dev freeglut3-dev libtbb-dev zstd
+        python -m pip install --upgrade pip
+        python -m pip install ninja
         git clone https://github.com/Kitware/VTK.git
         cd VTK
         git checkout ${{ env.vtk-git-tag }}
@@ -310,30 +329,23 @@ jobs:
               ../VTK
         ninja
         EOF
-        chmod +x ./git-configure-build-vtk.sh
-        /tmp/dockcross-manylinux-x64 -a "-v $PWD/ITKPythonPackage:/ITKPythonPackage" ./git-configure-build-vtk.sh
+        chmod u+x ./git-configure-build-vtk.sh
 
-    - name: 'Set Swap Space'
-      uses: pierotofy/set-swap-space@master
-      with:
-        swap-size-gb: 10
+        source "./ITKPythonPackage/scripts/dockcross-manylinux-set-vars.sh"
+        docker run -v $(pwd):/work/ --rm ${CONTAINER_SOURCE} /work/git-configure-build-vtk.sh
 
     - name: 'Build 🐍 Python 📦 package TubeTK'
       timeout-minutes: 400
       run: |
-        df -h
         export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
         export ITKPYTHONPACKAGE_TAG=${{ env.itk-python-package-tag }}
         export ITKPYTHONPACKAGE_ORG=${{ env.itk-python-package-org }}
         #export ITK_MODULE_PREQ=${{ env.itk-module-deps }}
+
         export MANYLINUX_PLATFORM=${{ matrix.manylinux-platform }}
-        echo "Manylinux platform ${MANYLINUX_PLATFORM}"
         export MANYLINUX_VERSION=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 1)`
         export TARGET_ARCH=`(echo ${MANYLINUX_PLATFORM} | cut -d '-' -f 2)`
-        echo "Building for manylinux specialization ${MANYLINUX_VERSION} and target architecture ${TARGET_ARCH}"
-        # The following was done for MinimalPathExtraction already
-        # ./dockcross-manylinux-download-cache-and-build-module-wheels.sh cp${{ matrix.python-version }}
-        # So we use this script instead
+
         ./ITKPythonPackage/scripts/dockcross-manylinux-build-module-wheels.sh cp${{ matrix.python-version }}
 
     - name: Publish Python package as GitHub Artifact
@@ -352,7 +364,7 @@ jobs:
             cxx-compiler: "clang++"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: 'Specific XCode version'
       run: |
@@ -368,7 +380,17 @@ jobs:
         curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/${{ env.itk-wheel-tag }}/scripts/macpython-download-cache-and-build-module-wheels.sh -O
         chmod u+x macpython-download-cache-and-build-module-wheels.sh
 
+    - name: Cache VTK Python Mac
+      id: cache-vtk-python-mac
+      uses: actions/cache@v3
+      with:
+        path: |
+          VTK
+          VTK-build
+        key: mac-${{ env.vtk-git-tag }}
+
     - name: 'Git-Configure-Build VTK'
+      if: steps.cache-vtk-python-mac.outputs.cache-hit != 'true'
       run: |
         export ITK_PACKAGE_VERSION=${{ env.itk-wheel-tag }}
         export MACOSX_DEPLOYMENT_TARGET=10.9
@@ -422,7 +444,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version-minor: ["7", "8", "9", "10", "11"]
+        python-version-minor: ["8", "9", "10", "11"]
         include:
           - c-compiler: "cl.exe"
             cxx-compiler: "cl.exe"
@@ -431,7 +453,7 @@ jobs:
     - name: Get specific version of CMake, Ninja
       uses: lukka/get-cmake@v3.22.2
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         path: "im"
 
@@ -453,21 +475,49 @@ jobs:
         curl -L "https://data.kitware.com/api/v1/file/5bbf87ba8d777f06b91f27d6/download/grep-win.zip" -o "grep-win.zip"
         7z x grep-win.zip -o/c/P/grep -aoa -r
         echo "Updating ITKPythonPackage build scripts to ${{env.itk-python-package-tag}}"
+        git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
+        pushd ITKMinimalPathExtraction
+        git checkout ${{env.itk-minimalpathextraction-git-tag}}
+        popd
+        git clone https://github.com/Slicer/SlicerExecutionModel
+
         pushd /c/P/IPP
         git remote add InsightSoftwareConsortium https://github.com/InsightSoftwareConsortium/ITKPythonPackage.git --tags
         git fetch InsightSoftwareConsortium
         git checkout ${{env.itk-python-package-tag}}
         git status
-        popd
-        git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
-        pushd ITKMinimalPathExtraction
-        git checkout ${{env.itk-minimalpathextraction-git-tag}}
-        popd
+
+    - name: Cache VTK Python Windows
+      id: cache-vtk-python-windows
+      uses: actions/cache@v3
+      with:
+        path: |
+          \a\im\VTK
+          \a\im\VTK-build-3${{ matrix.python-version-minor }}
+        key: windows-${{ env.vtk-git-tag }}-${{ matrix.python-version-minor }}
+
+    - name: 'Git-Configure-Build VTK'
+      if: steps.cache-vtk-python-windows.outputs.cache-hit != 'true'
+      shell: cmd
+      run: |
+        pushd \a\im
+
         git clone https://github.com/Kitware/VTK
         pushd VTK
         git checkout ${{env.vtk-git-tag}}
         popd
-        git clone https://github.com/Slicer/SlicerExecutionModel
+
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        set PATH=C:\P\grep;%PATH%
+        set CC=cl.exe
+        set CXX=cl.exe
+        C:\Python3${{ matrix.python-version-minor }}-x64\python.exe -m pip install ninja
+        C:\Python3${{ matrix.python-version-minor }}-x64\python.exe -m pip install cmake
+
+        mkdir VTK-build-3${{ matrix.python-version-minor }}
+        pushd VTK-build-3${{ matrix.python-version-minor }}
+        C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ..\VTK
+        C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\ninja
 
     - name: 'Build 🐍 Python 📦 package'
       shell: cmd
@@ -475,27 +525,20 @@ jobs:
         pushd ..\..\im
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         set PATH=C:\P\grep;%PATH%
-        dir C:\Python3${{ matrix.python-version-minor }}-x64\
-        dir C:\Python3${{ matrix.python-version-minor }}-x64\Scripts
-        dir C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\cmake
         set CC=cl.exe
         set CXX=cl.exe
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe -m pip install ninja
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe -m pip install cmake
-        mkdir VTK-build
-        pushd VTK-build
-        C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ..\VTK
-        C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\ninja
-        popd
 
         pushd ITKMinimalPathExtraction
         C:\Python3${{ matrix.python-version-minor }}-x64\python.exe C:\P\IPP\scripts\windows_build_module_wheels.py --py-envs "3${{ matrix.python-version-minor }}-x64"
         popd
         copy ITKMinimalPathExtraction\include\* include\
 
-        set ITK_DIR=%CD%\ITK-build
-        mkdir SlicerExecutionModel-build
-        pushd SlicerExecutionModel-build
+        set ITK_DIR=C:\P\IPP\ITK-win_3${{ matrix.python-version-minor }}-x64
+        set VTK_DIR=\a\im\VTK-build-3${{ matrix.python-version-minor }}
+        mkdir SlicerExecutionModel-build-3${{ matrix.python-version-minor }}
+        pushd SlicerExecutionModel-build-3${{ matrix.python-version-minor }}
         cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ../SlicerExecutionModel
         ninja
         popd
