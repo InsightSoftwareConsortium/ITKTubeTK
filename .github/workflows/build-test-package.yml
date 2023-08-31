@@ -81,7 +81,7 @@ jobs:
         mkdir VTK-build
         pushd VTK-build
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ../VTK
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DVTK_MODULE_ENABLE_VTK_ioss:BOOL=NO -DVTK_MODULE_ENABLE_VTK_IOIOSS:BOOL=NO -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ../VTK
         ninja
       shell: cmd
 
@@ -401,7 +401,7 @@ jobs:
         popd
         mkdir VTK-build
         pushd VTK-build
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ../VTK
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DVTK_MODULE_ENABLE_VTK_ioss:BOOL=NO -DVTK_MODULE_ENABLE_VTK_IOIOSS:BOOL=NO -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ../VTK
         ninja
 
     - name: 'Git-Configure-Build MinimalPathExtraction'
@@ -517,7 +517,7 @@ jobs:
 
         mkdir VTK-build-3${{ matrix.python-version-minor }}
         pushd VTK-build-3${{ matrix.python-version-minor }}
-        C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ..\VTK
+        C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_TESTING:BOOL=OFF -DBUILD_SHARED_LIBS:BOOL=OFF -DVTK_MODULE_ENABLE_VTK_ioss:BOOL=NO -DVTK_MODULE_ENABLE_VTK_IOIOSS:BOOL=NO -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING="Release" -GNinja ..\VTK
         C:\Python3${{ matrix.python-version-minor }}-x64\Scripts\ninja
 
     - name: 'Build 🐍 Python 📦 package'
