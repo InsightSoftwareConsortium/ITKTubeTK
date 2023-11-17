@@ -43,19 +43,9 @@ set( tubeRegistrationTests_SRCS
   itktubeSyntheticTubeImageGenerationTest.cxx
   itktubePointBasedSpatialObjectTransformFilterTest.cxx )
 
-if( TubeTK_USE_VTK )
-  list( APPEND tubeRegistrationTests_SRCS
-    itktubeAnisotropicDiffusiveRegistrationGenerateTestingImages.cxx
-    itktubeAnisotropicDiffusiveRegistrationRegularizationTest.cxx )
-endif( TubeTK_USE_VTK )
-
 CreateTestDriver( tubeRegistration
   "${TubeTK-Test_LIBRARIES}"
   "${tubeRegistrationTests_SRCS}" )
-if( TubeTK_USE_VTK )
-  target_link_libraries( tubeRegistrationTestDriver LINK_PUBLIC
-    ${VTK_LIBRARIES} )
-endif( TubeTK_USE_VTK )
 
 itk_add_test( NAME tubeRegistrationPrintTest
   COMMAND tubeRegistrationTestDriver
@@ -95,66 +85,6 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/itktubeSpatialObjectToImageRegistrationPerformance )
 set_tests_properties(itktubeSpatialObjectToImageRegistrationPerformanceTest
   PROPERTIES TIMEOUT 15)
-
-if( TubeTK_USE_VTK )
-  itk_add_test(
-    NAME itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise
-    COMMAND tubeRegistrationTestDriver
-      --compare
-        ${ITK_TEST_OUTPUT_DIR}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise.mha
-        DATA{${TubeTK_DATA_ROOT}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise.mha}
-      itktubeAnisotropicDiffusiveRegistrationRegularizationTest
-        ${ITK_TEST_OUTPUT_DIR}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise.mha
-        0 0
-        5 0.125 1 )
-
-  itk_add_test(
-    NAME
-      itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraight
-    COMMAND tubeRegistrationTestDriver
-      --compare
-        ${ITK_TEST_OUTPUT_DIR}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraight.mha
-        DATA{${TubeTK_DATA_ROOT}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraight.mha}
-      itktubeAnisotropicDiffusiveRegistrationRegularizationTest
-        ${ITK_TEST_OUTPUT_DIR}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraight.mha
-        0.1 0
-        5 0.125 1 )
-
-  itk_add_test(
-    NAME
-      itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise
-    COMMAND tubeRegistrationTestDriver
-      --compare
-        ${ITK_TEST_OUTPUT_DIR}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise.mha
-        DATA{${TubeTK_DATA_ROOT}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise.mha}
-      itktubeAnisotropicDiffusiveRegistrationRegularizationTest
-        ${ITK_TEST_OUTPUT_DIR}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise.mha
-        0 0.5
-        5 0.125 1 )
-  itk_add_test(
-    NAME
-      itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngled
-    COMMAND tubeRegistrationTestDriver
-      --compare
-        ${ITK_TEST_OUTPUT_DIR}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngled.mha
-        DATA{${TubeTK_DATA_ROOT}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngled.mha}
-      itktubeAnisotropicDiffusiveRegistrationRegularizationTest
-        ${ITK_TEST_OUTPUT_DIR}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngled.mha
-        0.1 0.5
-        5 0.125 1 )
-
-  itk_add_test(
-    NAME
-      itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian
-    COMMAND tubeRegistrationTestDriver
-      --compare
-        ${ITK_TEST_OUTPUT_DIR}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian.mha
-        DATA{${TubeTK_DATA_ROOT}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian.mha}
-      itktubeAnisotropicDiffusiveRegistrationRegularizationTest
-        ${ITK_TEST_OUTPUT_DIR}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian.mha
-        0.1 0.5
-        5 0.125 0 )
-endif()
 
 itk_add_test(
   NAME itktubePointsToImageTest

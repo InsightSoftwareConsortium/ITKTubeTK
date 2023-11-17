@@ -100,16 +100,10 @@ add_subdirectory( ShrinkImageWithBlending )
 add_subdirectory( SimulateAcquisitionArtifactsUsingPrior )
 add_subdirectory( TubeMath )
 
-if( TubeTK_USE_VTK )
-  add_subdirectory( ConvertTubesToSurface )
-  add_subdirectory( ComputeTubeTortuosityMeasures )
-  add_subdirectory( RegisterUsingSlidingGeometries )
-endif()
-
-
 ####
 # NOT CONVERTED YET
 ####
+#add_subdirectory( ComputeTubeTortuosityMeasures )
 #add_subdirectory( ComputeRegionSignatures )
 #add_subdirectory( SegmentUsingQuantileThreshold )
 #add_subdirectory( TransferLabelsToRegions )

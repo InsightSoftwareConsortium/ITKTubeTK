@@ -1,9 +1,5 @@
 itk_module_test()
 
-if( TubeTK_USE_VTK )
-  find_package( VTK REQUIRED )
-endif()
-
 set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/test/Baseline )
 
 add_subdirectory(CompareTools)

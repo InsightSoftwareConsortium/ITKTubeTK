@@ -31,8 +31,7 @@ namespace tube
 
 /**
  * Lightweight base class for classes not derived from classes in ITK or VTK.
- * For ITK-derived classes use itk::Object and for VTK-derived classes use
- * vtkObject.
+ * For ITK-derived classes use itk::Object
  *
  * \ingroup  Common
  */

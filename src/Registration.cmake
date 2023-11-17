@@ -54,12 +54,6 @@ set( TubeTK_Registration_H_Files
   Registration/itktubeSpatialObjectToImageRegistrationMethod.h
   )
 
-if( TubeTK_USE_VTK )
-  list( APPEND TubeTK_Registration_H_Files
-    Registration/itktubeAnisotropicDiffusiveSparseRegistrationFilter.h
-    Registration/itktubeAnisotropicDiffusiveRegistrationFilter.h )
-endif()
-
 set( TubeTK_Registration_HXX_Files
   Registration/itkAffineImageToImageRegistrationMethod.hxx
   Registration/itkAnisotropicSimilarity3DTransform.hxx
@@ -92,12 +86,6 @@ set( TubeTK_Registration_HXX_Files
   Registration/itktubeSpatialObjectToImageRegistrationHelper.hxx
   Registration/itktubeSpatialObjectToImageRegistrationMethod.hxx
   )
-
-if( TubeTK_USE_VTK )
-  list( APPEND TubeTK_Registration_HXX_Files
-    Registration/itktubeAnisotropicDiffusiveSparseRegistrationFilter.hxx
-    Registration/itktubeAnisotropicDiffusiveRegistrationFilter.hxx )
-endif()
 
 set( TubeTK_Registration_CXX_Files )
 
