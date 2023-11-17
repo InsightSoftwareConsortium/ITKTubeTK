@@ -5,6 +5,8 @@ on: [push,pull_request]
 jobs:
   cxx-build-workflow:
     uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-cxx.yml@5083da2740617b78423ebf6083489e1e70ee8ca0
+    with:
+      itk-cmake-options: '-DModule_MinimalPathExtraction:BOOL=ON'
 
   python-build-workflow:
     uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@5083da2740617b78423ebf6083489e1e70ee8ca0
