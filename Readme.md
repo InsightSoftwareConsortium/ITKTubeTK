@@ -44,7 +44,7 @@ Compiling TubeTK
 
 We stronly reocmmend that you use the Python version of TubeTK, as described above.  However, if you wish to compile TubeTK from scratch (e.g., because you wish to modify it or use its C++ interface), then use the version of TubeTK that is bundled with ITK.   ITKTubeTK is available as a official ITK Remote Module, starting with [ITKv5.1.2](https://github.com/InsightSoftwareConsortium/ITK/releases/tag/v5.1.2).   
 
-Details on compiling ITK (and optionally compiling it with VTK, compiling its example applications, and wrapping it for python) are described next.
+Details on compiling ITK (and optionally compiling its example applications and wrapping it for python) are described next.
 
 Within ITK
 ----------
@@ -57,22 +57,10 @@ If you decide to compile TubeTK instead of using its convenient Python interface
 
 and then, when you build ITK, TubeTK will be automatically built as well.  Additionally, if you enable Python wrapping for ITK, that wrapping will include TubeTK.
 
-With VTK
---------
-
-TubeTK will also default to requiring VTK (https://github.com/Kitware/VTK).  If you plan on wrapping for Python, you must build VTK with static libraries.  Typically, CMake will automatically find your VTK build directory, otherwise, you must set the VTK_DIR variable during ITK configuration:
-
-* VTK_DIR = \<Path to VTK build directory\>
-
-
-If you do not wish to have TubeTK use VTK, some functionality will be lost, but this can be accomplished by setting the ITK CMake variable
-
-* TubeTK_USE_VTK = Off
-
 Example Applications
 --------------------
 
-To build TubeTK's example applications, we recommend compiling with VTK (see above).   Additionally, you must do the following: 
+To build TubeTK's example applications, you must do the following: 
 
 1) Build Slicer Execution Model: https://github.com/Slicer/SlicerExecutionModel
 2) Set the following configuration options in CMake for ITK:

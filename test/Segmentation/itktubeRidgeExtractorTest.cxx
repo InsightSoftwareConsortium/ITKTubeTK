@@ -161,10 +161,10 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
           if( ridgeResult == RidgeOpType::SUCCESS )
             {
             imOut->SetPixel( indx, 0.5 );
-            imOut->TransformPhysicalPointToContinuousIndex( pntOut, contIndx );
+            bool isInside = imOut->TransformPhysicalPointToContinuousIndex( pntOut, contIndx );
             std::cout << "   leads to: " << contIndx << std::endl;
-            bool inside = imOut->TransformPhysicalPointToIndex( pntOut, indx );
-            if( inside )
+            isInside = imOut->TransformPhysicalPointToIndex( pntOut, indx );
+            if( isInside )
               {
               imOut->SetPixel( indx, imOut->GetPixel( indx ) + 1 );
               std::cout << "      ridgeness = " <<

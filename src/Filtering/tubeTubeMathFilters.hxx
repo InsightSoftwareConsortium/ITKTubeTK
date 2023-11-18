@@ -568,61 +568,41 @@ SetPointValuesFromTubeRadius(
       {
       TubePointType * tubePoint = dynamic_cast<TubePointType *>(
         tube->GetPoint( k ) );
-      inputImage->TransformPhysicalPointToContinuousIndex(
+      bool isInside = inputImage->TransformPhysicalPointToContinuousIndex(
         tubePoint->GetPositionInWorldSpace(),
         pointI );
-      for( unsigned int i=0; i<DimensionT; i++ )
+      if( isInside )
         {
-        index[i] = ( long int )( pointI[i]+0.5 );
-        }
-      double val = 0;
-      unsigned int count = 0;
-      if( inputImage->GetLargestPossibleRegion().IsInside( index ) )
-        {
-        double radius = tubePoint->GetRadiusInWorldSpace();
-        ContinuousIndexType radiusI;
-        ContinuousIndexType maxRadiusI;
-        for( unsigned int i = 0; i < DimensionT; i++ )
+        double val = 0;
+        unsigned int count = 0;
+        for( unsigned int i=0; i<DimensionT; i++ )
           {
-          maxRadiusI[i] = (maxRFactor * radius) / inputImage->GetSpacing()[i];
-          radiusI[i] = radius / inputImage->GetSpacing()[i];
-          if(radiusI[i] < 0.25)
-            {
-            radiusI[i] = 0.25;
-            }
+          index[i] = ( long int )( pointI[i]+0.5 );
           }
-
-        if( DimensionT == 2 )
+        isInside = inputImage->GetLargestPossibleRegion().IsInside( index );
+        if( isInside )
           {
-          for( double x=-maxRadiusI[0]; x<=maxRadiusI[0]; x += 0.5 )
+          double radius = tubePoint->GetRadiusInWorldSpace();
+          ContinuousIndexType radiusI;
+          ContinuousIndexType maxRadiusI;
+          for( unsigned int i = 0; i < DimensionT; i++ )
             {
-            for( double y=-maxRadiusI[1]; y<=maxRadiusI[1]; y += 0.5 )
+            maxRadiusI[i] = (maxRFactor * radius) / inputImage->GetSpacing()[i];
+            radiusI[i] = radius / inputImage->GetSpacing()[i];
+            if(radiusI[i] < 0.25)
               {
-              index2[0]=( long )( pointI[0]+x+0.5 );
-              index2[1]=( long )( pointI[1]+y+0.5 );
-              if( inputImage->GetLargestPossibleRegion().IsInside( index2 ) )
-                {
-                double rFactor = m_TubeDistanceImage->GetPixel(index2)/radius;
-                if( rFactor >= minRFactor && rFactor <= maxRFactor )
-                  {
-                  val += inputImage->GetPixel(index2);
-                  ++count;
-                  }
-                }
+              radiusI[i] = 0.25;
               }
             }
-          }
-        else if( DimensionT == 3 )
-          {
-          for( double x=-maxRadiusI[0]; x<=maxRadiusI[0]; x+=0.5 )
+  
+          if( DimensionT == 2 )
             {
-            for( double y=-maxRadiusI[1]; y<=maxRadiusI[1]; y+=0.5 )
+            for( double x=-maxRadiusI[0]; x<=maxRadiusI[0]; x += 0.5 )
               {
-              for( double z=-maxRadiusI[2]; z<=maxRadiusI[2]; z+=0.5 )
+              for( double y=-maxRadiusI[1]; y<=maxRadiusI[1]; y += 0.5 )
                 {
                 index2[0]=( long )( pointI[0]+x+0.5 );
                 index2[1]=( long )( pointI[1]+y+0.5 );
-                index2[2]=( long )( pointI[2]+z+0.5 );
                 if( inputImage->GetLargestPossibleRegion().IsInside( index2 ) )
                   {
                   double rFactor = m_TubeDistanceImage->GetPixel(index2)/radius;
@@ -635,30 +615,54 @@ SetPointValuesFromTubeRadius(
                 }
               }
             }
+          else if( DimensionT == 3 )
+            {
+            for( double x=-maxRadiusI[0]; x<=maxRadiusI[0]; x+=0.5 )
+              {
+              for( double y=-maxRadiusI[1]; y<=maxRadiusI[1]; y+=0.5 )
+                {
+                for( double z=-maxRadiusI[2]; z<=maxRadiusI[2]; z+=0.5 )
+                  {
+                  index2[0]=( long )( pointI[0]+x+0.5 );
+                  index2[1]=( long )( pointI[1]+y+0.5 );
+                  index2[2]=( long )( pointI[2]+z+0.5 );
+                  if( inputImage->GetLargestPossibleRegion().IsInside( index2 ) )
+                    {
+                    double rFactor = m_TubeDistanceImage->GetPixel(index2)/radius;
+                    if( rFactor >= minRFactor && rFactor <= maxRFactor )
+                      {
+                      val += inputImage->GetPixel(index2);
+                      ++count;
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
-        }
-      if( count > 0 )
-        {
-        val /= count;
-        if( propertyId == "Ridgeness" )
+        if( count > 0 )
           {
-          tubePoint->SetRidgeness(val);
-          }
-        else if( propertyId == "Medialness" )
-          {
-          tubePoint->SetMedialness(val);
-          }
-        else if( propertyId == "Branchness" )
-          {
-          tubePoint->SetBranchness(val);
-          }
-        else if( propertyId == "Radius" )
-          {
-          tubePoint->SetRadiusInObjectSpace(val);
-          }
-        else
-          {
-          tubePoint->SetTagScalarValue( propertyId, val );
+          val /= count;
+          if( propertyId == "Ridgeness" )
+            {
+            tubePoint->SetRidgeness(val);
+            }
+          else if( propertyId == "Medialness" )
+            {
+            tubePoint->SetMedialness(val);
+            }
+          else if( propertyId == "Branchness" )
+            {
+            tubePoint->SetBranchness(val);
+            }
+          else if( propertyId == "Radius" )
+            {
+            tubePoint->SetRadiusInObjectSpace(val);
+            }
+          else
+            {
+            tubePoint->SetTagScalarValue( propertyId, val );
+            }
           }
         }
       }

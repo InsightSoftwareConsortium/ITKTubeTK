@@ -84,29 +84,6 @@ RUN cd $BUILD_PATH && \
     find . -name '*.o' -delete && \
     find ../ITK* -depth -name .git -exec rm -rf '{}' \;
 
-# Download/configure/build/install VTK
-ENV VTK_GIT_TAG v7.1.1
-ENV VTK_BUILD_DIR $BUILD_PATH/VTK-build
-RUN cd $BUILD_PATH && \
-    git clone --depth 1 -b ${VTK_GIT_TAG} https://github.com/Kitware/VTK.git && \
-    mkdir VTK-build && \
-    cd VTK-build && \
-    cmake \
-        -G Ninja \
-        -DCMAKE_BUILD_TYPE:STRING=Release \
-        -DBUILD_SHARED_LIBS:BOOL=ON \
-        -DBUILD_EXAMPLES:BOOL=OFF \
-        -DBUILD_TESTING:BOOL=OFF \
-        -DVTK_LEGACY_REMOVE:BOOL=ON \
-        -DVTK_WRAP_PYTHON:BOOL=ON \
-        ../VTK && \
-    ninja && \
-    echo "${VTK_BUILD_DIR}/lib" > $BUILD_PATH/miniconda/lib/python2.7/site-packages/WrapVTK.pth && \
-    echo "${VTK_BUILD_DIR}/Wrapping/Python" >> $BUILD_PATH/miniconda/lib/python2.7/site-packages/WrapVTK.pth && \
-    python -c "import vtk" && \
-    find . -name '*.o' -delete && \
-    find ../VTK* -depth -name .git -exec rm -rf '{}' \;
-
 # Download/configure/build/install SlicerExecutionModel
 ENV SEM_GIT_TAG master
 ENV SEM_BUILD_DIR $BUILD_PATH/SEM-build

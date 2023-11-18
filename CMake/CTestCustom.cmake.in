@@ -221,23 +221,6 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   #"OSMemory.*deprecated"
   #"OSAtomic.*deprecated"
 
-  # VTK suppressions
-  #"vtkfreetype"
-  #"Utilities.vtktiff"
-  #"VTK.*IO.vtkMySQLQuery.cxx"
-  #"VTK.*Utilities.vtkexodus2"
-  #"VTK.*Utilities.vtklibproj"
-  #"VTK.*Utilities.vtksqlite"
-  #"VTK.*Utilities.VPIC.*cxx"
-  #"VTK.*warn_unused_result"
-  #"VTK.*Filtering.*cxx"
-  #"VTK.*IO.*cxx"
-  #"VTK.*Infovis.*cxx"
-  ## exception specific to Mac/Carbon
-  #"VTK.Rendering.vtkCarbonRenderWindow.*warning.*(NewRgn|DiffRgn|EqualRgn|DisposeRgn).*is deprecated"
-  # exception specific to Mac/X11
-  #"VTK.Rendering.vtkOpenGL.*warning: this is the location of the previous definition"
-
   # Visual studio spurious warnings...
   "The following environment variables were not found"
 

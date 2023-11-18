@@ -21,8 +21,6 @@ RUN cmake \
         -DTubeTK_USE_PYQTGRAPH:BOOL=OFF \
         -DTubeTK_USE_NUMPY_STACK:BOOL=OFF \
         -DITK_DIR:PATH=$ITK_BUILD_DIR \
-        -DTubeTK_USE_VTK:BOOL=ON \
-        -DVTK_DIR:PATH=$VTK_BUILD_DIR \
         -DUSE_SYSTEM_SLICER_EXECUTION_MODEL:BOOL=ON \
         -DSlicerExecutionModel_DIR:PATH=$SEM_BUILD_DIR \
         ../TubeTK && \

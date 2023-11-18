@@ -442,7 +442,24 @@ RidgeExtractor<TInputImage>
   m_X = x;
 
   ContinuousIndexType xi;
-  m_InputImage->TransformPhysicalPointToContinuousIndex( x, xi );
+  if( ! m_InputImage->TransformPhysicalPointToContinuousIndex( x, xi ) )
+    {
+    m_XVal = 0;
+
+    m_XIV.fill(0.0);
+    m_XD.fill(0.0);
+    m_XH.fill(0.0);
+    m_XHEVal.fill(0.0);
+    m_XHEVect.fill(0.0);
+
+    m_XRidgeness = 0;
+    m_XRoundness = 0;
+    m_XCurvature = 0;
+    m_XLevelness = 0;
+
+    return m_XRidgeness;
+    }
+
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     m_XIV[i] = xi[i];
@@ -453,19 +470,44 @@ RidgeExtractor<TInputImage>
   m_XVal = m_DataSpline->ValueJet( m_XIV, m_XD, m_XH );
 
   // test for nan
-  if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH( 0, 0 ) != m_XH( 0, 0 ) )
+  bool hasa_nan = isnan(m_XVal);
+  for( unsigned int i=0; !hasa_nan && i<ImageDimension; i++ )
     {
-    std::cerr << "NAN at " << m_X << " (" << m_XIV << ")" << std::endl;
+    if( isnan(m_XD[i]) )
+      {
+      hasa_nan = true;
+      break;
+      }
+    for( unsigned int j=0; !hasa_nan && j<ImageDimension; j++ )
+      {
+      if( isnan(m_XH( i, j )) )
+        {
+        hasa_nan = true;
+        break;
+        }
+      }
+    }
+
+  if( hasa_nan )
+    {
+    std::cerr << "NAN: RidgeExtractor: Line 493: " << m_X
+              << " (" << m_XIV << ")" << std::endl;
 
     intensity = 0;
     roundness = 0;
     curvature = 0;
     levelness = 0;
 
+    m_XIV.fill(0.0);
+    m_XD.fill(0.0);
+    m_XH.fill(0.0);
+    m_XHEVal.fill(0.0);
+    m_XHEVect.fill(0.0);
+
+    m_XRidgeness = 0;
     m_XRoundness = 0;
     m_XCurvature = 0;
     m_XLevelness = 0;
-    m_XRidgeness = 0;
 
     return m_XRidgeness;
     }
@@ -482,6 +524,48 @@ RidgeExtractor<TInputImage>
   ::tube::ComputeRidgeness<double>( m_XH, m_XD, prevTangent,
     m_XRidgeness, m_XRoundness, m_XCurvature, m_XLevelness, m_XHEVect,
     m_XHEVal );
+
+  hasa_nan = isnan(m_XRidgeness) || isnan(m_XRoundness) || isnan(m_XCurvature)
+    || isnan(m_XLevelness);
+  for( unsigned int i=0; !hasa_nan && i<ImageDimension; i++ )
+    {
+    if( isnan(m_XHEVal[i]) )
+      {
+      hasa_nan = true;
+      break;
+      }
+    for( unsigned int j=0; !hasa_nan && j<ImageDimension; j++ )
+      {
+      if( isnan(m_XHEVect( i, j )) )
+        {
+        hasa_nan = true;
+        break;
+        }
+      }
+    }
+  if( hasa_nan )
+    {
+    std::cerr << "NAN: RidgeExtractor: Line 547: " << m_X
+              << " (" << m_XIV << ")" << std::endl;
+
+    intensity = 0;
+    roundness = 0;
+    curvature = 0;
+    levelness = 0;
+
+    m_XIV.fill(0.0);
+    m_XD.fill(0.0);
+    m_XH.fill(0.0);
+    m_XHEVal.fill(0.0);
+    m_XHEVect.fill(0.0);
+
+    m_XRidgeness = 0;
+    m_XRoundness = 0;
+    m_XCurvature = 0;
+    m_XLevelness = 0;
+
+    return m_XRidgeness;
+    }
 
   intensity = m_XVal;
   roundness = m_XRoundness;
@@ -697,7 +781,16 @@ RidgeExtractor<TInputImage>
   MatrixType  pSearchDir( ImageDimension, ImageDimension-1 );
 
   ContinuousIndexType xI;
-  m_InputImage->TransformPhysicalPointToContinuousIndex( newX, xI );
+  if( !m_InputImage->TransformPhysicalPointToContinuousIndex( newX, xI ) )
+    {
+    if( verbose || this->GetDebug() )
+      {
+      std::cout << "Ridge: Initial point outside of image" << std::endl;
+      }
+    m_CurrentFailureCode = EXITED_IMAGE;
+    ++m_FailureCodeCount[ m_CurrentFailureCode ];
+    return false;
+    }
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     lXIV[i] = xI[i];
@@ -771,9 +864,6 @@ RidgeExtractor<TInputImage>
       if( this->GetDebug() )
         {
         std::cout << "Ridge: dir = 1" << std::endl;
-        }
-      if( this->GetDebug() )
-        {
         std::cout << "Initial point ridgeness..." << std::endl;
         }
       for( unsigned int i=0; i<ImageDimension; i++ )
@@ -1476,7 +1566,15 @@ RidgeExtractor<TInputImage>
 ::LocalRidge( PointType & newX, bool verbose )
 {
   ContinuousIndexType newXI;
-  m_InputImage->TransformPhysicalPointToContinuousIndex( newX, newXI );
+  if( ! m_InputImage->TransformPhysicalPointToContinuousIndex( newX, newXI ) )
+    {
+    if( verbose || this->GetDebug() )
+      {
+      std::cout << "Ridge::LocalRidge outside of image" << std::endl;
+      }
+    return EXITED_IMAGE;
+    }
+
   if( verbose || this->GetDebug() )
     {
     std::cout << "Ridge::LocalRidge" << std::endl;
@@ -1730,7 +1828,14 @@ RidgeExtractor<TInputImage>
     }
 
   ContinuousIndexType lXI;
-  m_InputImage->TransformPhysicalPointToContinuousIndex( lX, lXI );
+  if( ! m_InputImage->TransformPhysicalPointToContinuousIndex( lX, lXI ) )
+    {
+    if( verbose || this->GetDebug() )
+      {
+      std::cout << "LocalRidge outside of image at " << lX << std::endl;
+      }
+    return nullptr;
+    }
   if( verbose || this->GetDebug() )
     {
     std::cout << "*** Ridge found at index = " << lXI << std::endl;
@@ -1966,16 +2071,18 @@ RidgeExtractor<TInputImage>
       }
     x = ( *pnt ).GetPositionInObjectSpace();
 
-    m_TubeMaskImage->TransformPhysicalPointToContinuousIndex( x, xI );
-    bool inside = true;
-    for( unsigned int i=0; i<ImageDimension; ++i )
+    bool inside = m_TubeMaskImage->TransformPhysicalPointToContinuousIndex( x, xI );
+    if( inside )
       {
-      indx[i] = (int)(xI[i] + 0.5);
-      if( (int)(xI[i]) < m_ExtractBoundMinInIndexSpace[i]
-        || indx[i] > m_ExtractBoundMaxInIndexSpace[i] )
+      for( unsigned int i=0; i<ImageDimension; ++i )
         {
-        inside = false;
-        break;
+        indx[i] = (int)(xI[i] + 0.5);
+        if( (int)(xI[i]) < m_ExtractBoundMinInIndexSpace[i]
+          || indx[i] > m_ExtractBoundMaxInIndexSpace[i] )
+          {
+          inside = false;
+          break;
+          }
         }
       }
 
@@ -2091,18 +2198,21 @@ RidgeExtractor<TInputImage>
       std::cout << "Add pnt = " << pnt->GetPositionInObjectSpace() << std::endl;
       }
     x = ( *pnt ).GetPositionInObjectSpace();
-    m_TubeMaskImage->TransformPhysicalPointToContinuousIndex( x, xI );
-    bool inside = true;
-    for( unsigned int i=0; i<ImageDimension; ++i )
+    bool inside = m_TubeMaskImage->TransformPhysicalPointToContinuousIndex( x, xI );
+    if( inside )
       {
-      indx[i] = (int)(xI[i] + 0.5);
-      if( (int)(xI[i]) < m_ExtractBoundMinInIndexSpace[i]
-        || indx[i] > m_ExtractBoundMaxInIndexSpace[i] )
+      for( unsigned int i=0; i<ImageDimension; ++i )
         {
-        inside = false;
-        break;
+        indx[i] = (int)(xI[i] + 0.5);
+        if( (int)(xI[i]) < m_ExtractBoundMinInIndexSpace[i]
+          || indx[i] > m_ExtractBoundMaxInIndexSpace[i] )
+          {
+          inside = false;
+          break;
+          }
         }
       }
+
     if( inside )
       {
       drawMask->SetPixel( indx, ( PixelType )( tubeId +

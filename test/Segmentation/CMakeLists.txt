@@ -20,7 +20,7 @@
 #
 ##############################################################################
 
-find_package( PythonInterp )
+find_package( Python )
 if( PYTHON_EXECUTABLE )
   itk_add_test( PrintSelf-TubeTKSegmentation ${PYTHON_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py

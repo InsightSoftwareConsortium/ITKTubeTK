@@ -283,7 +283,13 @@ BlurImageFunction<TInputImage>
     }
   else
     {
-    this->m_Image->TransformPhysicalPointToContinuousIndex( point, index );
+    bool isInside = this->m_Image->TransformPhysicalPointToContinuousIndex( point, index );
+    if( !isInside )
+      {
+      std::cout << "ERROR: BlurImageFunction: Point is outside of image"
+        << std::endl;
+      return 0;
+      }
     }
 
   if( this->GetDebug() )

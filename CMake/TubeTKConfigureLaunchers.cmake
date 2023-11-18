@@ -28,9 +28,6 @@ if( WIN32 )
       ${ITK_DIR}/bin/${_build_type}
       ${TubeTK_BINARY_DIR}/bin/${_build_type}
       ${TubeTK_BINARY_DIR}/lib/${_build_type} )
-    if( TubeTK_USE_VTK )
-      list( APPEND TubeTK_EXECUTABLE_DIRS ${VTK_DIR}/bin/${_build_type} )
-    endif()
   endforeach()
 else( WIN32 )
   set( TubeTK_EXECUTABLE_DIRS
@@ -38,9 +35,6 @@ else( WIN32 )
     ${TubeTK_BINARY_DIR}/bin
     ${TubeTK_BINARY_DIR}/lib
     CACHE INTERNAL "Bin and Lib dirs for running apps." FORCE )
-  if( TubeTK_USE_VTK )
-    list( APPEND TubeTK_EXECUTABLE_DIRS ${VTK_DIR}/bin )
-  endif()
 endif( WIN32 )
 
 message( STATUS "Configuring Launcher script" )
