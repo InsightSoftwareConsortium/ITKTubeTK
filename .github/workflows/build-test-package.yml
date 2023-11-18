@@ -10,7 +10,7 @@ jobs:
 
 
   python-build-workflow:
-    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-cxx.yml@246883ef3828fc00219145aeec9efa67b9889d0b
+    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@246883ef3828fc00219145aeec9efa67b9889d0b
     with:
       itk-module-deps: 'MinimalPathExtraction'
     secrets:
