@@ -25,10 +25,6 @@ project( TubeTK )
 
 set( TubeTK_VERSION 1.3.5 )
 
-if(NOT ITK_SOURCE_DIR)
-  include(itk-module-init.cmake)
-endif()
-
 ####
 # Setup CMake
 ####
