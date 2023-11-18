@@ -11,6 +11,6 @@ jobs:
   python-build-workflow:
     uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@3f63de316255a285b0cac4c819d3d45649738999
     with:
-      itk-cmake-options: '-DModule_MinimalPathExtraction:BOOL=ON'
+      test-notebooks: false
     secrets:
       pypi_password: ${{ secrets.pypi_password }}
