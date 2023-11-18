@@ -42,7 +42,7 @@ endif()
 if( NOT ITK_SOURCE_DIR )
   find_package( ITK COMPONENTS MinimalPathExtraction REQUIRED )
   mark_as_advanced( CLEAR ITK_DIR )
-  if( ITK_FOUND )
+  if( NOT ITK_FOUND )
     message( FATAL_ERROR
       "TubeTK requires ITK with MinimalPathExtraction module enabled.")
   endif()
