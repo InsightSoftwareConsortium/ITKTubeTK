@@ -72,7 +72,7 @@ endif()
 # Find Python
 ####
 if( ITK_WRAP_PYTHON )
-  find_package( PythonInterp )
+  find_package( Python )
   find_package( NumPy REQUIRED )
   mark_as_advanced( NUMPY_INCLUDE_DIR )
 endif()

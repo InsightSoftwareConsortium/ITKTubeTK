@@ -27,4 +27,3 @@ CreateTestDriver( tubeCompareImages
 CreateTestDriver( tubeCompareTextFiles
   "${TubeTK-Test_LIBRARIES}"
   CompareTextFiles.cxx )
-
