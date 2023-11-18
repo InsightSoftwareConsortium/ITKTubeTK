@@ -161,7 +161,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   // We wish to perform the following mapping of outputIndex to
   // inputIndex on all points in our region
   outputPtr->TransformIndexToPhysicalPoint( outputIndex, tempPoint );
-  inputPtr->TransformPhysicalPointToIndex( tempPoint, inputIndex );
+  bool isInside = inputPtr->TransformPhysicalPointToIndex( tempPoint, inputIndex );
 
   // Support progress methods/callbacks
   ProgressReporter progress( this, threadId,
@@ -205,7 +205,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
         curMipPoint[i] = inputMipPointItPtr->Get()[i];
         }
 
-      inputPtr->TransformPhysicalPointToIndex( curMipPoint, inputIndex );
+      isInside = inputPtr->TransformPhysicalPointToIndex( curMipPoint, inputIndex );
 
       // set output pixel intensity as intensity of input pixel at mip point
       outIt.Set( inputPtr->GetPixel( inputIndex ) );
@@ -225,7 +225,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     outputIndex = outIt.GetIndex();
 
     outputPtr->TransformIndexToPhysicalPoint( outputIndex, tempPoint );
-    inputPtr->TransformPhysicalPointToIndex( tempPoint, inputIndex );
+    isInside = inputPtr->TransformPhysicalPointToIndex( tempPoint, inputIndex );
 
     for( unsigned int i = 0; i < ImageDimension; ++i )
       {
@@ -484,7 +484,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 
   outputPtr->TransformIndexToPhysicalPoint( outputRequestedRegionStartIndex,
     tempPoint );
-  inputPtr->TransformPhysicalPointToIndex( tempPoint,
+  bool isInside = inputPtr->TransformPhysicalPointToIndex( tempPoint,
     inputRequestedRegionStartIndex );
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
     {

@@ -21,11 +21,10 @@
 ##############################################################################
 
 CreateTestDriver( tubeCompareImages
-  ""
+  "${TubeTK-Test_LIBRARIES}"
   CompareImages.cxx )
 
 CreateTestDriver( tubeCompareTextFiles
-  ""
+  "${TubeTK-Test_LIBRARIES}"
   CompareTextFiles.cxx )
 
-  #"${TubeTK-Test_LIBRARIES}"

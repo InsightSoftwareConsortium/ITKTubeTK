@@ -121,7 +121,19 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
     itk::Index< Dimension > indx;
     tubePoint = static_cast< TubePointType >( tube->GetPoints()[0] );
     pnt = tubePoint.GetPositionInWorldSpace();
-    m_CVTImage->TransformPhysicalPointToIndex( pnt, indx );
+    bool isInside = m_CVTImage->TransformPhysicalPointToIndex( pnt, indx );
+    int tpnum = 1;
+    while( !isInside && tpnum < numberOfPoints)
+      {
+      tubePoint = static_cast< TubePointType >( tube->GetPoints()[tpnum] );
+      pnt = tubePoint.GetPositionInWorldSpace();
+      isInside = m_CVTImage->TransformPhysicalPointToIndex( pnt, indx );
+      ++tpnum;
+      }
+    if( !isInside )
+      {
+      continue;
+      }
     double cCount = 1;
     int cNode = m_CVTImage->GetPixel( indx );
     double cRadius = tubePoint.GetRadiusInWorldSpace();
@@ -140,7 +152,11 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
       {
       tubePoint = static_cast< TubePointType >( tube->GetPoints()[p] );
       pnt = tubePoint.GetPositionInWorldSpace();
-      m_CVTImage->TransformPhysicalPointToIndex( pnt, indx );
+      isInside = m_CVTImage->TransformPhysicalPointToIndex( pnt, indx );
+      if( !isInside )
+        {
+        continue;
+        }
       int tNode = m_CVTImage->GetPixel( indx );
       if( tNode == cNode )
         {

@@ -223,16 +223,19 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
       typedef typename TubeType::TubePointType TubePointType;
       const TubePointType* tubePoint = static_cast<const TubePointType*>(
         tube->GetPoint( k ) );
-      OutputImage->TransformPhysicalPointToContinuousIndex(
+      bool isInside = OutputImage->TransformPhysicalPointToContinuousIndex(
         tubePoint->GetPositionInWorldSpace(),
         pointI );
-      for( unsigned int i=0; i<ObjectDimension; i++ )
+      if( isInside )
         {
-        index[i] = ( long int )( pointI[i]+0.5 );
+        for( unsigned int i=0; i<ObjectDimension; i++ )
+          {
+          index[i] = ( long int )( pointI[i]+0.5 );
+          }
+        isInside = OutputImage->GetLargestPossibleRegion().IsInside( index );
         }
-      bool IsInside = OutputImage->GetLargestPossibleRegion().IsInside( index );
 
-      if( IsInside )
+      if( isInside )
         {
         double val = 1;
         if( m_ColorByTubeId )

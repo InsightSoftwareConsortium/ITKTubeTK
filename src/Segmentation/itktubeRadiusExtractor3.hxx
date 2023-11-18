@@ -76,6 +76,11 @@ public:
       double tf = (*m_Data)[i] - (p[0]-(p[1]/(1+exp(-p[2]*(i-p[3])))));
       if( isnan(tf) )
         {
+        std::cerr << "NAN: RadiusExtractor: Line 79" << std::endl;
+        std::cerr << "   i = " << i << std::endl;
+        std::cerr << "   p = " << p[0] << ", " << p[1] << ", " 
+                  << p[2] << ", " << p[3] << std::endl;
+        std::cerr << "   (*m_Data)[i] = " << (*m_Data)[i] << std::endl;
         tf = 1;
         }
       err += tf * tf;
@@ -107,6 +112,12 @@ public:
       {
       if( isnan(d[i]) )
         {
+        std::cerr << "NAN: RadiusExtractor: Line 111" << std::endl;
+        std::cerr << "   i = " << i << std::endl;
+        std::cerr << "   p = " << p[0] << ", " << p[1] << ", " 
+                  << p[2] << ", " << p[3] << std::endl;
+        std::cerr << "   d = " << d[0] << ", " << d[1] << ", " 
+                  << d[2] << ", " << d[3] << std::endl;
         d[i] = 0;
         }
       }
@@ -277,6 +288,12 @@ RadiusExtractor3<TInputImage>
   this->SetKernelNumberOfPoints( tempNumPoints );
 
   r0 = this->GetKernelOptimalRadius();
+  if( isnan(r0) )
+    {
+    std::cerr << "NAN: RadiusExtractor: Line 284" << std::endl;
+    r0 = 1;
+    return false;
+    }
 
   return true;
 }
@@ -354,7 +371,23 @@ RadiusExtractor3<TInputImage>
   pntIter = m_KernelTube->GetPoints().begin();
   PointType p = pntIter->GetPositionInObjectSpace();
   IndexType kernelPointIndex;
-  m_InputImage->TransformPhysicalPointToIndex( p, kernelPointIndex );
+  bool isInside = m_InputImage->TransformPhysicalPointToIndex( p, kernelPointIndex );
+  while( !isInside && pntIter != m_KernelTube->GetPoints().end() )
+    {
+    ++pntIter;
+    p = pntIter->GetPositionInObjectSpace();
+    isInside = m_InputImage->TransformPhysicalPointToIndex( p, kernelPointIndex );
+    }
+  if( !isInside )
+    {
+    std::fill( m_ProfileBinValue.begin(), m_ProfileBinValue.end(), 0 );
+    std::fill( m_ProfileBinCount.begin(), m_ProfileBinCount.end(), 0 );
+    m_ProfileBinValue[0] = 1;
+    m_ProfileBinCount[0] = 1;
+    std::cerr << "ERROR: All points map outside of image, cannot estimate radius"
+      << std::endl;
+    return;
+    }
   for( unsigned int i = 0; i < ImageDimension; ++i )
     {
     minXIndex[i] = static_cast< int >( kernelPointIndex[i] -
@@ -367,7 +400,12 @@ RadiusExtractor3<TInputImage>
   while( pntIter != m_KernelTube->GetPoints().end() )
     {
     p = pntIter->GetPositionInObjectSpace();
-    m_InputImage->TransformPhysicalPointToIndex( p, kernelPointIndex );
+    bool isInside = m_InputImage->TransformPhysicalPointToIndex( p, kernelPointIndex );
+    if( !isInside )
+      {
+      ++pntIter;
+      continue;
+      }
     for( unsigned int i = 0; i < ImageDimension; ++i )
       {
       tempIndex = static_cast< int >( kernelPointIndex[i] -
@@ -396,7 +434,12 @@ RadiusExtractor3<TInputImage>
       {
       double val = ( m_InputImage->GetPixel( xIndex ) - m_DataMin )
         / ( m_DataMax - m_DataMin );
-      if( val >= 0 && val < 1 )
+      if( isnan(val) )
+        {
+        std::cerr << "NAN: RadiusExtractor: Line 412" << std::endl;
+        val = 0;
+        }
+      if( val >= 0 && val <= 1 )
         {
         PointType point;
         m_InputImage->TransformIndexToPhysicalPoint( xIndex, point );
@@ -418,6 +461,14 @@ RadiusExtractor3<TInputImage>
             double tf = pDiff[i] * pntIter->GetTangentInObjectSpace()[i];
             d1 += tf * tf;
             }
+          if( isnan(d1) )
+            {
+            std::cerr << "NAN: RadiusExtractor: Line 466" << std::endl;
+            std::cerr << "   T = " << pntIter->GetTangentInObjectSpace()
+                      << std::endl;
+            std::cerr << "   pDiff = " << pDiff << std::endl;
+            d1 = minTangentDistance;
+            }
           pntTangentDistance = std::sqrt( d1 );
           if( pntTangentDistance < minTangentDistance )
             {
@@ -436,6 +487,14 @@ RadiusExtractor3<TInputImage>
             double tf = pDiff[i] * minTangentPnt->GetNormal1InObjectSpace()[i];
             d1 += tf * tf;
             }
+          if( isnan(d1) )
+            {
+            std::cerr << "NAN: RadiusExtractor: Line 492" << std::endl;
+            std::cerr << "   T = " << pntIter->GetNormal1InObjectSpace()
+                      << std::endl;
+            std::cerr << "   pDiff = " << pDiff << std::endl;
+            d1 = 0;
+            }
           minNormalDistance = d1;
           if( ImageDimension == 3 )
             {
@@ -444,6 +503,14 @@ RadiusExtractor3<TInputImage>
               {
               double tf = pDiff[i] * minTangentPnt->GetNormal2InObjectSpace()[i];
               d2 += tf * tf;
+              }
+            if( isnan(d1) )
+              {
+              std::cerr << "NAN: RadiusExtractor: Line 492" << std::endl;
+              std::cerr << "   T = " << pntIter->GetNormal2InObjectSpace()
+                        << std::endl;
+              std::cerr << "   pDiff = " << pDiff << std::endl;
+              d2 = 0;
               }
             minNormalDistance += d2;
             }
@@ -481,7 +548,10 @@ RadiusExtractor3<TInputImage>
     }
   for(unsigned int i=0; i<m_ProfileNumberOfBins; ++i )
     {
-    if( m_ProfileBinCount[i] > 0 && m_ProfileBinValue[i] > 0 )
+    if( !isnan(m_ProfileBinCount[i]) &&
+        !isnan(m_ProfileBinValue[i]) &&
+        m_ProfileBinCount[i] > 0 &&
+        m_ProfileBinValue[i] > 0 )
       {
       m_ProfileBinValue[i] /= m_ProfileBinCount[i];
       }
@@ -489,7 +559,21 @@ RadiusExtractor3<TInputImage>
       {
       if( i>0 )
         {
+        if( isnan(m_ProfileBinCount[i]) ||
+            isnan(m_ProfileBinValue[i]) )
+            {
+            std::cerr << "NAN: RadiusExtractor: Line 567" << std::endl;
+            }
         m_ProfileBinValue[i] = m_ProfileBinValue[i-1];
+        }
+      else
+        {
+        if( isnan(m_ProfileBinCount[i]) ||
+            isnan(m_ProfileBinValue[i]) )
+            {
+            std::cerr << "NAN: RadiusExtractor: Line 574" << std::endl;
+            }
+        m_ProfileBinValue[i] = 0;
         }
       }
     }
@@ -559,7 +643,7 @@ RadiusExtractor3<TInputImage>
         }
       if( sum == 0 )
         {
-        std::cout << "WARNING: Single point kernel, setting tangent and normals."
+        std::cerr << "ERROR: Single point kernel, setting tangent and normals."
           << std::endl;
         kernPnt->SetTangentInObjectSpace(v);
         kernPnt->SetNormal1InObjectSpace(cv);
@@ -572,7 +656,7 @@ RadiusExtractor3<TInputImage>
         }
       else
         {
-        std::cout << "WARNING: Single point kernel, setting tangent."
+        std::cerr << "WARNING: Single point kernel, setting tangent."
           << std::endl;
         kernPnt->SetTangentInObjectSpace(v);
         }
@@ -584,7 +668,7 @@ RadiusExtractor3<TInputImage>
       }
     if( sum == 0 )
       {
-      std::cout << "WARNING: Single point kernel, resetting normal 1"
+      std::cerr << "WARNING: Single point kernel, resetting normal 1"
         << std::endl;
       kernPnt->SetNormal1InObjectSpace(cv);
       }
@@ -597,7 +681,7 @@ RadiusExtractor3<TInputImage>
         }
       if( sum == 0 )
         {
-        std::cout << "WARNING: Single point kernel, resetting normal 2"
+        std::cerr << "WARNING: Single point kernel, resetting normal 2"
           << std::endl;
         kernPnt->SetNormal2InObjectSpace(cv);
         }
@@ -645,6 +729,14 @@ RadiusExtractor3<TInputImage>
   opt->StartOptimization();
 
   params = opt->GetCurrentPosition();
+  for( int i=0; i<4; ++i )
+    {
+    if( isnan(params[i]) )
+      {
+      std::cerr << "NAN: RadiusExtractor: Line 676" << std::endl;
+      params[i] = 1;
+      }
+    }
 
   m_KernelOptimalRadius = this->GetProfileBinRadius(params[3]);
   m_KernelOptimalRadiusMedialness = params[1];
@@ -908,12 +1000,12 @@ RadiusExtractor3<TInputImage>
   double rMax = this->GetRadiusMax();
   if( r0 < rMin || r1 < rMin || r2 < rMin )
     {
-    std::cout << "ERROR: Max r exceeded." << r0 << ", " << r1 << ", " << r2
+    std::cerr << "ERROR: Min r exceeded." << r0 << ", " << r1 << ", " << r2
       << std::endl;
     }
   if( r0 > rMax || r1 > rMax || r2 > rMax )
     {
-    std::cout << "ERROR: Max r exceeded." << r0 << ", " << r1 << ", " << r2
+    std::cerr << "ERROR: Max r exceeded." << r0 << ", " << r1 << ", " << r2
       << std::endl;
     }
   for( int p = startP; p <= endP; ++p )
@@ -958,7 +1050,7 @@ RadiusExtractor3<TInputImage>
       }
     if( tube->GetPoints()[p].GetRadiusInObjectSpace() > rMax )
       {
-      std::cout << "ERROR: Max r exceeded."
+      std::cerr << "ERROR: Max r exceeded."
         << tube->GetPoints()[p].GetRadiusInObjectSpace() << std::endl;
       }
     }
