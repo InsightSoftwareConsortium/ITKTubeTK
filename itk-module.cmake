@@ -37,7 +37,6 @@ itk_module( TubeTK
     ITKSpatialObjects
     ITKTransform
     ITKThresholding
-    ITKVTK
     MinimalPathExtraction
   COMPILE_DEPENDS
     ITKAnisotropicSmoothing
@@ -59,4 +58,5 @@ itk_module( TubeTK
   DESCRIPTION
     "${DOCUMENTATION}"
   EXCLUDE_FROM_DEFAULT
+  ENABLE_SHARED
 )
