@@ -20,8 +20,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubetkConfigure.h"
-
 #include "itktubeRidgeSeedFilter.h"
 
 int itktubeRidgeSeedFilterTest( int argc, char * argv[] )

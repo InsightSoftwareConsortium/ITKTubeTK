@@ -32,7 +32,3 @@ include( Registration.cmake )
 include( Segmentation.cmake )
 
 itk_module_add_library( TubeTK ${TubeTK_SRCS} )
-
-if( ITK_WRAP_PYTHON )
-  add_subdirectory( Python )
-endif()

@@ -30,15 +30,6 @@ set( TubeTK_VERSION 1.3.5 )
 ####
 list( APPEND CMAKE_MODULE_PATH ${TubeTK_SOURCE_DIR}/CMake )
 
-####
-# Find Python
-####
-if( ITK_WRAP_PYTHON )
-  find_package( Python )
-  find_package( NumPy REQUIRED )
-  mark_as_advanced( NUMPY_INCLUDE_DIR )
-endif()
-
 if( NOT ITK_SOURCE_DIR )
   find_package( ITK COMPONENTS MinimalPathExtraction REQUIRED )
   mark_as_advanced( CLEAR ITK_DIR )
@@ -47,12 +38,6 @@ if( NOT ITK_SOURCE_DIR )
       "TubeTK requires ITK with MinimalPathExtraction module enabled.")
   endif()
 endif()
-
-####
-# Create TubeTK Configuration file (to pass flags)
-####
-configure_file( "${TubeTK_SOURCE_DIR}/CMake/tubetkConfigure.h.in"
-  ${TubeTK_BINARY_DIR}/include/tubetkConfigure.h @ONLY )
 
 ####
 # Setup include directories
