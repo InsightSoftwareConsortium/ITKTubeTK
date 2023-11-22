@@ -55,9 +55,7 @@ itk_module( TubeTK
     ITKPDEDeformableRegistration
     ITKRegistrationCommon
     ITKTestKernel
-    MinimalPathExtraction
   DESCRIPTION
     "${DOCUMENTATION}"
   EXCLUDE_FROM_DEFAULT
-  ENABLE_SHARED
 )
