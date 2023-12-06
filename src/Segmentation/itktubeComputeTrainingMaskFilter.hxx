@@ -109,6 +109,7 @@ ComputeTrainingMaskFilter< TInputImage, TLabelMap >
 {
   typename ImageType::Pointer input = ImageType::New();
   input->Graft( const_cast< ImageType * >( this->GetInput() ) );
+  input->CopyInformation( this->GetInput() );
 
   m_Threshold->SetInput( input );
   m_Threshold->Update();

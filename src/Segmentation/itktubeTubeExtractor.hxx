@@ -586,7 +586,7 @@ TubeExtractor<TInputImage>
       
       typedef itk::MinimumMaximumImageCalculator<TubeMaskImageType> MinMaxCalcType;
       typename MinMaxCalcType::Pointer maxCalc = MinMaxCalcType::New();
-      unsigned int count = 0;
+      unsigned int count = 1;
       double successRatio = 1;
       double maxValue = m_SeedExtractionMinimumProbability;
       while( ( m_SeedMaskMaximumNumberOfPoints == 0
