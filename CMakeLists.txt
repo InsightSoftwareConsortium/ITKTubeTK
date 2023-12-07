@@ -71,7 +71,7 @@ include_directories( ${TubeTK_SYSTEM_INCLUDE_DIRS} )
 # Build TubeTK module
 ####
 if( NOT ITK_SOURCE_DIR )
-  find_package( ITK COMPONENTS MinimalPathExtraction REQUIRED )
+  find_package( ITK REQUIRED )
   list( APPEND CMAKE_MODULE_PATH ${ITK_CMAKE_DIR} )
   include( ITKModuleExternal )
   #if( WASI OR EMSCRIPTEN )
