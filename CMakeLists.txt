@@ -21,6 +21,10 @@
 ##############################################################################
 cmake_minimum_required(VERSION 3.16.3)
 
+if(POLICY CMP135)
+  cmake_policy(SET CMP135 NEW)
+endif()
+
 project( TubeTK )
 
 set( TubeTK_VERSION 1.3.5 )
