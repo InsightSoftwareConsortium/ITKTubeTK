@@ -21,8 +21,8 @@
 ##############################################################################
 cmake_minimum_required(VERSION 3.16.3)
 
-if(POLICY CMP135)
-  cmake_policy(SET CMP135 NEW)
+if(POLICY CMP0135)
+  cmake_policy(SET CMP0135 NEW)
 endif()
 
 project( TubeTK )
@@ -34,14 +34,7 @@ set( TubeTK_VERSION 1.3.5 )
 ####
 list( APPEND CMAKE_MODULE_PATH ${TubeTK_SOURCE_DIR}/CMake )
 
-if( NOT ITK_SOURCE_DIR )
-  find_package( ITK COMPONENTS MinimalPathExtraction REQUIRED )
-  mark_as_advanced( CLEAR ITK_DIR )
-  if( NOT ITK_FOUND )
-    message( FATAL_ERROR
-      "TubeTK requires ITK with MinimalPathExtraction module enabled.")
-  endif()
-endif()
+set( TubeTK_LIBRARIES TubeTK )
 
 ####
 # Setup include directories
@@ -56,8 +49,6 @@ set( TubeTK_INCLUDE_DIRS
   $<INSTALL_INTERFACE:include/ObjectDocuments>
   $<INSTALL_INTERFACE:include/Registration>
   $<INSTALL_INTERFACE:include/Segmentation> )
-
-set( TubeTK_LIBRARIES TubeTK )
 
 ####
 # Build base library and optional components
@@ -80,12 +71,13 @@ include_directories( ${TubeTK_SYSTEM_INCLUDE_DIRS} )
 # Build TubeTK module
 ####
 if( NOT ITK_SOURCE_DIR )
+  find_package( ITK COMPONENTS MinimalPathExtraction REQUIRED )
   list( APPEND CMAKE_MODULE_PATH ${ITK_CMAKE_DIR} )
   include( ITKModuleExternal )
-  if( WASI OR EMSCRIPTEN )
-    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )
-    add_subdirectory( wasm )
-  endif()
+  #if( WASI OR EMSCRIPTEN )
+    #set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )
+    #add_subdirectory( wasm )
+  #endif()
 else()
   set(ITK_DIR ${CMAKE_BINARY_DIR})
   itk_module_impl()
