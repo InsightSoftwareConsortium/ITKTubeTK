@@ -4,12 +4,12 @@ on: [push,pull_request]
 
 jobs:
   cxx-build-workflow:
-    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-cxx.yml@246883ef3828fc00219145aeec9efa67b9889d0b
+    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-cxx.yml@3f63de316255a285b0cac4c819d3d45649738999
     with:
       itk-module-deps: 'MinimalPathExtraction@35dd8e83b7df2059876e6835a5741eb3d45973bf'
 
   python-build-workflow:
-    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@246883ef3828fc00219145aeec9efa67b9889d0b
+    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@3f63de316255a285b0cac4c819d3d45649738999
     with:
       itk-module-deps: 'MinimalPathExtraction@35dd8e83b7df2059876e6835a5741eb3d45973bf'
     secrets:
