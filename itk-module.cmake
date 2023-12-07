@@ -37,7 +37,7 @@ itk_module( TubeTK
     ITKSpatialObjects
     ITKTransform
     ITKThresholding
-    MinimalPathExtraction
+    ITKMinimalPathExtraction
   COMPILE_DEPENDS
     ITKAnisotropicSmoothing
     ITKBinaryMathematicalMorphology
