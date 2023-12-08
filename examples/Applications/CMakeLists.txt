@@ -36,18 +36,16 @@ set( TubeTK_CompareTextFiles_EXE
 set( TubeTK_CompareImages_EXE 
   "tubeCompareImagesTestDriver" )
 
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+mark_as_advanced( GENERATECLP_EXE )
+
 set( SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY
   "${ITK_BINARY_DIR}/bin" )
 set( SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY
   "${ITK_BINARY_DIR}/lib" )
 set( SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY
   "${ITK_BINARY_DIR}/lib" )
-
-find_package( SlicerExecutionModel REQUIRED
-  HINTS ./SlicerExecutionModel-build ../SlicerExecutionModel-build
-        ../../SlicerExecutionModel-build )
-include( ${SlicerExecutionModel_USE_FILE} )
-mark_as_advanced( GENERATECLP_EXE )
 
 add_subdirectory( AtlasBuilderUsingIntensity )
 add_subdirectory( ComputeBinaryImageSimilarityMetrics )
@@ -72,7 +70,6 @@ add_subdirectory( ConvertTubesToTubeGraph )
 add_subdirectory( CropImage )
 add_subdirectory( CropTubes )
 add_subdirectory( DeblendTomosynthesisSlicesUsingPrior )
-#add_subdirectory( DICOMSeriesConverter )
 add_subdirectory( EnhanceCoherenceAndEdgesUsingDiffusion )
 add_subdirectory( EnhanceCoherenceUsingDiffusion )
 add_subdirectory( EnhanceContrastUsingAHE )
@@ -108,3 +105,4 @@ add_subdirectory( TubeMath )
 #add_subdirectory( SegmentUsingQuantileThreshold )
 #add_subdirectory( TransferLabelsToRegions )
 #add_subdirectory( ComputeTubeGraphSimilarityKernelMatrix )
+#add_subdirectory( DICOMSeriesConverter )

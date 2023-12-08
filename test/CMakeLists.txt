@@ -16,7 +16,3 @@ add_subdirectory(Numerics)
 add_subdirectory(ObjectDocuments)
 add_subdirectory(Registration)
 add_subdirectory(Segmentation)
-
-#if( ITK_WRAP_PYTHON )
-  #add_subdirectory(Python)
-#endif()

@@ -19,8 +19,6 @@
 
 #include <itkTimeProbesCollectorBase.h>
 
-#include "tubetkConfigure.h"
-
 #include "itktubeFFTGaussianDerivativeIFFTFilter.h"
 
 #include "tubeMatrixMath.h"

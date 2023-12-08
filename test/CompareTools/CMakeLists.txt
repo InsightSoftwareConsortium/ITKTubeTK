@@ -24,6 +24,12 @@ CreateTestDriver( tubeCompareImages
   "${TubeTK-Test_LIBRARIES}"
   CompareImages.cxx )
 
+add_dependencies( tubeCompareImagesTestDriver
+  ${TubeTK_LIBRARIES} )
+
 CreateTestDriver( tubeCompareTextFiles
   "${TubeTK-Test_LIBRARIES}"
   CompareTextFiles.cxx )
+
+add_dependencies( tubeCompareTextFilesTestDriver
+  ${TubeTK_LIBRARIES} )

@@ -21,8 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubetkConfigure.h"
-
 #include "tubeMacro.h"
 
 #include "itktubeMetaClassPDF.h"

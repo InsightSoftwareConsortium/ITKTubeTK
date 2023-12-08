@@ -18,8 +18,8 @@
 #include <sstream>
 #include <vnl/vnl_math.h>
 
+#include <itkImage.h>
 #include <metaCommand.h>
-
 
 int RegressionTestFile ( const char *testFilename,
   const char *baselineFilename, bool reportErrors,
