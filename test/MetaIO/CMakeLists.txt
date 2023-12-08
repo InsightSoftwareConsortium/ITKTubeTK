@@ -20,11 +20,11 @@
 #
 ##############################################################################
 
-if( PYTHON_EXECUTABLE )
-  itk_add_test( PrintSelf-MetaIO ${PYTHON_EXECUTABLE}
+if( Python3_EXECUTABLE )
+  itk_add_test( PrintSelf-MetaIO ${Python3_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/src/MetaIO )
-endif( PYTHON_EXECUTABLE )
+endif( Python3_EXECUTABLE )
 
 CreateTestDriver( tubeMetaIOHeader
   "${TubeTK-Test_LIBRARIES}"

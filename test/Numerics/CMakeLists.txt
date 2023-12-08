@@ -20,11 +20,11 @@
 #
 ##############################################################################
 
-if( PYTHON_EXECUTABLE )
-  add_test( PrintSelf-Numerics ${PYTHON_EXECUTABLE}
+if( Python3_EXECUTABLE )
+  add_test( PrintSelf-Numerics ${Python3_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/TubeTKLib/Numerics )
-endif()
+endif( Python3_EXECUTABLE )
 
 set( tubeNumericsTests_SRCS
   tubeNumericsPrintTest.cxx

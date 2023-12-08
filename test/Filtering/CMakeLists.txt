@@ -20,11 +20,11 @@
 #
 ##############################################################################
 
-if( PYTHON_EXECUTABLE )
-  itk_add_test( PrintSelf-TubeTKFiltering ${PYTHON_EXECUTABLE}
+if( Python3_EXECUTABLE )
+  itk_add_test( PrintSelf-TubeTKFiltering ${Python3_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/src/Filtering )
-endif( PYTHON_EXECUTABLE )
+endif( Python3_EXECUTABLE )
 
 CreateTestDriver( tubeFilteringHeader
   "${TubeTK-Test_LIBRARIES}"

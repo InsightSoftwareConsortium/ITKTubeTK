@@ -20,11 +20,11 @@
 #
 ##############################################################################
 
-if( PYTHON_EXECUTABLE )
-  itk_add_test( PrintSelf-ObjectDocuments ${PYTHON_EXECUTABLE}
+if( Python3_EXECUTABLE )
+  itk_add_test( PrintSelf-ObjectDocuments ${Python3_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/src/ObjectDocuments )
-endif( PYTHON_EXECUTABLE )
+endif( Python3_EXECUTABLE )
 
 set( tubeObjectDocumentsTests_SRCS
   tubeObjectDocumentsPrintTest.cxx )
