@@ -36,8 +36,9 @@ itk_module( TubeTK
     ITKSmoothing
     ITKStatistics
     ITKSpatialObjects
-    ITKTransform
+    ITKTestKernel
     ITKThresholding
+    ITKTransform
     MinimalPathExtraction
   COMPILE_DEPENDS
     ITKAnisotropicSmoothing
@@ -55,6 +56,7 @@ itk_module( TubeTK
     ITKLabelVoting
     ITKPDEDeformableRegistration
     ITKRegistrationCommon
+  TEST_DEPENDS
     ITKTestKernel
   DESCRIPTION
     "${DOCUMENTATION}"
