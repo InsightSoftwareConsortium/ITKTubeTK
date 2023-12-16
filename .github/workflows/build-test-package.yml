@@ -7,8 +7,6 @@ jobs:
     uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-cxx.yml@3f63de316255a285b0cac4c819d3d45649738999
     with:
       itk-module-deps: 'MinimalPathExtraction@35dd8e83b7df2059876e6835a5741eb3d45973bf'
-      itk-cmake-options: '-DBUILD_SHARED_LIBS:BOOL=ON -DBUILD_STATIC_LIBS:BOOL=OFF'
-      cmake-options: '-DBUILD_SHARED_LIBS:BOOL=ON -DBUILD_STATIC_LIBS:BOOL=OFF'
 
   python-build-workflow:
     uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@3f63de316255a285b0cac4c819d3d45649738999
