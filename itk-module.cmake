@@ -55,7 +55,6 @@ itk_module( TubeTK
     ITKLabelVoting
     ITKPDEDeformableRegistration
     ITKRegistrationCommon
-  TEST_DEPENDS
     ITKTestKernel
   DESCRIPTION
     "${DOCUMENTATION}"
