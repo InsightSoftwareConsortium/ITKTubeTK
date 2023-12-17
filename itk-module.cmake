@@ -23,6 +23,7 @@ set( DOCUMENTATION
 "TubeTK provides methods for extracting, registering, and quantifying the shape of tubular structures (e.g., vessels, nerves, bones, roads) in 2D and 3D images (e.g., from MRI, CT, ultrasound, or satelite imaging).")
 
 itk_module( TubeTK
+  ENABLE_SHARED
   DEPENDS
     ITKCommon
     ITKFFT
