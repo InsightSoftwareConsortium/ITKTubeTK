@@ -21,11 +21,11 @@
 ##############################################################################
 
 find_package( Python )
-if( PYTHON_EXECUTABLE )
-  itk_add_test( PrintSelf-TubeTKSegmentation ${PYTHON_EXECUTABLE}
+if( Python3_EXECUTABLE )
+  itk_add_test( PrintSelf-TubeTKSegmentation ${Python3_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/src/Segmentation )
-endif()
+endif( Python3_EXECUTABLE )
 
 CreateTestDriver( tubeSegmentationHeader
   "${TubeTK-Test_LIBRARIES}"
