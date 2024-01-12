@@ -27,7 +27,7 @@ endif()
 
 project( TubeTK )
 
-set( TubeTK_VERSION 1.3.5 )
+set( TubeTK_VERSION 1.3.6 )
 
 ####
 # Setup CMake
