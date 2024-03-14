@@ -67,7 +67,7 @@ public:
   itkGetMacro( InverseMaximumIntensity, InputPixelType );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( TubeNetworkSpatialObjectToImageFilter, ImageToImageFilter );
+  itkTypeMacro( InverseIntensityImageFilter, ImageToImageFilter );
 
 protected:
 
