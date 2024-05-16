@@ -1,9 +1,5 @@
 itk_wrap_include( tubeSegmentConnectedComponentsUsingParzenPDFs.h )
-itk_wrap_include( itkImage.h )
 
-itk_wrap_class("itk::Image" POINTER)
-  itk_wrap_template("${ITKM_F}4" "${ITKT_F}, 4")
-itk_end_wrap_class()
 itk_wrap_named_class("tube::SegmentConnectedComponentsUsingParzenPDFs" tubeSegmentConnectedComponentsUsingParzenPDFs POINTER)
   foreach(t ${WRAP_ITK_SCALAR})
     foreach(t2 ${WRAP_ITK_SCALAR})
