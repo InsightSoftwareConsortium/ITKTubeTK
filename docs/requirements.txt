@@ -1,5 +1,0 @@
-recommonmark
-Sphinx==3.3.0
-sphinx-rtd-theme==0.5.0
-sphinx-autodoc-typehints==1.11.1
-typing-extensions
