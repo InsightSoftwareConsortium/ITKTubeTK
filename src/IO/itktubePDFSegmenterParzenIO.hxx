@@ -198,8 +198,6 @@ Read( const char * _headerName )
     std::cout << "MetaClassPDF: M_SetupReadFields" << std::endl;
     }
 
-  MetaClassPDF classPDFReader;
-
   std::vector< MET_FieldRecordType * > metaFields;
 
   MET_FieldRecordType * mF;
@@ -485,6 +483,9 @@ Read( const char * _headerName )
         0.005 * spacing[j] )
         {
         std::cout << "ERROR: Spacing mismatch" << std::endl;
+        std::cout << "   Spacing[" << j << "] = " << spacing[j] << std::endl;
+        std::cout << "   PDFSpacing[" << j << "] = "
+          << m_PDFSegmenter->GetBinSize()[j] << std::endl;
         for( unsigned int f=0; f<metaFields.size(); ++f )
           {
           delete metaFields[f];

@@ -288,11 +288,14 @@ RadiusExtractor2<TInputImage>
 
   typename std::vector< TubePointType >::iterator pntIter;
   pntIter = m_KernelTube->GetPoints().begin();
+  IndexType kernelPointI;
+  if ( !m_InputImage->TransformPhysicalPointToIndex(
+    pntIter->GetPositionInObjectSpace(), kernelPointI ) )
+    {
+    ::tube::WarningMessage( "Kernel point is outside of image bounds." );
+    }
   for( unsigned int i = 0; i < ImageDimension; ++i )
     {
-    IndexType kernelPointI;
-    m_InputImage->TransformPhysicalPointToIndex( 
-      m_KernelTube->GetPoints()[0].GetPositionInObjectSpace(), kernelPointI );
     minXI[i] = static_cast< int >( kernelPointI[i] - bufferI[i] );
     maxXI[i] = static_cast< int >( kernelPointI[i] + bufferI[i] );
     }
@@ -301,8 +304,11 @@ RadiusExtractor2<TInputImage>
   while( pntIter != m_KernelTube->GetPoints().end() )
     {
     IndexType kernelPointI;
-    m_InputImage->TransformPhysicalPointToIndex(
-      pntIter->GetPositionInObjectSpace(), kernelPointI );
+    if( !m_InputImage->TransformPhysicalPointToIndex(
+      pntIter->GetPositionInObjectSpace(), kernelPointI ) )
+      {
+      ::tube::WarningMessage( "Kernel point is outside of image bounds." );
+      }
     for( unsigned int i = 0; i < ImageDimension; ++i )
       {
       tempI = static_cast< int >( kernelPointI[i] - bufferI[i] );

@@ -5,7 +5,7 @@ from ctk_cli import CLIArgumentParser
 # Append ITK libs
 sys.path.append(os.path.join(os.environ['ITK_BUILD_DIR'],
                              'Wrapping/Generators/Python'))
-sys.path.append(os.path.join(os.environ['ITK_BUILD_DIR'], 'lib')
+sys.path.append(os.path.join(os.environ['ITK_BUILD_DIR'], 'lib'))
 
 # Append TubeTK libs :
 sys.path.append(os.environ['TUBETK_BUILD_DIR'], 'TubeTK-build/lib/TubeTK')

@@ -24,9 +24,13 @@ limitations under the License.
 #ifndef __itktubeMetaClassPDF_h
 #define __itktubeMetaClassPDF_h
 
-#include "metaImage.h"
-
+#include <metaImage.h>
 #include <metaForm.h>
+#include <metaTypes.h>
+
+#ifndef METAIO_STREAM
+#define METAIO_STREAM std
+#endif
 
 namespace itk
 {
@@ -100,24 +104,24 @@ public:
   unsigned int GetNumberOfFeatures( void ) const;
 
   void         SetNumberOfBinsPerFeature( const VectorUIntType & _nBins );
-  const VectorUIntType & GetNumberOfBinsPerFeature( void ) const;
+  const VectorUIntType GetNumberOfBinsPerFeature( void ) const;
 
   void          SetBinMin( const VectorDoubleType & _binMin );
-  const VectorDoubleType & GetBinMin( void ) const;
+  const VectorDoubleType GetBinMin( void ) const;
 
   void          SetBinSize( const VectorDoubleType & _binSize );
-  const VectorDoubleType & GetBinSize( void ) const;
+  const VectorDoubleType GetBinSize( void ) const;
 
   void          SetPDF( float * _pdfData );
   float *       GetPDF( void );  // Data is freed when reader is destroyed
   float *       ExportPDF( void );  // Data persists when reader destroyed
 
   void          SetObjectId( const VectorIntType & _objectIds );
-  const VectorIntType & GetObjectId( void ) const;
+  const VectorIntType GetObjectId( void ) const;
 
   void          SetObjectPDFWeight( const VectorDoubleType &
                   _objectWeights );
-  const VectorDoubleType & GetObjectPDFWeight( void ) const;
+  const VectorDoubleType GetObjectPDFWeight( void ) const;
 
   void          SetVoidId( int _voidId );
   int           GetVoidId( void ) const;
@@ -148,13 +152,13 @@ public:
 
   virtual bool Read( const char * _headerName = NULL );
 
-  virtual bool CanReadStream( std::ifstream * _stream ) const;
+  virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
 
-  virtual bool ReadStream( std::ifstream * _stream );
+  virtual bool ReadStream( METAIO_STREAM::ifstream * _stream );
 
   virtual bool Write( const char * _headerName = NULL );
 
-  virtual bool WriteStream( std::ofstream * _stream );
+  virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
 
 protected:
 
@@ -163,10 +167,6 @@ protected:
   virtual void M_SetupWriteFields( void );
 
   virtual bool M_Read( void );
-
-  mutable VectorUIntType   m_NumberOfBinsPerFeature;
-  mutable VectorDoubleType m_BinMin;
-  mutable VectorDoubleType m_BinSize;
 
   VectorIntType        m_ObjectId;
   VectorDoubleType     m_ObjectPDFWeight;

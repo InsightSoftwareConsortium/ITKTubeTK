@@ -141,7 +141,7 @@ public:
     *
     * \sa Transform::SetParameters()
     * \sa Transform::SetFixedParameters() */
-  virtual void SetParameters(const ParametersType & parameters) ITK_OVERRIDE;
+  virtual void SetParameters(const ParametersType & parameters) override;
 
   /** Get the parameters that uniquely define the transform
    * This is typically used by optimizers.
@@ -152,15 +152,15 @@ public:
    *
    * \sa Transform::GetParameters()
    * \sa Transform::GetFixedParameters() */
-  virtual const ParametersType & GetParameters() const ITK_OVERRIDE;
+  virtual const ParametersType & GetParameters() const override;
 
   /** This method computes the Jacobian matrix of the transformation
   * at a given input point.
   */
-  virtual void ComputeJacobianWithRespectToParameters( const InputPointType  & p, JacobianType & jacobian) const ITK_OVERRIDE;
+  virtual void ComputeJacobianWithRespectToParameters( const InputPointType  & p, JacobianType & jacobian) const override;
 
   /** Set the transformation to an identity. */
-  virtual void SetIdentity() ITK_OVERRIDE;
+  virtual void SetIdentity() override;
 
   /**
    * This method creates and returns a new Similarity2DTransform object
@@ -172,7 +172,7 @@ public:
   bool GetInverse(Self *inverse) const;
 
   /** Return an inverse of this transform. */
-  virtual InverseTransformBasePointer GetInverseTransform() const ITK_OVERRIDE;
+  virtual InverseTransformBasePointer GetInverseTransform() const override;
 
   /**
    * This method creates and returns a new Similarity2DTransform object
@@ -193,7 +193,7 @@ public:
    * \sa MatrixOffsetTransformBase::SetMatrix()
    *
    */
-  virtual void SetMatrix(const MatrixType & matrix) ITK_OVERRIDE;
+  virtual void SetMatrix(const MatrixType & matrix) override;
 
   /**
    * Set the rotation Matrix of a Similarity 2D Transform
@@ -208,7 +208,7 @@ public:
    * \sa MatrixOffsetTransformBase::SetMatrix()
    *
    */
-  virtual void SetMatrix(const MatrixType & matrix, const TParametersValueType tolerance) ITK_OVERRIDE;
+  virtual void SetMatrix(const MatrixType & matrix, const TParametersValueType tolerance) override;
 
 protected:
   Similarity2DTransform(unsigned int outputSpaceDimension, unsigned int parametersDimension);
@@ -224,13 +224,13 @@ protected:
   /** Compute matrix from angle and scale. This is used in Set methods
    * to update the underlying matrix whenever a transform parameter
    * is changed. */
-  virtual void ComputeMatrix(void) ITK_OVERRIDE;
+  virtual void ComputeMatrix(void) override;
 
   /** Compute the angle and scale from the matrix. This is used to compute
    * transform parameters from a given matrix. This is used in
    * MatrixOffsetTransformBase::Compose() and
    * MatrixOffsetTransformBase::GetInverse(). */
-  virtual void ComputeMatrixParameters(void) ITK_OVERRIDE;
+  virtual void ComputeMatrixParameters(void) override;
 
   /** Set the scale without updating underlying variables. */
   void SetVarScale(ScaleType scale)

@@ -92,7 +92,7 @@ int DoIt( int argc, char * argv[] )
     itk::Point<double, VDimension> pnt;
     itk::Index< VDimension > indx;
     tube->Update();
-   
+
     for( unsigned int i=0; i<tube->GetNumberOfPoints(); i++ )
       {
       // Get point
@@ -102,8 +102,13 @@ int DoIt( int argc, char * argv[] )
       pnt = tubePoint.GetPositionInWorldSpace();
 
       // Get closest voxel
-      meanImage->TransformPhysicalPointToIndex( pnt, indx );
- 
+      bool success = meanImage->TransformPhysicalPointToIndex( pnt, indx );
+      if( !success )
+        {
+        ::tube::WarningMessage("Point is outside of image bounds.");
+        continue;
+        }
+
       // Write value of ATLAS EMD file at voxel
       writeStream << meanImage->GetPixel( indx ) << std::endl;
       }

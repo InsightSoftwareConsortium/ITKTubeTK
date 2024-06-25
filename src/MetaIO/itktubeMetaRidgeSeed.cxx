@@ -427,7 +427,7 @@ CanRead( const char * _headerName ) const
     }
 
   // Now check the file content
-  std::ifstream inputStream;
+  METAIO_STREAM::ifstream inputStream;
 
   inputStream.open( _headerName, std::ios::in |
                                  std::ios::binary );
@@ -453,9 +453,9 @@ Read( const char * _headerName )
     FileName( _headerName );
     }
 
-  std::ifstream * tmpStream = new std::ifstream;
+  METAIO_STREAM::ifstream * tmpStream = new METAIO_STREAM::ifstream;
 
-  tmpStream->open( m_FileName, std::ios::in |
+  tmpStream->open( m_FileName.c_str(), std::ios::in |
                                std::ios::binary );
 
   if( !tmpStream->rdbuf()->is_open() )
@@ -476,7 +476,7 @@ Read( const char * _headerName )
 }
 
 bool MetaRidgeSeed::
-CanReadStream( std::ifstream * _stream ) const
+CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 {
   if( !std::strncmp( MET_ReadForm( * _stream ).c_str(), "RidgeSeed", 9 ) )
     {
@@ -487,7 +487,7 @@ CanReadStream( std::ifstream * _stream ) const
 }
 
 bool MetaRidgeSeed::
-ReadStream( std::ifstream * _stream )
+ReadStream( METAIO_STREAM::ifstream * _stream )
 {
   if( META_DEBUG )
     {
@@ -535,9 +535,9 @@ Write( const char * _headName )
 
   MET_SetFileSuffix( m_FileName, ".mrs" );
 
-  std::ofstream * tmpWriteStream = new std::ofstream;
+  METAIO_STREAM::ofstream * tmpWriteStream = new METAIO_STREAM::ofstream;
 
-  tmpWriteStream->open( m_FileName, std::ios::binary |
+  tmpWriteStream->open( m_FileName.c_str(), std::ios::binary |
                                    std::ios::out );
 
   if( !tmpWriteStream->rdbuf()->is_open() )
@@ -558,7 +558,7 @@ Write( const char * _headName )
 }
 
 bool MetaRidgeSeed::
-WriteStream( std::ofstream * _stream )
+WriteStream( METAIO_STREAM::ofstream * _stream )
 {
   if( m_WriteStream != NULL )
     {
