@@ -55,7 +55,6 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   enum { ObjectDimension = 3 };
   typedef double            FloatType;
 
-  typedef itk::TubeSpatialObject< ObjectDimension >            TubeType;
   typedef itk::GroupSpatialObject< ObjectDimension >           GroupType;
   typedef itk::SpatialObjectReader< ObjectDimension >          SOReaderType;
   typedef itk::Image< FloatType, ObjectDimension >             ImageType;

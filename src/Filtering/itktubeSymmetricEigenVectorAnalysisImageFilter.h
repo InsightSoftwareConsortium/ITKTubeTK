@@ -66,6 +66,7 @@ public:
   inline TMatrix operator()( const TInput & x )
     {
     TOutput      eigenValues;
+    eigenValues.Fill(0);
     TMatrix eigenVectorMatrix;
     m_Calculator.ComputeEigenValuesAndVectors( x, eigenValues,
       eigenVectorMatrix );

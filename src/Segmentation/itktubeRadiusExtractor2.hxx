@@ -303,7 +303,6 @@ RadiusExtractor2<TInputImage>
   int tempI;
   while( pntIter != m_KernelTube->GetPoints().end() )
     {
-    IndexType kernelPointI;
     if( !m_InputImage->TransformPhysicalPointToIndex(
       pntIter->GetPositionInObjectSpace(), kernelPointI ) )
       {

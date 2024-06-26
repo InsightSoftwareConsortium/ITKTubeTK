@@ -400,7 +400,7 @@ RadiusExtractor3<TInputImage>
   while( pntIter != m_KernelTube->GetPoints().end() )
     {
     p = pntIter->GetPositionInObjectSpace();
-    bool isInside = m_InputImage->TransformPhysicalPointToIndex( p, kernelPointIndex );
+    isInside = m_InputImage->TransformPhysicalPointToIndex( p, kernelPointIndex );
     if( !isInside )
       {
       ++pntIter;

@@ -259,6 +259,7 @@ private:
 
   TimeStepType    m_TimeStep;
   bool            m_UseImageSpacing;
+  SpacingType     m_Spacing{1};
 
 }; // End class AnisotropicDiffusionTensorFunction
 

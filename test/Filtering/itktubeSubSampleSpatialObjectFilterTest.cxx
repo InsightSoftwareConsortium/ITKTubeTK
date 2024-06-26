@@ -39,7 +39,6 @@ int itktubeSubSampleSpatialObjectFilterTest( int argc, char * argv[] )
   const char * outputTubeNetwork = argv[2];
 
   enum { Dimension = 3 };
-  typedef itk::TubeSpatialObject< Dimension >   TubeSpatialObjectType;
   typedef itk::GroupSpatialObject< Dimension >  GroupSpatialObjectType;
 
   // Read input tube tree.
