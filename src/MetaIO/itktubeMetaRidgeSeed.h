@@ -24,9 +24,15 @@ limitations under the License.
 #ifndef __itktubeMetaRidgeSeed_h
 #define __itktubeMetaRidgeSeed_h
 
+
 #include "itktubeMetaLDA.h"
 
+#include <metaTypes.h>
 #include <metaForm.h>
+
+#ifndef METAIO_STREAM
+#define METAIO_STREAM std
+#endif
 
 namespace itk
 {
@@ -125,13 +131,13 @@ public:
 
   virtual bool Read( const char * _headerName = NULL );
 
-  virtual bool CanReadStream( std::ifstream * _stream ) const;
+  virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
 
-  virtual bool ReadStream( std::ifstream * _stream );
+  virtual bool ReadStream( METAIO_STREAM::ifstream * _stream );
 
   virtual bool Write( const char * _headName = NULL );
 
-  virtual bool WriteStream( std::ofstream * _stream );
+  virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
 
 protected:
   void  M_Destroy( void );

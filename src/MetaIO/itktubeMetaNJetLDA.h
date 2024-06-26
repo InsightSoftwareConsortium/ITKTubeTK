@@ -25,10 +25,15 @@ limitations under the License.
 
 #include "itktubeMetaLDA.h"
 
+#include <metaTypes.h>
 #include <metaForm.h>
 
 #include <vnl/vnl_matrix.h>
 #include <vnl/vnl_vector.h>
+
+#ifndef METAIO_STREAM
+#define METAIO_STREAM std
+#endif
 
 namespace itk
 {
@@ -117,13 +122,13 @@ public:
 
   virtual bool Read( const char * headerName = NULL );
 
-  virtual bool CanReadStream( std::ifstream * stream ) const;
+  virtual bool CanReadStream( METAIO_STREAM::ifstream * stream ) const;
 
-  virtual bool ReadStream( std::ifstream * stream );
+  virtual bool ReadStream( METAIO_STREAM::ifstream * stream );
 
   virtual bool Write( const char * headerName = NULL );
 
-  virtual bool WriteStream( std::ofstream * stream );
+  virtual bool WriteStream( METAIO_STREAM::ofstream * stream );
 
 protected:
 

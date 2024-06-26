@@ -267,7 +267,7 @@ Similarity2DTransform<TParametersValueType>
     {
     return inv.GetPointer();
     }
-  return ITK_NULLPTR;
+  return nullptr;
 }
 
 

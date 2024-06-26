@@ -26,7 +26,6 @@ set( TubeTK_Registration_H_Files
   Registration/itkAnisotropicSimilarityLandmarkBasedTransformInitializer.h
   Registration/itkBSplineImageToImageRegistrationMethod.h
   Registration/itkImageRegionMomentsCalculator.h
-  Registration/itkImageRegionSplitter.h
   Registration/itkImageToImageRegistrationHelper.h
   Registration/itkImageToImageRegistrationMethod.h
   Registration/itkInitialImageToImageRegistrationMethod.h
@@ -60,7 +59,6 @@ set( TubeTK_Registration_HXX_Files
   Registration/itkAnisotropicSimilarityLandmarkBasedTransformInitializer.hxx
   Registration/itkBSplineImageToImageRegistrationMethod.hxx
   Registration/itkImageRegionMomentsCalculator.hxx
-  Registration/itkImageRegionSplitter.hxx
   Registration/itkImageToImageRegistrationHelper.hxx
   Registration/itkImageToImageRegistrationMethod.hxx
   Registration/itkInitialImageToImageRegistrationMethod.hxx

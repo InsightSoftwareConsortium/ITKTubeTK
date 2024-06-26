@@ -184,15 +184,23 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
       != TubeOpType::RidgeExtractorType::SUCCESS )
       {
       TubeOpType::ContinuousIndexType x1;
-      im->TransformPhysicalPointToContinuousIndex( pntX1, x1 );
+      bool success = im->TransformPhysicalPointToContinuousIndex( pntX1, x1 );
       std::cout << "Local tube test failed.  No tube found." << std::endl;
       std::cout << "   Source = " << pntX << " (" << x0 << ")" << std::endl;
-      std::cout << "   Result = " << pntX1 << " (" << x1 << ")" << std::endl;
+      std::cout << "   Result = " << pntX1 << " (" << x1 << ": valid = " << success << ")" << std::endl;
       ++failures;
       continue;
       }
+
     TubeOpType::ContinuousIndexType x1;
-    im->TransformPhysicalPointToContinuousIndex( pntX1, x1 );
+    bool success = im->TransformPhysicalPointToContinuousIndex( pntX1, x1 );
+    if (!success)
+    {
+        std::cout << "Local tube test failed.  Result outside of image." << std::endl;
+        std::cout << "   Result = " << pntX1 << " Index = " << x1 << std::endl;
+        ++failures;
+        continue;
+    }
 
     double diff = 0;
     for( unsigned int i=0; i<ImageType::ImageDimension; i++ )

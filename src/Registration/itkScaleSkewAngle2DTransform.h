@@ -106,9 +106,9 @@ public:
    * Orthogonality testing is bypassed in this case.
    *
    * \sa MatrixOffsetTransformBase::SetMatrix() */
-  virtual void SetMatrix(const MatrixType & matrix) ITK_OVERRIDE;
+  virtual void SetMatrix(const MatrixType & matrix) override;
   virtual void SetMatrix(const MatrixType & matrix, 
-    const TParametersValueType tolerance) ITK_OVERRIDE;
+    const TParametersValueType tolerance) override;
 
   /** Set the transformation from a container of parameters
    * This is typically used by optimizers.
@@ -118,9 +118,9 @@ public:
    *   3-4   Scale
    *   5-6   Skew
    **  */
-  virtual void SetParameters(const ParametersType & parameters) ITK_OVERRIDE;
+  virtual void SetParameters(const ParametersType & parameters) override;
 
-  virtual const ParametersType & GetParameters(void) const ITK_OVERRIDE;
+  virtual const ParametersType & GetParameters(void) const override;
 
   itkGetMacro( UseSingleScale, bool );
   itkSetMacro( UseSingleScale, bool );
@@ -133,13 +133,13 @@ public:
 
   itkGetConstReferenceMacro(Skew, SkewVectorType);
 
-  void SetIdentity() ITK_OVERRIDE;
+  void SetIdentity() override;
 
   /** This method computes the Jacobian matrix of the transformation.
    * given point or vector, returning the transformed point or
    * vector. The rank of the Jacobian will also indicate if the
    * transform is invertible at this point. */
-  virtual void ComputeJacobianWithRespectToParameters( const InputPointType  & p, JacobianType & jacobian) const ITK_OVERRIDE;
+  virtual void ComputeJacobianWithRespectToParameters( const InputPointType  & p, JacobianType & jacobian) const override;
 
 protected:
   ScaleSkewAngle2DTransform();
@@ -164,9 +164,9 @@ protected:
   }
 
   /** Compute the components of the rotation matrix in the superclass. */
-  void ComputeMatrix(void) ITK_OVERRIDE;
+  void ComputeMatrix(void) override;
 
-  void ComputeMatrixParameters(void) ITK_OVERRIDE;
+  void ComputeMatrixParameters(void) override;
 
 private:
   ITK_DISALLOW_COPY_AND_MOVE(ScaleSkewAngle2DTransform);

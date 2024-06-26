@@ -38,8 +38,8 @@ template< class TInputImage, class TOutputImage >
 ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 ::ShrinkWithBlendingImageFilter( void )
 {
-  m_InputMipPointImage = ITK_NULLPTR;
-  m_OutputMipPointImage = ITK_NULLPTR;
+  m_InputMipPointImage = nullptr;
+  m_OutputMipPointImage = nullptr;
 
   m_Overlap.Fill( 0 );
 
@@ -357,7 +357,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     progress.CompletedPixel();
     }
 
-  if( inputMipPointItPtr != ITK_NULLPTR )
+  if( inputMipPointItPtr != nullptr )
     {
     delete inputMipPointItPtr;
     }

@@ -306,7 +306,7 @@ bool MetaNJetLDA
     }
 
   // Now check the file content.
-  std::ifstream inputStream;
+  METAIO_STREAM::ifstream inputStream;
 
   inputStream.open( headerName,
                     std::ios::in | std::ios::binary );
@@ -332,9 +332,9 @@ bool MetaNJetLDA
     this->FileName( headerName );
     }
 
-  std::ifstream * const tmpStream = new std::ifstream();
+  METAIO_STREAM::ifstream * const tmpStream = new METAIO_STREAM::ifstream();
 
-  tmpStream->open( m_FileName,
+  tmpStream->open( m_FileName.c_str(),
                    std::ios::in | std::ios::binary );
 
   if( !tmpStream->rdbuf()->is_open() )
@@ -355,7 +355,7 @@ bool MetaNJetLDA
 }
 
 bool MetaNJetLDA
-::CanReadStream( std::ifstream * stream ) const
+::CanReadStream( METAIO_STREAM::ifstream * stream ) const
 {
   if( !std::strncmp( MET_ReadForm( *stream ).c_str(), "NJetLDA", 7 ) )
     {
@@ -366,7 +366,7 @@ bool MetaNJetLDA
 }
 
 bool MetaNJetLDA
-::ReadStream( std::ifstream * stream )
+::ReadStream( METAIO_STREAM::ifstream * stream )
 {
   if( META_DEBUG )
     {
@@ -415,10 +415,10 @@ bool MetaNJetLDA
 
   MET_SetFileSuffix( m_FileName, "mnda" );
 
-  std::ofstream * const tmpWriteStream = new
-    std::ofstream();
+  METAIO_STREAM::ofstream * const tmpWriteStream = new
+    METAIO_STREAM::ofstream();
 
-  tmpWriteStream->open( m_FileName,
+  tmpWriteStream->open( m_FileName.c_str(),
     std::ios::binary | std::ios::out );
 
   if( !tmpWriteStream->rdbuf()->is_open() )
@@ -438,7 +438,7 @@ bool MetaNJetLDA
 }
 
 bool MetaNJetLDA
-::WriteStream( std::ofstream * stream )
+::WriteStream( METAIO_STREAM::ofstream * stream )
 {
   if( m_WriteStream != NULL )
     {
