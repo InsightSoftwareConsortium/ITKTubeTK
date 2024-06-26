@@ -90,6 +90,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
 {
   DiffusionTensorNeighborhoodType tensorNeighborhood;
   SpacingType                     spacing;
+  spacing = m_Spacing;
   return this->ComputeUpdate( neighborhood,
                               tensorNeighborhood,
                               spacing,
@@ -314,6 +315,7 @@ AnisotropicDiffusionTensorFunction<TImageType>
   if( useImageSpacing )
     {
     minSpacing = input->GetSpacing()[0];
+    m_Spacing = input->GetSpacing();
     for( unsigned int i = 1; i < ImageDimension; i++ )
       {
       if( input->GetSpacing()[i] < minSpacing )
@@ -325,6 +327,7 @@ AnisotropicDiffusionTensorFunction<TImageType>
   else
     {
     minSpacing = 1.0;
+    m_Spacing.Fill(1.0);
     }
 
   // TODO plus 1?

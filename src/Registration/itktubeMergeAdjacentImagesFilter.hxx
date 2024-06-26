@@ -220,7 +220,7 @@ MergeAdjacentImagesFilter< TImage >
     pointX = m_InitialTransform->GetInverseTransform()->TransformPoint( pointX );
     }
 
-  bool isInside = m_Input1->TransformPhysicalPointToIndex( pointX, minX2 );
+  std::ignore = m_Input1->TransformPhysicalPointToIndex( pointX, minX2 );
 
   typename ImageType::SizeType size2 =
     m_Input2->GetLargestPossibleRegion().GetSize();
@@ -243,7 +243,7 @@ MergeAdjacentImagesFilter< TImage >
     {
     pointX = m_InitialTransform->GetInverseTransform()->TransformPoint( pointX );
     }
-  isInside = m_Input1->TransformPhysicalPointToIndex( pointX, maxX2 );
+  std::ignore = m_Input1->TransformPhysicalPointToIndex( pointX, maxX2 );
 
   // compute min-max coord and size of output
   for( unsigned int i = 0; i < ImageDimension; i++ )

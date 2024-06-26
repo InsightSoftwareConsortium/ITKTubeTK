@@ -137,10 +137,16 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
   PointType & origin ) const
 {
   SizeType size = image->GetLargestPossibleRegion().GetSize();
+  PointType point;
   PointType maximum;
 
-  // Fill origin ( minimum value with large number ).
-  origin.Fill( 9999999 );
+  typename ImageType::IndexType index;
+  index.Fill(0);
+  image->TransformIndexToPhysicalPoint( index, point );
+  point = transform->TransformPoint( point );
+
+  origin = point;
+  maximum = point;
 
   // Transform all of the image corners and determine the minimum bounding
   // box.
@@ -150,13 +156,10 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
       {
       for( unsigned int z = 0; z <= size[2]; z += size[2] )
         {
-        typename ImageType::IndexType index;
 
         index[0] = x;
         index[1] = y;
         index[2] = z;
-
-        PointType point;
 
         image->TransformIndexToPhysicalPoint( index, point );
         point = transform->TransformPoint( point );

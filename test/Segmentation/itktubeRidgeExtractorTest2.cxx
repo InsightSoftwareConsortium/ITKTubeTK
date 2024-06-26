@@ -187,7 +187,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     if( ridgeOp->LocalRidge( xRidgePnt ) != RidgeOpType::SUCCESS )
       {
       RidgeOpType::ContinuousIndexType xRidgeContI;
-      bool isInside = im->TransformPhysicalPointToContinuousIndex( xRidgePnt,
+      std::ignore = im->TransformPhysicalPointToContinuousIndex( xRidgePnt,
         xRidgeContI );
       std::cout << "*** FAILURE: Local ridge test failed.  No ridge found."
         << std::endl;
@@ -205,7 +205,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       continue;
       }
     RidgeOpType::ContinuousIndexType xRidgeContI;
-    bool isInside = im->TransformPhysicalPointToContinuousIndex( xRidgePnt,
+    std::ignore = im->TransformPhysicalPointToContinuousIndex( xRidgePnt,
       xRidgeContI );
 
     double diff = 0;

@@ -169,7 +169,7 @@ PrintInfo( void ) const
   if( ! m_ObjectId.empty() )
     {
     std::cout << m_ObjectId[0];
-    for( int i = 1; i < m_ObjectId.size(); i++ )
+    for( std::vector<double>::size_type i = 1; i < m_ObjectId.size(); i++ )
       {
       std::cout << ", " << m_ObjectId[i];
       }
@@ -877,9 +877,6 @@ M_Read( void )
       std::cout << "  Field " << i << " = " << m_Fields[i]->name << std::endl;
       }
     }
-
-  unsigned int nFeatures = static_cast< unsigned int >(
-    MetaImage::NDims() );
 
   MET_FieldRecordType * mF = MET_GetFieldRecord( "NObjects",
     &m_Fields );

@@ -472,11 +472,6 @@ BSplineImageToImageRegistrationMethod<TImage>
   fixedPyramid->SetNumberOfLevels( numberOfLevelsUsing );
   movingPyramid->SetNumberOfLevels( numberOfLevelsUsing );
 
-  typename ImageType::SpacingType fixedSpacing =
-    this->GetFixedImage()->GetSpacing();
-  typename ImageType::SpacingType movingSpacing =
-    this->GetFixedImage()->GetSpacing();
-
   typename PyramidType::ScheduleType fixedSchedule =
     fixedPyramid->GetSchedule();
   typename PyramidType::ScheduleType movingSchedule =
