@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "itk-tubetk"
-version = "1.3.7"
+version = "1.4.0"
 description = "An open-source toolkit, led by Kitware, Inc., for the segmentation, registration, and analysis of tubes (e.g., blood vessels) in images."
 readme = "README.md"
 license = {file = "LICENSE"}
