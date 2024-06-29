@@ -31,4 +31,6 @@ include( ObjectDocuments.cmake )
 include( Registration.cmake )
 include( Segmentation.cmake )
 
-itk_module_add_library( TubeTK ${TubeTK_SRCS} )
+add_library(TubeTK STATIC ${TubeTK_SRCS})
+itk_module_link_dependencies()
+itk_module_target(TubeTK)
