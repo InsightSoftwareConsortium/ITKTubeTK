@@ -29,20 +29,70 @@ TubeTK offers various interface layers:
 Installing TubeTK
 =================
 
-We recommend using TubeTK via Python.  To do so, the installation command is
+There are now a full set of wheels for itk-TubeTK on Pypi, and they are
+SOMEWHAT compatible with ITK v5.4. Regretfully getting them to work
+required changes to ITK, and those changes aren't incorporated into
+ITK v5.4. We will have to wait for the ITK v6.0 release, which will
+likely be a few months from now.
+
+So, for 90+% of the functionality working (certain Spatial Object I/O
+methods will fail), you can use itk-tubetk 1.4.0 from pypi
 
     > pip install itk-tubetk
 
-There may also be newer, experimental versions of TubeTK available via
+HOWEVER, for 100% functionality working, IF you are running Windows
+with Python 3.11, I have created a full set of wheels for ITK,
+ITKMinimumPathExtraction, and ITKTubeTK and uploaded them to the
+TEST pypi server.  You can install them into a new Python venv (one
+without ITK already installed), via
 
-    > pip install --pre itk-tubetk
-    
-For a list of present and past releases and pre-releases, see https://pypi.org/project/itk-tubetk/
+   > python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ itk itk-minimalpathextraction itk-tubetk
+
+This should then install the following packages/wheels, ON WINDOWS machines
+with Python 3.11 ONLY:
+
+```
+itk                       5.4.0.20240629
+itk-core                  5.4.0.20240629
+itk-filtering             5.4.0.20240629
+itk-io                    5.4.0.20240629
+itk-minimalpathextraction 2.0.0.20240629
+itk-numerics              5.4.0.20240629
+itk-registration          5.4.0.20240629
+itk-segmentation          5.4.0.20240629
+itk-tubetk                1.4.0.20240629
+```
+
+I will also upload Ubuntu 22.04 wheels to the PyPiTEST server. If you
+need other wheels, please email me at stephen@aylward.org. However, my
+time (like everyone's time) is quite booked so there will be a delay.
+I will also get ITK master updated asap to build with the latest TubeTK
+and MinimalPathExtraction...
+
+Thanks for your patience!
+
+Installing Additional Examples
+==============================
+
+For additional examples of how to use TubeTK, see
+
+*** pytubetk 
+
+This is a new project that will evolve to be the primary
+source of examples for python tubetk.  It is very much a work-in-progress.
+The scripts will be helpful, but they may require updates to work with
+current itk-tubetk wheels:
+    https://github.com/aylward/pytubetk/tree/main/examples
 
 Compiling TubeTK
 ================
 
-We stronly reocmmend that you use the Python version of TubeTK, as described above.  However, if you wish to compile TubeTK from scratch (e.g., because you wish to modify it or use its C++ interface), then use the version of TubeTK that is bundled with ITK.   ITKTubeTK is available as a official ITK Remote Module, starting with [ITKv5.1.2](https://github.com/InsightSoftwareConsortium/ITK/releases/tag/v5.1.2).   
+We stronly reocmmend that you use the Python version of TubeTK, as
+described above.  However, if you wish to compile TubeTK from scratch
+(e.g., because you wish to modify it or use its C++ interface), then
+use the version of TubeTK that is bundled with ITK. ITKTubeTK is
+available as a official ITK Remote Module, see instructions given
+earlier in this document.
 
 Details on compiling ITK (and optionally compiling its example applications and wrapping it for python) are described next.
 
@@ -72,24 +122,22 @@ We then recommend adding the following paths to your user environment:
 For Python
 ----------
 
-Again, our recommendation is to use the freely avaible and easy-to install Python wrapping of TubeTK that is available simply by issuing the following command:
-
-    pip install itk-tubetk
+Again, our recommendation is to use the freely avaible and easy-to install
+Python wrapping of TubeTK that is available as described earlier in this
+document.
     
-However, if you are compiling your own version of ITK/TubeTK, and you have set ITK_WRAP_PYTHON = On, then when you compile ITK, you will generate the Python interface for ITK and TubeTK.
+However, if you are compiling your own version of ITK/TubeTK, and you
+have set ITK_WRAP_PYTHON = On, then when you compile ITK, you will
+generate the Python interface for ITK and TubeTK. To use itk and 
+itk-tubetk within you python environment, copy the file
 
-To use TubeTK from Python, you will also need the following packages on your build machine:
-* numpy
-* scipy
-* jupyter
-* matplotlib
+    ITK-build/Wrapping/Generators/Python/WrapITK.pth 
 
-Tou will also need to add the modules of python-wrapped ITK to your python environment. This is accomplished by copying the files that specify the paths to their python modules into your python site-packages directory.  To find the site-packages directory on your system, follow the directions on this link:
-https://stackoverflow.com/questions/122327/how-do-i-find-the-location-of-my-python-site-packages-directory
+into your python's site-packages directory, e.g.,
 
-If that reveals that your site-packages directory is /Python/Python36/site-packages. then copy ITK's python paths file into that directory, e.g.,
+    venv/Lib/site-packages
 
-    $ cp ~/src/ITK-Release/Wrapping/Generators/Python/WrapITK.pth /Python/Python36/site-packages
+For more info, see https://stackoverflow.com/questions/122327/how-do-i-find-the-location-of-my-python-site-packages-directory
 
 Then you can test your configuration:
 
@@ -105,11 +153,8 @@ Roadmap
 =======
 
 Our roadmap includes:
-* Adding more Jupyter Notebook examples in ITKTubeTK/examples:
-    * Sliding organ registration
-    * Vessel-based registration
-    * Tomosynthesis simulation
-    * Additional vessel extraction demonstrations involving lungs, livers, and brains imaged via MRA, CT, and ultrasound.
+* Continue to add examples to the pytubetk repo
+* Use TubeTK segmentations to create MONAI models for vessel segmentation.
 
 Acknowledgements
 ----------------
