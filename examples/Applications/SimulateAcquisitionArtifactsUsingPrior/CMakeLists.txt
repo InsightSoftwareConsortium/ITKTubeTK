@@ -34,7 +34,7 @@ add_custom_target( SimulateAcquisitionArtifactsUsingPriorInclude SOURCES
 
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h
+  LOGO_HEADER ${CMAKE_CURRENT_LIST_DIR}/../../../docs/TubeTKLogo.h
   TARGET_LIBRARIES
     TubeTK ${ITK_LIBRARIES}
   )
