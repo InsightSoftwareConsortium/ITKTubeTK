@@ -43,11 +43,11 @@ set( TubeTK_CompareImages_EXE
   "tubeCompareImagesTestDriver" )
 
 set( SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY
-  "${ITK_BINARY_DIR}/bin" )
+  "${ITK_DIR}/bin" )
 set( SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY
-  "${ITK_BINARY_DIR}/lib" )
+  "${ITK_DIR}/lib" )
 set( SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY
-  "${ITK_BINARY_DIR}/lib" )
+  "${ITK_DIR}/lib" )
 
 add_subdirectory( AtlasBuilderUsingIntensity )
 add_subdirectory( ComputeBinaryImageSimilarityMetrics )
