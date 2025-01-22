@@ -22,6 +22,10 @@
 
 project( TubeTKApplications )
 
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+mark_as_advanced( GENERATECLP_EXE )
+
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 
@@ -35,10 +39,6 @@ set( TubeTK_CompareTextFiles_EXE
   "tubeCompareTextFilesTestDriver")
 set( TubeTK_CompareImages_EXE 
   "tubeCompareImagesTestDriver" )
-
-find_package( SlicerExecutionModel REQUIRED )
-include( ${SlicerExecutionModel_USE_FILE} )
-mark_as_advanced( GENERATECLP_EXE )
 
 set( SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY
   "${ITK_BINARY_DIR}/bin" )
