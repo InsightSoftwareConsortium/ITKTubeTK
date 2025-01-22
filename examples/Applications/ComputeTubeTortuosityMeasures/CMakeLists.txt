@@ -26,7 +26,7 @@ SEMMacroBuildCLI(
   NAME
     ${MODULE_NAME}
   LOGO_HEADER
-    ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h
+    ${CMAKE_CURRENT_LIST_DIR}/../../../docs/TubeTKLogo.h
   TARGET_LIBRARIES
     TubeTK ${ITK_LIBRARIES}
     ${VTK_LIBRARIES}
