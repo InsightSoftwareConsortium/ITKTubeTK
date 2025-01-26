@@ -50,7 +50,7 @@ public:
   typedef SmartPointer< Self >                         Pointer;
   typedef SmartPointer< const Self >                   ConstPointer;
 
-  itkTypeMacro( BlurImageFunction, ImageFunction );
+  itkOverrideGetNameOfClassMacro( BlurImageFunction);
 
   itkNewMacro( Self );
 

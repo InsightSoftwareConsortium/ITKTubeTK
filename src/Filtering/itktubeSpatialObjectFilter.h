@@ -49,7 +49,7 @@ public:
   typedef SmartPointer< const Self >                           ConstPointer;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SpatialObjectFilter, SpatialObjectSource );
+  itkOverrideGetNameOfClassMacro( SpatialObjectFilter);
 
   typedef SpatialObject<ObjectDimension>  SpatialObjectType;
 

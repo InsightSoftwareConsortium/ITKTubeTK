@@ -56,7 +56,7 @@ public:
   typedef SmartPointer< Self >                    Pointer;
   typedef SmartPointer< const Self >              ConstPointer;
 
-  itkTypeMacro( BlendCostFunction, SingleValuedCostFunction );
+  itkOverrideGetNameOfClassMacro( BlendCostFunction);
 
   itkNewMacro( Self );
 
@@ -261,7 +261,7 @@ public:
   typedef SmartPointer< Self >                    Pointer;
   typedef SmartPointer< const Self >              ConstPointer;
 
-  itkTypeMacro( BlendScaleCostFunction, SingleValuedCostFunction );
+  itkOverrideGetNameOfClassMacro( BlendScaleCostFunction);
 
   itkNewMacro( Self );
 

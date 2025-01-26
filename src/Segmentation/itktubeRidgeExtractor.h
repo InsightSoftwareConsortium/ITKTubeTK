@@ -63,7 +63,7 @@ public:
   typedef SmartPointer< Self >       Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
-  itkTypeMacro( RidgeExtractor, Object );
+  itkOverrideGetNameOfClassMacro( RidgeExtractor);
 
   itkNewMacro( RidgeExtractor );
 

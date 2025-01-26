@@ -57,7 +57,7 @@ public:
     this->SetDescription( "No valid image moments are availble." );
     }
 
-  itkTypeMacro( InvalidImageRegionMomentsError, ExceptionObject );
+  itkOverrideGetNameOfClassMacro( InvalidImageRegionMomentsError);
 
 }; // End class InvalidImageRegionMomentsError
 

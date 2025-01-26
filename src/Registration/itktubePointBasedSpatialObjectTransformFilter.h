@@ -95,7 +95,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( PointBasedSpatialObjectTransformFilter, SpatialObjectFilter );
+  itkOverrideGetNameOfClassMacro( PointBasedSpatialObjectTransformFilter);
 
   /** Set the Transformation */
   itkSetConstObjectMacro( Transform, TransformType );

@@ -56,7 +56,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( CropTubes, ProcessObject );
+  itkOverrideGetNameOfClassMacro( CropTubes);
 
  /* Set input tubes */
   tubeWrapSetMacro( Input, TubeGroupPointer, Filter );

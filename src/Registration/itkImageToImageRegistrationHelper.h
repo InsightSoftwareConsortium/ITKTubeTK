@@ -49,7 +49,7 @@ public:
   typedef SmartPointer<Self>             Pointer;
   typedef SmartPointer<const Self>       ConstPointer;
 
-  itkTypeMacro( ImageToImageRegistrationHelper, Object );
+  itkOverrideGetNameOfClassMacro( ImageToImageRegistrationHelper);
 
   itkNewMacro( Self );
 

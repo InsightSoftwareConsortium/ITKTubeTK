@@ -78,7 +78,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ImageRegionSplitter, Object );
+  itkOverrideGetNameOfClassMacro( ImageRegionSplitter);
 
   /** Dimension of the image available at compile time. */
   itkStaticConstMacro( ImageDimension, unsigned int, VImageDimension );

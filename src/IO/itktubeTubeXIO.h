@@ -49,7 +49,7 @@ public:
 
   typedef Size< TDimension >                      SizeType;
 
-  itkTypeMacro( TubeXIO, Object );
+  itkOverrideGetNameOfClassMacro( TubeXIO);
 
   itkNewMacro( TubeXIO );
 

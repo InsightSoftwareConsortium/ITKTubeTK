@@ -64,7 +64,7 @@ public:
   itkStaticConstMacro( NumberOfParameters, unsigned int, VNumberOfParameters );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SingleValuedCostFunctionImageSource, ImageSource );
+  itkOverrideGetNameOfClassMacro( SingleValuedCostFunctionImageSource);
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

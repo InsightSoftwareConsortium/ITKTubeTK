@@ -51,7 +51,7 @@ public:
   typedef Superclass::TransformNameListType  TransformNameListType;
 
   itkNewMacro( Self );
-  itkTypeMacro( ImageDocument, ObjectDocument );
+  itkOverrideGetNameOfClassMacro( ImageDocument);
 
 protected:
 

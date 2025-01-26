@@ -52,7 +52,7 @@ public:
   typedef Superclass::TransformNameListType  TransformNameListType;
 
   itkNewMacro( Self );
-  itkTypeMacro( BlobSpatialObjectDocument, SpatialObjectDocument );
+  itkOverrideGetNameOfClassMacro( BlobSpatialObjectDocument);
 
 protected:
 

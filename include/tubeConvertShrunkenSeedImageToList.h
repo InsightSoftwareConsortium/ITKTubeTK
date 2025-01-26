@@ -52,7 +52,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( ConvertShrunkenSeedImageToList, ProcessObject );
+  itkOverrideGetNameOfClassMacro( ConvertShrunkenSeedImageToList);
 
   typedef TImage                                           ImageType;
   typedef typename ImageType::PixelType                    PixelType;

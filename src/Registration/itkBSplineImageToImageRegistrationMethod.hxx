@@ -49,7 +49,7 @@ public:
   typedef Command                        Superclass;
   typedef SmartPointer<Self>             Pointer;
 
-  itkTypeMacro( BSplineImageRegistrationViewer, Command );
+  itkOverrideGetNameOfClassMacro( BSplineImageRegistrationViewer);
 
   itkNewMacro( BSplineImageRegistrationViewer );
 

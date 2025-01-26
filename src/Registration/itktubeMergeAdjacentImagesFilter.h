@@ -57,7 +57,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( MergeAdjacentImagesFilter, Object );
+  itkOverrideGetNameOfClassMacro( MergeAdjacentImagesFilter);
 
   itkStaticConstMacro( ImageDimension, unsigned int, TImage::ImageDimension );
 

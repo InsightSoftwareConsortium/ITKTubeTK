@@ -62,7 +62,7 @@ public:
 
   /**
    * Run-time type information ( and related methods ). */
-  itkTypeMacro( TubeExtractor, Object );
+  itkOverrideGetNameOfClassMacro( TubeExtractor);
 
   itkNewMacro( TubeExtractor );
 

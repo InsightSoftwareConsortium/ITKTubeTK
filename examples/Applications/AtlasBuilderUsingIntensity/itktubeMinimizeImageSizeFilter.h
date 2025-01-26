@@ -58,7 +58,7 @@ public:
   typedef SmartPointer< const Self >              ConstPointer;
 
   itkNewMacro( Self );
-  itkTypeMacro( MinimizeImageSizeFilter, ImageToImageFilter );
+  itkOverrideGetNameOfClassMacro( MinimizeImageSizeFilter);
 
   typedef TInputImage                             InputImageType;
   typedef typename InputImageType::PixelType      InputPixelType;

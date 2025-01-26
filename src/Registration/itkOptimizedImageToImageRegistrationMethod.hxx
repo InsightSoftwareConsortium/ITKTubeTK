@@ -63,7 +63,7 @@ public:
   typedef Command                 Superclass;
   typedef SmartPointer<Self>      Pointer;
 
-  itkTypeMacro( ImageRegistrationViewer, Command );
+  itkOverrideGetNameOfClassMacro( ImageRegistrationViewer);
 
   itkNewMacro( ImageRegistrationViewer );
 

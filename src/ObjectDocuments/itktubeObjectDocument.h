@@ -49,7 +49,7 @@ public:
   typedef std::vector< std::string >       TransformNameListType;
 
   itkNewMacro( Self );
-  itkTypeMacro( ObjectDocument, Document );
+  itkOverrideGetNameOfClassMacro( ObjectDocument);
 
   /** Return the object type. */
   itkGetStringMacro( ObjectType );

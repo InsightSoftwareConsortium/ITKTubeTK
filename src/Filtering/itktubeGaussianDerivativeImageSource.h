@@ -93,7 +93,7 @@ public:
   typedef typename Superclass::ParametersType      ParametersType;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( GaussianDerivativeImageSource, ParametricImageSource );
+  itkOverrideGetNameOfClassMacro( GaussianDerivativeImageSource);
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

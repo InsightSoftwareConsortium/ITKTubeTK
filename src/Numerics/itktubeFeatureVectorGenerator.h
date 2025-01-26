@@ -47,7 +47,7 @@ public:
   typedef SmartPointer< Self >                 Pointer;
   typedef SmartPointer< const Self >           ConstPointer;
 
-  itkTypeMacro( FeatureVectorGenerator, LightProcessObject );
+  itkOverrideGetNameOfClassMacro( FeatureVectorGenerator);
 
   itkNewMacro( Self );
 

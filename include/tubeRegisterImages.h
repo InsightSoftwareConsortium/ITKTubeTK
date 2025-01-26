@@ -68,7 +68,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( RegisterImages, ProcessObject );
+  itkOverrideGetNameOfClassMacro( RegisterImages);
 
   /* Set input image */
   tubeWrapCallWithConstReferenceArgMacro( LoadFixedImage, std::string, Filter );

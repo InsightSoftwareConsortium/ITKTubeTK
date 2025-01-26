@@ -49,7 +49,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ContrastCostFunction, SingleValuedCostFunction );
+  itkOverrideGetNameOfClassMacro( ContrastCostFunction);
 
   typedef Superclass::MeasureType          MeasureType;
   typedef Superclass::ParametersType       ParametersType;

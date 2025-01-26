@@ -88,7 +88,7 @@ public:
     InputImageType, EigenValueImageType >           EigenAnalysisFilterType;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro( SheetnessMeasureImageFilter, ImageToImageFilter );
+  itkOverrideGetNameOfClassMacro( SheetnessMeasureImageFilter);
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

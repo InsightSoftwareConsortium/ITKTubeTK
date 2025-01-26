@@ -52,7 +52,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ConvertImagesToCSV, ProcessObject );
+  itkOverrideGetNameOfClassMacro( ConvertImagesToCSV);
 
   typedef TInputMask                                      InputMaskType;
   typedef typename InputMaskType::PixelType               MaskPixelType;

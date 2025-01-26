@@ -63,7 +63,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ConvertTubesToImage, ProcessObject );
+  itkOverrideGetNameOfClassMacro( ConvertTubesToImage);
 
   /** Set if the tube should be full inside */
   tubeWrapSetMacro( UseRadius, bool, Filter );

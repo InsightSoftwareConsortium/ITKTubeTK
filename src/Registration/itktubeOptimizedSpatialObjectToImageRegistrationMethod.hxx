@@ -55,7 +55,7 @@ public:
   typedef Command                 Superclass;
   typedef SmartPointer<Self>      Pointer;
 
-  itkTypeMacro( SpatialObjectToImageRegistrationViewer, Command );
+  itkOverrideGetNameOfClassMacro( SpatialObjectToImageRegistrationViewer);
 
   itkNewMacro( SpatialObjectToImageRegistrationViewer );
 
