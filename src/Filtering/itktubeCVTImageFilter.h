@@ -65,7 +65,7 @@ public:
   typedef typename InputImageType::PixelType            InputPixelType;
 
   typedef typename InputImageType::IndexType            IndexType;
-  typedef ContinuousIndex<double, itkGetStaticConstMacro( ImageDimension )>
+  typedef ContinuousIndex<double, Self:: ImageDimension >
                                                         ContinuousIndexType;
 
   typedef TOutputImage                                  OutputImageType;

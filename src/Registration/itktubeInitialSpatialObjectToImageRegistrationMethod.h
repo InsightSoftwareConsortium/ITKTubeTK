@@ -61,7 +61,7 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
 
-  typedef AffineTransform<double, itkGetStaticConstMacro( ImageDimension )>
+  typedef AffineTransform<double, Self:: ImageDimension >
   TransformType;
 
   typedef typename TransformType::Pointer TransformPointer;
@@ -69,7 +69,7 @@ public:
   //
   // Local Typedefs
   //
-  typedef Point<double, itkGetStaticConstMacro( ImageDimension )>
+  typedef Point<double, Self:: ImageDimension >
   LandmarkPointType;
   typedef std::vector<LandmarkPointType> LandmarkPointContainer;
 

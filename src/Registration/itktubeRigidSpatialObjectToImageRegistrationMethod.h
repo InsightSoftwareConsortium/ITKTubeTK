@@ -64,8 +64,8 @@ public:
   // We must use MatrixOffsetTransformBase since no itk rigid transform is
   //   templated over ImageDimension.
   typedef MatrixOffsetTransformBase<double,
-                                    itkGetStaticConstMacro( ImageDimension ),
-                                    itkGetStaticConstMacro( ImageDimension )>
+                                    Self:: ImageDimension ,
+                                    Self:: ImageDimension >
   RigidTransformType;
   typedef RigidTransformType TransformType;
 
@@ -76,7 +76,7 @@ public:
   typedef VersorRigid3DTransform<double> Rigid3DTransformType;
 
   typedef AffineTransform<double,
-                          itkGetStaticConstMacro( ImageDimension )>
+                          Self:: ImageDimension >
   AffineTransformType;
 
   typedef typename AffineTransformType::Pointer AffineTransformPointer;

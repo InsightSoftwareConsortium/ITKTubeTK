@@ -70,23 +70,23 @@ public:
                        DensityImageType::ImageDimension );
 
   typedef GroupSpatialObject<
-    itkGetStaticConstMacro( ImageDimension ) >  TubeGroupType;
+    Self:: ImageDimension  >  TubeGroupType;
   typedef typename TubeGroupType::Pointer       TubeGroupPointer;
 
   typedef TubeSpatialObject<
-    itkGetStaticConstMacro( ImageDimension ) >  TubeType;
+    Self:: ImageDimension  >  TubeType;
 
   typedef typename DensityImageType::OffsetType VectorPixelType;
   typedef Image<
     VectorPixelType,
-    itkGetStaticConstMacro( ImageDimension ) >  VectorImageType;
+    Self:: ImageDimension  >  VectorImageType;
   typedef typename VectorImageType::Pointer     VectorImagePointer;
 
   typedef typename DensityImageType::SizeType     SizeType;
   typedef typename DensityImageType::SpacingType  SpacingType;
 
   typedef TubeSpatialObjectToImageFilter<
-    itkGetStaticConstMacro( ImageDimension ),
+    Self:: ImageDimension ,
     DensityImageType > TubetoImageFilterType;
 
   typedef DanielssonDistanceMapImageFilter<

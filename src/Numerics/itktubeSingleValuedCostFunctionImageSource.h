@@ -61,7 +61,7 @@ public:
   typedef typename Superclass::OutputImageRegionType OutputImageRegionType;
 
   /** Dimensionality of the output image. */
-  itkStaticConstMacro( NumberOfParameters, unsigned int, VNumberOfParameters );
+  static constexpr unsigned int NumberOfParameters = VNumberOfParameters ;
 
   /** Run-time type information ( and related methods ). */
   itkOverrideGetNameOfClassMacro( SingleValuedCostFunctionImageSource);

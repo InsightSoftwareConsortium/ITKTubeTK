@@ -70,7 +70,7 @@ public:
   typedef TOutputMeanImageType                          OutputMeanImageType;
   typedef TOutputSigmaImageType                         OutputSigmaImageType;
   typedef Image<
-    float, itkGetStaticConstMacro( ImageDimension )>           CountImageType;
+    float, Self:: ImageDimension >           CountImageType;
 
   typedef typename InputImageType::PixelType            InputPixelType;
   typedef typename OutputMeanImageType::PixelType       OutputMeanPixelType;
@@ -87,7 +87,7 @@ public:
   typedef typename InputImageType::SpacingType          SpacingType;
   typedef typename InputImageType::PointType            PointType;
 
-  typedef Image< float, itkGetStaticConstMacro( ImageDimension ) >
+  typedef Image< float, Self:: ImageDimension  >
     ProcessImageType;
 
   /**

@@ -75,7 +75,7 @@ public:
       RealType is usually 'double' in NumericTraits.
       Here we prefer float in order to save memory. */
   typedef float                                           InternalRealType;
-  typedef Image< InternalRealType, itkGetStaticConstMacro( ImageDimension ) >
+  typedef Image< InternalRealType, Self:: ImageDimension  >
       RealImageType;
 
   /**  Output Image Nth Element Adaptor

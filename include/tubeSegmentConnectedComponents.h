@@ -61,7 +61,7 @@ public:
   /** Run-time type information ( and related methods ). */
   itkOverrideGetNameOfClassMacro( SegmentConnectedComponents);
 
-  itkStaticConstMacro( ImageDimension, unsigned int, ImageType::ImageDimension );
+  static constexpr unsigned int ImageDimension = ImageType::ImageDimension ;
 
   tubeWrapSetObjectMacro( Input, ImageType, Filter );
   tubeWrapGetConstObjectMacro( Input, ImageType, Filter );

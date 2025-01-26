@@ -67,7 +67,7 @@ public:
                        TImage::ImageDimension );
 
   typedef Transform<double, ObjectDimension,
-          itkGetStaticConstMacro( ImageDimension )>  TransformType;
+          Self:: ImageDimension >  TransformType;
 
   typedef DataObjectDecorator<TransformType>         TransformOutputType;
 
@@ -80,7 +80,7 @@ public:
   typedef typename SpatialObjectType::PointType      SpatialObjectPointType;
   typedef typename ImageType::PointType              PointType;
 
-  typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
+  typedef SpatialObject<Self:: ImageDimension >
                                                      ImageMaskObjectType;
 
   typedef SpatialObject< ObjectDimension >
