@@ -58,7 +58,7 @@ public:
 
   itkNewMacro(Self);
 
-  itkTypeMacro(ProfileCurve, SingleValuedCostFunction);
+  itkOverrideGetNameOfClassMacro(ProfileCurve);
 
   typedef SingleValuedCostFunction::ParametersType ParametersType;
   typedef SingleValuedCostFunction::DerivativeType DerivativeType;

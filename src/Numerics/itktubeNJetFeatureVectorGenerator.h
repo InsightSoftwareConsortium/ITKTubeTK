@@ -51,7 +51,7 @@ public:
   typedef SmartPointer< Self >                 Pointer;
   typedef SmartPointer< const Self >           ConstPointer;
 
-  itkTypeMacro( NJetFeatureVectorGenerator, FeatureVectorGenerator );
+  itkOverrideGetNameOfClassMacro( NJetFeatureVectorGenerator);
 
   itkNewMacro( Self );
 

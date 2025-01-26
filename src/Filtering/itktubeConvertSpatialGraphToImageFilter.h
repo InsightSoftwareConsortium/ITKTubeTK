@@ -50,7 +50,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  itkTypeMacro( ConvertSpatialGraphToImageFilter, ImageToImageFilter );
+  itkOverrideGetNameOfClassMacro( ConvertSpatialGraphToImageFilter);
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TInputImage::ImageDimension );

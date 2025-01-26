@@ -46,7 +46,7 @@ public:
   typedef SmartPointer< Self >                 Pointer;
   typedef SmartPointer< const Self >           ConstPointer;
 
-  itkTypeMacro( PDFSegmenterBase, ProcessObject );
+  itkOverrideGetNameOfClassMacro( PDFSegmenterBase);
 
   itkNewMacro( Self );
 

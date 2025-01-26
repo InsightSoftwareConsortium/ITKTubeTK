@@ -50,7 +50,7 @@ public:
   typedef SmartPointer< Self >                    Pointer;
 
   itkNewMacro( Self );
-  itkTypeMacro( TubeSpatialObjectToDensityImageFilter, Object );
+  itkOverrideGetNameOfClassMacro( TubeSpatialObjectToDensityImageFilter);
 
   /** Typdefs */
   typedef TDensityImageType                              DensityImageType;

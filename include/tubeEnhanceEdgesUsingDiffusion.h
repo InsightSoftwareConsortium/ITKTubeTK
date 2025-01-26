@@ -59,7 +59,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( EnhanceEdgesUsingDiffusion, ProcessObject );
+  itkOverrideGetNameOfClassMacro( EnhanceEdgesUsingDiffusion);
 
   /** Set/Get input image */
   tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );

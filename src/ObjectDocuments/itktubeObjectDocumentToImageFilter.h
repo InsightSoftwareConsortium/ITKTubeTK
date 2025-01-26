@@ -72,7 +72,7 @@ public:
     InterpolateImageFunctionPointer;
 
   itkNewMacro( Self );
-  itkTypeMacro( ObjectDocumentToImageFilter, ObjectDocumentToObjectSource );
+  itkOverrideGetNameOfClassMacro( ObjectDocumentToImageFilter);
 
   /** Return the interpolator. */
   itkGetModifiableObjectMacro( Interpolator, InterpolateImageFunctionType );

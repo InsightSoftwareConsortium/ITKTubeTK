@@ -79,7 +79,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(LimitedMinimumMaximumImageFilter, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(LimitedMinimumMaximumImageFilter);
 
   /** Image type alias support */
   using InputImageType = TInputImage;
