@@ -46,10 +46,10 @@ int itktubeVotingResampleImageFunctionTest( int argc, char * argv[] )
 
   typedef ImageType::IndexType                ImageIndexType;
   typedef ImageType::SizeType                 ImageSizeType;
-  typedef double                              CoordRepType;
-  typedef itk::AffineTransform<CoordRepType,Dimension>
+  typedef double                              CoordinateType;
+  typedef itk::AffineTransform<CoordinateType,Dimension>
                                               AffineTransformType;
-  typedef itk::tube::VotingResampleImageFunction<ImageType,CoordRepType>
+  typedef itk::tube::VotingResampleImageFunction<ImageType,CoordinateType>
                                               InterpolatorType;
 
   typedef itk::ImageFileReader< ImageType >   ImageReaderType;
