@@ -52,7 +52,7 @@ public:
   // Typedefs from Superclass
   //
   typedef TImage ImageType;
-  itkStaticConstMacro( ImageDimension, unsigned int, TImage::ImageDimension );
+  static constexpr unsigned int ImageDimension = TImage::ImageDimension ;
 
   // Overrides the superclass' TransformType typedef
   typedef BSplineTransform<double, Self:: ImageDimension , 3>

@@ -67,9 +67,9 @@ public:
   itkOverrideGetNameOfClassMacro(ScaleSkewAngle2DTransform);
 
   /** Dimension of parameters. */
-  itkStaticConstMacro(InputSpaceDimension, unsigned int, 2);
-  itkStaticConstMacro(OutputSpaceDimension, unsigned int, 2);
-  itkStaticConstMacro(ParametersDimension, unsigned int, 7);
+  static constexpr unsigned int InputSpaceDimension = 2;
+  static constexpr unsigned int OutputSpaceDimension = 2;
+  static constexpr unsigned int ParametersDimension = 7;
 
   /** Parameters Type   */
   typedef typename Superclass::ParametersType            ParametersType;

@@ -81,7 +81,7 @@ public:
   itkOverrideGetNameOfClassMacro( ImageRegionSplitter);
 
   /** Dimension of the image available at compile time. */
-  itkStaticConstMacro( ImageDimension, unsigned int, VImageDimension );
+  static constexpr unsigned int ImageDimension = VImageDimension ;
 
   /** Dimension of the image available at run time. */
   static unsigned int GetImageDimension()
