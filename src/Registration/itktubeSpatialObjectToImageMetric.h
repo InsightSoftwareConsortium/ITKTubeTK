@@ -89,7 +89,7 @@ public:
   /** Image dimension enumeration. */
   static constexpr unsigned int ImageDimension = FixedImageType::ImageDimension;
 
-  typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
+  typedef SpatialObject<Self:: ImageDimension >
   ImageMaskObjectType;
 
   typedef SpatialObject< ObjectDimension > SpatialObjectMaskObjectType;

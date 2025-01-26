@@ -81,9 +81,9 @@ public:
     InputPixelType::Dimension );
 
   typedef FixedArray< double,
-    itkGetStaticConstMacro( InputPixelDimension ) > EigenValueArrayType;
+    Self:: InputPixelDimension  > EigenValueArrayType;
   typedef Image< EigenValueArrayType,
-    itkGetStaticConstMacro( ImageDimension ) >      EigenValueImageType;
+    Self:: ImageDimension  >      EigenValueImageType;
   typedef SymmetricEigenAnalysisImageFilter<
     InputImageType, EigenValueImageType >           EigenAnalysisFilterType;
 
