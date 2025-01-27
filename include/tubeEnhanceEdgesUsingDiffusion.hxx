@@ -27,27 +27,23 @@ limitations under the License.
 namespace tube
 {
 
-template< class TInputImage, class TOutputImage >
-EnhanceEdgesUsingDiffusion< TInputImage, TOutputImage >
-::EnhanceEdgesUsingDiffusion( void )
+template <class TInputImage, class TOutputImage>
+EnhanceEdgesUsingDiffusion<TInputImage, TOutputImage>::EnhanceEdgesUsingDiffusion(void)
 {
   m_Filter = FilterType::New();
 }
 
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 void
-EnhanceEdgesUsingDiffusion< TInputImage, TOutputImage >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+EnhanceEdgesUsingDiffusion<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
-  os << indent << "Contrast parameter LambdaE: "
-    << m_Filter->GetContrastParameterLambdaE() << std::endl;
+  Superclass::PrintSelf(os, indent);
+  os << indent << "Contrast parameter LambdaE: " << m_Filter->GetContrastParameterLambdaE() << std::endl;
   os << indent << "Sigma : " << m_Filter->GetSigma() << std::endl;
   os << indent << "SigmaOuter : " << m_Filter->GetSigmaOuter() << std::endl;
-  os << indent << "Threshold parameter C "
-    << m_Filter->GetThresholdParameterC() << std::endl;
+  os << indent << "Threshold parameter C " << m_Filter->GetThresholdParameterC() << std::endl;
 }
 
-}
+} // namespace tube
 
 #endif

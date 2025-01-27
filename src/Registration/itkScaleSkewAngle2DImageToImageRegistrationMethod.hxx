@@ -28,25 +28,21 @@ namespace itk
 {
 
 template <class TImage>
-ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
-::ScaleSkewAngle2DImageToImageRegistrationMethod( void )
+ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::ScaleSkewAngle2DImageToImageRegistrationMethod(void)
 {
-  this->SetTransform( ScaleSkewAngle2DTransformType::New() );
-  this->GetTypedTransform()->SetUseSingleScale( true );
+  this->SetTransform(ScaleSkewAngle2DTransformType::New());
+  this->GetTypedTransform()->SetUseSingleScale(true);
   this->GetTypedTransform()->SetIdentity();
 
-  this->SetInitialTransformParameters( this->GetTypedTransform()
-                                       ->GetParameters() );
-  this->SetInitialTransformFixedParameters( this->GetTypedTransform()
-                                            ->GetFixedParameters() );
+  this->SetInitialTransformParameters(this->GetTypedTransform()->GetParameters());
+  this->SetInitialTransformFixedParameters(this->GetTypedTransform()->GetFixedParameters());
 
   typename Superclass::TransformParametersScalesType scales;
-  scales.set_size( this->GetTypedTransform()->GetNumberOfParameters() );
-  if( scales.size() != 6 )
-    {
-    std::cerr << "ERROR: number of parameters not standard for transform"
-              << std::endl;
-    }
+  scales.set_size(this->GetTypedTransform()->GetNumberOfParameters());
+  if (scales.size() != 6)
+  {
+    std::cerr << "ERROR: number of parameters not standard for transform" << std::endl;
+  }
   unsigned int scaleNum = 0;
   // Angle
   scales[scaleNum++] = 1000;
@@ -58,83 +54,74 @@ ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
   scales[scaleNum++] = 100;
   // Skew
   scales[scaleNum++] = 1000;
-  this->SetTransformParametersScales( scales );
+  this->SetTransformParametersScales(scales);
 
-  this->SetTransformMethodEnum( Superclass::AFFINE_TRANSFORM );
+  this->SetTransformMethodEnum(Superclass::AFFINE_TRANSFORM);
 
-  this->SetMaxIterations( 150 );
-  this->SetNumberOfSamples( 150000 );
+  this->SetMaxIterations(150);
+  this->SetNumberOfSamples(150000);
 }
 
 template <class TImage>
-ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
-::~ScaleSkewAngle2DImageToImageRegistrationMethod( void )
-{
-}
+ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::~ScaleSkewAngle2DImageToImageRegistrationMethod(void)
+{}
 
 template <class TImage>
 void
-ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
-::GenerateData( void )
+ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::GenerateData(void)
 {
   // Set the center of rotation
-  this->GetTransform()->SetFixedParameters(
-    this->GetInitialTransformFixedParameters() );
+  this->GetTransform()->SetFixedParameters(this->GetInitialTransformFixedParameters());
 
   Superclass::GenerateData();
 }
 
 template <class TImage>
-typename ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::TransformType
-* ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
-::GetTypedTransform( void )
+typename ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::TransformType *
+ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::GetTypedTransform(void)
 {
-  return static_cast<TransformType  *>( Superclass::GetTransform() );
+  return static_cast<TransformType *>(Superclass::GetTransform());
 }
 
 template <class TImage>
-const typename ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::TransformType
-* ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
-::GetTypedTransform( void ) const
+const typename ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::TransformType *
+ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::GetTypedTransform(void) const
 {
-  return static_cast<const TransformType  *>( Superclass::GetTransform() );
+  return static_cast<const TransformType *>(Superclass::GetTransform());
 }
 
 template <class TImage>
 typename ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::AffineTransformPointer
-ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
-::GetAffineTransform( void ) const
+ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::GetAffineTransform(void) const
 {
   AffineTransformPointer trans = AffineTransformType::New();
 
   const TransformType * typedTransform = this->GetTypedTransform();
 
   trans->SetIdentity();
-  trans->SetCenter( typedTransform->GetCenter() );
-  trans->SetMatrix( typedTransform->GetMatrix() );
-  trans->SetOffset( typedTransform->GetOffset() );
+  trans->SetCenter(typedTransform->GetCenter());
+  trans->SetMatrix(typedTransform->GetMatrix());
+  trans->SetOffset(typedTransform->GetOffset());
 
   return trans;
 }
 
 template <class TImage>
 void
-ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
-::SetInitialTransformParametersFromAffineTransform(
-  const AffineTransformType * tfm )
+ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::SetInitialTransformParametersFromAffineTransform(
+  const AffineTransformType * tfm)
 {
-  this->SetInitialTransformFixedParameters( tfm->GetFixedParameters() );
-  this->SetInitialTransformParameters( tfm->GetParameters() );
+  this->SetInitialTransformFixedParameters(tfm->GetFixedParameters());
+  this->SetInitialTransformParameters(tfm->GetParameters());
 }
 
 template <class TImage>
 void
-ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
-::PrintSelf( std::ostream & os, Indent indent ) const
+ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 }
 
-}
+} // namespace itk
 
 #endif

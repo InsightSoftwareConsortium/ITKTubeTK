@@ -31,89 +31,90 @@ namespace tube
 
 //-----------------------------------------------------------------------------
 ShortestPathKernel::GraphType
-ShortestPathKernel::FloydTransform( const GraphType &in )
+ShortestPathKernel::FloydTransform(const GraphType & in)
 {
-  int nVertices = num_vertices( in );
+  int nVertices = num_vertices(in);
 
-  DistanceMatrixType distances( nVertices );
-  DistanceMatrixMapType dm( distances, in );
+  DistanceMatrixType    distances(nVertices);
+  DistanceMatrixMapType dm(distances, in);
 
-  floyd_warshall_all_pairs_shortest_paths( in, dm );
+  floyd_warshall_all_pairs_shortest_paths(in, dm);
 
-  GraphType out( nVertices );
-  assert( nVertices == static_cast< int >( num_vertices( out ) ) );
+  GraphType out(nVertices);
+  assert(nVertices == static_cast<int>(num_vertices(out)));
 
-  ConstVertexAllMapType mapIn = boost::get( boost::vertex_all, in );
-  VertexAllMapType mapOut     = boost::get( boost::vertex_all, out );
+  ConstVertexAllMapType mapIn = boost::get(boost::vertex_all, in);
+  VertexAllMapType      mapOut = boost::get(boost::vertex_all, out);
 
-  for( int i=0; i<nVertices; ++i )
-    {
+  for (int i = 0; i < nVertices; ++i)
+  {
     // Vertex type of i-th node in input graph
-    VertexType v0 = vertex( i, in );
+    VertexType v0 = vertex(i, in);
 
     // Vertex type of i-th node in output graph
-    VertexType v1 = vertex( i, out );
+    VertexType v1 = vertex(i, out);
 
-    put( mapOut, v1, get( mapIn, v0 ) );
-    }
+    put(mapOut, v1, get(mapIn, v0));
+  }
 
-  for( int i=0; i<nVertices; ++i )
+  for (int i = 0; i < nVertices; ++i)
+  {
+    for (int j = 0; j <= i; ++j)
     {
-    for( int j=0; j<=i; ++j )
-      {
       // As long as we do not INF distance between ( i,j ), and ...
-      if( dm[i][j] != std::numeric_limits<double>::max() )
-        {
+      if (dm[i][j] != std::numeric_limits<double>::max())
+      {
         // the edge exists ...
-        if( !edge( i, j, out ).second )
-          {
-          // add an edge with the shortest path length
-          add_edge( i, j, dm[i][j], out );
-          }
-        }
-      else
+        if (!edge(i, j, out).second)
         {
-        //tube::FmtWarningMessage( "Numeric limit found at ( %d,%d )!",
-        //  i,j );
+          // add an edge with the shortest path length
+          add_edge(i, j, dm[i][j], out);
         }
       }
+      else
+      {
+        // tube::FmtWarningMessage( "Numeric limit found at ( %d,%d )!",
+        //   i,j );
+      }
     }
+  }
 
   return out;
 }
 
 
 //-----------------------------------------------------------------------------
-double ShortestPathKernel::Compute( void )
+double
+ShortestPathKernel::Compute(void)
 {
-  double kernelValue = 0.0;
-  long int cntEdgeEvaluations = 0;
+  double           kernelValue = 0.0;
+  long int         cntEdgeEvaluations = 0;
   EdgeIteratorType aIt, aEnd;
 
-  tube::FmtDebugMessage( "Computing Floyd transform." );
-  m_FG0 = FloydTransform( m_G0 );
-  m_FG1 = FloydTransform( m_G1 );
+  tube::FmtDebugMessage("Computing Floyd transform.");
+  m_FG0 = FloydTransform(m_G0);
+  m_FG1 = FloydTransform(m_G1);
 
 
   // Get the weight maps for both Floyd-transformed graphs
-  EdgeWeightMapType wmFG0 = boost::get( boost::edge_weight, m_FG0 );
-  EdgeWeightMapType wmFG1 = boost::get( boost::edge_weight, m_FG1 );
+  EdgeWeightMapType wmFG0 = boost::get(boost::edge_weight, m_FG0);
+  EdgeWeightMapType wmFG1 = boost::get(boost::edge_weight, m_FG1);
 
   // Iterate over all the edges of Floyd-transformed graph fg0
-  for( tie( aIt, aEnd ) = edges( m_FG0 ); aIt != aEnd; ++aIt )
-    {
-    const EdgeDescriptorType &e0 = *aIt;
+  for (tie(aIt, aEnd) = edges(m_FG0); aIt != aEnd; ++aIt)
+  {
+    const EdgeDescriptorType & e0 = *aIt;
 
-    int srcLabel = m_FG0[source( e0, m_FG0 )].type; // Type of start vertex
-    int dstLabel = m_FG0[target( e0, m_FG0 )].type; // Type of end vertex
-    ensureOrder( srcLabel, dstLabel );
+    int srcLabel = m_FG0[source(e0, m_FG0)].type; // Type of start vertex
+    int dstLabel = m_FG0[target(e0, m_FG0)].type; // Type of end vertex
+    ensureOrder(srcLabel, dstLabel);
 
     // Iterate over all the edges of Floyd-transformed graph fg1
     EdgeIteratorType bIt, bEnd;
-    for( tie( bIt, bEnd ) = edges( m_FG1 ); bIt != bEnd; ++bIt )
-      {
+    for (tie(bIt, bEnd) = edges(m_FG1); bIt != bEnd; ++bIt)
+    {
       cntEdgeEvaluations++;
-      const EdgeDescriptorType &e1 = *bIt;
+      const EdgeDescriptorType & e1 = *bIt;
 
       // We only consider walks of equal length --- At this point we
       // only support weights of 1, since this gives integer lengths
@@ -126,39 +127,35 @@ double ShortestPathKernel::Compute( void )
       double weightE1 = wmFG1[*bIt];
 
       // Skip edges, unless the weights are equal
-      if( !( std::fabs( weightE0 - weightE1 ) <
-          std::numeric_limits<double>::epsilon() ) )
-        {
+      if (!(std::fabs(weightE0 - weightE1) < std::numeric_limits<double>::epsilon()))
+      {
         continue;
-        }
+      }
 
       double edgeKernelValue = 0.0;
-      switch( m_EdgeKernelType )
-        {
+      switch (m_EdgeKernelType)
+      {
         case EDGE_KERNEL_DEL:
-          int cmpSrcLabel = m_FG1[source( e1, m_FG1 )].type;
-          int cmpDstLabel = m_FG1[target( e1, m_FG1 )].type;
-          ensureOrder( cmpSrcLabel, cmpDstLabel );
+          int cmpSrcLabel = m_FG1[source(e1, m_FG1)].type;
+          int cmpDstLabel = m_FG1[target(e1, m_FG1)].type;
+          ensureOrder(cmpSrcLabel, cmpDstLabel);
 
-          bool vertexTypeCheck =
-            ( srcLabel == cmpSrcLabel ) &&
-            ( dstLabel == cmpDstLabel );
-          if( !vertexTypeCheck )
-            {
+          bool vertexTypeCheck = (srcLabel == cmpSrcLabel) && (dstLabel == cmpDstLabel);
+          if (!vertexTypeCheck)
+          {
             continue;
-            }
+          }
           else
-            {
+          {
             edgeKernelValue = 1.0;
-            }
+          }
           break;
-        }
-      kernelValue += edgeKernelValue;
       }
+      kernelValue += edgeKernelValue;
     }
+  }
 
-  tube::FmtInfoMessage( "Performed %ld edge evaluations",
-    cntEdgeEvaluations );
+  tube::FmtInfoMessage("Performed %ld edge evaluations", cntEdgeEvaluations);
   return kernelValue;
 }
 

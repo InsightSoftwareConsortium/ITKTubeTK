@@ -25,7 +25,8 @@ limitations under the License.
 #include "itktubeTubeExtractorIO.h"
 #include "itktubeTubeXIO.h"
 
-int tubeIOHeaderTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
+int
+tubeIOHeaderTest(int tubeNotUsed(argc), char * tubeNotUsed(argv)[])
 {
   return EXIT_SUCCESS;
 }

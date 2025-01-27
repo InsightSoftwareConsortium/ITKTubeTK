@@ -25,15 +25,16 @@ limitations under the License.
 
 #include "itktubeMetaTubeExtractor.h"
 
-int itktubeMetaTubeExtractorTest( int argc, char * argv[] )
+int
+itktubeMetaTubeExtractorTest(int argc, char * argv[])
 {
-  if( argc != 2 )
-    {
+  if (argc != 2)
+  {
     std::cout << "Usage: testname <tempfilename>" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
-  vnl_vector< double > scales( 3 );
+  vnl_vector<double> scales(3);
   scales[0] = 1;
   scales[1] = 2;
   scales[2] = 3;
@@ -52,7 +53,7 @@ int itktubeMetaTubeExtractorTest( int argc, char * argv[] )
     }
     */
 
-  itk::tube::MetaTubeExtractor mtp2( mtp1 );
+  itk::tube::MetaTubeExtractor mtp2(mtp1);
   /*
   if( mtp2.GetSeedScales() != scales
     || mtp2.GetSeedIntensityMin() != 1024
@@ -66,9 +67,9 @@ int itktubeMetaTubeExtractorTest( int argc, char * argv[] )
     }
     */
 
-  mtp1.Write( argv[1] );
+  mtp1.Write(argv[1]);
 
-  itk::tube::MetaTubeExtractor mtp3( argv[1] );
+  itk::tube::MetaTubeExtractor mtp3(argv[1]);
   /*
   if( mtp3.GetSeedScales() != scales
     || mtp3.GetSeedIntensityMin() != 1024
@@ -91,7 +92,7 @@ int itktubeMetaTubeExtractorTest( int argc, char * argv[] )
     }
     */
 
-  mtp1.Read( argv[1] );
+  mtp1.Read(argv[1]);
   /*
   if( mtp1.GetSeedScales() != scales
     || mtp1.GetSeedIntensityMin() != 1024

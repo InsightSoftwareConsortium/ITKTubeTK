@@ -41,75 +41,65 @@ namespace tube
 /**
  * Define the number of neighbors
  */
-template< class TInputImage, class TCoordRep >
-const unsigned long
-VotingResampleImageFunction< TInputImage, TCoordRep >
-::m_Neighbors = 1 << TInputImage::ImageDimension;
+template <class TInputImage, class TCoordRep>
+const unsigned long VotingResampleImageFunction<TInputImage, TCoordRep>::m_Neighbors = 1 << TInputImage::ImageDimension;
 
 
 /**
  * Constructor
  */
-template< class TInputImage, class TCoordRep >
-VotingResampleImageFunction< TInputImage, TCoordRep >
-::VotingResampleImageFunction( void )
+template <class TInputImage, class TCoordRep>
+VotingResampleImageFunction<TInputImage, TCoordRep>::VotingResampleImageFunction(void)
 {
-  m_Radius.Fill( 1 );
+  m_Radius.Fill(1);
 }
 
 
 /**
  * PrintSelf
  */
-template< class TInputImage, class TCoordRep >
+template <class TInputImage, class TCoordRep>
 void
-VotingResampleImageFunction< TInputImage, TCoordRep >
-::PrintSelf( std::ostream& os, Indent indent ) const
+VotingResampleImageFunction<TInputImage, TCoordRep>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  this->Superclass::PrintSelf( os, indent );
+  this->Superclass::PrintSelf(os, indent);
 }
 
 
 /**
  * Evaluate at image index position
  */
-template< class TInputImage, class TCoordRep >
-typename VotingResampleImageFunction< TInputImage, TCoordRep >
-::OutputType
-VotingResampleImageFunction< TInputImage, TCoordRep >
-::EvaluateAtContinuousIndex(
-  const ContinuousIndexType& index ) const
+template <class TInputImage, class TCoordRep>
+typename VotingResampleImageFunction<TInputImage, TCoordRep>::OutputType
+VotingResampleImageFunction<TInputImage, TCoordRep>::EvaluateAtContinuousIndex(const ContinuousIndexType & index) const
 {
-  typedef itk::ConstNeighborhoodIterator< TInputImage >
-    NeighborhoodIteratorType;
+  typedef itk::ConstNeighborhoodIterator<TInputImage> NeighborhoodIteratorType;
 
-  NeighborhoodIteratorType it( m_Radius, this->GetInputImage(),
-    this->GetInputImage()->GetRequestedRegion() );
+  NeighborhoodIteratorType it(m_Radius, this->GetInputImage(), this->GetInputImage()->GetRequestedRegion());
 
   IndexType newIndex;
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    newIndex[i] = ( int )(index[i]+0.5);  // Round to nearest int
-    }
+  for (unsigned int i = 0; i < ImageDimension; i++)
+  {
+    newIndex[i] = (int)(index[i] + 0.5); // Round to nearest int
+  }
 
-  it.SetLocation( newIndex );
-  itk::Neighborhood<typename TInputImage::PixelType, ImageDimension> n =
-    it.GetNeighborhood();
-  std::map<typename TInputImage::PixelType, int> tally;
-  for( unsigned int i = 0; i < n.Size(); i++ )
-    {
+  it.SetLocation(newIndex);
+  itk::Neighborhood<typename TInputImage::PixelType, ImageDimension> n = it.GetNeighborhood();
+  std::map<typename TInputImage::PixelType, int>                     tally;
+  for (unsigned int i = 0; i < n.Size(); i++)
+  {
     tally[n[i]] = 0;
-    }
-  int max = 0;
+  }
+  int        max = 0;
   OutputType ret = n[0];
-  for( unsigned int i = 0; i < n.Size(); i++ )
+  for (unsigned int i = 0; i < n.Size(); i++)
+  {
+    if (++tally[n[i]] > max)
     {
-    if( ++tally[n[i]] > max )
-      {
       max = tally[n[i]];
       ret = n[i];
-      }
     }
+  }
   return ret;
 }
 

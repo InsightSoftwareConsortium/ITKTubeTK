@@ -23,88 +23,90 @@ limitations under the License.
 
 #include "itktubeRidgeFFTFeatureVectorGenerator.h"
 
-int itktubeRidgeFFTFeatureVectorGeneratorTest( int argc, char * argv[] )
+int
+itktubeRidgeFFTFeatureVectorGeneratorTest(int argc, char * argv[])
 {
-  if( argc != 4 )
-    {
+  if (argc != 4)
+  {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0]
-      << " inputImage outputF0Image outputF1Image"
-      << std::endl;
+    std::cerr << argv[0] << " inputImage outputF0Image outputF1Image" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // Define the dimension of the images
-  enum { Dimension = 2 };
+  enum
+  {
+    Dimension = 2
+  };
 
   // Define the pixel type
   typedef float PixelType;
 
   // Declare the types of the images
-  typedef itk::Image<PixelType, Dimension>  ImageType;
+  typedef itk::Image<PixelType, Dimension> ImageType;
 
   // Declare the reader and writer
-  typedef itk::ImageFileReader< ImageType > ReaderType;
-  typedef itk::ImageFileWriter< ImageType > WriterType;
+  typedef itk::ImageFileReader<ImageType> ReaderType;
+  typedef itk::ImageFileWriter<ImageType> WriterType;
 
 
   // Declare the type for the Filter
-  typedef itk::tube::RidgeFFTFeatureVectorGenerator< ImageType > FilterType;
+  typedef itk::tube::RidgeFFTFeatureVectorGenerator<ImageType> FilterType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( argv[1] );
+  reader->SetFileName(argv[1]);
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
+  }
+  catch (itk::ExceptionObject & e)
+  {
     std::cerr << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
-    }
+  }
   ImageType::Pointer inputImage = reader->GetOutput();
 
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInput( inputImage );
+  filter->SetInput(inputImage);
 
-  FilterType::RidgeScalesType scales( 2 );
+  FilterType::RidgeScalesType scales(2);
   scales[0] = 0.4;
   scales[1] = 1.0;
-  filter->SetScales( scales );
+  filter->SetScales(scales);
   std::cout << filter << std::endl;
 
-  filter->SetUpdateWhitenStatisticsOnUpdate( true );
+  filter->SetUpdateWhitenStatisticsOnUpdate(true);
   filter->Update();
 
   WriterType::Pointer imageFeature0Writer = WriterType::New();
-  imageFeature0Writer->SetFileName( argv[2] );
-  imageFeature0Writer->SetUseCompression( true );
-  imageFeature0Writer->SetInput( filter->GetFeatureImage( 0 ) );
+  imageFeature0Writer->SetFileName(argv[2]);
+  imageFeature0Writer->SetUseCompression(true);
+  imageFeature0Writer->SetInput(filter->GetFeatureImage(0));
   try
-    {
+  {
     imageFeature0Writer->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
+  }
+  catch (itk::ExceptionObject & e)
+  {
     std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
-    }
+  }
 
   WriterType::Pointer imageFeature1Writer = WriterType::New();
-  imageFeature1Writer->SetFileName( argv[3] );
-  imageFeature1Writer->SetUseCompression( true );
-  imageFeature1Writer->SetInput( filter->GetFeatureImage( 6 ) );
+  imageFeature1Writer->SetFileName(argv[3]);
+  imageFeature1Writer->SetUseCompression(true);
+  imageFeature1Writer->SetInput(filter->GetFeatureImage(6));
   try
-    {
+  {
     imageFeature1Writer->Update();
-    }
-  catch ( itk::ExceptionObject& e )
-    {
+  }
+  catch (itk::ExceptionObject & e)
+  {
     std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
-    }
+  }
 
   return EXIT_SUCCESS;
 }

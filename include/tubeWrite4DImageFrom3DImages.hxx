@@ -23,7 +23,6 @@ limitations under the License.
 #define __tubeWrite4DImageFrom3DImages_hxx
 
 
-
 #include "tubeMessage.h"
 
 #include <itkImage.h>
@@ -37,9 +36,8 @@ limitations under the License.
 namespace tube
 {
 
-template< class InputImageT >
-Write4DImageFrom3DImages< InputImageT >::
-Write4DImageFrom3DImages()
+template <class InputImageT>
+Write4DImageFrom3DImages<InputImageT>::Write4DImageFrom3DImages()
 {
   m_OutputImage = nullptr;
 
@@ -48,110 +46,103 @@ Write4DImageFrom3DImages()
   m_FileName = "";
 }
 
-template< class InputImageT >
+template <class InputImageT>
 void
-Write4DImageFrom3DImages< InputImageT >::
-SetNumberOfInputImages( unsigned int numInputs )
+Write4DImageFrom3DImages<InputImageT>::SetNumberOfInputImages(unsigned int numInputs)
 {
   m_NumberOfInputImages = numInputs;
 
   m_OutputImage = nullptr;
 }
 
-template< class InputImageT >
+template <class InputImageT>
 void
-Write4DImageFrom3DImages< InputImageT >::
-SetNthInputImage( unsigned int outputIndex,
-  const InputImageType * img )
+Write4DImageFrom3DImages<InputImageT>::SetNthInputImage(unsigned int outputIndex, const InputImageType * img)
 {
-  if( m_OutputImage == nullptr )
-    {
+  if (m_OutputImage == nullptr)
+  {
     m_OutputImage = OutputImageType::New();
 
     typename InputImageType::RegionType inRegion;
     inRegion = img->GetLargestPossibleRegion();
 
-    typename OutputImageType::SizeType outSize;
-    typename OutputImageType::SpacingType outSpacing;
-    typename OutputImageType::IndexType outIndex;
+    typename OutputImageType::SizeType      outSize;
+    typename OutputImageType::SpacingType   outSpacing;
+    typename OutputImageType::IndexType     outIndex;
     typename OutputImageType::DirectionType outDirection;
     outDirection.SetIdentity();
-    for( unsigned int i=0; i<3; ++i )
-      {
+    for (unsigned int i = 0; i < 3; ++i)
+    {
       outSize[i] = inRegion.GetSize()[i];
       outSpacing[i] = img->GetSpacing()[i];
       outIndex[i] = inRegion.GetIndex()[i];
-      for( unsigned int j=0; j<3; ++j )
-        {
+      for (unsigned int j = 0; j < 3; ++j)
+      {
         outDirection(i, j) = img->GetDirection()(i, j);
-        }
       }
+    }
     outSize[3] = m_NumberOfInputImages;
     outSpacing[3] = 1;
     outIndex[3] = 0;
-    for( unsigned int j=0; j<3; ++j )
-      {
+    for (unsigned int j = 0; j < 3; ++j)
+    {
       outDirection(3, j) = 0;
-      }
+    }
     outDirection(3, 3) = 1;
 
     typename OutputImageType::RegionType outRegion;
-    outRegion.SetSize( outSize );
-    outRegion.SetIndex( outIndex );
-    m_OutputImage->SetRegions( outRegion );
-    m_OutputImage->SetSpacing( outSpacing );
-    m_OutputImage->SetDirection( outDirection );
+    outRegion.SetSize(outSize);
+    outRegion.SetIndex(outIndex);
+    m_OutputImage->SetRegions(outRegion);
+    m_OutputImage->SetSpacing(outSpacing);
+    m_OutputImage->SetDirection(outDirection);
     m_OutputImage->Allocate(0);
-    }
+  }
 
-  itk::ImageRegionConstIterator< InputImageType > inIter( img,
-    img->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< OutputImageType > outIter( m_OutputImage,
-    m_OutputImage->GetLargestPossibleRegion() );
+  itk::ImageRegionConstIterator<InputImageType> inIter(img, img->GetLargestPossibleRegion());
+  itk::ImageRegionIterator<OutputImageType>     outIter(m_OutputImage, m_OutputImage->GetLargestPossibleRegion());
   inIter.GoToBegin();
   outIter.GoToBegin();
   unsigned int numPixelsPerSlice = img->GetLargestPossibleRegion().GetSize()[0];
-  for( unsigned int i=1; i<3; ++i )
-    {
+  for (unsigned int i = 1; i < 3; ++i)
+  {
     numPixelsPerSlice *= img->GetLargestPossibleRegion().GetSize()[i];
-    }
-  for( unsigned int i=0; i<outputIndex*numPixelsPerSlice; ++i )
-    {
+  }
+  for (unsigned int i = 0; i < outputIndex * numPixelsPerSlice; ++i)
+  {
     ++outIter;
-    }
-  while( !inIter.IsAtEnd() )
-    {
-    outIter.Set( inIter.Get() );
+  }
+  while (!inIter.IsAtEnd())
+  {
+    outIter.Set(inIter.Get());
     ++inIter;
     ++outIter;
-    }
+  }
 }
 
 /** Main work happens here */
-template< class InputImageT >
+template <class InputImageT>
 void
-Write4DImageFrom3DImages< InputImageT >::
-Update()
+Write4DImageFrom3DImages<InputImageT>::Update()
 {
-  typedef itk::ImageFileWriter< OutputImageType >  WriterType;
-  typename WriterType::Pointer writer = WriterType::New();
-  writer->SetInput( m_OutputImage );
-  writer->SetFileName( m_FileName );
-  writer->SetUseCompression( true );
+  typedef itk::ImageFileWriter<OutputImageType> WriterType;
+  typename WriterType::Pointer                  writer = WriterType::New();
+  writer->SetInput(m_OutputImage);
+  writer->SetFileName(m_FileName);
+  writer->SetUseCompression(true);
   writer->Update();
 }
 
-template< class InputImageT >
+template <class InputImageT>
 void
-Write4DImageFrom3DImages< InputImageT >::
-PrintSelf( std::ostream & os, itk::Indent indent ) const
+Write4DImageFrom3DImages<InputImageT>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 
   os << indent << "Output image = " << m_OutputImage << std::endl;
   os << indent << "File name = " << m_FileName << std::endl;
 }
 
-}; //namespace
+}; // namespace tube
 
-#endif 
+#endif

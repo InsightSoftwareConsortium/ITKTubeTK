@@ -26,124 +26,124 @@ limitations under the License.
 namespace tube
 {
 
-void WLSubtreeKernel::UpdateLabelCompression( GraphType & G,
-  std::vector< LabelMapType > & labelMap, int & cLabCounter,
-  int subtreeHeight )
+void
+WLSubtreeKernel::UpdateLabelCompression(GraphType &                 G,
+                                        std::vector<LabelMapType> & labelMap,
+                                        int &                       cLabCounter,
+                                        int                         subtreeHeight)
 {
-  const int N = num_vertices( G );
-  for( int i = 0; i < N; ++i )
-    {
+  const int N = num_vertices(G);
+  for (int i = 0; i < N; ++i)
+  {
     /* At height = 0, we relabel the vertex types to start with 0 ( since the
        type can be an arbitrary number ). This will allow convenient
        indexing. */
-    const int height = 0;
-    const int type = G[vertex( i, G )].type;
-    const std::string vertexStr =
-      boost::lexical_cast< std::string >( type );
-    LabelMapType::const_iterator it = labelMap[height].find( vertexStr );
-    if( it == labelMap[height].end() )
-      {
+    const int                    height = 0;
+    const int                    type = G[vertex(i, G)].type;
+    const std::string            vertexStr = boost::lexical_cast<std::string>(type);
+    LabelMapType::const_iterator it = labelMap[height].find(vertexStr);
+    if (it == labelMap[height].end())
+    {
       labelMap[height][vertexStr] = cLabCounter;
-      G[vertex( i, G )].type = cLabCounter;
+      G[vertex(i, G)].type = cLabCounter;
       ++cLabCounter;
-      }
-    else
-      {
-      G[vertex( i, G )].type = it->second;
-      }
     }
+    else
+    {
+      G[vertex(i, G)].type = it->second;
+    }
+  }
 
   /* For heights > 0, we have to be careful with relabeling immediately,
    * since we need neighbor information. We record the relabeling result
    * while fetching neighbor information and building the compressed label.
    * Once we are done with all vertices, we relabel. */
-  for( int height = 1; height < subtreeHeight; ++height )
+  for (int height = 1; height < subtreeHeight; ++height)
+  {
+    std::vector<int> relabel(N, -1);
+    for (int i = 0; i < N; ++i)
     {
-    std::vector< int > relabel( N, -1 );
-    for( int i = 0; i < N; ++i )
+      const std::string            nbStr = BuildNeighborStr(G, i);
+      LabelMapType::const_iterator it = labelMap[height].find(nbStr);
+      if (it == labelMap[height].end())
       {
-      const std::string nbStr = BuildNeighborStr( G, i );
-      LabelMapType::const_iterator it = labelMap[height].find( nbStr );
-      if( it == labelMap[height].end() )
-        {
         labelMap[height][nbStr] = cLabCounter;
         relabel[i] = cLabCounter;
         ++cLabCounter;
-        }
-      else
-        {
-        relabel[i] = labelMap[height][nbStr];
-        }
       }
+      else
+      {
+        relabel[i] = labelMap[height][nbStr];
+      }
+    }
 
     // Relabel now.
-    for( int i = 0; i < N; ++i )
+    for (int i = 0; i < N; ++i)
+    {
+      if (relabel[i] > 0)
       {
-      if( relabel[i] > 0 )
-        {
-        G[vertex( i, G )].type = relabel[i];
-        }
+        G[vertex(i, G)].type = relabel[i];
       }
     }
+  }
 }
 
-std::vector< int > WLSubtreeKernel::BuildPhi( GraphType & G )
+std::vector<int>
+WLSubtreeKernel::BuildPhi(GraphType & G)
 {
-  std::vector< int > phi( m_LabelCount, 0 );
-  const int N = num_vertices( G );
+  std::vector<int> phi(m_LabelCount, 0);
+  const int        N = num_vertices(G);
 
-  for( int i = 0; i < N; ++i )
+  for (int i = 0; i < N; ++i)
+  {
+    const int                    height = 0;
+    const int                    type = G[vertex(i, G)].type;
+    LabelMapType::const_iterator it = m_LabelMap[height].find(boost::lexical_cast<std::string>(type));
+    if (it != m_LabelMap[height].end())
     {
-    const int height = 0;
-    const int type = G[vertex( i, G )].type;
-    LabelMapType::const_iterator it
-      = m_LabelMap[height].find( boost::lexical_cast< std::string >(
-          type ) );
-    if( it != m_LabelMap[height].end() )
-      {
       const int cLab = it->second;
-      G[vertex( i, G )].type = cLab;
+      G[vertex(i, G)].type = cLab;
       ++phi[cLab];
-      }
     }
+  }
 
-  for( int height = 1; height < m_SubtreeHeight; ++height )
+  for (int height = 1; height < m_SubtreeHeight; ++height)
+  {
+    std::vector<int> relabel(N, -1);
+    for (int i = 0; i < N; ++i)
     {
-    std::vector< int > relabel( N, -1 );
-    for( int i = 0; i < N; ++i )
+      const std::string            nbStr = BuildNeighborStr(G, i);
+      LabelMapType::const_iterator it = m_LabelMap[height].find(nbStr);
+      if (it != m_LabelMap[height].end())
       {
-      const std::string nbStr = BuildNeighborStr( G, i );
-      LabelMapType::const_iterator it = m_LabelMap[height].find( nbStr );
-      if( it != m_LabelMap[height].end() )
-        {
         const int cLab = it->second;
         relabel[i] = cLab;
         ++phi[cLab];
-        }
-      }
-    for( int i = 0; i < N; ++i )
-      {
-      if( relabel[i] > 0 )
-        {
-        G[vertex( i, G )].type = relabel[i];
-        }
       }
     }
+    for (int i = 0; i < N; ++i)
+    {
+      if (relabel[i] > 0)
+      {
+        G[vertex(i, G)].type = relabel[i];
+      }
+    }
+  }
   return phi;
 }
 
-double WLSubtreeKernel::Compute( void )
+double
+WLSubtreeKernel::Compute(void)
 {
-  const std::vector< int > phiG0 = this->BuildPhi( m_G0 );
-  const std::vector< int > phiG1 = this->BuildPhi( m_G1 );
+  const std::vector<int> phiG0 = this->BuildPhi(m_G0);
+  const std::vector<int> phiG1 = this->BuildPhi(m_G1);
 
-  if( phiG0.size() != phiG1.size() )
-    {
-    tube::ErrorMessage( "Mismatch in feature mapping." );
+  if (phiG0.size() != phiG1.size())
+  {
+    tube::ErrorMessage("Mismatch in feature mapping.");
     throw std::exception();
-    }
-  return static_cast< double >( inner_product( phiG0.begin(), phiG0.end(),
-      phiG1.begin(), 0.0 ) );
+  }
+  return static_cast<double>(inner_product(phiG0.begin(), phiG0.end(), phiG1.begin(), 0.0));
 }
 
 } // End namespace tube

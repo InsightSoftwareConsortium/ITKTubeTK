@@ -27,134 +27,136 @@ limitations under the License.
 
 #include "AtlasBuilderUsingIntensityCLP.h"
 
-enum { Dimension = 3 };
-
-typedef itk::Image< float, Dimension > FloatImageType;
-
-void WriteImage( FloatImageType::Pointer i, const std::string & name )
+enum
 {
-  typedef itk::ImageFileWriter< FloatImageType > WriterType;
-  WriterType::Pointer writer  = WriterType::New();
+  Dimension = 3
+};
 
-  writer->SetInput( i );
-  writer->SetFileName( name );
-  writer->SetUseCompression( true );
+typedef itk::Image<float, Dimension> FloatImageType;
+
+void
+WriteImage(FloatImageType::Pointer i, const std::string & name)
+{
+  typedef itk::ImageFileWriter<FloatImageType> WriterType;
+  WriterType::Pointer                          writer = WriterType::New();
+
+  writer->SetInput(i);
+  writer->SetFileName(name);
+  writer->SetUseCompression(true);
   writer->Update();
 }
 
-typedef itk::Image< unsigned short, Dimension > UShortImageType;
+typedef itk::Image<unsigned short, Dimension> UShortImageType;
 
-void WriteImage( UShortImageType::Pointer i, const std::string & name )
+void
+WriteImage(UShortImageType::Pointer i, const std::string & name)
 {
-  typedef itk::ImageFileWriter< UShortImageType > UShortWriterType;
-  UShortWriterType::Pointer writer  = UShortWriterType::New();
+  typedef itk::ImageFileWriter<UShortImageType> UShortWriterType;
+  UShortWriterType::Pointer                     writer = UShortWriterType::New();
 
-  writer->SetInput( i );
-  writer->SetFileName( name );
-  writer->SetUseCompression( true );
+  writer->SetInput(i);
+  writer->SetFileName(name);
+  writer->SetUseCompression(true);
   writer->Update();
 }
 
-int DoIt( int argc, char * argv[] )
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
-  typedef tube::AtlasSummation                       AtlasSummationType;
-  typedef AtlasSummationType::InputPixelType         InputPixelType;
-  typedef itk::Image< InputPixelType, Dimension >    InputImageType;
-  typedef tube::MetaObjectDocument                   DocumentReaderType;
-  typedef itk::tube::ImageDocument                   ImageDocumentType;
-  typedef DocumentReaderType::ObjectDocumentListType ImageDocumentListType;
-  typedef
-    itk::tube::ObjectDocumentToImageFilter< ImageDocumentType, InputImageType >
-    DocumentToImageFilter;
+  typedef tube::AtlasSummation                                                      AtlasSummationType;
+  typedef AtlasSummationType::InputPixelType                                        InputPixelType;
+  typedef itk::Image<InputPixelType, Dimension>                                     InputImageType;
+  typedef tube::MetaObjectDocument                                                  DocumentReaderType;
+  typedef itk::tube::ImageDocument                                                  ImageDocumentType;
+  typedef DocumentReaderType::ObjectDocumentListType                                ImageDocumentListType;
+  typedef itk::tube::ObjectDocumentToImageFilter<ImageDocumentType, InputImageType> DocumentToImageFilter;
 
   // Reads the ObjectDocuments file
   DocumentReaderType::Pointer reader = new DocumentReaderType();
-  reader->SetFileName( imageDocFile.c_str() );
+  reader->SetFileName(imageDocFile.c_str());
 
-  if( !reader->Read( imageDocFile.c_str() ) )
-    {
-    tube::ErrorMessage( "Could not read input document!" );
+  if (!reader->Read(imageDocFile.c_str()))
+  {
+    tube::ErrorMessage("Could not read input document!");
 
     return EXIT_FAILURE;
-    }
+  }
 
-  tube::FmtInfoMessage( "Read input document %s", imageDocFile.c_str() );
+  tube::FmtInfoMessage("Read input document %s", imageDocFile.c_str());
   ImageDocumentListType imageObjects = reader->GetObjectDocumentList();
 
   AtlasSummationType * atlasBuilder = new tube::AtlasSummation();
 
-  assert( outputSize.size() == Dimension );
+  assert(outputSize.size() == Dimension);
 
   AtlasSummationType::SizeType size;
 
-  for( unsigned int i = 0; i < outputSpacing.size(); ++i )
-    {
+  for (unsigned int i = 0; i < outputSpacing.size(); ++i)
+  {
     size[i] = outputSpacing[i];
-    }
+  }
 
-  atlasBuilder->SetOutputSize( size );
+  atlasBuilder->SetOutputSize(size);
 
-  assert( outputSpacing.size() > 0 );
+  assert(outputSpacing.size() > 0);
 
   AtlasSummationType::SpacingType spacing;
 
-  for( unsigned int i = 0; i < outputSpacing.size(); ++i )
-    {
+  for (unsigned int i = 0; i < outputSpacing.size(); ++i)
+  {
     spacing[i] = outputSpacing[i];
-    }
+  }
 
   // Configure the atlas builder
-  atlasBuilder->SetOutputSpacing( spacing );
-  atlasBuilder->SetUseStdDeviation( useStdDeviation );
-  atlasBuilder->SetImageCountThreshold( lowerThreshold );
-  atlasBuilder->AdjustResampledImageSize( doImageSizeAdjustment );
-  atlasBuilder->AdjustResampledImageOrigin( doImageOriginAdjustment );
+  atlasBuilder->SetOutputSpacing(spacing);
+  atlasBuilder->SetUseStdDeviation(useStdDeviation);
+  atlasBuilder->SetImageCountThreshold(lowerThreshold);
+  atlasBuilder->AdjustResampledImageSize(doImageSizeAdjustment);
+  atlasBuilder->AdjustResampledImageOrigin(doImageOriginAdjustment);
 
   ImageDocumentListType::const_iterator it_imgDoc = imageObjects.begin();
-  tube::FmtInfoMessage( "Starting image addition..." );
+  tube::FmtInfoMessage("Starting image addition...");
 
   /* Iteratively add the images to atlas summation method. This is done so that
      only one image must be held in memory at a time. */
   DocumentToImageFilter::Pointer filter = DocumentToImageFilter::New();
 
-  while( it_imgDoc != imageObjects.end() )
-    {
-    ImageDocumentType::Pointer doc
-      = static_cast< ImageDocumentType * >( ( *it_imgDoc ).GetPointer() );
-    tube::FmtInfoMessage( "Adding image: %s", doc->GetObjectName().c_str() );
+  while (it_imgDoc != imageObjects.end())
+  {
+    ImageDocumentType::Pointer doc = static_cast<ImageDocumentType *>((*it_imgDoc).GetPointer());
+    tube::FmtInfoMessage("Adding image: %s", doc->GetObjectName().c_str());
 
-    filter->SetInput( doc );
-    filter->SetApplyTransforms( false );
+    filter->SetInput(doc);
+    filter->SetApplyTransforms(false);
     filter->Update();
     filter->GetComposedTransform();
 
-    if( filter->GetComposedTransformIsIdentity() )
-      {
-      tube::DebugMessage( "ComposedTransform is IDENTITY" );
-      atlasBuilder->AddImage( filter->GetOutput() );
-      }
-    else
-      {
-      atlasBuilder->AddImage( filter->GetOutput(),
-                              filter->GetComposedTransform().GetPointer() );
-      }
-    ++it_imgDoc;
+    if (filter->GetComposedTransformIsIdentity())
+    {
+      tube::DebugMessage("ComposedTransform is IDENTITY");
+      atlasBuilder->AddImage(filter->GetOutput());
     }
+    else
+    {
+      atlasBuilder->AddImage(filter->GetOutput(), filter->GetComposedTransform().GetPointer());
+    }
+    ++it_imgDoc;
+  }
 
-  tube::InfoMessage( "Finalizing the images..." );
+  tube::InfoMessage("Finalizing the images...");
   atlasBuilder->Finalize();
-  tube::InfoMessage( "Done!" );
+  tube::InfoMessage("Done!");
 
   // Save output images.
-  WriteImage( atlasBuilder->GetMeanImage(), outputMeanAtlas.c_str() );
-  WriteImage( atlasBuilder->GetVarianceImage(), outputVarianceAtlas.c_str() );
+  WriteImage(atlasBuilder->GetMeanImage(), outputMeanAtlas.c_str());
+  WriteImage(atlasBuilder->GetVarianceImage(), outputVarianceAtlas.c_str());
 
-  if( !outputCountImage.empty() )
-    {
-    WriteImage( atlasBuilder->GetValidCountImage(), outputCountImage.c_str() );
-    }
+  if (!outputCountImage.empty())
+  {
+    WriteImage(atlasBuilder->GetValidCountImage(), outputCountImage.c_str());
+  }
 
   delete reader;
   delete atlasBuilder;
@@ -162,9 +164,10 @@ int DoIt( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
-  return DoIt( argc, argv );
+  return DoIt(argc, argv);
 }

@@ -31,15 +31,17 @@ limitations under the License.
 
 #include "EnhanceContrastUsingPriorCLP.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
@@ -48,104 +50,100 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with Slicer GUI
-  tube::CLIProgressReporter    progressReporter(
-    "ContrastImage", CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("ContrastImage", CLPProcessInformation);
   progressReporter.Start();
 
-  typedef float                                PixelType;
+  typedef float PixelType;
 
-  typedef tube::EnhanceContrastUsingPrior
-    < PixelType, VDimension >                  FilterType;
-  typename FilterType::Pointer filter = FilterType::New();
+  typedef tube::EnhanceContrastUsingPrior<PixelType, VDimension> FilterType;
+  typename FilterType::Pointer                                   filter = FilterType::New();
 
-  typedef typename FilterType::ImageType       ImageType;
+  typedef typename FilterType::ImageType ImageType;
 
   /** Read input images */
   typename ImageType::Pointer inputImage;
   typename ImageType::Pointer inputMask;
 
-  timeCollector.Start( "Read" );
-    {
-    typedef itk::ImageFileReader< ImageType >   ReaderType;
+  timeCollector.Start("Read");
+  {
+    typedef itk::ImageFileReader<ImageType> ReaderType;
 
     typename ReaderType::Pointer readerInputImage = ReaderType::New();
     typename ReaderType::Pointer readerInputMask = ReaderType::New();
 
-    //read input image
-    readerInputImage->SetFileName( inputImageName.c_str() );
-    readerInputMask->SetFileName( inputMaskName.c_str() );
+    // read input image
+    readerInputImage->SetFileName(inputImageName.c_str());
+    readerInputMask->SetFileName(inputMaskName.c_str());
 
     try
-      {
+    {
       readerInputImage->Update();
-      filter->SetInput( readerInputImage->GetOutput() );
-      }
-    catch( itk::ExceptionObject & err )
-      {
-      tube::ErrorMessage( "Reading input image. Exception caught: "
-                          + std::string( err.GetDescription() ) );
+      filter->SetInput(readerInputImage->GetOutput());
+    }
+    catch (itk::ExceptionObject & err)
+    {
+      tube::ErrorMessage("Reading input image. Exception caught: " + std::string(err.GetDescription()));
       timeCollector.Report();
       return EXIT_FAILURE;
-      }
+    }
 
     try
-      {
+    {
       readerInputMask->Update();
-      filter->SetInputMaskImage( readerInputMask->GetOutput() );
-      }
-    catch( itk::ExceptionObject & err )
-      {
-      tube::ErrorMessage( "Reading input mask. Exception caught: "
-                          + std::string( err.GetDescription() ) );
+      filter->SetInputMaskImage(readerInputMask->GetOutput());
+    }
+    catch (itk::ExceptionObject & err)
+    {
+      tube::ErrorMessage("Reading input mask. Exception caught: " + std::string(err.GetDescription()));
       timeCollector.Report();
       return EXIT_FAILURE;
-      }
     }
-  progressReporter.Report( 0.1 );
-  timeCollector.Stop( "Read" );
+  }
+  progressReporter.Report(0.1);
+  timeCollector.Stop("Read");
 
-  filter->SetObjectScale( objectScale );
-  filter->SetBackgroundScale( backgroundScale );
-  filter->SetMaskObjectValue( maskObjectValue );
-  filter->SetMaskBackgroundValue( maskBackgroundValue );
-  filter->SetOptimizationIterations( iterations );
-  filter->SetOptimizationSeed( seed );
+  filter->SetObjectScale(objectScale);
+  filter->SetBackgroundScale(backgroundScale);
+  filter->SetMaskObjectValue(maskObjectValue);
+  filter->SetMaskBackgroundValue(maskBackgroundValue);
+  filter->SetOptimizationIterations(iterations);
+  filter->SetOptimizationSeed(seed);
 
-  timeCollector.Start( "Run Filter" );
+  timeCollector.Start("Run Filter");
 
   filter->Update();
 
-  timeCollector.Stop( "Run Filter" );
-  progressReporter.Report( 0.8 );
+  timeCollector.Stop("Run Filter");
+  progressReporter.Report(0.8);
 
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
-  typename ImageWriterType::Pointer writer = ImageWriterType::New();
+  typedef itk::ImageFileWriter<ImageType> ImageWriterType;
+  typename ImageWriterType::Pointer       writer = ImageWriterType::New();
 
-  writer->SetFileName( outputImageName.c_str() );
-  writer->SetInput( filter->GetOutput() );
-  writer->SetUseCompression( true );
+  writer->SetFileName(outputImageName.c_str());
+  writer->SetInput(filter->GetOutput());
+  writer->SetUseCompression(true);
   try
-    {
+  {
     writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Writing volume. Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Writing volume. Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
-  progressReporter.Report( 1.0 );
+  progressReporter.Report(1.0);
   progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;
 }
 
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
-  return tube::ParseArgsAndCallDoIt( inputImageName, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputImageName, argc, argv);
 }
