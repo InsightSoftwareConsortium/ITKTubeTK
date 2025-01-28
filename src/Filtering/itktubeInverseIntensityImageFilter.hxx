@@ -35,82 +35,82 @@ namespace tube
 {
 
 
-template< class TInputImage >
-InverseIntensityImageFilter<TInputImage>
-::InverseIntensityImageFilter( void )
+template <class TInputImage>
+InverseIntensityImageFilter<TInputImage>::InverseIntensityImageFilter(void)
 {
   m_InverseMaximumIntensity = 0;
 }
 
 /** Generate Data */
-template< class TInputImage >
+template <class TInputImage>
 void
-InverseIntensityImageFilter<TInputImage>
-::GenerateData( void )
+InverseIntensityImageFilter<TInputImage>::GenerateData(void)
 {
-  itkDebugMacro( << "InverseIntensityImageFilter::Generate Data() called." );
+  itkDebugMacro(<< "InverseIntensityImageFilter::Generate Data() called.");
 
   /**************************************/
   /* Get the input and output pointers */
   /************************************/
-  InputImageConstPointer  InputImage = this->GetInput();
-  RegionType region;             //
-  region = InputImage->GetLargestPossibleRegion();    //
+  InputImageConstPointer InputImage = this->GetInput();
+  RegionType             region;                   //
+  region = InputImage->GetLargestPossibleRegion(); //
 
-  OutputImagePointer OutputImage  = this->GetOutput();
-  OutputImage->SetLargestPossibleRegion( region );   //
-  OutputImage->SetBufferedRegion( region );         // set the region
-  OutputImage->SetRequestedRegion( region );       //
-  OutputImage->SetSpacing( InputImage->GetSpacing() );  // set spacing
-  OutputImage->SetOrigin( InputImage->GetOrigin() );   //   and origin
-  OutputImage->SetDirection( InputImage->GetDirection() );   //   and origin
-  OutputImage->Allocate();                          // allocate the image
+  OutputImagePointer OutputImage = this->GetOutput();
+  OutputImage->SetLargestPossibleRegion(region);         //
+  OutputImage->SetBufferedRegion(region);                // set the region
+  OutputImage->SetRequestedRegion(region);               //
+  OutputImage->SetSpacing(InputImage->GetSpacing());     // set spacing
+  OutputImage->SetOrigin(InputImage->GetOrigin());       //   and origin
+  OutputImage->SetDirection(InputImage->GetDirection()); //   and origin
+  OutputImage->Allocate();                               // allocate the image
 
-  InputPixelType myMin;        //
-  InputPixelType myMax;       //  declaration variables
-  InputPixelType value;      //       calc max/min
-  InputPixelType temp;     //
+  InputPixelType myMin; //
+  InputPixelType myMax; //  declaration variables
+  InputPixelType value; //       calc max/min
+  InputPixelType temp;  //
 
-  typename itk::MinimumMaximumImageFilter<InputImageType>::Pointer
-    MinMaxFilter;
-  MinMaxFilter=itk::MinimumMaximumImageFilter<InputImageType>::New();
-  MinMaxFilter->SetInput( InputImage );         //  compute max
-  MinMaxFilter->Update();                       // and min
-  myMin=MinMaxFilter->GetMinimum();             //  of the input image
-  myMax=MinMaxFilter->GetMaximum();             //
+  typename itk::MinimumMaximumImageFilter<InputImageType>::Pointer MinMaxFilter;
+  MinMaxFilter = itk::MinimumMaximumImageFilter<InputImageType>::New();
+  MinMaxFilter->SetInput(InputImage); //  compute max
+  MinMaxFilter->Update();             // and min
+  myMin = MinMaxFilter->GetMinimum(); //  of the input image
+  myMax = MinMaxFilter->GetMaximum(); //
 
   // ** Input max value is given, then use it instead of true max ** //
-  if( m_InverseMaximumIntensity ) { myMax = m_InverseMaximumIntensity;  }
+  if (m_InverseMaximumIntensity)
+  {
+    myMax = m_InverseMaximumIntensity;
+  }
 
   // ** Build Input and output iterators for inversion ** //
-  typedef  ImageRegionConstIterator<InputImageType>      InputIteratorType;
-  typedef  ImageRegionIterator<OutputImageType>          OutputIteratorType;
-  InputIteratorType it_input( InputImage, region );
-  OutputIteratorType it_output( OutputImage, region );
+  typedef ImageRegionConstIterator<InputImageType> InputIteratorType;
+  typedef ImageRegionIterator<OutputImageType>     OutputIteratorType;
+  InputIteratorType                                it_input(InputImage, region);
+  OutputIteratorType                               it_output(OutputImage, region);
 
   it_input.GoToBegin();
   it_output.GoToBegin();
 
   // ** Since output is a product of input, only output needs to be tested ** //
-  while( !it_output.IsAtEnd() )
-    {
+  while (!it_output.IsAtEnd())
+  {
     temp = it_input.Get();
-    if( temp > myMax )
-      {
+    if (temp > myMax)
+    {
       value = myMin;
-      }
+    }
     else
-      {
-      value = ( myMax + myMin ) - temp;
-      }
-    OutputPixelType out = ( OutputPixelType ) value;
+    {
+      value = (myMax + myMin) - temp;
+    }
+    OutputPixelType out = (OutputPixelType)value;
 
-    it_output.Set( out );
+    it_output.Set(out);
     ++it_output;
     ++it_input;
-    }
+  }
 
-  itkDebugMacro( << "InverseIntensityImageFilter::Generate Data() finished." );
+  itkDebugMacro(<< "InverseIntensityImageFilter::Generate Data() finished.");
 }
 
 } // End namespace tube

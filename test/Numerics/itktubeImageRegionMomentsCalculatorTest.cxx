@@ -26,76 +26,72 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-int itktubeImageRegionMomentsCalculatorTest( int argc, char * argv[] )
+int
+itktubeImageRegionMomentsCalculatorTest(int argc, char * argv[])
 {
-  if( argc != 2 )
-    {
+  if (argc != 2)
+  {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0]
-      << " inputImage outputImage"
-      << std::endl;
+    std::cerr << argv[0] << " inputImage outputImage" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // Define the dimension of the images
-  enum { Dimension = 2 };
+  enum
+  {
+    Dimension = 2
+  };
 
   // Define the pixel type
   typedef float PixelType;
 
   // Declare the types of the images
-  typedef itk::Image<PixelType, Dimension>  ImageType;
+  typedef itk::Image<PixelType, Dimension> ImageType;
 
   // Declare the reader and writer
-  typedef itk::ImageFileReader< ImageType > ReaderType;
+  typedef itk::ImageFileReader<ImageType> ReaderType;
 
 
   // Declare the type for the Filter
-  typedef itk::tube::ImageRegionMomentsCalculator< ImageType > FilterType;
+  typedef itk::tube::ImageRegionMomentsCalculator<ImageType> FilterType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( argv[1] );
+  reader->SetFileName(argv[1]);
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject& e )
-    {
-    std::cerr << "Exception caught during input read:\n"  << e;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cerr << "Exception caught during input read:\n" << e;
     return EXIT_FAILURE;
-    }
+  }
 
   ImageType::Pointer inputImage = reader->GetOutput();
 
   FilterType::Pointer filter = FilterType::New();
-  filter->SetImage( inputImage );
+  filter->SetImage(inputImage);
   filter->Compute();
 
   std::cout << "Mass = " << filter->GetTotalMass() << std::endl;
-  if( filter->GetTotalMass() != 117300 )
-    {
+  if (filter->GetTotalMass() != 117300)
+  {
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "First = " << filter->GetFirstMoments() << std::endl;
-  if( std::fabs( filter->GetFirstMoments()[0] - 71.5565 ) > 0.001 )
-    {
+  if (std::fabs(filter->GetFirstMoments()[0] - 71.5565) > 0.001)
+  {
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "Second = " << filter->GetSecondMoments() << std::endl;
   std::cout << "CoG = " << filter->GetCenterOfGravity() << std::endl;
   std::cout << "Moments = " << filter->GetCentralMoments() << std::endl;
-  std::cout << "Principal Moments = " << filter->GetPrincipalMoments()
-            << std::endl;
-  std::cout << "Principal Axes = " << filter->GetPrincipalAxes()
-            << std::endl;
-  std::cout << "Principal Axes Transform = "
-            << filter->GetPrincipalAxesToPhysicalAxesTransform()
-            << std::endl;
-  std::cout << "Physical Axes Transform = "
-            << filter->GetPhysicalAxesToPrincipalAxesTransform()
-            << std::endl;
+  std::cout << "Principal Moments = " << filter->GetPrincipalMoments() << std::endl;
+  std::cout << "Principal Axes = " << filter->GetPrincipalAxes() << std::endl;
+  std::cout << "Principal Axes Transform = " << filter->GetPrincipalAxesToPhysicalAxesTransform() << std::endl;
+  std::cout << "Physical Axes Transform = " << filter->GetPhysicalAxesToPrincipalAxesTransform() << std::endl;
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;

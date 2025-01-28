@@ -39,344 +39,318 @@ namespace itk
 namespace tube
 {
 
-template< class TImage >
-RidgeFFTFeatureVectorGenerator< TImage >
-::RidgeFFTFeatureVectorGenerator( void )
+template <class TImage>
+RidgeFFTFeatureVectorGenerator<TImage>::RidgeFFTFeatureVectorGenerator(void)
 {
   m_UseIntensityOnly = false;
-  m_Scales.resize( 0 );
-  m_FeatureImageList.resize( 0 );
+  m_Scales.resize(0);
+  m_FeatureImageList.resize(0);
 }
 
-template< class TImage >
-RidgeFFTFeatureVectorGenerator< TImage >
-::~RidgeFFTFeatureVectorGenerator( void )
-{
-}
+template <class TImage>
+RidgeFFTFeatureVectorGenerator<TImage>::~RidgeFFTFeatureVectorGenerator(void)
+{}
 
-template< class TImage >
+template <class TImage>
 unsigned int
-RidgeFFTFeatureVectorGenerator< TImage >
-::GetNumberOfImageFeaturesPerScale( void ) const
+RidgeFFTFeatureVectorGenerator<TImage>::GetNumberOfImageFeaturesPerScale(void) const
 {
-  if( m_UseIntensityOnly )
-    {
+  if (m_UseIntensityOnly)
+  {
     return 2;
-    }
+  }
   else
-    {
+  {
     return 5;
-    }
+  }
 }
 
-template< class TImage >
+template <class TImage>
 unsigned int
-RidgeFFTFeatureVectorGenerator< TImage >
-::GetNumberOfImageFeatures( void ) const
+RidgeFFTFeatureVectorGenerator<TImage>::GetNumberOfImageFeatures(void) const
 {
   unsigned int featuresPerImage =
-    m_Scales.size() * this->GetNumberOfImageFeaturesPerScale() +
-    this->GetNumberOfImageFeaturesPerScale() + 1;
+    m_Scales.size() * this->GetNumberOfImageFeaturesPerScale() + this->GetNumberOfImageFeaturesPerScale() + 1;
 
   unsigned int numFeatures = this->GetNumberOfInputImages() * featuresPerImage;
 
   return numFeatures;
 }
 
-template< class TImage >
+template <class TImage>
 unsigned int
-RidgeFFTFeatureVectorGenerator< TImage >
-::GetNumberOfMathFeatures( void ) const
+RidgeFFTFeatureVectorGenerator<TImage>::GetNumberOfMathFeatures(void) const
 {
   unsigned int imageFeatures = this->GetNumberOfImageFeatures();
 
   unsigned int mathFeatures = 0;
-  if( this->m_UseFeatureMath )
-    {
-    mathFeatures += 4*(imageFeatures*(imageFeatures-1))/2;
-    }
+  if (this->m_UseFeatureMath)
+  {
+    mathFeatures += 4 * (imageFeatures * (imageFeatures - 1)) / 2;
+  }
 
   unsigned int numFeatures = this->GetNumberOfInputImages() * mathFeatures;
 
   return numFeatures;
 }
 
-template< class TImage >
+template <class TImage>
 unsigned int
-RidgeFFTFeatureVectorGenerator< TImage >
-::GetNumberOfFeatures( void ) const
+RidgeFFTFeatureVectorGenerator<TImage>::GetNumberOfFeatures(void) const
 {
-  unsigned int numFeatures = this->GetNumberOfImageFeatures() +
-    this->GetNumberOfMathFeatures();
+  unsigned int numFeatures = this->GetNumberOfImageFeatures() + this->GetNumberOfMathFeatures();
 
   return numFeatures;
 }
 
 
-template< class TImage >
+template <class TImage>
 void
-RidgeFFTFeatureVectorGenerator< TImage >
-::UpdateWhitenStatistics( void )
+RidgeFFTFeatureVectorGenerator<TImage>::UpdateWhitenStatistics(void)
 {
   unsigned int numFeatureImages = m_FeatureImageList.size();
 
   this->m_WhitenMean.resize(numFeatureImages);
   this->m_WhitenStdDev.resize(numFeatureImages);
   typedef itk::StatisticsImageFilter<FeatureImageType> StatsFilterType;
-  for( unsigned int f=0; f<numFeatureImages; ++f )
-    {
+  for (unsigned int f = 0; f < numFeatureImages; ++f)
+  {
     typename StatsFilterType::Pointer stats = StatsFilterType::New();
-    stats->SetInput( m_FeatureImageList[f] );
+    stats->SetInput(m_FeatureImageList[f]);
     stats->Update();
     this->m_WhitenMean[f] = stats->GetMean();
     this->m_WhitenStdDev[f] = stats->GetSigma();
-    }
+  }
 }
 
-template< class TImage >
+template <class TImage>
 void
-RidgeFFTFeatureVectorGenerator< TImage >
-::Update( void )
+RidgeFFTFeatureVectorGenerator<TImage>::Update(void)
 {
   unsigned int numImageFeatures = this->GetNumberOfImageFeatures();
 
-  typename FeatureImageType::RegionType region =
-    this->m_InputImageList[0]->GetLargestPossibleRegion();
-  m_FeatureImageList.resize( numImageFeatures );
-  for( unsigned int feat=0; feat < numImageFeatures; ++feat )
-    {
+  typename FeatureImageType::RegionType region = this->m_InputImageList[0]->GetLargestPossibleRegion();
+  m_FeatureImageList.resize(numImageFeatures);
+  for (unsigned int feat = 0; feat < numImageFeatures; ++feat)
+  {
     m_FeatureImageList[feat] = FeatureImageType::New();
-    m_FeatureImageList[feat]->CopyInformation( this->m_InputImageList[0] );
-    m_FeatureImageList[feat]->SetRegions( region );
+    m_FeatureImageList[feat]->CopyInformation(this->m_InputImageList[0]);
+    m_FeatureImageList[feat]->SetRegions(region);
     m_FeatureImageList[feat]->Allocate();
-    }
+  }
 
   unsigned int numFeaturesPerScale = this->GetNumberOfImageFeaturesPerScale();
   unsigned int optScaleFeat = 1;
   unsigned int feat = 0;
-  for( unsigned int img=0; img<this->m_InputImageList.size(); ++img )
-    {
+  for (unsigned int img = 0; img < this->m_InputImageList.size(); ++img)
+  {
     unsigned int imageFirstFeat = feat;
-    if( m_UseIntensityOnly )
+    if (m_UseIntensityOnly)
+    {
+      typedef itk::DiscreteGaussianImageFilter<TImage, FeatureImageType> BlurFilterType;
+      for (unsigned int s = 0; s < m_Scales.size(); ++s)
       {
-      typedef itk::DiscreteGaussianImageFilter<TImage, FeatureImageType>
-        BlurFilterType;
-      for( unsigned int s=0; s<m_Scales.size(); ++s )
-        {
         typename BlurFilterType::Pointer blurFilter = BlurFilterType::New();
-        blurFilter->SetInput( this->m_InputImageList[img] );
+        blurFilter->SetInput(this->m_InputImageList[img]);
         blurFilter->SetSigma(m_Scales[s]);
         blurFilter->SetUseImageSpacing(true);
         blurFilter->Update();
         m_FeatureImageList[feat++] = blurFilter->GetOutput();
-        if( s == 0 )
-          {
-          typedef itk::SubtractImageFilter< FeatureImageType, TImage >
-            DiffFilterType;
-          typename DiffFilterType::Pointer diffFilter = DiffFilterType::New();
-          diffFilter->SetInput1(m_FeatureImageList[feat-1]);
+        if (s == 0)
+        {
+          typedef itk::SubtractImageFilter<FeatureImageType, TImage> DiffFilterType;
+          typename DiffFilterType::Pointer                           diffFilter = DiffFilterType::New();
+          diffFilter->SetInput1(m_FeatureImageList[feat - 1]);
           diffFilter->SetInput2(this->m_InputImageList[img]);
           diffFilter->Update();
           m_FeatureImageList[feat++] = diffFilter->GetOutput();
-          }
+        }
         else
-          {
-          typedef itk::SubtractImageFilter< FeatureImageType, FeatureImageType >
-            DiffFilterType;
-          typename DiffFilterType::Pointer diffFilter = DiffFilterType::New();
-          diffFilter->SetInput1(m_FeatureImageList[feat-1]);
-          diffFilter->SetInput2(m_FeatureImageList[feat-numFeaturesPerScale-1]);
+        {
+          typedef itk::SubtractImageFilter<FeatureImageType, FeatureImageType> DiffFilterType;
+          typename DiffFilterType::Pointer                                     diffFilter = DiffFilterType::New();
+          diffFilter->SetInput1(m_FeatureImageList[feat - 1]);
+          diffFilter->SetInput2(m_FeatureImageList[feat - numFeaturesPerScale - 1]);
           diffFilter->Update();
           m_FeatureImageList[feat++] = diffFilter->GetOutput();
-          }
         }
       }
+    }
     else
-      {
-      typedef RidgeFFTFilter< TImage > RidgeFilterType;
+    {
+      typedef RidgeFFTFilter<TImage>    RidgeFilterType;
       typename RidgeFilterType::Pointer ridgeF = RidgeFilterType::New();
-      ridgeF->SetInput( this->m_InputImageList[img] );
-      ridgeF->SetUseIntensityOnly( false );
-      for( unsigned int s=0; s<m_Scales.size(); ++s )
-        {
-        ridgeF->SetScale( m_Scales[s] );
+      ridgeF->SetInput(this->m_InputImageList[img]);
+      ridgeF->SetUseIntensityOnly(false);
+      for (unsigned int s = 0; s < m_Scales.size(); ++s)
+      {
+        ridgeF->SetScale(m_Scales[s]);
         ridgeF->Update();
         m_FeatureImageList[feat++] = ridgeF->GetIntensity();
         m_FeatureImageList[feat++] = ridgeF->GetRidgeness();
         m_FeatureImageList[feat++] = ridgeF->GetRoundness();
         m_FeatureImageList[feat++] = ridgeF->GetCurvature();
         m_FeatureImageList[feat++] = ridgeF->GetLevelness();
-        }
       }
+    }
 
-    typedef ImageRegionIterator< FeatureImageType >  IterType;
-    unsigned int numIterators = numFeaturesPerScale * m_Scales.size() +
-      numFeaturesPerScale + 1;
-    std::vector< IterType > iterF( numIterators );
-    for( unsigned int f=0; f<numIterators; ++f )
-      {
-      iterF[f] = IterType( m_FeatureImageList[f+imageFirstFeat], region );
-      }
+    typedef ImageRegionIterator<FeatureImageType> IterType;
+    unsigned int          numIterators = numFeaturesPerScale * m_Scales.size() + numFeaturesPerScale + 1;
+    std::vector<IterType> iterF(numIterators);
+    for (unsigned int f = 0; f < numIterators; ++f)
+    {
+      iterF[f] = IterType(m_FeatureImageList[f + imageFirstFeat], region);
+    }
     unsigned int optScaleDest = numFeaturesPerScale * m_Scales.size();
     unsigned int optFeatDest = optScaleDest + 1;
-    while( !iterF[0].IsAtEnd() )
-      {
+    while (!iterF[0].IsAtEnd())
+    {
       // Init
       double optScaleV = iterF[optScaleFeat].Get();
-      iterF[ optScaleDest ].Set( m_Scales[ 0 ] );
-      for( unsigned int f=0; f<numFeaturesPerScale; ++f )
-        {
-        iterF[ optFeatDest + f ].Set( iterF[ f ].Get() );
-        }
+      iterF[optScaleDest].Set(m_Scales[0]);
+      for (unsigned int f = 0; f < numFeaturesPerScale; ++f)
+      {
+        iterF[optFeatDest + f].Set(iterF[f].Get());
+      }
       // Calc max
-      for( unsigned int s=1; s<m_Scales.size(); ++s )
-        {
+      for (unsigned int s = 1; s < m_Scales.size(); ++s)
+      {
         unsigned int scaleFirstFeat = s * numFeaturesPerScale;
-        if( iterF[scaleFirstFeat + optScaleFeat].Get() > optScaleV )
-          {
+        if (iterF[scaleFirstFeat + optScaleFeat].Get() > optScaleV)
+        {
           optScaleV = iterF[scaleFirstFeat + optScaleFeat].Get();
-          iterF[ optScaleDest ].Set( m_Scales[ s ] );
-          for( unsigned int f=0; f<numFeaturesPerScale; ++f )
-            {
-            iterF[ optFeatDest + f ].Set( iterF[ scaleFirstFeat + f ].Get() );
-            }
+          iterF[optScaleDest].Set(m_Scales[s]);
+          for (unsigned int f = 0; f < numFeaturesPerScale; ++f)
+          {
+            iterF[optFeatDest + f].Set(iterF[scaleFirstFeat + f].Get());
           }
         }
-      for( unsigned int f=0; f<numIterators; ++f )
-        {
-        ++iterF[ f ];
-        }
+      }
+      for (unsigned int f = 0; f < numIterators; ++f)
+      {
+        ++iterF[f];
       }
     }
+  }
 
-  if( this->GetUpdateWhitenStatisticsOnUpdate() )
-    {
+  if (this->GetUpdateWhitenStatisticsOnUpdate())
+  {
     this->UpdateWhitenStatistics();
-    }
-
+  }
 }
 
-template< class TImage >
-typename RidgeFFTFeatureVectorGenerator< TImage >::FeatureVectorType
-RidgeFFTFeatureVectorGenerator< TImage >
-::GetFeatureVector( const IndexType & indx ) const
+template <class TImage>
+typename RidgeFFTFeatureVectorGenerator<TImage>::FeatureVectorType
+RidgeFFTFeatureVectorGenerator<TImage>::GetFeatureVector(const IndexType & indx) const
 {
   unsigned int imageFeatureCount = this->GetNumberOfImageFeatures();
 
   unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  FeatureVectorType featureVector( numFeatures );
+  FeatureVectorType featureVector(numFeatures);
 
-  for( unsigned int f=0; f<imageFeatureCount; ++f )
-    {
-    featureVector[f] = m_FeatureImageList[f]->GetPixel( indx );
-    }
+  for (unsigned int f = 0; f < imageFeatureCount; ++f)
+  {
+    featureVector[f] = m_FeatureImageList[f]->GetPixel(indx);
+  }
 
-  if( this->m_WhitenStdDev.size() > 0 )
+  if (this->m_WhitenStdDev.size() > 0)
+  {
+    for (unsigned int f = 0; f < imageFeatureCount; ++f)
     {
-    for( unsigned int f=0; f<imageFeatureCount; ++f )
+      if (this->m_WhitenStdDev.size() > f && this->m_WhitenStdDev[f] > 0)
       {
-      if( this->m_WhitenStdDev.size() > f &&
-        this->m_WhitenStdDev[f] > 0 )
-        {
-        featureVector[f] = (featureVector[f]-this->m_WhitenMean[f])
-          / this->m_WhitenStdDev[f];
-        }
+        featureVector[f] = (featureVector[f] - this->m_WhitenMean[f]) / this->m_WhitenStdDev[f];
       }
     }
+  }
   unsigned int featureCount = imageFeatureCount;
-  if( this->m_UseFeatureMath )
+  if (this->m_UseFeatureMath)
+  {
+    int offset = (imageFeatureCount * (imageFeatureCount - 1)) / 2;
+    for (unsigned int f0 = 0; f0 < imageFeatureCount; f0++)
     {
-    int offset = (imageFeatureCount*(imageFeatureCount-1))/2;
-    for( unsigned int f0 = 0; f0 < imageFeatureCount; f0++ )
-      {
       double tf0 = featureVector[f0];
       double tf0a = fabs(tf0);
-      for( unsigned int f1 = f0+1; f1 < imageFeatureCount; f1++ )
-        {
+      for (unsigned int f1 = f0 + 1; f1 < imageFeatureCount; f1++)
+      {
         double tf1 = featureVector[f1];
         double tf1a = fabs(tf1);
-        featureVector[featureCount] = (tf0+tf1)/2;
-        featureVector[featureCount+offset] = (tf0-tf1)/2;
-        featureVector[featureCount+2*offset] = sqrt(fabs(tf0*tf1));
-        if( tf0a+tf1a != 0 )
-          {
-          featureVector[featureCount+3*offset] = (tf0+tf1) / (tf0a+tf1a);
-          }
+        featureVector[featureCount] = (tf0 + tf1) / 2;
+        featureVector[featureCount + offset] = (tf0 - tf1) / 2;
+        featureVector[featureCount + 2 * offset] = sqrt(fabs(tf0 * tf1));
+        if (tf0a + tf1a != 0)
+        {
+          featureVector[featureCount + 3 * offset] = (tf0 + tf1) / (tf0a + tf1a);
+        }
         else
-          {
-          featureVector[featureCount+3*offset] = 0;
-          }
+        {
+          featureVector[featureCount + 3 * offset] = 0;
+        }
         featureCount++;
-        }
       }
-    featureCount = imageFeatureCount + 4*offset;
-    if( this->m_WhitenStdDev.size() > imageFeatureCount )
-      {
+    }
+    featureCount = imageFeatureCount + 4 * offset;
+    if (this->m_WhitenStdDev.size() > imageFeatureCount)
+    {
       unsigned int count = featureCount;
-      if( count < this->m_WhitenStdDev.size() )
-        {
+      if (count < this->m_WhitenStdDev.size())
+      {
         count = this->m_WhitenStdDev.size();
-        }
-      for( unsigned int f=imageFeatureCount; f<count; ++f )
+      }
+      for (unsigned int f = imageFeatureCount; f < count; ++f)
+      {
+        if (this->m_WhitenStdDev[f] > 0)
         {
-        if( this->m_WhitenStdDev[f] > 0 )
-          {
-          featureVector[f] = (featureVector[f] - this->m_WhitenMean[f])
-            / this->m_WhitenStdDev[f];
-          }
+          featureVector[f] = (featureVector[f] - this->m_WhitenMean[f]) / this->m_WhitenStdDev[f];
         }
       }
     }
+  }
 
   return featureVector;
 }
 
-template< class TImage >
-typename RidgeFFTFeatureVectorGenerator< TImage >::FeatureValueType
-RidgeFFTFeatureVectorGenerator< TImage >
-::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
+template <class TImage>
+typename RidgeFFTFeatureVectorGenerator<TImage>::FeatureValueType
+RidgeFFTFeatureVectorGenerator<TImage>::GetFeatureVectorValue(const IndexType & indx, unsigned int fNum) const
 {
   return this->GetFeatureVector(indx)[fNum];
 }
 
-template< class TImage >
-typename RidgeFFTFeatureVectorGenerator< TImage >::FeatureImageType::Pointer
-RidgeFFTFeatureVectorGenerator< TImage >
-::GetFeatureImage( unsigned int i ) const
+template <class TImage>
+typename RidgeFFTFeatureVectorGenerator<TImage>::FeatureImageType::Pointer
+RidgeFFTFeatureVectorGenerator<TImage>::GetFeatureImage(unsigned int i) const
 {
-  if( i < this->m_FeatureImageList.size() )
-    {
-    return this->m_FeatureImageList[ i ];
-    }
+  if (i < this->m_FeatureImageList.size())
+  {
+    return this->m_FeatureImageList[i];
+  }
   else
-    {
+  {
     return Superclass::GetFeatureImage(i);
-    }
+  }
 }
 
-template< class TImage >
+template <class TImage>
 void
-RidgeFFTFeatureVectorGenerator< TImage >
-::SetScales( const RidgeScalesType & scales )
+RidgeFFTFeatureVectorGenerator<TImage>::SetScales(const RidgeScalesType & scales)
 {
   this->m_Scales = scales;
 }
 
-template< class TImage >
-const std::vector< double > &
-RidgeFFTFeatureVectorGenerator< TImage >
-::GetScales( void ) const
+template <class TImage>
+const std::vector<double> &
+RidgeFFTFeatureVectorGenerator<TImage>::GetScales(void) const
 {
   return this->m_Scales;
 }
 
-template< class TImage >
+template <class TImage>
 void
-RidgeFFTFeatureVectorGenerator< TImage >
-::PrintSelf( std::ostream & os, Indent indent ) const
+RidgeFFTFeatureVectorGenerator<TImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 
   os << indent << "Scales.size() = " << m_Scales.size() << std::endl;
 }

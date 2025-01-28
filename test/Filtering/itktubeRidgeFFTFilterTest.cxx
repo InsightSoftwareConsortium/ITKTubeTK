@@ -26,82 +26,87 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-int itktubeRidgeFFTFilterTest( int argc, char * argv[] )
+int
+itktubeRidgeFFTFilterTest(int argc, char * argv[])
 {
-  if( argc != 7 )
-    {
+  if (argc != 7)
+  {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << " scale inputImage ridgenessImage roundnessImage curvatureImage levelnessImage" << std::endl;
+    std::cerr << argv[0] << " scale inputImage ridgenessImage roundnessImage curvatureImage levelnessImage"
+              << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // Define the dimension of the images
-  enum { Dimension = 3 };
+  enum
+  {
+    Dimension = 3
+  };
 
   // Define the pixel type
   typedef float PixelType;
 
   // Declare the types of the images
-  typedef itk::Image<PixelType, Dimension>  ImageType;
+  typedef itk::Image<PixelType, Dimension> ImageType;
 
   // Declare the reader and writer
-  typedef itk::ImageFileReader< ImageType > ReaderType;
-  typedef itk::ImageFileWriter< ImageType > WriterType;
+  typedef itk::ImageFileReader<ImageType> ReaderType;
+  typedef itk::ImageFileWriter<ImageType> WriterType;
 
   // Declare the type for the Filter
-  typedef itk::tube::RidgeFFTFilter< ImageType > FunctionType;
+  typedef itk::tube::RidgeFFTFilter<ImageType> FunctionType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( argv[2] );
+  reader->SetFileName(argv[2]);
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject& e )
-    {
-    std::cerr << "Exception caught during read:\n"  << e;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cerr << "Exception caught during read:\n" << e;
     return EXIT_FAILURE;
-    }
+  }
 
   ImageType::Pointer inputImage = reader->GetOutput();
 
   FunctionType::Pointer func = FunctionType::New();
-  func->SetInput( inputImage );
+  func->SetInput(inputImage);
 
-  func->SetScale( atof( argv[1] ) );
+  func->SetScale(atof(argv[1]));
   func->Update();
 
   WriterType::Pointer writer = WriterType::New();
 
-  writer->SetFileName( argv[3] );
-  writer->SetInput( func->GetRidgeness() );
-  writer->SetUseCompression( true );
+  writer->SetFileName(argv[3]);
+  writer->SetInput(func->GetRidgeness());
+  writer->SetUseCompression(true);
   writer->Update();
 
-  writer->SetFileName( argv[4] );
-  writer->SetInput( func->GetRoundness() );
-  writer->SetUseCompression( true );
+  writer->SetFileName(argv[4]);
+  writer->SetInput(func->GetRoundness());
+  writer->SetUseCompression(true);
   writer->Update();
 
-  writer->SetFileName( argv[5] );
-  writer->SetInput( func->GetCurvature() );
-  writer->SetUseCompression( true );
+  writer->SetFileName(argv[5]);
+  writer->SetInput(func->GetCurvature());
+  writer->SetUseCompression(true);
   writer->Update();
 
-  writer->SetFileName( argv[6] );
-  writer->SetInput( func->GetLevelness() );
-  writer->SetUseCompression( true );
+  writer->SetFileName(argv[6]);
+  writer->SetInput(func->GetLevelness());
+  writer->SetUseCompression(true);
   writer->Update();
 
-  func->SetScale( atof( argv[1] ) + 1 );
+  func->SetScale(atof(argv[1]) + 1);
   func->Update();
   std::string tmpStr = argv[3];
   tmpStr = tmpStr + "2.mha";
-  writer->SetFileName( tmpStr.c_str() );
-  writer->SetInput( func->GetRidgeness() );
-  writer->SetUseCompression( true );
+  writer->SetFileName(tmpStr.c_str());
+  writer->SetInput(func->GetRidgeness());
+  writer->SetUseCompression(true);
   writer->Update();
 
 

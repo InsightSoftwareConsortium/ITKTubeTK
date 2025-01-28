@@ -25,7 +25,7 @@ limitations under the License.
 #include "../CLI/tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
-//TubeTKITK include
+// TubeTKITK include
 #include "itktubeBinaryThinningImageFilter3D.h"
 
 #include <itkImageFileReader.h>
@@ -36,14 +36,16 @@ limitations under the License.
 
 #define PARSE_ARGS_3D_ONLY true
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
@@ -52,72 +54,63 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "Skeletonize",
-                                                 CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("Skeletonize", CLPProcessInformation);
   progressReporter.Start();
 
-  typedef unsigned char                         PixelType;
-  typedef itk::Image< PixelType, 3 >   ImageType;
-  typedef itk::ImageFileReader< ImageType >     ReaderType;
+  typedef unsigned char                   PixelType;
+  typedef itk::Image<PixelType, 3>        ImageType;
+  typedef itk::ImageFileReader<ImageType> ReaderType;
 
-  timeCollector.Start( "Load data" );
+  timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( inputVolume.c_str() );
+  reader->SetFileName(inputVolume.c_str());
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Load data" );
+  }
+  timeCollector.Stop("Load data");
   double progress = 0.1;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
-  timeCollector.Start( "Binary Thinning" );
+  timeCollector.Start("Binary Thinning");
 
   // Progress per iteration
-  double progressFraction = 0.8/3;
+  double progressFraction = 0.8 / 3;
 
-  typedef itk::tube::BinaryThinningImageFilter3D<ImageType,ImageType>
-    FilterType;
-  typename FilterType::Pointer filter = FilterType::New();
-  filter->SetInput( reader->GetOutput() );
-  tube::CLIFilterWatcher watcher( filter,
-                                  "Binary Thinning",
-                                  CLPProcessInformation,
-                                  progressFraction,
-                                  progress,
-                                  true );
+  typedef itk::tube::BinaryThinningImageFilter3D<ImageType, ImageType> FilterType;
+  typename FilterType::Pointer                                         filter = FilterType::New();
+  filter->SetInput(reader->GetOutput());
+  tube::CLIFilterWatcher watcher(filter, "Binary Thinning", CLPProcessInformation, progressFraction, progress, true);
   filter->Update();
-  timeCollector.Stop( "Binary Thinning" );
+  timeCollector.Stop("Binary Thinning");
 
 
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+  typedef itk::ImageFileWriter<ImageType> ImageWriterType;
 
-  timeCollector.Start( "Save data" );
+  timeCollector.Start("Save data");
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
-  writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( filter->GetOutput() );
-  writer->SetUseCompression( true );
+  writer->SetFileName(outputVolume.c_str());
+  writer->SetInput(filter->GetOutput());
+  writer->SetUseCompression(true);
   try
-    {
+  {
     writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Writing volume: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Writing volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Save data" );
+  }
+  timeCollector.Stop("Save data");
   progress = 1.0;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
   progressReporter.End();
 
   timeCollector.Report();
@@ -125,11 +118,12 @@ int DoIt( int argc, char * argv[] )
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputVolume.
-  return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputVolume, argc, argv);
 }

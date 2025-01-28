@@ -24,116 +24,102 @@ namespace itk
 {
 
 template <class TImage>
-RigidImageToImageRegistrationMethod<TImage>
-::RigidImageToImageRegistrationMethod( void )
+RigidImageToImageRegistrationMethod<TImage>::RigidImageToImageRegistrationMethod(void)
 {
-  if( ImageDimension == 2 )
-    {
-    typename Rigid2DTransformType::Pointer tmpTrans =
-      Rigid2DTransformType::New();
-    this->SetTransform( dynamic_cast<RigidTransformType *>(
-                          tmpTrans.GetPointer() ) );
+  if (ImageDimension == 2)
+  {
+    typename Rigid2DTransformType::Pointer tmpTrans = Rigid2DTransformType::New();
+    this->SetTransform(dynamic_cast<RigidTransformType *>(tmpTrans.GetPointer()));
     tmpTrans->Register();
-    }
-  else if( ImageDimension == 3 )
-    {
-    typename Rigid3DTransformType::Pointer tmpTrans =
-      Rigid3DTransformType::New();
-    this->SetTransform( dynamic_cast<RigidTransformType *>(
-                          tmpTrans.GetPointer() ) );
+  }
+  else if (ImageDimension == 3)
+  {
+    typename Rigid3DTransformType::Pointer tmpTrans = Rigid3DTransformType::New();
+    this->SetTransform(dynamic_cast<RigidTransformType *>(tmpTrans.GetPointer()));
     tmpTrans->Register();
-    }
+  }
   else
-    {
-    std::cerr << "ERROR: Rigid registration only supported for 2D & 3D images."
-              << std::endl;
-    }
+  {
+    std::cerr << "ERROR: Rigid registration only supported for 2D & 3D images." << std::endl;
+  }
 
   this->GetTypedTransform()->SetIdentity();
 
-  this->SetInitialTransformParameters( this->GetTypedTransform()
-                                       ->GetParameters() );
-  this->SetInitialTransformFixedParameters( this->GetTypedTransform()
-                                            ->GetFixedParameters() );
-  this->SetLastTransformParameters( this->GetTypedTransform()
-                                    ->GetParameters() );
+  this->SetInitialTransformParameters(this->GetTypedTransform()->GetParameters());
+  this->SetInitialTransformFixedParameters(this->GetTypedTransform()->GetFixedParameters());
+  this->SetLastTransformParameters(this->GetTypedTransform()->GetParameters());
 
   typename Superclass::TransformParametersScalesType scales;
-  scales.set_size( this->GetTypedTransform()->GetNumberOfParameters() );
-  if( ImageDimension == 2 )
-    {
+  scales.set_size(this->GetTypedTransform()->GetNumberOfParameters());
+  if (ImageDimension == 2)
+  {
     scales[0] = 10;
     scales[1] = 0.1;
     scales[2] = 0.1;
-    }
-  else if( ImageDimension == 3 )
-    {
+  }
+  else if (ImageDimension == 3)
+  {
     scales[0] = 10;
     scales[1] = 10;
     scales[2] = 10;
     scales[3] = 0.1;
     scales[4] = 0.1;
     scales[5] = 0.1;
-    }
+  }
 
-  this->SetTransformParametersScales( scales );
+  this->SetTransformParametersScales(scales);
 
-  this->SetTransformMethodEnum( Superclass::RIGID_TRANSFORM );
+  this->SetTransformMethodEnum(Superclass::RIGID_TRANSFORM);
 }
 
 template <class TImage>
-RigidImageToImageRegistrationMethod<TImage>
-::~RigidImageToImageRegistrationMethod( void )
+RigidImageToImageRegistrationMethod<TImage>::~RigidImageToImageRegistrationMethod(void)
 {
   this->m_Transform->UnRegister();
 }
 
 template <class TImage>
-typename RigidImageToImageRegistrationMethod<TImage>::TransformType
-* RigidImageToImageRegistrationMethod<TImage>
-::GetTypedTransform( void )
-  {
-  return dynamic_cast<TransformType  *>( Superclass::GetTransform() );
-  }
+typename RigidImageToImageRegistrationMethod<TImage>::TransformType *
+RigidImageToImageRegistrationMethod<TImage>::GetTypedTransform(void)
+{
+  return dynamic_cast<TransformType *>(Superclass::GetTransform());
+}
 
 template <class TImage>
-const typename RigidImageToImageRegistrationMethod<TImage>::TransformType
-* RigidImageToImageRegistrationMethod<TImage>
-::GetTypedTransform( void ) const
-  {
-  return dynamic_cast<const TransformType  *>( Superclass::GetTransform() );
-  }
+const typename RigidImageToImageRegistrationMethod<TImage>::TransformType *
+RigidImageToImageRegistrationMethod<TImage>::GetTypedTransform(void) const
+{
+  return dynamic_cast<const TransformType *>(Superclass::GetTransform());
+}
 
 template <class TImage>
 typename RigidImageToImageRegistrationMethod<TImage>::AffineTransformPointer
-RigidImageToImageRegistrationMethod<TImage>
-::GetAffineTransform( void ) const
+RigidImageToImageRegistrationMethod<TImage>::GetAffineTransform(void) const
 {
   typename AffineTransformType::Pointer trans = AffineTransformType::New();
 
   trans->SetIdentity();
-  trans->SetCenter( this->GetTypedTransform()->GetCenter() );
-  trans->SetMatrix( this->GetTypedTransform()->GetMatrix() );
-  trans->SetOffset( this->GetTypedTransform()->GetOffset() );
+  trans->SetCenter(this->GetTypedTransform()->GetCenter());
+  trans->SetMatrix(this->GetTypedTransform()->GetMatrix());
+  trans->SetOffset(this->GetTypedTransform()->GetOffset());
 
   return trans;
 }
 
 template <class TImage>
 void
-RigidImageToImageRegistrationMethod<TImage>
-::SetInitialTransformParametersFromAffineTransform( const AffineTransformType * affine )
+RigidImageToImageRegistrationMethod<TImage>::SetInitialTransformParametersFromAffineTransform(
+  const AffineTransformType * affine)
 {
-  RigidTransformType * rigidTransform =
-    dynamic_cast<RigidTransformType *>( this->GetTransform() );
+  RigidTransformType * rigidTransform = dynamic_cast<RigidTransformType *>(this->GetTransform());
 
-  if( !rigidTransform )
-    {
+  if (!rigidTransform)
+  {
     itkExceptionMacro("GetTransform() didn't return a Rigid Transform");
-    }
+  }
 
-  rigidTransform->SetCenter( affine->GetCenter() );
-  rigidTransform->SetTranslation( affine->GetTranslation() );
+  rigidTransform->SetCenter(affine->GetCenter());
+  rigidTransform->SetTranslation(affine->GetTranslation());
 
   typedef vnl_matrix<double> VnlMatrixType;
 
@@ -153,50 +139,48 @@ RigidImageToImageRegistrationMethod<TImage>
   VnlMatrixType PQNQDiff;
 
   const unsigned int maximumIterations = 100;
-  for( unsigned int ni = 0; ni < maximumIterations; ni++ )
-    {
+  for (unsigned int ni = 0; ni < maximumIterations; ni++)
+  {
     // Average current Qi with its inverse transpose
-    NQ = ( PQ + vnl_inverse_transpose( PQ ) ) / 2.0;
+    NQ = (PQ + vnl_inverse_transpose(PQ)) / 2.0;
     PQNQDiff = NQ - PQ;
-    if( PQNQDiff.frobenius_norm() < 1e-7 )
-      {
+    if (PQNQDiff.frobenius_norm() < 1e-7)
+    {
       break;
-      }
-    else
-      {
-      PQ = NQ;
-      }
     }
+    else
+    {
+      PQ = NQ;
+    }
+  }
 
   typename AffineTransformType::MatrixType QMatrix;
 
   QMatrix = NQ;
 
-  rigidTransform->SetMatrix( QMatrix );
+  rigidTransform->SetMatrix(QMatrix);
 
-  this->SetInitialTransformFixedParameters( rigidTransform->GetFixedParameters() );
-  this->SetInitialTransformParameters( rigidTransform->GetParameters() );
+  this->SetInitialTransformFixedParameters(rigidTransform->GetFixedParameters());
+  this->SetInitialTransformParameters(rigidTransform->GetParameters());
 }
 
 template <class TImage>
 void
-RigidImageToImageRegistrationMethod<TImage>
-::GenerateData( void )
+RigidImageToImageRegistrationMethod<TImage>::GenerateData(void)
 {
   // Set the center of rotation
-  this->GetTransform()->SetFixedParameters( this->GetInitialTransformFixedParameters() );
+  this->GetTransform()->SetFixedParameters(this->GetInitialTransformFixedParameters());
 
   Superclass::GenerateData();
 }
 
 template <class TImage>
 void
-RigidImageToImageRegistrationMethod<TImage>
-::PrintSelf( std::ostream & os, Indent indent ) const
+RigidImageToImageRegistrationMethod<TImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
   this->Superclass::PrintSelf(os, indent);
 }
 
-};
+}; // namespace itk
 
 #endif

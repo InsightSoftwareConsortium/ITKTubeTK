@@ -25,23 +25,23 @@ limitations under the License.
 #include "itktubeTubeExtractorIO.h"
 #include "itktubeTubeXIO.h"
 
-int tubeIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
+int
+tubeIOPrintTest(int tubeNotUsed(argc), char * tubeNotUsed(argv)[])
 {
-  typedef itk::Image< float, 3 > ImageType;
-  itk::tube::PDFSegmenterParzenIO< ImageType,
-    ImageType > pdfSegmenterParzenIO;
+  typedef itk::Image<float, 3>                          ImageType;
+  itk::tube::PDFSegmenterParzenIO<ImageType, ImageType> pdfSegmenterParzenIO;
   std::cout << "-------------pdfSegmenterParzenIO" << std::endl;
   pdfSegmenterParzenIO.PrintInfo();
 
-  itk::tube::RidgeSeedFilterIO< ImageType, ImageType > ridgeSeedFilterIO;
+  itk::tube::RidgeSeedFilterIO<ImageType, ImageType> ridgeSeedFilterIO;
   std::cout << "-------------ridgeSeedFilterIO" << std::endl;
   ridgeSeedFilterIO.PrintInfo();
 
-  itk::tube::TubeExtractorIO< ImageType > tubeExtractorIO;
+  itk::tube::TubeExtractorIO<ImageType> tubeExtractorIO;
   std::cout << "-------------tubeExtractorIO" << std::endl;
   tubeExtractorIO.PrintInfo();
 
-  itk::tube::TubeXIO< 3 >::Pointer tubeTubeXIO;
+  itk::tube::TubeXIO<3>::Pointer tubeTubeXIO;
   std::cout << "-------------tubeTubeXIO" << tubeTubeXIO << std::endl;
 
   return EXIT_SUCCESS;

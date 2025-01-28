@@ -38,463 +38,450 @@ limitations under the License.
 
 #include "TubeMathCLP.h"
 
-template< unsigned int DimensionT >
-typename itk::GroupSpatialObject< DimensionT >::Pointer
-ReadTubeFile( const char * fileName )
+template <unsigned int DimensionT>
+typename itk::GroupSpatialObject<DimensionT>::Pointer
+ReadTubeFile(const char * fileName)
 {
-  typedef itk::SpatialObjectReader< DimensionT > SpatialObjectReaderType;
+  typedef itk::SpatialObjectReader<DimensionT> SpatialObjectReaderType;
 
-  typename SpatialObjectReaderType::Pointer reader =
-    SpatialObjectReaderType::New();
-  reader->SetFileName( fileName );
+  typename SpatialObjectReaderType::Pointer reader = SpatialObjectReaderType::New();
+  reader->SetFileName(fileName);
   reader->Update();
 
-  typename SpatialObjectReaderType::GroupType::Pointer group =
-    reader->GetGroup();
+  typename SpatialObjectReaderType::GroupType::Pointer group = reader->GetGroup();
   try
-    {
+  {
     group->Update();
-    }
-  catch( const itk::ExceptionObject & e )
-    {
+  }
+  catch (const itk::ExceptionObject & e)
+  {
     std::cout << "ITK Error:" << std::endl;
     std::cout << e.GetDescription() << std::endl;
-    }
-  catch( const std::exception & e )
-    {
+  }
+  catch (const std::exception & e)
+  {
     std::cout << "STD Error:" << std::endl;
     std::cout << e.what() << std::endl;
-    }
-  catch(...)
-    {
+  }
+  catch (...)
+  {
     std::cout << "Unknown error." << std::endl;
-    }
+  }
 
   return group;
 }
 
-template< unsigned int DimensionT >
-void WriteTubeFile( typename itk::GroupSpatialObject< DimensionT >::Pointer
-  object, const char * fileName )
+template <unsigned int DimensionT>
+void
+WriteTubeFile(typename itk::GroupSpatialObject<DimensionT>::Pointer object, const char * fileName)
 {
   std::cout << "Writing" << std::endl;
-  typedef itk::SpatialObjectWriter< DimensionT > SpatialObjectWriterType;
+  typedef itk::SpatialObjectWriter<DimensionT> SpatialObjectWriterType;
 
-  typename SpatialObjectWriterType::Pointer writer =
-    SpatialObjectWriterType::New();
-  writer->SetInput( object );
-  writer->SetFileName( fileName );
-  try 
-    {
+  typename SpatialObjectWriterType::Pointer writer = SpatialObjectWriterType::New();
+  writer->SetInput(object);
+  writer->SetFileName(fileName);
+  try
+  {
     writer->Update();
-    }
-  catch( const itk::ExceptionObject & e )
-    {
+  }
+  catch (const itk::ExceptionObject & e)
+  {
     std::cout << "ITK Error:" << std::endl;
     std::cout << e.GetDescription() << std::endl;
-    }
-  catch( const std::exception & e )
-    {
+  }
+  catch (const std::exception & e)
+  {
     std::cout << "STD Error:" << std::endl;
     std::cout << e.what() << std::endl;
-    }
-  catch(...)
-    {
+  }
+  catch (...)
+  {
     std::cout << "Unknown error." << std::endl;
-    }
-
+  }
 }
 
-template< class PixelT, unsigned int DimensionT >
-typename itk::Image< PixelT, DimensionT >::Pointer
-ReadImageFile( const char * fileName )
+template <class PixelT, unsigned int DimensionT>
+typename itk::Image<PixelT, DimensionT>::Pointer
+ReadImageFile(const char * fileName)
 {
-  typedef itk::Image< PixelT, DimensionT >  ImageType;
-  typedef itk::ImageFileReader< ImageType > ImageReaderType;
+  typedef itk::Image<PixelT, DimensionT>  ImageType;
+  typedef itk::ImageFileReader<ImageType> ImageReaderType;
 
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
-  reader->SetFileName( fileName );
-  try 
-    {
+  reader->SetFileName(fileName);
+  try
+  {
     reader->Update();
-    }
-  catch( const itk::ExceptionObject & e )
-    {
+  }
+  catch (const itk::ExceptionObject & e)
+  {
     std::cout << "ITK Error:" << std::endl;
     std::cout << e.GetDescription() << std::endl;
-    }
-  catch( const std::exception & e )
-    {
+  }
+  catch (const std::exception & e)
+  {
     std::cout << "STD Error:" << std::endl;
     std::cout << e.what() << std::endl;
-    }
-  catch(...)
-    {
+  }
+  catch (...)
+  {
     std::cout << "Unknown error." << std::endl;
-    }
+  }
 
   return reader->GetOutput();
 }
 
-template< unsigned int DimensionT >
-int DoIt( MetaCommand & command )
+template <unsigned int DimensionT>
+int
+DoIt(MetaCommand & command)
 {
-  typename itk::GroupSpatialObject< DimensionT >::Pointer inputTubes;
+  typename itk::GroupSpatialObject<DimensionT>::Pointer inputTubes;
 
   MetaCommand::OptionVector parsed = command.GetParsedOptions();
 
-  inputTubes = ReadTubeFile< DimensionT >( command.GetValueAsString(
-    "infile" ).c_str() );
+  inputTubes = ReadTubeFile<DimensionT>(command.GetValueAsString("infile").c_str());
 
   ::tube::TubeMathFilters<DimensionT> filter;
-  filter.SetInputTubeGroup( inputTubes );
+  filter.SetInputTubeGroup(inputTubes);
 
   int currentTube = -1;
-  filter.SetCurrentTubeId( currentTube );
+  filter.SetCurrentTubeId(currentTube);
   MetaCommand::OptionVector::const_iterator it = parsed.begin();
-  while( it != parsed.end() )
+  while (it != parsed.end())
+  {
+    if (it->name == "Write")
     {
-    if( it->name == "Write" )
-      {
-      WriteTubeFile< DimensionT >( inputTubes, command.GetValueAsString(
-        *it, "filename" ).c_str() );
-      }
-    else if( it->name == "SelectTube" )
-      {
-      ::tube::Message( "Select Tube" );
-      currentTube = command.GetValueAsInt( *it, "tubeNumber" );
-      filter.SetCurrentTubeId( currentTube );
-      }
-    else if( it->name == "SelectAllTubes" )
-      {
-      ::tube::Message( "Select All Tubes" );
+      WriteTubeFile<DimensionT>(inputTubes, command.GetValueAsString(*it, "filename").c_str());
+    }
+    else if (it->name == "SelectTube")
+    {
+      ::tube::Message("Select Tube");
+      currentTube = command.GetValueAsInt(*it, "tubeNumber");
+      filter.SetCurrentTubeId(currentTube);
+    }
+    else if (it->name == "SelectAllTubes")
+    {
+      ::tube::Message("Select All Tubes");
       currentTube = -1;
-      filter.SetCurrentTubeId( currentTube );
-      }
-    else if( it->name == "LoadPointValuesFromImage" )
-      {
+      filter.SetCurrentTubeId(currentTube);
+    }
+    else if (it->name == "LoadPointValuesFromImage")
+    {
       std::cout << "Load Point Values From Image" << std::endl;
-      typedef itk::Image< float, DimensionT > ImageType;
-      typename ImageType::Pointer ridgeImage = ReadImageFile< float,
-        DimensionT >( command.GetValueAsString( *it, "filename" ).c_str() );
-      double blend = command.GetValueAsFloat( *it, "BlendFactor" );
-      filter.SetPointValuesFromImage( ridgeImage,
-        command.GetValueAsString( *it, "value" ), blend );
+      typedef itk::Image<float, DimensionT> ImageType;
+      typename ImageType::Pointer           ridgeImage =
+        ReadImageFile<float, DimensionT>(command.GetValueAsString(*it, "filename").c_str());
+      double blend = command.GetValueAsFloat(*it, "BlendFactor");
+      filter.SetPointValuesFromImage(ridgeImage, command.GetValueAsString(*it, "value"), blend);
       inputTubes = filter.GetOutputTubeGroup();
-      }
-    else if( it->name == "LoadPointValuesFromImageMean" )
-      {
+    }
+    else if (it->name == "LoadPointValuesFromImageMean")
+    {
       std::cout << "Load Value From Image Mean" << std::endl;
-      typedef itk::Image< float, DimensionT > ImageType;
-      typename ImageType::Pointer ridgeImage = ReadImageFile< float,
-        DimensionT >( command.GetValueAsString( *it, "filename" ).c_str() );
-      filter.SetPointValuesFromImageMean( ridgeImage,
-        command.GetValueAsString( *it, "value" ) );
+      typedef itk::Image<float, DimensionT> ImageType;
+      typename ImageType::Pointer           ridgeImage =
+        ReadImageFile<float, DimensionT>(command.GetValueAsString(*it, "filename").c_str());
+      filter.SetPointValuesFromImageMean(ridgeImage, command.GetValueAsString(*it, "value"));
       inputTubes = filter.GetOutputTubeGroup();
-      }
-    else if( it->name == "LoadPointValuesFromTubeRegions" )
-      {
+    }
+    else if (it->name == "LoadPointValuesFromTubeRegions")
+    {
       static bool first = true;
       std::cout << "Load Values From Regions" << std::endl;
-      typedef itk::Image< float, DimensionT > ImageType;
-      typename ImageType::Pointer valueImage = ReadImageFile< float,
-        DimensionT >( command.GetValueAsString( *it, "filename" ).c_str() );
-      if( first )
-        {
+      typedef itk::Image<float, DimensionT> ImageType;
+      typename ImageType::Pointer           valueImage =
+        ReadImageFile<float, DimensionT>(command.GetValueAsString(*it, "filename").c_str());
+      if (first)
+      {
         first = false;
         filter.ComputeTubeRegions(valueImage);
-        }
-      filter.SetPointValuesFromTubeRegions( valueImage,
-        command.GetValueAsString( *it, "value" ),
-        command.GetValueAsFloat( *it, "minRadiusFactor" ),
-        command.GetValueAsFloat( *it, "maxRadiusFactor" ) );
-      inputTubes = filter.GetOutputTubeGroup();
       }
-    else if( it->name == "LoadPointValuesFromTubeRadius" )
-      {
+      filter.SetPointValuesFromTubeRegions(valueImage,
+                                           command.GetValueAsString(*it, "value"),
+                                           command.GetValueAsFloat(*it, "minRadiusFactor"),
+                                           command.GetValueAsFloat(*it, "maxRadiusFactor"));
+      inputTubes = filter.GetOutputTubeGroup();
+    }
+    else if (it->name == "LoadPointValuesFromTubeRadius")
+    {
       static bool first = true;
       std::cout << "Load Values From Radius" << std::endl;
-      typedef itk::Image< float, DimensionT > ImageType;
-      typename ImageType::Pointer valueImage = ReadImageFile< float,
-        DimensionT >( command.GetValueAsString( *it, "filename" ).c_str() );
-      if( first )
-        {
+      typedef itk::Image<float, DimensionT> ImageType;
+      typename ImageType::Pointer           valueImage =
+        ReadImageFile<float, DimensionT>(command.GetValueAsString(*it, "filename").c_str());
+      if (first)
+      {
         first = false;
         filter.ComputeTubeRegions(valueImage);
-        }
-      filter.SetPointValuesFromTubeRadius( valueImage,
-        command.GetValueAsString( *it, "value" ),
-        command.GetValueAsFloat( *it, "minRadiusFactor" ),
-        command.GetValueAsFloat( *it, "maxRadiusFactor" ) );
+      }
+      filter.SetPointValuesFromTubeRadius(valueImage,
+                                          command.GetValueAsString(*it, "value"),
+                                          command.GetValueAsFloat(*it, "minRadiusFactor"),
+                                          command.GetValueAsFloat(*it, "maxRadiusFactor"));
       inputTubes = filter.GetOutputTubeGroup();
-      }
-    else if( it->name == "Delete" )
-      {
-      ::tube::Message( "Delete Not Implemented" );
-      }
-    else if( it->name == "Reverse" )
-      {
-      ::tube::Message( "Reverse Not Implemented" );
-      }
-    else if( it->name == "FillGapsInTree" )
-      {
-      ::tube::Message( "Fill gapes in tree" );
-      filter.FillGapToParent(
-        command.GetValueAsString( *it, "InterpolationMethod" ).c_str()[0] );
+    }
+    else if (it->name == "Delete")
+    {
+      ::tube::Message("Delete Not Implemented");
+    }
+    else if (it->name == "Reverse")
+    {
+      ::tube::Message("Reverse Not Implemented");
+    }
+    else if (it->name == "FillGapsInTree")
+    {
+      ::tube::Message("Fill gapes in tree");
+      filter.FillGapToParent(command.GetValueAsString(*it, "InterpolationMethod").c_str()[0]);
       inputTubes = filter.GetOutputTubeGroup();
-      }
-    else if( it->name == "ComputeTangentsAndNormals" )
-      {
-      ::tube::Message( "Compute Tangents and Normals" );
-      typedef itk::TubeSpatialObject< DimensionT >  TubeType;
+    }
+    else if (it->name == "ComputeTangentsAndNormals")
+    {
+      ::tube::Message("Compute Tangents and Normals");
+      typedef itk::TubeSpatialObject<DimensionT> TubeType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
       char soTypeName[80];
-      strcpy( soTypeName, "TubeSpatialObject" );
+      strcpy(soTypeName, "TubeSpatialObject");
       typename TubeType::ChildrenListPointer inputTubeList =
-        inputTubes->GetChildren( inputTubes->GetMaximumDepth(),
-        soTypeName );
-      for( tubeIterator = inputTubeList->begin(); tubeIterator !=
-        inputTubeList->end(); tubeIterator++ )
-        {
-        typename TubeType::Pointer inputTube = ( ( TubeType * )( tubeIterator->
-          GetPointer() ) );
+        inputTubes->GetChildren(inputTubes->GetMaximumDepth(), soTypeName);
+      for (tubeIterator = inputTubeList->begin(); tubeIterator != inputTubeList->end(); tubeIterator++)
+      {
+        typename TubeType::Pointer inputTube = ((TubeType *)(tubeIterator->GetPointer()));
 
-        if( currentTube == -1 || inputTube->GetId() == currentTube )
-          {
+        if (currentTube == -1 || inputTube->GetId() == currentTube)
+        {
           inputTube->ComputeTangentsAndNormals();
-          }
         }
+      }
       inputTubeList->clear();
       delete inputTubeList;
-      }
-    else if( it->name == "SmoothTube" )
-      {
+    }
+    else if (it->name == "SmoothTube")
+    {
       std::cout << "Smooth" << std::endl;
-      double sigma = command.GetValueAsFloat( *it, "Sigma" );
-      filter.SmoothTube( sigma );
+      double sigma = command.GetValueAsFloat(*it, "Sigma");
+      filter.SmoothTube(sigma);
       inputTubes = filter.GetOutputTubeGroup();
-      }
-    else if( it->name == "RenumberTubes" )
-      {
+    }
+    else if (it->name == "RenumberTubes")
+    {
       std::cout << "RenumberTubes" << std::endl;
       filter.RenumberTubes();
       inputTubes = filter.GetOutputTubeGroup();
-      }
-    else if( it->name == "RenumberPoints" )
-      {
+    }
+    else if (it->name == "RenumberPoints")
+    {
       std::cout << "RenumberPoints" << std::endl;
       filter.RenumberPoints();
       inputTubes = filter.GetOutputTubeGroup();
-      }
-    else if( it->name == "SplitAtPoint" )
-      {
-      ::tube::Message( "Split at Point" );
-      }
-    else if( it->name == "MarkAsArtery" )
-      {
-      ::tube::Message( "Mark as Artery" );
-      typedef itk::TubeSpatialObject< DimensionT >  TubeType;
-
-      typename TubeType::ChildrenListType::iterator tubeIterator;
-
-      char soTypeName[80];
-      strcpy( soTypeName, "TubeSpatialObject" );
-      typename TubeType::ChildrenListPointer inputTubeList =
-        inputTubes->GetChildren( inputTubes->GetMaximumDepth(),
-        soTypeName );
-      for( tubeIterator = inputTubeList->begin(); tubeIterator !=
-        inputTubeList->end(); tubeIterator++ )
-        {
-        typename TubeType::Pointer inputTube = ( ( TubeType * )( tubeIterator->
-          GetPointer() ) );
-
-        if( currentTube == -1 || inputTube->GetId() == currentTube )
-          {
-          std::string str;
-          if( inputTube->GetProperty().GetTagStringValue( "Artery", str )
-            && str == "True" )
-            {
-            inputTube->GetProperty().SetTagStringValue( "Artery", "False" );
-            }
-          else
-            {
-            inputTube->GetProperty().SetTagStringValue( "Artery", "True" );
-            }
-          }
-        }
-      inputTubeList->clear();
-      delete inputTubeList;
-      }
-    else if( it->name == "MarkAsRoot" )
-      {
-      ::tube::Message( "Mark as Root" );
-      typedef itk::TubeSpatialObject< DimensionT >  TubeType;
-
-      typename TubeType::ChildrenListType::iterator tubeIterator;
-
-      char soTypeName[80];
-      strcpy( soTypeName, "TubeSpatialObject" );
-      typename TubeType::ChildrenListPointer inputTubeList =
-        inputTubes->GetChildren( inputTubes->GetMaximumDepth(),
-        soTypeName );
-      for( tubeIterator = inputTubeList->begin(); tubeIterator !=
-        inputTubeList->end(); tubeIterator++ )
-        {
-        typename TubeType::Pointer inputTube = ( ( TubeType * )( tubeIterator->
-          GetPointer() ) );
-
-        if( currentTube == -1 || inputTube->GetId() == currentTube )
-          {
-          inputTube->SetRoot( true );
-          }
-        }
-      inputTubeList->clear();
-      delete inputTubeList;
-      }
-    else if( it->name == "UniqueIDs" )
-      {
-      ::tube::Message( "Assign Unique IDs" );
-      typedef itk::TubeSpatialObject< DimensionT >  TubeType;
-
-      typename TubeType::ChildrenListType::iterator tubeIterator;
-
-      char soTypeName[80];
-      strcpy( soTypeName, "TubeSpatialObject" );
-      typename TubeType::ChildrenListPointer inputTubeList =
-        inputTubes->GetChildren( inputTubes->GetMaximumDepth(),
-        soTypeName );
-      unsigned int count = 100;
-      for( tubeIterator = inputTubeList->begin(); tubeIterator !=
-        inputTubeList->end(); tubeIterator++ )
-        {
-        typename TubeType::Pointer inputTube = ( ( TubeType * )( tubeIterator->
-          GetPointer() ) );
-
-        inputTube->SetId( count++ );
-        }
-
-      inputTubeList->clear();
-      delete inputTubeList;
-      }
-    else if( it->name == "MergeWithTube" )
-      {
-      ::tube::Message( "Merge with Tube" );
-      }
-    ++it;
     }
+    else if (it->name == "SplitAtPoint")
+    {
+      ::tube::Message("Split at Point");
+    }
+    else if (it->name == "MarkAsArtery")
+    {
+      ::tube::Message("Mark as Artery");
+      typedef itk::TubeSpatialObject<DimensionT> TubeType;
+
+      typename TubeType::ChildrenListType::iterator tubeIterator;
+
+      char soTypeName[80];
+      strcpy(soTypeName, "TubeSpatialObject");
+      typename TubeType::ChildrenListPointer inputTubeList =
+        inputTubes->GetChildren(inputTubes->GetMaximumDepth(), soTypeName);
+      for (tubeIterator = inputTubeList->begin(); tubeIterator != inputTubeList->end(); tubeIterator++)
+      {
+        typename TubeType::Pointer inputTube = ((TubeType *)(tubeIterator->GetPointer()));
+
+        if (currentTube == -1 || inputTube->GetId() == currentTube)
+        {
+          std::string str;
+          if (inputTube->GetProperty().GetTagStringValue("Artery", str) && str == "True")
+          {
+            inputTube->GetProperty().SetTagStringValue("Artery", "False");
+          }
+          else
+          {
+            inputTube->GetProperty().SetTagStringValue("Artery", "True");
+          }
+        }
+      }
+      inputTubeList->clear();
+      delete inputTubeList;
+    }
+    else if (it->name == "MarkAsRoot")
+    {
+      ::tube::Message("Mark as Root");
+      typedef itk::TubeSpatialObject<DimensionT> TubeType;
+
+      typename TubeType::ChildrenListType::iterator tubeIterator;
+
+      char soTypeName[80];
+      strcpy(soTypeName, "TubeSpatialObject");
+      typename TubeType::ChildrenListPointer inputTubeList =
+        inputTubes->GetChildren(inputTubes->GetMaximumDepth(), soTypeName);
+      for (tubeIterator = inputTubeList->begin(); tubeIterator != inputTubeList->end(); tubeIterator++)
+      {
+        typename TubeType::Pointer inputTube = ((TubeType *)(tubeIterator->GetPointer()));
+
+        if (currentTube == -1 || inputTube->GetId() == currentTube)
+        {
+          inputTube->SetRoot(true);
+        }
+      }
+      inputTubeList->clear();
+      delete inputTubeList;
+    }
+    else if (it->name == "UniqueIDs")
+    {
+      ::tube::Message("Assign Unique IDs");
+      typedef itk::TubeSpatialObject<DimensionT> TubeType;
+
+      typename TubeType::ChildrenListType::iterator tubeIterator;
+
+      char soTypeName[80];
+      strcpy(soTypeName, "TubeSpatialObject");
+      typename TubeType::ChildrenListPointer inputTubeList =
+        inputTubes->GetChildren(inputTubes->GetMaximumDepth(), soTypeName);
+      unsigned int count = 100;
+      for (tubeIterator = inputTubeList->begin(); tubeIterator != inputTubeList->end(); tubeIterator++)
+      {
+        typename TubeType::Pointer inputTube = ((TubeType *)(tubeIterator->GetPointer()));
+
+        inputTube->SetId(count++);
+      }
+
+      inputTubeList->clear();
+      delete inputTubeList;
+    }
+    else if (it->name == "MergeWithTube")
+    {
+      ::tube::Message("Merge with Tube");
+    }
+    ++it;
+  }
 
   return EXIT_SUCCESS;
 }
 
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
-   //PARSE_ARGS;
+  // PARSE_ARGS;
   MetaCommand command;
 
-  command.SetName( "ImageMath" );
-  command.SetVersion( "1.0" );
-  command.SetAuthor( "CADDLab @ UNC" );
-  command.SetDescription( "Perform several filters on an set of tubes" );
+  command.SetName("ImageMath");
+  command.SetVersion("1.0");
+  command.SetAuthor("CADDLab @ UNC");
+  command.SetDescription("Perform several filters on an set of tubes");
 
-  command.AddField( "infile", "infile filename",
-    MetaCommand::STRING, MetaCommand::DATA_IN );
+  command.AddField("infile", "infile filename", MetaCommand::STRING, MetaCommand::DATA_IN);
 
-  command.SetOption( "Write", "w", false,
-    "writes current tubes to the designated file" );
-  command.AddOptionField( "Write", "filename", MetaCommand::STRING, true,
-    "", "output filename", MetaCommand::DATA_OUT );
+  command.SetOption("Write", "w", false, "writes current tubes to the designated file");
+  command.AddOptionField("Write", "filename", MetaCommand::STRING, true, "", "output filename", MetaCommand::DATA_OUT);
 
-  command.SetOption( "SelectTube", "t", false,
-    "Sets the target tube by ID." );
-  command.AddOptionField( "SelectTube", "tubeNumber",
-    MetaCommand::INT, true, "", "Tube Number", MetaCommand::DATA_IN );
+  command.SetOption("SelectTube", "t", false, "Sets the target tube by ID.");
+  command.AddOptionField("SelectTube", "tubeNumber", MetaCommand::INT, true, "", "Tube Number", MetaCommand::DATA_IN);
 
-  command.SetOption( "SelectAllTubes", "T", false,
-    "Sets the target tube to be all tubes." );
+  command.SetOption("SelectAllTubes", "T", false, "Sets the target tube to be all tubes.");
 
-  command.SetOption( "LoadPointValuesFromImage", "l", false,
-    "Sets tube points' values to the values in the image." );
-  command.AddOptionField( "LoadPointValuesFromImage", "value",
-    MetaCommand::STRING, true, "",
-    "Ridgeness, Medialness, Branchness, Radius, <NewVarName>",
-    MetaCommand::DATA_IN );
-  command.AddOptionField( "LoadPointValuesFromImage", "filename",
-    MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
-  command.AddOptionField( "LoadPointValuesFromImage", "BlendFactor",
-    MetaCommand::FLOAT, true );
+  command.SetOption("LoadPointValuesFromImage", "l", false, "Sets tube points' values to the values in the image.");
+  command.AddOptionField("LoadPointValuesFromImage",
+                         "value",
+                         MetaCommand::STRING,
+                         true,
+                         "",
+                         "Ridgeness, Medialness, Branchness, Radius, <NewVarName>",
+                         MetaCommand::DATA_IN);
+  command.AddOptionField(
+    "LoadPointValuesFromImage", "filename", MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN);
+  command.AddOptionField("LoadPointValuesFromImage", "BlendFactor", MetaCommand::FLOAT, true);
 
-  command.SetOption( "LoadPointValuesFromImageMean", "L", false,
-    "Sets all point values to mean value along the tube in the image." );
-  command.AddOptionField( "LoadPointValuesFromImageMean", "value",
-    MetaCommand::STRING, true, "",
-    "Ridgeness, Medialness, Branchness, Radius, <NewVarName>",
-    MetaCommand::DATA_IN );
-  command.AddOptionField( "LoadPointValuesFromImageMean", "filename",
-    MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
+  command.SetOption(
+    "LoadPointValuesFromImageMean", "L", false, "Sets all point values to mean value along the tube in the image.");
+  command.AddOptionField("LoadPointValuesFromImageMean",
+                         "value",
+                         MetaCommand::STRING,
+                         true,
+                         "",
+                         "Ridgeness, Medialness, Branchness, Radius, <NewVarName>",
+                         MetaCommand::DATA_IN);
+  command.AddOptionField(
+    "LoadPointValuesFromImageMean", "filename", MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN);
 
-  command.SetOption( "LoadPointValuesFromTubeRegions", "p", false,
-    "Set tube point values as averages in regions that are closest to them." );
-  command.AddOptionField( "LoadPointValuesFromTubeRegions", "value",
-    MetaCommand::STRING, true, "",
-    "Ridgeness, Medialness, Branchness, Radius, <NewVarName>",
-    MetaCommand::DATA_IN );
-  command.AddOptionField( "LoadPointValuesFromTubeRegions", "filename",
-    MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
-  command.AddOptionField( "LoadPointValuesFromTubeRegions", "minRadiusFactor",
-    MetaCommand::FLOAT, true );
-  command.AddOptionField( "LoadPointValuesFromTubeRegions", "maxRadiusFactor",
-    MetaCommand::FLOAT, true );
+  command.SetOption("LoadPointValuesFromTubeRegions",
+                    "p",
+                    false,
+                    "Set tube point values as averages in regions that are closest to them.");
+  command.AddOptionField("LoadPointValuesFromTubeRegions",
+                         "value",
+                         MetaCommand::STRING,
+                         true,
+                         "",
+                         "Ridgeness, Medialness, Branchness, Radius, <NewVarName>",
+                         MetaCommand::DATA_IN);
+  command.AddOptionField("LoadPointValuesFromTubeRegions",
+                         "filename",
+                         MetaCommand::STRING,
+                         true,
+                         "",
+                         "Image filename",
+                         MetaCommand::DATA_IN);
+  command.AddOptionField("LoadPointValuesFromTubeRegions", "minRadiusFactor", MetaCommand::FLOAT, true);
+  command.AddOptionField("LoadPointValuesFromTubeRegions", "maxRadiusFactor", MetaCommand::FLOAT, true);
 
-  command.SetOption( "LoadPointValuesFromTubeRadius", "P", false,
-    "Set tube point values as averages in regions that are closest to them." );
-  command.AddOptionField( "LoadPointValuesFromTubeRadius", "value",
-    MetaCommand::STRING, true, "",
-    "Ridgeness, Medialness, Branchness, Radius, <NewVarName>",
-    MetaCommand::DATA_IN );
-  command.AddOptionField( "LoadPointValuesFromTubeRadius", "filename",
-    MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
-  command.AddOptionField( "LoadPointValuesFromTubeRadius", "minRadiusFactor",
-    MetaCommand::FLOAT, true );
-  command.AddOptionField( "LoadPointValuesFromTubeRadius", "maxRadiusFactor",
-    MetaCommand::FLOAT, true );
+  command.SetOption("LoadPointValuesFromTubeRadius",
+                    "P",
+                    false,
+                    "Set tube point values as averages in regions that are closest to them.");
+  command.AddOptionField("LoadPointValuesFromTubeRadius",
+                         "value",
+                         MetaCommand::STRING,
+                         true,
+                         "",
+                         "Ridgeness, Medialness, Branchness, Radius, <NewVarName>",
+                         MetaCommand::DATA_IN);
+  command.AddOptionField(
+    "LoadPointValuesFromTubeRadius", "filename", MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN);
+  command.AddOptionField("LoadPointValuesFromTubeRadius", "minRadiusFactor", MetaCommand::FLOAT, true);
+  command.AddOptionField("LoadPointValuesFromTubeRadius", "maxRadiusFactor", MetaCommand::FLOAT, true);
 
-  command.SetOption( "FillGapsInTubeTree", "f", false,
-    "Connects the parent and child tube if they have a gap inbetween,"
-    " by interpolating the path inbetween." );
-  command.AddOptionField( "FillGapsInTubeTree", "InterpolationMethod",
-    MetaCommand::STRING, true, "",
-    "[S]traight Line, [L]Linear Interp., [C]urve Fitting, [M]inimal Path",
-    MetaCommand::DATA_IN );
+  command.SetOption("FillGapsInTubeTree",
+                    "f",
+                    false,
+                    "Connects the parent and child tube if they have a gap inbetween,"
+                    " by interpolating the path inbetween.");
+  command.AddOptionField("FillGapsInTubeTree",
+                         "InterpolationMethod",
+                         MetaCommand::STRING,
+                         true,
+                         "",
+                         "[S]traight Line, [L]Linear Interp., [C]urve Fitting, [M]inimal Path",
+                         MetaCommand::DATA_IN);
 
-  command.SetOption( "SmoothTube", "s", false,
-    "Smooth position, tangents, and normals" );
-  command.AddOptionField( "SmoothTube", "Sigma",
-    MetaCommand::FLOAT, true );
+  command.SetOption("SmoothTube", "s", false, "Smooth position, tangents, and normals");
+  command.AddOptionField("SmoothTube", "Sigma", MetaCommand::FLOAT, true);
 
-  command.SetOption( "RenumberPoints", "r", false,
-    "Assigned points sequential numbers for Id." );
+  command.SetOption("RenumberPoints", "r", false, "Assigned points sequential numbers for Id.");
 
-  command.SetOption( "RenumberTubes", "R", false,
-    "Assigned tubes sequential numbers for Id." );
+  command.SetOption("RenumberTubes", "R", false, "Assigned tubes sequential numbers for Id.");
 
-  command.SetOption( "ComputeTangentsAndNormals", "n", false,
-    "Compute current tube's tangents and normals from point sequence." );
+  command.SetOption(
+    "ComputeTangentsAndNormals", "n", false, "Compute current tube's tangents and normals from point sequence.");
 
-  command.SetOption( "MarkAsArtery", "a", false,
-    "Flag the current tube as an Artery." );
+  command.SetOption("MarkAsArtery", "a", false, "Flag the current tube as an Artery.");
 
-  command.SetOption( "MarkAsRoot", "o", false,
-    "Flag the current tube as an Root in a tree." );
+  command.SetOption("MarkAsRoot", "o", false, "Flag the current tube as an Root in a tree.");
 
-  command.SetOption( "UniqueIDs", "u", false,
-    "Assign current tube a unique ID." );
+  command.SetOption("UniqueIDs", "u", false, "Assign current tube a unique ID.");
 
-  if( !command.Parse( argc, argv ) )
-    {
+  if (!command.Parse(argc, argv))
+  {
     return EXIT_FAILURE;
-    }
+  }
 
-  return DoIt< 3 >( command );
+  return DoIt<3>(command);
 }

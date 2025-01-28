@@ -26,75 +26,78 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-int itktubeFFTGaussianDerivativeIFFTFilterTest( int argc, char * argv[] )
+int
+itktubeFFTGaussianDerivativeIFFTFilterTest(int argc, char * argv[])
 {
-  if( argc < 7 )
-    {
+  if (argc < 7)
+  {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0] << " orderX orderY scaleX scaleY inputImage outputImage" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // Define the dimension of the images
-  enum { Dimension = 2 };
+  enum
+  {
+    Dimension = 2
+  };
 
   // Define the pixel type
   typedef float PixelType;
 
   // Declare the types of the images
-  typedef itk::Image<PixelType, Dimension>  ImageType;
+  typedef itk::Image<PixelType, Dimension> ImageType;
 
   // Declare the reader and writer
-  typedef itk::ImageFileReader< ImageType > ReaderType;
-  typedef itk::ImageFileWriter< ImageType > WriterType;
+  typedef itk::ImageFileReader<ImageType> ReaderType;
+  typedef itk::ImageFileWriter<ImageType> WriterType;
 
   // Declare the type for the Filter
-  typedef itk::tube::FFTGaussianDerivativeIFFTFilter< ImageType, ImageType >
-    FunctionType;
+  typedef itk::tube::FFTGaussianDerivativeIFFTFilter<ImageType, ImageType> FunctionType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( argv[5] );
+  reader->SetFileName(argv[5]);
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject& e )
-    {
-    std::cerr << "Exception caught during read:\n"  << e;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cerr << "Exception caught during read:\n" << e;
     return EXIT_FAILURE;
-    }
+  }
 
   ImageType::Pointer inputImage = reader->GetOutput();
 
   FunctionType::Pointer func = FunctionType::New();
-  func->SetInput( inputImage );
+  func->SetInput(inputImage);
 
   FunctionType::OrdersType orders;
-  orders[0] = atoi( argv[1] );
-  orders[1] = atoi( argv[2] );
-  func->SetOrders( orders );
+  orders[0] = atoi(argv[1]);
+  orders[1] = atoi(argv[2]);
+  func->SetOrders(orders);
   FunctionType::SigmasType sigmas;
-  sigmas[0] = atof( argv[3] );
-  sigmas[1] = atof( argv[4] );
-  func->SetSigmas( sigmas );
+  sigmas[0] = atof(argv[3]);
+  sigmas[1] = atof(argv[4]);
+  func->SetSigmas(sigmas);
   func->Update();
 
   WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[6] );
-  writer->SetInput( func->GetOutput() );
-  writer->SetUseCompression( true );
+  writer->SetFileName(argv[6]);
+  writer->SetInput(func->GetOutput());
+  writer->SetUseCompression(true);
 
   try
-    {
+  {
     writer->Update();
-    }
-  catch( itk::ExceptionObject& e )
-    {
-    std::cerr << "Exception caught during write:\n"  << e;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cerr << "Exception caught during write:\n" << e;
     return EXIT_FAILURE;
-    }
+  }
 
   return EXIT_SUCCESS;
 }

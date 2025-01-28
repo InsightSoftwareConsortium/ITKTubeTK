@@ -38,8 +38,9 @@ limitations under the License.
 #include "Convert3DImagesTo4DImageCLP.h"
 
 // Your code should be within the DoIt function...
-template< class TPixel >
-int DoIt( int argc, char * argv[] )
+template <class TPixel>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
@@ -48,143 +49,140 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter( "Convert3DImagesTo4DImage",
-    CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("Convert3DImagesTo4DImage", CLPProcessInformation);
   progressReporter.Start();
 
-  typedef TPixel                                    InputPixelType;
-  typedef itk::Image< InputPixelType, 3 >           InputImageType;
-  typedef itk::ImageFileReader< InputImageType >    ReaderType;
+  typedef TPixel                               InputPixelType;
+  typedef itk::Image<InputPixelType, 3>        InputImageType;
+  typedef itk::ImageFileReader<InputImageType> ReaderType;
 
-  typedef tube::Write4DImageFrom3DImages< InputImageType > FilterType;
+  typedef tube::Write4DImageFrom3DImages<InputImageType> FilterType;
 
   typename FilterType::Pointer filter = FilterType::New();
-  unsigned int num3DImages = argc-2;
-  filter->SetNumberOfInputImages( num3DImages );
+  unsigned int                 num3DImages = argc - 2;
+  filter->SetNumberOfInputImages(num3DImages);
 
-  timeCollector.Start( "Load data" );
+  timeCollector.Start("Load data");
   double progress = 0.0;
-  progressReporter.Report( progress );
-  for( unsigned int i=0; i<num3DImages; ++i )
-    {
+  progressReporter.Report(progress);
+  for (unsigned int i = 0; i < num3DImages; ++i)
+  {
     typename ReaderType::Pointer reader = ReaderType::New();
     std::cout << "Reading #" << i << " : " << inputImageFileNames[i] << std::endl;
-    reader->SetFileName( inputImageFileNames[i] );
+    reader->SetFileName(inputImageFileNames[i]);
     try
-      {
+    {
       reader->Update();
-      }
-    catch( itk::ExceptionObject & err )
-      {
-      tube::ErrorMessage( "Reading volume: Exception caught: "
-                          + std::string( err.GetDescription() ) );
+    }
+    catch (itk::ExceptionObject & err)
+    {
+      tube::ErrorMessage("Reading volume: Exception caught: " + std::string(err.GetDescription()));
       timeCollector.Report();
       return EXIT_FAILURE;
-      }
-    filter->SetNthInputImage( i, reader->GetOutput() );
-
-    progress = i * 0.75/num3DImages;
-    progressReporter.Report( progress );
     }
-  timeCollector.Stop( "Load data" );
+    filter->SetNthInputImage(i, reader->GetOutput());
 
-  filter->SetFileName( outputImageFileName );
+    progress = i * 0.75 / num3DImages;
+    progressReporter.Report(progress);
+  }
+  timeCollector.Stop("Load data");
+
+  filter->SetFileName(outputImageFileName);
   filter->Write();
 
   progress = 1.0;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
   progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;
-  }
+}
 
 namespace tube
 {
 
 // Get the component type and dimension of the image.
-void GetImageInformation( const std::string & fileName,
-                          itk::ImageIOBase::IOComponentEnum & componentType,
-                          unsigned int & dimension )
+void
+GetImageInformation(const std::string &                 fileName,
+                    itk::ImageIOBase::IOComponentEnum & componentType,
+                    unsigned int &                      dimension)
 {
-  typedef itk::ImageIOBase     ImageIOType;
-  typedef itk::ImageIOFactory  ImageIOFactoryType;
+  typedef itk::ImageIOBase    ImageIOType;
+  typedef itk::ImageIOFactory ImageIOFactoryType;
 
-  ImageIOType::Pointer imageIO =
-    ImageIOFactoryType::CreateImageIO( fileName.c_str(),
-      itk::IOFileModeEnum::ReadMode );
+  ImageIOType::Pointer imageIO = ImageIOFactoryType::CreateImageIO(fileName.c_str(), itk::IOFileModeEnum::ReadMode);
 
-  if( imageIO )
-    {
+  if (imageIO)
+  {
     // Read the metadata from the image file.
-    imageIO->SetFileName( fileName );
+    imageIO->SetFileName(fileName);
     imageIO->ReadImageInformation();
 
     componentType = imageIO->GetComponentType();
     dimension = imageIO->GetNumberOfDimensions();
-    }
+  }
   else
-    {
-    tubeErrorMacro( << "No ImageIO was found." );
-    }
+  {
+    tubeErrorMacro(<< "No ImageIO was found.");
+  }
 }
 
-}
+} // namespace tube
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
-  typedef itk::ImageIOBase              ImageIOType;
-  typedef ImageIOType::IOComponentEnum  IOComponentType;
+  typedef itk::ImageIOBase             ImageIOType;
+  typedef ImageIOType::IOComponentEnum IOComponentType;
 
   IOComponentType componentType = IOComponentType::UNKNOWNCOMPONENTTYPE;
-  unsigned int dimension = 0;
+  unsigned int    dimension = 0;
   try
-    {
-    tube::GetImageInformation( inputImageFileNames[0],
-      componentType, dimension );
+  {
+    tube::GetImageInformation(inputImageFileNames[0], componentType, dimension);
 
-    if( dimension == 3 )
+    if (dimension == 3)
+    {
+      switch (componentType)
       {
-      switch( componentType )
-        {
         case IOComponentType::UCHAR:
-          return DoIt< unsigned char >( argc, argv );
+          return DoIt<unsigned char>(argc, argv);
         case IOComponentType::CHAR:
-          return DoIt< char >( argc, argv );
+          return DoIt<char>(argc, argv);
         case IOComponentType::USHORT:
-          return DoIt< unsigned short >( argc, argv );
+          return DoIt<unsigned short>(argc, argv);
         case IOComponentType::SHORT:
-          return DoIt< short >( argc, argv );
+          return DoIt<short>(argc, argv);
         case IOComponentType::FLOAT:
-          return DoIt< float >( argc, argv );
+          return DoIt<float>(argc, argv);
         case IOComponentType::DOUBLE:
-          return DoIt< double >( argc, argv );
+          return DoIt<double>(argc, argv);
         case IOComponentType::INT:
-          return DoIt< int >( argc, argv );
+          return DoIt<int>(argc, argv);
         case IOComponentType::UINT:
-          return DoIt< unsigned int >( argc, argv );
+          return DoIt<unsigned int>(argc, argv);
         case IOComponentType::UNKNOWNCOMPONENTTYPE:
         default:
-          tubeErrorMacro( << "Unknown component type." );
+          tubeErrorMacro(<< "Unknown component type.");
           return EXIT_FAILURE;
-        }
       }
-    tubeErrorMacro( << "Dimension size of " << dimension << " not supported" );
-    return EXIT_FAILURE;
     }
-  catch( itk::ExceptionObject & ex )
-    {
-    tubeErrorMacro( << "ITK exception caught. " << ex );
+    tubeErrorMacro(<< "Dimension size of " << dimension << " not supported");
     return EXIT_FAILURE;
-    }
-  catch( ... )
-    {
-    tubeErrorMacro( << "Exception caught." );
+  }
+  catch (itk::ExceptionObject & ex)
+  {
+    tubeErrorMacro(<< "ITK exception caught. " << ex);
     return EXIT_FAILURE;
-    }
+  }
+  catch (...)
+  {
+    tubeErrorMacro(<< "Exception caught.");
+    return EXIT_FAILURE;
+  }
 
   return EXIT_FAILURE;
 }

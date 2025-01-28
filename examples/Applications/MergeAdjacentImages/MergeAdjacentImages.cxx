@@ -35,8 +35,9 @@ limitations under the License.
 
 #include "MergeAdjacentImagesCLP.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 #define PARSE_ARGS_FLOAT_ONLY 1
 
@@ -44,137 +45,132 @@ int DoIt( int argc, char * argv[] );
 #include "../CLI/tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // setup progress reporting
   double progress = 0.0;
 
-  tube::CLIProgressReporter progressReporter(
-    "MergeAdjacentImages", CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("MergeAdjacentImages", CLPProcessInformation);
   progressReporter.Start();
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // The timeCollector to perform basic profiling of algorithmic components
   itk::TimeProbesCollectorBase timeCollector;
 
   // define types
-  typedef TPixel                                        PixelType;
-  typedef itk::Image< PixelType, VDimension >           ImageType;
-  typedef itk::ImageFileReader< ImageType >             ReaderType;
-  typedef itk::ImageFileWriter< ImageType  >            WriterType;
+  typedef TPixel                            PixelType;
+  typedef itk::Image<PixelType, VDimension> ImageType;
+  typedef itk::ImageFileReader<ImageType>   ReaderType;
+  typedef itk::ImageFileWriter<ImageType>   WriterType;
 
   // Load input image 1
-  timeCollector.Start( "Loading input image 1" );
+  timeCollector.Start("Loading input image 1");
 
   typename ReaderType::Pointer reader1 = ReaderType::New();
 
   try
-    {
-    reader1->SetFileName( inputVolume1.c_str() );
+  {
+    reader1->SetFileName(inputVolume1.c_str());
     reader1->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Error loading input image 1: "
-      + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Error loading input image 1: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
-  timeCollector.Stop( "Loading input image 1" );
+  timeCollector.Stop("Loading input image 1");
   progress = 0.05;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // Load input image 2
-  timeCollector.Start( "Loading input image 2" );
+  timeCollector.Start("Loading input image 2");
 
   typename ReaderType::Pointer reader2 = ReaderType::New();
 
   try
-    {
-    reader2->SetFileName( inputVolume2.c_str() );
+  {
+    reader2->SetFileName(inputVolume2.c_str());
     reader2->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Error loading input image 2: "
-      + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Error loading input image 2: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
-  timeCollector.Stop( "Loading input image 2" );
+  timeCollector.Stop("Loading input image 2");
   progress = 0.1;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // Perform merging
-  timeCollector.Start( "Merging images" );
+  timeCollector.Start("Merging images");
 
-  typedef tube::MergeAdjacentImages< ImageType >
-    MergeAdjacentImagesFilterType;
+  typedef tube::MergeAdjacentImages<ImageType> MergeAdjacentImagesFilterType;
 
-  typename MergeAdjacentImagesFilterType::Pointer filter =
-    MergeAdjacentImagesFilterType::New();
+  typename MergeAdjacentImagesFilterType::Pointer filter = MergeAdjacentImagesFilterType::New();
 
-  filter->SetInput1( reader1->GetOutput() );
-  filter->SetInput2( reader2->GetOutput() );
+  filter->SetInput1(reader1->GetOutput());
+  filter->SetInput2(reader2->GetOutput());
 
-  filter->SetBackground( background );
-  filter->SetMaskZero( mask );
-  filter->SetMaxIterations( iterations );
-  filter->SetExpectedOffset( expectedOffset );
-  filter->SetExpectedRotation( expectedRotation );
-  filter->SetSamplingRatio( samplingRatio );
+  filter->SetBackground(background);
+  filter->SetMaskZero(mask);
+  filter->SetMaxIterations(iterations);
+  filter->SetExpectedOffset(expectedOffset);
+  filter->SetExpectedRotation(expectedRotation);
+  filter->SetSamplingRatio(samplingRatio);
 
-  if( !loadTransform.empty() )
-    {
-    filter->LoadInitialTransform( loadTransform );
-    }
-  filter->SetBlendUsingAverage( averagePixels );
-  filter->SetUseFastBlending( useFastBlending );
+  if (!loadTransform.empty())
+  {
+    filter->LoadInitialTransform(loadTransform);
+  }
+  filter->SetBlendUsingAverage(averagePixels);
+  filter->SetUseFastBlending(useFastBlending);
 
-  if( boundary.size() == VDimension )
-    {
-    filter->SetPadding( boundary );
-    }
+  if (boundary.size() == VDimension)
+  {
+    filter->SetPadding(boundary);
+  }
 
   filter->Update();
 
-  if( !saveTransform.empty() )
-    {
-    filter->SaveOutputTransform( saveTransform );
-    }
+  if (!saveTransform.empty())
+  {
+    filter->SaveOutputTransform(saveTransform);
+  }
 
-  timeCollector.Stop( "Merging images" );
+  timeCollector.Stop("Merging images");
   progress = 0.9;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // Write output image
-  timeCollector.Start( "Writing output image" );
+  timeCollector.Start("Writing output image");
 
   typename WriterType::Pointer writer = WriterType::New();
 
   try
-    {
-    writer->SetFileName( outputVolume.c_str() );
-    writer->SetInput( filter->GetOutput() );
-    writer->SetUseCompression( true );
+  {
+    writer->SetFileName(outputVolume.c_str());
+    writer->SetInput(filter->GetOutput());
+    writer->SetUseCompression(true);
     writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Error writing output image: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Error writing output image: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
-  timeCollector.Stop( "Writing output image" );
+  timeCollector.Stop("Writing output image");
   progress = 1.0;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
   progressReporter.End();
 
   timeCollector.Report();
@@ -182,11 +178,12 @@ int DoIt( int argc, char * argv[] )
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputVolume.
-  return tube::ParseArgsAndCallDoIt( inputVolume1, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputVolume1, argc, argv);
 }

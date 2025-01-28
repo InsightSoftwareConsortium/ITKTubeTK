@@ -27,93 +27,91 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 
-int itktubeShrinkWithBlendingImageFilterTest( int argc, char * argv[] )
+int
+itktubeShrinkWithBlendingImageFilterTest(int argc, char * argv[])
 {
-  if( argc != 4 )
-    {
+  if (argc != 4)
+  {
     std::cout << "Missing arguments." << std::endl;
     std::cout << "Usage: " << std::endl;
-    std::cout << argv[0] << " inputImage outputImage pointImage"
-      << std::endl;
+    std::cout << argv[0] << " inputImage outputImage pointImage" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // Define the dimension of the images
-  enum { Dimension = 2 };
+  enum
+  {
+    Dimension = 2
+  };
 
   // Define the pixel type
   typedef float PixelType;
 
   // Declare the types of the images
-  typedef itk::Image< PixelType, Dimension >  ImageType;
+  typedef itk::Image<PixelType, Dimension> ImageType;
 
   // Declare the reader and writer
-  typedef itk::ImageFileReader< ImageType > ReaderType;
-  typedef itk::ImageFileWriter< ImageType > WriterType;
+  typedef itk::ImageFileReader<ImageType> ReaderType;
+  typedef itk::ImageFileWriter<ImageType> WriterType;
 
-  typedef itk::Vector< float, Dimension >          PointPixelType;
-  typedef itk::Image< PointPixelType, Dimension >  PointImageType;
-  typedef itk::ImageFileWriter< PointImageType >   PointImageWriterType;
+  typedef itk::Vector<float, Dimension>         PointPixelType;
+  typedef itk::Image<PointPixelType, Dimension> PointImageType;
+  typedef itk::ImageFileWriter<PointImageType>  PointImageWriterType;
 
   // Declare the type for the Filter
-  typedef itk::tube::ShrinkWithBlendingImageFilter< ImageType, ImageType >
-    FilterType;
+  typedef itk::tube::ShrinkWithBlendingImageFilter<ImageType, ImageType> FilterType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( argv[1] );
+  reader->SetFileName(argv[1]);
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during input read:" << std::endl << e
-      << std::endl;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cout << "Exception caught during input read:" << std::endl << e << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   ImageType::Pointer inputImage = reader->GetOutput();
 
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInput( inputImage );
+  filter->SetInput(inputImage);
   FilterType::ShrinkFactorsType shrinkFactors;
-  shrinkFactors.Fill( 4 );
-  filter->SetShrinkFactors( shrinkFactors );
+  shrinkFactors.Fill(4);
+  filter->SetShrinkFactors(shrinkFactors);
   FilterType::InputIndexType overlap;
-  overlap.Fill( 1 );
-  filter->SetOverlap( overlap );
+  overlap.Fill(1);
+  filter->SetOverlap(overlap);
   filter->Update();
 
   WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[2] );
-  writer->SetUseCompression( true );
-  writer->SetInput( filter->GetOutput() );
+  writer->SetFileName(argv[2]);
+  writer->SetUseCompression(true);
+  writer->SetInput(filter->GetOutput());
   try
-    {
+  {
     writer->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during write:" << std::endl << e
-      << std::endl;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cout << "Exception caught during write:" << std::endl << e << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
-  PointImageWriterType::Pointer pointImageWriter =
-    PointImageWriterType::New();
-  pointImageWriter->SetFileName( argv[3] );
-  pointImageWriter->SetUseCompression( true );
-  pointImageWriter->SetInput( filter->GetOutputMipPointImage() );
+  PointImageWriterType::Pointer pointImageWriter = PointImageWriterType::New();
+  pointImageWriter->SetFileName(argv[3]);
+  pointImageWriter->SetUseCompression(true);
+  pointImageWriter->SetInput(filter->GetOutputMipPointImage());
   try
-    {
+  {
     pointImageWriter->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during image index write:" << std::endl
-      << e << std::endl;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cout << "Exception caught during image index write:" << std::endl << e << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;

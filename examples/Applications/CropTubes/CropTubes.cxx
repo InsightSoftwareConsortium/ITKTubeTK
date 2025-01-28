@@ -34,134 +34,130 @@
 #include "tubeCropTubes.h"
 #include "CropTubesCLP.h"
 
-template< unsigned int DimensionT >
-int DoIt ( int argc, char * argv[] )
+template <unsigned int DimensionT>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // Ensure that the input image dimension is valid
   // We only support 2D and 3D Images due to the
   // limitation of itkTubeSpatialObject
-  if( DimensionT != 2 && DimensionT != 3 )
-    {
-    tube::ErrorMessage(
-      "Error: Only 2D and 3D data is currently supported." );
+  if (DimensionT != 2 && DimensionT != 3)
+  {
+    tube::ErrorMessage("Error: Only 2D and 3D data is currently supported.");
     return EXIT_FAILURE;
-    }
+  }
 
   // The timeCollector to perform basic profiling of algorithmic components
   itk::TimeProbesCollectorBase timeCollector;
 
   // Load TRE File
-  tubeStandardOutputMacro( << "\n>> Loading TRE File" );
+  tubeStandardOutputMacro(<< "\n>> Loading TRE File");
 
-  typedef itk::SpatialObjectReader< DimensionT >          TubesReaderType;
-  typedef double                                          PixelType;
-  typedef itk::Image< PixelType, DimensionT >             ImageType;
-  typedef itk::ImageFileReader< ImageType >               ImageReaderType;
-  typedef itk::Vector< double, DimensionT >               VectorType;
-  typedef itk::Point< double, DimensionT >                PointType;
+  typedef itk::SpatialObjectReader<DimensionT> TubesReaderType;
+  typedef double                               PixelType;
+  typedef itk::Image<PixelType, DimensionT>    ImageType;
+  typedef itk::ImageFileReader<ImageType>      ImageReaderType;
+  typedef itk::Vector<double, DimensionT>      VectorType;
+  typedef itk::Point<double, DimensionT>       PointType;
 
-  timeCollector.Start( "Loading Input TRE File" );
+  timeCollector.Start("Loading Input TRE File");
 
-  typedef tube::CropTubes< DimensionT > FilterType;
-  typename FilterType::Pointer filter = FilterType::New();
+  typedef tube::CropTubes<DimensionT> FilterType;
+  typename FilterType::Pointer        filter = FilterType::New();
 
   typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
 
   try
-    {
-    tubeFileReader->SetFileName( inputTREFile.c_str() );
+  {
+    tubeFileReader->SetFileName(inputTREFile.c_str());
     tubeFileReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Error loading TRE File: "
-      + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Error loading TRE File: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
-  filter->SetInput( tubeFileReader->GetGroup() );
+  filter->SetInput(tubeFileReader->GetGroup());
 
-  timeCollector.Stop( "Loading Input TRE File" );
+  timeCollector.Stop("Loading Input TRE File");
 
-  timeCollector.Start( "Loading Input Parameters" );
+  timeCollector.Start("Loading Input Parameters");
 
-  //Cast XML vector parameters
-  PointType boxPositionVector;
+  // Cast XML vector parameters
+  PointType  boxPositionVector;
   VectorType boxSizeVector;
-  if( !boxCorner.empty() )
+  if (!boxCorner.empty())
+  {
+    for (unsigned int i = 0; i < DimensionT; i++)
     {
-    for( unsigned int i = 0; i < DimensionT; i++ )
-      {
       boxPositionVector[i] = boxCorner[i];
       boxSizeVector[i] = boxSize[i];
-      }
     }
+  }
   else
+  {
+    for (unsigned int i = 0; i < DimensionT; i++)
     {
-    for( unsigned int i = 0; i < DimensionT; i++ )
-      {
       boxPositionVector[i] = -1;
       boxSizeVector[i] = -1;
-      }
     }
+  }
 
-  filter->SetBoxPositionInWorldSpace( boxPositionVector );
-  filter->SetBoxSizeInWorldSpace( boxSizeVector );
-  filter->SetCropTubes( CropTubes );
-  //loading Volume mask if its there
+  filter->SetBoxPositionInWorldSpace(boxPositionVector);
+  filter->SetBoxSizeInWorldSpace(boxSizeVector);
+  filter->SetCropTubes(CropTubes);
+  // loading Volume mask if its there
   typename ImageReaderType::Pointer imReader = ImageReaderType::New();
-  typename ImageType::Pointer image;
-  if( !volumeMask.empty() )
-    {
-    tube::InfoMessage( "Reading volume mask..." );
-    imReader->SetFileName( volumeMask.c_str() );
+  typename ImageType::Pointer       image;
+  if (!volumeMask.empty())
+  {
+    tube::InfoMessage("Reading volume mask...");
+    imReader->SetFileName(volumeMask.c_str());
     try
-      {
+    {
       imReader->Update();
-      filter->SetMaskImage( imReader->GetOutput() );
-      filter->SetUseMaskImage( true );
-      }
-    catch ( itk::ExceptionObject & err )
-      {
-      tube::FmtErrorMessage( "Cannot read volume mask file: %s",
-        err.what() );
-      return EXIT_FAILURE;
-      }
+      filter->SetMaskImage(imReader->GetOutput());
+      filter->SetUseMaskImage(true);
     }
+    catch (itk::ExceptionObject & err)
+    {
+      tube::FmtErrorMessage("Cannot read volume mask file: %s", err.what());
+      return EXIT_FAILURE;
+    }
+  }
 
-  timeCollector.Stop( "Loading Input Parameters" );
+  timeCollector.Stop("Loading Input Parameters");
 
-  timeCollector.Start( "Cropping Tubes" );
+  timeCollector.Start("Cropping Tubes");
   filter->Update();
-  timeCollector.Stop( "Cropping Tubes" );
+  timeCollector.Stop("Cropping Tubes");
 
   // Write output TRE file
-  tubeStandardOutputMacro(
-    << "\n>> Writing TRE file" );
+  tubeStandardOutputMacro(<< "\n>> Writing TRE file");
 
-  timeCollector.Start( "Writing output TRE file" );
+  timeCollector.Start("Writing output TRE file");
 
-  typedef itk::SpatialObjectWriter< DimensionT > TubeWriterType;
-  typename TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
+  typedef itk::SpatialObjectWriter<DimensionT> TubeWriterType;
+  typename TubeWriterType::Pointer             tubeWriter = TubeWriterType::New();
 
   try
-    {
-    tubeWriter->SetFileName( outputTREFile.c_str() );
-    tubeWriter->SetInput( filter->GetOutput() );
+  {
+    tubeWriter->SetFileName(outputTREFile.c_str());
+    tubeWriter->SetInput(filter->GetOutput());
     tubeWriter->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Error writing TRE file: "
-      + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Error writing TRE file: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
-  timeCollector.Stop( "Writing output TRE file" );
+  timeCollector.Stop("Writing output TRE file");
 
   timeCollector.Report();
   return EXIT_SUCCESS;
@@ -169,61 +165,60 @@ int DoIt ( int argc, char * argv[] )
 
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   try
-    {
+  {
     PARSE_ARGS;
-    }
-  catch( const std::exception & err )
-    {
-    tube::ErrorMessage( err.what() );
+  }
+  catch (const std::exception & err)
+  {
+    tube::ErrorMessage(err.what());
     return EXIT_FAILURE;
-    }
+  }
   PARSE_ARGS;
 
-  if( ( boxCorner.empty() || boxSize.empty() ) && volumeMask.empty() )
-    {
-    tube::ErrorMessage(
-      "Error: Either both longflags --boxCorner and --boxSize "
-      "or the flag --volumeMask is required." );
+  if ((boxCorner.empty() || boxSize.empty()) && volumeMask.empty())
+  {
+    tube::ErrorMessage("Error: Either both longflags --boxCorner and --boxSize "
+                       "or the flag --volumeMask is required.");
     return EXIT_FAILURE;
-    }
+  }
 
-  MetaScene *mScene = new MetaScene;
-  mScene->Read( inputTREFile.c_str() );
+  MetaScene * mScene = new MetaScene;
+  mScene->Read(inputTREFile.c_str());
 
-  if( mScene->GetObjectList()->empty() )
-    {
-    tubeWarningMacro( << "Input TRE file has no spatial objects" );
+  if (mScene->GetObjectList()->empty())
+  {
+    tubeWarningMacro(<< "Input TRE file has no spatial objects");
     delete mScene;
     return EXIT_SUCCESS;
-    }
+  }
 
-  switch( mScene->GetObjectList()->front()->NDims() )
-    {
+  switch (mScene->GetObjectList()->front()->NDims())
+  {
     case 2:
-      {
-      bool result = DoIt<2>( argc, argv );
+    {
+      bool result = DoIt<2>(argc, argv);
       delete mScene;
       return result;
       break;
-      }
+    }
     case 3:
-      {
-      bool result = DoIt<3>( argc, argv );
+    {
+      bool result = DoIt<3>(argc, argv);
       delete mScene;
       return result;
       break;
-      }
+    }
     default:
-      {
-      tubeErrorMacro(
-        << "Error: Only 2D and 3D data is currently supported." );
+    {
+      tubeErrorMacro(<< "Error: Only 2D and 3D data is currently supported.");
       delete mScene;
       return EXIT_FAILURE;
       break;
-      }
     }
+  }
   return EXIT_FAILURE;
 }

@@ -30,7 +30,8 @@ limitations under the License.
 
 #include <cstdlib>
 
-int tubeCommonHeaderTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+int
+tubeCommonHeaderTest(int itkNotUsed(argc), char * itkNotUsed(argv)[])
 {
   return EXIT_SUCCESS;
 }

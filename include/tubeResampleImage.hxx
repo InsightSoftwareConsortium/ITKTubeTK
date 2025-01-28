@@ -14,26 +14,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef __tubeResampleImage_hxx
 #define __tubeResampleImage_hxx
 
 
 namespace tube
 {
-template< class TImage >
-ResampleImage< TImage >
-::ResampleImage( void )
+template <class TImage>
+ResampleImage<TImage>::ResampleImage(void)
 {
   m_Filter = FilterType::New();
 }
 
-template< class TImage >
+template <class TImage>
 void
-ResampleImage< TImage >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+ResampleImage<TImage>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 
   os << indent << m_Filter << std::endl;
 }

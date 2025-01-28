@@ -26,27 +26,25 @@ limitations under the License.
 namespace tube
 {
 
-template< class TImageType, class TMaskType >
-SegmentUsingOtsuThreshold< TImageType, TMaskType >
-::SegmentUsingOtsuThreshold( void )
+template <class TImageType, class TMaskType>
+SegmentUsingOtsuThreshold<TImageType, TMaskType>::SegmentUsingOtsuThreshold(void)
 {
   m_Filter = FilterType::New();
-  m_Filter->SetMaskOutput( false );
-  m_Filter->SetOutsideValue( 0 );
-  m_Filter->SetInsideValue( 1 );
+  m_Filter->SetMaskOutput(false);
+  m_Filter->SetOutsideValue(0);
+  m_Filter->SetInsideValue(1);
 }
 
-template< class TImageType, class TMaskType >
+template <class TImageType, class TMaskType>
 void
-SegmentUsingOtsuThreshold< TImageType, TMaskType >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+SegmentUsingOtsuThreshold<TImageType, TMaskType>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << "Inside Value: " << m_Filter->GetInsideValue() << std::endl;
   os << "Outside Value: " << m_Filter->GetOutsideValue() << std::endl;
   os << "Mask Value: " << m_Filter->GetMaskValue() << std::endl;
 }
 
-}
+} // namespace tube
 
 #endif

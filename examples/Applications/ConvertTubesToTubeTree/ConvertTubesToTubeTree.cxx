@@ -49,102 +49,95 @@
 
 #include "ConvertTubesToTubeTreeCLP.h"
 
-template< unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // Ensure that the input image dimension is valid
   // We only support 2D and 3D Images due to the
   // limitation of itkTubeSpatialObject
-  if( VDimension != 2 && VDimension != 3 )
-    {
-    tube::ErrorMessage( "Error: Only 2D and 3D data is currently supported." );
+  if (VDimension != 2 && VDimension != 3)
+  {
+    tube::ErrorMessage("Error: Only 2D and 3D data is currently supported.");
     return EXIT_FAILURE;
-    }
+  }
 
   // The timeCollector to perform basic profiling of algorithmic components
   itk::TimeProbesCollectorBase timeCollector;
 
   // Load TRE File
-  tubeStandardOutputMacro( << "\n>> Loading TRE File" );
+  tubeStandardOutputMacro(<< "\n>> Loading TRE File");
 
-  typedef itk::SpatialObjectReader< VDimension > TubesReaderType;
-  typedef itk::GroupSpatialObject< VDimension >  TubeGroupType;
+  typedef itk::SpatialObjectReader<VDimension> TubesReaderType;
+  typedef itk::GroupSpatialObject<VDimension>  TubeGroupType;
 
-  timeCollector.Start( "Loading Input TRE File" );
+  timeCollector.Start("Loading Input TRE File");
 
   typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
 
   try
-    {
-    tubeFileReader->SetFileName( inputTREFile.c_str() );
+  {
+    tubeFileReader->SetFileName(inputTREFile.c_str());
     tubeFileReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Error loading TRE File: "
-      + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Error loading TRE File: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
   typename TubeGroupType::Pointer pTubeGroup = tubeFileReader->GetGroup();
 
-  timeCollector.Stop( "Loading Input TRE File" );
+  timeCollector.Stop("Loading Input TRE File");
 
   // Run vessel connecitivity filter
-  tubeStandardOutputMacro( << "\n>> Running vessel connectivity filter" );
+  tubeStandardOutputMacro(<< "\n>> Running vessel connectivity filter");
 
-  timeCollector.Start( "Running vessel connectivity filter" );
+  timeCollector.Start("Running vessel connectivity filter");
 
-  typedef itk::tube::MinimumSpanningTreeVesselConnectivityFilter< VDimension >
-  VesselConnectivityFilterType;
-  typename VesselConnectivityFilterType::Pointer vesselConnectivityFilter =
-  VesselConnectivityFilterType::New();
+  typedef itk::tube::MinimumSpanningTreeVesselConnectivityFilter<VDimension> VesselConnectivityFilterType;
+  typename VesselConnectivityFilterType::Pointer vesselConnectivityFilter = VesselConnectivityFilterType::New();
 
-  vesselConnectivityFilter->SetInput( pTubeGroup );
-  vesselConnectivityFilter->SetMaxTubeDistanceToRadiusRatio(
-    maxTubeDistanceToRadiusRatio );
-  vesselConnectivityFilter->SetMaxContinuityAngleError(
-    maxContinuityAngleError );
-  vesselConnectivityFilter->SetRemoveOrphanTubes( removeOrphanTubes );
+  vesselConnectivityFilter->SetInput(pTubeGroup);
+  vesselConnectivityFilter->SetMaxTubeDistanceToRadiusRatio(maxTubeDistanceToRadiusRatio);
+  vesselConnectivityFilter->SetMaxContinuityAngleError(maxContinuityAngleError);
+  vesselConnectivityFilter->SetRemoveOrphanTubes(removeOrphanTubes);
 
-  if( !rootTubeIdList.empty() )
-    {
-    typename VesselConnectivityFilterType::TubeIdListType
-      IdList( rootTubeIdList.begin(), rootTubeIdList.end() );
-    vesselConnectivityFilter->SetRootTubeIdList( IdList );
-    }
+  if (!rootTubeIdList.empty())
+  {
+    typename VesselConnectivityFilterType::TubeIdListType IdList(rootTubeIdList.begin(), rootTubeIdList.end());
+    vesselConnectivityFilter->SetRootTubeIdList(IdList);
+  }
 
   vesselConnectivityFilter->Update();
 
-  timeCollector.Stop( "Running vessel connectivity filter" );
+  timeCollector.Stop("Running vessel connectivity filter");
 
   // Write tube group with connectivity information
-  tubeStandardOutputMacro(
-    << "\n>> Writing TRE file with connectivity information" );
+  tubeStandardOutputMacro(<< "\n>> Writing TRE file with connectivity information");
 
-  timeCollector.Start( "Writing TRE file with connectivity information" );
+  timeCollector.Start("Writing TRE file with connectivity information");
 
-  typedef itk::SpatialObjectWriter< VDimension > TubeWriterType;
-  typename TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
+  typedef itk::SpatialObjectWriter<VDimension> TubeWriterType;
+  typename TubeWriterType::Pointer             tubeWriter = TubeWriterType::New();
 
   try
-    {
-    tubeWriter->SetFileName( outputTREFile.c_str() );
-    tubeWriter->SetInput( vesselConnectivityFilter->GetOutput() );
+  {
+    tubeWriter->SetFileName(outputTREFile.c_str());
+    tubeWriter->SetInput(vesselConnectivityFilter->GetOutput());
     tubeWriter->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Error writing TRE file: "
-      + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Error writing TRE file: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
-  timeCollector.Stop( "Writing TRE file with connectivity information" );
+  timeCollector.Stop("Writing TRE file with connectivity information");
 
   // All done
   timeCollector.Report();
@@ -152,47 +145,47 @@ int DoIt( int argc, char * argv[] )
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   try
-    {
+  {
     PARSE_ARGS;
-    }
-  catch( const std::exception & err )
-    {
-    tube::ErrorMessage( err.what() );
+  }
+  catch (const std::exception & err)
+  {
+    tube::ErrorMessage(err.what());
     return EXIT_FAILURE;
-    }
+  }
   PARSE_ARGS;
 
-  MetaScene *mScene = new MetaScene;
-  mScene->Read( inputTREFile.c_str() );
-  if( mScene->GetObjectList()->empty() )
-    {
-    tubeWarningMacro( << "Input TRE file has no spatial objects" );
+  MetaScene * mScene = new MetaScene;
+  mScene->Read(inputTREFile.c_str());
+  if (mScene->GetObjectList()->empty())
+  {
+    tubeWarningMacro(<< "Input TRE file has no spatial objects");
     return EXIT_SUCCESS;
-    }
+  }
 
-  switch( mScene->GetObjectList()->front()->NDims() )
-    {
+  switch (mScene->GetObjectList()->front()->NDims())
+  {
     case 2:
-      {
-      bool result = DoIt<2>( argc, argv );
+    {
+      bool result = DoIt<2>(argc, argv);
       delete mScene;
       return result;
-      }
+    }
     case 3:
-      {
-      bool result = DoIt<3>( argc, argv );
+    {
+      bool result = DoIt<3>(argc, argv);
       delete mScene;
       return result;
-      }
+    }
     default:
-      {
-      tubeErrorMacro(
-        << "Error: Only 2D and 3D data is currently supported." );
+    {
+      tubeErrorMacro(<< "Error: Only 2D and 3D data is currently supported.");
       delete mScene;
       return EXIT_FAILURE;
-      }
     }
+  }
 }

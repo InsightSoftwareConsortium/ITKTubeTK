@@ -14,26 +14,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef __tubeComputeBinaryImageSimilarityMetrics_hxx
 #define __tubeComputeBinaryImageSimilarityMetrics_hxx
 
 
 namespace tube
 {
-template< class TInputImage >
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::ComputeBinaryImageSimilarityMetrics( void )
+template <class TInputImage>
+ComputeBinaryImageSimilarityMetrics<TInputImage>::ComputeBinaryImageSimilarityMetrics(void)
 {
   m_Filter = FilterType::New();
 }
 
-template< class TInputImage >
+template <class TInputImage>
 void
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+ComputeBinaryImageSimilarityMetrics<TInputImage>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << "TotalOverlap: " << this->GetTotalOverlap() << std::endl;
   os << "UnionOverlap: " << this->GetUnionOverlap() << std::endl;
   os << "MeanOverlap: " << this->GetMeanOverlap() << std::endl;

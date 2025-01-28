@@ -29,7 +29,8 @@ limitations under the License.
 
 #include <iostream>
 
-int tubeSegmentationHeaderTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+int
+tubeSegmentationHeaderTest(int itkNotUsed(argc), char * itkNotUsed(argv)[])
 {
   return EXIT_SUCCESS;
 }

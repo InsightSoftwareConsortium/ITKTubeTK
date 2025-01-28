@@ -24,32 +24,26 @@ limitations under the License.
 #define __tubeConvertShrunkenSeedImageToList_hxx
 
 
-
 namespace tube
 {
-template< class TImage, class TPointsImage >
-ConvertShrunkenSeedImageToList< TImage, TPointsImage >
-::ConvertShrunkenSeedImageToList( void )
+template <class TImage, class TPointsImage>
+ConvertShrunkenSeedImageToList<TImage, TPointsImage>::ConvertShrunkenSeedImageToList(void)
 {
-  m_ConvertShrunkenSeedImageToListFilter =
-    ConvertShrunkenSeedImageToListFilterType::New();
+  m_ConvertShrunkenSeedImageToListFilter = ConvertShrunkenSeedImageToListFilterType::New();
 }
 
-template< class TImage, class TPointsImage >
-typename itk::tube::ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
-::VnlMatrixType
-ConvertShrunkenSeedImageToList< TImage, TPointsImage >
-::GetOutput()
+template <class TImage, class TPointsImage>
+typename itk::tube::ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::VnlMatrixType
+ConvertShrunkenSeedImageToList<TImage, TPointsImage>::GetOutput()
 {
   return m_ConvertShrunkenSeedImageToListFilter->GetOutput()->Get();
 }
 
-template< class TImage, class TPointsImage >
+template <class TImage, class TPointsImage>
 void
-ConvertShrunkenSeedImageToList< TImage, TPointsImage >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+ConvertShrunkenSeedImageToList<TImage, TPointsImage>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << "Filter = " << m_ConvertShrunkenSeedImageToListFilter << std::endl;
 }
 

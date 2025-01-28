@@ -14,58 +14,52 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef __tubeConvertSpatialGraphToImage_hxx
 #define __tubeConvertSpatialGraphToImage_hxx
 
 
 namespace tube
 {
-template< typename TInputImage, typename TOutputImage >
-ConvertSpatialGraphToImage< TInputImage, TOutputImage >
-::ConvertSpatialGraphToImage( void )
+template <typename TInputImage, typename TOutputImage>
+ConvertSpatialGraphToImage<TInputImage, TOutputImage>::ConvertSpatialGraphToImage(void)
 {
   m_Filter = FilterType::New();
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-ConvertSpatialGraphToImage< TInputImage, TOutputImage >
-::SetAdjacencyMatrix( vnl_matrix< double > a )
+ConvertSpatialGraphToImage<TInputImage, TOutputImage>::SetAdjacencyMatrix(vnl_matrix<double> a)
 {
-  m_Filter->SetAdjacencyMatrix( a );
+  m_Filter->SetAdjacencyMatrix(a);
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-ConvertSpatialGraphToImage< TInputImage, TOutputImage >
-::SetBranchnessVector( vnl_vector< double > b )
+ConvertSpatialGraphToImage<TInputImage, TOutputImage>::SetBranchnessVector(vnl_vector<double> b)
 {
-  m_Filter->SetBranchnessVector( b );
+  m_Filter->SetBranchnessVector(b);
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-ConvertSpatialGraphToImage< TInputImage, TOutputImage >
-::SetRadiusVector( vnl_vector< double > r )
+ConvertSpatialGraphToImage<TInputImage, TOutputImage>::SetRadiusVector(vnl_vector<double> r)
 {
-  m_Filter->SetRadiusVector( r );
+  m_Filter->SetRadiusVector(r);
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-ConvertSpatialGraphToImage< TInputImage, TOutputImage >
-::SetCentralityVector( vnl_vector< double > c )
+ConvertSpatialGraphToImage<TInputImage, TOutputImage>::SetCentralityVector(vnl_vector<double> c)
 {
-  m_Filter->SetCentralityVector( c );
+  m_Filter->SetCentralityVector(c);
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-ConvertSpatialGraphToImage< TInputImage, TOutputImage >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+ConvertSpatialGraphToImage<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << indent << m_Filter << std::endl;
 }
 

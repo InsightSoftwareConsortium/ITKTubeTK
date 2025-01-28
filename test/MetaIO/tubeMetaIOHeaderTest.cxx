@@ -29,7 +29,8 @@ limitations under the License.
 #include "itktubeMetaRidgeSeed.h"
 #include "itktubeMetaTubeExtractor.h"
 
-int tubeMetaIOHeaderTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
+int
+tubeMetaIOHeaderTest(int tubeNotUsed(argc), char * tubeNotUsed(argv)[])
 {
   return EXIT_SUCCESS;
 }

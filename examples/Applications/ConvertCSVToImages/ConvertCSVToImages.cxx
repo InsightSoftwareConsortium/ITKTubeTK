@@ -39,114 +39,112 @@ limitations under the License.
 
 // Must do a forward declaration of DoIt before including
 // tubeCLIHelperFunctions
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of
 // int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
-  typedef float                                     InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension >  InputImageType;
-  typedef itk::ImageFileReader< InputImageType >    ReaderType;
+  typedef float                                  InputPixelType;
+  typedef itk::Image<InputPixelType, VDimension> InputImageType;
+  typedef itk::ImageFileReader<InputImageType>   ReaderType;
 
   typename ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( inputImageFileName );
+  reader->SetFileName(inputImageFileName);
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading volume: Exception caught: " + std::string(err.GetDescription()));
     return EXIT_FAILURE;
-    }
+  }
   typename InputImageType::Pointer maskImage = reader->GetOutput();
 
-  std::ifstream inCSVFile( inputCSVFileName.c_str() );
-  std::string header;
-  std::getline( inCSVFile, header );
+  std::ifstream inCSVFile(inputCSVFileName.c_str());
+  std::string   header;
+  std::getline(inCSVFile, header);
 
-  std::vector< std::string > imageFileNameList;
-  tube::StringToVector< std::string >( header, imageFileNameList );
+  std::vector<std::string> imageFileNameList;
+  tube::StringToVector<std::string>(header, imageFileNameList);
 
   unsigned int numImages = imageFileNameList.size();
 
-  std::vector< typename InputImageType::Pointer > imageList;
-  imageList.resize( numImages );
-  for( unsigned int i = 0; i < numImages; ++i )
-    {
+  std::vector<typename InputImageType::Pointer> imageList;
+  imageList.resize(numImages);
+  for (unsigned int i = 0; i < numImages; ++i)
+  {
     imageList[i] = InputImageType::New();
-    imageList[i]->CopyInformation( maskImage );
-    imageList[i]->SetRegions( maskImage->GetLargestPossibleRegion() );
+    imageList[i]->CopyInformation(maskImage);
+    imageList[i]->SetRegions(maskImage->GetLargestPossibleRegion());
     imageList[i]->Allocate();
-    imageList[i]->FillBuffer( 0 );
-    }
+    imageList[i]->FillBuffer(0);
+  }
 
-  typedef typename itk::ImageRegionIterator< InputImageType > ImageIterType;
-  std::vector< ImageIterType * > imageIter;
-  imageIter.resize( numImages );
-  for( unsigned int i = 0; i < numImages; ++i )
-    {
-    imageIter[i] = new ImageIterType( imageList[i],
-      maskImage->GetLargestPossibleRegion() );
-    }
+  typedef typename itk::ImageRegionIterator<InputImageType> ImageIterType;
+  std::vector<ImageIterType *>                              imageIter;
+  imageIter.resize(numImages);
+  for (unsigned int i = 0; i < numImages; ++i)
+  {
+    imageIter[i] = new ImageIterType(imageList[i], maskImage->GetLargestPossibleRegion());
+  }
 
-  ImageIterType maskIter( maskImage,
-    maskImage->GetLargestPossibleRegion() );
+  ImageIterType maskIter(maskImage, maskImage->GetLargestPossibleRegion());
 
-  if( stride < 1 )
-    {
+  if (stride < 1)
+  {
     stride = 1;
-    }
+  }
 
-  while( !maskIter.IsAtEnd() )
+  while (!maskIter.IsAtEnd())
+  {
+    if (maskIter.Get() != 0)
     {
-    if( maskIter.Get() != 0 )
-      {
       std::string valueString;
-      std::getline( inCSVFile, valueString );
+      std::getline(inCSVFile, valueString);
 
-      std::vector< float > valueList;
-      tube::StringToVector< float >( valueString, valueList );
+      std::vector<float> valueList;
+      tube::StringToVector<float>(valueString, valueList);
 
-      for( unsigned int i=0; i<numImages; ++i )
-        {
-        imageIter[i]->Set( valueList[i] );
-        }
-      }
-    for( int s=0; s<stride && !maskIter.IsAtEnd(); ++s )
+      for (unsigned int i = 0; i < numImages; ++i)
       {
-      for( unsigned int i=0; i<numImages; ++i )
-        {
-        ++( *imageIter[i] );
-        }
-      ++maskIter;
+        imageIter[i]->Set(valueList[i]);
       }
     }
+    for (int s = 0; s < stride && !maskIter.IsAtEnd(); ++s)
+    {
+      for (unsigned int i = 0; i < numImages; ++i)
+      {
+        ++(*imageIter[i]);
+      }
+      ++maskIter;
+    }
+  }
 
-  typedef itk::ImageFileWriter< InputImageType > WriterType;
-  typename WriterType::Pointer writer = WriterType::New();
-  for( unsigned int i=0; i<imageIter.size(); ++i )
-    {
+  typedef itk::ImageFileWriter<InputImageType> WriterType;
+  typename WriterType::Pointer                 writer = WriterType::New();
+  for (unsigned int i = 0; i < imageIter.size(); ++i)
+  {
     char outName[4096];
-    snprintf( outName, 4095, "%s.%s.%03d.mha", outputImageBaseFileName.c_str(),
-     imageFileNameList[i].c_str(), i );
-    writer->SetFileName( outName );
-    writer->SetInput( imageList[i] );
+    snprintf(outName, 4095, "%s.%s.%03d.mha", outputImageBaseFileName.c_str(), imageFileNameList[i].c_str(), i);
+    writer->SetFileName(outName);
+    writer->SetInput(imageList[i]);
     writer->Update();
-    }
-  for( unsigned int i=0; i<imageIter.size(); ++i )
-    {
+  }
+  for (unsigned int i = 0; i < imageIter.size(); ++i)
+  {
     delete imageIter[i];
-    }
+  }
   imageIter.clear();
 
   inCSVFile.close();
@@ -155,11 +153,12 @@ int DoIt( int argc, char * argv[] )
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputImageFileName.
-  return tube::ParseArgsAndCallDoIt( inputImageFileName, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputImageFileName, argc, argv);
 }

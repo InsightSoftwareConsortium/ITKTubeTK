@@ -35,171 +35,157 @@ limitations under the License.
 
 #include "EnhanceUsingDiscriminantAnalysisCLP.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
-  std::vector< std::string > inputVolumesList;
-  tube::StringToVector< std::string >( inputVolumesString,
-    inputVolumesList );
+  std::vector<std::string> inputVolumesList;
+  tube::StringToVector<std::string>(inputVolumesString, inputVolumesList);
 
   // The timeCollector is used to perform basic profiling of the components
   //   of this algorithm.
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef TPixel                                   InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension > InputImageType;
-  typedef itk::Image< unsigned short, VDimension > MaskImageType;
-  typedef itk::Image< float, VDimension >          BasisImageType;
+  typedef TPixel                                 InputPixelType;
+  typedef itk::Image<InputPixelType, VDimension> InputImageType;
+  typedef itk::Image<unsigned short, VDimension> MaskImageType;
+  typedef itk::Image<float, VDimension>          BasisImageType;
 
-  typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
-  typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;
-  typedef itk::ImageFileWriter< BasisImageType >   BasisImageWriterType;
+  typedef itk::ImageFileReader<InputImageType> ImageReaderType;
+  typedef itk::ImageFileReader<MaskImageType>  MaskReaderType;
+  typedef itk::ImageFileWriter<BasisImageType> BasisImageWriterType;
 
-  typedef itk::tube::FeatureVectorGenerator< InputImageType >
-    FeatureVectorGeneratorType;
+  typedef itk::tube::FeatureVectorGenerator<InputImageType> FeatureVectorGeneratorType;
 
-  typedef itk::tube::BasisFeatureVectorGenerator< InputImageType,
-    MaskImageType >
-      BasisFeatureVectorGeneratorType;
+  typedef itk::tube::BasisFeatureVectorGenerator<InputImageType, MaskImageType> BasisFeatureVectorGeneratorType;
 
-  typename FeatureVectorGeneratorType::Pointer fvGenerator =
-    FeatureVectorGeneratorType::New();
+  typename FeatureVectorGeneratorType::Pointer fvGenerator = FeatureVectorGeneratorType::New();
 
-  typename BasisFeatureVectorGeneratorType::Pointer basisGenerator =
-    BasisFeatureVectorGeneratorType::New();
+  typename BasisFeatureVectorGeneratorType::Pointer basisGenerator = BasisFeatureVectorGeneratorType::New();
 
-  timeCollector.Start( "LoadData" );
+  timeCollector.Start("LoadData");
 
   typename ImageReaderType::Pointer reader;
-  for( unsigned int i = 0; i < inputVolumesList.size(); i++ )
-    {
+  for (unsigned int i = 0; i < inputVolumesList.size(); i++)
+  {
     reader = ImageReaderType::New();
-    reader->SetFileName( inputVolumesList[i].c_str() );
+    reader->SetFileName(inputVolumesList[i].c_str());
     reader->Update();
-    if( i == 0 )
-      {
-      fvGenerator->SetInput( reader->GetOutput() );
-      basisGenerator->SetInput( reader->GetOutput() );
-      }
+    if (i == 0)
+    {
+      fvGenerator->SetInput(reader->GetOutput());
+      basisGenerator->SetInput(reader->GetOutput());
+    }
     else
-      {
-      fvGenerator->AddInput( reader->GetOutput() );
-      basisGenerator->AddInput( reader->GetOutput() );
-      }
-    }
-
-  if( !labelmap.empty() )
     {
-    typename MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
-    inMaskReader->SetFileName( labelmap.c_str() );
+      fvGenerator->AddInput(reader->GetOutput());
+      basisGenerator->AddInput(reader->GetOutput());
+    }
+  }
+
+  if (!labelmap.empty())
+  {
+    typename MaskReaderType::Pointer inMaskReader = MaskReaderType::New();
+    inMaskReader->SetFileName(labelmap.c_str());
     inMaskReader->Update();
-    basisGenerator->SetLabelMap( inMaskReader->GetOutput() );
-    }
+    basisGenerator->SetLabelMap(inMaskReader->GetOutput());
+  }
 
-  timeCollector.Stop( "LoadData" );
+  timeCollector.Stop("LoadData");
 
-  basisGenerator->SetInputFeatureVectorGenerator( fvGenerator );
+  basisGenerator->SetInputFeatureVectorGenerator(fvGenerator);
 
-  basisGenerator->SetObjectId( objectId[0] );
-  if( objectId.size() > 1 )
+  basisGenerator->SetObjectId(objectId[0]);
+  if (objectId.size() > 1)
+  {
+    for (unsigned int o = 1; o < objectId.size(); o++)
     {
-    for( unsigned int o = 1; o < objectId.size(); o++ )
-      {
-      basisGenerator->AddObjectId( objectId[o] );
-      }
+      basisGenerator->AddObjectId(objectId[o]);
     }
+  }
 
-  if( loadBasisInfo.size() > 0 )
-    {
-    timeCollector.Start( "LoadBasis" );
+  if (loadBasisInfo.size() > 0)
+  {
+    timeCollector.Start("LoadBasis");
 
-    itk::tube::MetaLDA basisReader( loadBasisInfo.c_str() );
+    itk::tube::MetaLDA basisReader(loadBasisInfo.c_str());
     basisReader.Read();
 
-    basisGenerator->SetNumberOfPCABasisToUseAsFeatures(
-      basisReader.GetNumberOfPCABasisToUseAsFeatures() );
-    basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
-      basisReader.GetNumberOfLDABasisToUseAsFeatures() );
+    basisGenerator->SetNumberOfPCABasisToUseAsFeatures(basisReader.GetNumberOfPCABasisToUseAsFeatures());
+    basisGenerator->SetNumberOfLDABasisToUseAsFeatures(basisReader.GetNumberOfLDABasisToUseAsFeatures());
 
-    basisGenerator->SetBasisValues( basisReader.GetLDAValues() );
-    basisGenerator->SetBasisMatrix( basisReader.GetLDAMatrix() );
-    basisGenerator->SetInputWhitenMeans( basisReader.
-      GetInputWhitenMeans() );
-    basisGenerator->SetInputWhitenStdDevs( basisReader.
-      GetInputWhitenStdDevs() );
-    basisGenerator->SetOutputWhitenMeans( basisReader.
-      GetOutputWhitenMeans() );
-    basisGenerator->SetOutputWhitenStdDevs( basisReader.
-      GetOutputWhitenStdDevs() );
+    basisGenerator->SetBasisValues(basisReader.GetLDAValues());
+    basisGenerator->SetBasisMatrix(basisReader.GetLDAMatrix());
+    basisGenerator->SetInputWhitenMeans(basisReader.GetInputWhitenMeans());
+    basisGenerator->SetInputWhitenStdDevs(basisReader.GetInputWhitenStdDevs());
+    basisGenerator->SetOutputWhitenMeans(basisReader.GetOutputWhitenMeans());
+    basisGenerator->SetOutputWhitenStdDevs(basisReader.GetOutputWhitenStdDevs());
 
-    timeCollector.Stop( "LoadBasis" );
-    }
+    timeCollector.Stop("LoadBasis");
+  }
   else
+  {
+    timeCollector.Start("Update");
+
+    basisGenerator->SetNumberOfPCABasisToUseAsFeatures(useNumberOfPCABasis);
+    if (useNumberOfLDABasis == -1)
     {
-    timeCollector.Start( "Update" );
-
-    basisGenerator->SetNumberOfPCABasisToUseAsFeatures( useNumberOfPCABasis );
-    if( useNumberOfLDABasis == -1 )
-      {
-      basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
-        objectId.size() - 1 );
-      }
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures(objectId.size() - 1);
+    }
     else
-      {
-      basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
-        useNumberOfLDABasis );
-      }
+    {
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures(useNumberOfLDABasis);
+    }
 
-    basisGenerator->SetUpdateWhitenStatisticsOnUpdate( true );
+    basisGenerator->SetUpdateWhitenStatisticsOnUpdate(true);
     basisGenerator->Update();
 
-    timeCollector.Stop( "Update" );
-    }
+    timeCollector.Stop("Update");
+  }
 
-  if( outputBase.size() > 0 )
-    {
-    timeCollector.Start( "SaveBasisImages" );
+  if (outputBase.size() > 0)
+  {
+    timeCollector.Start("SaveBasisImages");
 
     unsigned int numBasis = basisGenerator->GetNumberOfFeatures();
-    for( unsigned int i = 0; i < numBasis; i++ )
-      {
-      typename BasisImageWriterType::Pointer basisImageWriter =
-        BasisImageWriterType::New();
-      std::string fname = outputBase;
-      char c[4096];
-      std::snprintf( c, 2095, ".basis%02u.mha", i );
-      fname += std::string( c );
-      basisImageWriter->SetUseCompression( true );
-      basisImageWriter->SetFileName( fname.c_str() );
-      basisImageWriter->SetInput( basisGenerator->GetFeatureImage( i ) );
-      basisImageWriter->Update();
-      }
-    timeCollector.Stop( "SaveBasisImages" );
-    }
-
-  if( saveBasisInfo.size() > 0 )
+    for (unsigned int i = 0; i < numBasis; i++)
     {
-    timeCollector.Start( "SaveBasis" );
-    itk::tube::MetaLDA basisWriter(
-      basisGenerator->GetNumberOfPCABasisToUseAsFeatures(),
-      basisGenerator->GetNumberOfLDABasisToUseAsFeatures(),
-      basisGenerator->GetBasisValues(),
-      basisGenerator->GetBasisMatrix(),
-      basisGenerator->GetInputWhitenMeans(),
-      basisGenerator->GetInputWhitenStdDevs(),
-      basisGenerator->GetOutputWhitenMeans(),
-      basisGenerator->GetOutputWhitenStdDevs() );
-    basisWriter.Write( saveBasisInfo.c_str() );
-    timeCollector.Stop( "SaveBasis" );
+      typename BasisImageWriterType::Pointer basisImageWriter = BasisImageWriterType::New();
+      std::string                            fname = outputBase;
+      char                                   c[4096];
+      std::snprintf(c, 2095, ".basis%02u.mha", i);
+      fname += std::string(c);
+      basisImageWriter->SetUseCompression(true);
+      basisImageWriter->SetFileName(fname.c_str());
+      basisImageWriter->SetInput(basisGenerator->GetFeatureImage(i));
+      basisImageWriter->Update();
     }
+    timeCollector.Stop("SaveBasisImages");
+  }
+
+  if (saveBasisInfo.size() > 0)
+  {
+    timeCollector.Start("SaveBasis");
+    itk::tube::MetaLDA basisWriter(basisGenerator->GetNumberOfPCABasisToUseAsFeatures(),
+                                   basisGenerator->GetNumberOfLDABasisToUseAsFeatures(),
+                                   basisGenerator->GetBasisValues(),
+                                   basisGenerator->GetBasisMatrix(),
+                                   basisGenerator->GetInputWhitenMeans(),
+                                   basisGenerator->GetInputWhitenStdDevs(),
+                                   basisGenerator->GetOutputWhitenMeans(),
+                                   basisGenerator->GetOutputWhitenStdDevs());
+    basisWriter.Write(saveBasisInfo.c_str());
+    timeCollector.Stop("SaveBasis");
+  }
 
   timeCollector.Report();
 
@@ -207,15 +193,15 @@ int DoIt( int argc, char * argv[] )
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
-  std::vector< std::string > inputVolumesList;
-  tube::StringToVector< std::string >( inputVolumesString,
-    inputVolumesList );
+  std::vector<std::string> inputVolumesList;
+  tube::StringToVector<std::string>(inputVolumesString, inputVolumesList);
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputVolume.
-  return tube::ParseArgsAndCallDoIt( inputVolumesList[0], argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputVolumesList[0], argc, argv);
 }

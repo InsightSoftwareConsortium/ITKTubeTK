@@ -39,9 +39,8 @@ namespace tube
 {
 
 //--------------------------------------------------------------------------
-template< unsigned int ObjectDimension >
-ResampleTubesFilter< ObjectDimension >
-::ResampleTubesFilter( void )
+template <unsigned int ObjectDimension>
+ResampleTubesFilter<ObjectDimension>::ResampleTubesFilter(void)
 {
   m_UseInverseTransform = false;
   m_MatchImage = nullptr;
@@ -50,243 +49,216 @@ ResampleTubesFilter< ObjectDimension >
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int ObjectDimension >
-ResampleTubesFilter< ObjectDimension >
-::~ResampleTubesFilter( void )
-{
-}
+template <unsigned int ObjectDimension>
+ResampleTubesFilter<ObjectDimension>::~ResampleTubesFilter(void)
+{}
 
 //--------------------------------------------------------------------------
-template< unsigned int ObjectDimension >
+template <unsigned int ObjectDimension>
 void
-ResampleTubesFilter< ObjectDimension >
-::SetDisplacementField( DisplacementFieldType * field )
+ResampleTubesFilter<ObjectDimension>::SetDisplacementField(DisplacementFieldType * field)
 {
   m_DisplacementField = field;
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int ObjectDimension >
+template <unsigned int ObjectDimension>
 void
-ResampleTubesFilter< ObjectDimension >
-::SetReadTransformList( const BaseTransformListType * tList )
+ResampleTubesFilter<ObjectDimension>::SetReadTransformList(const BaseTransformListType * tList)
 {
   m_ReadTransformList = tList;
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int ObjectDimension >
+template <unsigned int ObjectDimension>
 void
-ResampleTubesFilter< ObjectDimension >
-::ReadImageTransform( typename SpatialObjectType::TransformType::Pointer &
-  outputTransform )
+ResampleTubesFilter<ObjectDimension>::ReadImageTransform(
+  typename SpatialObjectType::TransformType::Pointer & outputTransform)
 {
-  typename ImageType::PointType origin = m_MatchImage->GetOrigin();
-  typename ImageType::DirectionType directions =
-    m_MatchImage->GetDirection();
+  typename ImageType::PointType     origin = m_MatchImage->GetOrigin();
+  typename ImageType::DirectionType directions = m_MatchImage->GetDirection();
 
   outputTransform = SpatialObjectType::TransformType::New();
   outputTransform->SetIdentity();
-  itk::Vector< double, ObjectDimension > offset;
-  for( unsigned int i = 0; i < ObjectDimension; ++i )
-    {
+  itk::Vector<double, ObjectDimension> offset;
+  for (unsigned int i = 0; i < ObjectDimension; ++i)
+  {
     offset[i] = origin[i];
-    }
-  outputTransform->SetMatrix( directions );
-  outputTransform->SetOffset( offset );
+  }
+  outputTransform->SetMatrix(directions);
+  outputTransform->SetOffset(offset);
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int ObjectDimension >
-typename itk::SpatialObject< ObjectDimension >::Pointer
-ResampleTubesFilter< ObjectDimension >
-::ApplyDisplacementFieldTransform( typename
-  SpatialObjectType::TransformType::ConstPointer & outputTransform )
+template <unsigned int ObjectDimension>
+typename itk::SpatialObject<ObjectDimension>::Pointer
+ResampleTubesFilter<ObjectDimension>::ApplyDisplacementFieldTransform(
+  typename SpatialObjectType::TransformType::ConstPointer & outputTransform)
 {
   typename SpatialObjectType::ConstPointer inSO = this->GetInput();
 
   /** Typedefs for Displacement field tranform filter.    */
-  typedef itk::tube::PointBasedSpatialObjectTransformFilter<
-    DisplacementFieldTransformType, ObjectDimension >
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter<DisplacementFieldTransformType, ObjectDimension>
     DisplacementFieldTransformFilterType;
 
   // Create new transform
-  typename DisplacementFieldTransformType::Pointer transform =
-    DisplacementFieldTransformType::New();
-  transform->SetDisplacementField( m_DisplacementField );
+  typename DisplacementFieldTransformType::Pointer transform = DisplacementFieldTransformType::New();
+  transform->SetDisplacementField(m_DisplacementField);
 
   // Create the filter and apply
- typename DisplacementFieldTransformFilterType::Pointer filter =
-   DisplacementFieldTransformFilterType::New();
-  filter->SetInput( inSO );
-  filter->SetTransform( transform );
-  filter->SetOutputObjectToParentTransform(
-    outputTransform.GetPointer() );
+  typename DisplacementFieldTransformFilterType::Pointer filter = DisplacementFieldTransformFilterType::New();
+  filter->SetInput(inSO);
+  filter->SetTransform(transform);
+  filter->SetOutputObjectToParentTransform(outputTransform.GetPointer());
   filter->Update();
 
-  this->GraftOutput( filter->GetOutput() );
+  this->GraftOutput(filter->GetOutput());
 
   return this->GetOutput();
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int ObjectDimension >
-typename itk::SpatialObject< ObjectDimension >::Pointer
-ResampleTubesFilter< ObjectDimension >
-::ApplyInputTransform( typename SpatialObjectType::TransformType::ConstPointer &
-  outputTransform )
+template <unsigned int ObjectDimension>
+typename itk::SpatialObject<ObjectDimension>::Pointer
+ResampleTubesFilter<ObjectDimension>::ApplyInputTransform(
+  typename SpatialObjectType::TransformType::ConstPointer & outputTransform)
 {
   typename SpatialObjectType::ConstPointer inSO = this->GetInput();
 
   /** Typedefs for transform read from a file    */
-  typedef itk::MatrixOffsetTransformBase< double, ObjectDimension, ObjectDimension >
-    MatrixOffsetTransformType;
-  typedef itk::tube::PointBasedSpatialObjectTransformFilter<
-    MatrixOffsetTransformType,
-    ObjectDimension >
+  typedef itk::MatrixOffsetTransformBase<double, ObjectDimension, ObjectDimension> MatrixOffsetTransformType;
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter<MatrixOffsetTransformType, ObjectDimension>
     MatrixOffsetTransformFilterType;
 
   BaseTransformListType::const_iterator tListIt;
   tListIt = m_ReadTransformList->begin();
-  while( tListIt != m_ReadTransformList->end() )
+  while (tListIt != m_ReadTransformList->end())
+  {
+    typename MatrixOffsetTransformType::Pointer transform =
+      dynamic_cast<MatrixOffsetTransformType *>((*tListIt).GetPointer());
+    typename MatrixOffsetTransformFilterType::Pointer filter = MatrixOffsetTransformFilterType::New();
+    if (m_UseInverseTransform)
     {
-    typename MatrixOffsetTransformType::Pointer transform = dynamic_cast<
-      MatrixOffsetTransformType * >( ( *tListIt ).GetPointer() );
-    typename MatrixOffsetTransformFilterType::Pointer filter =
-      MatrixOffsetTransformFilterType::New();
-    if( m_UseInverseTransform )
-      {
-      typename MatrixOffsetTransformType::InverseTransformBaseType::Pointer
-        ivT = transform->GetInverseTransform();
-      transform = ( MatrixOffsetTransformType * )ivT.GetPointer();
-      }
+      typename MatrixOffsetTransformType::InverseTransformBaseType::Pointer ivT = transform->GetInverseTransform();
+      transform = (MatrixOffsetTransformType *)ivT.GetPointer();
+    }
 
-    filter->SetInput( inSO );
-    filter->SetTransform( transform );
-    filter->SetOutputObjectToParentTransform( outputTransform );
+    filter->SetInput(inSO);
+    filter->SetTransform(transform);
+    filter->SetOutputObjectToParentTransform(outputTransform);
     filter->Update();
 
     inSO = filter->GetOutput();
-    this->GraftOutput( filter->GetOutput() );
+    this->GraftOutput(filter->GetOutput());
     ++tListIt;
-    }
+  }
 
   return this->GetOutput();
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int ObjectDimension >
-typename itk::SpatialObject< ObjectDimension >::Pointer
-ResampleTubesFilter< ObjectDimension >
-::ApplyIdentityAffineTransform( typename
-  SpatialObjectType::TransformType::ConstPointer & outputTransform )
+template <unsigned int ObjectDimension>
+typename itk::SpatialObject<ObjectDimension>::Pointer
+ResampleTubesFilter<ObjectDimension>::ApplyIdentityAffineTransform(
+  typename SpatialObjectType::TransformType::ConstPointer & outputTransform)
 {
   typename SpatialObjectType::ConstPointer inSO = this->GetInput();
 
   /** Typedefs for Affine Transform */
-  typedef itk::AffineTransform< double, ObjectDimension >
-    AffineTransformType;
-  typedef itk::tube::PointBasedSpatialObjectTransformFilter<
-    AffineTransformType,
-    ObjectDimension >
+  typedef itk::AffineTransform<double, ObjectDimension> AffineTransformType;
+  typedef itk::tube::PointBasedSpatialObjectTransformFilter<AffineTransformType, ObjectDimension>
     AffineTransformFilterType;
 
-  typename AffineTransformType::Pointer identityAffineTransform =
-    AffineTransformType::New();
+  typename AffineTransformType::Pointer identityAffineTransform = AffineTransformType::New();
   identityAffineTransform->SetIdentity();
 
-  typename AffineTransformFilterType::Pointer filter =
-    AffineTransformFilterType::New();
-  filter->SetInput( inSO );
-  filter->SetTransform( identityAffineTransform );
-  filter->SetOutputObjectToParentTransform( outputTransform );
+  typename AffineTransformFilterType::Pointer filter = AffineTransformFilterType::New();
+  filter->SetInput(inSO);
+  filter->SetTransform(identityAffineTransform);
+  filter->SetOutputObjectToParentTransform(outputTransform);
   filter->Update();
 
-  this->GraftOutput( filter->GetOutput() );
+  this->GraftOutput(filter->GetOutput());
 
   return this->GetOutput();
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int ObjectDimension >
+template <unsigned int ObjectDimension>
 void
-ResampleTubesFilter< ObjectDimension >
-::GenerateData( void )
+ResampleTubesFilter<ObjectDimension>::GenerateData(void)
 {
   typename SpatialObjectType::ConstPointer inSO = this->GetInput();
 
   typename SpatialObjectType::Pointer outSO = this->GetOutput();
 
   typename SpatialObjectType::TransformType::ConstPointer outputTransformConst;
-  if( m_MatchImage )
-    {
+  if (m_MatchImage)
+  {
     typename SpatialObjectType::TransformType::Pointer outputTransform;
-    this->ReadImageTransform( outputTransform );
+    this->ReadImageTransform(outputTransform);
     outputTransformConst = outputTransform.GetPointer();
-    }
+  }
   else
-    {
+  {
     outputTransformConst = inSO->GetObjectToWorldTransform();
-    }
+  }
 
   bool outSOUpdated = false;
-  if( m_DisplacementField )
-    {
-    outSO = this->ApplyDisplacementFieldTransform( outputTransformConst );
+  if (m_DisplacementField)
+  {
+    outSO = this->ApplyDisplacementFieldTransform(outputTransformConst);
     outSOUpdated = true;
-    }
-  else if( m_ReadTransformList )
-    {
-    outSO = this->ApplyInputTransform( outputTransformConst );
+  }
+  else if (m_ReadTransformList)
+  {
+    outSO = this->ApplyInputTransform(outputTransformConst);
     outSOUpdated = true;
-    }
-  else if( m_MatchImage )
-    {
-    outSO = this->ApplyIdentityAffineTransform( outputTransformConst );
+  }
+  else if (m_MatchImage)
+  {
+    outSO = this->ApplyIdentityAffineTransform(outputTransformConst);
     outSOUpdated = true;
-    }
+  }
 
-  if( m_SamplingFactor != 1 )
-    {
+  if (m_SamplingFactor != 1)
+  {
     /** Typedefs for Sub samppling filter     */
-    typedef itk::tube::SubSampleSpatialObjectFilter<ObjectDimension>
-      SubSampleFilterType;
+    typedef itk::tube::SubSampleSpatialObjectFilter<ObjectDimension> SubSampleFilterType;
 
-    typename SubSampleFilterType::Pointer subSampleFilter =
-      SubSampleFilterType::New();
-    if(outSOUpdated)
-      {
-      subSampleFilter->SetInput( outSO );
-      }
+    typename SubSampleFilterType::Pointer subSampleFilter = SubSampleFilterType::New();
+    if (outSOUpdated)
+    {
+      subSampleFilter->SetInput(outSO);
+    }
     else
-      {
-      subSampleFilter->SetInput( inSO );
-      subSampleFilter->GraftOutput( outSO );
-      }
-    subSampleFilter->SetSampling( m_SamplingFactor );
+    {
+      subSampleFilter->SetInput(inSO);
+      subSampleFilter->GraftOutput(outSO);
+    }
+    subSampleFilter->SetSampling(m_SamplingFactor);
 
     try
-      {
+    {
       subSampleFilter->Update();
-      }
-    catch( const std::exception &e )
-      {
+    }
+    catch (const std::exception & e)
+    {
       std::cout << e.what();
       return;
-      }
-
-    this->GraftOutput( subSampleFilter->GetOutput() );
-    outSO = subSampleFilter->GetOutput();
     }
+
+    this->GraftOutput(subSampleFilter->GetOutput());
+    outSO = subSampleFilter->GetOutput();
+  }
 }
 
 //--------------------------------------------------------------------------
-template< unsigned int ObjectDimension >
+template <unsigned int ObjectDimension>
 void
-ResampleTubesFilter< ObjectDimension >
-::PrintSelf( std::ostream & os, Indent indent ) const
+ResampleTubesFilter<ObjectDimension>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  this->Superclass::PrintSelf( os, indent );
+  this->Superclass::PrintSelf(os, indent);
 }
 
 } // End namespace tube

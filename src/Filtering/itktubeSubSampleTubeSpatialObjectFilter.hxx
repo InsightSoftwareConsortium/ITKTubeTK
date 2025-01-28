@@ -30,65 +30,57 @@ namespace itk
 namespace tube
 {
 
-template< unsigned int ObjectDimension >
-SubSampleTubeSpatialObjectFilter< ObjectDimension >
-::SubSampleTubeSpatialObjectFilter( void )
-  : m_Sampling( 1 )
-{
-}
+template <unsigned int ObjectDimension>
+SubSampleTubeSpatialObjectFilter<ObjectDimension>::SubSampleTubeSpatialObjectFilter(void)
+  : m_Sampling(1)
+{}
 
-template< unsigned int ObjectDimension >
-SubSampleTubeSpatialObjectFilter< ObjectDimension >
-::~SubSampleTubeSpatialObjectFilter( void )
-{
-}
+template <unsigned int ObjectDimension>
+SubSampleTubeSpatialObjectFilter<ObjectDimension>::~SubSampleTubeSpatialObjectFilter(void)
+{}
 
 
-template< unsigned int ObjectDimension >
+template <unsigned int ObjectDimension>
 void
-SubSampleTubeSpatialObjectFilter< ObjectDimension >
-::GenerateData( void )
+SubSampleTubeSpatialObjectFilter<ObjectDimension>::GenerateData(void)
 {
-  const TubeSpatialObjectType * input =
-    dynamic_cast<const TubeSpatialObjectType *>( this->GetInput() );
+  const TubeSpatialObjectType * input = dynamic_cast<const TubeSpatialObjectType *>(this->GetInput());
   if (input == nullptr)
   {
     std::cerr << "Error: tube passed to SubSampleTubes is not a tube." << std::endl;
     return;
   }
-  typename TubeSpatialObjectType::Pointer output =
-    dynamic_cast<TubeSpatialObjectType *>( this->GetOutput() );
+  typename TubeSpatialObjectType::Pointer output = dynamic_cast<TubeSpatialObjectType *>(this->GetOutput());
 
   typedef typename TubeSpatialObjectType::TubePointListType TubePointListType;
-  const TubePointListType & inputPoints = input->GetPoints();
-  TubePointListType & outputPoints = output->GetPoints();
+  const TubePointListType &                                 inputPoints = input->GetPoints();
+  TubePointListType &                                       outputPoints = output->GetPoints();
 
   const unsigned int numberOfInputPoints = inputPoints.size();
-  unsigned int numberOfOutputPoints;
-  if( this->m_Sampling == 1 )
-    {
+  unsigned int       numberOfOutputPoints;
+  if (this->m_Sampling == 1)
+  {
     numberOfOutputPoints = numberOfInputPoints / this->m_Sampling + 0;
-    }
-  else if( numberOfInputPoints % this->m_Sampling == 0 )
-    {
+  }
+  else if (numberOfInputPoints % this->m_Sampling == 0)
+  {
     numberOfOutputPoints = numberOfInputPoints / this->m_Sampling + 1;
-    }
+  }
   else
-    {
+  {
     numberOfOutputPoints = numberOfInputPoints / this->m_Sampling + 2;
-    }
-  outputPoints.resize( numberOfOutputPoints );
-  for( unsigned int inputIndex = 0, outputIndex = 0;
-    outputIndex < numberOfOutputPoints - 1;
-    ++outputIndex, inputIndex += this->m_Sampling )
-    {
+  }
+  outputPoints.resize(numberOfOutputPoints);
+  for (unsigned int inputIndex = 0, outputIndex = 0; outputIndex < numberOfOutputPoints - 1;
+       ++outputIndex, inputIndex += this->m_Sampling)
+  {
     outputPoints[outputIndex] = inputPoints[inputIndex];
-    }
+  }
   outputPoints[numberOfOutputPoints - 1] = inputPoints[numberOfInputPoints - 1];
 
   output->RemoveDuplicatePointsInObjectSpace();
 
-  this->GraftOutput( output );
+  this->GraftOutput(output);
 }
 
 } // End namespace tube

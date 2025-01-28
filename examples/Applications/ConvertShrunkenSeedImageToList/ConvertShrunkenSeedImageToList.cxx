@@ -39,15 +39,17 @@ limitations under the License.
 
 // Must do a forward declaration of DoIt before including
 // tubeCLIHelperFunctions
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
@@ -56,130 +58,122 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter( "Shrink Image",
-    CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("Shrink Image", CLPProcessInformation);
   progressReporter.Start();
 
-  typedef float                                     PixelType;
-  typedef itk::Image< PixelType, VDimension >       ImageType;
-  typedef itk::ImageFileReader< ImageType >         ImageReaderType;
+  typedef float                             PixelType;
+  typedef itk::Image<PixelType, VDimension> ImageType;
+  typedef itk::ImageFileReader<ImageType>   ImageReaderType;
 
-  typedef itk::Vector< float, VDimension >          PointsPixelType;
-  typedef itk::Image< PointsPixelType, VDimension > PointsImageType;
-  typedef itk::ImageFileReader< PointsImageType >   PointsImageReaderType;
+  typedef itk::Vector<float, VDimension>          PointsPixelType;
+  typedef itk::Image<PointsPixelType, VDimension> PointsImageType;
+  typedef itk::ImageFileReader<PointsImageType>   PointsImageReaderType;
 
-  typedef tube::ConvertShrunkenSeedImageToList
-    < ImageType, PointsImageType > ConvertShrunkenSeedImageToListFilterType;
-  typename ConvertShrunkenSeedImageToListFilterType::Pointer filter
-    = ConvertShrunkenSeedImageToListFilterType::New();
+  typedef tube::ConvertShrunkenSeedImageToList<ImageType, PointsImageType> ConvertShrunkenSeedImageToListFilterType;
+  typename ConvertShrunkenSeedImageToListFilterType::Pointer filter = ConvertShrunkenSeedImageToListFilterType::New();
 
   double progress = 0.1;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
-  timeCollector.Start( "Load image data" );
+  timeCollector.Start("Load image data");
   typename ImageReaderType::Pointer inImageReader = ImageReaderType::New();
-  inImageReader->SetFileName( inputShrunkenImageFileName.c_str() );
+  inImageReader->SetFileName(inputShrunkenImageFileName.c_str());
   try
-    {
+  {
     inImageReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
   typename ImageType::Pointer inImage = inImageReader->GetOutput();
-  timeCollector.Stop( "Load image data" );
+  timeCollector.Stop("Load image data");
 
   progress += 0.1;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
-  timeCollector.Start( "Load scale data" );
+  timeCollector.Start("Load scale data");
   typename ImageReaderType::Pointer inScaleReader = ImageReaderType::New();
-  inScaleReader->SetFileName( inputShrunkenScaleImageFileName.c_str() );
+  inScaleReader->SetFileName(inputShrunkenScaleImageFileName.c_str());
   try
-    {
+  {
     inScaleReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
   typename ImageType::Pointer inScale = inScaleReader->GetOutput();
-  timeCollector.Stop( "Load scale data" );
+  timeCollector.Stop("Load scale data");
 
   progress += 0.1;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
-  timeCollector.Start( "Load point data" );
+  timeCollector.Start("Load point data");
 
-  typename PointsImageReaderType::Pointer inPointReader =
-    PointsImageReaderType::New();
+  typename PointsImageReaderType::Pointer inPointReader = PointsImageReaderType::New();
 
-  inPointReader->SetFileName( inputShrunkenPointsImageFileName.c_str() );
+  inPointReader->SetFileName(inputShrunkenPointsImageFileName.c_str());
   try
-    {
+  {
     inPointReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
   typename PointsImageType::Pointer inPoint = inPointReader->GetOutput();
-  timeCollector.Stop( "Load point data" );
+  timeCollector.Stop("Load point data");
 
   progress += 0.1;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
-  timeCollector.Start( "Generate output list" );
+  timeCollector.Start("Generate output list");
 
-  filter->SetInput( inImage );
-  filter->SetScaleImage( inScale );
-  filter->SetPointsImage( inPoint );
-  filter->SetThreshold( shrunkenImageThreshold );
+  filter->SetInput(inImage);
+  filter->SetScaleImage(inScale);
+  filter->SetPointsImage(inPoint);
+  filter->SetThreshold(shrunkenImageThreshold);
 
   filter->Update();
 
   typedef vnl_matrix<PixelType> MatrixType;
-  const unsigned int ARows =
-    inImage->GetLargestPossibleRegion().GetNumberOfPixels();
-  const unsigned int ACols = VDimension + 1;
-  MatrixType matrix;
-  matrix.set_size( ARows, ACols );
+  const unsigned int            ARows = inImage->GetLargestPossibleRegion().GetNumberOfPixels();
+  const unsigned int            ACols = VDimension + 1;
+  MatrixType                    matrix;
+  matrix.set_size(ARows, ACols);
   matrix = filter->GetOutput();
 
   // write out the vnl_matrix object
   typedef itk::CSVNumericObjectFileWriter<PixelType> WriterType;
-  WriterType::Pointer writer = WriterType::New();
+  WriterType::Pointer                                writer = WriterType::New();
 
-  writer->SetFieldDelimiterCharacter( ',' );
-  writer->SetFileName( outputListFileName );
-  writer->SetInput( &matrix );
+  writer->SetFieldDelimiterCharacter(',');
+  writer->SetFileName(outputListFileName);
+  writer->SetInput(&matrix);
 
   try
-    {
+  {
     writer->Update();
-    }
-  catch( itk::ExceptionObject& exp )
-    {
+  }
+  catch (itk::ExceptionObject & exp)
+  {
     std::cerr << "Exception caught!" << std::endl;
     std::cerr << exp << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
-  timeCollector.Stop( "Generate output list" );
+  timeCollector.Stop("Generate output list");
 
   progress = 1.0;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
   progressReporter.End();
 
   timeCollector.Report();
@@ -187,11 +181,12 @@ int DoIt( int argc, char * argv[] )
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputShrunkenImageFileName.
-  return tube::ParseArgsAndCallDoIt( inputShrunkenImageFileName, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputShrunkenImageFileName, argc, argv);
 }

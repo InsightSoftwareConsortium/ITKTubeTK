@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef __tubeSegmentTubeUsingMinimalPath_hxx
 #define __tubeSegmentTubeUsingMinimalPath_hxx
 
@@ -22,30 +22,27 @@
 namespace tube
 {
 
-template< unsigned int Dimension, class TInputPixel >
-SegmentTubeUsingMinimalPath< Dimension, TInputPixel >
-::SegmentTubeUsingMinimalPath( void )
+template <unsigned int Dimension, class TInputPixel>
+SegmentTubeUsingMinimalPath<Dimension, TInputPixel>::SegmentTubeUsingMinimalPath(void)
 {
   m_Filter = FilterType::New();
 }
 
-template< unsigned int Dimension, class TInputPixel >
+template <unsigned int Dimension, class TInputPixel>
 void
-SegmentTubeUsingMinimalPath< Dimension, TInputPixel >
-::SetIntermediatePoints( std::vector< PointType > v )
+SegmentTubeUsingMinimalPath<Dimension, TInputPixel>::SetIntermediatePoints(std::vector<PointType> v)
 {
-  m_Filter->SetIntermediatePoints( v );
+  m_Filter->SetIntermediatePoints(v);
 }
 
-template< unsigned int Dimension, class TInputPixel >
+template <unsigned int Dimension, class TInputPixel>
 void
-SegmentTubeUsingMinimalPath< Dimension, TInputPixel >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+SegmentTubeUsingMinimalPath<Dimension, TInputPixel>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << indent << m_Filter << std::endl;
 }
 
-}
+} // namespace tube
 
 #endif

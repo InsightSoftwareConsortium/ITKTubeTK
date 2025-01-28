@@ -29,9 +29,8 @@ limitations under the License.
 namespace tube
 {
 
-template< class TPixel, unsigned int Dimension >
-EnhanceTubesUsingDiffusion< TPixel, Dimension >
-::EnhanceTubesUsingDiffusion( void )
+template <class TPixel, unsigned int Dimension>
+EnhanceTubesUsingDiffusion<TPixel, Dimension>::EnhanceTubesUsingDiffusion(void)
 {
   m_MinSigma = 1.0;
   m_MaxSigma = 1.0;
@@ -41,50 +40,47 @@ EnhanceTubesUsingDiffusion< TPixel, Dimension >
   m_Filter->SetDefaultPars();
 }
 
-template< class TPixel, unsigned int Dimension >
+template <class TPixel, unsigned int Dimension>
 void
-EnhanceTubesUsingDiffusion< TPixel, Dimension >
-::Update( void )
+EnhanceTubesUsingDiffusion<TPixel, Dimension>::Update(void)
 {
   // set scales
-  std::vector< float > scales( m_NumSigmaSteps );
+  std::vector<float> scales(m_NumSigmaSteps);
 
   double deltaSigma = m_MaxSigma - m_MinSigma;
 
-  for( unsigned int i = 0; i < m_NumSigmaSteps; i++ )
-    {
-    scales[i] = m_MinSigma + i * ( deltaSigma / m_NumSigmaSteps );
-    }
+  for (unsigned int i = 0; i < m_NumSigmaSteps; i++)
+  {
+    scales[i] = m_MinSigma + i * (deltaSigma / m_NumSigmaSteps);
+  }
 
-  m_Filter->SetScales( scales );
+  m_Filter->SetScales(scales);
 
   // compute vesselness image
   m_Filter->Update();
 }
 
-template< class TPixel, unsigned int Dimension >
+template <class TPixel, unsigned int Dimension>
 void
-EnhanceTubesUsingDiffusion< TPixel, Dimension >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+EnhanceTubesUsingDiffusion<TPixel, Dimension>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 
   os << indent << "MinSigma             : " << GetMinSigma() << std::endl;
   os << indent << "MaxSigma             : " << GetMaxSigma() << std::endl;
   os << indent << "NumSigmaSteps        : " << GetNumSigmaSteps() << std::endl;
 
-  os << indent << "RecalculateTubeness  : " << GetRecalculateTubeness()
-                                            << std::endl;
+  os << indent << "RecalculateTubeness  : " << GetRecalculateTubeness() << std::endl;
   os << indent << "Beta                 : " << GetBeta() << std::endl;
   os << indent << "Gamma                : " << GetGamma() << std::endl;
   os << indent << "Epsilon              : " << GetEpsilon() << std::endl;
   os << indent << "Omega                : " << GetOmega() << std::endl;
   os << indent << "Sensitivity          : " << GetSensitivity() << std::endl;
 
-  os << indent << "TimeStep             : " << GetTimeStep()  << std::endl;
+  os << indent << "TimeStep             : " << GetTimeStep() << std::endl;
   os << indent << "Iterations           : " << GetIterations() << std::endl;
 }
 
-}
+} // namespace tube
 
 #endif

@@ -43,262 +43,232 @@ PURPOSE.  See the above copyright notices for more information.
 namespace tube
 {
 
-OptionList
-::OptionList( void )
-{
-}
+OptionList ::OptionList(void) {}
 
 
-OptionList
-::~OptionList( void )
-{
-}
+OptionList ::~OptionList(void) {}
 
 
 OptionList::OptionMapType &
-OptionList
-::GetOptionMap( void )
+OptionList ::GetOptionMap(void)
 {
   return m_OptionMap;
 }
 
 
 void
-OptionList
-::CreateOptionMap( int argc, char * argv[] )
+OptionList ::CreateOptionMap(int argc, char * argv[])
 {
   std::string tag;
-  int index = 1;
+  int         index = 1;
 
-  while( index < argc )
+  while (index < argc)
+  {
+    if (argv[index][0] == '-' && argv[index][1] == '-')
     {
-    if( argv[index][0] == '-' && argv[index][1] == '-' )
-      {
       tag = argv[index];
-      tag = tag.erase( 0, 2 ); // Remove '--'.
-      }
+      tag = tag.erase(0, 2); // Remove '--'.
+    }
     else
-      {
-      m_OptionMap.insert( std::make_pair( tag, argv[index] ) );
-      }
+    {
+      m_OptionMap.insert(std::make_pair(tag, argv[index]));
+    }
 
     ++index;
-    }
+  }
 }
 
 
 int
-OptionList
-::GetOptions( const std::string & tag,
-                            std::vector< std::string > & values ) const
+OptionList ::GetOptions(const std::string & tag, std::vector<std::string> & values) const
 {
   values.clear();
 
   typedef OptionMapType::const_iterator OptionIterator;
 
-  std::pair< OptionIterator, OptionIterator > bound
-    = m_OptionMap.equal_range( tag );
-  int numberOfValues = 0;
+  std::pair<OptionIterator, OptionIterator> bound = m_OptionMap.equal_range(tag);
+  int                                       numberOfValues = 0;
 
-  for( OptionIterator iter = bound.first; iter != bound.second; ++iter )
-    {
-    values.push_back( iter->second );
+  for (OptionIterator iter = bound.first; iter != bound.second; ++iter)
+  {
+    values.push_back(iter->second);
     ++numberOfValues;
-    }
+  }
 
   return numberOfValues;
 }
 
 
 int
-OptionList
-::DumpOptions( const std::string & tag, bool withTag, bool withNewLine ) const
+OptionList ::DumpOptions(const std::string & tag, bool withTag, bool withNewLine) const
 {
   typedef OptionMapType::const_iterator OptionIterator;
 
-  std::pair< OptionIterator, OptionIterator > bound
-    = m_OptionMap.equal_range( tag );
+  std::pair<OptionIterator, OptionIterator> bound = m_OptionMap.equal_range(tag);
 
-  if( bound.first != bound.second )
+  if (bound.first != bound.second)
+  {
+    if (withTag)
     {
-    if( withTag )
-      {
       std::cout << "--" << tag << " ";
-      }
+    }
 
     int numberOfValues = 0;
 
-    for( OptionIterator iter = bound.first; iter != bound.second; ++iter )
-      {
+    for (OptionIterator iter = bound.first; iter != bound.second; ++iter)
+    {
       std::cout << iter->second << " ";
       ++numberOfValues;
-      }
+    }
 
-    if( withNewLine )
-      {
+    if (withNewLine)
+    {
       std::cout << std::endl;
-      }
+    }
 
     return numberOfValues++;
-    }
+  }
 
   return 0;
 }
 
 
 bool
-OptionList
-::GetBooleanOption( const std::string & tag,
-  bool defaultValue,
-  bool required ) const
+OptionList ::GetBooleanOption(const std::string & tag, bool defaultValue, bool required) const
 {
-  std::vector< std::string > values;
-  const int numberOfValues = this->GetOptions( tag, values );
+  std::vector<std::string> values;
+  const int                numberOfValues = this->GetOptions(tag, values);
 
-  if( required && numberOfValues == 0 )
-    {
-    throw RequiredOptionMissing( tag );
-    }
+  if (required && numberOfValues == 0)
+  {
+    throw RequiredOptionMissing(tag);
+  }
 
-  if( numberOfValues == 0 )
-    {
+  if (numberOfValues == 0)
+  {
     return defaultValue;
-    }
+  }
 
-  if( values[0] == "yes" )
-    {
-      return true;
-    }
+  if (values[0] == "yes")
+  {
+    return true;
+  }
 
   return false;
 }
 
 
 unsigned char
-OptionList
-::GetCharacterOption( const std::string & tag,
-  unsigned char defaultValue,
-  bool required ) const
+OptionList ::GetCharacterOption(const std::string & tag, unsigned char defaultValue, bool required) const
 {
-  std::vector< std::string > values;
-  const int numberOfValues = this->GetOptions( tag, values );
+  std::vector<std::string> values;
+  const int                numberOfValues = this->GetOptions(tag, values);
 
-  if( required && numberOfValues == 0 )
-    {
-    throw RequiredOptionMissing( tag );
-    }
+  if (required && numberOfValues == 0)
+  {
+    throw RequiredOptionMissing(tag);
+  }
 
-  if( numberOfValues == 0 )
-    {
+  if (numberOfValues == 0)
+  {
     return defaultValue;
-    }
+  }
 
-  return ( unsigned char )std::atoi( values[0].c_str() );
+  return (unsigned char)std::atoi(values[0].c_str());
 }
 
 
 double
-OptionList
-::GetDoubleOption( const std::string & tag,
-  double defaultValue,
-  bool required ) const
+OptionList ::GetDoubleOption(const std::string & tag, double defaultValue, bool required) const
 {
-  std::vector< std::string > tempValues;
-  const int numberOfValues = this->GetOptions( tag, tempValues );
+  std::vector<std::string> tempValues;
+  const int                numberOfValues = this->GetOptions(tag, tempValues);
 
-  if( required && numberOfValues == 0 )
-    {
-    throw RequiredOptionMissing( tag );
-    }
+  if (required && numberOfValues == 0)
+  {
+    throw RequiredOptionMissing(tag);
+  }
 
-  if( numberOfValues == 0 )
-    {
+  if (numberOfValues == 0)
+  {
     return defaultValue;
-    }
+  }
 
-  return std::strtod( tempValues[0].c_str(), NULL );
+  return std::strtod(tempValues[0].c_str(), NULL);
 }
 
 
 int
-OptionList
-::GetIntegerOption( const std::string & tag,
-  int defaultValue,
-  bool required ) const
+OptionList ::GetIntegerOption(const std::string & tag, int defaultValue, bool required) const
 {
-  std::vector< std::string > values;
-  const int numberOfValues = this->GetOptions( tag, values );
+  std::vector<std::string> values;
+  const int                numberOfValues = this->GetOptions(tag, values);
 
-  if( required && numberOfValues == 0 )
-    {
-    throw RequiredOptionMissing( tag );
-    }
+  if (required && numberOfValues == 0)
+  {
+    throw RequiredOptionMissing(tag);
+  }
 
-  if( numberOfValues == 0 )
-    {
+  if (numberOfValues == 0)
+  {
     return defaultValue;
-    }
+  }
 
-  return ( int )std::strtol( values[0].c_str(), NULL, 0 );
+  return (int)std::strtol(values[0].c_str(), NULL, 0);
 }
 
 
 int
-OptionList
-::GetMultipleCharactersOption( const std::string & tag,
-  std::vector< unsigned char > & values,
-  bool required ) const
+OptionList ::GetMultipleCharactersOption(const std::string &          tag,
+                                         std::vector<unsigned char> & values,
+                                         bool                         required) const
 {
   values.clear();
 
-  std::vector< std::string > tempValues;
-  const int numberOfValues = this->GetOptions( tag, tempValues );
+  std::vector<std::string> tempValues;
+  const int                numberOfValues = this->GetOptions(tag, tempValues);
 
-  if( required && numberOfValues == 0 )
-    {
-    throw RequiredOptionMissing( tag );
-    }
+  if (required && numberOfValues == 0)
+  {
+    throw RequiredOptionMissing(tag);
+  }
 
-  if( numberOfValues == 0 )
-    {
+  if (numberOfValues == 0)
+  {
     return -1;
-    }
+  }
 
-  if( tempValues[0] == "-" )
-    {
+  if (tempValues[0] == "-")
+  {
     return -2;
-    }
+  }
 
-  for( int i = 0; i < numberOfValues; ++i )
-    {
-    values.push_back( ( unsigned char )std::atoi( tempValues[i].c_str() ) );
-    }
+  for (int i = 0; i < numberOfValues; ++i)
+  {
+    values.push_back((unsigned char)std::atoi(tempValues[i].c_str()));
+  }
 
   return numberOfValues;
 }
 
 
 int
-OptionList
-::GetMultipleDoublesOption( const std::string & tag,
-  itk::Array< double > & values,
-  bool required ) const
+OptionList ::GetMultipleDoublesOption(const std::string & tag, itk::Array<double> & values, bool required) const
 {
-  std::vector< double > tempValues;
-  const int numberOfValues = this->GetMultipleDoublesOption( tag, tempValues,
-                                                             required );
+  std::vector<double> tempValues;
+  const int           numberOfValues = this->GetMultipleDoublesOption(tag, tempValues, required);
 
-  if( numberOfValues <= 0 )
-    {
+  if (numberOfValues <= 0)
+  {
     return numberOfValues;
-    }
+  }
 
-  itk::Array< double > array( numberOfValues );
+  itk::Array<double> array(numberOfValues);
 
-  for( int i = 0; i < numberOfValues; ++i )
-    {
+  for (int i = 0; i < numberOfValues; ++i)
+  {
     array[i] = tempValues[i];
-    }
+  }
 
   values = array;
 
@@ -307,159 +277,145 @@ OptionList
 
 
 int
-OptionList
-::GetMultipleDoublesOption( const std::string & tag,
-  std::vector< double > & values,
-  bool required ) const
+OptionList ::GetMultipleDoublesOption(const std::string & tag, std::vector<double> & values, bool required) const
 {
   values.clear();
 
-  std::vector< std::string > tempValues;
-  const int numberOfValues = this->GetOptions( tag, tempValues );
+  std::vector<std::string> tempValues;
+  const int                numberOfValues = this->GetOptions(tag, tempValues);
 
-  if( required && numberOfValues == 0 )
-    {
-    throw RequiredOptionMissing( tag );
-    }
+  if (required && numberOfValues == 0)
+  {
+    throw RequiredOptionMissing(tag);
+  }
 
-  if( numberOfValues == 0 )
-    {
+  if (numberOfValues == 0)
+  {
     return -1;
-    }
+  }
 
-  if( tempValues[0] == "-" )
-    {
+  if (tempValues[0] == "-")
+  {
     return -2;
-    }
+  }
 
-  for( int i = 0; i < numberOfValues; ++i )
-    {
-    values.push_back( std::strtod( tempValues[i].c_str(), NULL ) );
-    }
+  for (int i = 0; i < numberOfValues; ++i)
+  {
+    values.push_back(std::strtod(tempValues[i].c_str(), NULL));
+  }
 
   return numberOfValues;
 }
 
 
 int
-OptionList
-::GetMultipleIntegersOption( const std::string & tag,
-  std::vector< int > & values,
-  bool required ) const
+OptionList ::GetMultipleIntegersOption(const std::string & tag, std::vector<int> & values, bool required) const
 {
   values.clear();
 
-  std::vector< std::string > tempValues;
-  const int numberOfValues = this->GetOptions( tag, tempValues );
+  std::vector<std::string> tempValues;
+  const int                numberOfValues = this->GetOptions(tag, tempValues);
 
-  if( required && numberOfValues == 0 )
-    {
-    throw RequiredOptionMissing( tag );
-    }
+  if (required && numberOfValues == 0)
+  {
+    throw RequiredOptionMissing(tag);
+  }
 
-  if( numberOfValues == 0 )
-    {
+  if (numberOfValues == 0)
+  {
     return -1;
-    }
+  }
 
-  if( tempValues[0] == "-" )
-    {
+  if (tempValues[0] == "-")
+  {
     return -2;
-    }
+  }
 
-  for( int i = 0; i < numberOfValues; ++i )
-    {
-    values.push_back( ( int )std::strtol( tempValues[i].c_str(), NULL, 0 ) );
-    }
-
-  return numberOfValues;
-}
-
-
-int
-OptionList
-::GetMultipleStringsOption( const std::string & tag,
-  std::vector< std::string > & values,
-  bool required ) const
-{
-  values.clear();
-
-  std::vector< std::string > tempValues;
-  const int numberOfValues = this->GetOptions( tag, tempValues );
-
-  if( required && numberOfValues == 0 )
-    {
-    throw RequiredOptionMissing( tag );
-    }
-
-  if( numberOfValues == 0 )
-    {
-    return -1;
-    }
-
-  for( int i = 0; i < numberOfValues; ++i )
-    {
-    values.push_back( tempValues[i] );
-    }
+  for (int i = 0; i < numberOfValues; ++i)
+  {
+    values.push_back((int)std::strtol(tempValues[i].c_str(), NULL, 0));
+  }
 
   return numberOfValues;
 }
 
 
 int
-OptionList
-::GetMultipleUnsignedIntegersOption( const std::string & tag,
-  std::vector< unsigned int > & values,
-  bool required ) const
+OptionList ::GetMultipleStringsOption(const std::string & tag, std::vector<std::string> & values, bool required) const
 {
   values.clear();
 
-  std::vector< std::string > tempValues;
-  const int numberOfValues = this->GetOptions( tag, tempValues );
+  std::vector<std::string> tempValues;
+  const int                numberOfValues = this->GetOptions(tag, tempValues);
 
-  if( required && numberOfValues == 0 )
-    {
-    throw RequiredOptionMissing( tag );
-    }
+  if (required && numberOfValues == 0)
+  {
+    throw RequiredOptionMissing(tag);
+  }
 
-  if( numberOfValues == 0 )
-    {
+  if (numberOfValues == 0)
+  {
     return -1;
-    }
+  }
 
-  if( tempValues[0] == "-" )
-    {
+  for (int i = 0; i < numberOfValues; ++i)
+  {
+    values.push_back(tempValues[i]);
+  }
+
+  return numberOfValues;
+}
+
+
+int
+OptionList ::GetMultipleUnsignedIntegersOption(const std::string &         tag,
+                                               std::vector<unsigned int> & values,
+                                               bool                        required) const
+{
+  values.clear();
+
+  std::vector<std::string> tempValues;
+  const int                numberOfValues = this->GetOptions(tag, tempValues);
+
+  if (required && numberOfValues == 0)
+  {
+    throw RequiredOptionMissing(tag);
+  }
+
+  if (numberOfValues == 0)
+  {
+    return -1;
+  }
+
+  if (tempValues[0] == "-")
+  {
     return -2;
-    }
+  }
 
-  for( int i = 0; i < numberOfValues; ++i )
-    {
-    values.push_back( ( unsigned int )std::strtoul( tempValues[i].c_str(), NULL,
-                                                  0 ) );
-    }
+  for (int i = 0; i < numberOfValues; ++i)
+  {
+    values.push_back((unsigned int)std::strtoul(tempValues[i].c_str(), NULL, 0));
+  }
 
   return numberOfValues;
 }
 
 
 int
-OptionList
-::GetStringOption( const std::string & tag,
-  std::string & value,
-  bool required ) const
+OptionList ::GetStringOption(const std::string & tag, std::string & value, bool required) const
 {
-  std::vector< std::string > values;
-  const int numberOfValues = this->GetOptions( tag, values );
+  std::vector<std::string> values;
+  const int                numberOfValues = this->GetOptions(tag, values);
 
-  if( required && numberOfValues == 0 )
-    {
-    throw RequiredOptionMissing( tag );
-    }
+  if (required && numberOfValues == 0)
+  {
+    throw RequiredOptionMissing(tag);
+  }
 
-  if( numberOfValues == 0 )
-    {
+  if (numberOfValues == 0)
+  {
     return -1;
-    }
+  }
 
   value = values[0];
 
@@ -468,41 +424,36 @@ OptionList
 
 
 unsigned int
-OptionList
-::GetUnsignedIntegerOption( const std::string & tag,
-  unsigned int defaultValue,
-  bool required ) const
+OptionList ::GetUnsignedIntegerOption(const std::string & tag, unsigned int defaultValue, bool required) const
 {
-  std::vector< std::string > values;
-  const int numberOfValues = this->GetOptions( tag, values );
+  std::vector<std::string> values;
+  const int                numberOfValues = this->GetOptions(tag, values);
 
-  if( required && numberOfValues == 0 )
-    {
-    throw RequiredOptionMissing( tag );
-    }
+  if (required && numberOfValues == 0)
+  {
+    throw RequiredOptionMissing(tag);
+  }
 
-  if( numberOfValues == 0 )
-    {
+  if (numberOfValues == 0)
+  {
     return defaultValue;
-    }
+  }
 
-  return ( unsigned int )std::strtoul( values[0].c_str(), NULL, 0 );
+  return (unsigned int)std::strtoul(values[0].c_str(), NULL, 0);
 }
 
 
 void
-OptionList
-::PrintSelf( std::ostream & os, Indent indent ) const
+OptionList ::PrintSelf(std::ostream & os, Indent indent) const
 {
-  this->Superclass::PrintSelf( os, indent );
+  this->Superclass::PrintSelf(os, indent);
 
   os << indent << "OptionMap:" << std::endl;
 
-  for( OptionMapType::const_iterator it = m_OptionMap.begin();
-       it != m_OptionMap.end(); ++it )
-    {
+  for (OptionMapType::const_iterator it = m_OptionMap.begin(); it != m_OptionMap.end(); ++it)
+  {
     os << indent << it->first << " -> " << it->second << std::endl;
-    }
+  }
 }
 
 } // End namespace tube

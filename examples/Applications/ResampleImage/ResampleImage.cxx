@@ -32,119 +32,118 @@ limitations under the License.
 #include <tubeResampleImage.h>
 #include "ResampleImageCLP.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of
 //   int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int DimensionI >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int DimensionI>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
-  typedef itk::Image< TPixel, DimensionI >            ImageType;
+  typedef itk::Image<TPixel, DimensionI> ImageType;
 
-  typedef typename tube::ResampleImage< ImageType >   FilterType;
-  typename FilterType::Pointer filter = FilterType::New();
+  typedef typename tube::ResampleImage<ImageType> FilterType;
+  typename FilterType::Pointer                    filter = FilterType::New();
 
-  typedef typename FilterType::TransformType     TransformType;
+  typedef typename FilterType::TransformType TransformType;
 
-  typedef  itk::ImageFileReader< ImageType >     InputReaderType;
-  typedef  itk::ImageFileWriter< ImageType >     OutputWriterType;
+  typedef itk::ImageFileReader<ImageType> InputReaderType;
+  typedef itk::ImageFileWriter<ImageType> OutputWriterType;
 
   itk::TimeProbesCollectorBase timeCollector;
 
-  tube::CLIProgressReporter reporter( "Resample", CLPProcessInformation );
+  tube::CLIProgressReporter reporter("Resample", CLPProcessInformation);
   reporter.Start();
 
-  timeCollector.Start( "LoadData" );
+  timeCollector.Start("LoadData");
 
   typename InputReaderType::Pointer reader = InputReaderType::New();
-  reader->SetFileName( inputVolume.c_str() );
+  reader->SetFileName(inputVolume.c_str());
   try
-    {
+  {
     reader->Update();
-    filter->SetInput( reader->GetOutput() );
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading input image. Exception caught: "
-                        + std::string( err.GetDescription() ) );
+    filter->SetInput(reader->GetOutput());
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading input image. Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-      }
+  }
 
-  timeCollector.Stop( "LoadData" );
-  reporter.Report( 0.1 );
+  timeCollector.Stop("LoadData");
+  reporter.Report(0.1);
 
-  if( matchImage.size() > 1 )
-    {
-    typename InputReaderType::Pointer matchImReader =
-      InputReaderType::New();
-    matchImReader->SetFileName( matchImage );
+  if (matchImage.size() > 1)
+  {
+    typename InputReaderType::Pointer matchImReader = InputReaderType::New();
+    matchImReader->SetFileName(matchImage);
     matchImReader->Update();
-    filter->SetMatchImage( matchImReader->GetOutput() );
-    reporter.Report( 0.2 );
-    }
+    filter->SetMatchImage(matchImReader->GetOutput());
+    reporter.Report(0.2);
+  }
 
-  if( spacing.size() > 0 )
-    {
-    filter->SetSpacing( spacing );
-    }
+  if (spacing.size() > 0)
+  {
+    filter->SetSpacing(spacing);
+  }
 
-  if( origin.size() > 0 )
-    {
-    filter->SetOrigin( origin );
-    }
+  if (origin.size() > 0)
+  {
+    filter->SetOrigin(origin);
+  }
 
-  if( index.size() > 0 )
-    {
-    filter->SetIndex( index );
-    }
+  if (index.size() > 0)
+  {
+    filter->SetIndex(index);
+  }
 
-  if( resampleFactor.size() > 0 )
-    {
-    filter->SetResampleFactor( resampleFactor );
-    }
+  if (resampleFactor.size() > 0)
+  {
+    filter->SetResampleFactor(resampleFactor);
+  }
 
-  filter->SetMakeIsotropic( makeIsotropic );
-  filter->SetMakeHighResIso( makeHighResIso );
-  filter->SetInterpolator( interpolator );
+  filter->SetMakeIsotropic(makeIsotropic);
+  filter->SetMakeHighResIso(makeHighResIso);
+  filter->SetInterpolator(interpolator);
 
-  if( loadTransform.size() > 0 )
-    {
-    typename itk::TransformFileReader::Pointer treader =
-      itk::TransformFileReader::New();
-    treader->SetFileName( loadTransform );
+  if (loadTransform.size() > 0)
+  {
+    typename itk::TransformFileReader::Pointer treader = itk::TransformFileReader::New();
+    treader->SetFileName(loadTransform);
     treader->Update();
 
-    typename TransformType::Pointer tfm = static_cast< TransformType * >(
-      treader->GetTransformList()->front().GetPointer() );
+    typename TransformType::Pointer tfm =
+      static_cast<TransformType *>(treader->GetTransformList()->front().GetPointer());
 
-    filter->SetTransform( tfm );
-    }
+    filter->SetTransform(tfm);
+  }
 
   typename ImageType::Pointer outIm;
 
-  timeCollector.Start( "Resample" );
-  reporter.Report( 0.25 );
+  timeCollector.Start("Resample");
+  reporter.Report(0.25);
 
   filter->Update();
 
   outIm = filter->GetOutput();
 
-  reporter.Report( 0.95 );
-  timeCollector.Stop( "Resample" );
+  reporter.Report(0.95);
+  timeCollector.Stop("Resample");
 
-  timeCollector.Start( "Write" );
-  typename OutputWriterType::Pointer  writer = OutputWriterType::New();
-  writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( outIm );
-  writer->SetUseCompression( true );
+  timeCollector.Start("Write");
+  typename OutputWriterType::Pointer writer = OutputWriterType::New();
+  writer->SetFileName(outputVolume.c_str());
+  writer->SetInput(outIm);
+  writer->SetUseCompression(true);
   writer->Update();
-  timeCollector.Stop( "Write" );
+  timeCollector.Stop("Write");
 
   timeCollector.Report();
   reporter.End();
@@ -153,11 +152,12 @@ int DoIt( int argc, char * argv[] )
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputVolume.
-  return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputVolume, argc, argv);
 }

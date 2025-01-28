@@ -14,27 +14,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef __tubeCropTubes_hxx
 #define __tubeCropTubes_hxx
 
 
-
 namespace tube
 {
-template< unsigned int VDimension >
-CropTubes< VDimension >
-::CropTubes( void )
+template <unsigned int VDimension>
+CropTubes<VDimension>::CropTubes(void)
 {
   m_Filter = FilterType::New();
 }
 
-template< unsigned int VDimension >
+template <unsigned int VDimension>
 void
-CropTubes< VDimension >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+CropTubes<VDimension>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 
   os << indent << m_Filter << std::endl;
 }

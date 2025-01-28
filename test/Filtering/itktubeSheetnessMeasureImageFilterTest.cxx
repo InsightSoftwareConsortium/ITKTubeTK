@@ -25,7 +25,8 @@ limitations under the License.
 #include <itkHessianRecursiveGaussianImageFilter.h>
 #include <itkImageFileWriter.h>
 
-int itktubeSheetnessMeasureImageFilterTest( int ,char *[] )
+int
+itktubeSheetnessMeasureImageFilterTest(int, char *[])
 {
   std::cout << "itktubeSheetnessMeasureImageFilterTest running..." << std::endl;
 
@@ -33,19 +34,19 @@ int itktubeSheetnessMeasureImageFilterTest( int ,char *[] )
   const unsigned int myDimension = 3;
 
   // Declare the types of the images
-  typedef itk::Image<float, myDimension>           myImageType;
+  typedef itk::Image<float, myDimension> myImageType;
 
   // Declare the type of the index to access images
-  typedef itk::Index<myDimension>             myIndexType;
+  typedef itk::Index<myDimension> myIndexType;
 
   // Declare the type of the size
-  typedef itk::Size<myDimension>              mySizeType;
+  typedef itk::Size<myDimension> mySizeType;
 
   // Declare the type of the Region
-  typedef itk::ImageRegion<myDimension>        myRegionType;
+  typedef itk::ImageRegion<myDimension> myRegionType;
 
   // Create the image
-  myImageType::Pointer inputImage  = myImageType::New();
+  myImageType::Pointer inputImage = myImageType::New();
 
   std::cout << "Creating a synthetic image" << std::endl;
 
@@ -56,30 +57,30 @@ int itktubeSheetnessMeasureImageFilterTest( int ,char *[] )
   size[2] = 8;
 
   myIndexType start;
-  start.Fill( 0 );
+  start.Fill(0);
 
   myRegionType region;
-  region.SetIndex( start );
-  region.SetSize( size );
+  region.SetIndex(start);
+  region.SetSize(size);
 
   // Initialize Image A
-  inputImage->SetLargestPossibleRegion( region );
-  inputImage->SetBufferedRegion( region );
-  inputImage->SetRequestedRegion( region );
+  inputImage->SetLargestPossibleRegion(region);
+  inputImage->SetBufferedRegion(region);
+  inputImage->SetRequestedRegion(region);
   inputImage->Allocate();
 
   // Declare Iterator type for the input image
-  typedef itk::ImageRegionIteratorWithIndex<myImageType>  myIteratorType;
+  typedef itk::ImageRegionIteratorWithIndex<myImageType> myIteratorType;
 
   // Create one iterator for the Input Image A ( this is a light object )
-  myIteratorType it( inputImage, inputImage->GetRequestedRegion() );
+  myIteratorType it(inputImage, inputImage->GetRequestedRegion());
 
   // Initialize the content of Image A
-  while( !it.IsAtEnd() )
-    {
-    it.Set( 0.0 );
+  while (!it.IsAtEnd())
+  {
+    it.Set(0.0);
     ++it;
-    }
+  }
 
   size[0] = 4;
   size[1] = 4;
@@ -90,32 +91,31 @@ int itktubeSheetnessMeasureImageFilterTest( int ,char *[] )
   start[2] = 2;
 
   // Create one iterator for an internal region
-  region.SetSize( size );
-  region.SetIndex( start );
-  myIteratorType itb( inputImage, region );
+  region.SetSize(size);
+  region.SetIndex(start);
+  myIteratorType itb(inputImage, region);
 
   // Initialize the content the internal region
-  while( !itb.IsAtEnd() )
-    {
-    itb.Set( 100.0 );
+  while (!itb.IsAtEnd())
+  {
+    itb.Set(100.0);
     ++itb;
-    }
+  }
 
   std::cout << "Finished creating a synthetic image" << std::endl;
 
   std::cout << "Writing out the synthetic image" << std::endl;
-  typedef itk::ImageFileWriter<myImageType>     InputImageWriterType;
-  InputImageWriterType::Pointer inputImageWriter= InputImageWriterType::New();
-  inputImageWriter->SetFileName( "SyntheticImageForSheetnessTest.mha" );
-  inputImageWriter->SetInput( inputImage );
+  typedef itk::ImageFileWriter<myImageType> InputImageWriterType;
+  InputImageWriterType::Pointer             inputImageWriter = InputImageWriterType::New();
+  inputImageWriter->SetFileName("SyntheticImageForSheetnessTest.mha");
+  inputImageWriter->SetInput(inputImage);
   inputImageWriter->Update();
 
   // Declare the type for the Hessian filter
-  typedef itk::HessianRecursiveGaussianImageFilter<
-                                            myImageType >  myHessianFilterType;
+  typedef itk::HessianRecursiveGaussianImageFilter<myImageType> myHessianFilterType;
 
   // Declare the type for the sheetness measure filter
-  typedef itk::tube::SheetnessMeasureImageFilter< float >  mySheetnessFilterType;
+  typedef itk::tube::SheetnessMeasureImageFilter<float> mySheetnessFilterType;
 
   typedef mySheetnessFilterType::OutputImageType mySheetnessImageType;
 
@@ -128,11 +128,11 @@ int itktubeSheetnessMeasureImageFilterTest( int ,char *[] )
 
 
   // Connect the input images
-  filterHessian->SetInput( inputImage );
-  filterSheetness->SetInput( filterHessian->GetOutput() );
+  filterHessian->SetInput(inputImage);
+  filterSheetness->SetInput(filterHessian->GetOutput());
 
   // Select the value of Sigma
-  filterHessian->SetSigma( 0.5 );
+  filterHessian->SetSigma(0.5);
 
 
   // Execute the filter
@@ -145,15 +145,15 @@ int itktubeSheetnessMeasureImageFilterTest( int ,char *[] )
   // by another during GenerateData() call
   mySheetnessImageType::Pointer outputImage = filterSheetness->GetOutput();
 
-  //Write out the sheetness image
-  //Define output type
+  // Write out the sheetness image
+  // Define output type
   typedef mySheetnessFilterType::OutputImageType SheetnessImageType;
 
   std::cout << "Write out the sheetness image" << std::endl;
-  typedef itk::ImageFileWriter<SheetnessImageType>     SheetnessImageWriterType;
-  SheetnessImageWriterType::Pointer writer= SheetnessImageWriterType::New();
-  writer->SetFileName( "SheetnessImage.mha" );
-  writer->SetInput( outputImage );
+  typedef itk::ImageFileWriter<SheetnessImageType> SheetnessImageWriterType;
+  SheetnessImageWriterType::Pointer                writer = SheetnessImageWriterType::New();
+  writer->SetFileName("SheetnessImage.mha");
+  writer->SetInput(outputImage);
   writer->Update();
 
   return EXIT_SUCCESS;

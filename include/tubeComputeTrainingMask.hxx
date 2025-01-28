@@ -23,14 +23,14 @@ limitations under the License.
 #define __tubeComputeTrainingMask_hxx
 
 
-namespace tube {
+namespace tube
+{
 
 /**
  *
  */
-template< class TImage, class TLabelMap >
-ComputeTrainingMask< TImage, TLabelMap >
-::ComputeTrainingMask( void )
+template <class TImage, class TLabelMap>
+ComputeTrainingMask<TImage, TLabelMap>::ComputeTrainingMask(void)
 {
   m_Filter = FilterType::New();
 }
@@ -39,15 +39,12 @@ ComputeTrainingMask< TImage, TLabelMap >
 /**
  *
  */
-template< class TImage, class TLabelMap >
+template <class TImage, class TLabelMap>
 void
-ComputeTrainingMask< TImage, TLabelMap >
-::PrintSelf( std::ostream & os, itk::Indent  indent ) const
+ComputeTrainingMask<TImage, TLabelMap>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  os << indent << "Gap:"
-     << m_Filter->GetGap() << std::endl;
-  os << indent << "NotObjectWidth:"
-     << m_Filter->GetNotObjectWidth() << std::endl;
+  os << indent << "Gap:" << m_Filter->GetGap() << std::endl;
+  os << indent << "NotObjectWidth:" << m_Filter->GetNotObjectWidth() << std::endl;
 }
 
 

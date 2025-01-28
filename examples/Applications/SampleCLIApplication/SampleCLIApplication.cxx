@@ -35,15 +35,17 @@ limitations under the License.
 
 // Must do a forward declaration of DoIt before including
 // tubeCLIHelperFunctions
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
@@ -52,108 +54,103 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter( "SampleCLIApplication",
-    CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("SampleCLIApplication", CLPProcessInformation);
   progressReporter.Start();
 
-  typedef TPixel                                    InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension >  InputImageType;
-  typedef itk::ImageFileReader< InputImageType >    ReaderType;
+  typedef TPixel                                 InputPixelType;
+  typedef itk::Image<InputPixelType, VDimension> InputImageType;
+  typedef itk::ImageFileReader<InputImageType>   ReaderType;
 
-  typedef float                                     OutputPixelType;
-  typedef itk::Image< OutputPixelType, VDimension > OutputImageType;
-  typedef itk::ImageFileWriter< OutputImageType  >  WriterType;
+  typedef float                                   OutputPixelType;
+  typedef itk::Image<OutputPixelType, VDimension> OutputImageType;
+  typedef itk::ImageFileWriter<OutputImageType>   WriterType;
 
-  typedef itk::DiscreteGaussianImageFilter< InputImageType,
-    OutputImageType > FilterType;
+  typedef itk::DiscreteGaussianImageFilter<InputImageType, OutputImageType> FilterType;
 
-  timeCollector.Start( "Load data" );
+  timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( inputImageFileName.c_str() );
+  reader->SetFileName(inputImageFileName.c_str());
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Load data" );
+  }
+  timeCollector.Stop("Load data");
 
   double progress = 0.1;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
-  if( gaussianBlurStdDev > 0 )
-    {
-    timeCollector.Start( "Gaussian Blur" );
+  if (gaussianBlurStdDev > 0)
+  {
+    timeCollector.Start("Gaussian Blur");
 
     typename FilterType::Pointer filter;
     filter = FilterType::New();
-    filter->SetInput( reader->GetOutput() );
-    filter->SetVariance( gaussianBlurStdDev * gaussianBlurStdDev );
+    filter->SetInput(reader->GetOutput());
+    filter->SetVariance(gaussianBlurStdDev * gaussianBlurStdDev);
 
-    double progressFraction = 0.8;
-    tube::CLIFilterWatcher watcher( filter, "Blur Filter 1D",
-      CLPProcessInformation, progressFraction, progress, true );
+    double                 progressFraction = 0.8;
+    tube::CLIFilterWatcher watcher(filter, "Blur Filter 1D", CLPProcessInformation, progressFraction, progress, true);
 
     try
-      {
+    {
       filter->Update();
-      }
-    catch( itk::ExceptionObject & err )
-      {
-      tube::ErrorMessage( "Processing volume: Exception caught: "
-        + std::string( err.GetDescription() ) );
+    }
+    catch (itk::ExceptionObject & err)
+    {
+      tube::ErrorMessage("Processing volume: Exception caught: " + std::string(err.GetDescription()));
       timeCollector.Report();
       return EXIT_FAILURE;
-      }
-    timeCollector.Stop( "Gaussian Blur" );
+    }
+    timeCollector.Stop("Gaussian Blur");
 
-    timeCollector.Start( "Save data" );
+    timeCollector.Start("Save data");
     typename WriterType::Pointer writer = WriterType::New();
-    writer->SetFileName( outputImageFileName.c_str() );
-    writer->SetInput( filter->GetOutput() );
-    writer->SetUseCompression( true );
+    writer->SetFileName(outputImageFileName.c_str());
+    writer->SetInput(filter->GetOutput());
+    writer->SetUseCompression(true);
     try
-      {
+    {
       writer->Update();
-      }
-    catch( itk::ExceptionObject & err )
-      {
-      tube::ErrorMessage( "Writing volume: Exception caught: "
-        + std::string( err.GetDescription() ) );
+    }
+    catch (itk::ExceptionObject & err)
+    {
+      tube::ErrorMessage("Writing volume: Exception caught: " + std::string(err.GetDescription()));
       timeCollector.Report();
       return EXIT_FAILURE;
-      }
-    timeCollector.Stop( "Save data" );
+    }
+    timeCollector.Stop("Save data");
 
     progress = 1.0;
-    progressReporter.Report( progress );
+    progressReporter.Report(progress);
     progressReporter.End();
 
     timeCollector.Report();
     return EXIT_SUCCESS;
-    }
+  }
   else
-    {
-    tubeErrorMacro( << "Specified scale <= 0 is not supported." );
+  {
+    tubeErrorMacro(<< "Specified scale <= 0 is not supported.");
     progress = 1.0;
-    progressReporter.Report( progress );
+    progressReporter.Report(progress);
     progressReporter.End();
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputImageFileName.
-  return tube::ParseArgsAndCallDoIt( inputImageFileName, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputImageFileName, argc, argv);
 }

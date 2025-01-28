@@ -24,26 +24,25 @@ limitations under the License.
 
 #include <sstream>
 
-int tubeObjectTest( int argc, char * argv[] )
+int
+tubeObjectTest(int argc, char * argv[])
 {
-  if( argc > 1 )
-    {
-    tubeStandardErrorMacro( << "Usage: " << argv[0] );
+  if (argc > 1)
+  {
+    tubeStandardErrorMacro(<< "Usage: " << argv[0]);
 
     return EXIT_FAILURE;
-    }
+  }
 
   typedef tube::Object ObjectType;
 
   ObjectType::Pointer object = new ObjectType();
-  std::ostringstream oss;
+  std::ostringstream  oss;
 
-  object->Print( oss );
+  object->Print(oss);
 
-  tubeStandardOutputMacro( << "Object print method test:" << std::endl
-                           << oss.str() );
-  tubeStandardOutputMacro( << "Object stream operator test:" << std::endl
-                           << *object );
+  tubeStandardOutputMacro(<< "Object print method test:" << std::endl << oss.str());
+  tubeStandardOutputMacro(<< "Object stream operator test:" << std::endl << *object);
 
   delete object;
 
