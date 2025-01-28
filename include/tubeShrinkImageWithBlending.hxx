@@ -24,88 +24,77 @@ limitations under the License.
 #define __tubeShrinkImageWithBlending_hxx
 
 
-namespace tube {
+namespace tube
+{
 
 /**
  *
  */
-template< class TInputImage, class TOutputImage >
-ShrinkImageWithBlending< TInputImage, TOutputImage >
-::ShrinkImageWithBlending( void )
+template <class TInputImage, class TOutputImage>
+ShrinkImageWithBlending<TInputImage, TOutputImage>::ShrinkImageWithBlending(void)
 {
   m_Filter = FilterType::New();
 }
 
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 void
-ShrinkImageWithBlending< TInputImage, TOutputImage >
-::SetShrinkFactor( unsigned int i, unsigned int factor )
+ShrinkImageWithBlending<TInputImage, TOutputImage>::SetShrinkFactor(unsigned int i, unsigned int factor)
 {
-  if( m_Filter->GetShrinkFactor( i ) != factor )
-    {
-    m_Filter->SetShrinkFactor( i, factor );
+  if (m_Filter->GetShrinkFactor(i) != factor)
+  {
+    m_Filter->SetShrinkFactor(i, factor);
     this->Modified();
-    }
+  }
 }
 
 /**
  *
  */
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 unsigned int
-ShrinkImageWithBlending< TInputImage, TOutputImage >
-::GetShrinkFactor( unsigned int i )
+ShrinkImageWithBlending<TInputImage, TOutputImage>::GetShrinkFactor(unsigned int i)
 {
-  return m_Filter->GetShrinkFactor( i );
+  return m_Filter->GetShrinkFactor(i);
 }
 
 /**
  *
  */
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 void
-ShrinkImageWithBlending< TInputImage, TOutputImage >
-::PrintSelf( std::ostream & os, itk::Indent  indent ) const
+ShrinkImageWithBlending<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  os << indent << "ShrinkFactors:"
-     << m_Filter->GetShrinkFactors() << std::endl;
+  os << indent << "ShrinkFactors:" << m_Filter->GetShrinkFactors() << std::endl;
 
-  os << indent << "NewSize:"
-     << m_Filter->GetNewSize() << std::endl;
+  os << indent << "NewSize:" << m_Filter->GetNewSize() << std::endl;
 
   os << indent << "Overlap:" << m_Filter->GetOverlap() << std::endl;
 
-  os << indent << "BlendWithMean:"
-     << m_Filter->GetBlendWithMean() << std::endl;
+  os << indent << "BlendWithMean:" << m_Filter->GetBlendWithMean() << std::endl;
 
-  os << indent << "BlendWithMax:"
-     << m_Filter->GetBlendWithMax() << std::endl;
+  os << indent << "BlendWithMax:" << m_Filter->GetBlendWithMax() << std::endl;
 
-  os << indent << "BlendWithGaussianWeighting:"
-     << m_Filter->GetBlendWithGaussianWeighting() << std::endl;
+  os << indent << "BlendWithGaussianWeighting:" << m_Filter->GetBlendWithGaussianWeighting() << std::endl;
 
-  os << indent << "UseLog:"
-     << m_Filter->GetUseLog() << std::endl;
+  os << indent << "UseLog:" << m_Filter->GetUseLog() << std::endl;
 
-  if( m_Filter->GetInputMipPointImage() != nullptr )
-    {
-    os << indent << "Input MIP Point Image: "
-       << m_Filter->GetInputMipPointImage() << std::endl;
-    }
+  if (m_Filter->GetInputMipPointImage() != nullptr)
+  {
+    os << indent << "Input MIP Point Image: " << m_Filter->GetInputMipPointImage() << std::endl;
+  }
   else
-    {
+  {
     os << indent << "Input MIP Point Image: NULL" << std::endl;
-    }
+  }
 
-  if( m_Filter->GetOutputMipPointImage() != nullptr )
-    {
-    os << indent << "Output MIP Point Image: "
-       << m_Filter->GetOutputMipPointImage() << std::endl;
-    }
+  if (m_Filter->GetOutputMipPointImage() != nullptr)
+  {
+    os << indent << "Output MIP Point Image: " << m_Filter->GetOutputMipPointImage() << std::endl;
+  }
   else
-    {
+  {
     os << indent << "Output MIP Point Image: NULL" << std::endl;
-    }
+  }
 }
 
 

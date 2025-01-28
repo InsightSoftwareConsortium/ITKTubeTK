@@ -34,93 +34,85 @@ namespace itk
 namespace tube
 {
 
-template< unsigned int ObjectDimension >
-SubSampleSpatialObjectFilter< ObjectDimension >
-::SubSampleSpatialObjectFilter( void )
-  : m_Sampling( 1 )
+template <unsigned int ObjectDimension>
+SubSampleSpatialObjectFilter<ObjectDimension>::SubSampleSpatialObjectFilter(void)
+  : m_Sampling(1)
 {
   SpatialObjectFactoryBase::RegisterDefaultSpatialObjects();
-  SpatialObjectFactory< SpatialObjectType >::RegisterSpatialObject();
-  SpatialObjectFactory< TubeSpatialObjectType >::RegisterSpatialObject();
+  SpatialObjectFactory<SpatialObjectType>::RegisterSpatialObject();
+  SpatialObjectFactory<TubeSpatialObjectType>::RegisterSpatialObject();
 }
 
-template< unsigned int ObjectDimension >
-SubSampleSpatialObjectFilter< ObjectDimension >
-::~SubSampleSpatialObjectFilter( void )
-{
-}
+template <unsigned int ObjectDimension>
+SubSampleSpatialObjectFilter<ObjectDimension>::~SubSampleSpatialObjectFilter(void)
+{}
 
-template< unsigned int ObjectDimension >
+template <unsigned int ObjectDimension>
 void
-SubSampleSpatialObjectFilter< ObjectDimension >
-::SubSampleLevel( const SpatialObjectType * input,
-  typename SpatialObjectType::Pointer output, bool graftOutput )
+SubSampleSpatialObjectFilter<ObjectDimension>::SubSampleLevel(const SpatialObjectType *           input,
+                                                              typename SpatialObjectType::Pointer output,
+                                                              bool                                graftOutput)
 {
   // We make the copy and sub-sample if it is a tube.
-  const TubeSpatialObjectType * inputAsTube =
-    dynamic_cast< const TubeSpatialObjectType * >( input );
+  const TubeSpatialObjectType *       inputAsTube = dynamic_cast<const TubeSpatialObjectType *>(input);
   typename SpatialObjectType::Pointer newParent;
-  if( inputAsTube != NULL )
-    {
-    typedef SubSampleTubeSpatialObjectFilter< ObjectDimension >
-      SubSampleTubeFilterType;
-    typename SubSampleTubeFilterType::Pointer subSampleTubeFilter
-      = SubSampleTubeFilterType::New();
+  if (inputAsTube != NULL)
+  {
+    typedef SubSampleTubeSpatialObjectFilter<ObjectDimension> SubSampleTubeFilterType;
+    typename SubSampleTubeFilterType::Pointer                 subSampleTubeFilter = SubSampleTubeFilterType::New();
 
-    subSampleTubeFilter->SetSampling( this->GetSampling() );
-    subSampleTubeFilter->SetInput( inputAsTube );
-    if( graftOutput )
-      {
-      TubeSpatialObjectType * outputAsTube =
-        dynamic_cast< TubeSpatialObjectType * >( output.GetPointer() );
-      subSampleTubeFilter->GraftOutput( outputAsTube );
-      subSampleTubeFilter->Update();
-      newParent = subSampleTubeFilter->GetOutput();
-      this->GraftOutput( newParent );
-      }
-    else
-      {
-      subSampleTubeFilter->Update();
-      newParent = subSampleTubeFilter->GetOutput();
-      output->AddChild( newParent );
-      }
-    }
-  else
+    subSampleTubeFilter->SetSampling(this->GetSampling());
+    subSampleTubeFilter->SetInput(inputAsTube);
+    if (graftOutput)
     {
-    if( graftOutput )
-      {
-      // Output = Input in baseclass
-      newParent = dynamic_cast< SpatialObjectType * >( this->GetOutput() );
-      }
-    else
-      {
-      newParent = input->Clone();
-      output->AddChild( newParent );
-      }
+      TubeSpatialObjectType * outputAsTube = dynamic_cast<TubeSpatialObjectType *>(output.GetPointer());
+      subSampleTubeFilter->GraftOutput(outputAsTube);
+      subSampleTubeFilter->Update();
+      newParent = subSampleTubeFilter->GetOutput();
+      this->GraftOutput(newParent);
     }
+    else
+    {
+      subSampleTubeFilter->Update();
+      newParent = subSampleTubeFilter->GetOutput();
+      output->AddChild(newParent);
+    }
+  }
+  else
+  {
+    if (graftOutput)
+    {
+      // Output = Input in baseclass
+      newParent = dynamic_cast<SpatialObjectType *>(this->GetOutput());
+    }
+    else
+    {
+      newParent = input->Clone();
+      output->AddChild(newParent);
+    }
+  }
 
   typedef typename SpatialObjectType::ChildrenListType ChildrenListType;
-  ChildrenListType *children = input->GetChildren();
-  typename ChildrenListType::const_iterator it = children->begin();
-  while( it != children->end() )
-    {
-    this->SubSampleLevel( *it, newParent );
+  ChildrenListType *                                   children = input->GetChildren();
+  typename ChildrenListType::const_iterator            it = children->begin();
+  while (it != children->end())
+  {
+    this->SubSampleLevel(*it, newParent);
     ++it;
-    }
+  }
   delete children;
 }
 
 
-template< unsigned int ObjectDimension >
+template <unsigned int ObjectDimension>
 void
-SubSampleSpatialObjectFilter< ObjectDimension >
-::GenerateData( void )
+SubSampleSpatialObjectFilter<ObjectDimension>::GenerateData(void)
 {
   const SpatialObjectType * input = this->GetInput();
 
   typename SpatialObjectType::Pointer output = this->GetOutput();
 
-  this->SubSampleLevel( input, output, true );
+  this->SubSampleLevel(input, output, true);
 
   this->GraftOutput(output);
 }

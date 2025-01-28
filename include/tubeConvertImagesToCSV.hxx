@@ -24,40 +24,34 @@ limitations under the License.
 #define __tubeConvertImagesToCSV_hxx
 
 
-
 namespace tube
 {
-template< class TInputImage, class TInputMask >
-ConvertImagesToCSV< TInputImage, TInputMask >
-::ConvertImagesToCSV( void )
+template <class TInputImage, class TInputMask>
+ConvertImagesToCSV<TInputImage, TInputMask>::ConvertImagesToCSV(void)
 {
   m_ConvertImagesToCSVFilter = ConvertImagesToCSVFilterType::New();
 }
 
-template< class TInputImage, class TInputMask >
-typename itk::tube::ConvertImagesToCSVFilter< TInputImage, TInputMask >
-::VnlMatrixType
-ConvertImagesToCSV< TInputImage, TInputMask >
-::GetOutput()
+template <class TInputImage, class TInputMask>
+typename itk::tube::ConvertImagesToCSVFilter<TInputImage, TInputMask>::VnlMatrixType
+ConvertImagesToCSV<TInputImage, TInputMask>::GetOutput()
 {
   return m_ConvertImagesToCSVFilter->GetOutput()->Get();
 }
 
-template< class TInputImage, class TInputMask >
+template <class TInputImage, class TInputMask>
 void
-ConvertImagesToCSV< TInputImage, TInputMask >
-::AddImage( TInputImage* image )
+ConvertImagesToCSV<TInputImage, TInputMask>::AddImage(TInputImage * image)
 {
-  m_ConvertImagesToCSVFilter->AddImage( image );
+  m_ConvertImagesToCSVFilter->AddImage(image);
   this->Modified();
 }
 
-template< class TInputImage, class TInputMask >
+template <class TInputImage, class TInputMask>
 void
-ConvertImagesToCSV< TInputImage, TInputMask >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+ConvertImagesToCSV<TInputImage, TInputMask>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << "Filter = " << m_ConvertImagesToCSVFilter << std::endl;
 }
 

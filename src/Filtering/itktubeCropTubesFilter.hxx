@@ -32,198 +32,184 @@ namespace tube
 {
 
 //----------------------------------------------------------------------------
-template< unsigned int VDimension >
-CropTubesFilter< VDimension >
-::CropTubesFilter( void )
+template <unsigned int VDimension>
+CropTubesFilter<VDimension>::CropTubesFilter(void)
 {
   m_CropTubes = false;
   m_UseMaskImage = false;
   m_MaskImage = nullptr;
-  m_BoxPositionInWorldSpace.Fill( 0 );
-  m_BoxSizeInWorldSpace.Fill( 0 );
+  m_BoxPositionInWorldSpace.Fill(0);
+  m_BoxSizeInWorldSpace.Fill(0);
 }
 
 //----------------------------------------------------------------------------
-template< unsigned int VDimension >
-CropTubesFilter< VDimension >
-::~CropTubesFilter( void )
-{
-}
+template <unsigned int VDimension>
+CropTubesFilter<VDimension>::~CropTubesFilter(void)
+{}
 
 //----------------------------------------------------------------------------
-template< unsigned int VDimension >
+template <unsigned int VDimension>
 void
-CropTubesFilter< VDimension >
-::GenerateData( void )
+CropTubesFilter<VDimension>::GenerateData(void)
 {
-  const TubeGroupType* pSourceTubeGroup = this->GetInput();
+  const TubeGroupType *                       pSourceTubeGroup = this->GetInput();
   typename TubeGroupType::ChildrenListPointer pSourceTubeList =
-    pSourceTubeGroup->GetChildren( TubeGroupType::MaximumDepth, "Tube" );
+    pSourceTubeGroup->GetChildren(TubeGroupType::MaximumDepth, "Tube");
 
-  TubeGroupType* pTargetTubeGroup = this->GetOutput();
+  TubeGroupType * pTargetTubeGroup = this->GetOutput();
 
-  pTargetTubeGroup->CopyInformation( pSourceTubeGroup );
-  pTargetTubeGroup->SetId( pSourceTubeGroup->GetId() );
-  pTargetTubeGroup->SetParentId( pSourceTubeGroup->GetParentId() );
+  pTargetTubeGroup->CopyInformation(pSourceTubeGroup);
+  pTargetTubeGroup->SetId(pSourceTubeGroup->GetId());
+  pTargetTubeGroup->SetParentId(pSourceTubeGroup->GetParentId());
   pTargetTubeGroup->Update();
 
-  int targetTubeId=0;
-  for( typename TubeGroupType::ChildrenListType::iterator
-    tubeList_it = pSourceTubeList->begin();
-    tubeList_it != pSourceTubeList->end(); ++tubeList_it )
-    {
+  int targetTubeId = 0;
+  for (typename TubeGroupType::ChildrenListType::iterator tubeList_it = pSourceTubeList->begin();
+       tubeList_it != pSourceTubeList->end();
+       ++tubeList_it)
+  {
     //**** Source Tube **** :
-    typename TubeType::Pointer pCurSourceTube =
-      dynamic_cast< TubeType* >( tubeList_it->GetPointer() );
-    //dynamic_cast verification
-    if( !pCurSourceTube )
-      {
+    typename TubeType::Pointer pCurSourceTube = dynamic_cast<TubeType *>(tubeList_it->GetPointer());
+    // dynamic_cast verification
+    if (!pCurSourceTube)
+    {
       return;
-      }
-    //Compute Tangent and Normals
+    }
+    // Compute Tangent and Normals
     pCurSourceTube->ComputeTangentsAndNormals();
     pCurSourceTube->Update();
-    //Point List for TargetTube
+    // Point List for TargetTube
     typename TubeType::TubePointListType targetPointList;
-    //Get points in current source tube
-    typename TubeType::TubePointListType pointList =
-      pCurSourceTube->GetPoints();
+    // Get points in current source tube
+    typename TubeType::TubePointListType pointList = pCurSourceTube->GetPoints();
 
-    for( typename TubeType::TubePointListType::const_iterator
-      pointList_it = pointList.begin();
-      pointList_it != pointList.end(); ++pointList_it )
-      {
-      TubePointType curSourcePoint = *pointList_it;
-      typename TubePointType::PointType curSourcePos =
-          curSourcePoint.GetPositionInWorldSpace();
-      typename TubePointType::CovariantVectorType curTubeNormal1 =
-          curSourcePoint.GetNormal1InWorldSpace();
-      typename TubePointType::CovariantVectorType curTubeNormal2 =
-          curSourcePoint.GetNormal2InWorldSpace();
-      double curRadius = curSourcePoint.GetRadiusInWorldSpace();
+    for (typename TubeType::TubePointListType::const_iterator pointList_it = pointList.begin();
+         pointList_it != pointList.end();
+         ++pointList_it)
+    {
+      TubePointType                               curSourcePoint = *pointList_it;
+      typename TubePointType::PointType           curSourcePos = curSourcePoint.GetPositionInWorldSpace();
+      typename TubePointType::CovariantVectorType curTubeNormal1 = curSourcePoint.GetNormal1InWorldSpace();
+      typename TubePointType::CovariantVectorType curTubeNormal2 = curSourcePoint.GetNormal2InWorldSpace();
+      double                                      curRadius = curSourcePoint.GetRadiusInWorldSpace();
 
       std::vector<typename TubePointType::CovariantVectorType> normalList;
-      normalList.push_back( curTubeNormal1 );
-      if( VDimension == 3 )
-        {
-        normalList.push_back( curTubeNormal2 );
-        }
+      normalList.push_back(curTubeNormal1);
+      if (VDimension == 3)
+      {
+        normalList.push_back(curTubeNormal2);
+      }
 
       bool volumeMaskFlag = false;
-      if( m_UseMaskImage )
-        {
+      if (m_UseMaskImage)
+      {
         typename ImageType::IndexType imageIndex;
-        if( m_MaskImage->TransformPhysicalPointToIndex(
-          curSourcePoint.GetPositionInWorldSpace(),
-          imageIndex ) )
-          {
+        if (m_MaskImage->TransformPhysicalPointToIndex(curSourcePoint.GetPositionInWorldSpace(), imageIndex))
+        {
           double val = 0;
-          val = m_MaskImage->GetPixel( imageIndex );
-          if( val != 0 )
-            {
+          val = m_MaskImage->GetPixel(imageIndex);
+          if (val != 0)
+          {
             volumeMaskFlag = true;
-            }
           }
         }
+      }
 
-      //Save point in target tube if it belongs to the box
-      if( volumeMaskFlag || IsInsideInWorldSpace( curSourcePos, curRadius,
-        m_BoxPositionInWorldSpace, m_BoxSizeInWorldSpace, normalList ) )
+      // Save point in target tube if it belongs to the box
+      if (volumeMaskFlag ||
+          IsInsideInWorldSpace(curSourcePos, curRadius, m_BoxPositionInWorldSpace, m_BoxSizeInWorldSpace, normalList))
+      {
+        if (m_CropTubes)
         {
-        if( m_CropTubes )
-          {
-          targetPointList.push_back( curSourcePoint );
-          }
-        else
-          {
-          pCurSourceTube->SetId( targetTubeId );
-          ++targetTubeId;
-          pTargetTubeGroup->AddChild( pCurSourceTube );
-          break;
-          }
+          targetPointList.push_back(curSourcePoint);
         }
-      else
+        else
         {
-        if( targetPointList.size() > 0 )
-          {
+          pCurSourceTube->SetId(targetTubeId);
+          ++targetTubeId;
+          pTargetTubeGroup->AddChild(pCurSourceTube);
+          break;
+        }
+      }
+      else
+      {
+        if (targetPointList.size() > 0)
+        {
           //**** Target Tube **** :
           typename TubeType::Pointer pTargetTube = TubeType::New();
 
-          pTargetTube->CopyInformation( pCurSourceTube );
+          pTargetTube->CopyInformation(pCurSourceTube);
           pTargetTube->Update();
 
           pTargetTube->ComputeTangentsAndNormals();
 
-          pTargetTube->SetId( targetTubeId );
+          pTargetTube->SetId(targetTubeId);
           ++targetTubeId;
-          //Save cropped tube
-          pTargetTube->SetPoints( targetPointList );
-          pTargetTubeGroup->AddChild( pTargetTube );
+          // Save cropped tube
+          pTargetTube->SetPoints(targetPointList);
+          pTargetTubeGroup->AddChild(pTargetTube);
 
           targetPointList.clear();
-          }
         }
       }
-    if( targetPointList.size() > 0 )
-      {
+    }
+    if (targetPointList.size() > 0)
+    {
       //**** Target Tube **** :
       typename TubeType::Pointer pTargetTube = TubeType::New();
 
-      pTargetTube->CopyInformation( pCurSourceTube );
+      pTargetTube->CopyInformation(pCurSourceTube);
       pTargetTube->Update();
 
       pTargetTube->ComputeTangentsAndNormals();
 
-      pTargetTube->SetId( targetTubeId );
+      pTargetTube->SetId(targetTubeId);
       ++targetTubeId;
-      //Save cropped tube
-      pTargetTube->SetPoints( targetPointList );
-      pTargetTubeGroup->AddChild( pTargetTube );
+      // Save cropped tube
+      pTargetTube->SetPoints(targetPointList);
+      pTargetTubeGroup->AddChild(pTargetTube);
 
       targetPointList.clear();
-      }
     }
-  delete pSourceTubeList; 
+  }
+  delete pSourceTubeList;
 }
 
 //----------------------------------------------------------------------------
-template< unsigned int VDimension >
+template <unsigned int VDimension>
 bool
-CropTubesFilter< VDimension >
-::IsInsideInWorldSpace( itk::Point< double, VDimension > pointPos,
-  double tubeRadius,
-  itk::Point< double, VDimension > boxPos,
-  itk::Vector< double, VDimension > boxSize,
-  std::vector<  typename itk::TubeSpatialObjectPoint
-    < VDimension >::CovariantVectorType > normalList )
+CropTubesFilter<VDimension>::IsInsideInWorldSpace(
+  itk::Point<double, VDimension>                                                     pointPos,
+  double                                                                             tubeRadius,
+  itk::Point<double, VDimension>                                                     boxPos,
+  itk::Vector<double, VDimension>                                                    boxSize,
+  std::vector<typename itk::TubeSpatialObjectPoint<VDimension>::CovariantVectorType> normalList)
 {
   // Return true if a slice of a tube is within the box.
   //   A slice is defined as a center point and its radius in the normal
   //     directions.
-  for( unsigned int i = 0; i < normalList.size(); i++ )
+  for (unsigned int i = 0; i < normalList.size(); i++)
+  {
+    for (unsigned int d = 0; d < VDimension; ++d)
     {
-    for( unsigned int d = 0; d < VDimension; ++d )
+      if ((pointPos[d] + tubeRadius * normalList[i][d] < boxPos[d] &&
+           pointPos[d] - tubeRadius * normalList[i][d] < boxPos[d]) ||
+          (pointPos[d] + tubeRadius * normalList[i][d] > boxPos[d] + boxSize[d] &&
+           pointPos[d] - tubeRadius * normalList[i][d] > boxPos[d] + boxSize[d]))
       {
-      if( ( pointPos[d] + tubeRadius * normalList[i][d] < boxPos[d]
-          && pointPos[d] - tubeRadius * normalList[i][d] < boxPos[d] )
-        || ( pointPos[d] + tubeRadius * normalList[i][d] > boxPos[d] + boxSize[d]
-          && pointPos[d] - tubeRadius * normalList[i][d] > boxPos[d] + boxSize[d] ) )
-        {
         return false;
-        }
       }
     }
+  }
   return true;
 }
 
 //----------------------------------------------------------------------------
-template< unsigned int VDimension >
+template <unsigned int VDimension>
 void
-CropTubesFilter< VDimension >
-::PrintSelf( std::ostream & os, Indent indent ) const
+CropTubesFilter<VDimension>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  this->Superclass::PrintSelf( os, indent );
-
+  this->Superclass::PrintSelf(os, indent);
 }
 
 } // End namespace tube

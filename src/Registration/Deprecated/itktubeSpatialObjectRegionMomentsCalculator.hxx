@@ -39,8 +39,8 @@ public:
   /*
    * Constructor. Needed to ensure the exception object can be copied.
    */
-  InvalidSpatialObjectRegionMomentsError(const char *file,
-    unsigned int lineNumber) : ExceptionObject(file, lineNumber)
+  InvalidSpatialObjectRegionMomentsError(const char * file, unsigned int lineNumber)
+    : ExceptionObject(file, lineNumber)
   {
     this->SetDescription("No valid spatial object moments are availble.");
   }
@@ -48,8 +48,8 @@ public:
   /*
    * Constructor. Needed to ensure the exception object can be copied.
    */
-  InvalidSpatialObjectRegionMomentsError(const std::string& file,
-    unsigned int lineNumber) : ExceptionObject(file, lineNumber)
+  InvalidSpatialObjectRegionMomentsError(const std::string & file, unsigned int lineNumber)
+    : ExceptionObject(file, lineNumber)
   {
     this->SetDescription("No valid spatial Object moments are availble.");
   }
@@ -63,11 +63,7 @@ template <unsigned int ObjectDimension>
 SpatialObjectRegionMomentsCalculator<ObjectDimension>::SpatialObjectRegionMomentsCalculator(void)
 {
   m_Valid = false;
-  m_Region =
-  m_Origin
-  m_Spacing
-  m_Direction = 
-  m_SpatialObject = nullptr;
+  m_Region = m_Origin m_Spacing m_Direction = m_SpatialObject = nullptr;
   m_SpatialObjectMask = nullptr;
   m_M0 = NumericTraits<ScalarType>::Zero;
   m_M1.Fill(NumericTraits<typename VectorType::ValueType>::Zero);
@@ -81,15 +77,12 @@ SpatialObjectRegionMomentsCalculator<ObjectDimension>::SpatialObjectRegionMoment
 // ----------------------------------------------------------------------
 // Destructor
 template <unsigned int ObjectDimension>
-SpatialObjectRegionMomentsCalculator<ObjectDimension>::
-~SpatialObjectRegionMomentsCalculator()
-{
-}
+SpatialObjectRegionMomentsCalculator<ObjectDimension>::~SpatialObjectRegionMomentsCalculator()
+{}
 
 template <class TInputImage>
 void
-SpatialObjectRegionMomentsCalculator<TInputImage>
-::PrintSelf( std::ostream& os, Indent indent ) const
+SpatialObjectRegionMomentsCalculator<TInputImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
   os << indent << "SpatialObject: " << m_SpatialObject.GetPointer() << std::endl;
@@ -118,16 +111,15 @@ SpatialObjectRegionMomentsCalculator<ObjectDimension>::Compute()
 
   typedef typename ImageType::IndexType IndexType;
 
-  if( !m_Image )
-    {
+  if (!m_Image)
+  {
     return;
-    }
+  }
 
-  SpatialObjectRegionConstIteratorWithIndex<ImageType> it( m_Image,
-                                                   m_Image->GetRequestedRegion() );
+  SpatialObjectRegionConstIteratorWithIndex<ImageType> it(m_Image, m_Image->GetRequestedRegion());
 
-  while( !it.IsAtEnd() )
-    {
+  while (!it.IsAtEnd())
+  {
     double value = it.Value();
 
     IndexType indexPosition = it.GetIndex();
@@ -136,104 +128,100 @@ SpatialObjectRegionMomentsCalculator<ObjectDimension>::Compute()
     m_Image->TransformIndexToPhysicalPoint(indexPosition, physicalPosition);
 
     bool isInsideRegionOfInterest = true;
-    if( m_UseRegionOfInterest )
+    if (m_UseRegionOfInterest)
+    {
+      for (unsigned int i = 0; i < ImageDimension; i++)
       {
-      for( unsigned int i = 0; i < ImageDimension; i++ )
+        if (!((physicalPosition[i] <= m_RegionOfInterestPoint1[i] &&
+               physicalPosition[i] >= m_RegionOfInterestPoint2[i]) ||
+              (physicalPosition[i] <= m_RegionOfInterestPoint2[i] &&
+               physicalPosition[i] >= m_RegionOfInterestPoint1[i])))
         {
-        if( !( (physicalPosition[i] <= m_RegionOfInterestPoint1[i]
-                && physicalPosition[i] >= m_RegionOfInterestPoint2[i])
-               || (physicalPosition[i] <= m_RegionOfInterestPoint2[i]
-                   && physicalPosition[i] >= m_RegionOfInterestPoint1[i]) ) )
-          {
           isInsideRegionOfInterest = false;
           break;
-          }
         }
       }
+    }
 
-    if( isInsideRegionOfInterest &&
-        (m_SpatialObjectMask.IsNull()
-         || m_SpatialObjectMask->IsInsideInWorldSpace(physicalPosition) ) )
-      {
+    if (isInsideRegionOfInterest &&
+        (m_SpatialObjectMask.IsNull() || m_SpatialObjectMask->IsInsideInWorldSpace(physicalPosition)))
+    {
       m_M0 += value;
-      for( unsigned int i = 0; i < ImageDimension; i++ )
+      for (unsigned int i = 0; i < ImageDimension; i++)
+      {
+        m_M1[i] += static_cast<double>(indexPosition[i]) * value;
+        for (unsigned int j = 0; j < ImageDimension; j++)
         {
-        m_M1[i] += static_cast<double>( indexPosition[i] ) * value;
-        for( unsigned int j = 0; j < ImageDimension; j++ )
-          {
-          double weight = value * static_cast<double>( indexPosition[i] )
-            * static_cast<double>( indexPosition[j] );
+          double weight = value * static_cast<double>(indexPosition[i]) * static_cast<double>(indexPosition[j]);
           m_M2[i][j] += weight;
-          }
         }
-      for( unsigned int i = 0; i < ImageDimension; i++ )
-        {
+      }
+      for (unsigned int i = 0; i < ImageDimension; i++)
+      {
         m_Cg[i] += physicalPosition[i] * value;
-        for( unsigned int j = 0; j < ImageDimension; j++ )
-          {
+        for (unsigned int j = 0; j < ImageDimension; j++)
+        {
           double weight = value * physicalPosition[i] * physicalPosition[j];
           m_Cm[i][j] += weight;
-          }
-
         }
       }
+    }
 
     ++it;
-    }
+  }
 
   // Throw an error if the total mass is zero
-  if( m_M0 == 0.0 )
-    {
+  if (m_M0 == 0.0)
+  {
     itkExceptionMacro(
       << "Compute(): Total Mass of the image was zero. Aborting here to prevent division by zero later on.");
-    }
+  }
   // Normalize using the total mass
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
+  for (unsigned int i = 0; i < ImageDimension; i++)
+  {
     m_Cg[i] /= m_M0;
     m_M1[i] /= m_M0;
-    for( unsigned int j = 0; j < ImageDimension; j++ )
-      {
+    for (unsigned int j = 0; j < ImageDimension; j++)
+    {
       m_M2[i][j] /= m_M0;
       m_Cm[i][j] /= m_M0;
-      }
     }
+  }
   // Center the second order moments
-  for( unsigned int i = 0; i < ImageDimension; i++ )
+  for (unsigned int i = 0; i < ImageDimension; i++)
+  {
+    for (unsigned int j = 0; j < ImageDimension; j++)
     {
-    for( unsigned int j = 0; j < ImageDimension; j++ )
-      {
       m_M2[i][j] -= m_M1[i] * m_M1[j];
       m_Cm[i][j] -= m_Cg[i] * m_Cg[j];
-      }
     }
+  }
 
   // Compute principal moments and axes
-  vnl_symmetric_eigensystem<double> eigen( m_Cm.GetVnlMatrix().as_ref() );
+  vnl_symmetric_eigensystem<double> eigen(m_Cm.GetVnlMatrix().as_ref());
   vnl_diag_matrix<double>           pm = eigen.D;
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
+  for (unsigned int i = 0; i < ImageDimension; i++)
+  {
     m_Pm[i] = pm(i, i) * m_M0;
-    }
+  }
   m_Pa = eigen.V.transpose();
 
   // Add a final reflection if needed for a proper rotation,
   // by multiplying the last row by the determinant
-  vnl_real_eigensystem                  eigenrot( m_Pa.GetVnlMatrix().as_ref() );
-  vnl_diag_matrix<std::complex<double> > eigenval = eigenrot.D;
-  std::complex<double>                   det( 1.0, 0.0 );
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    det *= eigenval( i, i );
-    }
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    m_Pa[ImageDimension - 1][i] *= std::real( det );
-    }
+  vnl_real_eigensystem                  eigenrot(m_Pa.GetVnlMatrix().as_ref());
+  vnl_diag_matrix<std::complex<double>> eigenval = eigenrot.D;
+  std::complex<double>                  det(1.0, 0.0);
+  for (unsigned int i = 0; i < ImageDimension; i++)
+  {
+    det *= eigenval(i, i);
+  }
+  for (unsigned int i = 0; i < ImageDimension; i++)
+  {
+    m_Pa[ImageDimension - 1][i] *= std::real(det);
+  }
 
   /* Remember that the moments are valid */
   m_Valid = 1;
-
 }
 
 // ---------------------------------------------------------------------
@@ -242,10 +230,10 @@ template <unsigned int ObjectDimension>
 typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::ScalarType
 SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetTotalMass() const
 {
-  if( !m_Valid )
-    {
-    itkExceptionMacro( << "GetTotalMass() invoked, but the moments have not been computed. Call Compute() first.");
-    }
+  if (!m_Valid)
+  {
+    itkExceptionMacro(<< "GetTotalMass() invoked, but the moments have not been computed. Call Compute() first.");
+  }
   return m_M0;
 }
 
@@ -255,10 +243,10 @@ template <unsigned int ObjectDimension>
 typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::VectorType
 SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetFirstMoments() const
 {
-  if( !m_Valid )
-    {
-    itkExceptionMacro( << "GetFirstMoments() invoked, but the moments have not been computed. Call Compute() first.");
-    }
+  if (!m_Valid)
+  {
+    itkExceptionMacro(<< "GetFirstMoments() invoked, but the moments have not been computed. Call Compute() first.");
+  }
   return m_M1;
 }
 
@@ -268,10 +256,10 @@ template <unsigned int ObjectDimension>
 typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::MatrixType
 SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetSecondMoments() const
 {
-  if( !m_Valid )
-    {
-    itkExceptionMacro( << "GetSecondMoments() invoked, but the moments have not been computed. Call Compute() first.");
-    }
+  if (!m_Valid)
+  {
+    itkExceptionMacro(<< "GetSecondMoments() invoked, but the moments have not been computed. Call Compute() first.");
+  }
   return m_M2;
 }
 
@@ -281,10 +269,10 @@ template <unsigned int ObjectDimension>
 typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::VectorType
 SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetCenterOfGravity() const
 {
-  if( !m_Valid )
-    {
-    itkExceptionMacro( << "GetCenterOfGravity() invoked, but the moments have not been computed. Call Compute() first.");
-    }
+  if (!m_Valid)
+  {
+    itkExceptionMacro(<< "GetCenterOfGravity() invoked, but the moments have not been computed. Call Compute() first.");
+  }
   return m_Cg;
 }
 
@@ -294,10 +282,10 @@ template <unsigned int ObjectDimension>
 typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::MatrixType
 SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetCentralMoments() const
 {
-  if( !m_Valid )
-    {
-    itkExceptionMacro( << "GetCentralMoments() invoked, but the moments have not been computed. Call Compute() first.");
-    }
+  if (!m_Valid)
+  {
+    itkExceptionMacro(<< "GetCentralMoments() invoked, but the moments have not been computed. Call Compute() first.");
+  }
   return m_Cm;
 }
 
@@ -307,11 +295,11 @@ template <unsigned int ObjectDimension>
 typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::VectorType
 SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetPrincipalMoments() const
 {
-  if( !m_Valid )
-    {
+  if (!m_Valid)
+  {
     itkExceptionMacro(
       << "GetPrincipalMoments() invoked, but the moments have not been computed. Call Compute() first.");
-    }
+  }
   return m_Pm;
 }
 
@@ -321,10 +309,10 @@ template <unsigned int ObjectDimension>
 typename SpatialObjectRegionMomentsCalculator<ObjectDimension>::MatrixType
 SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetPrincipalAxes() const
 {
-  if( !m_Valid )
-    {
-    itkExceptionMacro( << "GetPrincipalAxes() invoked, but the moments have not been computed. Call Compute() first.");
-    }
+  if (!m_Valid)
+  {
+    itkExceptionMacro(<< "GetPrincipalAxes() invoked, but the moments have not been computed. Call Compute() first.");
+  }
   return m_Pa;
 }
 
@@ -336,14 +324,14 @@ SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetPrincipalAxesToPhysica
 {
   typename AffineTransformType::MatrixType matrix;
   typename AffineTransformType::OffsetType offset;
-  for( unsigned int i = 0; i < ImageDimension; i++ )
+  for (unsigned int i = 0; i < ImageDimension; i++)
+  {
+    offset[i] = m_Cg[i];
+    for (unsigned int j = 0; j < ImageDimension; j++)
     {
-    offset[i]  = m_Cg[i];
-    for( unsigned int j = 0; j < ImageDimension; j++ )
-      {
-      matrix[j][i] = m_Pa[i][j];    // Note the transposition
-      }
+      matrix[j][i] = m_Pa[i][j]; // Note the transposition
     }
+  }
 
   AffineTransformPointer result = AffineTransformType::New();
 
@@ -362,14 +350,14 @@ SpatialObjectRegionMomentsCalculator<ObjectDimension>::GetPhysicalAxesToPrincipa
 {
   typename AffineTransformType::MatrixType matrix;
   typename AffineTransformType::OffsetType offset;
-  for( unsigned int i = 0; i < ImageDimension; i++ )
+  for (unsigned int i = 0; i < ImageDimension; i++)
+  {
+    offset[i] = m_Cg[i];
+    for (unsigned int j = 0; j < ImageDimension; j++)
     {
-    offset[i]    = m_Cg[i];
-    for( unsigned int j = 0; j < ImageDimension; j++ )
-      {
-      matrix[j][i] = m_Pa[i][j];    // Note the transposition
-      }
+      matrix[j][i] = m_Pa[i][j]; // Note the transposition
     }
+  }
 
   AffineTransformPointer result = AffineTransformType::New();
   result->SetMatrix(matrix);

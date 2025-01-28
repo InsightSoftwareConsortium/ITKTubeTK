@@ -23,85 +23,85 @@ limitations under the License.
 
 #include "itktubeTubeExtractorIO.h"
 
-int itktubeTubeExtractorIOTest( int argc, char * argv[] )
+int
+itktubeTubeExtractorIOTest(int argc, char * argv[])
 {
-  if( argc != 4 )
-    {
+  if (argc != 4)
+  {
     std::cout << "Missing arguments." << std::endl;
     std::cout << "Usage: " << std::endl;
     std::cout << argv[0] << " input.mtp output1.mtp output2.mtp" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // Prep
-  typedef itk::Image< float, 3 >                     ImageType;
+  typedef itk::Image<float, 3> ImageType;
 
   // Declare the type for the Filter
-  typedef itk::tube::TubeExtractorIO< ImageType >    IOMethodType;
+  typedef itk::tube::TubeExtractorIO<ImageType> IOMethodType;
 
   // TubeExtractor must have been assigned an input image prior to
   //   reading parameters into it.
-  ImageType::Pointer image = ImageType::New();
+  ImageType::Pointer    image = ImageType::New();
   ImageType::RegionType region;
-  ImageType::IndexType indx;
-  indx.Fill( 0 );
+  ImageType::IndexType  indx;
+  indx.Fill(0);
   ImageType::RegionType::SizeType size;
-  size.Fill( 100 );
+  size.Fill(100);
   ImageType::PointType origin;
-  origin.Fill( 0 );
+  origin.Fill(0);
   ImageType::SpacingType spacing;
-  spacing.Fill( 1 );
-  region.SetIndex( indx );
-  region.SetSize( size );
-  image->SetOrigin( origin );
-  image->SetRegions( region );
-  image->SetSpacing( spacing );
+  spacing.Fill(1);
+  region.SetIndex(indx);
+  region.SetSize(size);
+  image->SetOrigin(origin);
+  image->SetRegions(region);
+  image->SetSpacing(spacing);
   image->Allocate();
-  image->FillBuffer( 0 );
+  image->FillBuffer(0);
 
-  IOMethodType::TubeExtractorType::Pointer tubeExtractor =
-    IOMethodType::TubeExtractorType::New();
-  tubeExtractor->SetInputImage( image );
+  IOMethodType::TubeExtractorType::Pointer tubeExtractor = IOMethodType::TubeExtractorType::New();
+  tubeExtractor->SetInputImage(image);
 
   IOMethodType ioMethod;
-  ioMethod.SetTubeExtractor( tubeExtractor );
+  ioMethod.SetTubeExtractor(tubeExtractor);
 
-  if( !ioMethod.CanRead( argv[1] ) )
-    {
+  if (!ioMethod.CanRead(argv[1]))
+  {
     std::cout << "ERROR: CanRead returned false." << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "CanRead." << std::endl;
 
-  if( !ioMethod.Read( argv[1] ) )
-    {
+  if (!ioMethod.Read(argv[1]))
+  {
     std::cout << "ERROR: Read failed." << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "Read." << std::endl;
 
   IOMethodType ioMethod2;
 
-  ioMethod2.SetTubeExtractor( tubeExtractor );
+  ioMethod2.SetTubeExtractor(tubeExtractor);
   std::cout << "SetTubeExtractor." << std::endl;
 
-  if( !ioMethod2.Write( argv[2] ) )
-    {
+  if (!ioMethod2.Write(argv[2]))
+  {
     std::cout << "ERROR: Write failed." << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "Write." << std::endl;
 
   IOMethodType ioMethod3;
 
-  ioMethod3.CopyInfo( ioMethod );
+  ioMethod3.CopyInfo(ioMethod);
   std::cout << "CopyInfo." << std::endl;
 
-  if( !ioMethod3.Write( argv[3] ) )
-    {
+  if (!ioMethod3.Write(argv[3]))
+  {
     std::cout << "Write file = " << argv[3] << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "Write." << std::endl;
 
   ioMethod.PrintInfo();

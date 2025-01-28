@@ -34,146 +34,144 @@ namespace tube
 {
 
 // Constructor.
-GoldenMeanOptimizer1D::GoldenMeanOptimizer1D( void )
+GoldenMeanOptimizer1D::GoldenMeanOptimizer1D(void)
   : Optimizer1D()
-{
-}
+{}
 
 // Constructor.
-GoldenMeanOptimizer1D::GoldenMeanOptimizer1D( ValueFunctionType::Pointer
-  funcVal ) : Optimizer1D( funcVal, NULL )
-{
-}
+GoldenMeanOptimizer1D::GoldenMeanOptimizer1D(ValueFunctionType::Pointer funcVal)
+  : Optimizer1D(funcVal, NULL)
+{}
 
 // Destructor.
-GoldenMeanOptimizer1D::~GoldenMeanOptimizer1D( void )
+GoldenMeanOptimizer1D::~GoldenMeanOptimizer1D(void) {}
+
+void
+GoldenMeanOptimizer1D::Use(ValueFunctionType::Pointer funcVal)
 {
+  Optimizer1D::Use(funcVal, NULL);
 }
 
-void GoldenMeanOptimizer1D::Use( ValueFunctionType::Pointer funcVal )
-{
-  Optimizer1D::Use( funcVal, NULL );
-}
-
-bool GoldenMeanOptimizer1D::m_Extreme( double * extX, double * extVal )
+bool
+GoldenMeanOptimizer1D::m_Extreme(double * extX, double * extVal)
 {
   double maxSign = 1;
-  if( m_SearchForMin )
-    {
+  if (m_SearchForMin)
+  {
     maxSign = -1;
-    }
+  }
 
-  double v = maxSign * m_FuncVal->Value( *extX );
+  double v = maxSign * m_FuncVal->Value(*extX);
   double prevV = v;
   double xstep = m_XStep;
-  int dir = 1;
+  int    dir = 1;
 
-  double v1 = v-std::fabs( v*0.0001 );
-  if( *extX+dir*xstep <= m_XMax && *extX+dir*xstep >= m_XMin )
-    {
-    v1 = maxSign * m_FuncVal->Value( *extX+dir*xstep );
-    }
+  double v1 = v - std::fabs(v * 0.0001);
+  if (*extX + dir * xstep <= m_XMax && *extX + dir * xstep >= m_XMin)
+  {
+    v1 = maxSign * m_FuncVal->Value(*extX + dir * xstep);
+  }
 
-  double v2 = v1-std::fabs( v1*0.0001 );
-  if( *extX-dir*xstep <= m_XMax && *extX-dir*xstep >= m_XMin )
-    {
-    v2 = maxSign * m_FuncVal->Value( *extX-dir*xstep );
-    }
+  double v2 = v1 - std::fabs(v1 * 0.0001);
+  if (*extX - dir * xstep <= m_XMax && *extX - dir * xstep >= m_XMin)
+  {
+    v2 = maxSign * m_FuncVal->Value(*extX - dir * xstep);
+  }
 
-  if( v2>v1 )
-    {
+  if (v2 > v1)
+  {
     dir = -1;
     v = v2;
-    }
+  }
   else
-    {
+  {
     v = v1;
-    }
+  }
 
   unsigned int iter = 0;
-  int dirInit = dir;
-  while( v < prevV && xstep > 2 * m_Tolerance && iter < m_MaxIterations )
-    {
+  int          dirInit = dir;
+  while (v < prevV && xstep > 2 * m_Tolerance && iter < m_MaxIterations)
+  {
     dir *= -1;
-    if( *extX+dir*xstep <= m_XMax && *extX+dir*xstep >= m_XMin )
-      {
-      v = maxSign * m_FuncVal->Value( *extX+dir*xstep );
-      }
-    else
-      {
-      dir *= -1;
-      }
-    if( v<prevV && dir == dirInit )
-      {
-      xstep /= 1.618;
-      }
-    ++iter;
+    if (*extX + dir * xstep <= m_XMax && *extX + dir * xstep >= m_XMin)
+    {
+      v = maxSign * m_FuncVal->Value(*extX + dir * xstep);
     }
+    else
+    {
+      dir *= -1;
+    }
+    if (v < prevV && dir == dirInit)
+    {
+      xstep /= 1.618;
+    }
+    ++iter;
+  }
 
   prevV = v;
 
-  *extX += dir*xstep;
-  if( *extX > m_XMax )
-    {
+  *extX += dir * xstep;
+  if (*extX > m_XMax)
+  {
     *extX = m_XMax;
-    *extVal = m_FuncVal->Value( *extX );
+    *extVal = m_FuncVal->Value(*extX);
     return false;
-    }
-  if( *extX < m_XMin )
-    {
+  }
+  if (*extX < m_XMin)
+  {
     *extX = m_XMin;
-    *extVal = m_FuncVal->Value( *extX );
+    *extVal = m_FuncVal->Value(*extX);
     return false;
-    }
+  }
 
   dirInit = dir;
-  while( xstep > m_Tolerance && iter < m_MaxIterations )
+  while (xstep > m_Tolerance && iter < m_MaxIterations)
+  {
+    if (*extX + dir * xstep <= m_XMax && *extX + dir * xstep >= m_XMin)
     {
-    if( *extX+dir*xstep <= m_XMax && *extX+dir*xstep >= m_XMin )
-      {
-      v = maxSign * m_FuncVal->Value( *extX+dir*xstep );
-      }
+      v = maxSign * m_FuncVal->Value(*extX + dir * xstep);
+    }
     else
+    {
+      if (*extX > m_XMax)
       {
-      if( *extX > m_XMax )
-        {
         *extX = m_XMax;
-        *extVal = m_FuncVal->Value( *extX );
+        *extVal = m_FuncVal->Value(*extX);
         return false;
-        }
-      if( *extX < m_XMin )
-        {
-        *extX = m_XMin;
-        *extVal = m_FuncVal->Value( *extX );
-        return false;
-        }
       }
-    while( v > prevV && iter < m_MaxIterations )
+      if (*extX < m_XMin)
       {
+        *extX = m_XMin;
+        *extVal = m_FuncVal->Value(*extX);
+        return false;
+      }
+    }
+    while (v > prevV && iter < m_MaxIterations)
+    {
       dirInit = dir;
       prevV = v;
-      *extX += dir*xstep;
-      if( *extX > m_XMax )
-        {
-        *extX = m_XMax;
-        *extVal = m_FuncVal->Value( *extX );
-        return false;
-        }
-      if( *extX < m_XMin )
-        {
-        *extX = m_XMin;
-        *extVal = m_FuncVal->Value( *extX );
-        return false;
-        }
-      v = maxSign * m_FuncVal->Value( *extX+dir*xstep );
-      ++iter;
-      }
-    if( dir == dirInit )
+      *extX += dir * xstep;
+      if (*extX > m_XMax)
       {
-      xstep /= 1.618;
+        *extX = m_XMax;
+        *extVal = m_FuncVal->Value(*extX);
+        return false;
       }
-    dir *= -1;
+      if (*extX < m_XMin)
+      {
+        *extX = m_XMin;
+        *extVal = m_FuncVal->Value(*extX);
+        return false;
+      }
+      v = maxSign * m_FuncVal->Value(*extX + dir * xstep);
+      ++iter;
     }
+    if (dir == dirInit)
+    {
+      xstep /= 1.618;
+    }
+    dir *= -1;
+  }
 
   *extVal = maxSign * prevV;
   return true;

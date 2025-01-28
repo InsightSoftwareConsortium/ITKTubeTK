@@ -30,36 +30,30 @@ namespace itk
 namespace tube
 {
 
-template< unsigned int ObjectDimension >
-SpatialObjectFilter< ObjectDimension >
-::SpatialObjectFilter( void )
-{
-}
+template <unsigned int ObjectDimension>
+SpatialObjectFilter<ObjectDimension>::SpatialObjectFilter(void)
+{}
 
-template< unsigned int ObjectDimension >
+template <unsigned int ObjectDimension>
 void
-SpatialObjectFilter< ObjectDimension >
-::SetInput( const SpatialObject<ObjectDimension> * input )
+SpatialObjectFilter<ObjectDimension>::SetInput(const SpatialObject<ObjectDimension> * input)
 {
   // Process object is not const-correct so the const_cast is required here
-  this->SpatialObjectSource< SpatialObject<ObjectDimension> >::SetNthInput( 0,
-   const_cast<SpatialObject<ObjectDimension> *>(input) );
+  this->SpatialObjectSource<SpatialObject<ObjectDimension>>::SetNthInput(
+    0, const_cast<SpatialObject<ObjectDimension> *>(input));
 
   typename SpatialObject<ObjectDimension>::Pointer output =
-   static_cast<SpatialObject<ObjectDimension> *>(this->MakeOutput( 0 ).GetPointer());
-  this->ProcessObject::SetNumberOfRequiredOutputs( 1 );
-  this->ProcessObject::SetNthOutput( 0, output.GetPointer() );
+    static_cast<SpatialObject<ObjectDimension> *>(this->MakeOutput(0).GetPointer());
+  this->ProcessObject::SetNumberOfRequiredOutputs(1);
+  this->ProcessObject::SetNthOutput(0, output.GetPointer());
 }
 
-template< unsigned int ObjectDimension >
+template <unsigned int ObjectDimension>
 ProcessObject::DataObjectPointer
-SpatialObjectFilter< ObjectDimension >
-::MakeOutput( ProcessObject::DataObjectPointerArraySizeType itkNotUsed(
-  idx ) )
+SpatialObjectFilter<ObjectDimension>::MakeOutput(ProcessObject::DataObjectPointerArraySizeType itkNotUsed(idx))
 {
   return this->GetInput()->Clone().GetPointer();
 }
-
 
 
 } // End namespace tube

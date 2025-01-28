@@ -36,15 +36,17 @@ limitations under the License.
 
 // Must do a forward declaration of DoIt before including
 // tubeCLIHelperFunctions
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
@@ -53,218 +55,206 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter( "Shrink Image",
-    CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("Shrink Image", CLPProcessInformation);
   progressReporter.Start();
 
-  typedef float                                 PixelType;
-  typedef itk::Image< PixelType, VDimension >   InputImageType;
-  typedef itk::Image< PixelType, VDimension >   OutputImageType;
+  typedef float                             PixelType;
+  typedef itk::Image<PixelType, VDimension> InputImageType;
+  typedef itk::Image<PixelType, VDimension> OutputImageType;
 
-  typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
-  typedef itk::ImageFileWriter< OutputImageType  > ImageWriterType;
+  typedef itk::ImageFileReader<InputImageType>  ImageReaderType;
+  typedef itk::ImageFileWriter<OutputImageType> ImageWriterType;
 
-  typedef itk::Vector< float, VDimension >         PointPixelType;
-  typedef itk::Image< PointPixelType, VDimension > PointImageType;
-  typedef itk::ImageFileWriter< PointImageType >   PointImageWriterType;
-  typedef itk::ImageFileReader< PointImageType >   PointImageReaderType;
+  typedef itk::Vector<float, VDimension>         PointPixelType;
+  typedef itk::Image<PointPixelType, VDimension> PointImageType;
+  typedef itk::ImageFileWriter<PointImageType>   PointImageWriterType;
+  typedef itk::ImageFileReader<PointImageType>   PointImageReaderType;
 
-  typedef tube::ShrinkImageWithBlending< InputImageType,
-    OutputImageType > FilterType;
+  typedef tube::ShrinkImageWithBlending<InputImageType, OutputImageType> FilterType;
 
-  timeCollector.Start( "Load data" );
+  timeCollector.Start("Load data");
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
-  reader->SetFileName( inputImageFileName.c_str() );
+  reader->SetFileName(inputImageFileName.c_str());
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Load data" );
+  }
+  timeCollector.Stop("Load data");
   double progress = 0.1;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   typename InputImageType::Pointer inIm = reader->GetOutput();
 
-  typename InputImageType::SpacingType     inSpacing = inIm->GetSpacing();
-  typename InputImageType::PointType       inOrigin = inIm->GetOrigin();
-  typename InputImageType::SizeType        inSize =
-    inIm->GetLargestPossibleRegion().GetSize();
-  typename InputImageType::IndexType       inIndex =
-    inIm->GetLargestPossibleRegion().GetIndex();
-  typename InputImageType::DirectionType   inDirection =
-    inIm->GetDirection();
+  typename InputImageType::SpacingType   inSpacing = inIm->GetSpacing();
+  typename InputImageType::PointType     inOrigin = inIm->GetOrigin();
+  typename InputImageType::SizeType      inSize = inIm->GetLargestPossibleRegion().GetSize();
+  typename InputImageType::IndexType     inIndex = inIm->GetLargestPossibleRegion().GetIndex();
+  typename InputImageType::DirectionType inDirection = inIm->GetDirection();
 
-  typename OutputImageType::SizeType       outSize;
-  typename OutputImageType::SpacingType    outSpacing;
-  typename OutputImageType::PointType      outOrigin;
-  typename OutputImageType::IndexType      outIndex;
-  typename OutputImageType::DirectionType  outDirection;
-  for( unsigned int i=0; i< VDimension; i++ )
-    {
+  typename OutputImageType::SizeType      outSize;
+  typename OutputImageType::SpacingType   outSpacing;
+  typename OutputImageType::PointType     outOrigin;
+  typename OutputImageType::IndexType     outIndex;
+  typename OutputImageType::DirectionType outDirection;
+  for (unsigned int i = 0; i < VDimension; i++)
+  {
     outSpacing[i] = inSpacing[i];
     outOrigin[i] = inOrigin[i];
     outIndex[i] = inIndex[i];
     outSize[i] = inSize[i];
-    }
+  }
   outDirection = inDirection;
 
   typename FilterType::Pointer filter = FilterType::New();
-  filter->SetInput( inIm );
+  filter->SetInput(inIm);
 
   typename FilterType::ShrinkFactorsType shrinkFactors;
-  shrinkFactors.Fill( 1 );
+  shrinkFactors.Fill(1);
   typename FilterType::InputSizeType newInputSize;
-  newInputSize.Fill( 1 );
+  newInputSize.Fill(1);
 
   typename FilterType::InputIndexType overlapVoxels;
 
-  if( overlap.size() > 0 )
+  if (overlap.size() > 0)
+  {
+    if (overlap.size() != VDimension)
     {
-    if( overlap.size() != VDimension )
-      {
       std::cout << "Error: Size of overlap vector argument does not ";
       std::cout << "match the dimensionality of the image." << std::endl;
       return EXIT_FAILURE;
-      }
-    for( unsigned int i = 0; i < VDimension; ++i )
-      {
-      overlapVoxels[ i ] = overlap[ i ];
-      }
-    filter->SetOverlap( overlapVoxels );
     }
+    for (unsigned int i = 0; i < VDimension; ++i)
+    {
+      overlapVoxels[i] = overlap[i];
+    }
+    filter->SetOverlap(overlapVoxels);
+  }
 
-  if( log )
-    {
-    filter->SetUseLog( true );
-    }
+  if (log)
+  {
+    filter->SetUseLog(true);
+  }
 
-  if( mean )
-    {
-    filter->SetBlendWithMax( false );
-    filter->SetBlendWithMean( true );
-    filter->SetBlendWithGaussianWeighting( false );
-    }
-  else if( gaussian )
-    {
-    filter->SetBlendWithMax( false );
-    filter->SetBlendWithMean( false );
-    filter->SetBlendWithGaussianWeighting( true );
-    }
+  if (mean)
+  {
+    filter->SetBlendWithMax(false);
+    filter->SetBlendWithMean(true);
+    filter->SetBlendWithGaussianWeighting(false);
+  }
+  else if (gaussian)
+  {
+    filter->SetBlendWithMax(false);
+    filter->SetBlendWithMean(false);
+    filter->SetBlendWithGaussianWeighting(true);
+  }
   else
-    {
-    filter->SetBlendWithMax( true );
-    filter->SetBlendWithMean( false );
-    filter->SetBlendWithGaussianWeighting( false );
-    }
+  {
+    filter->SetBlendWithMax(true);
+    filter->SetBlendWithMean(false);
+    filter->SetBlendWithGaussianWeighting(false);
+  }
 
-  if( !inputMipPointImageFile.empty() )
-    {
-    typename PointImageReaderType::Pointer inputMipPointImageReader =
-      PointImageReaderType::New();
+  if (!inputMipPointImageFile.empty())
+  {
+    typename PointImageReaderType::Pointer inputMipPointImageReader = PointImageReaderType::New();
 
     try
-      {
-      inputMipPointImageReader->SetFileName( inputMipPointImageFile.c_str() );
+    {
+      inputMipPointImageReader->SetFileName(inputMipPointImageFile.c_str());
       inputMipPointImageReader->Update();
-      }
-    catch( itk::ExceptionObject & err )
-      {
-      tube::ErrorMessage( "Reading Mip Point Image: Exception caught: "
-                          + std::string( err.GetDescription() ) );
+    }
+    catch (itk::ExceptionObject & err)
+    {
+      tube::ErrorMessage("Reading Mip Point Image: Exception caught: " + std::string(err.GetDescription()));
       timeCollector.Report();
       return EXIT_FAILURE;
-      }
-
-    filter->SetInputMipPointImage( inputMipPointImageReader->GetOutput() );
     }
 
-  if( divideBy.size() > 0 )
+    filter->SetInputMipPointImage(inputMipPointImageReader->GetOutput());
+  }
+
+  if (divideBy.size() > 0)
+  {
+    if (divideBy.size() != VDimension)
     {
-    if( divideBy.size() != VDimension )
-      {
       std::cout << "Error: Size of divideBy vector argument does not ";
       std::cout << "match the dimensionality of the image." << std::endl;
       return EXIT_FAILURE;
-      }
-    for( unsigned int i = 0; i < VDimension; ++i )
-      {
-      shrinkFactors[ i ] = divideBy[ i ];
-      }
-      filter->SetShrinkFactors( shrinkFactors );
     }
-
-  if( newSize.size() > 0 )
+    for (unsigned int i = 0; i < VDimension; ++i)
     {
-    if( divideBy.size() > 0 )
-      {
+      shrinkFactors[i] = divideBy[i];
+    }
+    filter->SetShrinkFactors(shrinkFactors);
+  }
+
+  if (newSize.size() > 0)
+  {
+    if (divideBy.size() > 0)
+    {
       std::cout << "Error: Specify only one of divideBy or newSize ";
       std::cout << "arguments." << std::endl;
       return EXIT_FAILURE;
-      }
-    if( newSize.size() != VDimension )
-      {
+    }
+    if (newSize.size() != VDimension)
+    {
       std::cout << "Error: Size of newSize vector argument does not ";
       std::cout << "match the dimensionality of the image." << std::endl;
       return EXIT_FAILURE;
-      }
-    for( unsigned int i = 0; i < VDimension; ++i )
-      {
-      newInputSize[ i ] = newSize[ i ];
-      }
-    filter->SetNewSize( newInputSize );
     }
+    for (unsigned int i = 0; i < VDimension; ++i)
+    {
+      newInputSize[i] = newSize[i];
+    }
+    filter->SetNewSize(newInputSize);
+  }
 
-  tube::CLIFilterWatcher watcher( filter, "Shrink Filter",
-    CLPProcessInformation, progress, 0.8, true );
+  tube::CLIFilterWatcher watcher(filter, "Shrink Filter", CLPProcessInformation, progress, 0.8, true);
 
   filter->Update();
 
-  timeCollector.Start( "Save data" );
+  timeCollector.Start("Save data");
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
-  writer->SetFileName( outputImageFileName.c_str() );
-  writer->SetInput( filter->GetOutput() );
-  writer->SetUseCompression( true );
+  writer->SetFileName(outputImageFileName.c_str());
+  writer->SetInput(filter->GetOutput());
+  writer->SetUseCompression(true);
   try
-    {
+  {
     writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Writing volume: Exception caught: "
-      + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Writing volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
-  if( !outputMipPointImageFile.empty() && !mean && !gaussian )
-    {
-    typename PointImageWriterType::Pointer outputMipPointImageWriter =
-      PointImageWriterType::New();
-    outputMipPointImageWriter->SetFileName( outputMipPointImageFile );
-    outputMipPointImageWriter->SetUseCompression( true );
-    outputMipPointImageWriter->SetInput( filter->GetOutputMipPointImage() );
+  if (!outputMipPointImageFile.empty() && !mean && !gaussian)
+  {
+    typename PointImageWriterType::Pointer outputMipPointImageWriter = PointImageWriterType::New();
+    outputMipPointImageWriter->SetFileName(outputMipPointImageFile);
+    outputMipPointImageWriter->SetUseCompression(true);
+    outputMipPointImageWriter->SetInput(filter->GetOutputMipPointImage());
     try
-      {
+    {
       outputMipPointImageWriter->Update();
-      }
-    catch( itk::ExceptionObject & e )
-      {
-      std::cout << "Exception caught during image index write:" << std::endl
-        << e << std::endl;
-      return EXIT_FAILURE;
-      }
     }
+    catch (itk::ExceptionObject & e)
+    {
+      std::cout << "Exception caught during image index write:" << std::endl << e << std::endl;
+      return EXIT_FAILURE;
+    }
+  }
 
-  timeCollector.Stop( "Save data" );
+  timeCollector.Stop("Save data");
   progress = 1.0;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
   progressReporter.End();
 
   timeCollector.Report();
@@ -272,11 +262,12 @@ int DoIt( int argc, char * argv[] )
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputImageFileName.
-  return tube::ParseArgsAndCallDoIt( inputImageFileName, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputImageFileName, argc, argv);
 }

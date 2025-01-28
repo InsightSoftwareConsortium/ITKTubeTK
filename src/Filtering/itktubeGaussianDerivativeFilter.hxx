@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef __itktubeGaussianDerivativeFilter_hxx
 #define __itktubeGaussianDerivativeFilter_hxx
 
@@ -24,20 +24,18 @@ namespace tube
 {
 //----------------------------------------------------------------------------
 
-template< typename TInputImage, typename TOutputImage >
-GaussianDerivativeFilter<TInputImage, TOutputImage>
-::GaussianDerivativeFilter()
+template <typename TInputImage, typename TOutputImage>
+GaussianDerivativeFilter<TInputImage, TOutputImage>::GaussianDerivativeFilter()
 {
-  this->m_Orders.Fill ( 0 );
-  this->m_Sigmas.Fill ( 0 );
+  this->m_Orders.Fill(0);
+  this->m_Sigmas.Fill(0);
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-GaussianDerivativeFilter<TInputImage, TOutputImage>
-::PrintSelf ( std::ostream & os, Indent indent ) const
+GaussianDerivativeFilter<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  this->Superclass::PrintSelf ( os, indent );
+  this->Superclass::PrintSelf(os, indent);
 
   os << indent << "Orders              : " << m_Orders << std::endl;
   os << indent << "Sigmas               : " << m_Sigmas << std::endl;

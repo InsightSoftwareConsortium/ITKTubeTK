@@ -31,7 +31,8 @@ limitations under the License.
 #include "tubeMetaObjectDocument.h"
 #include "tubeOptionList.h"
 
-int tubeObjectDocumentsHeaderTest ( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
+int
+tubeObjectDocumentsHeaderTest(int tubeNotUsed(argc), char * tubeNotUsed(argv)[])
 {
   return EXIT_SUCCESS;
 }

@@ -36,108 +36,105 @@ limitations under the License.
 
 #include "ConvertTubesToImageCLP.h"
 
-template< class TPixel, unsigned int TDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int TDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "<ModuleName>CLP.h"
 //   and forward declaration of int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int Dimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int Dimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // setup progress reporting
-  double progress = 0.0;
+  double                       progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
 
-  tube::CLIProgressReporter progressReporter(
-    "ConvertTubesToImage",
-    CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("ConvertTubesToImage", CLPProcessInformation);
 
   progressReporter.Start();
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // read tubes
-  typedef itk::SpatialObjectReader< Dimension > TubesReaderType;
+  typedef itk::SpatialObjectReader<Dimension> TubesReaderType;
 
-  timeCollector.Start( "Reading tubes file" );
+  timeCollector.Start("Reading tubes file");
 
   typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
 
   try
-    {
-    tubeFileReader->SetFileName( inputTubeFile.c_str() );
+  {
+    tubeFileReader->SetFileName(inputTubeFile.c_str());
     tubeFileReader->Update();
-    }
-  catch( ... )
-    {
-    tube::ErrorMessage( "No readable tubes found!" );
+  }
+  catch (...)
+  {
+    tube::ErrorMessage("No readable tubes found!");
     return EXIT_FAILURE;
-    }
+  }
 
-  timeCollector.Stop( "Reading tubes file" );
+  timeCollector.Stop("Reading tubes file");
   progress = 0.1; // At about 10% done
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // read template image
-  typedef itk::Image< TPixel, Dimension >            TemplateImageType;
-  typedef itk::ImageFileReader< TemplateImageType >  TemplateImageReaderType;
+  typedef itk::Image<TPixel, Dimension>           TemplateImageType;
+  typedef itk::ImageFileReader<TemplateImageType> TemplateImageReaderType;
 
-  timeCollector.Start( "Reading template image" );
+  timeCollector.Start("Reading template image");
 
-  typename TemplateImageReaderType::Pointer templateImageReader =
-    TemplateImageReaderType::New();
+  typename TemplateImageReaderType::Pointer templateImageReader = TemplateImageReaderType::New();
 
   try
-    {
-    templateImageReader->SetFileName( inputTemplateImage.c_str() );
+  {
+    templateImageReader->SetFileName(inputTemplateImage.c_str());
     templateImageReader->Update();
-    }
-  catch( ... )
-    {
-    tube::ErrorMessage( "Could not read template image!" );
+  }
+  catch (...)
+  {
+    tube::ErrorMessage("Could not read template image!");
     return EXIT_FAILURE;
-    }
+  }
 
-  timeCollector.Stop( "Reading template image" );
+  timeCollector.Stop("Reading template image");
   progress = 0.2; // At about 20% done
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // call TubesToImageFilter
-  typedef tube::ConvertTubesToImage< TemplateImageType > TubesToImageFilterType;
+  typedef tube::ConvertTubesToImage<TemplateImageType> TubesToImageFilterType;
 
-  timeCollector.Start( "Converting Tubes To Image" );
+  timeCollector.Start("Converting Tubes To Image");
 
-  typename TubesToImageFilterType::Pointer tubesToImageFilter =
-    TubesToImageFilterType::New();
+  typename TubesToImageFilterType::Pointer tubesToImageFilter = TubesToImageFilterType::New();
 
-  tubesToImageFilter->SetUseRadius( useRadii );
-  tubesToImageFilter->SetTemplateImage( templateImageReader->GetOutput() );
-  tubesToImageFilter->SetInput( tubeFileReader->GetGroup() );
+  tubesToImageFilter->SetUseRadius(useRadii);
+  tubesToImageFilter->SetTemplateImage(templateImageReader->GetOutput());
+  tubesToImageFilter->SetInput(tubeFileReader->GetGroup());
   tubesToImageFilter->Update();
 
-  timeCollector.Stop( "Converting Tubes To Image" );
+  timeCollector.Stop("Converting Tubes To Image");
   progress = 0.8; // At about 80% done after filter
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // write tube image to file
-  timeCollector.Start( "Writing tube image to file" );
+  timeCollector.Start("Writing tube image to file");
 
-  typedef itk::ImageFileWriter< TemplateImageType > TubeImageWriterType;
-  typename TubeImageWriterType::Pointer tubeImageWriter =
-    TubeImageWriterType::New();
+  typedef itk::ImageFileWriter<TemplateImageType> TubeImageWriterType;
+  typename TubeImageWriterType::Pointer           tubeImageWriter = TubeImageWriterType::New();
 
-  tubeImageWriter->SetFileName( outputImageFile.c_str() );
-  tubeImageWriter->SetInput( tubesToImageFilter->GetOutput() );
-  tubeImageWriter->SetUseCompression( true );
+  tubeImageWriter->SetFileName(outputImageFile.c_str());
+  tubeImageWriter->SetInput(tubesToImageFilter->GetOutput());
+  tubeImageWriter->SetUseCompression(true);
   tubeImageWriter->Update();
 
-  timeCollector.Stop( "Writing tube image to file" );
+  timeCollector.Stop("Writing tube image to file");
 
   progress = 1.0;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // Finish progress reporting
   progressReporter.End();
@@ -146,19 +143,20 @@ int DoIt( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   try
-    {
+  {
     PARSE_ARGS;
-    }
-  catch( const std::exception & err )
-    {
-    tube::ErrorMessage( err.what() );
+  }
+  catch (const std::exception & err)
+  {
+    tube::ErrorMessage(err.what());
     return EXIT_FAILURE;
-    }
+  }
 
   PARSE_ARGS;
 
-  return tube::ParseArgsAndCallDoIt( inputTemplateImage, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputTemplateImage, argc, argv);
 }

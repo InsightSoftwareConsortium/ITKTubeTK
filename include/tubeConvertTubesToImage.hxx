@@ -27,45 +27,42 @@ limitations under the License.
 namespace tube
 {
 
-template< class TImage >
-ConvertTubesToImage< TImage >
-::ConvertTubesToImage( void )
+template <class TImage>
+ConvertTubesToImage<TImage>::ConvertTubesToImage(void)
 {
   m_Filter = FilterType::New();
-  m_Filter->SetBuildRadiusImage( false );
-  m_Filter->SetBuildTangentImage( false );
+  m_Filter->SetBuildRadiusImage(false);
+  m_Filter->SetBuildTangentImage(false);
 
   m_TemplateImage = NULL;
 }
 
-template< class TImage >
+template <class TImage>
 void
-ConvertTubesToImage< TImage >
-::SetTemplateImage( const typename ConvertTubesToImage< TImage >::
-  OutputImageType * pTemplateImage )
+ConvertTubesToImage<TImage>::SetTemplateImage(
+  const typename ConvertTubesToImage<TImage>::OutputImageType * pTemplateImage)
 {
-  if( this->m_TemplateImage != pTemplateImage )
-    {
+  if (this->m_TemplateImage != pTemplateImage)
+  {
     this->m_TemplateImage = pTemplateImage;
 
-    m_Filter->SetSize( pTemplateImage->GetLargestPossibleRegion().GetSize() );
-    m_Filter->SetSpacing( pTemplateImage->GetSpacing() );
-    m_Filter->SetDirection( pTemplateImage->GetDirection() );
-    m_Filter->SetOrigin( pTemplateImage->GetOrigin() );
+    m_Filter->SetSize(pTemplateImage->GetLargestPossibleRegion().GetSize());
+    m_Filter->SetSpacing(pTemplateImage->GetSpacing());
+    m_Filter->SetDirection(pTemplateImage->GetDirection());
+    m_Filter->SetOrigin(pTemplateImage->GetOrigin());
 
     this->Modified();
-    }
+  }
 }
 
-template< class TImage >
+template <class TImage>
 void
-ConvertTubesToImage< TImage >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+ConvertTubesToImage<TImage>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << indent << "Filter: " << m_Filter << std::endl;
 }
 
-}
+} // namespace tube
 
 #endif

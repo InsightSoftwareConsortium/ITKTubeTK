@@ -44,16 +44,17 @@ limitations under the License.
 #include "tubeImageMathFilters.h"
 #include "tubeTubeMathFilters.h"
 
-#if defined( TubeTK_USE_ARRAYFIRE )
+#if defined(TubeTK_USE_ARRAYFIRE)
 
-#include "itktubeArrayFireGlueUtilities.h"
-#include "itktubeGPUArrayFireGaussianDerivativeFilter.h"
+#  include "itktubeArrayFireGlueUtilities.h"
+#  include "itktubeGPUArrayFireGaussianDerivativeFilter.h"
 
 #endif
 
 #include <iostream>
 
-int tubeFilteringHeaderTest ( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+int
+tubeFilteringHeaderTest(int itkNotUsed(argc), char * itkNotUsed(argv)[])
 {
   return EXIT_SUCCESS;
 }

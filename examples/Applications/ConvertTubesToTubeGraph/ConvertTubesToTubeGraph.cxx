@@ -30,131 +30,134 @@ limitations under the License.
 
 #include "ConvertTubesToTubeGraphCLP.h"
 
-int DoIt( int argc, char * argv[] );
+int
+DoIt(int argc, char * argv[]);
 
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
-  return DoIt( argc, argv );
+  return DoIt(argc, argv);
 }
 
-int DoIt( int argc, char * argv[] )
+int
+DoIt(int argc, char * argv[])
 {
-  enum { Dimension = 3 };
+  enum
+  {
+    Dimension = 3
+  };
 
-  typedef short                                      PixelType;
-  typedef itk::Image< PixelType, Dimension >         ImageType;
-  typedef itk::ImageFileReader< ImageType >          ImageReaderType;
-  typedef itk::SpatialObjectReader< >                SpatialObjectReaderType;
+  typedef short                            PixelType;
+  typedef itk::Image<PixelType, Dimension> ImageType;
+  typedef itk::ImageFileReader<ImageType>  ImageReaderType;
+  typedef itk::SpatialObjectReader<>       SpatialObjectReaderType;
 
-  typedef tube::ConvertTubesToTubeGraph< PixelType, Dimension >
-    FilterType;
-  FilterType::Pointer filter = FilterType::New();
+  typedef tube::ConvertTubesToTubeGraph<PixelType, Dimension> FilterType;
+  FilterType::Pointer                                         filter = FilterType::New();
   PARSE_ARGS;
 
   itk::TimeProbesCollectorBase timeCollector;
-  std::stringstream logMsg;
+  std::stringstream            logMsg;
 
-  tube::InfoMessage( "Reading spatial objects..." );
-  timeCollector.Start( "Load tubes" );
+  tube::InfoMessage("Reading spatial objects...");
+  timeCollector.Start("Load tubes");
   SpatialObjectReaderType::Pointer soReader = SpatialObjectReaderType::New();
-  soReader->SetFileName( tubeFile.c_str() );
+  soReader->SetFileName(tubeFile.c_str());
   try
-    {
+  {
     soReader->Update();
-    filter->SetInputTubeGroup( soReader->GetGroup() );
-    }
-  catch( ... )
-    {
-    tube::ErrorMessage( "ERROR: Cannot read spatial object file" );
+    filter->SetInputTubeGroup(soReader->GetGroup());
+  }
+  catch (...)
+  {
+    tube::ErrorMessage("ERROR: Cannot read spatial object file");
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Load tubes" );
+  }
+  timeCollector.Stop("Load tubes");
 
-  tube::InfoMessage( "Reading image..." );
-  timeCollector.Start( "Load CVT" );
+  tube::InfoMessage("Reading image...");
+  timeCollector.Start("Load CVT");
   ImageReaderType::Pointer imReader = ImageReaderType::New();
-  imReader->SetFileName( voronoiFile.c_str() );
+  imReader->SetFileName(voronoiFile.c_str());
   try
-    {
+  {
     imReader->Update();
-    filter->SetCVTImage( imReader->GetOutput() );
-    }
-  catch( itk::ExceptionObject & ex )
-    {
-    tube::FmtErrorMessage( "Cannot read image file: %s",
-        ex.what() );
+    filter->SetCVTImage(imReader->GetOutput());
+  }
+  catch (itk::ExceptionObject & ex)
+  {
+    tube::FmtErrorMessage("Cannot read image file: %s", ex.what());
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Load CVT" );
-  timeCollector.Start( "Processing" );
+  }
+  timeCollector.Stop("Load CVT");
+  timeCollector.Start("Processing");
 
   try
-    {
+  {
     filter->Update();
-    }
-  catch( itk::ExceptionObject & ex )
-    {
-    tube::FmtErrorMessage(
-      "TubeSpatialObjectToTubeGraphFilter Update error: %s", ex.what() );
+  }
+  catch (itk::ExceptionObject & ex)
+  {
+    tube::FmtErrorMessage("TubeSpatialObjectToTubeGraphFilter Update error: %s", ex.what());
     return EXIT_FAILURE;
-    }
+  }
 
   int numberOfCentroids = filter->GetNumberOfCenteroids();
 
-  logMsg.str( "" );
+  logMsg.str("");
   logMsg << "Number of Centroids = " << numberOfCentroids;
-  tube::InfoMessage( logMsg.str() );
+  tube::InfoMessage(logMsg.str());
 
-  vnl_matrix< double > aMat( numberOfCentroids, numberOfCentroids );
+  vnl_matrix<double> aMat(numberOfCentroids, numberOfCentroids);
   aMat = filter->GetAdjacencyMatrix();
 
-  vnl_vector< int > rootNodes( numberOfCentroids );
+  vnl_vector<int> rootNodes(numberOfCentroids);
   rootNodes = filter->GetRootNodes();
-  vnl_vector< double > branchNodes( numberOfCentroids );
+  vnl_vector<double> branchNodes(numberOfCentroids);
   branchNodes = filter->GetBranchNodes();
 
-  timeCollector.Stop( "Processing" );
+  timeCollector.Stop("Processing");
 
-  timeCollector.Start( "Save data" );
+  timeCollector.Start("Save data");
 
-  std::string matrixFile = graphFile + ".mat";
+  std::string   matrixFile = graphFile + ".mat";
   std::ofstream writeStream;
-  writeStream.open( matrixFile.c_str(), std::ios::binary | std::ios::out );
+  writeStream.open(matrixFile.c_str(), std::ios::binary | std::ios::out);
   writeStream << numberOfCentroids << std::endl;
-  for( int i = 0; i < numberOfCentroids; i++ )
+  for (int i = 0; i < numberOfCentroids; i++)
+  {
+    for (int j = 0; j < numberOfCentroids; j++)
     {
-    for( int j = 0; j < numberOfCentroids; j++ )
-      {
       writeStream << aMat[i][j];
-      if( j < numberOfCentroids - 1 )
-        {
+      if (j < numberOfCentroids - 1)
+      {
         writeStream << " ";
-        }
       }
-    writeStream << std::endl;
     }
+    writeStream << std::endl;
+  }
   writeStream.close();
 
   std::string branchFile = graphFile + ".brc";
-  writeStream.open( branchFile.c_str(), std::ios::binary | std::ios::out );
+  writeStream.open(branchFile.c_str(), std::ios::binary | std::ios::out);
   writeStream << numberOfCentroids << std::endl;
-  for( int i = 0; i < numberOfCentroids; i++ )
-    {
+  for (int i = 0; i < numberOfCentroids; i++)
+  {
     writeStream << branchNodes[i] << std::endl;
-    }
+  }
   writeStream.close();
 
   std::string rootFile = graphFile + ".rot";
-  writeStream.open( rootFile.c_str(), std::ios::binary | std::ios::out );
+  writeStream.open(rootFile.c_str(), std::ios::binary | std::ios::out);
   writeStream << numberOfCentroids << std::endl;
-  for( int i = 0; i < numberOfCentroids; i++ )
-    {
+  for (int i = 0; i < numberOfCentroids; i++)
+  {
     writeStream << rootNodes[i] << std::endl;
-    }
+  }
   writeStream.close();
-  timeCollector.Stop( "Save data" );
+  timeCollector.Stop("Save data");
 
   timeCollector.Report();
 

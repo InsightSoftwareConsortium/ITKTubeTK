@@ -27,22 +27,20 @@ limitations under the License.
 namespace tube
 {
 
-template< class TPixel, unsigned int Dimension >
-ComputeTubeMeasures< TPixel, Dimension >
-::ComputeTubeMeasures( void )
+template <class TPixel, unsigned int Dimension>
+ComputeTubeMeasures<TPixel, Dimension>::ComputeTubeMeasures(void)
 {
   m_Filter = FilterType::New();
 }
 
-template< class TPixel, unsigned int Dimension >
+template <class TPixel, unsigned int Dimension>
 void
-ComputeTubeMeasures< TPixel, Dimension >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+ComputeTubeMeasures<TPixel, Dimension>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << "Filter: " << m_Filter << std::endl;
 }
 
-}
+} // namespace tube
 
 #endif

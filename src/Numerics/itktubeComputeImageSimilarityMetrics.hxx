@@ -40,9 +40,8 @@ namespace tube
 /**
  * Constructor
  */
-template< class TInputImage >
-ComputeImageSimilarityMetrics< TInputImage >
-::ComputeImageSimilarityMetrics()
+template <class TInputImage>
+ComputeImageSimilarityMetrics<TInputImage>::ComputeImageSimilarityMetrics()
 {
   m_Input1 = NULL;
   m_Input2 = NULL;
@@ -50,88 +49,80 @@ ComputeImageSimilarityMetrics< TInputImage >
   m_UseCorrelation = false;
 }
 
-template< class TInputImage >
+template <class TInputImage>
 void
-ComputeImageSimilarityMetrics< TInputImage >
-::Update( void )
+ComputeImageSimilarityMetrics<TInputImage>::Update(void)
 {
   // check if both input images are set
-  if( m_Input1.IsNull() )
-    {
-    itkExceptionMacro( "Input Image 1 is not set" );
-    }
+  if (m_Input1.IsNull())
+  {
+    itkExceptionMacro("Input Image 1 is not set");
+  }
 
-  if( m_Input1.IsNull() )
-    {
-    itkExceptionMacro( "Input Image 2 is not set" );
-    }
+  if (m_Input1.IsNull())
+  {
+    itkExceptionMacro("Input Image 2 is not set");
+  }
 
   // Normalize the images
-  typedef itk::NormalizeImageFilter< ImageType, ImageType > NormFilterType;
+  typedef itk::NormalizeImageFilter<ImageType, ImageType> NormFilterType;
 
   typename NormFilterType::Pointer norm1 = NormFilterType::New();
-  norm1->SetInput( m_Input1 );
+  norm1->SetInput(m_Input1);
   norm1->Update();
 
   typename NormFilterType::Pointer norm2 = NormFilterType::New();
-  norm2->SetInput( m_Input2 );
+  norm2->SetInput(m_Input2);
   norm2->Update();
 
   // Compute similarity
-  typedef itk::ImageToImageMetric< ImageType, ImageType > MetricType;
-  typename MetricType::Pointer metric;
+  typedef itk::ImageToImageMetric<ImageType, ImageType> MetricType;
+  typename MetricType::Pointer                          metric;
 
-  typedef itk::IdentityTransform< double,
-    TInputImage::ImageDimension > TransformType;
-  typename TransformType::Pointer transform = TransformType::New();
+  typedef itk::IdentityTransform<double, TInputImage::ImageDimension> TransformType;
+  typename TransformType::Pointer                                     transform = TransformType::New();
 
-  typedef itk::LinearInterpolateImageFunction< ImageType, double >
-    InterpolatorType;
-  typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
-  interpolator->SetInputImage( norm2->GetOutput() );
+  typedef itk::LinearInterpolateImageFunction<ImageType, double> InterpolatorType;
+  typename InterpolatorType::Pointer                             interpolator = InterpolatorType::New();
+  interpolator->SetInputImage(norm2->GetOutput());
 
-  if( !m_UseCorrelation )
-    {
-    typedef itk::MutualInformationImageToImageMetric< ImageType,
-      ImageType >                                          MIMetricType;
+  if (!m_UseCorrelation)
+  {
+    typedef itk::MutualInformationImageToImageMetric<ImageType, ImageType> MIMetricType;
     metric = MIMetricType::New();
-    }
+  }
   else
-    {
-    typedef itk::NormalizedCorrelationImageToImageMetric< ImageType,
-      ImageType >                                          CorMetricType;
+  {
+    typedef itk::NormalizedCorrelationImageToImageMetric<ImageType, ImageType> CorMetricType;
     metric = CorMetricType::New();
-    }
+  }
 
-  typename ImageType::SizeType size =
-    norm1->GetOutput()->GetLargestPossibleRegion().GetSize();
+  typename ImageType::SizeType size = norm1->GetOutput()->GetLargestPossibleRegion().GetSize();
 
-  metric->SetFixedImage( norm1->GetOutput() );
-  metric->SetMovingImage( norm2->GetOutput() );
-  metric->SetFixedImageRegion(
-    norm1->GetOutput()->GetLargestPossibleRegion() );
-  metric->SetTransform( transform );
-  metric->SetInterpolator( interpolator );
-  metric->SetNumberOfSpatialSamples( size[0] * size[1] * m_SamplingRate );
+  metric->SetFixedImage(norm1->GetOutput());
+  metric->SetMovingImage(norm2->GetOutput());
+  metric->SetFixedImageRegion(norm1->GetOutput()->GetLargestPossibleRegion());
+  metric->SetTransform(transform);
+  metric->SetInterpolator(interpolator);
+  metric->SetNumberOfSpatialSamples(size[0] * size[1] * m_SamplingRate);
   metric->Initialize();
   metric->MultiThreadingInitialize();
 
-  if( !m_UseCorrelation )
-    {
-    m_Output = metric->GetValue( transform->GetParameters() );
-    }
+  if (!m_UseCorrelation)
+  {
+    m_Output = metric->GetValue(transform->GetParameters());
+  }
   else
-    {
-    m_Output = -metric->GetValue( transform->GetParameters() );
-    }
+  {
+    m_Output = -metric->GetValue(transform->GetParameters());
+  }
 }
 
-template< class TInputImage >
+template <class TInputImage>
 void
-ComputeImageSimilarityMetrics< TInputImage >
-::PrintSelf( std::ostream & os, Indent indent ) const
+ComputeImageSimilarityMetrics<TInputImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << "Use Correlation: " << m_UseCorrelation << std::endl;
   os << "Sampling Rate: " << m_SamplingRate << std::endl;
 }

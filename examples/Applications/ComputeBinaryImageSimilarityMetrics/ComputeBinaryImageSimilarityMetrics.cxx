@@ -26,103 +26,93 @@ limitations under the License.
 
 #include "ComputeBinaryImageSimilarityMetricsCLP.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 #define PARSE_ARGS_INT_ONLY 1
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
-  typedef TPixel                                              PixelType;
-  typedef itk::Image< PixelType, VDimension >                 ImageType;
-  typedef itk::ImageFileReader< ImageType >                   ReaderType;
+  typedef TPixel                            PixelType;
+  typedef itk::Image<PixelType, VDimension> ImageType;
+  typedef itk::ImageFileReader<ImageType>   ReaderType;
 
   typename ReaderType::Pointer reader1 = ReaderType::New();
   typename ReaderType::Pointer reader2 = ReaderType::New();
 
-  //read input image
-  reader1->SetFileName( inputVolume1.c_str() );
-  reader2->SetFileName( inputVolume2.c_str() );
+  // read input image
+  reader1->SetFileName(inputVolume1.c_str());
+  reader2->SetFileName(inputVolume2.c_str());
 
   try
-    {
+  {
     reader1->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
+  }
+  catch (itk::ExceptionObject & err)
+  {
     std::cerr << "ExceptionObject caught, image reader 1 !" << std::endl;
     std::cerr << err << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   try
-    {
+  {
     reader2->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
+  }
+  catch (itk::ExceptionObject & err)
+  {
     std::cerr << "ExceptionObject caught, image reader2 !" << std::endl;
     std::cerr << err << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   typename ImageType::Pointer image1 = reader1->GetOutput();
   typename ImageType::Pointer image2 = reader2->GetOutput();
 
-  typedef tube::ComputeBinaryImageSimilarityMetrics< ImageType >
-    MetricFilterType;
+  typedef tube::ComputeBinaryImageSimilarityMetrics<ImageType> MetricFilterType;
 
   typename MetricFilterType::Pointer metric = MetricFilterType::New();
-  metric->SetSourceImage( image1 );
-  metric->SetTargetImage( image2 );
+  metric->SetSourceImage(image1);
+  metric->SetTargetImage(image2);
   metric->Update();
 
-  if( resultsFile.size() == 0 )
-    {
-    std::cout << "Total Overlap = " << metric->GetTotalOverlap()
-      << std::endl;
-    std::cout << "Union Overlap (Jaccard Coefficient) = "
-      << metric->GetUnionOverlap() << std::endl;
-    std::cout << "Mean Overlap (Dice Coefficient) = "
-      << metric->GetMeanOverlap() << std::endl;
-    std::cout << "Similarity = " << metric->GetVolumeSimilarity()
-      << std::endl;
-    std::cout << "False Negative Error = " << metric->GetFalseNegativeError()
-      << std::endl;
-    std::cout << "False Positive Error = " << metric->GetFalsePositiveError()
-      << std::endl;
-    }
+  if (resultsFile.size() == 0)
+  {
+    std::cout << "Total Overlap = " << metric->GetTotalOverlap() << std::endl;
+    std::cout << "Union Overlap (Jaccard Coefficient) = " << metric->GetUnionOverlap() << std::endl;
+    std::cout << "Mean Overlap (Dice Coefficient) = " << metric->GetMeanOverlap() << std::endl;
+    std::cout << "Similarity = " << metric->GetVolumeSimilarity() << std::endl;
+    std::cout << "False Negative Error = " << metric->GetFalseNegativeError() << std::endl;
+    std::cout << "False Positive Error = " << metric->GetFalsePositiveError() << std::endl;
+  }
   else
-    {
+  {
     std::ofstream outFile;
-    outFile.open( resultsFile.c_str() );
-    outFile << "Total Overlap = " << metric->GetTotalOverlap()
-      << std::endl;
-    outFile << "Union Overlap (Jaccard Coefficient) = "
-      << metric->GetUnionOverlap() << std::endl;
-    outFile << "Mean Overlap (Dice Coefficient) = "
-      << metric->GetMeanOverlap() << std::endl;
-    outFile << "Similarity = " << metric->GetVolumeSimilarity()
-      << std::endl;
-    outFile << "False Negative Error = " << metric->GetFalseNegativeError()
-      << std::endl;
-    outFile << "False Positive Error = " << metric->GetFalsePositiveError()
-      << std::endl;
+    outFile.open(resultsFile.c_str());
+    outFile << "Total Overlap = " << metric->GetTotalOverlap() << std::endl;
+    outFile << "Union Overlap (Jaccard Coefficient) = " << metric->GetUnionOverlap() << std::endl;
+    outFile << "Mean Overlap (Dice Coefficient) = " << metric->GetMeanOverlap() << std::endl;
+    outFile << "Similarity = " << metric->GetVolumeSimilarity() << std::endl;
+    outFile << "False Negative Error = " << metric->GetFalseNegativeError() << std::endl;
+    outFile << "False Positive Error = " << metric->GetFalsePositiveError() << std::endl;
     outFile.close();
-    }
+  }
 
   return EXIT_SUCCESS;
 }
 
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
-  return tube::ParseArgsAndCallDoIt( inputVolume1, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputVolume1, argc, argv);
 }

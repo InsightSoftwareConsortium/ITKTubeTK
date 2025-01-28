@@ -45,7 +45,8 @@ limitations under the License.
 
 #include <iostream>
 
-int tubeNumericsHeaderTest ( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+int
+tubeNumericsHeaderTest(int itkNotUsed(argc), char * itkNotUsed(argv)[])
 {
   return EXIT_SUCCESS;
 }

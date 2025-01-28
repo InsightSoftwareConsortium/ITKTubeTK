@@ -32,16 +32,15 @@ namespace tube
 {
 
 bool
-Optimizer1D
-::m_Extreme( double * tubeNotUsed( x ), double * tubeNotUsed( xval ) )
+Optimizer1D ::m_Extreme(double * tubeNotUsed(x), double * tubeNotUsed(xval))
 {
   return false;
 }
 
 
-Optimizer1D
-::Optimizer1D( void )
-  : m_FuncVal( NULL ), m_FuncDeriv( NULL )
+Optimizer1D ::Optimizer1D(void)
+  : m_FuncVal(NULL)
+  , m_FuncDeriv(NULL)
 {
   m_SearchForMin = true;
   m_Tolerance = 0.0001;
@@ -53,9 +52,7 @@ Optimizer1D
 }
 
 
-Optimizer1D
-::Optimizer1D( ValueFunctionType::Pointer funcVal,
-  DerivativeFunctionType::Pointer funcDeriv )
+Optimizer1D ::Optimizer1D(ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv)
 {
   m_SearchForMin = true;
   m_Tolerance = 0.0001;
@@ -69,16 +66,11 @@ Optimizer1D
 }
 
 
-Optimizer1D
-::~Optimizer1D( void )
-{
-}
+Optimizer1D ::~Optimizer1D(void) {}
 
 
 void
-Optimizer1D
-::Use( ValueFunctionType::Pointer funcVal,
-  DerivativeFunctionType::Pointer funcDeriv )
+Optimizer1D ::Use(ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv)
 {
   m_FuncVal = funcVal;
   m_FuncDeriv = funcDeriv;
@@ -87,23 +79,21 @@ Optimizer1D
 
 
 bool
-Optimizer1D
-::Extreme( double * x, double * xVal )
+Optimizer1D ::Extreme(double * x, double * xVal)
 {
-  if( !m_Defined )
-    {
+  if (!m_Defined)
+  {
     return false;
-    }
+  }
 
-  return m_Extreme( x, xVal );
+  return m_Extreme(x, xVal);
 }
 
 
 void
-Optimizer1D
-::PrintSelf( std::ostream & os, Indent indent ) const
+Optimizer1D ::PrintSelf(std::ostream & os, Indent indent) const
 {
-  this->Superclass::PrintSelf( os, indent );
+  this->Superclass::PrintSelf(os, indent);
 
   os << indent << "Defined:       " << m_Defined << std::endl;
   os << indent << "XMin:          " << m_XMin << std::endl;
