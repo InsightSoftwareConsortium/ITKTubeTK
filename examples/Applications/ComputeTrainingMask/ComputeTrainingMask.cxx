@@ -38,119 +38,118 @@
 #include <itkAddImageFilter.h>
 #include <itkCastImageFilter.h>
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
-  if( VDimension != 2 && VDimension != 3 )
-    {
-    tube::ErrorMessage(
-      "Error: Only 2D and 3D data is currently supported." );
+  if (VDimension != 2 && VDimension != 3)
+  {
+    tube::ErrorMessage("Error: Only 2D and 3D data is currently supported.");
     return EXIT_FAILURE;
-    }
+  }
 
-  typedef itk::Image< TPixel, VDimension >            ImageType;
-  typedef itk::ImageFileReader< ImageType >           ImageReaderType;
+  typedef itk::Image<TPixel, VDimension>  ImageType;
+  typedef itk::ImageFileReader<ImageType> ImageReaderType;
 
   // The timeCollector to perform basic profiling of algorithmic components
   itk::TimeProbesCollectorBase timeCollector;
 
-  timeCollector.Start( "Loading Input Volume Mask File" );
+  timeCollector.Start("Loading Input Volume Mask File");
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter( "ComputeTrainingMask",
-    CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("ComputeTrainingMask", CLPProcessInformation);
   progressReporter.Start();
   float progress = 0;
 
   typename ImageReaderType::Pointer imReader;
   imReader = ImageReaderType::New();
   typename ImageType::Pointer image;
-  tube::InfoMessage( "Reading volume mask..." );
-  imReader->SetFileName( inputVolume.c_str() );
+  tube::InfoMessage("Reading volume mask...");
+  imReader->SetFileName(inputVolume.c_str());
   try
-    {
+  {
     imReader->Update();
     image = imReader->GetOutput();
-    }
-  catch ( itk::ExceptionObject & err )
-    {
-    tube::FmtErrorMessage( "Cannot read volume mask file: %s",
-      err.what() );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::FmtErrorMessage("Cannot read volume mask file: %s", err.what());
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Loading Input Volume Mask File" );
+  }
+  timeCollector.Stop("Loading Input Volume Mask File");
   progress = 0.35;
-  progressReporter.Report( progress );
-  timeCollector.Start( "Compute training mask" );
-  tube::InfoMessage( "Compute training mask..." );
+  progressReporter.Report(progress);
+  timeCollector.Start("Compute training mask");
+  tube::InfoMessage("Compute training mask...");
   typedef tube::ComputeTrainingMask<ImageType> ComputeTrainingMaskType;
-  typename ComputeTrainingMaskType::Pointer filter =
-    ComputeTrainingMaskType::New();
-  filter->SetInput( imReader->GetOutput() );
-  filter->SetGap( gap );
-  filter->SetNotObjectWidth( notObjectWidth );
-  filter->SetObjectWidth( objectWidth );
+  typename ComputeTrainingMaskType::Pointer    filter = ComputeTrainingMaskType::New();
+  filter->SetInput(imReader->GetOutput());
+  filter->SetGap(gap);
+  filter->SetNotObjectWidth(notObjectWidth);
+  filter->SetObjectWidth(objectWidth);
   filter->Update();
   progress = 0.65;
-  progressReporter.Report( progress );
-  timeCollector.Stop( "Compute training mask" );
-  typedef typename ComputeTrainingMaskType::LabelMapType   LabelMapType;
-  typedef itk::ImageFileWriter<LabelMapType>               VolumeWriterType;
+  progressReporter.Report(progress);
+  timeCollector.Stop("Compute training mask");
+  typedef typename ComputeTrainingMaskType::LabelMapType LabelMapType;
+  typedef itk::ImageFileWriter<LabelMapType>             VolumeWriterType;
 
   typename VolumeWriterType::Pointer writer = VolumeWriterType::New();
-  if( !objectMask.empty() )
-    {
-    timeCollector.Start( "Creating Object Mask" );
-    tube::InfoMessage( "Creating Object Mask..." );
-    writer->SetFileName( objectMask );
-    writer->SetInput( filter->GetObjectMask() );
+  if (!objectMask.empty())
+  {
+    timeCollector.Start("Creating Object Mask");
+    tube::InfoMessage("Creating Object Mask...");
+    writer->SetFileName(objectMask);
+    writer->SetInput(filter->GetObjectMask());
     writer->Update();
-    timeCollector.Stop( "Creating Object Mask" );
-    }
-  if( !notObjectMask.empty() )
-    {
-    timeCollector.Start( "Creating not-Object Mask" );
-    tube::InfoMessage( "Creating not-Object Mask..." );
-    writer->SetFileName( notObjectMask );
-    writer->SetInput( filter->GetNotObjectMask() );
+    timeCollector.Stop("Creating Object Mask");
+  }
+  if (!notObjectMask.empty())
+  {
+    timeCollector.Start("Creating not-Object Mask");
+    tube::InfoMessage("Creating not-Object Mask...");
+    writer->SetFileName(notObjectMask);
+    writer->SetInput(filter->GetNotObjectMask());
     writer->Update();
-    timeCollector.Stop( "Creating not-Object Mask" );
-    }
-  timeCollector.Start( "Creating Training Mask" );
-  tube::InfoMessage( "Creating Training Mask..." );
-  writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( filter->GetOutput() );
+    timeCollector.Stop("Creating not-Object Mask");
+  }
+  timeCollector.Start("Creating Training Mask");
+  tube::InfoMessage("Creating Training Mask...");
+  writer->SetFileName(outputVolume.c_str());
+  writer->SetInput(filter->GetOutput());
   writer->Update();
-  timeCollector.Stop( "Creating Training Mask" );
+  timeCollector.Stop("Creating Training Mask");
   progress = 1.0;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
   progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;
 }
 
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   try
-    {
+  {
     PARSE_ARGS;
-    }
-  catch ( const std::exception & err )
-    {
-    tube::ErrorMessage( err.what() );
+  }
+  catch (const std::exception & err)
+  {
+    tube::ErrorMessage(err.what());
     return EXIT_FAILURE;
-    }
+  }
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputVolume.
-  return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputVolume, argc, argv);
 }

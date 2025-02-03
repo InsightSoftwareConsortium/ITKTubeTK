@@ -61,7 +61,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( EnhanceContrastUsingPrior, ProcessObject );
+  itkOverrideGetNameOfClassMacro( EnhanceContrastUsingPrior);
 
   /* Set input image */
   tubeWrapSetConstObjectMacro( Input, ImageType, Filter );

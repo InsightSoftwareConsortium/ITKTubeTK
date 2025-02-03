@@ -24,30 +24,26 @@ limitations under the License.
 #define __tubeCropImage_hxx
 
 
-
 namespace tube
 {
-template< typename TInputImage, typename TOutputImage >
-CropImage< TInputImage, TOutputImage >
-::CropImage( void )
+template <typename TInputImage, typename TOutputImage>
+CropImage<TInputImage, TOutputImage>::CropImage(void)
 {
   m_Filter = FilterType::New();
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-CropImage< TInputImage, TOutputImage >
-::SetSplitInput( InputIndexType splitIndex, InputIndexType roiIndex )
+CropImage<TInputImage, TOutputImage>::SetSplitInput(InputIndexType splitIndex, InputIndexType roiIndex)
 {
-  m_Filter->SetSplitInput( splitIndex, roiIndex );
+  m_Filter->SetSplitInput(splitIndex, roiIndex);
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-CropImage< TInputImage, TOutputImage >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+CropImage<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 
   os << indent << m_Filter << std::endl;
 }

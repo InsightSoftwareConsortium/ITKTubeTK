@@ -21,18 +21,18 @@ limitations under the License.
 =========================================================================*/
 
 #ifndef __itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter_hxx
-#define __itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter_hxx
+#  define __itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter_hxx
 
 
-#include <itkFixedArray.h>
-#include <itkImageFileWriter.h>
-#include <itkImageRegionConstIterator.h>
-#include <itkImageRegionIterator.h>
-#include <itkNeighborhoodAlgorithm.h>
-#include <itkNumericTraits.h>
-#include <itkVector.h>
+#  include <itkFixedArray.h>
+#  include <itkImageFileWriter.h>
+#  include <itkImageRegionConstIterator.h>
+#  include <itkImageRegionIterator.h>
+#  include <itkNeighborhoodAlgorithm.h>
+#  include <itkNumericTraits.h>
+#  include <itkVector.h>
 
-#include <list>
+#  include <list>
 
 namespace itk
 {
@@ -43,9 +43,9 @@ namespace tube
 /**
  * Constructor
  */
-template< class TInputImage, class TOutputImage >
-AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
-::AnisotropicCoherenceEnhancingDiffusionImageFilter( void )
+template <class TInputImage, class TOutputImage>
+AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage,
+                                                  TOutputImage>::AnisotropicCoherenceEnhancingDiffusionImageFilter(void)
 {
   m_ContrastParameterLambdaC = 15.0;
   m_Alpha = 0.001;
@@ -53,12 +53,11 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   m_SigmaOuter = 1.0;
 }
 
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 void
-AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
-::UpdateDiffusionTensorImage( void )
+AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>::UpdateDiffusionTensorImage(void)
 {
-  itkDebugMacro( << "UpdateDiffusionTensorImage() called." );
+  itkDebugMacro(<< "UpdateDiffusionTensorImage() called.");
 
   std::cerr << "UpdateDiffusionTensorImage()" << std::endl;
 
@@ -68,99 +67,83 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
    - Compute eigenvalues corresponding to the diffusion matrix tensor
   */
 
-  //Step 1: Compute the structure tensor and identify the eigenvectors
-  //Step 1.1: Compute the structure tensor
-  // Instantiate the structure tensor filter
-  typename StructureTensorFilterType::Pointer
-          StructureTensorFilter  = StructureTensorFilterType::New();
+  // Step 1: Compute the structure tensor and identify the eigenvectors
+  // Step 1.1: Compute the structure tensor
+  //  Instantiate the structure tensor filter
+  typename StructureTensorFilterType::Pointer StructureTensorFilter = StructureTensorFilterType::New();
 
-  StructureTensorFilter->SetInput( this->GetOutput() );
-  StructureTensorFilter->SetSigma ( m_Sigma );
-  StructureTensorFilter->SetSigmaOuter ( m_SigmaOuter );
+  StructureTensorFilter->SetInput(this->GetOutput());
+  StructureTensorFilter->SetSigma(m_Sigma);
+  StructureTensorFilter->SetSigmaOuter(m_SigmaOuter);
   StructureTensorFilter->Update();
 
   // Step 1.2: Identify the eigenvectors of the structure tensor
-  typedef  Matrix< double, 3, 3>
-    EigenVectorMatrixType;
-  typedef  Image< EigenVectorMatrixType, 3>
-    EigenVectorImageType;
-  typedef  typename itk::Image< EigenValueArrayType, 3>
-    EigenValueImageType;
+  typedef Matrix<double, 3, 3>                        EigenVectorMatrixType;
+  typedef Image<EigenVectorMatrixType, 3>             EigenVectorImageType;
+  typedef typename itk::Image<EigenValueArrayType, 3> EigenValueImageType;
 
-  typedef  typename StructureTensorFilterType::OutputImageType
-    SymmetricSecondRankTensorImageType;
-  typedef  SymmetricEigenVectorAnalysisImageFilter<
-    SymmetricSecondRankTensorImageType, EigenValueImageType,
-    EigenVectorImageType>
+  typedef typename StructureTensorFilterType::OutputImageType SymmetricSecondRankTensorImageType;
+  typedef SymmetricEigenVectorAnalysisImageFilter<SymmetricSecondRankTensorImageType,
+                                                  EigenValueImageType,
+                                                  EigenVectorImageType>
     EigenVectorAnalysisFilterType;
 
-  typename EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter
-    = EigenVectorAnalysisFilterType::New();
-  eigenVectorAnalysisFilter->SetDimension( 3 );
-  eigenVectorAnalysisFilter->OrderEigenValuesBy(
-    EigenValueOrderEnum::OrderByValue );
+  typename EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter = EigenVectorAnalysisFilterType::New();
+  eigenVectorAnalysisFilter->SetDimension(3);
+  eigenVectorAnalysisFilter->OrderEigenValuesBy(EigenValueOrderEnum::OrderByValue);
 
-  eigenVectorAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );
+  eigenVectorAnalysisFilter->SetInput(StructureTensorFilter->GetOutput());
   eigenVectorAnalysisFilter->Modified();
   eigenVectorAnalysisFilter->Update();
 
-  //Step 1.3: Compute the eigenvalues
-  typedef itk::SymmetricEigenAnalysisImageFilter<
-    SymmetricSecondRankTensorImageType, EigenValueImageType>
+  // Step 1.3: Compute the eigenvalues
+  typedef itk::SymmetricEigenAnalysisImageFilter<SymmetricSecondRankTensorImageType, EigenValueImageType>
     EigenAnalysisFilterType;
 
-  typename EigenAnalysisFilterType::Pointer eigenAnalysisFilter
-    = EigenAnalysisFilterType::New();
-  eigenAnalysisFilter->SetDimension( 3 );
-  eigenAnalysisFilter->OrderEigenValuesBy(
-    EigenValueOrderEnum::OrderByValue );
+  typename EigenAnalysisFilterType::Pointer eigenAnalysisFilter = EigenAnalysisFilterType::New();
+  eigenAnalysisFilter->SetDimension(3);
+  eigenAnalysisFilter->OrderEigenValuesBy(EigenValueOrderEnum::OrderByValue);
 
-  eigenAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );
+  eigenAnalysisFilter->SetInput(StructureTensorFilter->GetOutput());
   eigenAnalysisFilter->Update();
 
   /* Step 2: Generate the diffusion tensor matrix
       D = [v1 v2 v3] [DiagonalMatrixContainingLambdas] [v1 v2 v3]^t
   */
 
-  //Setup the iterators
+  // Setup the iterators
   //
-  //Iterator for the eigenvector matrix image
-  EigenVectorImageType::ConstPointer eigenVectorImage
-    = eigenVectorAnalysisFilter->GetOutput();
-  itk::ImageRegionConstIterator<EigenVectorImageType>
-    eigenVectorImageIterator;
-  eigenVectorImageIterator
-    = itk::ImageRegionConstIterator<EigenVectorImageType>( eigenVectorImage,
-    eigenVectorImage->GetRequestedRegion() );
+  // Iterator for the eigenvector matrix image
+  EigenVectorImageType::ConstPointer                  eigenVectorImage = eigenVectorAnalysisFilter->GetOutput();
+  itk::ImageRegionConstIterator<EigenVectorImageType> eigenVectorImageIterator;
+  eigenVectorImageIterator =
+    itk::ImageRegionConstIterator<EigenVectorImageType>(eigenVectorImage, eigenVectorImage->GetRequestedRegion());
   eigenVectorImageIterator.GoToBegin();
 
-  //Iterator for the diffusion tensor image
-  typedef itk::ImageRegionIterator< DiffusionTensorImageType >
-    DiffusionTensorIteratorType;
-  DiffusionTensorIteratorType it( this->GetDiffusionTensorImage(),
-    this->GetDiffusionTensorImage()->GetLargestPossibleRegion() );
+  // Iterator for the diffusion tensor image
+  typedef itk::ImageRegionIterator<DiffusionTensorImageType> DiffusionTensorIteratorType;
+  DiffusionTensorIteratorType                                it(this->GetDiffusionTensorImage(),
+                                 this->GetDiffusionTensorImage()->GetLargestPossibleRegion());
 
-  //Iterator for the eigenvalue image
-  typename EigenValueImageType::ConstPointer eigenImage
-    = eigenAnalysisFilter->GetOutput();
-  itk::ImageRegionConstIterator<EigenValueImageType>
-    eigenValueImageIterator;
-  eigenValueImageIterator = itk::ImageRegionConstIterator<
-    EigenValueImageType>( eigenImage, eigenImage->GetRequestedRegion() );
+  // Iterator for the eigenvalue image
+  typename EigenValueImageType::ConstPointer         eigenImage = eigenAnalysisFilter->GetOutput();
+  itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
+  eigenValueImageIterator =
+    itk::ImageRegionConstIterator<EigenValueImageType>(eigenImage, eigenImage->GetRequestedRegion());
   eigenValueImageIterator.GoToBegin();
 
   it.GoToBegin();
   eigenVectorImageIterator.GoToBegin();
   eigenValueImageIterator.GoToBegin();
 
-  MatrixType  eigenValueMatrix;
-  while( !it.IsAtEnd() )
-    {
+  MatrixType eigenValueMatrix;
+  while (!it.IsAtEnd())
+  {
     // Generate the diagonal matrix with the eigenvalues
     eigenValueMatrix.SetIdentity();
 
-    //Set the lambda's appropriately. For now, set them to be equal to the
-    //eigenvalues
+    // Set the lambda's appropriately. For now, set them to be equal to the
+    // eigenvalues
     double Lambda1;
     double Lambda2;
     double Lambda3;
@@ -173,39 +156,39 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
     /* Assumption is that eigenvalue1 > eigenvalue2 > eigenvalue3 */
 
     // Find the smallest eigenvalue
-    double smallest = std::fabs( eigenValue[0] );
-    unsigned int smallestEigenValueIndex=0;
-    for( unsigned int i=1; i <=2; i++ )
+    double       smallest = std::fabs(eigenValue[0]);
+    unsigned int smallestEigenValueIndex = 0;
+    for (unsigned int i = 1; i <= 2; i++)
+    {
+      if (std::fabs(eigenValue[i]) < smallest)
       {
-      if( std::fabs( eigenValue[i] ) < smallest )
-        {
         Lambda1 = eigenValue[i];
-        smallest = std::fabs( eigenValue[i] );
+        smallest = std::fabs(eigenValue[i]);
         smallestEigenValueIndex = i;
-        }
       }
+    }
 
     // Find the largest eigenvalue
-    double largest = std::fabs( eigenValue[0] );
-    unsigned int largestEigenValueIndex=0;
-    for( unsigned int i=1; i <=2; i++ )
+    double       largest = std::fabs(eigenValue[0]);
+    unsigned int largestEigenValueIndex = 0;
+    for (unsigned int i = 1; i <= 2; i++)
+    {
+      if (std::fabs(eigenValue[i] > largest))
       {
-      if( std::fabs( eigenValue[i] > largest ) )
-        {
-        largest = std::fabs( eigenValue[i] );
+        largest = std::fabs(eigenValue[i]);
         largestEigenValueIndex = i;
-        }
       }
+    }
 
-    unsigned int middleEigenValueIndex=0;
-    for( unsigned int i=0; i <=2; i++ )
+    unsigned int middleEigenValueIndex = 0;
+    for (unsigned int i = 0; i <= 2; i++)
+    {
+      if (eigenValue[i] != smallest && eigenValue[i] != largest)
       {
-      if( eigenValue[i] != smallest && eigenValue[i] != largest )
-        {
         middleEigenValueIndex = i;
         break;
-        }
       }
+    }
 
     Lambda1 = m_Alpha;
     Lambda2 = m_Alpha;
@@ -214,41 +197,37 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 
     /* largest > middle > smallest */
 
-    if( ( std::fabs( eigenValue[middleEigenValueIndex] ) <
-        zeroValueTolerance )  ||
-       ( std::fabs( eigenValue[smallestEigenValueIndex] ) <
-         zeroValueTolerance ) )
-      {
+    if ((std::fabs(eigenValue[middleEigenValueIndex]) < zeroValueTolerance) ||
+        (std::fabs(eigenValue[smallestEigenValueIndex]) < zeroValueTolerance))
+    {
       Lambda3 = 1.0;
-      }
+    }
     else
-      {
-      double kappa = std::pow( (float)( eigenValue[middleEigenValueIndex] )
-        / ( m_Alpha + eigenValue[smallestEigenValueIndex] ), 4.0 );
+    {
+      double kappa =
+        std::pow((float)(eigenValue[middleEigenValueIndex]) / (m_Alpha + eigenValue[smallestEigenValueIndex]), 4.0);
 
-      double contrastParameterLambdaCSquare = m_ContrastParameterLambdaC
-        * m_ContrastParameterLambdaC;
+      double contrastParameterLambdaCSquare = m_ContrastParameterLambdaC * m_ContrastParameterLambdaC;
 
-      double expVal = std::exp( ( -1.0 * ( std::log( 2.0 )
-        * contrastParameterLambdaCSquare )/kappa ) );
-      Lambda3 = m_Alpha + ( 1.0 - m_Alpha )*expVal;
+      double expVal = std::exp((-1.0 * (std::log(2.0) * contrastParameterLambdaCSquare) / kappa));
+      Lambda3 = m_Alpha + (1.0 - m_Alpha) * expVal;
+    }
 
-      }
+    eigenValueMatrix(0, 0) = Lambda1;
+    eigenValueMatrix(1, 1) = Lambda2;
+    eigenValueMatrix(2, 2) = Lambda3;
 
-    eigenValueMatrix( 0, 0 ) = Lambda1;
-    eigenValueMatrix( 1, 1 ) = Lambda2;
-    eigenValueMatrix( 2, 2 ) = Lambda3;
-
-    //Get the eigenVector matrix
+    // Get the eigenVector matrix
     EigenVectorMatrixType eigenVectorMatrix;
-    unsigned int vectorLength = 3; // Eigenvector length
+    unsigned int          vectorLength = 3; // Eigenvector length
 
-    itk::VariableLengthVector<double> firstEigenVector( vectorLength );
-    itk::VariableLengthVector<double> secondEigenVector( vectorLength );
-    itk::VariableLengthVector<double> thirdEigenVector( vectorLength );
+    itk::VariableLengthVector<double> firstEigenVector(vectorLength);
+    itk::VariableLengthVector<double> secondEigenVector(vectorLength);
+    itk::VariableLengthVector<double> thirdEigenVector(vectorLength);
 
-    for( unsigned int i=0; i < vectorLength; i++ ) {
-    // Get eigenvectors belonging to eigenvalue order
+    for (unsigned int i = 0; i < vectorLength; i++)
+    {
+      // Get eigenvectors belonging to eigenvalue order
       firstEigenVector[i] = eigenVectorMatrix[largestEigenValueIndex][i];
       secondEigenVector[i] = eigenVectorMatrix[middleEigenValueIndex][i];
       thirdEigenVector[i] = eigenVectorMatrix[smallestEigenValueIndex][i];
@@ -257,48 +236,46 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
       eigenVectorMatrix[0][i] = firstEigenVector[i];
       eigenVectorMatrix[1][i] = secondEigenVector[i];
       eigenVectorMatrix[2][i] = thirdEigenVector[i];
-      }
+    }
 
-    EigenVectorMatrixType  eigenVectorMatrixTranspose;
+    EigenVectorMatrixType eigenVectorMatrixTranspose;
     eigenVectorMatrixTranspose = eigenVectorMatrix.GetTranspose();
 
     // Generate the tensor matrix
-    EigenVectorMatrixType  productMatrix;
-    productMatrix = eigenVectorMatrix * eigenValueMatrix
-      * eigenVectorMatrixTranspose;
+    EigenVectorMatrixType productMatrix;
+    productMatrix = eigenVectorMatrix * eigenValueMatrix * eigenVectorMatrixTranspose;
 
-    //Copy the ITK::Matrix to the tensor...there should be a better way of
-    //doing this TODO
-    typename DiffusionTensorImageType::PixelType        tensor;
+    // Copy the ITK::Matrix to the tensor...there should be a better way of
+    // doing this TODO
+    typename DiffusionTensorImageType::PixelType tensor;
 
-    tensor( 0, 0 ) = productMatrix( 0, 0 );
-    tensor( 0, 1 ) = productMatrix( 0, 1 );
-    tensor( 0, 2 ) = productMatrix( 0, 2 );
+    tensor(0, 0) = productMatrix(0, 0);
+    tensor(0, 1) = productMatrix(0, 1);
+    tensor(0, 2) = productMatrix(0, 2);
 
-    tensor( 1, 0 ) = productMatrix( 1, 0 );
-    tensor( 1, 1 ) = productMatrix( 1, 1 );
-    tensor( 1, 2 ) = productMatrix( 1, 2 );
+    tensor(1, 0) = productMatrix(1, 0);
+    tensor(1, 1) = productMatrix(1, 1);
+    tensor(1, 2) = productMatrix(1, 2);
 
-    tensor( 2, 0 ) = productMatrix( 2, 0 );
-    tensor( 2, 1 ) = productMatrix( 2, 1 );
-    tensor( 2, 2 ) = productMatrix( 2, 2 );
-    it.Set( tensor );
+    tensor(2, 0) = productMatrix(2, 0);
+    tensor(2, 1) = productMatrix(2, 1);
+    tensor(2, 2) = productMatrix(2, 2);
+    it.Set(tensor);
 
     ++it;
     ++eigenValueImageIterator;
     ++eigenVectorImageIterator;
-    }
+  }
 }
 
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 void
-AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
-::PrintSelf( std::ostream& os, Indent indent ) const
+AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostream & os,
+                                                                                        Indent         indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 
-  os << indent << "Contrast parameter LambdaC: "
-    << m_ContrastParameterLambdaC << std::endl;
+  os << indent << "Contrast parameter LambdaC: " << m_ContrastParameterLambdaC << std::endl;
   os << indent << "Sigma: " << m_Sigma << std::endl;
   os << indent << "SigmaOuter : " << m_SigmaOuter << std::endl;
   os << indent << "Alpha: " << m_Alpha << std::endl;

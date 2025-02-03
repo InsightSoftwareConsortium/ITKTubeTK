@@ -68,7 +68,7 @@ public:
 
   /** Define the type for the sigma array */
   typedef FixedArray< ScalarRealType,
-    itkGetStaticConstMacro( ImageDimension ) > SigmaArrayType;
+    Self:: ImageDimension  > SigmaArrayType;
 
   /** Define the image type for internal computations
     RealType is usually 'double' in NumericTraits.

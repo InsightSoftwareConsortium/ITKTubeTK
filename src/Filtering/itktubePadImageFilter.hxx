@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef __itktubePadImageFilter_hxx
 #define __itktubePadImageFilter_hxx
 
@@ -26,185 +26,173 @@
 #include "itkWrapPadImageFilter.h"
 #include "itkChangeInformationImageFilter.h"
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 template <class TInputImage, class TOutputImage>
-PadImageFilter<TInputImage, TOutputImage>
-::PadImageFilter()
+PadImageFilter<TInputImage, TOutputImage>::PadImageFilter()
 {
   m_GreatestPrimeFactor = 13;
   m_PadMethod = ZERO_FLUX_NEUMANN;
-  this->SetNumberOfRequiredOutputs( 1 );
+  this->SetNumberOfRequiredOutputs(1);
 }
 
 template <class TInputImage, class TOutputImage>
 void
-PadImageFilter<TInputImage, TOutputImage>
-::GenerateInputRequestedRegion()
+PadImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRegion()
 {
   // call the superclass' implementation of this method
   Superclass::GenerateInputRequestedRegion();
- 
-  InputImageType * input0 = const_cast<InputImageType *>( this->GetInput(
-    0 ) );
-  if( !input0 )
-    {
+
+  InputImageType * input0 = const_cast<InputImageType *>(this->GetInput(0));
+  if (!input0)
+  {
     return;
-    }
- 
+  }
+
   OutputImageType * output = this->GetOutput();
- 
+
   RegionType region = output->GetRequestedRegion();
-  region.Crop( input0->GetLargestPossibleRegion() );
-  input0->SetRequestedRegion( region );
+  region.Crop(input0->GetLargestPossibleRegion());
+  input0->SetRequestedRegion(region);
 }
 
 
 template <class TInputImage, class TOutputImage>
 void
-PadImageFilter<TInputImage, TOutputImage>
-::GenerateOutputInformation()
+PadImageFilter<TInputImage, TOutputImage>::GenerateOutputInformation()
 {
   // call the superclass' implementation of this method
   Superclass::GenerateOutputInformation();
- 
+
   const InputImageType * input0 = this->GetInput();
-  if( !input0 )
-    {
+  if (!input0)
+  {
     return;
-    }
- 
+  }
+
   OutputImageType * output0 = this->GetOutput();
- 
+
   RegionType region0 = input0->GetLargestPossibleRegion();
- 
+
   RegionType region;
-  if( m_PadMethod == NO_PADDING )
-    {
+  if (m_PadMethod == NO_PADDING)
+  {
     region = region0;
-    }
+  }
   else
-    {
+  {
     // increase the size of the output by the size of the kernel
-    SizeType size;
+    SizeType  size;
     IndexType idx;
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
+    for (unsigned int i = 0; i < ImageDimension; i++)
+    {
       long s1 = 0;
-      if( m_GreatestPrimeFactor > 1 )
+      if (m_GreatestPrimeFactor > 1)
+      {
+        while (greatestPrimeFactor(region0.GetSize()[i] + s1) > m_GreatestPrimeFactor)
         {
-        while( greatestPrimeFactor( region0.GetSize()[i] + s1 ) >
-          m_GreatestPrimeFactor )
-          {
           s1++;
-          }
         }
-      else if( m_GreatestPrimeFactor == 1 )
-        {
-        s1 += ( region0.GetSize()[i] + s1 ) % 2;
-        }
-      idx[i] = region0.GetIndex()[i] - s1/2;
-      size[i] = region0.GetSize()[i] + s1;
       }
-    region = RegionType( idx, size );
+      else if (m_GreatestPrimeFactor == 1)
+      {
+        s1 += (region0.GetSize()[i] + s1) % 2;
+      }
+      idx[i] = region0.GetIndex()[i] - s1 / 2;
+      size[i] = region0.GetSize()[i] + s1;
     }
-  output0->SetLargestPossibleRegion( region );
+    region = RegionType(idx, size);
+  }
+  output0->SetLargestPossibleRegion(region);
 }
 
 
-template<class TInputImage, class TOutputImage>
+template <class TInputImage, class TOutputImage>
 void
-PadImageFilter<TInputImage, TOutputImage>
-::GenerateData()
+PadImageFilter<TInputImage, TOutputImage>::GenerateData()
 {
   this->AllocateOutputs();
   const InputImageType * input0 = this->GetInput();
-  OutputImageType * output0 = this->GetOutput();
-  RegionType ir0 = input0->GetLargestPossibleRegion();
-  RegionType or0 = output0->GetLargestPossibleRegion();
+  OutputImageType *      output0 = this->GetOutput();
+  RegionType             ir0 = input0->GetLargestPossibleRegion();
+  RegionType             or0 = output0->GetLargestPossibleRegion();
 
   // Create a process accumulator for tracking the progress of this minipipeline
   ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
-  progress->SetMiniPipelineFilter( this );
+  progress->SetMiniPipelineFilter(this);
 
-  typedef typename itk::PadImageFilter
-    < InputImageType, OutputImageType > PadType;
-  typedef typename itk::ConstantPadImageFilter
-    < InputImageType, OutputImageType > ConstantPadType;
-  typedef typename itk::ZeroFluxNeumannPadImageFilter
-    < InputImageType, OutputImageType > ZeroFluxPadType;
-  typedef typename itk::MirrorPadImageFilter
-    < InputImageType, OutputImageType > MirrorPadType;
-  typedef typename itk::WrapPadImageFilter
-    < InputImageType, OutputImageType > WrapPadType;
-  SizeType s;
- 
+  typedef typename itk::PadImageFilter<InputImageType, OutputImageType>                PadType;
+  typedef typename itk::ConstantPadImageFilter<InputImageType, OutputImageType>        ConstantPadType;
+  typedef typename itk::ZeroFluxNeumannPadImageFilter<InputImageType, OutputImageType> ZeroFluxPadType;
+  typedef typename itk::MirrorPadImageFilter<InputImageType, OutputImageType>          MirrorPadType;
+  typedef typename itk::WrapPadImageFilter<InputImageType, OutputImageType>            WrapPadType;
+  SizeType                                                                             s;
+
   typename PadType::Pointer pad0;
-  switch( m_PadMethod )
-    {
+  switch (m_PadMethod)
+  {
     case ZERO_FLUX_NEUMANN:
-      {
+    {
       pad0 = ZeroFluxPadType::New();
       break;
-      }
+    }
     case NO_PADDING:
     case ZERO:
-      {
+    {
       pad0 = ConstantPadType::New();
       break;
-      }
+    }
     case MIRROR:
-      {
+    {
       pad0 = MirrorPadType::New();
       break;
-      }
+    }
     case WRAP:
-      {
+    {
       pad0 = WrapPadType::New();
       break;
-    default:
-      itkExceptionMacro( << "Unknown pad method: " << m_PadMethod );
-      break;
-      }
+      default:
+        itkExceptionMacro(<< "Unknown pad method: " << m_PadMethod);
+        break;
     }
-  pad0->SetInput( input0 );
-  pad0->SetNumberOfWorkUnits( this->GetNumberOfWorkUnits() );
-  if( m_PadMethod != NO_PADDING )
+  }
+  pad0->SetInput(input0);
+  pad0->SetNumberOfWorkUnits(this->GetNumberOfWorkUnits());
+  if (m_PadMethod != NO_PADDING)
+  {
+    for (unsigned int i = 0; i < ImageDimension; i++)
     {
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
       s[i] = ir0.GetIndex()[i] - or0.GetIndex()[i];
-      }
-    pad0->SetPadLowerBound( s );
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      s[i] = or0.GetSize()[i] -
-        ( ir0.GetIndex()[i] - or0.GetIndex()[i] + ir0.GetSize()[i] );
-      }
-    pad0->SetPadUpperBound( s );
     }
-  progress->RegisterInternalFilter( pad0, 0.5f );
-  pad0->GraftOutput( output0 );
+    pad0->SetPadLowerBound(s);
+    for (unsigned int i = 0; i < ImageDimension; i++)
+    {
+      s[i] = or0.GetSize()[i] - (ir0.GetIndex()[i] - or0.GetIndex()[i] + ir0.GetSize()[i]);
+    }
+    pad0->SetPadUpperBound(s);
+  }
+  progress->RegisterInternalFilter(pad0, 0.5f);
+  pad0->GraftOutput(output0);
   pad0->Update();
-  this->GraftOutput( pad0->GetOutput() );
+  this->GraftOutput(pad0->GetOutput());
 }
 
 
-template<class TInputImage, class TOutputImage>
+template <class TInputImage, class TOutputImage>
 void
-PadImageFilter<TInputImage, TOutputImage>
-::PrintSelf( std::ostream &os, Indent indent ) const
+PadImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 
-  os << indent << "GreatestPrimeFactor: "  << m_GreatestPrimeFactor
-    << std::endl;
-  os << indent << "PadMethod: "  << m_PadMethod << std::endl;
+  os << indent << "GreatestPrimeFactor: " << m_GreatestPrimeFactor << std::endl;
+  os << indent << "PadMethod: " << m_PadMethod << std::endl;
 }
- 
-}// end namespace tube
 
-}// end namespace itk
+} // end namespace tube
+
+} // end namespace itk
 #endif

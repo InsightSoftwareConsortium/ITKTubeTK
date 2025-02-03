@@ -61,7 +61,7 @@ public:
   typedef itk::Image<float, 2>                          HistogramType;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( JointHistogramImageFunction, ImageFunction );
+  itkOverrideGetNameOfClassMacro( JointHistogramImageFunction);
 
   /** Standard New Macro. */
   itkNewMacro( Self );

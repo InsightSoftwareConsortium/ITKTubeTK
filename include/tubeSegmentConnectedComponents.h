@@ -59,9 +59,9 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SegmentConnectedComponents, ProcessObject );
+  itkOverrideGetNameOfClassMacro( SegmentConnectedComponents);
 
-  itkStaticConstMacro( ImageDimension, unsigned int, ImageType::ImageDimension );
+  static constexpr unsigned int ImageDimension = ImageType::ImageDimension ;
 
   tubeWrapSetObjectMacro( Input, ImageType, Filter );
   tubeWrapGetConstObjectMacro( Input, ImageType, Filter );

@@ -28,10 +28,9 @@ limitations under the License.
 namespace itk
 {
 // Constructor with default arguments
-template<typename TParametersValueType>
-ScaleSkewAngle2DTransform<TParametersValueType>
-::ScaleSkewAngle2DTransform() :
-  Superclass(ParametersDimension)
+template <typename TParametersValueType>
+ScaleSkewAngle2DTransform<TParametersValueType>::ScaleSkewAngle2DTransform()
+  : Superclass(ParametersDimension)
 {
   m_UseSingleScale = false;
   m_Scale.Fill(NumericTraits<TParametersValueType>::OneValue());
@@ -39,41 +38,38 @@ ScaleSkewAngle2DTransform<TParametersValueType>
 }
 
 // Constructor with arguments
-template<typename TParametersValueType>
-ScaleSkewAngle2DTransform<TParametersValueType>
-::ScaleSkewAngle2DTransform(unsigned int parametersDimension) :
-  Superclass(parametersDimension)
+template <typename TParametersValueType>
+ScaleSkewAngle2DTransform<TParametersValueType>::ScaleSkewAngle2DTransform(unsigned int parametersDimension)
+  : Superclass(parametersDimension)
 {
   m_Scale.Fill(1.0);
   m_Skew.Fill(0.0);
 }
 
 // Constructor with arguments
-template<typename TParametersValueType>
-ScaleSkewAngle2DTransform<TParametersValueType>
-::ScaleSkewAngle2DTransform(const MatrixType & matrix,
-  const OutputVectorType & offset) :
-  Superclass(matrix, offset)
+template <typename TParametersValueType>
+ScaleSkewAngle2DTransform<TParametersValueType>::ScaleSkewAngle2DTransform(const MatrixType &       matrix,
+                                                                           const OutputVectorType & offset)
+  : Superclass(matrix, offset)
 {
   this->ComputeMatrixParameters();
 }
 
 // Directly set the matrix
-template<typename TParametersValueType>
+template <typename TParametersValueType>
 void
-ScaleSkewAngle2DTransform<TParametersValueType>
-::SetMatrix(const MatrixType & matrix)
+ScaleSkewAngle2DTransform<TParametersValueType>::SetMatrix(const MatrixType & matrix)
 {
 
-  this->SetVarMatrix( matrix );
+  this->SetVarMatrix(matrix);
   this->ComputeOffset();
   this->ComputeMatrixParameters();
 }
 
 template <typename TParametersValueType>
 void
-ScaleSkewAngle2DTransform<TParametersValueType>
-::SetMatrix(const MatrixType & matrix, const TParametersValueType tolerance)
+ScaleSkewAngle2DTransform<TParametersValueType>::SetMatrix(const MatrixType &         matrix,
+                                                           const TParametersValueType tolerance)
 {
   itkDebugMacro("setting  m_Matrix  to " << matrix);
   // The matrix must be orthogonal otherwise it is not
@@ -93,20 +89,18 @@ ScaleSkewAngle2DTransform<TParametersValueType>
 }
 
 
-
 // Set Parameters
-template<typename TParametersValueType>
+template <typename TParametersValueType>
 void
-ScaleSkewAngle2DTransform<TParametersValueType>
-::SetParameters(const ParametersType & parameters)
+ScaleSkewAngle2DTransform<TParametersValueType>::SetParameters(const ParametersType & parameters)
 {
   itkDebugMacro(<< "Setting parameters " << parameters);
 
   // Save parameters. Needed for proper operation of TransformUpdateParameters.
-  if( &parameters != &(this->m_Parameters) )
-    {
+  if (&parameters != &(this->m_Parameters))
+  {
     this->m_Parameters = parameters;
-    }
+  }
   this->SetVarAngle(parameters[0]);
 
   // Transfer the translation part
@@ -117,16 +111,16 @@ ScaleSkewAngle2DTransform<TParametersValueType>
 
   // Matrix must be defined before translation so that offset can be computed
   // from translation
-  if( m_UseSingleScale )
-    {
+  if (m_UseSingleScale)
+  {
     m_Scale[0] = parameters[3];
     m_Scale[1] = parameters[3];
-    }
-  else 
-    {
+  }
+  else
+  {
     m_Scale[0] = parameters[3];
     m_Scale[1] = parameters[4];
-    } 
+  }
 
   m_Skew[0] = parameters[5];
   m_Skew[1] = parameters[6];
@@ -152,11 +146,10 @@ ScaleSkewAngle2DTransform<TParametersValueType>
 // p[5:6] = Skew {xy, yx}
 //
 
-template<typename TParametersValueType>
-const typename ScaleSkewAngle2DTransform<TParametersValueType>::ParametersType
-& ScaleSkewAngle2DTransform<TParametersValueType>
-::GetParameters(void) const
-  {
+template <typename TParametersValueType>
+const typename ScaleSkewAngle2DTransform<TParametersValueType>::ParametersType &
+ScaleSkewAngle2DTransform<TParametersValueType>::GetParameters(void) const
+{
   itkDebugMacro(<< "Getting parameters ");
 
   this->m_Parameters[0] = this->GetAngle();
@@ -165,14 +158,14 @@ const typename ScaleSkewAngle2DTransform<TParametersValueType>::ParametersType
   this->m_Parameters[2] = this->GetTranslation()[1];
 
   this->m_Parameters[3] = this->GetScale()[0];
-  if( m_UseSingleScale )
-    {
+  if (m_UseSingleScale)
+  {
     this->m_Parameters[4] = this->GetScale()[0];
-    }
+  }
   else
-    {
+  {
     this->m_Parameters[4] = this->GetScale()[1];
-    }
+  }
 
   this->m_Parameters[5] = this->GetSkew()[0];
   this->m_Parameters[6] = this->GetSkew()[1];
@@ -180,43 +173,39 @@ const typename ScaleSkewAngle2DTransform<TParametersValueType>::ParametersType
   itkDebugMacro(<< "After getting parameters " << this->m_Parameters);
 
   return this->m_Parameters;
-  }
+}
 
-template<typename TParametersValueType>
+template <typename TParametersValueType>
 void
-ScaleSkewAngle2DTransform<TParametersValueType>
-::SetIdentity()
+ScaleSkewAngle2DTransform<TParametersValueType>::SetIdentity()
 {
   m_Scale.Fill(NumericTraits<ScaleVectorValueType>::OneValue());
   m_Skew.Fill(NumericTraits<SkewVectorValueType>::ZeroValue());
   Superclass::SetIdentity();
 }
 
-template<typename TParametersValueType>
+template <typename TParametersValueType>
 void
-ScaleSkewAngle2DTransform<TParametersValueType>
-::SetScale(const ScaleVectorType & scale)
+ScaleSkewAngle2DTransform<TParametersValueType>::SetScale(const ScaleVectorType & scale)
 {
   m_Scale = scale;
   this->ComputeMatrix();
 }
 
-template<typename TParametersValueType>
+template <typename TParametersValueType>
 void
-ScaleSkewAngle2DTransform<TParametersValueType>
-::SetSkew(const SkewVectorType & skew)
+ScaleSkewAngle2DTransform<TParametersValueType>::SetSkew(const SkewVectorType & skew)
 {
   m_Skew = skew;
   this->ComputeMatrix();
 }
 
 // Compute the matrix
-template<typename TParametersValueType>
+template <typename TParametersValueType>
 void
-ScaleSkewAngle2DTransform<TParametersValueType>
-::ComputeMatrix(void)
+ScaleSkewAngle2DTransform<TParametersValueType>::ComputeMatrix(void)
 {
-  MatrixType rotationMatrix;
+  MatrixType            rotationMatrix;
   const MatrixValueType ca = std::cos(this->GetAngle());
   const MatrixValueType sa = std::sin(this->GetAngle());
   rotationMatrix[0][0] = ca;
@@ -228,14 +217,14 @@ ScaleSkewAngle2DTransform<TParametersValueType>
   scaleSkewMatrix[0][0] = m_Scale[0];
   scaleSkewMatrix[0][1] = std::tan(m_Skew[1]) * m_Scale[1];
   scaleSkewMatrix[1][0] = std::tan(m_Skew[0]) * m_Scale[0];
-  if( m_UseSingleScale )
-    {
+  if (m_UseSingleScale)
+  {
     scaleSkewMatrix[1][1] = m_Scale[0];
-    }
+  }
   else
-    {
+  {
     scaleSkewMatrix[1][1] = m_Scale[1];
-    }
+  }
 
   MatrixType newMatrix = rotationMatrix * scaleSkewMatrix;
   this->SetVarMatrix(newMatrix);
@@ -244,10 +233,9 @@ ScaleSkewAngle2DTransform<TParametersValueType>
   this->ComputeMatrixParameters();
 }
 
-template<typename TParametersValueType>
+template <typename TParametersValueType>
 void
-ScaleSkewAngle2DTransform<TParametersValueType>
-::ComputeMatrixParameters(void)
+ScaleSkewAngle2DTransform<TParametersValueType>::ComputeMatrixParameters(void)
 {
   vnl_matrix<TParametersValueType> matrix(2, 2);
   matrix = this->GetMatrix().GetVnlMatrix().as_ref();
@@ -256,79 +244,78 @@ ScaleSkewAngle2DTransform<TParametersValueType>
   ortho = svd.U() * svd.V().transpose();
 
   double angle = std::acos(ortho[0][0]);
-  if( ortho[1][0] < 0.0 )
-    {
+  if (ortho[1][0] < 0.0)
+  {
     angle = -angle;
-    }
-  if( std::abs(ortho[1][0] - std::sin(angle)) > 0.000001 )
-    {
-    itkWarningMacro( "Bad Rotation Matrix " << this->GetMatrix() );
-    }
+  }
+  if (std::abs(ortho[1][0] - std::sin(angle)) > 0.000001)
+  {
+    itkWarningMacro("Bad Rotation Matrix " << this->GetMatrix());
+  }
 
   // Set Rotation
-  //std::cout << "ComputeMatrixParameters" << std::endl;
-  //std::cout << "   Original angle = " << this->GetAngle()
-    //<< " : New = " << angle << std::endl;
-  Superclass::SetVarAngle( angle );
+  // std::cout << "ComputeMatrixParameters" << std::endl;
+  // std::cout << "   Original angle = " << this->GetAngle()
+  //<< " : New = " << angle << std::endl;
+  Superclass::SetVarAngle(angle);
 
   vnl_matrix<TParametersValueType> scaleSkew(2, 2);
   scaleSkew = matrix * vnl_inverse(ortho);
-  //std::cout << "   Original scale = " << m_Scale[0] << ", " << m_Scale[1]
-    //<< " : New = " << scaleSkew[0][0] << ", " << scaleSkew[1][1] << std::endl;
+  // std::cout << "   Original scale = " << m_Scale[0] << ", " << m_Scale[1]
+  //<< " : New = " << scaleSkew[0][0] << ", " << scaleSkew[1][1] << std::endl;
   m_Scale[0] = scaleSkew[0][0];
   m_Scale[1] = scaleSkew[1][1];
 
   // Set Skew
-  //std::cout << "   Original skew = " << m_Skew[0] << ", " << m_Skew[1]
-    //<< " : New = " << std::atan(scaleSkew[1][0]/scaleSkew[0][0]) << ", "
-    //<< std::atan(scaleSkew[0][1]/scaleSkew[1][1]) << std::endl;
+  // std::cout << "   Original skew = " << m_Skew[0] << ", " << m_Skew[1]
+  //<< " : New = " << std::atan(scaleSkew[1][0]/scaleSkew[0][0]) << ", "
+  //<< std::atan(scaleSkew[0][1]/scaleSkew[1][1]) << std::endl;
   m_Skew[0] = std::atan2(scaleSkew[1][0], scaleSkew[0][0]);
   m_Skew[1] = std::atan2(scaleSkew[0][1], scaleSkew[1][1]);
 }
 
 // Print self
-template<typename TParametersValueType>
+template <typename TParametersValueType>
 void
-ScaleSkewAngle2DTransform<TParametersValueType>
-::PrintSelf(std::ostream & os, Indent indent) const
+ScaleSkewAngle2DTransform<TParametersValueType>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Rigid2DTransform<TParametersValueType>::PrintSelf(os, indent);
-  if( m_UseSingleScale )
-    {
+  if (m_UseSingleScale)
+  {
     os << indent << "UseSingleScale: true" << std::endl;
-    }
+  }
   else
-    {
+  {
     os << indent << "UseSingleScale: false" << std::endl;
-    }
-  os << indent << "Scale:          " << m_Scale        << std::endl;
-  os << indent << "Skew:           " << m_Skew         << std::endl;
+  }
+  os << indent << "Scale:          " << m_Scale << std::endl;
+  os << indent << "Skew:           " << m_Skew << std::endl;
 }
 
-template<typename TParametersValueType>
+template <typename TParametersValueType>
 void
-ScaleSkewAngle2DTransform<TParametersValueType>
-::ComputeJacobianWithRespectToParameters(const InputPointType & p, JacobianType & j) const
+ScaleSkewAngle2DTransform<TParametersValueType>::ComputeJacobianWithRespectToParameters(const InputPointType & p,
+                                                                                        JacobianType &         j) const
 {
-  j.SetSize( OutputSpaceDimension, this->GetNumberOfLocalParameters() );
+  j.SetSize(OutputSpaceDimension, this->GetNumberOfLocalParameters());
   j.Fill(0.0);
 
-  const double ca = std::cos( this->GetAngle() );
-  const double sa = std::sin( this->GetAngle() );
+  const double ca = std::cos(this->GetAngle());
+  const double sa = std::sin(this->GetAngle());
 
   const double cx = this->GetCenter()[0];
   const double cy = this->GetCenter()[1];
 
   // derivatives with respect to the angle
-  j[0][0] = -sa * ( p[0] - cx ) - ca * ( p[1] - cy );
-  j[1][0] =  ca * ( p[0] - cx ) - sa * ( p[1] - cy );
+  j[0][0] = -sa * (p[0] - cx) - ca * (p[1] - cy);
+  j[1][0] = ca * (p[0] - cx) - sa * (p[1] - cy);
 
   // compute derivatives for the translation part
   unsigned int blockOffset = 1;
-  for( unsigned int dim = 0; dim < OutputSpaceDimension; dim++ )
-    {
+  for (unsigned int dim = 0; dim < OutputSpaceDimension; dim++)
+  {
     j[dim][blockOffset + dim] = 1.0;
-    }
+  }
 
   j[0][3] = cx;
   j[1][4] = cy;

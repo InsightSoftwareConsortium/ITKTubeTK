@@ -68,8 +68,8 @@ public:
    */
   itkNewMacro( Self );
 
-  itkTypeMacro( NJetImageFunction, Object );
-  //itkTypeMacro( NJetImageFunction, ImageFunction );
+  itkOverrideGetNameOfClassMacro( NJetImageFunction);
+  //itkOverrideGetNameOfClassMacro( NJetImageFunction);
 
   /**
    * Dimension of the underlying image.

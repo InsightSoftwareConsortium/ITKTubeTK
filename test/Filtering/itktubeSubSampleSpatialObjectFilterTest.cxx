@@ -25,72 +25,71 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectWriter.h>
 
-int itktubeSubSampleSpatialObjectFilterTest( int argc, char * argv[] )
+int
+itktubeSubSampleSpatialObjectFilterTest(int argc, char * argv[])
 {
-  if( argc < 3 )
-    {
+  if (argc < 3)
+  {
     std::cerr << "Usage: "
-      << "inputTubeNetwork "
-      << "outputTubeNetwork "
-      << std::endl;
+              << "inputTubeNetwork "
+              << "outputTubeNetwork " << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   const char * inputTubeNetwork = argv[1];
   const char * outputTubeNetwork = argv[2];
 
-  enum { Dimension = 3 };
-  typedef itk::GroupSpatialObject< Dimension >  GroupSpatialObjectType;
+  enum
+  {
+    Dimension = 3
+  };
+  typedef itk::GroupSpatialObject<Dimension> GroupSpatialObjectType;
 
   // Read input tube tree.
-  typedef itk::SpatialObjectReader< Dimension >  ReaderType;
-  ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( inputTubeNetwork );
+  typedef itk::SpatialObjectReader<Dimension> ReaderType;
+  ReaderType::Pointer                         reader = ReaderType::New();
+  reader->SetFileName(inputTubeNetwork);
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject & error )
-    {
+  }
+  catch (itk::ExceptionObject & error)
+  {
     std::cerr << "Error: " << error << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   GroupSpatialObjectType::Pointer groupSpatialObject = reader->GetGroup();
-  std::cout << "Number of children = "
-    << groupSpatialObject->GetNumberOfChildren()
-    << std::endl;
+  std::cout << "Number of children = " << groupSpatialObject->GetNumberOfChildren() << std::endl;
 
   // Sub-sample the tube tree.
-  typedef itk::tube::SubSampleSpatialObjectFilter<>
-      SubSampleFilterType;
-  SubSampleFilterType::Pointer subSampleFilter =
-    SubSampleFilterType::New();
-  subSampleFilter->SetInput( reader->GetGroup() );
+  typedef itk::tube::SubSampleSpatialObjectFilter<> SubSampleFilterType;
+  SubSampleFilterType::Pointer                      subSampleFilter = SubSampleFilterType::New();
+  subSampleFilter->SetInput(reader->GetGroup());
 
   const unsigned int sampling = 100;
-  subSampleFilter->SetSampling( sampling );
-  if( subSampleFilter->GetSampling() != sampling )
-    {
+  subSampleFilter->SetSampling(sampling);
+  if (subSampleFilter->GetSampling() != sampling)
+  {
     std::cerr << "Sampling did not get set correctly." << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // Write output tube tree.
-  typedef itk::SpatialObjectWriter< Dimension > WriterType;
-  WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( outputTubeNetwork );
-  writer->SetInput( subSampleFilter->GetOutput() );
+  typedef itk::SpatialObjectWriter<Dimension> WriterType;
+  WriterType::Pointer                         writer = WriterType::New();
+  writer->SetFileName(outputTubeNetwork);
+  writer->SetInput(subSampleFilter->GetOutput());
   try
-    {
+  {
     // Currently, there is a bug in the SpatialObjectWriter that it does not do
     // a pipeline update on its inputs.
     subSampleFilter->Update();
     writer->Update();
-    }
-  catch( itk::ExceptionObject & error )
-    {
+  }
+  catch (itk::ExceptionObject & error)
+  {
     std::cerr << "Error: " << error << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   return EXIT_SUCCESS;
 }

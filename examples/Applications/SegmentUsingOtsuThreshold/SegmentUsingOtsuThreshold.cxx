@@ -35,127 +35,125 @@ limitations under the License.
 
 #include "SegmentUsingOtsuThresholdCLP.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // setup progress reporting
   double progress = 0.0;
 
-  tube::CLIProgressReporter progressReporter(
-    "SegmentUsingOtsuThreshold", CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("SegmentUsingOtsuThreshold", CLPProcessInformation);
   progressReporter.Start();
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // The timeCollector to perform basic profiling of algorithmic components
   itk::TimeProbesCollectorBase timeCollector;
 
   // typedefs
-  typedef itk::Image< TPixel, VDimension > ImageType;
+  typedef itk::Image<TPixel, VDimension> ImageType;
 
-  typedef tube::SegmentUsingOtsuThreshold< ImageType > FilterType;
+  typedef tube::SegmentUsingOtsuThreshold<ImageType> FilterType;
 
   // Load input image
-  timeCollector.Start( "Load data" );
+  timeCollector.Start("Load data");
 
-  typedef typename FilterType::InputImageType     InputImageType;
-  typedef itk::ImageFileReader< InputImageType >  ImageReaderType;
+  typedef typename FilterType::InputImageType  InputImageType;
+  typedef itk::ImageFileReader<InputImageType> ImageReaderType;
 
   typename ImageReaderType::Pointer inputReader = ImageReaderType::New();
 
   try
-    {
-    inputReader->SetFileName( inputVolume.c_str() );
+  {
+    inputReader->SetFileName(inputVolume.c_str());
     inputReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Error loading input image: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Error loading input image: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
   // Load mask image if provided
-  typedef typename FilterType::MaskImageType     MaskImageType;
-  typedef itk::ImageFileReader< MaskImageType >  MaskReaderType;
+  typedef typename FilterType::MaskImageType  MaskImageType;
+  typedef itk::ImageFileReader<MaskImageType> MaskReaderType;
 
   typename MaskReaderType::Pointer maskReader = MaskReaderType::New();
 
-  if( maskVolume.size() > 0 )
-    {
+  if (maskVolume.size() > 0)
+  {
     try
-      {
-      maskReader->SetFileName( maskVolume.c_str() );
+    {
+      maskReader->SetFileName(maskVolume.c_str());
       maskReader->Update();
-      }
-    catch( itk::ExceptionObject & err )
-      {
-      tube::ErrorMessage( "Error reading input mask: "
-                          + std::string( err.GetDescription() ) );
+    }
+    catch (itk::ExceptionObject & err)
+    {
+      tube::ErrorMessage("Error reading input mask: " + std::string(err.GetDescription()));
       timeCollector.Report();
       return EXIT_FAILURE;
-      }
     }
+  }
 
-  timeCollector.Stop( "Load data" );
+  timeCollector.Stop("Load data");
   progress = 0.1;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // run otsu thresholding
-  timeCollector.Start( "Otsu thresholding" );
+  timeCollector.Start("Otsu thresholding");
 
   typename FilterType::Pointer filter = FilterType::New();
 
-  filter->SetInput( inputReader->GetOutput() );
+  filter->SetInput(inputReader->GetOutput());
 
-  if( maskVolume.size() > 0 )
-    {
-    filter->SetMaskValue( maskValue );
-    filter->SetMaskImage( maskReader->GetOutput() );
-    }
+  if (maskVolume.size() > 0)
+  {
+    filter->SetMaskValue(maskValue);
+    filter->SetMaskImage(maskReader->GetOutput());
+  }
 
   filter->Update();
 
   std::cout << "Chosen threshold = " << filter->GetThreshold() << std::endl;
 
-  timeCollector.Stop( "Otsu thresholding" );
+  timeCollector.Stop("Otsu thresholding");
   progress = 0.8; // At about 80% done
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // write output
-  typedef typename FilterType::OutputImageType      OutputImageType;
-  typedef itk::ImageFileWriter< OutputImageType >   OutputWriterType;
+  typedef typename FilterType::OutputImageType  OutputImageType;
+  typedef itk::ImageFileWriter<OutputImageType> OutputWriterType;
 
-  timeCollector.Start( "Write segmentation mask" );
+  timeCollector.Start("Write segmentation mask");
 
   typename OutputWriterType::Pointer writer = OutputWriterType::New();
 
   try
-    {
-    writer->SetFileName( outputVolume.c_str() );
-    writer->SetInput( filter->GetOutput() );
-    writer->SetUseCompression( true );
+  {
+    writer->SetFileName(outputVolume.c_str());
+    writer->SetInput(filter->GetOutput());
+    writer->SetUseCompression(true);
     writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Error writing segmentation mask: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Error writing segmentation mask: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
-  timeCollector.Stop( "Write segmentation mask" );
+  timeCollector.Stop("Write segmentation mask");
   progress = 1.0;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
   progressReporter.End();
   timeCollector.Report();
 
@@ -163,11 +161,12 @@ int DoIt( int argc, char * argv[] )
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputVolume.
-  return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputVolume, argc, argv);
 }

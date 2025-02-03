@@ -48,7 +48,7 @@ public:
   typedef SmartPointer< const Self >  ConstPointer;
 
   itkNewMacro( Self );
-  itkTypeMacro( Document, DataObject );
+  itkOverrideGetNameOfClassMacro( Document);
 
   /** Return the date modified. */
   itkGetStringMacro( DateModified );

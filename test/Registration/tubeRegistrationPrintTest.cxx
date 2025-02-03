@@ -38,9 +38,9 @@ limitations under the License.
 #include "itkScaleSkewAngle2DTransform.h"
 #include "itkScaleSkewVersor3DImageToImageRegistrationMethod.h"
 #include "itkSimilarity2DTransform.h"
-//#include "itktubeAnisotropicDiffusiveRegistrationFilter.h"
+// #include "itktubeAnisotropicDiffusiveRegistrationFilter.h"
 #include "itktubeAnisotropicDiffusiveRegistrationFunction.h"
-//#include "itktubeAnisotropicDiffusiveSparseRegistrationFilter.h"
+// #include "itktubeAnisotropicDiffusiveSparseRegistrationFilter.h"
 #include "itktubeDiffusiveRegistrationFilter.h"
 #include "itktubeDiffusiveRegistrationFilterUtils.h"
 #include "itktubePointBasedSpatialObjectToImageMetric.h"
@@ -50,12 +50,12 @@ limitations under the License.
 #include "itktubeMergeAdjacentImagesFilter.h"
 #include "itktubePointBasedSpatialObjectTransformFilter.h"
 
-int tubeRegistrationPrintTest( int itkNotUsed( argc ), char * itkNotUsed(
-  argv )[] )
+int
+tubeRegistrationPrintTest(int itkNotUsed(argc), char * itkNotUsed(argv)[])
 {
-  //const unsigned int Dimension = 3;
-  //typedef itk::Image< float, Dimension >      ImageType;
-  //typedef itk::TubeSpatialObject< Dimension > TubeSpatialObjectType;
+  // const unsigned int Dimension = 3;
+  // typedef itk::Image< float, Dimension >      ImageType;
+  // typedef itk::TubeSpatialObject< Dimension > TubeSpatialObjectType;
 
   /*
   itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType,

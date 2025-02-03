@@ -32,9 +32,8 @@ namespace tube
 {
 
 /** Constructor */
-template< class TPixel, unsigned int VDimension >
-ReResampleImageFilter< TPixel, VDimension >::
-ReResampleImageFilter( void )
+template <class TPixel, unsigned int VDimension>
+ReResampleImageFilter<TPixel, VDimension>::ReResampleImageFilter(void)
 {
   m_MatchImage = nullptr;
   m_Spacing.clear();
@@ -53,291 +52,270 @@ ReResampleImageFilter( void )
 }
 
 /** GenerateData */
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 void
-ReResampleImageFilter< TPixel, VDimension >::
-Update( void )
+ReResampleImageFilter<TPixel, VDimension>::Update(void)
 {
   m_Filter = ResampleFilterType::New();
 
-  m_Filter->SetInput( m_Input );
-  
-  typename ImageType::SpacingType     inSpacing = m_Input->GetSpacing();
-  typename ImageType::PointType       inOrigin = m_Input->GetOrigin();
-  typename ImageType::SizeType        inSize =
-    m_Input->GetLargestPossibleRegion().GetSize();
-  typename ImageType::IndexType       inIndex =
-    m_Input->GetLargestPossibleRegion().GetIndex();
-  typename ImageType::DirectionType   inDirection =
-    m_Input->GetDirection();
+  m_Filter->SetInput(m_Input);
 
-  typename ImageType::SizeType       outSize;
-  typename ImageType::SpacingType    outSpacing;
-  typename ImageType::PointType      outOrigin;
-  typename ImageType::IndexType      outIndex;
-  typename ImageType::DirectionType  outDirection;
+  typename ImageType::SpacingType   inSpacing = m_Input->GetSpacing();
+  typename ImageType::PointType     inOrigin = m_Input->GetOrigin();
+  typename ImageType::SizeType      inSize = m_Input->GetLargestPossibleRegion().GetSize();
+  typename ImageType::IndexType     inIndex = m_Input->GetLargestPossibleRegion().GetIndex();
+  typename ImageType::DirectionType inDirection = m_Input->GetDirection();
 
-  for( unsigned int i = 0; i< VDimension; i++ )
-    {
+  typename ImageType::SizeType      outSize;
+  typename ImageType::SpacingType   outSpacing;
+  typename ImageType::PointType     outOrigin;
+  typename ImageType::IndexType     outIndex;
+  typename ImageType::DirectionType outDirection;
+
+  for (unsigned int i = 0; i < VDimension; i++)
+  {
     outSpacing[i] = inSpacing[i];
     outOrigin[i] = inOrigin[i];
     outIndex[i] = inIndex[i];
     outSize[i] = inSize[i];
-    }
+  }
   outDirection = inDirection;
 
   bool updateSize = true;
-  if( m_MatchImage )
-    {
+  if (m_MatchImage)
+  {
     outSpacing = m_MatchImage->GetSpacing();
     outOrigin = m_MatchImage->GetOrigin();
     outDirection = m_MatchImage->GetDirection();
     outSize = m_MatchImage->GetLargestPossibleRegion().GetSize();
     outIndex = m_MatchImage->GetLargestPossibleRegion().GetIndex();
     updateSize = false;
-    }
+  }
 
-  if( m_Origin.size() > 0 )
+  if (m_Origin.size() > 0)
+  {
+    for (unsigned int i = 0; i < VDimension; i++)
     {
-    for( unsigned int i = 0; i < VDimension; i++ )
-      {
       outOrigin[i] = m_Origin[i];
-      }
     }
-  if( m_Index.size() > 0 )
+  }
+  if (m_Index.size() > 0)
+  {
+    for (unsigned int i = 0; i < VDimension; i++)
     {
-    for( unsigned int i = 0; i < VDimension; i++ )
-      {
       outIndex[i] = m_Index[i];
-      }
     }
-  if( m_Size.size() > 0 )
+  }
+  if (m_Size.size() > 0)
+  {
+    for (unsigned int i = 0; i < VDimension; i++)
     {
-    for( unsigned int i = 0; i < VDimension; i++ )
-      {
       outSize[i] = m_Size[i];
-      }
+    }
     updateSize = false;
-    }
-  if( m_Spacing.size() > 0 )
+  }
+  if (m_Spacing.size() > 0)
+  {
+    for (unsigned int i = 0; i < VDimension; i++)
     {
-    for( unsigned int i = 0; i < VDimension; i++ )
-      {
       outSpacing[i] = m_Spacing[i];
-      }
     }
-  else if( m_ResampleFactor.size() > 0 )
+  }
+  else if (m_ResampleFactor.size() > 0)
+  {
+    for (unsigned int i = 0; i < VDimension; i++)
     {
-    for( unsigned int i = 0; i < VDimension; i++ )
-      {
       outSpacing[i] = outSpacing[i] / m_ResampleFactor[i];
-      }
     }
-  else if( m_MakeIsotropic )
-    {
+  }
+  else if (m_MakeIsotropic)
+  {
     double iso = outSpacing[0];
-    for( unsigned int i = 1; i < VDimension - 1; i++ )
-      {
+    for (unsigned int i = 1; i < VDimension - 1; i++)
+    {
       iso += outSpacing[i];
-      }
-    iso /= ( VDimension - 1 );
-    iso += outSpacing[ VDimension - 1 ];
+    }
+    iso /= (VDimension - 1);
+    iso += outSpacing[VDimension - 1];
     iso /= 2;
-    for( unsigned int i = 0; i < VDimension; i++ )
-      {
-      outSpacing[i] = iso;
-      }
-    }
-  else if( m_MakeHighResIso )
+    for (unsigned int i = 0; i < VDimension; i++)
     {
+      outSpacing[i] = iso;
+    }
+  }
+  else if (m_MakeHighResIso)
+  {
     double iso = outSpacing[0];
-    for( unsigned int i = 1; i < VDimension; i++ )
+    for (unsigned int i = 1; i < VDimension; i++)
+    {
+      if (outSpacing[i] < iso)
       {
-      if( outSpacing[i] < iso )
-        {
         iso = outSpacing[i];
-        }
       }
-    for( unsigned int i = 0; i < VDimension; i++ )
-      {
+    }
+    for (unsigned int i = 0; i < VDimension; i++)
+    {
       outSpacing[i] = iso;
-      }
     }
+  }
 
-  for( unsigned int i = 0; i < VDimension; i++ )
+  for (unsigned int i = 0; i < VDimension; i++)
+  {
+    if (outSpacing[i] <= 0)
     {
-    if( outSpacing[i] <= 0 )
-      {
-      std::cerr << "ERROR: Illegal or missing output spacing specified."
-                << std::endl;
+      std::cerr << "ERROR: Illegal or missing output spacing specified." << std::endl;
       return;
-      }
     }
+  }
 
-  if( updateSize )
+  if (updateSize)
+  {
+    std::vector<double> outResampleFactor;
+    outResampleFactor.resize(VDimension);
+    for (unsigned int i = 0; i < VDimension; i++)
     {
-    std::vector< double > outResampleFactor;
-    outResampleFactor.resize( VDimension );
-    for( unsigned int i = 0; i< VDimension; i++ )
-      {
       outResampleFactor[i] = inSpacing[i] / outSpacing[i];
-      outSize[i] = static_cast<unsigned long>( inSize[i]
-                                              * outResampleFactor[i] );
-      }
+      outSize[i] = static_cast<unsigned long>(inSize[i] * outResampleFactor[i]);
     }
+  }
 
-  typedef typename itk::InterpolateImageFunction< ImageType, double >
-    InterpType;
-  typename InterpType::Pointer interp;
-  if( m_Interpolator == "Sinc" )
-    {
-    typedef typename itk::WindowedSincInterpolateImageFunction<
-      ImageType, VDimension >     SincInterpType;
+  typedef typename itk::InterpolateImageFunction<ImageType, double> InterpType;
+  typename InterpType::Pointer                                      interp;
+  if (m_Interpolator == "Sinc")
+  {
+    typedef typename itk::WindowedSincInterpolateImageFunction<ImageType, VDimension> SincInterpType;
     interp = SincInterpType::New();
-    }
-  else if( m_Interpolator == "BSpline" )
-    {
-    typedef typename itk::BSplineInterpolateImageFunction<
-      ImageType, double >         BSplineInterpType;
+  }
+  else if (m_Interpolator == "BSpline")
+  {
+    typedef typename itk::BSplineInterpolateImageFunction<ImageType, double> BSplineInterpType;
     interp = BSplineInterpType::New();
-    }
-  else if( m_Interpolator == "NearestNeighbor" )
-    {
-    typedef typename itk::NearestNeighborInterpolateImageFunction<
-      ImageType, double >    NearestNeighborInterpType;
+  }
+  else if (m_Interpolator == "NearestNeighbor")
+  {
+    typedef typename itk::NearestNeighborInterpolateImageFunction<ImageType, double> NearestNeighborInterpType;
     interp = NearestNeighborInterpType::New();
-    }
+  }
   else // default = if( interpolator == "Linear" )
-    {
-    typedef typename itk::LinearInterpolateImageFunction<
-      ImageType, double >    LinearInterpType;
+  {
+    typedef typename itk::LinearInterpolateImageFunction<ImageType, double> LinearInterpType;
     interp = LinearInterpType::New();
-    }
-  m_Filter->SetInterpolator( interp );
+  }
+  m_Filter->SetInterpolator(interp);
 
-  if( m_LoadTransform )
-    {
-    m_Filter->SetTransform( m_Transform );
-    }
+  if (m_LoadTransform)
+  {
+    m_Filter->SetTransform(m_Transform);
+  }
 
-  m_Filter->SetSize( outSize );
-  m_Filter->SetOutputStartIndex( outIndex );
-  m_Filter->SetOutputOrigin( outOrigin );
-  m_Filter->SetOutputSpacing( outSpacing );
-  m_Filter->SetOutputDirection( outDirection );
-  m_Filter->SetDefaultPixelValue( 0 );
+  m_Filter->SetSize(outSize);
+  m_Filter->SetOutputStartIndex(outIndex);
+  m_Filter->SetOutputOrigin(outOrigin);
+  m_Filter->SetOutputSpacing(outSpacing);
+  m_Filter->SetOutputDirection(outDirection);
+  m_Filter->SetDefaultPixelValue(0);
 
   m_Filter->Update();
 
   m_Output = m_Filter->GetOutput();
 }
 
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 void
-ReResampleImageFilter< TPixel, VDimension >::
-SetTransform( TransformType* t )
+ReResampleImageFilter<TPixel, VDimension>::SetTransform(TransformType * t)
 {
   m_Transform = t;
 }
 
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 void
-ReResampleImageFilter< TPixel, VDimension >::
-SetSpacing( std::vector<double> s )
+ReResampleImageFilter<TPixel, VDimension>::SetSpacing(std::vector<double> s)
 {
   m_Spacing = s;
 }
 
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 void
-ReResampleImageFilter< TPixel, VDimension >::
-SetOrigin( std::vector<double> o )
+ReResampleImageFilter<TPixel, VDimension>::SetOrigin(std::vector<double> o)
 {
   m_Origin = o;
 }
 
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 void
-ReResampleImageFilter< TPixel, VDimension >::
-SetIndex( std::vector<int> i )
+ReResampleImageFilter<TPixel, VDimension>::SetIndex(std::vector<int> i)
 {
   m_Index = i;
 }
 
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 void
-ReResampleImageFilter< TPixel, VDimension >::
-SetSize( std::vector<int> i )
+ReResampleImageFilter<TPixel, VDimension>::SetSize(std::vector<int> i)
 {
   m_Size = i;
 }
 
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 void
-ReResampleImageFilter< TPixel, VDimension >::
-SetResampleFactor( std::vector<double> rf )
+ReResampleImageFilter<TPixel, VDimension>::SetResampleFactor(std::vector<double> rf)
 {
   m_ResampleFactor = rf;
 }
 
 /** PrintSelf */
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 void
-ReResampleImageFilter< TPixel, VDimension >::
-PrintSelf( std::ostream & os, Indent indent ) const
+ReResampleImageFilter<TPixel, VDimension>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 
   os << indent << "Match Image = " << m_MatchImage << std::endl;
   os << indent << "Spacing size = " << m_Spacing.size() << std::endl;
-  if( m_Spacing.size() > 0 )
-    {
+  if (m_Spacing.size() > 0)
+  {
     os << indent << "Spacing[0] = " << m_Spacing[0] << std::endl;
-    }
+  }
   os << indent << "Origin size = " << m_Origin.size() << std::endl;
-  if( m_Origin.size() > 0 )
-    {
+  if (m_Origin.size() > 0)
+  {
     os << indent << "Origin[0] = " << m_Origin[0] << std::endl;
-    }
+  }
   os << indent << "Index size = " << m_Index.size() << std::endl;
-  if( m_Index.size() > 0 )
-    {
+  if (m_Index.size() > 0)
+  {
     os << indent << "Index[0] = " << m_Index[0] << std::endl;
-    }
-  os << indent << "ResampleFactor size = " << m_ResampleFactor.size()
-    << std::endl;
-  if( m_ResampleFactor.size() > 0 )
-    {
-    os << indent << "ResampleFactor[0] = " << m_ResampleFactor[0]
-      << std::endl;
-    }
-  if( m_MakeIsotropic )
-    {
+  }
+  os << indent << "ResampleFactor size = " << m_ResampleFactor.size() << std::endl;
+  if (m_ResampleFactor.size() > 0)
+  {
+    os << indent << "ResampleFactor[0] = " << m_ResampleFactor[0] << std::endl;
+  }
+  if (m_MakeIsotropic)
+  {
     os << indent << "MakeIsotropic = True" << std::endl;
-    }
+  }
   else
-    {
+  {
     os << indent << "MakeIsotropic = False" << std::endl;
-    }
-  if( m_MakeHighResIso )
-    {
+  }
+  if (m_MakeHighResIso)
+  {
     os << indent << "MakeHighResIso = True" << std::endl;
-    }
+  }
   else
-    {
+  {
     os << indent << "MakeHighResIso = False" << std::endl;
-    }
+  }
   os << indent << "Interpolator = " << m_Interpolator << std::endl;
-  if( m_LoadTransform )
-    {
+  if (m_LoadTransform)
+  {
     os << indent << "LoadTransform = True" << std::endl;
-    }
+  }
   else
-    {
+  {
     os << indent << "LoadTransform = False" << std::endl;
-    }
+  }
   os << indent << "Transform = " << m_Transform << std::endl;
-
 }
 
 } // End namespace tube

@@ -59,7 +59,7 @@ public:
     DataObjectPointerArraySizeType;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SpatialObjectSource, ProcessObject );
+  itkOverrideGetNameOfClassMacro( SpatialObjectSource);
 
   OutputSpatialObjectType * GetOutput( void );
   const OutputSpatialObjectType * GetOutput( void ) const;

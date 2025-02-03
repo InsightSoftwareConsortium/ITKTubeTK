@@ -31,122 +31,113 @@ namespace tube
 {
 
 template <unsigned int ObjectDimension, class TImage>
-AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-::AffineSpatialObjectToImageRegistrationMethod( void )
+AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::AffineSpatialObjectToImageRegistrationMethod(
+  void)
 {
-  this->SetTransform( AffineTransformType::New() );
+  this->SetTransform(AffineTransformType::New());
   this->GetTypedTransform()->SetIdentity();
 
-  this->SetInitialTransformParameters( this->GetTypedTransform()
-                                       ->GetParameters() );
-  this->SetInitialTransformFixedParameters( this->GetTypedTransform()
-                                            ->GetFixedParameters() );
+  this->SetInitialTransformParameters(this->GetTypedTransform()->GetParameters());
+  this->SetInitialTransformFixedParameters(this->GetTypedTransform()->GetFixedParameters());
 
   typename Superclass::TransformParametersScalesType scales;
-  scales.set_size( this->GetTypedTransform()->GetNumberOfParameters() );
-  if( scales.size() != ImageDimension * (ImageDimension + 1) )
-    {
-    std::cerr << "ERROR: number of parameters not standard for affine transform"
-              << std::endl;
-    }
+  scales.set_size(this->GetTypedTransform()->GetNumberOfParameters());
+  if (scales.size() != ImageDimension * (ImageDimension + 1))
+  {
+    std::cerr << "ERROR: number of parameters not standard for affine transform" << std::endl;
+  }
   unsigned int scaleNum = 0;
-  for( unsigned int d1 = 0; d1 < ImageDimension; d1++ )
+  for (unsigned int d1 = 0; d1 < ImageDimension; d1++)
+  {
+    for (unsigned int d2 = 0; d2 < ImageDimension; d2++)
     {
-    for( unsigned int d2 = 0; d2 < ImageDimension; d2++ )
+      if (d1 == d2)
       {
-      if( d1 == d2 )
-        {
         scales[scaleNum] = 100;
-        }
-      else
-        {
-        scales[scaleNum] = 1000;
-        }
-      ++scaleNum;
       }
+      else
+      {
+        scales[scaleNum] = 1000;
+      }
+      ++scaleNum;
     }
-  for( unsigned int d1 = 0; d1 < ImageDimension; d1++ )
-    {
+  }
+  for (unsigned int d1 = 0; d1 < ImageDimension; d1++)
+  {
     scales[scaleNum] = 1;
     ++scaleNum;
-    }
-  this->SetTransformParametersScales( scales );
+  }
+  this->SetTransformParametersScales(scales);
 
-  this->SetTransformMethodEnum( Superclass::AFFINE_TRANSFORM );
+  this->SetTransformMethodEnum(Superclass::AFFINE_TRANSFORM);
 
-  this->SetMaxIterations( 150 );
-  this->SetNumberOfSamples( 150000 );
+  this->SetMaxIterations(150);
+  this->SetNumberOfSamples(150000);
 }
 
 template <unsigned int ObjectDimension, class TImage>
-AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-::~AffineSpatialObjectToImageRegistrationMethod( void )
-{
-}
+AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::~AffineSpatialObjectToImageRegistrationMethod(
+  void)
+{}
 
 template <unsigned int ObjectDimension, class TImage>
 void
-AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-::GenerateData( void )
+AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::GenerateData(void)
 {
   // Set the center of rotation
-  this->GetTransform()->SetFixedParameters( this->GetInitialTransformFixedParameters() );
+  this->GetTransform()->SetFixedParameters(this->GetInitialTransformFixedParameters());
 
   Superclass::GenerateData();
 }
 
 template <unsigned int ObjectDimension, class TImage>
-typename AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
-* AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-::GetTypedTransform( void )
+typename AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType *
+AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::GetTypedTransform(void)
 {
-  return static_cast<TransformType  *>( Superclass::GetTransform() );
+  return static_cast<TransformType *>(Superclass::GetTransform());
 }
 
 template <unsigned int ObjectDimension, class TImage>
-const typename AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType
-* AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-::GetTypedTransform( void ) const
+const typename AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType *
+AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::GetTypedTransform(void) const
 {
-  return static_cast<const TransformType  *>( Superclass::GetTransform() );
+  return static_cast<const TransformType *>(Superclass::GetTransform());
 }
 
 template <unsigned int ObjectDimension, class TImage>
 typename AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::AffineTransformPointer
-AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-::GetAffineTransform( void ) const
+AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::GetAffineTransform(void) const
 {
   AffineTransformPointer trans = AffineTransformType::New();
 
   const TransformType * typedTransform = this->GetTypedTransform();
 
   trans->SetIdentity();
-  trans->SetCenter( typedTransform->GetCenter() );
-  trans->SetMatrix( typedTransform->GetMatrix() );
-  trans->SetOffset( typedTransform->GetOffset() );
+  trans->SetCenter(typedTransform->GetCenter());
+  trans->SetMatrix(typedTransform->GetMatrix());
+  trans->SetOffset(typedTransform->GetOffset());
 
   return trans;
 }
 
 template <unsigned int ObjectDimension, class TImage>
 void
-AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-::SetInitialTransformParametersFromAffineTransform( const AffineTransformType * affine )
+AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::SetInitialTransformParametersFromAffineTransform(
+  const AffineTransformType * affine)
 {
-  this->SetInitialTransformFixedParameters( affine->GetFixedParameters() );
-  this->SetInitialTransformParameters( affine->GetParameters() );
+  this->SetInitialTransformFixedParameters(affine->GetFixedParameters());
+  this->SetInitialTransformParameters(affine->GetParameters());
 }
 
 template <unsigned int ObjectDimension, class TImage>
 void
-AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-::PrintSelf( std::ostream & os, Indent indent ) const
+AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 }
 
-} // tube
+} // namespace tube
 
-} // itk
+} // namespace itk
 
 #endif

@@ -27,34 +27,31 @@ limitations under the License.
 namespace tube
 {
 
-template< class TPixel, unsigned int VDimension >
-ComputeImageStatistics< TPixel, VDimension >
-::ComputeImageStatistics( void )
+template <class TPixel, unsigned int VDimension>
+ComputeImageStatistics<TPixel, VDimension>::ComputeImageStatistics(void)
 {
   m_Filter = FilterType::New();
 }
 
 
 /** Write statistics to a CSV formatted file */
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 void
-ComputeImageStatistics< TPixel, VDimension >
-::WriteCSVStatistics( std::string csvStatisticsFile ) const
+ComputeImageStatistics<TPixel, VDimension>::WriteCSVStatistics(std::string csvStatisticsFile) const
 {
-  m_Filter->WriteCSVStatistics( csvStatisticsFile );
+  m_Filter->WriteCSVStatistics(csvStatisticsFile);
 }
 
 
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 void
-ComputeImageStatistics< TPixel, VDimension >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+ComputeImageStatistics<TPixel, VDimension>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
- 
+  Superclass::PrintSelf(os, indent);
+
   os << indent << m_Filter << std::endl;
 }
 
-} // End namespace tubetk
+} // namespace tube
 
 #endif

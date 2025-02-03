@@ -67,7 +67,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( ConvertShrunkenSeedImageToListFilter, ProcessObject );
+  itkOverrideGetNameOfClassMacro( ConvertShrunkenSeedImageToListFilter);
 
   /** ImageDimension constants */
   itkStaticConstMacro( ImageDimension, unsigned int,

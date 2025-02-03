@@ -26,22 +26,20 @@ limitations under the License.
 namespace tube
 {
 
-template< class TInputImage >
-ImageMath< TInputImage >
-::ImageMath( void )
+template <class TInputImage>
+ImageMath<TInputImage>::ImageMath(void)
 {
   m_HistogramBinMin = 0;
   m_HistogramBinSize = 0;
 }
 
-template< class TInputImage >
+template <class TInputImage>
 void
-ImageMath< TInputImage >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+ImageMath<TInputImage>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 }
 
-}
+} // namespace tube
 
 #endif

@@ -111,16 +111,16 @@ public:
   typedef typename Superclass::TimeStepType     TimeStepType;
 
   /** Interpolator type. */
-  typedef double                                     CoordRepType;
-  typedef InterpolateImageFunction<MovingImageType, CoordRepType>
+  typedef double                                     CoordinateType;
+  typedef InterpolateImageFunction<MovingImageType, CoordinateType>
                                                      InterpolatorType;
   typedef typename InterpolatorType::Pointer         InterpolatorPointer;
   typedef typename InterpolatorType::PointType       PointType;
-  typedef LinearInterpolateImageFunction<MovingImageType, CoordRepType>
+  typedef LinearInterpolateImageFunction<MovingImageType, CoordinateType>
                                                      DefaultInterpolatorType;
 
   /** Covariant vector type. */
-  typedef CovariantVector< double, itkGetStaticConstMacro( ImageDimension ) >
+  typedef CovariantVector< double, Self:: ImageDimension  >
     CovariantVectorType;
 
   /** Gradient calculator type. */

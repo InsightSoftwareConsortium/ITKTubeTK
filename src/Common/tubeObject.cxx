@@ -22,73 +22,72 @@ limitations under the License.
 
 #include "tubeObject.h"
 
-#if __GNUC__ > 3 || ( __GNUC__ == 3 && __GNUC_MINOR__ > 0 )
-#include <cxxabi.h>
+#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 0)
+#  include <cxxabi.h>
 #endif
 
 namespace tube
 {
 
 // Constructor.
-Object::Object( void )
-{
-}
+Object::Object(void) {}
 
 // Destructor.
-Object::~Object( void )
-{
-}
+Object::~Object(void) {}
 
 // Print out information about this object.
-void Object::Print( std::ostream & os, Indent indent ) const
+void
+Object::Print(std::ostream & os, Indent indent) const
 {
-  this->PrintHeader( os, indent );
-  this->PrintSelf( os, indent.GetNextIndent() );
-  this->PrintFooter( os, indent );
+  this->PrintHeader(os, indent);
+  this->PrintSelf(os, indent.GetNextIndent());
+  this->PrintFooter(os, indent);
 }
 
 // Header for when printing out information about this object.
-void Object::PrintHeader( std::ostream & os, Indent indent ) const
+void
+Object::PrintHeader(std::ostream & os, Indent indent) const
 {
   os << indent << this->GetNameOfClass() << " ( " << this << " )" << std::endl;
 }
 
 // Print out information about the member variables of this object.
-void Object::PrintSelf( std::ostream & os, Indent indent ) const
+void
+Object::PrintSelf(std::ostream & os, Indent indent) const
 {
   os << indent << "RTTI typeinfo: ";
 
-#if __GNUC__ > 3 || ( __GNUC__ == 3 && __GNUC_MINOR__ > 0 )
-  const char * mangled = typeid( *this ).name();
-  int status;
-  char * demangled = abi::__cxa_demangle( mangled, NULL, NULL, &status );
+#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 0)
+  const char * mangled = typeid(*this).name();
+  int          status;
+  char *       demangled = abi::__cxa_demangle(mangled, NULL, NULL, &status);
 
-  if( status == 0 )
-    {
+  if (status == 0)
+  {
     os << demangled;
-    free( demangled );
-    }
+    free(demangled);
+  }
   else
-    {
+  {
     os << mangled;
-    }
+  }
 #else
-  os << typeid( *this ).name();
+  os << typeid(*this).name();
 #endif
 
   os << std::endl;
 }
 
 // Footer for when printing out information about this object.
-void Object::PrintFooter( std::ostream & tubeNotUsed( os ),
-                          Indent tubeNotUsed( indent ) ) const
-{
-}
+void
+Object::PrintFooter(std::ostream & tubeNotUsed(os), Indent tubeNotUsed(indent)) const
+{}
 
 // Print out information about the specified object.
-std::ostream & operator<<( std::ostream & os, const Object & object )
+std::ostream &
+operator<<(std::ostream & os, const Object & object)
 {
-  object.Print( os );
+  object.Print(os);
 
   return os;
 }

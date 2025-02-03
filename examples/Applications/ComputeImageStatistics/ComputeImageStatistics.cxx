@@ -36,15 +36,17 @@ limitations under the License.
 
 #include "ComputeImageStatisticsCLP.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
@@ -53,92 +55,87 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "tubeMaskToStats",
-                                                 CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("tubeMaskToStats", CLPProcessInformation);
   progressReporter.Start();
 
-  typedef itk::Image< TPixel, VDimension >         MaskType;
-  typedef itk::Image< float, VDimension >          VolumeType;
-  typedef itk::ImageFileReader< VolumeType >       VolumeReaderType;
-  typedef itk::ImageFileReader< MaskType >         MaskReaderType;
+  typedef itk::Image<TPixel, VDimension>   MaskType;
+  typedef itk::Image<float, VDimension>    VolumeType;
+  typedef itk::ImageFileReader<VolumeType> VolumeReaderType;
+  typedef itk::ImageFileReader<MaskType>   MaskReaderType;
 
   // Load mask
-  timeCollector.Start( "Load mask" );
+  timeCollector.Start("Load mask");
   typename MaskReaderType::Pointer maskReader = MaskReaderType::New();
-  maskReader->SetFileName( inputMask.c_str() );
+  maskReader->SetFileName(inputMask.c_str());
   try
-    {
+  {
     maskReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading mask: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading mask: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Load mask" );
+  }
+  timeCollector.Stop("Load mask");
   double progress = 0.1;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // Load volume
-  timeCollector.Start( "Load volume" );
+  timeCollector.Start("Load volume");
   typename VolumeReaderType::Pointer volumeReader = VolumeReaderType::New();
-  volumeReader->SetFileName( inputVolume.c_str() );
+  volumeReader->SetFileName(inputVolume.c_str());
   try
-    {
+  {
     volumeReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Load volume" );
+  }
+  timeCollector.Stop("Load volume");
   progress = 0.2;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // Compute statistics
-  timeCollector.Start( "Connected Components" );
+  timeCollector.Start("Connected Components");
 
-  typedef itk::tube::ComputeImageStatistics< TPixel, VDimension >
-    FilterType;
-  typename FilterType::Pointer statisticsCalculator = FilterType::New();
-  statisticsCalculator->SetInput( volumeReader->GetOutput() );
-  statisticsCalculator->SetInputMask( maskReader->GetOutput() );
-  statisticsCalculator->SetQuantiles( quantiles );
+  typedef itk::tube::ComputeImageStatistics<TPixel, VDimension> FilterType;
+  typename FilterType::Pointer                                  statisticsCalculator = FilterType::New();
+  statisticsCalculator->SetInput(volumeReader->GetOutput());
+  statisticsCalculator->SetInputMask(maskReader->GetOutput());
+  statisticsCalculator->SetQuantiles(quantiles);
   statisticsCalculator->Update();
 
-  if( ! csvStatisticsFile.empty() )
-    {
-    statisticsCalculator->WriteCSVStatistics( csvStatisticsFile );
-    }
+  if (!csvStatisticsFile.empty())
+  {
+    statisticsCalculator->WriteCSVStatistics(csvStatisticsFile);
+  }
 
-  timeCollector.Stop( "Connected Components" );
+  timeCollector.Stop("Connected Components");
 
-  typedef itk::ImageFileWriter< VolumeType  >   ImageWriterType;
-  //Write output
-  timeCollector.Start( "Save data" );
+  typedef itk::ImageFileWriter<VolumeType> ImageWriterType;
+  // Write output
+  timeCollector.Start("Save data");
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
-  writer->SetFileName( outputMeanImage.c_str() );
-  writer->SetInput( statisticsCalculator->GetOutput() );
-  writer->SetUseCompression( true );
+  writer->SetFileName(outputMeanImage.c_str());
+  writer->SetInput(statisticsCalculator->GetOutput());
+  writer->SetUseCompression(true);
   try
-    {
+  {
     writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Writing volume: Exception caught: "
-      + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Writing volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Save data" );
+  }
+  timeCollector.Stop("Save data");
   progress = 1.0;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
   progressReporter.End();
 
   timeCollector.Report();
@@ -146,11 +143,12 @@ int DoIt( int argc, char * argv[] )
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputVolume.
-  return tube::ParseArgsAndCallDoIt( inputMask, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputMask, argc, argv);
 }
