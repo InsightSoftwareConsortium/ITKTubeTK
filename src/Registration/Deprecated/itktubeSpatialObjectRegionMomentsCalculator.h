@@ -69,7 +69,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SpatialObjectMomentsCalculator, Object );
+  itkOverrideGetNameOfClassMacro( SpatialObjectMomentsCalculator);
 
   /** Standard scalar type within this class. */
   typedef double ScalarType;

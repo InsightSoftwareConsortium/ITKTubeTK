@@ -59,7 +59,7 @@ public:
   //
 
   // Overrides the superclass' TransformType typedef
-  typedef AffineTransform<double, itkGetStaticConstMacro( ImageDimension )>
+  typedef AffineTransform<double, Self:: ImageDimension >
                                                 AffineTransformType;
   typedef typename AffineTransformType::Pointer AffineTransformPointer;
   typedef AffineTransformType                   TransformType;

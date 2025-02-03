@@ -52,7 +52,7 @@ public:
   typedef SmartPointer<Self>             Pointer;
   typedef SmartPointer<const Self>       ConstPointer;
 
-  itkTypeMacro( ImageToImageRegistrationMethod, ProcessObject );
+  itkOverrideGetNameOfClassMacro( ImageToImageRegistrationMethod);
 
   itkNewMacro( Self );
 
@@ -63,8 +63,8 @@ public:
                        TImage::ImageDimension );
 
   typedef Transform<double,
-                    itkGetStaticConstMacro( ImageDimension ),
-                    itkGetStaticConstMacro( ImageDimension )>
+                    Self:: ImageDimension ,
+                    Self:: ImageDimension >
   TransformType;
 
   typedef DataObjectDecorator<TransformType> TransformOutputType;
@@ -77,7 +77,7 @@ public:
 
   typedef typename TImage::PointType PointType;
 
-  typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
+  typedef SpatialObject<Self:: ImageDimension >
   MaskObjectType;
 
   //

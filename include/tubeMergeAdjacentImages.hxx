@@ -28,19 +28,17 @@ limitations under the License.
 namespace tube
 {
 
-template< class TImage >
-MergeAdjacentImages< TImage >
-::MergeAdjacentImages()
+template <class TImage>
+MergeAdjacentImages<TImage>::MergeAdjacentImages()
 {
   m_Filter = FilterType::New();
 }
 
-template< class TImage >
+template <class TImage>
 void
-MergeAdjacentImages< TImage >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+MergeAdjacentImages<TImage>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 
   os << "Background: " << this->GetBackground() << std::endl;
   os << "MaskZero: " << this->GetMaskZero() << std::endl;
@@ -50,7 +48,6 @@ MergeAdjacentImages< TImage >
   os << "SamplingRatio: " << this->GetSamplingRatio() << std::endl;
   os << "BlendUsingAverage: " << this->GetBlendUsingAverage() << std::endl;
   os << "UseFastBlending: " << this->GetUseFastBlending() << std::endl;
-
 }
 
 } // End namespace tube

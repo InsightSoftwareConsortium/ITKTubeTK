@@ -22,21 +22,22 @@ limitations under the License.
 
 #include "tubeMacro.h"
 
-int tubeMacroTest( int argc, char * argv[] )
+int
+tubeMacroTest(int argc, char * argv[])
 {
-  if( argc > 1 )
-    {
-    tubeStandardErrorMacro( << "Usage: " << argv[0] );
+  if (argc > 1)
+  {
+    tubeStandardErrorMacro(<< "Usage: " << argv[0]);
 
     return EXIT_FAILURE;
-    }
+  }
 
-  tubeDebugMacro( << "tubeDebugMacro test." );
-  tubeWarningMacro( << "tubeWarningMacro test." );
-  tubeErrorMacro( << "tubeErrorMacro test." );
+  tubeDebugMacro(<< "tubeDebugMacro test.");
+  tubeWarningMacro(<< "tubeWarningMacro test.");
+  tubeErrorMacro(<< "tubeErrorMacro test.");
 
-  tubeStandardErrorMacro( << "tubeStandardErrorMacro test." );
-  tubeStandardOutputMacro( << "tubeStandardOutputMacro test." );
+  tubeStandardErrorMacro(<< "tubeStandardErrorMacro test.");
+  tubeStandardOutputMacro(<< "tubeStandardOutputMacro test.");
 
   return EXIT_SUCCESS;
 }

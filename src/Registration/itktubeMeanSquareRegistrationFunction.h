@@ -120,7 +120,7 @@ public:
                                                      DefaultInterpolatorType;
 
   /** Covariant vector type. */
-  typedef CovariantVector< double, itkGetStaticConstMacro( ImageDimension ) >
+  typedef CovariantVector< double, Self:: ImageDimension  >
     CovariantVectorType;
 
   /** Gradient calculator type. */

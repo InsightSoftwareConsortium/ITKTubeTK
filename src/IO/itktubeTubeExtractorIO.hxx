@@ -30,217 +30,198 @@ namespace itk
 namespace tube
 {
 
-template< class TImage >
-TubeExtractorIO< TImage >::
-TubeExtractorIO( void )
+template <class TImage>
+TubeExtractorIO<TImage>::TubeExtractorIO(void)
 {
   this->Clear();
 }
 
-template< class TImage >
-TubeExtractorIO< TImage >::
-TubeExtractorIO( const char * _headerName )
+template <class TImage>
+TubeExtractorIO<TImage>::TubeExtractorIO(const char * _headerName)
 {
   this->Clear();
 
-  TubeExtractorIO::Read( _headerName );
+  TubeExtractorIO::Read(_headerName);
 }
 
-template< class TImage >
-TubeExtractorIO< TImage >::
-TubeExtractorIO( const typename
-  TubeExtractorType::Pointer & _filter )
+template <class TImage>
+TubeExtractorIO<TImage>::TubeExtractorIO(const typename TubeExtractorType::Pointer & _filter)
 {
   this->Clear();
 
-  this->InitializeEssential( _filter );
+  this->InitializeEssential(_filter);
 }
 
-template< class TImage >
-TubeExtractorIO< TImage >::
-~TubeExtractorIO()
-{
-}
+template <class TImage>
+TubeExtractorIO<TImage>::~TubeExtractorIO()
+{}
 
-template< class TImage >
-void TubeExtractorIO< TImage >::
-PrintInfo() const
+template <class TImage>
+void
+TubeExtractorIO<TImage>::PrintInfo() const
 {
-  if( m_TubeExtractor.IsNotNull() )
-    {
+  if (m_TubeExtractor.IsNotNull())
+  {
     std::cout << m_TubeExtractor << std::endl;
-    }
+  }
   else
-    {
+  {
     std::cout << "TubeExtractor = NULL" << std::endl;
-    }
+  }
 }
 
-template< class TImage >
-void TubeExtractorIO< TImage >::
-CopyInfo( const TubeExtractorIO< TImage > & _filterIO )
+template <class TImage>
+void
+TubeExtractorIO<TImage>::CopyInfo(const TubeExtractorIO<TImage> & _filterIO)
 {
   this->Clear();
 
-  this->InitializeEssential( _filterIO.GetTubeExtractor() );
+  this->InitializeEssential(_filterIO.GetTubeExtractor());
 }
 
-template< class TImage >
-void TubeExtractorIO< TImage >::
-Clear( void )
+template <class TImage>
+void
+TubeExtractorIO<TImage>::Clear(void)
 {
   m_TubeExtractor = NULL;
 }
 
 
-template< class TImage >
-bool TubeExtractorIO< TImage >::
-InitializeEssential( const typename
-  TubeExtractorType::Pointer & _filter )
+template <class TImage>
+bool
+TubeExtractorIO<TImage>::InitializeEssential(const typename TubeExtractorType::Pointer & _filter)
 {
   m_TubeExtractor = _filter;
 
   return true;
 }
 
-template< class TImage >
-void TubeExtractorIO< TImage >::
-SetTubeExtractor( TubeExtractorType * _filter )
+template <class TImage>
+void
+TubeExtractorIO<TImage>::SetTubeExtractor(TubeExtractorType * _filter)
 {
   m_TubeExtractor = _filter;
 }
 
-template< class TImage >
-const typename TubeExtractor< TImage >::Pointer
-TubeExtractorIO< TImage >::
-GetTubeExtractor( void ) const
+template <class TImage>
+const typename TubeExtractor<TImage>::Pointer
+TubeExtractorIO<TImage>::GetTubeExtractor(void) const
 {
   return m_TubeExtractor;
 }
 
-template< class TImage >
-bool TubeExtractorIO< TImage >::
-CanRead( const char * _headerName ) const
+template <class TImage>
+bool
+TubeExtractorIO<TImage>::CanRead(const char * _headerName) const
 {
   MetaTubeExtractor teReader;
 
-  return teReader.CanRead( _headerName );
+  return teReader.CanRead(_headerName);
 }
 
-template< class TImage >
-bool TubeExtractorIO< TImage >::
-Read( const char * _headerName )
+template <class TImage>
+bool
+TubeExtractorIO<TImage>::Read(const char * _headerName)
 {
-  if( m_TubeExtractor.IsNull() )
-    {
-    std::cout <<
-      "ERROR: Set a TubeExtractor prior to reading TubeExtractor parameters."
-      << std::endl;
+  if (m_TubeExtractor.IsNull())
+  {
+    std::cout << "ERROR: Set a TubeExtractor prior to reading TubeExtractor parameters." << std::endl;
     return false;
-    }
+  }
 
-  typename TubeExtractorType::RidgeExtractorType::Pointer ridgeOp =
-    m_TubeExtractor->GetRidgeExtractor();
-  typename TubeExtractorType::RadiusExtractorType::Pointer radiusOp =
-    m_TubeExtractor->GetRadiusExtractor();
+  typename TubeExtractorType::RidgeExtractorType::Pointer  ridgeOp = m_TubeExtractor->GetRidgeExtractor();
+  typename TubeExtractorType::RadiusExtractorType::Pointer radiusOp = m_TubeExtractor->GetRadiusExtractor();
 
-  if( ridgeOp.IsNull() || radiusOp.IsNull() )
-    {
-    std::cout <<
-      "ERROR: Set a tubeExtractor input image prior to reading parameters."
-      << std::endl;
+  if (ridgeOp.IsNull() || radiusOp.IsNull())
+  {
+    std::cout << "ERROR: Set a tubeExtractor input image prior to reading parameters." << std::endl;
     return false;
-    }
+  }
 
   MetaTubeExtractor teReader;
 
-  if( !teReader.Read( _headerName ) )
-    {
+  if (!teReader.Read(_headerName))
+  {
     m_TubeExtractor = NULL;
     return false;
-    }
+  }
 
-  m_TubeExtractor->SetDataMin( teReader.GetDataMin() );
-  m_TubeExtractor->SetDataMax( teReader.GetDataMax() );
-  m_TubeExtractor->SetTubeColor( teReader.GetTubeColor() );
+  m_TubeExtractor->SetDataMin(teReader.GetDataMin());
+  m_TubeExtractor->SetDataMax(teReader.GetDataMax());
+  m_TubeExtractor->SetTubeColor(teReader.GetTubeColor());
 
-  ridgeOp->SetScale( teReader.GetRidgeScale() );
-  ridgeOp->SetScaleKernelExtent( teReader.GetRidgeScaleKernelExtent() );
-  ridgeOp->SetDynamicScale( teReader.GetRidgeDynamicScale() );
-  ridgeOp->SetDynamicStepSize( teReader.GetRidgeDynamicStepSize() );
-  ridgeOp->SetStepX( teReader.GetRidgeStepX() );
-  ridgeOp->SetMaxTangentChange( teReader.GetRidgeMaxTangentChange() );
-  ridgeOp->SetMaxXChange( teReader.GetRidgeMaxXChange() );
-  ridgeOp->SetMinRidgeness( teReader.GetRidgeMinRidgeness() );
-  ridgeOp->SetMinRidgenessStart( teReader.GetRidgeMinRidgenessStart() );
-  ridgeOp->SetMinRoundness( teReader.GetRidgeMinRoundness() );
-  ridgeOp->SetMinRoundnessStart( teReader.GetRidgeMinRoundnessStart() );
-  ridgeOp->SetMinCurvature( teReader.GetRidgeMinCurvature() );
-  ridgeOp->SetMinCurvatureStart( teReader.GetRidgeMinCurvatureStart() );
-  ridgeOp->SetMinLevelness( teReader.GetRidgeMinLevelness() );
-  ridgeOp->SetMinLevelnessStart( teReader.GetRidgeMinLevelnessStart() );
-  ridgeOp->SetMaxRecoveryAttempts( teReader.GetRidgeMaxRecoveryAttempts() );
-  ridgeOp->SetDataMin( teReader.GetDataMin() );
-  ridgeOp->SetDataMax( teReader.GetDataMax() );
+  ridgeOp->SetScale(teReader.GetRidgeScale());
+  ridgeOp->SetScaleKernelExtent(teReader.GetRidgeScaleKernelExtent());
+  ridgeOp->SetDynamicScale(teReader.GetRidgeDynamicScale());
+  ridgeOp->SetDynamicStepSize(teReader.GetRidgeDynamicStepSize());
+  ridgeOp->SetStepX(teReader.GetRidgeStepX());
+  ridgeOp->SetMaxTangentChange(teReader.GetRidgeMaxTangentChange());
+  ridgeOp->SetMaxXChange(teReader.GetRidgeMaxXChange());
+  ridgeOp->SetMinRidgeness(teReader.GetRidgeMinRidgeness());
+  ridgeOp->SetMinRidgenessStart(teReader.GetRidgeMinRidgenessStart());
+  ridgeOp->SetMinRoundness(teReader.GetRidgeMinRoundness());
+  ridgeOp->SetMinRoundnessStart(teReader.GetRidgeMinRoundnessStart());
+  ridgeOp->SetMinCurvature(teReader.GetRidgeMinCurvature());
+  ridgeOp->SetMinCurvatureStart(teReader.GetRidgeMinCurvatureStart());
+  ridgeOp->SetMinLevelness(teReader.GetRidgeMinLevelness());
+  ridgeOp->SetMinLevelnessStart(teReader.GetRidgeMinLevelnessStart());
+  ridgeOp->SetMaxRecoveryAttempts(teReader.GetRidgeMaxRecoveryAttempts());
+  ridgeOp->SetDataMin(teReader.GetDataMin());
+  ridgeOp->SetDataMax(teReader.GetDataMax());
 
-  radiusOp->SetRadiusStart( teReader.GetRadiusStart() );
-  radiusOp->SetRadiusMin( teReader.GetRadiusMin() );
-  radiusOp->SetRadiusMax( teReader.GetRadiusMax() );
-  radiusOp->SetMinMedialness( teReader.GetRadiusMinMedialness() );
-  radiusOp->SetMinMedialnessStart( teReader.GetRadiusMinMedialnessStart() );
-  radiusOp->SetDataMin( teReader.GetDataMin() );
-  radiusOp->SetDataMax( teReader.GetDataMax() );
+  radiusOp->SetRadiusStart(teReader.GetRadiusStart());
+  radiusOp->SetRadiusMin(teReader.GetRadiusMin());
+  radiusOp->SetRadiusMax(teReader.GetRadiusMax());
+  radiusOp->SetMinMedialness(teReader.GetRadiusMinMedialness());
+  radiusOp->SetMinMedialnessStart(teReader.GetRadiusMinMedialnessStart());
+  radiusOp->SetDataMin(teReader.GetDataMin());
+  radiusOp->SetDataMax(teReader.GetDataMax());
 
   return true;
 }
 
-template< class TImage >
-bool TubeExtractorIO< TImage >::
-Write( const char * _headerName )
+template <class TImage>
+bool
+TubeExtractorIO<TImage>::Write(const char * _headerName)
 {
-  if( m_TubeExtractor.IsNull() )
-    {
-    std::cout <<
-      "ERROR: Set a tubeExtractor input image prior to writing parameters."
-      << std::endl;
+  if (m_TubeExtractor.IsNull())
+  {
+    std::cout << "ERROR: Set a tubeExtractor input image prior to writing parameters." << std::endl;
     return false;
-    }
+  }
 
   MetaTubeExtractor teWriter;
 
-  typename TubeExtractorType::RidgeExtractorType::Pointer ridgeOp =
-    m_TubeExtractor->GetRidgeExtractor();
-  typename TubeExtractorType::RadiusExtractorType::Pointer radiusOp =
-    m_TubeExtractor->GetRadiusExtractor();
+  typename TubeExtractorType::RidgeExtractorType::Pointer  ridgeOp = m_TubeExtractor->GetRidgeExtractor();
+  typename TubeExtractorType::RadiusExtractorType::Pointer radiusOp = m_TubeExtractor->GetRadiusExtractor();
 
-  teWriter.SetGeneralProperties( m_TubeExtractor->GetDataMin(),
-    m_TubeExtractor->GetDataMax(),
-    m_TubeExtractor->GetTubeColor() );
+  teWriter.SetGeneralProperties(
+    m_TubeExtractor->GetDataMin(), m_TubeExtractor->GetDataMax(), m_TubeExtractor->GetTubeColor());
 
-  teWriter.SetRidgeProperties( ridgeOp->GetScale(),
-    ridgeOp->GetScaleKernelExtent(),
-    ridgeOp->GetDynamicScale(),
-    ridgeOp->GetDynamicStepSize(),
-    ridgeOp->GetStepX(),
-    ridgeOp->GetMaxTangentChange(),
-    ridgeOp->GetMaxXChange(),
-    ridgeOp->GetMinRidgeness(),
-    ridgeOp->GetMinRidgenessStart(),
-    ridgeOp->GetMinRoundness(),
-    ridgeOp->GetMinRoundnessStart(),
-    ridgeOp->GetMinCurvature(),
-    ridgeOp->GetMinCurvatureStart(),
-    ridgeOp->GetMinLevelness(),
-    ridgeOp->GetMinLevelnessStart(),
-    ridgeOp->GetMaxRecoveryAttempts() );
+  teWriter.SetRidgeProperties(ridgeOp->GetScale(),
+                              ridgeOp->GetScaleKernelExtent(),
+                              ridgeOp->GetDynamicScale(),
+                              ridgeOp->GetDynamicStepSize(),
+                              ridgeOp->GetStepX(),
+                              ridgeOp->GetMaxTangentChange(),
+                              ridgeOp->GetMaxXChange(),
+                              ridgeOp->GetMinRidgeness(),
+                              ridgeOp->GetMinRidgenessStart(),
+                              ridgeOp->GetMinRoundness(),
+                              ridgeOp->GetMinRoundnessStart(),
+                              ridgeOp->GetMinCurvature(),
+                              ridgeOp->GetMinCurvatureStart(),
+                              ridgeOp->GetMinLevelness(),
+                              ridgeOp->GetMinLevelnessStart(),
+                              ridgeOp->GetMaxRecoveryAttempts());
 
-  teWriter.SetRadiusProperties( radiusOp->GetRadiusStart(),
-    radiusOp->GetRadiusMin(),
-    radiusOp->GetRadiusMax(),
-    radiusOp->GetMinMedialness(),
-    radiusOp->GetMinMedialnessStart() );
+  teWriter.SetRadiusProperties(radiusOp->GetRadiusStart(),
+                               radiusOp->GetRadiusMin(),
+                               radiusOp->GetRadiusMax(),
+                               radiusOp->GetMinMedialness(),
+                               radiusOp->GetMinMedialnessStart());
 
-  return teWriter.Write( _headerName );
+  return teWriter.Write(_headerName);
 }
 
 } // End namespace tube

@@ -43,131 +43,127 @@ limitations under the License.
 
 // Must do a forward declaration of DoIt before including
 // tubeCLIHelperFunctions
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
-  typedef float                                     InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension >  InputImageType;
-  typedef itk::ImageFileReader< InputImageType >    ReaderType;
+  typedef float                                  InputPixelType;
+  typedef itk::Image<InputPixelType, VDimension> InputImageType;
+  typedef itk::ImageFileReader<InputImageType>   ReaderType;
 
-  typedef float                                     MaskPixelType;
-  typedef itk::Image< MaskPixelType, VDimension >   InputMaskType;
-  typedef itk::ImageFileReader< InputMaskType >     MaskReaderType;
+  typedef float                                 MaskPixelType;
+  typedef itk::Image<MaskPixelType, VDimension> InputMaskType;
+  typedef itk::ImageFileReader<InputMaskType>   MaskReaderType;
 
-  typedef tube::ConvertImagesToCSV< InputImageType, InputMaskType >
-    ConvertImagesToCSVFilterType;
-  typename ConvertImagesToCSVFilterType::Pointer filter
-          = ConvertImagesToCSVFilterType::New();
+  typedef tube::ConvertImagesToCSV<InputImageType, InputMaskType> ConvertImagesToCSVFilterType;
+  typename ConvertImagesToCSVFilterType::Pointer                  filter = ConvertImagesToCSVFilterType::New();
 
   typename MaskReaderType::Pointer readerMask = MaskReaderType::New();
 
-  readerMask->SetFileName( inputImageFileName );
+  readerMask->SetFileName(inputImageFileName);
 
   try
-    {
+  {
     readerMask->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume: Exception caught: "
-      + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading volume: Exception caught: " + std::string(err.GetDescription()));
     return EXIT_FAILURE;
-    }
+  }
 
   typename InputMaskType::Pointer inputMask = readerMask->GetOutput();
 
-  unsigned int numImages = 0;
-  std::vector< std::string > imageFileNameList;
-  tube::StringToVector< std::string >( inputImageFileNameList,
-    imageFileNameList );
+  unsigned int             numImages = 0;
+  std::vector<std::string> imageFileNameList;
+  tube::StringToVector<std::string>(inputImageFileNameList, imageFileNameList);
 
-  if( stride < 1 )
-    {
+  if (stride < 1)
+  {
     stride = 1;
-    }
+  }
   typename ReaderType::Pointer reader;
-  std::vector<std::string> fileName;
-  for( unsigned int i = 0; i < imageFileNameList.size(); ++i )
-    {
+  std::vector<std::string>     fileName;
+  for (unsigned int i = 0; i < imageFileNameList.size(); ++i)
+  {
     reader = ReaderType::New();
-    reader->SetFileName( imageFileNameList[i] );
+    reader->SetFileName(imageFileNameList[i]);
     std::string filePath;
-    fileName.push_back( imageFileNameList[i] );
-    if( MET_GetFilePath( imageFileNameList[i].c_str(), filePath ) )
-      {
-      fileName[i] = &( imageFileNameList[i][strlen( filePath.c_str() )] );
-      }
-    try
-      {
-      reader->Update();
-      }
-    catch ( itk::ExceptionObject & err )
-      {
-      tube::ErrorMessage( "Reading volume: Exception caught: "
-        + std::string( err.GetDescription() ) );
-      return EXIT_FAILURE;
-      }
-    filter->AddImage( reader->GetOutput() );
-    ++numImages;
+    fileName.push_back(imageFileNameList[i]);
+    if (MET_GetFilePath(imageFileNameList[i].c_str(), filePath))
+    {
+      fileName[i] = &(imageFileNameList[i][strlen(filePath.c_str())]);
     }
+    try
+    {
+      reader->Update();
+    }
+    catch (itk::ExceptionObject & err)
+    {
+      tube::ErrorMessage("Reading volume: Exception caught: " + std::string(err.GetDescription()));
+      return EXIT_FAILURE;
+    }
+    filter->AddImage(reader->GetOutput());
+    ++numImages;
+  }
 
   typedef vnl_matrix<InputPixelType> MatrixType;
-  const unsigned int ARows =
-    inputMask->GetLargestPossibleRegion().GetNumberOfPixels() / stride;
-  const unsigned int ACols = imageFileNameList.size() + 1;
-  MatrixType matrix;
-  matrix.set_size( ARows, ACols );
+  const unsigned int                 ARows = inputMask->GetLargestPossibleRegion().GetNumberOfPixels() / stride;
+  const unsigned int                 ACols = imageFileNameList.size() + 1;
+  MatrixType                         matrix;
+  matrix.set_size(ARows, ACols);
 
-  filter->SetInputMask( inputMask );
-  filter->SetStride( stride );
-  filter->SetNumImages( numImages );
+  filter->SetInputMask(inputMask);
+  filter->SetStride(stride);
+  filter->SetNumImages(numImages);
 
   filter->Update();
 
   matrix = filter->GetOutput();
   unsigned int numberRows = filter->GetNumberRows();
-  MatrixType submatrix = matrix.extract( numberRows, ACols );
+  MatrixType   submatrix = matrix.extract(numberRows, ACols);
 
   // write out the vnl_matrix object
   typedef itk::CSVNumericObjectFileWriter<InputPixelType> WriterType;
-  WriterType::Pointer writer = WriterType::New();
+  WriterType::Pointer                                     writer = WriterType::New();
 
-  writer->SetFieldDelimiterCharacter( ',' );
-  writer->SetFileName( outputCSVFileName );
-  writer->SetInput( &submatrix );
+  writer->SetFieldDelimiterCharacter(',');
+  writer->SetFileName(outputCSVFileName);
+  writer->SetInput(&submatrix);
 
-  fileName.push_back( "Class" );
-  writer->SetColumnHeaders( fileName );
+  fileName.push_back("Class");
+  writer->SetColumnHeaders(fileName);
 
   try
-    {
+  {
     writer->Update();
-    }
-  catch ( itk::ExceptionObject& exp )
-    {
+  }
+  catch (itk::ExceptionObject & exp)
+  {
     std::cerr << "Exception caught!" << std::endl;
     std::cerr << exp << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   return EXIT_SUCCESS;
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   // you change the variable name for the inputImageFileName.
-  return tube::ParseArgsAndCallDoIt( inputImageFileName, argc, argv );
-
+  return tube::ParseArgsAndCallDoIt(inputImageFileName, argc, argv);
 }

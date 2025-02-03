@@ -132,7 +132,7 @@ public:
     InputPointType;
   typedef typename TransformType::OutputVectorType
     OutputVectorType;
-  typedef Point<double, itkGetStaticConstMacro( ImageDimension )>
+  typedef Point<double, Self:: ImageDimension >
     LandmarkPointType;
   typedef std::vector<LandmarkPointType>
     LandmarkPointContainer;

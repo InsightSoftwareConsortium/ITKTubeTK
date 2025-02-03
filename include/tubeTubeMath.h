@@ -61,7 +61,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( TubeMath, ProcessObject );
+  itkOverrideGetNameOfClassMacro( TubeMath);
 
   void SetInputTubeGroup( TubeGroupType * tubeGroup )
   { m_Filter.SetInputTubeGroup( tubeGroup ); this->Modified(); };

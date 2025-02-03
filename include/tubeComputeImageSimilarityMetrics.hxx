@@ -27,24 +27,22 @@ limitations under the License.
 namespace tube
 {
 
-template< class TInputImage >
-ComputeImageSimilarityMetrics< TInputImage >
-::ComputeImageSimilarityMetrics( void )
+template <class TInputImage>
+ComputeImageSimilarityMetrics<TInputImage>::ComputeImageSimilarityMetrics(void)
 {
   m_Filter = FilterType::New();
 }
 
 
-template< class TInputImage >
+template <class TInputImage>
 void
-ComputeImageSimilarityMetrics< TInputImage >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+ComputeImageSimilarityMetrics<TInputImage>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << "Use Correlation: " << this->GetUseCorrelation() << std::endl;
   os << "Sampling Rate: " << this->GetSamplingRate() << std::endl;
 }
 
-} // End namespace tubetk
+} // namespace tube
 
 #endif

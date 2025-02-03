@@ -34,55 +34,49 @@ namespace tube
 class UserFunction2
 {
 public:
-
-  virtual ~UserFunction2( void ) = 0;
+  virtual ~UserFunction2(void) = 0;
 
   /** Derive this function */
-  virtual const vnl_vector<double> & Value( const vnl_vector<double> & x )
-    = 0;
+  virtual const vnl_vector<double> &
+  Value(const vnl_vector<double> & x) = 0;
 
 }; // End class UserFunction2
 
-inline UserFunction2::~UserFunction2( void )
-{
-}
+inline UserFunction2::~UserFunction2(void) {}
 
 } // End namespace tube
 
 class MyFunc2 : public tube::UserFunction2
 {
 public:
-
-  MyFunc2( void )
-    {
-    cVal.set_size( 1 );
-    }
-  const vnl_vector<double> & Value( const vnl_vector<double> & x )
-    {
+  MyFunc2(void) { cVal.set_size(1); }
+  const vnl_vector<double> &
+  Value(const vnl_vector<double> & x)
+  {
     std::cout << "func:x = " << x[0] << ", " << x[1] << std::endl;
-    cVal[0] = std::sin( x[0] ) + std::cos( x[1]/2 );
+    cVal[0] = std::sin(x[0]) + std::cos(x[1] / 2);
     std::cout << "  val = " << cVal << std::endl;
     return cVal;
-    }
+  }
+
 private:
   vnl_vector<double> cVal;
 
 }; // End class MyFunc2
 
-int tubeUserFunctionTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
+int
+tubeUserFunctionTest(int tubeNotUsed(argc), char * tubeNotUsed(argv)[])
 {
   MyFunc2 myFunc;
 
-  vnl_vector<double> xTest( 2 );
+  vnl_vector<double> xTest(2);
   xTest[0] = 0.01;
   xTest[1] = 0.01;
 
   tube::UserFunction2 * op = &myFunc;
-  std::cout << "test:func( 0.01,0.01 ) = " << op->Value( xTest )[0]
-    << std::endl;
+  std::cout << "test:func( 0.01,0.01 ) = " << op->Value(xTest)[0] << std::endl;
 
-  std::cout << "test:func( 0.01,0.01 ) = " << myFunc.Value( xTest )[0]
-    << std::endl;
+  std::cout << "test:func( 0.01,0.01 ) = " << myFunc.Value(xTest)[0] << std::endl;
 
   return EXIT_SUCCESS;
 }

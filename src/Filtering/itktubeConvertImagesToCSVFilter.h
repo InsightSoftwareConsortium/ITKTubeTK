@@ -64,7 +64,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ConvertImagesToCSVFilter, ProcessObject );
+  itkOverrideGetNameOfClassMacro( ConvertImagesToCSVFilter);
 
   /** ImageDimension constants */
   itkStaticConstMacro( ImageDimension, unsigned int,

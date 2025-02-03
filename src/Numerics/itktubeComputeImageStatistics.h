@@ -61,7 +61,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeImageStatistics, ImageToImageFilter );
+  itkOverrideGetNameOfClassMacro( ComputeImageStatistics);
 
   /** Set/Get input mask */
   itkSetObjectMacro( InputMask, MaskType );

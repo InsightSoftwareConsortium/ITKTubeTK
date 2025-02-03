@@ -77,7 +77,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ImageRegionMomentsCalculator, Object );
+  itkOverrideGetNameOfClassMacro( ImageRegionMomentsCalculator);
 
   /** Extract the dimension of the image. */
   itkStaticConstMacro( ImageDimension, unsigned int,
@@ -89,11 +89,11 @@ public:
   typedef typename TImage::PointType PointType;
 
   /** Standard vector type within this class. */
-  typedef Vector<ScalarType, itkGetStaticConstMacro( ImageDimension )>
+  typedef Vector<ScalarType, Self:: ImageDimension >
     VectorType;
 
   /** Spatial Object type within this class. */
-  typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
+  typedef SpatialObject<Self:: ImageDimension >
     SpatialObjectType;
 
   /** Spatial Object member types used within this class. */
@@ -101,8 +101,8 @@ public:
   typedef typename SpatialObjectType::ConstPointer SpatialObjectConstPointer;
 
   /** Standard matrix type within this class. */
-  typedef Matrix<ScalarType, itkGetStaticConstMacro( ImageDimension ),
-    itkGetStaticConstMacro( ImageDimension )>      MatrixType;
+  typedef Matrix<ScalarType, Self:: ImageDimension ,
+    Self:: ImageDimension >      MatrixType;
 
   /** Standard image type within this class. */
   typedef TImage ImageType;
@@ -112,7 +112,7 @@ public:
   typedef typename ImageType::ConstPointer ImageConstPointer;
 
   /** Affine transform for mapping to and from principal axis */
-  typedef AffineTransform<double, itkGetStaticConstMacro( ImageDimension )>
+  typedef AffineTransform<double, Self:: ImageDimension >
     AffineTransformType;
   typedef typename AffineTransformType::Pointer
     AffineTransformPointer;
@@ -130,7 +130,7 @@ public:
 
   /** Set the spatial object mask. */
   virtual void SetSpatialObjectMask(
-    const SpatialObject<itkGetStaticConstMacro( ImageDimension )> * so )
+    const SpatialObject<Self:: ImageDimension )> * so 
     {
     if( m_SpatialObjectMask != so )
       {

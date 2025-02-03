@@ -31,9 +31,8 @@ namespace tube
 {
 
 /** Constructor */
-template< class TInputImage, class TOutputImage >
-ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
-ConvertSpatialGraphToImageFilter( void )
+template <class TInputImage, class TOutputImage>
+ConvertSpatialGraphToImageFilter<TInputImage, TOutputImage>::ConvertSpatialGraphToImageFilter(void)
 {
   m_InputImage = NULL;
   m_AdjacencyMatrixImage = NULL;
@@ -43,53 +42,44 @@ ConvertSpatialGraphToImageFilter( void )
 }
 
 /** GenerateData */
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 void
-ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
-GenerateData( void )
+ConvertSpatialGraphToImageFilter<TInputImage, TOutputImage>::GenerateData(void)
 {
   m_InputImage = this->GetInput();
   int numberOfCentroids = m_AdjacencyMatrix.rows();
 
-  m_AdjacencyMatrixImage = this->GetOutput( 0 );
-  m_AdjacencyMatrixImage->SetRegions
-    ( m_InputImage->GetLargestPossibleRegion().GetSize() );
-  m_AdjacencyMatrixImage->SetSpacing( m_InputImage->GetSpacing() );
-  m_AdjacencyMatrixImage->SetOrigin( m_InputImage->GetOrigin() );
+  m_AdjacencyMatrixImage = this->GetOutput(0);
+  m_AdjacencyMatrixImage->SetRegions(m_InputImage->GetLargestPossibleRegion().GetSize());
+  m_AdjacencyMatrixImage->SetSpacing(m_InputImage->GetSpacing());
+  m_AdjacencyMatrixImage->SetOrigin(m_InputImage->GetOrigin());
   m_AdjacencyMatrixImage->Allocate();
-  m_AdjacencyMatrixImage->FillBuffer( 0 );
+  m_AdjacencyMatrixImage->FillBuffer(0);
 
   m_BranchnessImage = OutputImageType::New();
-  m_BranchnessImage->SetRegions(
-    m_InputImage->GetLargestPossibleRegion().GetSize() );
-  m_BranchnessImage->SetSpacing( m_InputImage->GetSpacing() );
-  m_BranchnessImage->SetOrigin( m_InputImage->GetOrigin() );
+  m_BranchnessImage->SetRegions(m_InputImage->GetLargestPossibleRegion().GetSize());
+  m_BranchnessImage->SetSpacing(m_InputImage->GetSpacing());
+  m_BranchnessImage->SetOrigin(m_InputImage->GetOrigin());
   m_BranchnessImage->Allocate();
 
   m_RadiusImage = OutputImageType::New();
-  m_RadiusImage->SetRegions(
-    m_InputImage->GetLargestPossibleRegion().GetSize() );
-  m_RadiusImage->SetSpacing( m_InputImage->GetSpacing() );
-  m_RadiusImage->SetOrigin( m_InputImage->GetOrigin() );
+  m_RadiusImage->SetRegions(m_InputImage->GetLargestPossibleRegion().GetSize());
+  m_RadiusImage->SetSpacing(m_InputImage->GetSpacing());
+  m_RadiusImage->SetOrigin(m_InputImage->GetOrigin());
   m_RadiusImage->Allocate();
 
   m_CentralityImage = OutputImageType::New();
-  m_CentralityImage->SetRegions(
-    m_InputImage->GetLargestPossibleRegion().GetSize() );
-  m_CentralityImage->SetSpacing( m_InputImage->GetSpacing() );
-  m_CentralityImage->SetOrigin( m_InputImage->GetOrigin() );
+  m_CentralityImage->SetRegions(m_InputImage->GetLargestPossibleRegion().GetSize());
+  m_CentralityImage->SetSpacing(m_InputImage->GetSpacing());
+  m_CentralityImage->SetOrigin(m_InputImage->GetOrigin());
   m_CentralityImage->Allocate();
 
-  itk::ImageRegionConstIterator< InputImageType > itCVT( m_InputImage,
-    m_InputImage->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< OutputImageType > itA( m_AdjacencyMatrixImage,
-    m_AdjacencyMatrixImage->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< OutputImageType > itB( m_BranchnessImage,
-    m_BranchnessImage->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< OutputImageType > itR( m_RadiusImage,
-    m_RadiusImage->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< OutputImageType > itC( m_CentralityImage,
-    m_CentralityImage->GetLargestPossibleRegion() );
+  itk::ImageRegionConstIterator<InputImageType> itCVT(m_InputImage, m_InputImage->GetLargestPossibleRegion());
+  itk::ImageRegionIterator<OutputImageType>     itA(m_AdjacencyMatrixImage,
+                                                m_AdjacencyMatrixImage->GetLargestPossibleRegion());
+  itk::ImageRegionIterator<OutputImageType>     itB(m_BranchnessImage, m_BranchnessImage->GetLargestPossibleRegion());
+  itk::ImageRegionIterator<OutputImageType>     itR(m_RadiusImage, m_RadiusImage->GetLargestPossibleRegion());
+  itk::ImageRegionIterator<OutputImageType>     itC(m_CentralityImage, m_CentralityImage->GetLargestPossibleRegion());
   itCVT.GoToBegin();
   itA.GoToBegin();
   itB.GoToBegin();
@@ -97,68 +87,63 @@ GenerateData( void )
   itC.GoToBegin();
   InputPixelType c;
 
-  while( !itCVT.IsAtEnd() )
-    {
-    c = itCVT.Get()-1;
-    itB.Set( m_BranchnessVector[c] );
-    itR.Set( m_RadiusVector[c] );
-    itC.Set( m_CentralityVector[c] );
+  while (!itCVT.IsAtEnd())
+  {
+    c = itCVT.Get() - 1;
+    itB.Set(m_BranchnessVector[c]);
+    itR.Set(m_RadiusVector[c]);
+    itC.Set(m_CentralityVector[c]);
     double maxT = 0;
-    for( int i = 0; i < numberOfCentroids; i++ )
+    for (int i = 0; i < numberOfCentroids; i++)
+    {
+      if (m_AdjacencyMatrix[c][i] > maxT)
       {
-      if( m_AdjacencyMatrix[c][i] > maxT )
-        {
         maxT = m_AdjacencyMatrix[c][i];
-        }
       }
-    itA.Set( maxT );
+    }
+    itA.Set(maxT);
     ++itCVT;
     ++itA;
     ++itB;
     ++itR;
     ++itC;
-    }
+  }
 }
 
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 void
-ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
-SetAdjacencyMatrix( vnl_matrix< double > a )
+ConvertSpatialGraphToImageFilter<TInputImage, TOutputImage>::SetAdjacencyMatrix(vnl_matrix<double> a)
 {
   m_AdjacencyMatrix = a;
 }
 
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 void
-ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
-SetBranchnessVector( vnl_vector< double > b )
+ConvertSpatialGraphToImageFilter<TInputImage, TOutputImage>::SetBranchnessVector(vnl_vector<double> b)
 {
   m_BranchnessVector = b;
 }
 
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 void
-ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
-SetRadiusVector( vnl_vector< double > r )
+ConvertSpatialGraphToImageFilter<TInputImage, TOutputImage>::SetRadiusVector(vnl_vector<double> r)
 {
   m_RadiusVector = r;
 }
 
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 void
-ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
-SetCentralityVector( vnl_vector< double > c )
+ConvertSpatialGraphToImageFilter<TInputImage, TOutputImage>::SetCentralityVector(vnl_vector<double> c)
 {
   m_CentralityVector = c;
 }
 
 /** PrintSelf */
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 void
-ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
-PrintSelf( std::ostream & os, Indent indent ) const
+ConvertSpatialGraphToImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 }
 
 } // End namespace tube
