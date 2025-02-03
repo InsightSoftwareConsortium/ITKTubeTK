@@ -53,7 +53,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeTrainingMask, ProcessObject );
+  itkOverrideGetNameOfClassMacro( ComputeTrainingMask);
 
 
   /** Typedef to images */

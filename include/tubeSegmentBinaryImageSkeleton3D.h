@@ -62,7 +62,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SegmentBinaryImageSkeleton3D, ProcessObject );
+  itkOverrideGetNameOfClassMacro( SegmentBinaryImageSkeleton3D);
 
   /** Set/Get input image */
   tubeWrapSetConstObjectMacro( Input, ImageType, Filter );

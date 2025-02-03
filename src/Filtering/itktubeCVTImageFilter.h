@@ -56,7 +56,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  itkTypeMacro( CVTImageFilter, ImageToImageFilter );
+  itkOverrideGetNameOfClassMacro( CVTImageFilter);
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TInputImage::ImageDimension );
@@ -65,7 +65,7 @@ public:
   typedef typename InputImageType::PixelType            InputPixelType;
 
   typedef typename InputImageType::IndexType            IndexType;
-  typedef ContinuousIndex<double, itkGetStaticConstMacro( ImageDimension )>
+  typedef ContinuousIndex<double, Self:: ImageDimension >
                                                         ContinuousIndexType;
 
   typedef TOutputImage                                  OutputImageType;

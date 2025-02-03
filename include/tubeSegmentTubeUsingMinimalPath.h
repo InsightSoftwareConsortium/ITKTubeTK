@@ -65,7 +65,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SegmentTubeUsingMinimalPath, Object );
+  itkOverrideGetNameOfClassMacro( SegmentTubeUsingMinimalPath);
 
   /* Set target tubes */
   tubeWrapSetMacro( TargetTubeGroup, TubeGroupPointer, Filter );

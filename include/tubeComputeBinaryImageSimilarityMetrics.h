@@ -57,7 +57,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeBinaryImageSimilarityMetrics, ProcessObject );
+  itkOverrideGetNameOfClassMacro( ComputeBinaryImageSimilarityMetrics);
 
   /** Set the source image. */
   tubeWrapSetConstObjectMacro( SourceImage, InputImageType, Filter );

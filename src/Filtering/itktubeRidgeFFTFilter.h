@@ -45,7 +45,7 @@ public:
 
   itkNewMacro( Self );
 
-  itkTypeMacro( RidgeFFTFilter, ImageToImageFilter );
+  itkOverrideGetNameOfClassMacro( RidgeFFTFilter);
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     TInputImage::ImageDimension );

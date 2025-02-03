@@ -51,7 +51,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( RegionFromReferenceImageFilter, ExtractImageFilter );
+  itkOverrideGetNameOfClassMacro( RegionFromReferenceImageFilter);
 
   /** Typedef to describe the output and input image region types. */
   typedef typename Superclass::OutputImageRegionType OutputImageRegionType;
@@ -76,7 +76,7 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     Superclass::OutputImageDimension );
 
-  typedef ImageBase< itkGetStaticConstMacro( ImageDimension ) >
+  typedef ImageBase< Self:: ImageDimension  >
     ReferenceImageType;
 
   /** Copy the output information from another Image. */

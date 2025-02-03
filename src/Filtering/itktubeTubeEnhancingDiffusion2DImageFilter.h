@@ -92,7 +92,7 @@ public:
   typedef SmartPointer< const Self >                      ConstPointer;
 
   itkNewMacro( Self );
-  itkTypeMacro( TubeEnhancingDiffusion2DImageFilter, ImageToImageFilter );
+  itkOverrideGetNameOfClassMacro( TubeEnhancingDiffusion2DImageFilter);
 
   /** Set/Get time step */
   itkSetMacro( TimeStep, Precision );

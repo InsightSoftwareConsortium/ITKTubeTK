@@ -71,7 +71,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( CompleteImageResampleFilter, ImageToImageFilter );
+  itkOverrideGetNameOfClassMacro( CompleteImageResampleFilter);
 
   /** Number of dimensions. */
   itkStaticConstMacro( ImageDimension, unsigned int,
@@ -98,7 +98,7 @@ public:
   typedef typename InterpolatorType::Pointer      InterpolatorPointerType;
 
   /** Image size typedef. */
-  typedef Size< itkGetStaticConstMacro( ImageDimension ) >
+  typedef Size< Self:: ImageDimension  >
                                                   SizeType;
 
   /** Image index typedef. */
