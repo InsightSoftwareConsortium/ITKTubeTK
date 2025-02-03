@@ -60,7 +60,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeImageSimilarityMetrics, Object );
+  itkOverrideGetNameOfClassMacro( ComputeImageSimilarityMetrics);
 
   /** Set/Get use of correlation or mutual information to compute similarity */
   tubeWrapSetMacro( UseCorrelation, bool, Filter );

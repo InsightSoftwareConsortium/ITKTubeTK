@@ -54,7 +54,7 @@ public:
     this->SetDescription("No valid spatial Object moments are availble.");
   }
 
-  itkTypeMacro(InvalidSpatialObjectRegionMomentsError, ExceptionObject);
+  itkOverrideGetNameOfClassMacro(InvalidSpatialObjectRegionMomentsError);
 };
 
 // ----------------------------------------------------------------------

@@ -58,7 +58,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  itkTypeMacro( ReResampleImageFilter, ProcessObject );
+  itkOverrideGetNameOfClassMacro( ReResampleImageFilter);
 
   typedef typename ImageType::Pointer                     ImagePointer;
   typedef itk::Transform< double, VDimension, VDimension> TransformType;

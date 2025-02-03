@@ -64,7 +64,7 @@ public:
                        TInputImageType::ImageDimension );
 
   itkNewMacro( Self );
-  itkTypeMacro( MeanAndSigmaImageBuilder, Object );
+  itkOverrideGetNameOfClassMacro( MeanAndSigmaImageBuilder);
 
   typedef TInputImageType                               InputImageType;
   typedef TOutputMeanImageType                          OutputMeanImageType;

@@ -86,7 +86,7 @@ public:
   itkNewMacro( Self );
 
   /** Runtime information support. */
-  itkTypeMacro( PadImageFilter, ImageToImageFilter );
+  itkOverrideGetNameOfClassMacro( PadImageFilter);
 
   /**
    * Set/Get whether the images must be padded to a size equal to a

@@ -42,7 +42,7 @@ public:
   typedef SmartPointer< const Self >    ConstPointer;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ArthurDentCostFunction, SingleValuedCostFunction );
+  itkOverrideGetNameOfClassMacro( ArthurDentCostFunction);
 
   itkNewMacro( Self );
 

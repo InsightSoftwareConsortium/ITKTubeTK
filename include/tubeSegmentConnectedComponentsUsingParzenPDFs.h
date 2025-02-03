@@ -74,7 +74,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SegmentConnectedComponentsUsingParzenPDFs, ProcessObject );
+  itkOverrideGetNameOfClassMacro( SegmentConnectedComponentsUsingParzenPDFs);
 
   /** Set/Get input image */
   void SetFeatureImage( InputImageType * img );

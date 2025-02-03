@@ -73,7 +73,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ) */
-  itkTypeMacro( AnisotropicHybridDiffusionImageFilter, ImageToImageFilter );
+  itkOverrideGetNameOfClassMacro( AnisotropicHybridDiffusionImageFilter);
 
   /** Convenient typedefs */
   typedef typename Superclass::InputImageType  InputImageType;

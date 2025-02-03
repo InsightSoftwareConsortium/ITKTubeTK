@@ -61,7 +61,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ConvertTubesToTubeGraph, ProcessObject );
+  itkOverrideGetNameOfClassMacro( ConvertTubesToTubeGraph);
 
   /** Set Number of Centroids */
   tubeWrapSetMacro( NumberOfCenteroids, int, Filter );

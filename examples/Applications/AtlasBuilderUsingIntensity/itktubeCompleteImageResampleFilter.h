@@ -71,7 +71,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( CompleteImageResampleFilter, ImageToImageFilter );
+  itkOverrideGetNameOfClassMacro( CompleteImageResampleFilter);
 
   /** Number of dimensions. */
   itkStaticConstMacro( ImageDimension, unsigned int,

@@ -60,7 +60,7 @@ public:
   typedef SmartPointer< Self >                               Pointer;
   typedef SmartPointer< const Self >                         ConstPointer;
 
-  itkTypeMacro( RadiusExtractor3, Object );
+  itkOverrideGetNameOfClassMacro( RadiusExtractor3);
   itkNewMacro( RadiusExtractor3 );
 
   /**
