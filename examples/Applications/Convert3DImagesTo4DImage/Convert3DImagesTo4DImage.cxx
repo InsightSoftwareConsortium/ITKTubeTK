@@ -52,11 +52,11 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-  typedef TPixel                                    InputPixelType;
-  typedef itk::Image< InputPixelType, 3 >           InputImageType;
-  typedef itk::ImageFileReader< InputImageType >    ReaderType;
+  using InputPixelType = TPixel;
+  using InputImageType = itk::Image< InputPixelType, 3 >;
+  using ReaderType = itk::ImageFileReader< InputImageType >;
 
-  typedef tube::Write4DImageFrom3DImages< InputImageType > FilterType;
+  using FilterType = tube::Write4DImageFrom3DImages< InputImageType >;
 
   typename FilterType::Pointer filter = FilterType::New();
   unsigned int num3DImages = argc-2;
@@ -107,8 +107,8 @@ void GetImageInformation( const std::string & fileName,
                           itk::ImageIOBase::IOComponentEnum & componentType,
                           unsigned int & dimension )
 {
-  typedef itk::ImageIOBase     ImageIOType;
-  typedef itk::ImageIOFactory  ImageIOFactoryType;
+  using ImageIOType = itk::ImageIOBase;
+  using ImageIOFactoryType = itk::ImageIOFactory;
 
   ImageIOType::Pointer imageIO =
     ImageIOFactoryType::CreateImageIO( fileName.c_str(),
@@ -136,8 +136,8 @@ int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef itk::ImageIOBase              ImageIOType;
-  typedef ImageIOType::IOComponentEnum  IOComponentType;
+  using ImageIOType = itk::ImageIOBase;
+  using IOComponentType = ImageIOType::IOComponentEnum;
 
   IOComponentType componentType = IOComponentType::UNKNOWNCOMPONENTTYPE;
   unsigned int dimension = 0;

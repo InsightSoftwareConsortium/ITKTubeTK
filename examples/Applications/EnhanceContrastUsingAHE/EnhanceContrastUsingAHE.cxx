@@ -53,10 +53,9 @@ int DoIt( int argc, char * argv[] )
     "ContrastImage", CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                PixelType;
-  typedef itk::Image< PixelType, VDimension >  ImageType;
-  typedef itk::AdaptiveHistogramEqualizationImageFilter< ImageType >
-                                               FilterType;
+  using PixelType = float;
+  using ImageType = itk::Image< PixelType, VDimension >;
+  using FilterType = itk::AdaptiveHistogramEqualizationImageFilter< ImageType >;
 
   typename FilterType::Pointer filter = FilterType::New();
 
@@ -65,7 +64,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start( "Read" );
     {
-    typedef itk::ImageFileReader< ImageType >   ReaderType;
+    using ReaderType = itk::ImageFileReader< ImageType >;
 
     typename ReaderType::Pointer readerInputImage = ReaderType::New();
 
@@ -102,7 +101,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop( "Run Filter" );
   progressReporter.Report( 0.8 );
 
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< ImageType  >;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
 
   writer->SetFileName( outputImageName.c_str() );

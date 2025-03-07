@@ -55,17 +55,17 @@ class CompleteImageResampleFilter
 {
 public:
 
-  /** Standard class typedefs. */
-  typedef CompleteImageResampleFilter               Self;
-  typedef ProcessObject                             Superclass;
-  typedef SmartPointer< Self >                      Pointer;
-  typedef SmartPointer< const Self >                ConstPointer;
+  /** Standard class type alias. */
+  using Self = CompleteImageResampleFilter;
+  using Superclass = ProcessObject;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef TInputImage                               InputImageType;
-  typedef TOutputImage                              OutputImageType;
-  typedef typename InputImageType::ConstPointer     InputImageConstPointer;
-  typedef typename OutputImageType::Pointer         OutputImagePointer;
-  typedef typename InputImageType::RegionType       InputImageRegionType;
+  using InputImageType = TInputImage;
+  using OutputImageType = TOutputImage;
+  using InputImageConstPointer = typename InputImageType::ConstPointer;
+  using OutputImagePointer = typename OutputImageType::Pointer;
+  using InputImageRegionType = typename InputImageType::RegionType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -77,45 +77,42 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TOutputImage::ImageDimension );
 
-  /** ResampleImageFilter typedef */
-  typedef ResampleImageFilter< InputImageType,
+  /** ResampleImageFilter type alias */
+  using ResampleImageFilterType = ResampleImageFilter< InputImageType,
                                OutputImageType,
-                               TInterpolatorPrecisionType >
-                                                  ResampleImageFilterType;
+                               TInterpolatorPrecisionType >;
 
-  /** Transform typedef
+  /** Transform type alias
    *
    * Note: The transform needs to have an inverse to determine
    * the proper outcome dimensions
    */
-  typedef TNonSingularTransform                   TransformType;
-  typedef typename TransformType::ConstPointer    TransformPointerType;
+  using TransformType = TNonSingularTransform;
+  using TransformPointerType = typename TransformType::ConstPointer;
 
-  /** Interpolator typedef. */
-  typedef InterpolateImageFunction< InputImageType,
-                                    TInterpolatorPrecisionType>
-                                                  InterpolatorType;
-  typedef typename InterpolatorType::Pointer      InterpolatorPointerType;
+  /** Interpolator type alias. */
+  using InterpolatorType = InterpolateImageFunction< InputImageType,
+                                    TInterpolatorPrecisionType>;
+  using InterpolatorPointerType = typename InterpolatorType::Pointer;
 
-  /** Image size typedef. */
-  typedef Size< itkGetStaticConstMacro( ImageDimension ) >
-                                                  SizeType;
+  /** Image size type alias. */
+  using SizeType = Size< itkGetStaticConstMacro( ImageDimension ) >;
 
-  /** Image index typedef. */
-  typedef typename TOutputImage::IndexType        IndexType;
+  /** Image index type alias. */
+  using IndexType = typename TOutputImage::IndexType;
 
-  /** Image point typedef. */
-  typedef typename InterpolatorType::PointType    PointType;
+  /** Image point type alias. */
+  using PointType = typename InterpolatorType::PointType;
 
-  /** Image pixel value typedef. */
-  typedef typename TOutputImage::PixelType        PixelType;
+  /** Image pixel value type alias. */
+  using PixelType = typename TOutputImage::PixelType;
 
   /** Typedef to describe the output image region type. */
-  typedef typename TOutputImage::RegionType       OutputImageRegionType;
+  using OutputImageRegionType = typename TOutputImage::RegionType;
 
-  /** Image spacing typedef */
-  typedef typename TOutputImage::SpacingType      SpacingType;
-  typedef typename TOutputImage::PointType        OriginPointType;
+  /** Image spacing type alias */
+  using SpacingType = typename TOutputImage::SpacingType;
+  using OriginPointType = typename TOutputImage::PointType;
 
   /*
    * Set the coordinate transformation.

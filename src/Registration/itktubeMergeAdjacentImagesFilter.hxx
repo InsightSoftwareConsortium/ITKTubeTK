@@ -111,8 +111,8 @@ void
 MergeAdjacentImagesFilter< TImage >
 ::LoadInitialTransform( const std::string & filename )
 {
-  typedef TransformFileReader                    TransformReaderType;
-  typedef TransformReaderType::TransformListType TransformListType;
+  using TransformReaderType = TransformFileReader;
+  using TransformListType = TransformReaderType::TransformListType;
 
   TransformReaderType::Pointer transformReader = TransformReaderType::New();
   transformReader->SetFileName( filename );
@@ -142,7 +142,7 @@ MergeAdjacentImagesFilter< TImage >
 {
   if( m_OutputTransform.IsNotNull() )
     {
-    typedef TransformFileWriter TransformWriterType;
+    using TransformWriterType = TransformFileWriter;
   
     TransformWriterType::Pointer transformWriter = TransformWriterType::New();
     transformWriter->SetFileName( filename );
@@ -304,8 +304,7 @@ MergeAdjacentImagesFilter< TImage >
   // timeCollector.Stop( "Allocate output image" );
 
   // perform registration
-  typedef typename itk::ImageToImageRegistrationHelper< ImageType >
-    RegFilterType;
+  using RegFilterType = typename itk::ImageToImageRegistrationHelper< ImageType >;
   typename RegFilterType::Pointer regOp = RegFilterType::New();
   regOp->SetFixedImage( m_Input1 );
   regOp->SetMovingImage( m_Input2 );
@@ -351,7 +350,7 @@ MergeAdjacentImagesFilter< TImage >
     m_Input2, NULL, NULL, m_Background );
 
   // timeCollector.Stop( "Resample Image" );
-  typedef typename itk::Image<float, ImageDimension> FloatImageType;
+  using FloatImageType = typename itk::Image<float, ImageDimension>;
 
   if( m_BlendUsingAverage )
     {
@@ -462,12 +461,11 @@ MergeAdjacentImagesFilter< TImage >
     typename FloatImageType::Pointer outputVoronoiMap = nullptr;
     if( m_UseFastBlending )
       {
-      typedef typename itk::GeneralizedDistanceTransformImageFilter<
-        FloatImageType, FloatImageType, FloatImageType >   MapFilterType;
+      using MapFilterType = typename itk::GeneralizedDistanceTransformImageFilter<
+        FloatImageType, FloatImageType, FloatImageType >;
       typename MapFilterType::Pointer mapDistFilter = MapFilterType::New();
 
-      typedef itk::BinaryThresholdImageFilter<FloatImageType, FloatImageType>
-        Indicator;
+      using Indicator = itk::BinaryThresholdImageFilter<FloatImageType, FloatImageType>;
       typename Indicator::Pointer indicator = Indicator::New();
 
       indicator->SetLowerThreshold( 0 );
@@ -488,8 +486,8 @@ MergeAdjacentImagesFilter< TImage >
       }
     else
       {
-      typedef typename itk::DanielssonDistanceMapImageFilter< FloatImageType,
-        FloatImageType, FloatImageType >   MapFilterType;
+      using MapFilterType = typename itk::DanielssonDistanceMapImageFilter< FloatImageType,
+        FloatImageType, FloatImageType >;
       typename MapFilterType::Pointer mapDistFilter = MapFilterType::New();
       mapDistFilter->SetInput( outputMap );
       mapDistFilter->SetInputIsBinary( false );
@@ -527,14 +525,13 @@ MergeAdjacentImagesFilter< TImage >
     typename FloatImageType::Pointer vorImageDistMap = nullptr;
     if( m_UseFastBlending )
       {
-      typedef typename itk::GeneralizedDistanceTransformImageFilter<
-        FloatImageType, FloatImageType >   MapFilterType;
+      using MapFilterType = typename itk::GeneralizedDistanceTransformImageFilter<
+        FloatImageType, FloatImageType >;
       typename MapFilterType::Pointer mapVorFilter = MapFilterType::New();
 
       // timeCollector.Start( "Voronoi Distance Map" );
 
-      typedef itk::BinaryThresholdImageFilter<FloatImageType, FloatImageType>
-        Indicator;
+      using Indicator = itk::BinaryThresholdImageFilter<FloatImageType, FloatImageType>;
       typename Indicator::Pointer indicator2 = Indicator::New();
 
       indicator2->SetLowerThreshold( 0 );
@@ -558,8 +555,8 @@ MergeAdjacentImagesFilter< TImage >
       {
       // timeCollector.Start( "Voronoi Distance Map" );
 
-      typedef typename itk::SignedDanielssonDistanceMapImageFilter<
-        FloatImageType, FloatImageType>  SignedMapFilterType;
+      using SignedMapFilterType = typename itk::SignedDanielssonDistanceMapImageFilter<
+        FloatImageType, FloatImageType>;
       typename SignedMapFilterType::Pointer mapVorFilter =
         SignedMapFilterType::New();
 

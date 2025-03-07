@@ -48,13 +48,13 @@ class Optimizer1D : public Object
 {
 public:
 
-  typedef Optimizer1D                     Self;
-  typedef Object                          Superclass;
-  typedef Self *                          Pointer;
-  typedef const Self *                    ConstPointer;
+  using Self = Optimizer1D;
+  using Superclass = Object;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef UserFunction< double, double >  ValueFunctionType;
-  typedef UserFunction< double, double >  DerivativeFunctionType;
+  using ValueFunctionType = UserFunction< double, double >;
+  using DerivativeFunctionType = UserFunction< double, double >;
 
   /** Return the type of this object. */
   tubeTypeMacro( Optimizer1D );

@@ -50,15 +50,15 @@ class Spline1D : public Object
 {
 public:
 
-  typedef Spline1D                        Self;
-  typedef Object                          Superclass;
-  typedef Self *                          Pointer;
-  typedef const Self *                    ConstPointer;
+  using Self = Spline1D;
+  using Superclass = Object;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef vnl_vector< double >            VectorType;
-  typedef UserFunction< int, double >     ValueFunctionType;
-  typedef UserFunction< double, double >  OptimizerValueFunctionType;
-  typedef UserFunction< double, double >  OptimizerDerivativeFunctionType;
+  using VectorType = vnl_vector< double >;
+  using ValueFunctionType = UserFunction< int, double >;
+  using OptimizerValueFunctionType = UserFunction< double, double >;
+  using OptimizerDerivativeFunctionType = UserFunction< double, double >;
 
   /** Return the type of this object. */
   tubeTypeMacro( Spline1D );

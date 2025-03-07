@@ -54,21 +54,19 @@ int DoIt( int argc, char * argv[] )
   //   of this algorithm.
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef TPixel                                   InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension > InputImageType;
-  typedef itk::Image< unsigned short, VDimension > MaskImageType;
-  typedef itk::Image< float, VDimension >          BasisImageType;
+  using InputPixelType = TPixel;
+  using InputImageType = itk::Image< InputPixelType, VDimension >;
+  using MaskImageType = itk::Image< unsigned short, VDimension >;
+  using BasisImageType = itk::Image< float, VDimension >;
 
-  typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
-  typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;
-  typedef itk::ImageFileWriter< BasisImageType >   BasisImageWriterType;
+  using ImageReaderType = itk::ImageFileReader< InputImageType >;
+  using MaskReaderType = itk::ImageFileReader< MaskImageType >;
+  using BasisImageWriterType = itk::ImageFileWriter< BasisImageType >;
 
-  typedef itk::tube::FeatureVectorGenerator< InputImageType >
-    FeatureVectorGeneratorType;
+  using FeatureVectorGeneratorType = itk::tube::FeatureVectorGenerator< InputImageType >;
 
-  typedef itk::tube::BasisFeatureVectorGenerator< InputImageType,
-    MaskImageType >
-      BasisFeatureVectorGeneratorType;
+  using BasisFeatureVectorGeneratorType = itk::tube::BasisFeatureVectorGenerator< InputImageType,
+    MaskImageType >;
 
   typename FeatureVectorGeneratorType::Pointer fvGenerator =
     FeatureVectorGeneratorType::New();

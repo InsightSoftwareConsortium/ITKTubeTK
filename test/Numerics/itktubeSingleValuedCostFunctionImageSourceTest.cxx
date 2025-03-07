@@ -35,20 +35,20 @@ class ArthurDentCostFunction:
   public SingleValuedCostFunction
 {
 public:
-  /** Standard class typedefs. */
-  typedef ArthurDentCostFunction        Self;
-  typedef SingleValuedCostFunction      Superclass;
-  typedef SmartPointer< Self >          Pointer;
-  typedef SmartPointer< const Self >    ConstPointer;
+  /** Standard class type alias. */
+  using Self = ArthurDentCostFunction;
+  using Superclass = SingleValuedCostFunction;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ArthurDentCostFunction, SingleValuedCostFunction );
 
   itkNewMacro( Self );
 
-  typedef Superclass::MeasureType         MeasureType;
-  typedef Superclass::ParametersType      ParametersType;
-  typedef Superclass::ParametersValueType ParametersValueType;
+  using MeasureType = Superclass::MeasureType;
+  using ParametersType = Superclass::ParametersType;
+  using ParametersValueType = Superclass::ParametersValueType;
 
   virtual MeasureType GetValue( const ParametersType & parameters ) const
     override
@@ -92,19 +92,18 @@ int itktubeSingleValuedCostFunctionImageSourceTest( int argc, char * argv[] )
     }
   const char * outputCostFunctionImage = argv[1];
 
-  typedef float      FloatType;
+  using FloatType = float;
   const unsigned int Dimension = 3;
 
-  typedef itk::ArthurDentCostFunction CostFunctionType;
+  using CostFunctionType = itk::ArthurDentCostFunction;
   CostFunctionType::Pointer costFunction = CostFunctionType::New();
 
-  typedef itk::tube::SingleValuedCostFunctionImageSource< CostFunctionType, Dimension >
-    CostFunctionImageSourceType;
+  using CostFunctionImageSourceType = itk::tube::SingleValuedCostFunctionImageSource< CostFunctionType, Dimension >;
   CostFunctionImageSourceType::Pointer costFunctionImageSource =
     CostFunctionImageSourceType::New();
   costFunctionImageSource->SetCostFunction( costFunction );
 
-  typedef CostFunctionImageSourceType::ParametersType ParametersType;
+  using ParametersType = CostFunctionImageSourceType::ParametersType;
 
   ParametersType parametersLowerBound( Dimension );
   parametersLowerBound[0] = -5.0;
@@ -124,14 +123,14 @@ int itktubeSingleValuedCostFunctionImageSourceTest( int argc, char * argv[] )
   parametersStep[2] = 0.5;
   costFunctionImageSource->SetParametersStep( parametersStep );
 
-  typedef itk::Image< FloatType, Dimension > OutputImageType;
+  using OutputImageType = itk::Image< FloatType, Dimension >;
 
-  typedef itk::CastImageFilter< CostFunctionImageSourceType::OutputImageType,
-    OutputImageType > CastImageFilterType;
+  using CastImageFilterType = itk::CastImageFilter< CostFunctionImageSourceType::OutputImageType,
+    OutputImageType >;
   CastImageFilterType::Pointer castImageFilter = CastImageFilterType::New();
   castImageFilter->SetInput( costFunctionImageSource->GetOutput() );
 
-  typedef itk::ImageFileWriter< OutputImageType > WriterType;
+  using WriterType = itk::ImageFileWriter< OutputImageType >;
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputCostFunctionImage );
   writer->SetInput( castImageFilter->GetOutput() );

@@ -472,8 +472,8 @@ PDFSegmenterParzen< TImage, TLabelMap >
   //
   if( true )
     {
-    typedef itk::DiscreteGaussianImageFilter<
-      HistogramImageType, HistogramImageType > HistogramBlurGenType;
+    using HistogramBlurGenType = itk::DiscreteGaussianImageFilter<
+      HistogramImageType, HistogramImageType >;
 
     for( unsigned int c = 0; c < numClasses; c++ )
       {
@@ -487,8 +487,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
         blurFilter->Update();
         m_InClassHistogram[c] = blurFilter->GetOutput();
 
-        typedef itk::ThresholdImageFilter< HistogramImageType >
-          ThresholdFilterType;
+        using ThresholdFilterType = itk::ThresholdImageFilter< HistogramImageType >;
         typename ThresholdFilterType::Pointer thresholdFilter =
           ThresholdFilterType::New();
         thresholdFilter->SetInput( m_InClassHistogram[c] );
@@ -498,8 +497,8 @@ PDFSegmenterParzen< TImage, TLabelMap >
         m_InClassHistogram[c] = thresholdFilter->GetOutput();
         }
 
-      typedef itk::NormalizeToConstantImageFilter< HistogramImageType,
-        HistogramImageType > NormalizeImageFilterType;
+      using NormalizeImageFilterType = itk::NormalizeToConstantImageFilter< HistogramImageType,
+        HistogramImageType >;
       typename NormalizeImageFilterType::Pointer normFilter =
         NormalizeImageFilterType::New();
       normFilter->SetInput( m_InClassHistogram[c] );
@@ -550,8 +549,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
 
   unsigned int numClasses = this->m_ObjectIdList.size();
 
-  typedef itk::ImageRegionIterator< HistogramImageType >
-    PDFIteratorType;
+  using PDFIteratorType = itk::ImageRegionIterator< HistogramImageType >;
   std::vector< PDFIteratorType * > pdfIter( numClasses );
   for( unsigned int i = 0; i < numClasses; i++ )
     {

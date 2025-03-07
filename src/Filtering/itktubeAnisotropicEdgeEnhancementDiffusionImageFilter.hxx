@@ -81,19 +81,15 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   StructureTensorFilter->Update();
 
   // Step 1.2: Identify the eigenvectors of the structure tensor
-  typedef  Matrix< double, 3, 3>
-    EigenVectorMatrixType;
-  typedef  Image< EigenVectorMatrixType, 3>
-    EigenVectorImageType;
-  typedef  typename itk::Image< EigenValueArrayType, 3>
-    EigenValueImageType;
+  using EigenVectorMatrixType = Matrix< double, 3, 3>;
+  using EigenVectorImageType = Image< EigenVectorMatrixType, 3>;
+  using EigenValueImageType = typename itk::Image< EigenValueArrayType, 3>;
 
   typedef  typename StructureTensorFilterType::OutputImageType
     SymmetricSecondRankTensorImageType;
-  typedef  SymmetricEigenVectorAnalysisImageFilter<
+  using EigenVectorAnalysisFilterType = SymmetricEigenVectorAnalysisImageFilter<
     SymmetricSecondRankTensorImageType, EigenValueImageType,
-    EigenVectorImageType>
-    EigenVectorAnalysisFilterType;
+    EigenVectorImageType>;
 
   typename EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter
     = EigenVectorAnalysisFilterType::New();
@@ -106,9 +102,8 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   eigenVectorAnalysisFilter->Update();
 
   //Step 1.3: Compute the eigenvalues
-  typedef SymmetricEigenAnalysisImageFilter<SymmetricSecondRankTensorImageType,
-    EigenValueImageType>
-    EigenAnalysisFilterType;
+  using EigenAnalysisFilterType = SymmetricEigenAnalysisImageFilter<SymmetricSecondRankTensorImageType,
+    EigenValueImageType>;
 
   typename EigenAnalysisFilterType::Pointer eigenAnalysisFilter =
     EigenAnalysisFilterType::New();
@@ -121,8 +116,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 
   /* Compute the gradient magnitude. This is required to set Lambda1 */
 
-  typedef itk::GradientMagnitudeRecursiveGaussianImageFilter<InputImageType>
-    GradientMagnitudeFilterType;
+  using GradientMagnitudeFilterType = itk::GradientMagnitudeRecursiveGaussianImageFilter<InputImageType>;
 
   typename GradientMagnitudeFilterType::Pointer gradientMagnitudeFilter =
     GradientMagnitudeFilterType::New();
@@ -147,8 +141,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   eigenVectorImageIterator.GoToBegin();
 
   //Iterator for the diffusion tensor image
-  typedef itk::ImageRegionIterator< DiffusionTensorImageType >
-    DiffusionTensorIteratorType;
+  using DiffusionTensorIteratorType = itk::ImageRegionIterator< DiffusionTensorImageType >;
   DiffusionTensorIteratorType it( this->GetDiffusionTensorImage(),
     this->GetDiffusionTensorImage()->GetLargestPossibleRegion() );
 

@@ -41,10 +41,10 @@ class PDFSegmenterBase : public ProcessObject
 {
 public:
 
-  typedef PDFSegmenterBase                     Self;
-  typedef ProcessObject                        Superclass;
-  typedef SmartPointer< Self >                 Pointer;
-  typedef SmartPointer< const Self >           ConstPointer;
+  using Self = PDFSegmenterBase;
+  using Superclass = ProcessObject;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkTypeMacro( PDFSegmenterBase, ProcessObject );
 
@@ -53,9 +53,9 @@ public:
   //
   // Template Args Typedefs
   //
-  typedef TImage                               InputImageType;
+  using InputImageType = TImage;
 
-  typedef TLabelMap                            LabelMapType;
+  using LabelMapType = TLabelMap;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
@@ -63,8 +63,7 @@ public:
   //
   // Base Typedefs
   //
-  typedef FeatureVectorGenerator< InputImageType >
-                                               FeatureVectorGeneratorType;
+  using FeatureVectorGeneratorType = FeatureVectorGenerator< InputImageType >;
   typedef typename FeatureVectorGeneratorType::FeatureValueType
                                                FeatureValueType;
   typedef typename FeatureVectorGeneratorType::FeatureVectorType
@@ -72,19 +71,18 @@ public:
   typedef typename FeatureVectorGeneratorType::FeatureImageType
                                                FeatureImageType;
 
-  typedef typename LabelMapType::PixelType     LabelMapPixelType;
+  using LabelMapPixelType = typename LabelMapType::PixelType;
 
-  typedef LabelMapPixelType                    ObjectIdType;
-  typedef std::vector< ObjectIdType >          ObjectIdListType;
+  using ObjectIdType = LabelMapPixelType;
+  using ObjectIdListType = std::vector< ObjectIdType >;
 
-  typedef float                                ProbabilityPixelType;
-  typedef std::vector< ProbabilityPixelType >  ProbabilityVectorType;
-  typedef Image< ProbabilityPixelType, TImage::ImageDimension >
-                                               ProbabilityImageType;
+  using ProbabilityPixelType = float;
+  using ProbabilityVectorType = std::vector< ProbabilityPixelType >;
+  using ProbabilityImageType = Image< ProbabilityPixelType, TImage::ImageDimension >;
 
-  typedef std::vector< double >                VectorDoubleType;
-  typedef std::vector< int >                   VectorIntType;
-  typedef std::vector< unsigned int >          VectorUIntType;
+  using VectorDoubleType = std::vector< double >;
+  using VectorIntType = std::vector< int >;
+  using VectorUIntType = std::vector< unsigned int >;
 
   //
   // Methods
@@ -186,11 +184,10 @@ protected:
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
-  typedef std::vector< typename ProbabilityImageType::Pointer >
-                                              ProbabilityImageVectorType;
-  typedef std::vector< ProbabilityPixelType > ListVectorType;
-  typedef std::vector< ListVectorType >       ListSampleType;
-  typedef std::vector< ListSampleType >       ClassListSampleType;
+  using ProbabilityImageVectorType = std::vector< typename ProbabilityImageType::Pointer >;
+  using ListVectorType = std::vector< ProbabilityPixelType >;
+  using ListSampleType = std::vector< ListVectorType >;
+  using ClassListSampleType = std::vector< ListSampleType >;
 
   ClassListSampleType                           m_InClassList;
   ListSampleType                                m_OutClassList;

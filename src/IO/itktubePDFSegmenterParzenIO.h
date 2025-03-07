@@ -49,9 +49,9 @@ class PDFSegmenterParzenIO
 {
 public:
 
-  typedef PDFSegmenterParzenIO< TImage, TLabelMap >  PDFSegmenterIOType;
+  using PDFSegmenterIOType = PDFSegmenterParzenIO< TImage, TLabelMap >;
 
-  typedef PDFSegmenterParzen< TImage, TLabelMap >    PDFSegmenterType;
+  using PDFSegmenterType = PDFSegmenterParzen< TImage, TLabelMap >;
 
   PDFSegmenterParzenIO( void );
 

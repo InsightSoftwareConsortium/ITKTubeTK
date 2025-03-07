@@ -48,18 +48,18 @@ class MergeAdjacentImages:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef MergeAdjacentImages                                  Self;
-  typedef itk::ProcessObject                                   Superclass;
-  typedef itk::SmartPointer< Self >                            Pointer;
-  typedef itk::SmartPointer< const Self >                      ConstPointer;
+  /** Standard class type alias. */
+  using Self = MergeAdjacentImages;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef TImage                                               ImageType;
-  typedef typename TImage::PixelType                           PixelType;
+  using ImageType = TImage;
+  using PixelType = typename TImage::PixelType;
 
-  typedef itk::tube::MergeAdjacentImagesFilter< ImageType >    FilterType;
-  typedef typename FilterType::PaddingType                     PaddingType;
-  typedef typename FilterType::TransformType                   TransformType;
+  using FilterType = itk::tube::MergeAdjacentImagesFilter< ImageType >;
+  using PaddingType = typename FilterType::PaddingType;
+  using TransformType = typename FilterType::TransformType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

@@ -44,42 +44,42 @@ class BasisFeatureVectorGenerator : public FeatureVectorGenerator< TImage >
 {
 public:
 
-  typedef BasisFeatureVectorGenerator            Self;
-  typedef FeatureVectorGenerator< TImage >       Superclass;
-  typedef SmartPointer< Self >                   Pointer;
-  typedef SmartPointer< const Self >             ConstPointer;
+  using Self = BasisFeatureVectorGenerator;
+  using Superclass = FeatureVectorGenerator< TImage >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkTypeMacro( BasisFeatureVectorGenerator, FeatureVectorGenerator );
 
   itkNewMacro( Self );
 
   //
-  typedef typename Superclass::ImageType         ImageType;
+  using ImageType = typename Superclass::ImageType;
 
-  typedef TLabelMap                              LabelMapType;
+  using LabelMapType = TLabelMap;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
-  typedef typename Superclass::IndexType         IndexType;
+  using IndexType = typename Superclass::IndexType;
 
-  typedef typename Superclass::FeatureValueType  FeatureValueType;
-  typedef typename Superclass::FeatureVectorType FeatureVectorType;
-  typedef typename Superclass::FeatureImageType  FeatureImageType;
+  using FeatureValueType = typename Superclass::FeatureValueType;
+  using FeatureVectorType = typename Superclass::FeatureVectorType;
+  using FeatureImageType = typename Superclass::FeatureImageType;
 
-  typedef FeatureVectorGenerator< TImage >       FeatureVectorGeneratorType;
+  using FeatureVectorGeneratorType = FeatureVectorGenerator< TImage >;
 
-  typedef typename TLabelMap::PixelType          ObjectIdType;
-  typedef std::vector< ObjectIdType >            ObjectIdListType;
+  using ObjectIdType = typename TLabelMap::PixelType;
+  using ObjectIdListType = std::vector< ObjectIdType >;
 
-  typedef typename Superclass::ValueType         ValueType;
-  typedef typename Superclass::ValueListType     ValueListType;
+  using ValueType = typename Superclass::ValueType;
+  using ValueListType = typename Superclass::ValueListType;
 
-  typedef vnl_vector< ValueType >                VectorType;
-  typedef std::vector< VectorType >              VectorListType;
+  using VectorType = vnl_vector< ValueType >;
+  using VectorListType = std::vector< VectorType >;
 
-  typedef vnl_matrix< ValueType >                MatrixType;
-  typedef std::vector< MatrixType >              MatrixListType;
+  using MatrixType = vnl_matrix< ValueType >;
+  using MatrixListType = std::vector< MatrixType >;
 
   void         SetInputFeatureVectorGenerator( FeatureVectorGeneratorType
                  * fGen );

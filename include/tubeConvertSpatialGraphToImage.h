@@ -43,19 +43,19 @@ class ConvertSpatialGraphToImage:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ConvertSpatialGraphToImage      Self;
-  typedef ProcessObject                   Superclass;
-  typedef itk::SmartPointer< Self >       Pointer;
-  typedef itk::SmartPointer< const Self > ConstPointer;
+  /** Standard class type alias. */
+  using Self = ConvertSpatialGraphToImage;
+  using Superclass = ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef itk::tube::ConvertSpatialGraphToImageFilter
-    < TInputImage, TOutputImage >         FilterType;
+  using FilterType = itk::tube::ConvertSpatialGraphToImageFilter
+    < TInputImage, TOutputImage >;
 
-  typedef typename FilterType::InputImageType      InputImageType;
-  typedef typename FilterType::InputImagePointer   InputImagePointer;
-  typedef typename FilterType::OutputImageType     OutputImageType;
-  typedef typename FilterType::OutputImagePointer  OutputImagePointer;
+  using InputImageType = typename FilterType::InputImageType;
+  using InputImagePointer = typename FilterType::InputImagePointer;
+  using OutputImageType = typename FilterType::OutputImageType;
+  using OutputImagePointer = typename FilterType::OutputImagePointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

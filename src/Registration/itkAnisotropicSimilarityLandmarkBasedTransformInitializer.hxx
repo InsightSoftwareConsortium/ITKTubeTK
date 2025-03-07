@@ -286,10 +286,10 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<
           vnl_matrix< double > eigenVectors( 4, 4 );
           vnl_vector< double > eigenValues( 4 );
 
-          typedef itk::SymmetricEigenAnalysis<
+          using SymmetricEigenAnalysisType = itk::SymmetricEigenAnalysis<
             itk::Matrix< double, 4, 4 >,
             vnl_vector< double >,
-            vnl_matrix< double > > SymmetricEigenAnalysisType;
+            vnl_matrix< double > >;
           SymmetricEigenAnalysisType symmetricEigenSystem( 4 );
 
           symmetricEigenSystem.ComputeEigenValuesAndVectors( N,
@@ -645,10 +645,10 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<
         vnl_matrix< double > eigenVectors( 4, 4 );
         vnl_vector< double > eigenValues( 4 );
 
-        typedef itk::SymmetricEigenAnalysis<
+        using SymmetricEigenAnalysisType = itk::SymmetricEigenAnalysis<
           itk::Matrix< double, 4, 4 >,
           vnl_vector< double >,
-          vnl_matrix< double > > SymmetricEigenAnalysisType;
+          vnl_matrix< double > >;
         SymmetricEigenAnalysisType symmetricEigenSystem( 4 );
 
         symmetricEigenSystem.ComputeEigenValuesAndVectors( N,
@@ -710,8 +710,8 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<
       Rigid2DTransformType *transform = dynamic_cast<
         Rigid2DTransformType * >( this->m_Transform.GetPointer() );
 
-      typedef typename Rigid2DTransformType::OutputVectorType VectorType;
-      typedef typename Rigid2DTransformType::OutputPointType  PointType;
+      using VectorType = typename Rigid2DTransformType::OutputVectorType;
+      using PointType = typename Rigid2DTransformType::OutputPointType;
 
       // Initialize the transform to identity
       transform->SetIdentity();

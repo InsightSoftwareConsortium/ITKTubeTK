@@ -48,7 +48,7 @@ void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::ComputeInputImageFFT()
 {
-  typedef PadImageFilter< InputImageType, RealImageType >   PadFilterType;
+  using PadFilterType = PadImageFilter< InputImageType, RealImageType >;
   typename PadFilterType::Pointer padFilter = PadFilterType::New();
   padFilter->SetInput( this->GetInput() );
   padFilter->SetGreatestPrimeFactor( 5 );
@@ -142,8 +142,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   iFFTFilter->SetInput( m_ConvolvedImageFFT );
   iFFTFilter->Update();
 
-  typedef RegionFromReferenceImageFilter< RealImageType, TOutputImage >
-    RegionFromFilterType;
+  using RegionFromFilterType = RegionFromReferenceImageFilter< RealImageType, TOutputImage >;
   typename RegionFromFilterType::Pointer regionFrom =
     RegionFromFilterType::New();
 

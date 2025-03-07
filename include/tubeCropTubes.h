@@ -39,18 +39,18 @@ class CropTubes:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef CropTubes                                Self;
-  typedef itk::ProcessObject                       Superclass;
-  typedef itk::SmartPointer< Self >                Pointer;
-  typedef itk::SmartPointer< const Self >          ConstPointer;
-  typedef itk::tube::CropTubesFilter< VDimension > FilterType;
+  /** Standard class type alias. */
+  using Self = CropTubes;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
+  using FilterType = itk::tube::CropTubesFilter< VDimension >;
 
-  typedef typename FilterType::TubeGroupType       TubeGroupType;
-  typedef typename TubeGroupType::Pointer          TubeGroupPointer;
-  typedef typename FilterType::ImageType           ImageType;
-  typedef typename FilterType::PointType           PointType;
-  typedef typename FilterType::VectorType          VectorType;
+  using TubeGroupType = typename FilterType::TubeGroupType;
+  using TubeGroupPointer = typename TubeGroupType::Pointer;
+  using ImageType = typename FilterType::ImageType;
+  using PointType = typename FilterType::PointType;
+  using VectorType = typename FilterType::VectorType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

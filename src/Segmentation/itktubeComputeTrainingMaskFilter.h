@@ -52,12 +52,12 @@ class ComputeTrainingMaskFilter:
     TLabelMap >
 {
 public:
-  typedef ComputeTrainingMaskFilter                       Self;
-  typedef ImageToImageFilter<TInputImage, TLabelMap>      Superclass;
-  typedef SmartPointer<Self>                              Pointer;
-  typedef SmartPointer<const Self>                        ConstPointer;
-  typedef TInputImage                                     ImageType;
-  typedef TLabelMap                                       LabelMapType;
+  using Self = ComputeTrainingMaskFilter;
+  using Superclass = ImageToImageFilter<TInputImage, TLabelMap>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
+  using ImageType = TInputImage;
+  using LabelMapType = TLabelMap;
 
   itkStaticConstMacro( InputImageDimension, unsigned int,
                       TInputImage::ImageDimension );
@@ -81,22 +81,16 @@ protected:
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
-  typedef itk::BinaryBallStructuringElement< short,
-    ImageType::ImageDimension > BallType;
-  typedef itk::DilateObjectMorphologyImageFilter< ImageType, ImageType,
-    BallType >                  DilateFilterType;
-  typedef itk::BinaryThinningImageFilter< ImageType, ImageType >
-                                BinaryThinningFilterType;
-  typedef itk::BinaryThresholdImageFilter< ImageType, ImageType >
-                                ThresholdFilterType;
-  typedef itk::SubtractImageFilter<ImageType, ImageType, ImageType>
-                                SubtractFilterType;
-  typedef itk::MultiplyImageFilter<ImageType, ImageType, ImageType>
-                                MultiplyFilterType;
-  typedef itk::AddImageFilter<ImageType, ImageType, ImageType>
-                                AddFilterType;
-  typedef itk::CastImageFilter< ImageType, LabelMapType >
-                                CastFilterType;
+  using BallType = itk::BinaryBallStructuringElement< short,
+    ImageType::ImageDimension >;
+  using DilateFilterType = itk::DilateObjectMorphologyImageFilter< ImageType, ImageType,
+    BallType >;
+  using BinaryThinningFilterType = itk::BinaryThinningImageFilter< ImageType, ImageType >;
+  using ThresholdFilterType = itk::BinaryThresholdImageFilter< ImageType, ImageType >;
+  using SubtractFilterType = itk::SubtractImageFilter<ImageType, ImageType, ImageType>;
+  using MultiplyFilterType = itk::MultiplyImageFilter<ImageType, ImageType, ImageType>;
+  using AddFilterType = itk::AddImageFilter<ImageType, ImageType, ImageType>;
+  using CastFilterType = itk::CastImageFilter< ImageType, LabelMapType >;
 
   ComputeTrainingMaskFilter( const Self& );
   void operator=( const Self& );

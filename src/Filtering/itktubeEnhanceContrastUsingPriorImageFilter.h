@@ -47,12 +47,12 @@ class EnhanceContrastUsingPriorImageFilter
   Image< TPixel, VDimension > >
 {
 public:
-  /** Standard class typedefs. */
-  typedef Image< TPixel, VDimension >                     ImageType;
-  typedef EnhanceContrastUsingPriorImageFilter            Self;
-  typedef ImageToImageFilter< ImageType, ImageType >      Superclass;
-  typedef SmartPointer< Self >                            Pointer;
-  typedef SmartPointer< const Self >                      ConstPointer;
+  /** Standard class type alias. */
+  using ImageType = Image< TPixel, VDimension >;
+  using Self = EnhanceContrastUsingPriorImageFilter;
+  using Superclass = ImageToImageFilter< ImageType, ImageType >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -60,12 +60,11 @@ public:
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( EnhanceContrastUsingPriorImageFilter, ImageToImageFilter );
 
-  /** Some convenient typedefs. */
-  typedef itk::tube::ContrastCostFunction< TPixel, VDimension >
-                                                ContrastCostFunctionType;
-  typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
-  typedef itk::FRPROptimizer                    OptimizerType;
-  typedef itk::ImageRegionIterator< ImageType > ImageIteratorType;
+  /** Some convenient type alias. */
+  using ContrastCostFunctionType = itk::tube::ContrastCostFunction< TPixel, VDimension >;
+  using InitialOptimizerType = itk::OnePlusOneEvolutionaryOptimizer;
+  using OptimizerType = itk::FRPROptimizer;
+  using ImageIteratorType = itk::ImageRegionIterator< ImageType >;
 
   /** Set/Get input Mask Image */
   itkSetObjectMacro( InputMaskImage, ImageType );

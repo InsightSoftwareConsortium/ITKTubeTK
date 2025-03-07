@@ -142,10 +142,10 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 
   // shapedneighborhood iter, zeroflux boundary condition
   // division into faces and inner region
-  typedef ZeroFluxNeumannBoundaryCondition<PrecisionImageType>     BT;
-  typedef ConstShapedNeighborhoodIterator<PrecisionImageType, BT>  NT;
-  typedef typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<
-    PrecisionImageType>                                            FT;
+  using BT = ZeroFluxNeumannBoundaryCondition<PrecisionImageType>;
+  using NT = ConstShapedNeighborhoodIterator<PrecisionImageType, BT>;
+  using FT = typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<
+    PrecisionImageType>;
 
   BT                      b;
   typename NT::RadiusType r;
@@ -338,8 +338,8 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 
   for( unsigned int i = 0; i < m_Scales.size(); ++i )
     {
-    typedef HessianRecursiveGaussianImageFilter<
-      PrecisionImageType > HessianType;
+    using HessianType = HessianRecursiveGaussianImageFilter<
+      PrecisionImageType >;
     typename HessianType::Pointer hessian = HessianType::New();
     hessian->SetInput( im );
     hessian->SetNormalizeAcrossScale( true );
@@ -500,7 +500,7 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 
   ProgressReporter progress( this, 0, m_Iterations+4 );
 
-  typedef MinimumMaximumImageFilter<ImageType> MinMaxType;
+  using MinMaxType = MinimumMaximumImageFilter<ImageType>;
   typename MinMaxType::Pointer minmax = MinMaxType::New();
 
   minmax->SetInput( this->GetInput() );
@@ -546,7 +546,7 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
     }
 
   // cast to precision
-  typedef CastImageFilter<ImageType, PrecisionImageType> CT;
+  using CT = CastImageFilter<ImageType, PrecisionImageType>;
   typename CT::Pointer cast = CT::New();
   cast->SetInput( this->GetInput() );
   cast->Update();
@@ -568,7 +568,7 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
     progress.CompletedPixel();
     }
 
-  typedef MinimumMaximumImageFilter<PrecisionImageType> MMT;
+  using MMT = MinimumMaximumImageFilter<PrecisionImageType>;
   typename MMT::Pointer mm = MMT::New();
   mm->SetInput( ci );
   mm->Update();
@@ -586,7 +586,7 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 
   // cast back to pixel type
   this->AllocateOutputs();
-  typedef CastImageFilter<PrecisionImageType, ImageType> CTI;
+  using CTI = CastImageFilter<PrecisionImageType, ImageType>;
   typename CTI::Pointer casti = CTI::New();
   casti->SetInput( ci );
   casti->GraftOutput( this->GetOutput() );

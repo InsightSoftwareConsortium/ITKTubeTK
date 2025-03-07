@@ -52,19 +52,19 @@ class StructureTensorRecursiveGaussianImageFilter
   : public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
-  /** Standard class typedefs. */
-  typedef StructureTensorRecursiveGaussianImageFilter     Self;
-  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
-  typedef SmartPointer< Self >                            Pointer;
-  typedef SmartPointer< const Self >                      ConstPointer;
+  /** Standard class type alias. */
+  using Self = StructureTensorRecursiveGaussianImageFilter;
+  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
   /** Pixel Type of the input image */
-  typedef TInputImage                                     InputImageType;
-  typedef typename TInputImage::PixelType                 PixelType;
-  typedef typename NumericTraits<PixelType>::RealType     RealType;
+  using InputImageType = TInputImage;
+  using PixelType = typename TInputImage::PixelType;
+  using RealType = typename NumericTraits<PixelType>::RealType;
 
   /** Image dimension. */
   itkStaticConstMacro( ImageDimension,
@@ -74,35 +74,31 @@ public:
   /** Define the image type for internal computations
       RealType is usually 'double' in NumericTraits.
       Here we prefer float in order to save memory. */
-  typedef float                                           InternalRealType;
-  typedef Image< InternalRealType, itkGetStaticConstMacro( ImageDimension ) >
-      RealImageType;
+  using InternalRealType = float;
+  using RealImageType = Image< InternalRealType, itkGetStaticConstMacro( ImageDimension ) >;
 
   /**  Output Image Nth Element Adaptor
    *  This adaptor allows to use conventional scalar
    *  smoothing filters to compute each one of the
    *  components of the gradient image pixels. */
-  typedef NthElementImageAdaptor< TOutputImage, InternalRealType >
-      OutputImageAdaptorType;
+  using OutputImageAdaptorType = NthElementImageAdaptor< TOutputImage, InternalRealType >;
   typedef typename OutputImageAdaptorType::Pointer
       OutputImageAdaptorPointer;
 
   /**  Smoothing filter type */
-  typedef RecursiveGaussianImageFilter< RealImageType, RealImageType >
-      GaussianFilterType;
+  using GaussianFilterType = RecursiveGaussianImageFilter< RealImageType, RealImageType >;
   typedef typename GaussianFilterType::Pointer
       GaussianFilterPointer;
 
   /**  Derivative filter type, it will be the first in the pipeline  */
-  typedef RecursiveGaussianImageFilter< InputImageType, RealImageType >
-      DerivativeFilterType;
+  using DerivativeFilterType = RecursiveGaussianImageFilter< InputImageType, RealImageType >;
   typedef typename DerivativeFilterType::Pointer
       DerivativeFilterPointer;
 
   /** Type of the output image */
-  typedef TOutputImage                                    OutputImageType;
-  typedef typename OutputImageType::Pointer               OutputImagePointer;
-  typedef typename OutputImageType::PixelType             OutputPixelType;
+  using OutputImageType = TOutputImage;
+  using OutputImagePointer = typename OutputImageType::Pointer;
+  using OutputPixelType = typename OutputImageType::PixelType;
   typedef typename PixelTraits< OutputPixelType >::ValueType
       OutputComponentType;
 

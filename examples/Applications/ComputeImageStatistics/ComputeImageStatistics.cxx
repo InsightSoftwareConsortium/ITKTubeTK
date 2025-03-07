@@ -57,10 +57,10 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef itk::Image< TPixel, VDimension >         MaskType;
-  typedef itk::Image< float, VDimension >          VolumeType;
-  typedef itk::ImageFileReader< VolumeType >       VolumeReaderType;
-  typedef itk::ImageFileReader< MaskType >         MaskReaderType;
+  using MaskType = itk::Image< TPixel, VDimension >;
+  using VolumeType = itk::Image< float, VDimension >;
+  using VolumeReaderType = itk::ImageFileReader< VolumeType >;
+  using MaskReaderType = itk::ImageFileReader< MaskType >;
 
   // Load mask
   timeCollector.Start( "Load mask" );
@@ -103,8 +103,7 @@ int DoIt( int argc, char * argv[] )
   // Compute statistics
   timeCollector.Start( "Connected Components" );
 
-  typedef itk::tube::ComputeImageStatistics< TPixel, VDimension >
-    FilterType;
+  using FilterType = itk::tube::ComputeImageStatistics< TPixel, VDimension >;
   typename FilterType::Pointer statisticsCalculator = FilterType::New();
   statisticsCalculator->SetInput( volumeReader->GetOutput() );
   statisticsCalculator->SetInputMask( maskReader->GetOutput() );
@@ -118,7 +117,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Stop( "Connected Components" );
 
-  typedef itk::ImageFileWriter< VolumeType  >   ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< VolumeType  >;
   //Write output
   timeCollector.Start( "Save data" );
   typename ImageWriterType::Pointer writer = ImageWriterType::New();

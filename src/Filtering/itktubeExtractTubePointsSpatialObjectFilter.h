@@ -56,23 +56,21 @@ template< class TTubeSpatialObject >
 class ExtractTubePointsSpatialObjectFilter : public ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ExtractTubePointsSpatialObjectFilter Self;
-  typedef ProcessObject                        Superclass;
-  typedef SmartPointer< Self >                 Pointer;
-  typedef SmartPointer< const Self >           ConstPointer;
+  /** Standard class type alias. */
+  using Self = ExtractTubePointsSpatialObjectFilter;
+  using Superclass = ProcessObject;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef TTubeSpatialObject                   TubeSpatialObjectType;
+  using TubeSpatialObjectType = TTubeSpatialObject;
 
-  typedef typename TTubeSpatialObject::TubePointType   TubePointType;
+  using TubePointType = typename TTubeSpatialObject::TubePointType;
 
-  typedef VectorContainer< IdentifierType, TubePointType > PointsContainerType;
+  using PointsContainerType = VectorContainer< IdentifierType, TubePointType >;
 
-  typedef DataObjectDecorator< PointsContainerType >
-                                               PointsContainerDecoratorType;
+  using PointsContainerDecoratorType = DataObjectDecorator< PointsContainerType >;
 
-  typedef GroupSpatialObject< TubeSpatialObjectType::ObjectDimension >
-                                               GroupSpatialObjectType;
+  using GroupSpatialObjectType = GroupSpatialObject< TubeSpatialObjectType::ObjectDimension >;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ExtractTubePointsSpatialObjectFilter, ProcessObject );

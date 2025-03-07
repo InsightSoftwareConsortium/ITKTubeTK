@@ -41,11 +41,11 @@ class WriteTubesAsPolyData:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef WriteTubesAsPolyData                         Self;
-  typedef itk::ProcessObject                           Superclass;
-  typedef itk::SmartPointer< Self >                    Pointer;
-  typedef itk::SmartPointer< const Self >              ConstPointer;
+  /** Standard class type alias. */
+  using Self = WriteTubesAsPolyData;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -56,8 +56,8 @@ public:
   /***/
   /***/
   /***/
-  typedef itk::GroupSpatialObject<3>       GroupSpatialObjectType;
-  typedef itk::TubeSpatialObject<3>        TubeSpatialObjectType;
+  using GroupSpatialObjectType = itk::GroupSpatialObject<3>;
+  using TubeSpatialObjectType = itk::TubeSpatialObject<3>;
 
   /** Set the source image. */
   void SetInput( GroupSpatialObjectType * grp )

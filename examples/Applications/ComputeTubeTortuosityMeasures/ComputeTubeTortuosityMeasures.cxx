@@ -70,14 +70,13 @@ int DoIt( int argc, char * argv[] )
   // The timeCollector to perform basic profiling of algorithmic components
   itk::TimeProbesCollectorBase timeCollector;
 
-  // typedefs
-  typedef itk::TubeSpatialObject< VDimension >        TubeType;
-  typedef itk::SpatialObjectReader< VDimension >      TubesReaderType;
-  typedef itk::GroupSpatialObject< VDimension >       TubeGroupType;
-  typedef typename TubeGroupType::ChildrenListPointer TubeListPointerType;
+  // type alias
+  using TubeType = itk::TubeSpatialObject< VDimension >;
+  using TubesReaderType = itk::SpatialObjectReader< VDimension >;
+  using TubeGroupType = itk::GroupSpatialObject< VDimension >;
+  using TubeListPointerType = typename TubeGroupType::ChildrenListPointer;
 
-  typedef itk::tube::TortuositySpatialObjectFilter< TubeType >
-    TortuosityFilterType;
+  using TortuosityFilterType = itk::tube::TortuositySpatialObjectFilter< TubeType >;
 
   // Load TRE File
   timeCollector.Start( "Loading Input TRE File" );

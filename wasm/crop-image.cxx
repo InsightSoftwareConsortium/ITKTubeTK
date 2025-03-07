@@ -68,7 +68,7 @@ public:
 
     const unsigned int Dimension = inputVolume.Get()->GetImageDimension();
 
-    typedef tube::CropImage< ImageType, ImageType > CropFilterType;
+    using CropFilterType = tube::CropImage< ImageType, ImageType >;
     typename CropFilterType::Pointer cropFilter = CropFilterType::New();
 
     cropFilter->SetInput( inputVolume.Get() );

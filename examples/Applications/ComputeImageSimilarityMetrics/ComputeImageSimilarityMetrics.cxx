@@ -43,11 +43,11 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  // typedefs
-  typedef TPixel                                              PixelType;
-  typedef itk::Image< PixelType, VDimension >                 ImageType;
-  typedef itk::ImageFileReader< ImageType >                   ReaderType;
-  typedef tube::ComputeImageSimilarityMetrics< ImageType >    FilterType;
+  // type alias
+  using PixelType = TPixel;
+  using ImageType = itk::Image< PixelType, VDimension >;
+  using ReaderType = itk::ImageFileReader< ImageType >;
+  using FilterType = tube::ComputeImageSimilarityMetrics< ImageType >;
 
   // read input image 1
   typename ReaderType::Pointer reader1 = ReaderType::New();

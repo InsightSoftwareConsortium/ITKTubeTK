@@ -82,14 +82,14 @@ class TubeEnhancingDiffusion2DImageFilter
 
 public:
 
-  typedef float                                           Precision;
-  typedef Image<TPixel, VDimension>                       ImageType;
-  typedef Image<Precision, VDimension>                    PrecisionImageType;
+  using Precision = float;
+  using ImageType = Image<TPixel, VDimension>;
+  using PrecisionImageType = Image<Precision, VDimension>;
 
-  typedef TubeEnhancingDiffusion2DImageFilter             Self;
-  typedef ImageToImageFilter<ImageType, ImageType>        Superclass;
-  typedef SmartPointer< Self >                            Pointer;
-  typedef SmartPointer< const Self >                      ConstPointer;
+  using Self = TubeEnhancingDiffusion2DImageFilter;
+  using Superclass = ImageToImageFilter<ImageType, ImageType>;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkNewMacro( Self );
   itkTypeMacro( TubeEnhancingDiffusion2DImageFilter, ImageToImageFilter );

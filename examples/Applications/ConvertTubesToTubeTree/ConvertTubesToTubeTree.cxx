@@ -69,8 +69,8 @@ int DoIt( int argc, char * argv[] )
   // Load TRE File
   tubeStandardOutputMacro( << "\n>> Loading TRE File" );
 
-  typedef itk::SpatialObjectReader< VDimension > TubesReaderType;
-  typedef itk::GroupSpatialObject< VDimension >  TubeGroupType;
+  using TubesReaderType = itk::SpatialObjectReader< VDimension >;
+  using TubeGroupType = itk::GroupSpatialObject< VDimension >;
 
   timeCollector.Start( "Loading Input TRE File" );
 
@@ -98,8 +98,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start( "Running vessel connectivity filter" );
 
-  typedef itk::tube::MinimumSpanningTreeVesselConnectivityFilter< VDimension >
-  VesselConnectivityFilterType;
+  using VesselConnectivityFilterType = itk::tube::MinimumSpanningTreeVesselConnectivityFilter< VDimension >;
   typename VesselConnectivityFilterType::Pointer vesselConnectivityFilter =
   VesselConnectivityFilterType::New();
 
@@ -127,7 +126,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start( "Writing TRE file with connectivity information" );
 
-  typedef itk::SpatialObjectWriter< VDimension > TubeWriterType;
+  using TubeWriterType = itk::SpatialObjectWriter< VDimension >;
   typename TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
 
   try

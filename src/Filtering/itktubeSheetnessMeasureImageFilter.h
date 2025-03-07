@@ -60,19 +60,19 @@ class SheetnessMeasureImageFilter : public
                       Image< TPixel, 3 > >
 {
 public:
-  /** Standard class typedefs. */
-  typedef SheetnessMeasureImageFilter Self;
-  typedef ImageToImageFilter<
+  /** Standard class type alias. */
+  using Self = SheetnessMeasureImageFilter;
+  using Superclass = ImageToImageFilter<
     Image< SymmetricSecondRankTensor< double, 3 >, 3 >,
-    Image< TPixel, 3 > >                    Superclass;
+    Image< TPixel, 3 > >;
 
-  typedef SmartPointer< Self >       Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef typename Superclass::InputImageType  InputImageType;
-  typedef typename Superclass::OutputImageType OutputImageType;
-  typedef typename InputImageType::PixelType   InputPixelType;
-  typedef TPixel                               OutputPixelType;
+  using InputImageType = typename Superclass::InputImageType;
+  using OutputImageType = typename Superclass::OutputImageType;
+  using InputPixelType = typename InputImageType::PixelType;
+  using OutputPixelType = TPixel;
 
   /** Image dimension = 3. */
   itkStaticConstMacro( ImageDimension, unsigned int,
@@ -80,12 +80,12 @@ public:
   itkStaticConstMacro( InputPixelDimension, unsigned int,
     InputPixelType::Dimension );
 
-  typedef FixedArray< double,
-    itkGetStaticConstMacro( InputPixelDimension ) > EigenValueArrayType;
-  typedef Image< EigenValueArrayType,
-    itkGetStaticConstMacro( ImageDimension ) >      EigenValueImageType;
-  typedef SymmetricEigenAnalysisImageFilter<
-    InputImageType, EigenValueImageType >           EigenAnalysisFilterType;
+  using EigenValueArrayType = FixedArray< double,
+    itkGetStaticConstMacro( InputPixelDimension ) >;
+  using EigenValueImageType = Image< EigenValueArrayType,
+    itkGetStaticConstMacro( ImageDimension ) >;
+  using EigenAnalysisFilterType = SymmetricEigenAnalysisImageFilter<
+    InputImageType, EigenValueImageType >;
 
   /** Run-time type information ( and related methods ).   */
   itkTypeMacro( SheetnessMeasureImageFilter, ImageToImageFilter );

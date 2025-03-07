@@ -42,30 +42,30 @@ class FeatureVectorGenerator : public LightProcessObject
 {
 public:
 
-  typedef FeatureVectorGenerator               Self;
-  typedef LightProcessObject                   Superclass;
-  typedef SmartPointer< Self >                 Pointer;
-  typedef SmartPointer< const Self >           ConstPointer;
+  using Self = FeatureVectorGenerator;
+  using Superclass = LightProcessObject;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkTypeMacro( FeatureVectorGenerator, LightProcessObject );
 
   itkNewMacro( Self );
 
-  typedef TImage                                             ImageType;
-  typedef std::vector< typename ImageType::ConstPointer >    ImageListType;
+  using ImageType = TImage;
+  using ImageListType = std::vector< typename ImageType::ConstPointer >;
 
-  typedef typename TImage::IndexType                    IndexType;
+  using IndexType = typename TImage::IndexType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
-  typedef float                                         FeatureValueType;
-  typedef vnl_vector< FeatureValueType >                FeatureVectorType;
+  using FeatureValueType = float;
+  using FeatureVectorType = vnl_vector< FeatureValueType >;
 
-  typedef Image< FeatureValueType, TImage::ImageDimension > FeatureImageType;
+  using FeatureImageType = Image< FeatureValueType, TImage::ImageDimension >;
 
-  typedef double                                        ValueType;
-  typedef std::vector< ValueType >                      ValueListType;
+  using ValueType = double;
+  using ValueListType = std::vector< ValueType >;
 
   virtual void SetInput( const ImageType * img );
   virtual void SetInput( unsigned int id, const ImageType * img );

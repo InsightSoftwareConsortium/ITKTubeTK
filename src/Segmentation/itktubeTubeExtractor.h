@@ -54,11 +54,11 @@ class TubeExtractor : public Object
 public:
 
   /**
-   * Standard self typedef */
-  typedef TubeExtractor               Self;
-  typedef Object                      Superclass;
-  typedef SmartPointer< Self >        Pointer;
-  typedef SmartPointer< const Self >  ConstPointer;
+   * Standard self type alias */
+  using Self = TubeExtractor;
+  using Superclass = Object;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /**
    * Run-time type information ( and related methods ). */
@@ -68,10 +68,10 @@ public:
 
   /**
    * Type definition for the input image. */
-  typedef TInputImage                               ImageType;
+  using ImageType = TInputImage;
 
-  typedef RidgeExtractor<ImageType>                 RidgeExtractorType;
-  typedef RadiusExtractor3<ImageType>               RadiusExtractorType;
+  using RidgeExtractorType = RidgeExtractor<ImageType>;
+  using RadiusExtractorType = RadiusExtractor3<ImageType>;
 
   typedef typename RidgeExtractorType::TubeMaskImageType
                                                     TubeMaskImageType;
@@ -84,28 +84,28 @@ public:
 
   /**
    * Type definition for the input image pixel type. */
-  typedef typename ImageType::PixelType                 PixelType;
+  using PixelType = typename ImageType::PixelType;
 
   /**  Type definition for VesselTubeSpatialObject */
-  typedef TubeSpatialObject< ImageDimension >           TubeType;
-  typedef typename TubeType::TubePointType              TubePointType;
+  using TubeType = TubeSpatialObject< ImageDimension >;
+  using TubePointType = typename TubeType::TubePointType;
 
-  typedef itk::GroupSpatialObject< ImageDimension >     TubeGroupType;
+  using TubeGroupType = itk::GroupSpatialObject< ImageDimension >;
 
   /**
    * Type definition for the input image pixel type. */
-  typedef ContinuousIndex<double, ImageDimension >      ContinuousIndexType;
-  typedef std::vector< ContinuousIndexType >            ContinuousIndexListType;
-  typedef Point<double, ImageDimension >                PointType;
-  typedef std::vector< PointType >                      PointListType;
-  typedef double                                        RadiusType;
-  typedef std::vector< RadiusType >                     RadiusListType;
+  using ContinuousIndexType = ContinuousIndex<double, ImageDimension >;
+  using ContinuousIndexListType = std::vector< ContinuousIndexType >;
+  using PointType = Point<double, ImageDimension >;
+  using PointListType = std::vector< PointType >;
+  using RadiusType = double;
+  using RadiusListType = std::vector< RadiusType >;
 
-  typedef typename ImageType::IndexType                 IndexType;
+  using IndexType = typename ImageType::IndexType;
 
   /**
    * Defines the type of vectors used */
-  typedef itk::Vector< double, ImageDimension >         VectorType;
+  using VectorType = itk::Vector< double, ImageDimension >;
 
 
   /***********/

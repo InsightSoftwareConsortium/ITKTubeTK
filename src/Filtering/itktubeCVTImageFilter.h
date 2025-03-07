@@ -47,11 +47,11 @@ class CVTImageFilter
 {
 public:
 
-  /** Standard class typedefs. */
-  typedef CVTImageFilter                                  Self;
-  typedef ImageToImageFilter< TInputImage, TOutputImage>  Superclass;
-  typedef SmartPointer< Self >                            Pointer;
-  typedef SmartPointer< const Self >                      ConstPointer;
+  /** Standard class type alias. */
+  using Self = CVTImageFilter;
+  using Superclass = ImageToImageFilter< TInputImage, TOutputImage>;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -61,22 +61,21 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TInputImage::ImageDimension );
 
-  typedef TInputImage                                   InputImageType;
-  typedef typename InputImageType::PixelType            InputPixelType;
+  using InputImageType = TInputImage;
+  using InputPixelType = typename InputImageType::PixelType;
 
-  typedef typename InputImageType::IndexType            IndexType;
-  typedef ContinuousIndex<double, itkGetStaticConstMacro( ImageDimension )>
-                                                        ContinuousIndexType;
+  using IndexType = typename InputImageType::IndexType;
+  using ContinuousIndexType = ContinuousIndex<double, itkGetStaticConstMacro( ImageDimension )>;
 
-  typedef TOutputImage                                  OutputImageType;
-  typedef typename OutputImageType::PixelType           OutputPixelType;
+  using OutputImageType = TOutputImage;
+  using OutputPixelType = typename OutputImageType::PixelType;
 
-  typedef typename InputImageType::RegionType           RegionType;
-  typedef typename RegionType::SizeType                 SizeType;
+  using RegionType = typename InputImageType::RegionType;
+  using SizeType = typename RegionType::SizeType;
 
-  typedef std::vector<ContinuousIndexType>              PointArrayType;
+  using PointArrayType = std::vector<ContinuousIndexType>;
 
-  typedef enum {CVT_GRID, CVT_RANDOM, CVT_USER}         SamplingMethodEnum;
+  using SamplingMethodEnum = enum {CVT_GRID, CVT_RANDOM, CVT_USER};
 
   /** */
   itkGetMacro( NumberOfCentroids, unsigned int );

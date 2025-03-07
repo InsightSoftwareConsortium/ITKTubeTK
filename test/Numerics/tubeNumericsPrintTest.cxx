@@ -35,8 +35,8 @@ limitations under the License.
 
 int tubeNumericsPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
-  typedef itk::Image< float, 2 >                 ImageType;
-  typedef itk::Image< itk::Vector<float, 2>, 2 > VectorImageType;
+  using ImageType = itk::Image< float, 2 >;
+  using VectorImageType = itk::Image< itk::Vector<float, 2>, 2 >;
 
   itk::tube::ImageRegionMomentsCalculator< ImageType >::Pointer
     regionMomentsObject =

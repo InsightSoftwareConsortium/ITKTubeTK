@@ -128,7 +128,7 @@ int tubeSplineNDTest( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  typedef itk::Image< float, 3 >  ImageType;
+  using ImageType = itk::Image< float, 3 >;
 
   ImageType::Pointer im = ImageType::New();
   ImageType::RegionType imRegion;
@@ -221,7 +221,7 @@ int tubeSplineNDTest( int argc, char * argv[] )
     ++itIm;
     }
 
-  typedef itk::ImageFileWriter<ImageType> ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter<ImageType>;
   ImageWriterType::Pointer imWriter = ImageWriterType::New();
   imWriter->SetFileName( argv[1] );
   imWriter->SetInput( im );

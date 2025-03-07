@@ -45,14 +45,14 @@ class ComputeImageSimilarityMetrics
 {
 public:
 
-  /** Standard class typedefs. */
-  typedef ComputeImageSimilarityMetrics               Self;
-  typedef Object                                      SuperClass;
-  typedef SmartPointer< Self >                        Pointer;
-  typedef SmartPointer< const Self >                  ConstPointer;
+  /** Standard class type alias. */
+  using Self = ComputeImageSimilarityMetrics;
+  using SuperClass = Object;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  /** custom typedefs */
-  typedef TInputImage                                 ImageType;
+  /** custom type alias */
+  using ImageType = TInputImage;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

@@ -196,7 +196,7 @@ Read( const char * _headerName )
   MET_GetFilePath( _headerName, pdfPath );
   pdfFileName = pdfPath + pdfFileName;
 
-  typedef PDFSegmenterParzen< TImage, TLabelMap > PDFSegmenterParzenType;
+  using PDFSegmenterParzenType = PDFSegmenterParzen< TImage, TLabelMap >;
   typename PDFSegmenterParzenType::Pointer pdfParzen = dynamic_cast<
     PDFSegmenterParzenType * >( m_RidgeSeedFilter->GetPDFSegmenter().
       GetPointer() );
@@ -272,7 +272,7 @@ Write( const char * _headerName )
 
   bool result = true;
 
-  typedef PDFSegmenterParzen< TImage, TLabelMap > PDFSegmenterParzenType;
+  using PDFSegmenterParzenType = PDFSegmenterParzen< TImage, TLabelMap >;
   typename PDFSegmenterParzenType::Pointer pdfParzen = dynamic_cast<
     PDFSegmenterParzenType * >( m_RidgeSeedFilter->
       GetPDFSegmenter().GetPointer() );

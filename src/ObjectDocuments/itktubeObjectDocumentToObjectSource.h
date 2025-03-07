@@ -47,19 +47,19 @@ class ObjectDocumentToObjectSource : public ProcessObject
 {
 public:
 
-  typedef ObjectDocumentToObjectSource         Self;
-  typedef ProcessObject                        Superclass;
-  typedef SmartPointer< Self >                 Pointer;
-  typedef SmartPointer< const Self >           ConstPointer;
+  using Self = ObjectDocumentToObjectSource;
+  using Superclass = ProcessObject;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef typename DataObject::Pointer         DataObjectPointer;
+  using DataObjectPointer = typename DataObject::Pointer;
 
-  typedef TObjectDocument                      DocumentType;
-  typedef typename DocumentType::ConstPointer  ConstDocumentPointer;
+  using DocumentType = TObjectDocument;
+  using ConstDocumentPointer = typename DocumentType::ConstPointer;
 
   typedef typename SpatialObject< VDimension >::TransformType
                                                TransformType;
-  typedef typename TransformType::Pointer      TransformPointer;
+  using TransformPointer = typename TransformType::Pointer;
 
   itkNewMacro( Self );
   itkTypeMacro( ObjectDocumentToObjectSource, ProcessObject );
@@ -109,8 +109,8 @@ public:
 
 protected:
 
-  typedef SpatialObject<>                    OutputType;
-  typedef SpatialObjectReader< VDimension >  TransformReaderType;
+  using OutputType = SpatialObject<>;
+  using TransformReaderType = SpatialObjectReader< VDimension >;
 
   /** Constructor. */
   ObjectDocumentToObjectSource( void );

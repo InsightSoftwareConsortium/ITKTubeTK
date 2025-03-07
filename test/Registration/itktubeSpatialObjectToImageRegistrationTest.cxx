@@ -53,18 +53,16 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   const char * outputImage = argv[4];
 
   enum { ObjectDimension = 3 };
-  typedef double            FloatType;
+  using FloatType = double;
 
-  typedef itk::GroupSpatialObject< ObjectDimension >           GroupType;
-  typedef itk::SpatialObjectReader< ObjectDimension >          SOReaderType;
-  typedef itk::Image< FloatType, ObjectDimension >             ImageType;
-  typedef itk::ImageFileReader< ImageType >              ImageReaderType;
-  typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
-  typedef itk::tube::SpatialObjectToImageRegistrationHelper< 3, ImageType >
-                                                         RegistrationHelperType;
-  typedef RegistrationHelperType::MatrixTransformType    TransformType;
-  typedef itk::tube::PointBasedSpatialObjectTransformFilter< TransformType, ObjectDimension >
-                                                         TubeTransformFilterType;
+  using GroupType = itk::GroupSpatialObject< ObjectDimension >;
+  using SOReaderType = itk::SpatialObjectReader< ObjectDimension >;
+  using ImageType = itk::Image< FloatType, ObjectDimension >;
+  using ImageReaderType = itk::ImageFileReader< ImageType >;
+  using ImageWriterType = itk::ImageFileWriter< ImageType >;
+  using RegistrationHelperType = itk::tube::SpatialObjectToImageRegistrationHelper< 3, ImageType >;
+  using TransformType = RegistrationHelperType::MatrixTransformType;
+  using TubeTransformFilterType = itk::tube::PointBasedSpatialObjectTransformFilter< TransformType, ObjectDimension >;
 
   // read image
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
@@ -73,8 +71,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   // Gaussian blur the original input image to increase the likelihood of vessel
   // spatial object overlapping with the vessel image at their initial alignment.
   // this enlarges the convergence zone.
-  typedef itk::SmoothingRecursiveGaussianImageFilter<ImageType, ImageType>
-                                                           GaussianBlurFilterType;
+  using GaussianBlurFilterType = itk::SmoothingRecursiveGaussianImageFilter<ImageType, ImageType>;
   GaussianBlurFilterType::Pointer blurFilter;
   blurFilter = GaussianBlurFilterType::New();
   blurFilter->SetInput(imageReader->GetOutput());
@@ -103,7 +100,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
     }
 
   // subsample points in vessel
-  typedef itk::tube::SubSampleSpatialObjectFilter< ObjectDimension > SubSampleFilterType;
+  using SubSampleFilterType = itk::tube::SubSampleSpatialObjectFilter< ObjectDimension >;
   SubSampleFilterType::Pointer subSampleFilter =
     SubSampleFilterType::New();
   subSampleFilter->SetInput( groupReader->GetGroup() );
@@ -198,7 +195,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
   std::cout << " done.\n";
 
   // Write the transformed tube to file.
-  typedef itk::SpatialObjectWriter< ObjectDimension > SOWriterType;
+  using SOWriterType = itk::SpatialObjectWriter< ObjectDimension >;
   SOWriterType::Pointer tubesWriter = SOWriterType::New();
   tubesWriter->SetInput( transformFilter->GetOutput() );
   tubesWriter->SetFileName( outputTubes );
@@ -212,8 +209,7 @@ int itktubeSpatialObjectToImageRegistrationTest( int argc, char * argv[] )
     result = EXIT_FAILURE;
     }
 
-  typedef itk::SpatialObjectToImageFilter< GroupType, ImageType>
-                                              SpatialObjectToImageFilterType;
+  using SpatialObjectToImageFilterType = itk::SpatialObjectToImageFilter< GroupType, ImageType>;
   SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
     SpatialObjectToImageFilterType::New();
 

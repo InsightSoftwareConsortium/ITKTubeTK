@@ -47,7 +47,7 @@ template< class TImage >
 void WriteBasis( const typename TImage::Pointer & img,
   std::string base, std::string ext, int num )
 {
-  typedef itk::ImageFileWriter< TImage >     BasisImageWriterType;
+  using BasisImageWriterType = itk::ImageFileWriter< TImage >;
 
   typename BasisImageWriterType::Pointer basisImageWriter =
     BasisImageWriterType::New();
@@ -74,24 +74,21 @@ int DoIt( int argc, char * argv[] )
   //   of your algorithm.
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef TPixel                                   InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension > InputImageType;
-  typedef itk::Image< unsigned short, VDimension > MaskImageType;
-  typedef itk::Image< float, VDimension >          BasisImageType;
+  using InputPixelType = TPixel;
+  using InputImageType = itk::Image< InputPixelType, VDimension >;
+  using MaskImageType = itk::Image< unsigned short, VDimension >;
+  using BasisImageType = itk::Image< float, VDimension >;
 
-  typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
-  typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;
-  typedef itk::ImageFileWriter< BasisImageType >   BasisImageWriterType;
+  using ImageReaderType = itk::ImageFileReader< InputImageType >;
+  using MaskReaderType = itk::ImageFileReader< MaskImageType >;
+  using BasisImageWriterType = itk::ImageFileWriter< BasisImageType >;
 
-  typedef itk::tube::NJetFeatureVectorGenerator< InputImageType >
-    NJetFeatureVectorGeneratorType;
+  using NJetFeatureVectorGeneratorType = itk::tube::NJetFeatureVectorGenerator< InputImageType >;
 
-  typedef itk::tube::FeatureVectorGenerator< InputImageType >
-    FeatureVectorGeneratorType;
+  using FeatureVectorGeneratorType = itk::tube::FeatureVectorGenerator< InputImageType >;
 
-  typedef itk::tube::BasisFeatureVectorGenerator< InputImageType,
-    MaskImageType >
-      BasisFeatureVectorGeneratorType;
+  using BasisFeatureVectorGeneratorType = itk::tube::BasisFeatureVectorGenerator< InputImageType,
+    MaskImageType >;
 
   typename NJetFeatureVectorGeneratorType::Pointer fvGenerator =
     NJetFeatureVectorGeneratorType::New();

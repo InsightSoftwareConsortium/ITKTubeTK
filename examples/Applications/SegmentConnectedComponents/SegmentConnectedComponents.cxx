@@ -53,8 +53,8 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef itk::Image< TPixel, VDimension >         MaskType;
-  typedef itk::ImageFileReader< MaskType >         MaskReaderType;
+  using MaskType = itk::Image< TPixel, VDimension >;
+  using MaskReaderType = itk::ImageFileReader< MaskType >;
 
   //
   //
@@ -84,8 +84,7 @@ int DoIt( int argc, char * argv[] )
   //
   timeCollector.Start( "Connected Components" );
 
-  typedef tube::SegmentConnectedComponents< MaskType, MaskType >
-    FilterType;
+  using FilterType = tube::SegmentConnectedComponents< MaskType, MaskType >;
   typename FilterType::Pointer filter;
 
   filter = FilterType::New();
@@ -116,7 +115,7 @@ int DoIt( int argc, char * argv[] )
 
   filter->Update();
 
-  typedef itk::ImageFileWriter< MaskType  >   ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< MaskType  >;
 
   timeCollector.Start( "Save data" );
   typename ImageWriterType::Pointer writer = ImageWriterType::New();

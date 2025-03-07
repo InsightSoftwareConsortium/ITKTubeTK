@@ -169,11 +169,11 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 
   // Define/declare an iterator that will walk the output region for this
   // thread.
-  typedef ImageRegionIteratorWithIndex< TOutputImage > OutputIteratorType;
+  using OutputIteratorType = ImageRegionIteratorWithIndex< TOutputImage >;
   OutputIteratorType outIt( outputPtr, outputRegionForThread );
 
-  typedef ImageRegionConstIteratorWithIndex<
-    PointImageType > PointImageConstIteratorType;
+  using PointImageConstIteratorType = ImageRegionConstIteratorWithIndex<
+    PointImageType >;
 
   PointImageConstIteratorType * inputMipPointItPtr = NULL;
 
@@ -183,13 +183,13 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
       m_InputMipPointImage, outputRegionForThread );
     }
 
-  typedef ImageRegionIteratorWithIndex<
-    PointImageType > PointImageIteratorType;
+  using PointImageIteratorType = ImageRegionIteratorWithIndex<
+    PointImageType >;
 
   PointImageIteratorType outMipPointIt( m_OutputMipPointImage,
                                         outputRegionForThread );
 
-  typedef ImageRegionConstIteratorWithIndex< TInputImage > InputIteratorType;
+  using InputIteratorType = ImageRegionConstIteratorWithIndex< TInputImage >;
 
   typename TInputImage::RegionType inputRegion;
 

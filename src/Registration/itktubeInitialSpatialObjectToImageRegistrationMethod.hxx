@@ -74,10 +74,9 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
 
     if( TImage::ImageDimension == 3 )
       {
-      typedef AnisotropicSimilarity3DTransform<double> LandmarkTransformType;
-      typedef AnisotropicSimilarityLandmarkBasedTransformInitializer<LandmarkTransformType,
-                                                                     TImage, TImage>
-      LandmarkTransformCalculatorType;
+      using LandmarkTransformType = AnisotropicSimilarity3DTransform<double>;
+      using LandmarkTransformCalculatorType = AnisotropicSimilarityLandmarkBasedTransformInitializer<LandmarkTransformType,
+                                                                     TImage, TImage>;
 
       typename LandmarkTransformCalculatorType::Pointer landmarkCalc;
       landmarkCalc = LandmarkTransformCalculatorType::New();
@@ -101,10 +100,9 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       }
     else if( TImage::ImageDimension == 2 )
       {
-      typedef Rigid2DTransform<double> LandmarkTransformType;
-      typedef AnisotropicSimilarityLandmarkBasedTransformInitializer<LandmarkTransformType,
-                                                                     TImage, TImage>
-      LandmarkTransformCalculatorType;
+      using LandmarkTransformType = Rigid2DTransform<double>;
+      using LandmarkTransformCalculatorType = AnisotropicSimilarityLandmarkBasedTransformInitializer<LandmarkTransformType,
+                                                                     TImage, TImage>;
 
       typename LandmarkTransformCalculatorType::Pointer landmarkCalc;
       landmarkCalc = LandmarkTransformCalculatorType::New();
@@ -161,7 +159,7 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     return;
     }
 
-  //typedef SpatialObjectRegionMomentsCalculator<TImage> MomentsCalculatorType;
+  //using MomentsCalculatorType = SpatialObjectRegionMomentsCalculator<TImage>;
 
   typename TransformType::Pointer newTransform = TransformType::New();
   newTransform->SetIdentity();
@@ -170,7 +168,7 @@ InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     this->m_NumberOfMoments == 0 )
     {
     //  Moving image info
-    typedef typename SpatialObjectType::BoundingBoxType     BoundingBoxType;
+    using BoundingBoxType = typename SpatialObjectType::BoundingBoxType;
     typename BoundingBoxType::ConstPointer                  bbox;
     typename BoundingBoxType::PointType                     minPnt;
     typename BoundingBoxType::PointType                     maxPnt;

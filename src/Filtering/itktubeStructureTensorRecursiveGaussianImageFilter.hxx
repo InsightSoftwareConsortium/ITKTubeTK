@@ -296,8 +296,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage >
     }
 
   //Finally, smooth the outer product components
-  typedef typename itk::Image<InternalRealType, ImageDimension>
-    ComponentImageType;
+  using ComponentImageType = typename itk::Image<InternalRealType, ImageDimension>;
 
   for( unsigned int i =0; i < numberTensorElements; i++ )
     {

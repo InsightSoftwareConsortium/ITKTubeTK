@@ -44,7 +44,7 @@ class MyMIWPFunc : public tube::UserFunction< vnl_vector< int >, double >
 {
 public:
 
-  typedef tube::CompareImageWithPrior< TPixel, VDimension > ImageEvalType;
+  using ImageEvalType = tube::CompareImageWithPrior< TPixel, VDimension >;
   MyMIWPFunc( ImageEvalType & eval ) : m_Eval( eval ), m_GoF( 0 )
     {
     }
@@ -80,8 +80,8 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                PixelType;
-  typedef itk::Image< PixelType, VDimension >  ImageType;
+  using PixelType = float;
+  using ImageType = itk::Image< PixelType, VDimension >;
 
   /** Read input images */
   typename ImageType::Pointer inVolume;
@@ -89,7 +89,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start( "Read" );
     {
-    typedef itk::ImageFileReader< ImageType >   ReaderType;
+    using ReaderType = itk::ImageFileReader< ImageType >;
 
     typename ReaderType::Pointer readerVolume = ReaderType::New();
     typename ReaderType::Pointer readerMask = ReaderType::New();
@@ -131,7 +131,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer metricMaskImage = nullptr;
   if( metricMask.size() != 0 )
     {
-    typedef itk::ImageFileReader< ImageType >   ReaderType;
+    using ReaderType = itk::ImageFileReader< ImageType >;
     typename ReaderType::Pointer readerMetricMask = ReaderType::New();
     readerMetricMask->SetFileName( metricMask.c_str() );
     readerMetricMask->Update();
@@ -139,7 +139,7 @@ int DoIt( int argc, char * argv[] )
     }
   progressReporter.Report( 0.2 );
 
-  typedef tube::CompareImageWithPrior< TPixel, VDimension > ImageEvalType;
+  using ImageEvalType = tube::CompareImageWithPrior< TPixel, VDimension >;
   ImageEvalType eval;
   eval.SetInput( inVolume );
   eval.SetMaskImage( inMask );
@@ -280,7 +280,7 @@ int DoIt( int argc, char * argv[] )
 
   progressReporter.Report( 0.9 );
 
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< ImageType  >;
   typename ImageWriterType::Pointer writerVolume = ImageWriterType::New();
   typename ImageWriterType::Pointer writerMask = ImageWriterType::New();
 

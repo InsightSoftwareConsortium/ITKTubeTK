@@ -63,11 +63,11 @@ class ITK_EXPORT ShrinkWithBlendingImageFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
-  /** Standard class typedefs. */
-  typedef ShrinkWithBlendingImageFilter                   Self;
-  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
-  typedef SmartPointer< Self >                            Pointer;
-  typedef SmartPointer< const Self >                      ConstPointer;
+  /** Standard class type alias. */
+  using Self = ShrinkWithBlendingImageFilter;
+  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -76,18 +76,18 @@ public:
   itkTypeMacro( ShrinkWithBlendingImageFilter, ShrinkImageFilter );
 
   /** Typedef to images */
-  typedef TOutputImage                          OutputImageType;
-  typedef TInputImage                           InputImageType;
-  typedef typename OutputImageType::Pointer     OutputImagePointer;
-  typedef typename InputImageType::Pointer      InputImagePointer;
-  typedef typename InputImageType::ConstPointer InputImageConstPointer;
+  using OutputImageType = TOutputImage;
+  using InputImageType = TInputImage;
+  using OutputImagePointer = typename OutputImageType::Pointer;
+  using InputImagePointer = typename InputImageType::Pointer;
+  using InputImageConstPointer = typename InputImageType::ConstPointer;
 
-  typedef typename TOutputImage::IndexType      OutputIndexType;
-  typedef typename TInputImage::IndexType       InputIndexType;
-  typedef typename TOutputImage::OffsetType     OutputOffsetType;
+  using OutputIndexType = typename TOutputImage::IndexType;
+  using InputIndexType = typename TInputImage::IndexType;
+  using OutputOffsetType = typename TOutputImage::OffsetType;
 
-  typedef typename TOutputImage::RegionType     OutputImageRegionType;
-  typedef typename TInputImage::SizeType        InputSizeType;
+  using OutputImageRegionType = typename TOutputImage::RegionType;
+  using InputSizeType = typename TInputImage::SizeType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TInputImage::ImageDimension );
@@ -95,11 +95,10 @@ public:
   itkStaticConstMacro( OutputImageDimension, unsigned int,
                        TOutputImage::ImageDimension );
 
-  typedef Vector< float, ImageDimension >       PointImagePixelType;
-  typedef Image< PointImagePixelType, OutputImageDimension >
-                                                PointImageType;
+  using PointImagePixelType = Vector< float, ImageDimension >;
+  using PointImageType = Image< PointImagePixelType, OutputImageDimension >;
 
-  typedef FixedArray< unsigned int, ImageDimension > ShrinkFactorsType;
+  using ShrinkFactorsType = FixedArray< unsigned int, ImageDimension >;
 
   /** Set the shrink factors. Values are clamped to
    * a minimum value of 1. Default is 1 for all dimensions. */

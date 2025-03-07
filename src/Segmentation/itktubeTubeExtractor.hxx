@@ -191,7 +191,7 @@ void
 TubeExtractor<TInputImage>
 ::SetDataMinMaxLimits( double limitMin, double limitMax )
 {
-  typedef LimitedMinimumMaximumImageFilter<ImageType> MinMaxFilterType;
+  using MinMaxFilterType = LimitedMinimumMaximumImageFilter<ImageType>;
   typename MinMaxFilterType::Pointer minMaxFilter = MinMaxFilterType::New();
   minMaxFilter->SetInput( this->GetInputImage() );
   minMaxFilter->SetMinimumLimit( limitMin );
@@ -578,13 +578,13 @@ TubeExtractor<TInputImage>
     {
     if( m_UseSeedMaskAsProbabilities )
       {
-      typedef itk::ImageDuplicator<TubeMaskImageType> DuplicatorType;
+      using DuplicatorType = itk::ImageDuplicator<TubeMaskImageType>;
       typename DuplicatorType::Pointer duplicator = DuplicatorType::New();
       duplicator->SetInputImage(m_SeedMask);
       duplicator->Update();
       typename TubeMaskImageType::Pointer tmpSeedMask = duplicator->GetOutput();
       
-      typedef itk::MinimumMaximumImageCalculator<TubeMaskImageType> MinMaxCalcType;
+      using MinMaxCalcType = itk::MinimumMaximumImageCalculator<TubeMaskImageType>;
       typename MinMaxCalcType::Pointer maxCalc = MinMaxCalcType::New();
       unsigned int count = 1;
       double successRatio = 1;
@@ -623,8 +623,7 @@ TubeExtractor<TInputImage>
             }
           else
             {
-            typedef itk::NeighborhoodIterator< TubeMaskImageType >
-              NeighborIterType;
+            using NeighborIterType = itk::NeighborhoodIterator< TubeMaskImageType >;
             typename NeighborIterType::RadiusType radius;
             radius.Fill(5);
             NeighborIterType iter( radius, tmpSeedMask,

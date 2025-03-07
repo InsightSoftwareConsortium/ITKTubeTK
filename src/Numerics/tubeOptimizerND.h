@@ -38,18 +38,18 @@ class OptimizerND : public Object
 {
 public:
 
-  typedef OptimizerND                             Self;
-  typedef Object                                  Superclass;
-  typedef Self *                                  Pointer;
-  typedef const Self *                            ConstPointer;
+  using Self = OptimizerND;
+  using Superclass = Object;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef vnl_matrix< double >                    MatrixType;
-  typedef vnl_vector< double >                    VectorType;
-  typedef UserFunction< VectorType, double >      ValueFunctionType;
-  typedef UserFunction< VectorType, VectorType >  DerivativeFunctionType;
+  using MatrixType = vnl_matrix< double >;
+  using VectorType = vnl_vector< double >;
+  using ValueFunctionType = UserFunction< VectorType, double >;
+  using DerivativeFunctionType = UserFunction< VectorType, VectorType >;
 
-  typedef UserFunction< double, double >    OptimizerValueFunctionType;
-  typedef UserFunction< double, double >    OptimizerDerivativeFunctionType;
+  using OptimizerValueFunctionType = UserFunction< double, double >;
+  using OptimizerDerivativeFunctionType = UserFunction< double, double >;
 
   /** Return the type of this object. */
   tubeTypeMacro( OptimizerND );

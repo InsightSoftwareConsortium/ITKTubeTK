@@ -52,11 +52,11 @@ class AnisotropicDiffusionTensorImageFilter
   : public FiniteDifferenceImageFilter< TInputImage, TOutputImage >
 {
 public:
-  /** Standard class typedefs */
-  typedef AnisotropicDiffusionTensorImageFilter                   Self;
-  typedef FiniteDifferenceImageFilter<TInputImage, TOutputImage>  Superclass;
-  typedef SmartPointer< Self >                                    Pointer;
-  typedef SmartPointer< const Self >                              ConstPointer;
+  /** Standard class type alias */
+  using Self = AnisotropicDiffusionTensorImageFilter;
+  using Superclass = FiniteDifferenceImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   // itkNewMacro( Self );  // Not included since pure virtual
 
@@ -64,36 +64,34 @@ public:
   itkTypeMacro( AnisotropicDiffusionTensorImageFilter,
     FiniteDifferenceImageFiler );
 
-  /** Convenient typedefs */
-  typedef typename Superclass::InputImageType  InputImageType;
-  typedef typename Superclass::OutputImageType OutputImageType;
-  typedef typename Superclass::PixelType       PixelType;
+  /** Convenient type alias */
+  using InputImageType = typename Superclass::InputImageType;
+  using OutputImageType = typename Superclass::OutputImageType;
+  using PixelType = typename Superclass::PixelType;
 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
   itkStaticConstMacro( ImageDimension, unsigned int,
     Superclass::ImageDimension );
 
-  /** Type of associated function, with associated typedefs */
-  typedef AnisotropicDiffusionTensorFunction< InputImageType >
-      FiniteDifferenceFunctionType;
+  /** Type of associated function, with associated type alias */
+  using FiniteDifferenceFunctionType = AnisotropicDiffusionTensorFunction< InputImageType >;
   typedef typename FiniteDifferenceFunctionType::DiffusionTensorType
       TensorPixelType;
   typedef typename FiniteDifferenceFunctionType::DiffusionTensorImageType
       DiffusionTensorImageType;
 
   // Define the type for storing the eigenvalues
-  typedef FixedArray< double, ImageDimension >   EigenValueArrayType;
+  using EigenValueArrayType = FixedArray< double, ImageDimension >;
 
   // Declare the types of the output images
-  typedef Image< EigenValueArrayType, ImageDimension >
-      EigenAnalysisOutputImageType;
+  using EigenAnalysisOutputImageType = Image< EigenValueArrayType, ImageDimension >;
 
   /** The value type of a time step.  Inherited from the superclass. */
-  typedef typename Superclass::TimeStepType TimeStepType;
+  using TimeStepType = typename Superclass::TimeStepType;
 
   /** The container type for the update buffer. */
-  typedef OutputImageType UpdateBufferType;
+  using UpdateBufferType = OutputImageType;
 
   /** Define diffusion image neighborhood type */
   typedef typename
@@ -155,7 +153,7 @@ protected:
   void virtual UpdateDiffusionTensorImage( void ) = 0;
 
   /** The type of region used for multithreading */
-  typedef typename UpdateBufferType::RegionType ThreadRegionType;
+  using ThreadRegionType = typename UpdateBufferType::RegionType;
 
   /** The type of region used for multithreading */
   typedef typename DiffusionTensorImageType::RegionType

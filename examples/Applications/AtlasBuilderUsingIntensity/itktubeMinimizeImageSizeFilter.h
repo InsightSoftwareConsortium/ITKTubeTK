@@ -51,26 +51,26 @@ class MinimizeImageSizeFilter
 {
 public:
 
-  typedef MinimizeImageSizeFilter                          Self;
-  typedef ImageToImageFilter< TInputImage, TInputImage >   Superclass;
+  using Self = MinimizeImageSizeFilter;
+  using Superclass = ImageToImageFilter< TInputImage, TInputImage >;
 
-  typedef SmartPointer< Self >                    Pointer;
-  typedef SmartPointer< const Self >              ConstPointer;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkNewMacro( Self );
   itkTypeMacro( MinimizeImageSizeFilter, ImageToImageFilter );
 
-  typedef TInputImage                             InputImageType;
-  typedef typename InputImageType::PixelType      InputPixelType;
+  using InputImageType = TInputImage;
+  using InputPixelType = typename InputImageType::PixelType;
 
-  typedef TInputImage                             OutputImageType;
-  typedef typename InputImageType::ConstPointer   InputImageConstPointer;
-  typedef typename OutputImageType::Pointer       OutputImagePointer;
+  using OutputImageType = TInputImage;
+  using InputImageConstPointer = typename InputImageType::ConstPointer;
+  using OutputImagePointer = typename OutputImageType::Pointer;
 
-  typedef typename InputImageType::RegionType     RegionType;
-  typedef typename InputImageType::SizeType       SizeType;
-  typedef typename InputImageType::IndexType      IndexType;
-  typedef typename InputImageType::PointType      PointType;
+  using RegionType = typename InputImageType::RegionType;
+  using SizeType = typename InputImageType::SizeType;
+  using IndexType = typename InputImageType::IndexType;
+  using PointType = typename InputImageType::PointType;
 
   /** Number of dimensions. */
   itkStaticConstMacro( ImageDimension, unsigned int,

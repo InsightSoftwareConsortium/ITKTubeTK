@@ -48,20 +48,20 @@ class ReResampleImageFilter
 {
 public:
 
-  /** Standard class typedefs. */
-  typedef Image< TPixel, VDimension >                     ImageType;
-  typedef ReResampleImageFilter                           Self;
-  typedef itk::ProcessObject                              Superclass;
-  typedef SmartPointer< Self >                            Pointer;
-  typedef SmartPointer< const Self >                      ConstPointer;
+  /** Standard class type alias. */
+  using ImageType = Image< TPixel, VDimension >;
+  using Self = ReResampleImageFilter;
+  using Superclass = itk::ProcessObject;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
   itkTypeMacro( ReResampleImageFilter, ProcessObject );
 
-  typedef typename ImageType::Pointer                     ImagePointer;
-  typedef itk::Transform< double, VDimension, VDimension> TransformType;
+  using ImagePointer = typename ImageType::Pointer;
+  using TransformType = itk::Transform< double, VDimension, VDimension>;
 
 
   /** Set/Get input Match Image */
@@ -122,8 +122,7 @@ private:
   ReResampleImageFilter( const Self& );
   void operator=( const Self& );
 
-  typedef typename itk::ResampleImageFilter< ImageType, ImageType >
-    ResampleFilterType;
+  using ResampleFilterType = typename itk::ResampleImageFilter< ImageType, ImageType >;
   typename ResampleFilterType::Pointer   m_Filter;
 
   typename ImageType::Pointer            m_MatchImage;

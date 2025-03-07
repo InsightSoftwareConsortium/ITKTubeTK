@@ -42,11 +42,11 @@ class ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod
 
 public:
 
-  typedef ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod  Self;
-  typedef OptimizedSpatialObjectToImageRegistrationMethod< 
-    2, Image< typename TImage::PixelType, 2 > >           Superclass;
-  typedef SmartPointer<Self>                              Pointer;
-  typedef SmartPointer<const Self>                        ConstPointer;
+  using Self = ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod;
+  using Superclass = OptimizedSpatialObjectToImageRegistrationMethod< 
+    2, Image< typename TImage::PixelType, 2 > >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   itkTypeMacro( ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod,
                 OptimizedSpatialObjectToImageRegistrationMethod );
@@ -61,15 +61,13 @@ public:
   //
 
   // Overrides the superclass' TransformType typedef
-  typedef ::itk::ScaleSkewAngle2DTransform< double >
-            ScaleSkewAngle2DTransformType;
+  using ScaleSkewAngle2DTransformType = ::itk::ScaleSkewAngle2DTransform< double >;
   typedef typename ScaleSkewAngle2DTransformType::Pointer
             ScaleSkewAngle2DTransformPointer;
   typedef ScaleSkewAngle2DTransformType
             TransformType;
 
-  typedef AffineTransform<double, 2>
-            AffineTransformType;
+  using AffineTransformType = AffineTransform<double, 2>;
   typedef typename AffineTransformType::Pointer
             AffineTransformPointer;
 

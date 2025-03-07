@@ -51,9 +51,9 @@ int DoIt( int argc, char * argv[] )
     "SegmentUsingQuantileThreshold", CLPProcessInformation );
   progressReporter.Start();
 
-  typedef TPixel                                PixelType;
-  typedef itk::Image< PixelType, VDimension >   ImageType;
-  typedef itk::ImageFileReader< ImageType >     ReaderType;
+  using PixelType = TPixel;
+  using ImageType = itk::Image< PixelType, VDimension >;
+  using ReaderType = itk::ImageFileReader< ImageType >;
 
   timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -103,12 +103,10 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "Boost accumulate" );
 
-    typedef boost::accumulators::accumulator_set< PixelType,
+    using QuantileAccumulatorType = boost::accumulators::accumulator_set< PixelType,
       boost::accumulators::stats<
-        boost::accumulators::tag::p_square_quantile > >
-      QuantileAccumulatorType;
-    typedef itk::ImageRegionConstIterator< ImageType >
-      ImageIteratorType;
+        boost::accumulators::tag::p_square_quantile > >;
+    using ImageIteratorType = itk::ImageRegionConstIterator< ImageType >;
 
     /*
      * Create a and configure a vector of length N of pointers
@@ -153,8 +151,7 @@ int DoIt( int argc, char * argv[] )
 
     PixelType qVal = boost::accumulators::p_square_quantile( acc );
 
-    typedef itk::BinaryThresholdImageFilter< ImageType, ImageType >
-      FilterType;
+    using FilterType = itk::BinaryThresholdImageFilter< ImageType, ImageType >;
     typename FilterType::Pointer filter = FilterType::New();
 
     filter->SetInput( image );
@@ -169,7 +166,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Boost accumulate" );
     }
 
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< ImageType  >;
 
   timeCollector.Start( "Save data" );
   typename ImageWriterType::Pointer writer = ImageWriterType::New();

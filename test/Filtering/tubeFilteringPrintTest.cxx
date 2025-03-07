@@ -46,8 +46,8 @@ int tubeFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed(
   argv )[] )
 {
   const unsigned int Dimension = 3;
-  typedef itk::Image< float, Dimension >      ImageType;
-  typedef itk::TubeSpatialObject< Dimension > TubeSpatialObjectType;
+  using ImageType = itk::Image< float, Dimension >;
+  using TubeSpatialObjectType = itk::TubeSpatialObject< Dimension >;
 
   itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType,
     ImageType > ::Pointer acedif =
@@ -72,38 +72,37 @@ int tubeFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed(
     ::New();
   std::cout << "-------------ahdif" << ahdif << std::endl;
 
-  typedef itk::tube::CropImageFilter< ImageType,
-    ImageType > CropImageFilter;
+  using CropImageFilter = itk::tube::CropImageFilter< ImageType,
+    ImageType >;
   CropImageFilter::Pointer cropImage = CropImageFilter::New();
   std::cout << "-------------cropImage" << cropImage << std::endl;
 
-  typedef itk::tube::CVTImageFilter< ImageType > CVTImageFilter;
+  using CVTImageFilter = itk::tube::CVTImageFilter< ImageType >;
   CVTImageFilter::Pointer cvtImage = CVTImageFilter::New();
   std::cout << "-------------cvtImage" << cvtImage << std::endl;
 
-  typedef itk::tube::ExtractTubePointsSpatialObjectFilter<
-    TubeSpatialObjectType > ExtractTubePointsSpatialObjectFilterType;
+  using ExtractTubePointsSpatialObjectFilterType = itk::tube::ExtractTubePointsSpatialObjectFilter<
+    TubeSpatialObjectType >;
   ExtractTubePointsSpatialObjectFilterType::Pointer etpsof =
     ExtractTubePointsSpatialObjectFilterType::New();
   std::cout << "-------------etpsof" << etpsof << std::endl;
 
-  typedef itk::tube::FFTGaussianDerivativeIFFTFilter< ImageType >
-    FFTGaussianDerivativeIFFTFilter;
+  using FFTGaussianDerivativeIFFTFilter = itk::tube::FFTGaussianDerivativeIFFTFilter< ImageType >;
   FFTGaussianDerivativeIFFTFilter::Pointer fgdif =
     FFTGaussianDerivativeIFFTFilter::New();
   std::cout << "-------------fgdif " << fgdif << std::endl;
 
-  typedef itk::tube::MinimumSpanningTreeVesselConnectivityFilter<
-    Dimension > VesselConnectivityFilterType;
+  using VesselConnectivityFilterType = itk::tube::MinimumSpanningTreeVesselConnectivityFilter<
+    Dimension >;
   VesselConnectivityFilterType::Pointer mstvcf =
     VesselConnectivityFilterType::New();
   std::cout << "-------------mstvcf " << mstvcf << std::endl;
 
-  typedef itk::tube::RidgeFFTFilter< ImageType > RidgeFFTFilterType;
+  using RidgeFFTFilterType = itk::tube::RidgeFFTFilter< ImageType >;
   RidgeFFTFilterType::Pointer rfif = RidgeFFTFilterType::New();
   std::cout << "-------------rfif " << rfif << std::endl;
 
-  typedef itk::tube::ReResampleImageFilter< float, 3 > ReResampleImageFilterType;
+  using ReResampleImageFilterType = itk::tube::ReResampleImageFilter< float, 3 >;
   ReResampleImageFilterType::Pointer rrif = ReResampleImageFilterType::New();
   std::cout << "-------------rrif " << rrif << std::endl;
 
@@ -113,10 +112,10 @@ int tubeFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed(
     ::New();
   std::cout << "-------------strgif" << strgif << std::endl;
 
-  typedef itk::FixedArray< float, 3 >            EigenValueArrayType;
-  typedef itk::Matrix< float, 3, 3 >             EigenVectorMatrixType;
-  typedef itk::Image< EigenValueArrayType, 3>    EigenValueImageType;
-  typedef itk::Image< EigenVectorMatrixType, 3>  EigenVectorImageType;
+  using EigenValueArrayType = itk::FixedArray< float, 3 >;
+  using EigenVectorMatrixType = itk::Matrix< float, 3, 3 >;
+  using EigenValueImageType = itk::Image< EigenValueArrayType, 3>;
+  using EigenVectorImageType = itk::Image< EigenVectorMatrixType, 3>;
 
   typedef itk::tube::StructureTensorRecursiveGaussianImageFilter<
     ImageType >::OutputImageType SymmetricSecondRankTensorImageType;

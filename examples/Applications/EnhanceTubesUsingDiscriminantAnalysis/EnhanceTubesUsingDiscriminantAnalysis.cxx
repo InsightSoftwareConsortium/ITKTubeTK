@@ -37,7 +37,7 @@ template< class TImage >
 void WriteImageInSequence( const typename TImage::Pointer & img,
   const std::string & base, const std::string & ext, int num )
 {
-  typedef itk::ImageFileWriter< TImage >     ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< TImage >;
 
   typename ImageWriterType::Pointer rsImageWriter = ImageWriterType::New();
   std::string fname = base;
@@ -54,7 +54,7 @@ template< class TImage >
 void WriteImage( const typename TImage::Pointer & img,
   const std::string & str )
 {
-  typedef itk::ImageFileWriter< TImage >     ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< TImage >;
 
   typename ImageWriterType::Pointer rsImageWriter = ImageWriterType::New();
   rsImageWriter->SetUseCompression( true );
@@ -74,24 +74,22 @@ int DoIt( int argc, char * argv[] )
 
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef TPixel                                    InputPixelType;
-  typedef itk::Image< InputPixelType, TDimension >  InputImageType;
-  typedef itk::ImageFileReader< InputImageType >    InputImageReaderType;
+  using InputPixelType = TPixel;
+  using InputImageType = itk::Image< InputPixelType, TDimension >;
+  using InputImageReaderType = itk::ImageFileReader< InputImageType >;
 
-  typedef itk::Image< unsigned short, TDimension >  LabelmapType;
-  typedef itk::ImageFileReader< LabelmapType >      LabelmapReaderType;
+  using LabelmapType = itk::Image< unsigned short, TDimension >;
+  using LabelmapReaderType = itk::ImageFileReader< LabelmapType >;
 
-  typedef itk::tube::RidgeSeedFilterIO< InputImageType, LabelmapType >
-                                                    RidgeSeedFilterIOType;
+  using RidgeSeedFilterIOType = itk::tube::RidgeSeedFilterIO< InputImageType, LabelmapType >;
 
-  typedef itk::tube::RidgeSeedFilter< InputImageType, LabelmapType >
-                                                    RidgeSeedFilterType;
+  using RidgeSeedFilterType = itk::tube::RidgeSeedFilter< InputImageType, LabelmapType >;
 
   typedef typename RidgeSeedFilterType::ProbabilityImageType
                                                     OutputImageType;
-  typedef itk::ImageFileWriter< OutputImageType >   OutputImageWriterType;
+  using OutputImageWriterType = itk::ImageFileWriter< OutputImageType >;
 
-  typedef itk::Image< float, TDimension >           RidgeSeedImageType;
+  using RidgeSeedImageType = itk::Image< float, TDimension >;
 
   typename RidgeSeedFilterType::Pointer tubeFilter =
     RidgeSeedFilterType::New();

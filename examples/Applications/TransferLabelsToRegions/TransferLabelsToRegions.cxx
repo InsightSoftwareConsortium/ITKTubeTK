@@ -50,7 +50,7 @@ int main( int argc, char * argv[] )
  */
 bool IsDiscrete( const std::string & fileName )
 {
-  typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
+  using ScalarPixelType = itk::ImageIOBase::IOComponentType;
 
   itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO(
     fileName.c_str(), itk::ImageIOFactory::ReadMode );
@@ -196,19 +196,19 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  // Some typedefs - Our input image type equals the output image type, since
+  // Some type alias - Our input image type equals the output image type, since
   // the images are essentially the same, except that the voxel values
   // represent different entities.
-  typedef TPixel                                          InputPixelType;
-  typedef itk::Image< InputPixelType, VImageDimension >   InputImageType;
+  using InputPixelType = TPixel;
+  using InputImageType = itk::Image< InputPixelType, VImageDimension >;
 
-  typedef InputPixelType                                  OutputPixelType;
-  typedef itk::Image< OutputPixelType, VImageDimension >  OutputImageType;
+  using OutputPixelType = InputPixelType;
+  using OutputImageType = itk::Image< OutputPixelType, VImageDimension >;
 
-  typedef itk::ImageFileReader< InputImageType >          InputReaderType;
-  typedef itk::ImageFileWriter< OutputImageType >         OutputWriterType;
+  using InputReaderType = itk::ImageFileReader< InputImageType >;
+  using OutputWriterType = itk::ImageFileWriter< OutputImageType >;
 
-  typedef itk::ImageIOBase::IOComponentType               ScalarPixelType;
+  using ScalarPixelType = itk::ImageIOBase::IOComponentType;
 
   // Check input images's type ( we assume discrete valued images )
   if( !IsDiscrete( argInImageFileName ) ||
@@ -304,8 +304,8 @@ int DoIt( int argc, char * argv[] )
 
   // Create a mapping from CVT cell ID to the vector of corresponding
   // voxel indices.
-  typedef typename InputImageType::IndexType                    IndexType;
-  typedef typename std::map< TPixel, std::vector< IndexType > > MapType;
+  using IndexType = typename InputImageType::IndexType;
+  using MapType = typename std::map< TPixel, std::vector< IndexType > >;
 
   MapType cvtToIndex;
 

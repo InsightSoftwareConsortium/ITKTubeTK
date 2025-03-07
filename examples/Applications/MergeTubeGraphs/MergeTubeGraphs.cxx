@@ -46,8 +46,8 @@ int DoIt( int argc, char * argv[] )
   // Generic stream for log messages
   std::stringstream logMsg;
 
-  typedef MetaObjectDocument                          DocumentReaderType;
-  typedef DocumentReaderType::ObjectDocumentListType  DocumentListType;
+  using DocumentReaderType = MetaObjectDocument;
+  using DocumentListType = DocumentReaderType::ObjectDocumentListType;
 
   int numberOfCentroids = nCentroids;
   assert( numberOfCentroids > 0 );

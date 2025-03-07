@@ -129,8 +129,7 @@ AtlasSummation::InputImagePointer AtlasSummation
 {
   // Realign image to the base Image specifications. If no adjustments
   // are done to the image, then add the transform to the filter as well
-  typedef itk::ResampleImageFilter< InputImageType, InputImageType >
-               ResampleFilterType;
+  using ResampleFilterType = itk::ResampleImageFilter< InputImageType, InputImageType >;
 
   ResampleFilterType::Pointer transfilter = ResampleFilterType::New();
   transfilter->SetInput( image );
@@ -162,8 +161,8 @@ AtlasSummation::InputImagePointer AtlasSummation
 {
   // The filter does only require output spacing ( not size or origin )
   // to run the resampling
-  typedef itk::tube::CompleteImageResampleFilter<
-    InputImageType, InputImageType, TransformType> ResampleImageFilterType;
+  using ResampleImageFilterType = itk::tube::CompleteImageResampleFilter<
+    InputImageType, InputImageType, TransformType>;
 
   TransformType::Pointer inverse = TransformType::New();
   t->GetInverse( inverse );
@@ -177,8 +176,7 @@ AtlasSummation::InputImagePointer AtlasSummation
   resampleFilter->Update();
 
   // Minimize the image to fit the parameters
-  typedef itk::tube::MinimizeImageSizeFilter<InputImageType>
-    MinImageSizeFilterType;
+  using MinImageSizeFilterType = itk::tube::MinimizeImageSizeFilter<InputImageType>;
 
   MinImageSizeFilterType::Pointer minFilter = MinImageSizeFilterType::New();
   minFilter->SetInput( resampleFilter->GetOutput() );
@@ -235,7 +233,7 @@ void AtlasSummation
 void AtlasSummation
 ::WriteImage( MeanImageType::Pointer image, const std::string & file )
 {
-  typedef itk::ImageFileWriter< MeanImageType > FileWriterType;
+  using FileWriterType = itk::ImageFileWriter< MeanImageType >;
   ++m_Count;
   std::stringstream file1;
   file1 << file << m_Count << ".mhd";
@@ -257,7 +255,7 @@ void AtlasSummation
 void AtlasSummation
 ::WriteImage( ProcessImagePointer image, const std::string & file )
 {
-  typedef itk::ImageFileWriter< ProcessImageType > FileWriterType;
+  using FileWriterType = itk::ImageFileWriter< ProcessImageType >;
 
   try
     {

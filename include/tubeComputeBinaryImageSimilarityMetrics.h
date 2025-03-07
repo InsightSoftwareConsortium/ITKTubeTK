@@ -42,16 +42,15 @@ class ComputeBinaryImageSimilarityMetrics:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ComputeBinaryImageSimilarityMetrics     Self;
-  typedef itk::ProcessObject                      Superclass;
-  typedef itk::SmartPointer< Self >               Pointer;
-  typedef itk::SmartPointer< const Self >         ConstPointer;
-  typedef TInputImage                             InputImageType;
-  typedef typename TInputImage::PixelType         LabelType;
+  /** Standard class type alias. */
+  using Self = ComputeBinaryImageSimilarityMetrics;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
+  using InputImageType = TInputImage;
+  using LabelType = typename TInputImage::PixelType;
 
-  typedef itk::LabelOverlapMeasuresImageFilter< InputImageType >
-    FilterType;
+  using FilterType = itk::LabelOverlapMeasuresImageFilter< InputImageType >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

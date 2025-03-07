@@ -43,13 +43,12 @@ int DoIt( int argc, char * argv[] )
 {
   enum { Dimension = 3 };
 
-  typedef short                                      PixelType;
-  typedef itk::Image< PixelType, Dimension >         ImageType;
-  typedef itk::ImageFileReader< ImageType >          ImageReaderType;
-  typedef itk::SpatialObjectReader< >                SpatialObjectReaderType;
+  using PixelType = short;
+  using ImageType = itk::Image< PixelType, Dimension >;
+  using ImageReaderType = itk::ImageFileReader< ImageType >;
+  using SpatialObjectReaderType = itk::SpatialObjectReader< >;
 
-  typedef tube::ConvertTubesToTubeGraph< PixelType, Dimension >
-    FilterType;
+  using FilterType = tube::ConvertTubesToTubeGraph< PixelType, Dimension >;
   FilterType::Pointer filter = FilterType::New();
   PARSE_ARGS;
 

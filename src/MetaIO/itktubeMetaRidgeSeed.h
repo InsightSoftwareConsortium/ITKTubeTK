@@ -55,11 +55,11 @@ class MetaRidgeSeed : public MetaLDA
 {
 public:
 
-  typedef std::vector< double >   RidgeSeedScalesType;
+  using RidgeSeedScalesType = std::vector< double >;
 
-  typedef MetaLDA::LDAValuesType  LDAValuesType;
+  using LDAValuesType = MetaLDA::LDAValuesType;
 
-  typedef MetaLDA::LDAMatrixType  LDAMatrixType;
+  using LDAMatrixType = MetaLDA::LDAMatrixType;
 
   MetaRidgeSeed( void );
 

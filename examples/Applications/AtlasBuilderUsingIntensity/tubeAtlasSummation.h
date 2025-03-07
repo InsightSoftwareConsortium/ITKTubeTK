@@ -47,48 +47,47 @@ public:
    */
   enum { Dimension = 3, DEFAULT_PIXEL_FILL = 0 };
 
-  typedef float                                      InputPixelType;
-  typedef float                                      CountPixelType;
-  typedef float                                      OutputPixelType;
-  typedef float                                      MeanPixelType;
-  typedef float                                      VariancePixelType;
+  using InputPixelType = float;
+  using CountPixelType = float;
+  using OutputPixelType = float;
+  using MeanPixelType = float;
+  using VariancePixelType = float;
 
-  typedef itk::Image< InputPixelType, Dimension >    InputImageType;
-  typedef itk::Image< MeanPixelType, Dimension >     MeanImageType;
-  typedef itk::Image< VariancePixelType, Dimension > VarianceImageType;
-  typedef itk::Image< CountPixelType, Dimension >    CountImageType;
-  typedef itk::AffineTransform<>                     TransformType;
+  using InputImageType = itk::Image< InputPixelType, Dimension >;
+  using MeanImageType = itk::Image< MeanPixelType, Dimension >;
+  using VarianceImageType = itk::Image< VariancePixelType, Dimension >;
+  using CountImageType = itk::Image< CountPixelType, Dimension >;
+  using TransformType = itk::AffineTransform<>;
 
-  typedef InputImageType::Pointer                    InputImagePointer;
-  typedef InputImageType::ConstPointer               InputImageConstPointer;
-  typedef MeanImageType::Pointer                     MeanImagePointer;
-  typedef VarianceImageType::Pointer                 VarianceImagePointer;
-  typedef TransformType::Pointer                     TransformPointer;
+  using InputImagePointer = InputImageType::Pointer;
+  using InputImageConstPointer = InputImageType::ConstPointer;
+  using MeanImagePointer = MeanImageType::Pointer;
+  using VarianceImagePointer = VarianceImageType::Pointer;
+  using TransformPointer = TransformType::Pointer;
 
-  typedef InputImageType::SpacingType                SpacingType;
-  typedef InputImageType::SizeType                   SizeType;
-  typedef InputImageType::PointType                  PointType;
+  using SpacingType = InputImageType::SpacingType;
+  using SizeType = InputImageType::SizeType;
+  using PointType = InputImageType::PointType;
 
 private:
 
   /** Pixel and Image Type for processing transition images */
-  typedef double                                     ProcessPixelType;
-  typedef itk::Image< ProcessPixelType, Dimension >  ProcessImageType;
-  typedef ProcessImageType::Pointer                  ProcessImagePointer;
+  using ProcessPixelType = double;
+  using ProcessImageType = itk::Image< ProcessPixelType, Dimension >;
+  using ProcessImagePointer = ProcessImageType::Pointer;
 
-  typedef itk::ImageRegionConstIterator< InputImageType >
-    InputConstIteratorType;
+  using InputConstIteratorType = itk::ImageRegionConstIterator< InputImageType >;
 
-  typedef itk::ImageRegionIterator< InputImageType >    InputIteratorType;
-  typedef itk::ImageRegionIterator< ProcessImageType >  ProcessIteratorType;
-  typedef itk::ImageRegionIterator< MeanImageType >     MeanIteratorType;
-  typedef itk::ImageRegionIterator< VarianceImageType > VarianceIteratorType;
-  typedef itk::ImageRegionIterator< CountImageType >    CountIteratorType;
+  using InputIteratorType = itk::ImageRegionIterator< InputImageType >;
+  using ProcessIteratorType = itk::ImageRegionIterator< ProcessImageType >;
+  using MeanIteratorType = itk::ImageRegionIterator< MeanImageType >;
+  using VarianceIteratorType = itk::ImageRegionIterator< VarianceImageType >;
+  using CountIteratorType = itk::ImageRegionIterator< CountImageType >;
 
-  typedef std::vector<InputImagePointer>                MedianImageListType;
+  using MedianImageListType = std::vector<InputImagePointer>;
 
-  typedef itk::tube::MeanAndSigmaImageBuilder< InputImageType,
-    MeanImageType, VarianceImageType >               RobustMeanBuilderType;
+  using RobustMeanBuilderType = itk::tube::MeanAndSigmaImageBuilder< InputImageType,
+    MeanImageType, VarianceImageType >;
 
 public:
 

@@ -107,8 +107,8 @@ ContrastCostFunction< TPixel, Dimension >
   double sumBkg = 0;
   double sumsBkg = 0;
 
-  typedef ImageRegionIterator< ImageType >       ImageIteratorType;
-  typedef ImageRegionConstIterator< ImageType >  ConstImageIteratorType;
+  using ImageIteratorType = ImageRegionIterator< ImageType >;
+  using ConstImageIteratorType = ImageRegionConstIterator< ImageType >;
 
   ConstImageIteratorType iterObj( imgObj,
     imgObj->GetLargestPossibleRegion() );

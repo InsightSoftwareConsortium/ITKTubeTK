@@ -41,19 +41,19 @@ class SegmentConnectedComponents:
   public itk::ProcessObject
 {
 public:
-  typedef TImage                                ImageType;
+  using ImageType = TImage;
 
-  typedef TSeedMask                             SeedMaskType;
+  using SeedMaskType = TSeedMask;
 
-  /** Standard class typedefs. */
-  typedef SegmentConnectedComponents            Self;
-  typedef itk::ProcessObject                    Superclass;
-  typedef itk::SmartPointer< Self >             Pointer;
-  typedef itk::SmartPointer< const Self >       ConstPointer;
+  /** Standard class type alias. */
+  using Self = SegmentConnectedComponents;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
 
-  typedef itk::ConnectedComponentImageFilter< ImageType,
-    ImageType, ImageType >                      FilterType;
+  using FilterType = itk::ConnectedComponentImageFilter< ImageType,
+    ImageType, ImageType >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

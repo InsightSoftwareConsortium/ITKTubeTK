@@ -43,10 +43,10 @@ class PDFSegmenterParzen : public PDFSegmenterBase< TImage, TLabelMap >
 {
 public:
 
-  typedef PDFSegmenterParzen                         Self;
-  typedef PDFSegmenterBase< TImage, TLabelMap >      Superclass;
-  typedef SmartPointer< Self >                       Pointer;
-  typedef SmartPointer< const Self >                 ConstPointer;
+  using Self = PDFSegmenterParzen;
+  using Superclass = PDFSegmenterBase< TImage, TLabelMap >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkTypeMacro( PDFSegmenterParzen, PDFSegmenterBase );
 
@@ -55,8 +55,8 @@ public:
   //
   // Template Args Typedefs
   //
-  typedef TImage                               InputImageType;
-  typedef TLabelMap                            LabelMapType;
+  using InputImageType = TImage;
+  using LabelMapType = TLabelMap;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
@@ -66,14 +66,14 @@ public:
   //
   typedef typename Superclass::FeatureVectorGeneratorType
                                                  FeatureVectorGeneratorType;
-  typedef typename Superclass::FeatureValueType  FeatureValueType;
-  typedef typename Superclass::FeatureVectorType FeatureVectorType;
-  typedef typename Superclass::FeatureImageType  FeatureImageType;
+  using FeatureValueType = typename Superclass::FeatureValueType;
+  using FeatureVectorType = typename Superclass::FeatureVectorType;
+  using FeatureImageType = typename Superclass::FeatureImageType;
 
-  typedef typename Superclass::LabelMapPixelType LabelMapPixelType;
+  using LabelMapPixelType = typename Superclass::LabelMapPixelType;
 
-  typedef typename Superclass::ObjectIdType      ObjectIdType;
-  typedef typename Superclass::ObjectIdListType  ObjectIdListType;
+  using ObjectIdType = typename Superclass::ObjectIdType;
+  using ObjectIdListType = typename Superclass::ObjectIdListType;
 
   typedef typename Superclass::ProbabilityPixelType
                                                  ProbabilityPixelType;
@@ -83,23 +83,21 @@ public:
   typedef typename Superclass::ProbabilityImageType
                                                  ProbabilityImageType;
 
-  typedef typename Superclass::VectorDoubleType  VectorDoubleType;
-  typedef typename Superclass::VectorIntType     VectorIntType;
-  typedef typename Superclass::VectorUIntType    VectorUIntType;
+  using VectorDoubleType = typename Superclass::VectorDoubleType;
+  using VectorIntType = typename Superclass::VectorIntType;
+  using VectorUIntType = typename Superclass::VectorUIntType;
 
   //
   // Custom Typedefs
   //
-  typedef float                                HistogramPixelType;
+  using HistogramPixelType = float;
 
-  typedef Image< HistogramPixelType, PARZEN_MAX_NUMBER_OF_FEATURES >
-    HistogramImageType;
+  using HistogramImageType = Image< HistogramPixelType, PARZEN_MAX_NUMBER_OF_FEATURES >;
 
-  typedef HistogramPixelType                   PDFPixelType;
-  typedef HistogramImageType                   PDFImageType;
+  using PDFPixelType = HistogramPixelType;
+  using PDFImageType = HistogramImageType;
 
-  typedef Image< LabelMapPixelType, PARZEN_MAX_NUMBER_OF_FEATURES >
-    LabeledFeatureSpaceType;
+  using LabeledFeatureSpaceType = Image< LabelMapPixelType, PARZEN_MAX_NUMBER_OF_FEATURES >;
 
   //
   // Methods
@@ -152,17 +150,15 @@ private:
   PDFSegmenterParzen( const Self & );          // Purposely not implemented
   void operator = ( const Self & );      // Purposely not implemented
 
-  // Superclass typedefs
-  typedef std::vector< typename ProbabilityImageType::Pointer >
-    ProbabilityImageVectorType;
+  // Superclass type alias
+  using ProbabilityImageVectorType = std::vector< typename ProbabilityImageType::Pointer >;
 
-  typedef std::vector< ProbabilityPixelType > ListVectorType;
-  typedef std::vector< ListVectorType >       ListSampleType;
-  typedef std::vector< ListSampleType >       ClassListSampleType;
+  using ListVectorType = std::vector< ProbabilityPixelType >;
+  using ListSampleType = std::vector< ListVectorType >;
+  using ClassListSampleType = std::vector< ListSampleType >;
 
-  // Custom typedefs
-  typedef std::vector< typename HistogramImageType::Pointer >
-    ClassHistogramImageType;
+  // Custom type alias
+  using ClassHistogramImageType = std::vector< typename HistogramImageType::Pointer >;
 
   ClassHistogramImageType         m_InClassHistogram;
   VectorDoubleType                m_HistogramBinMin;

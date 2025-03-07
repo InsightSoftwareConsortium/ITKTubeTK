@@ -57,16 +57,16 @@ int DoIt( int argc, char * argv[] )
   // The timeCollector to perform basic profiling of algorithmic components
   itk::TimeProbesCollectorBase timeCollector;
 
-  // typedefs
-  typedef itk::Image< TPixel, VDimension > ImageType;
+  // type alias
+  using ImageType = itk::Image< TPixel, VDimension >;
 
-  typedef tube::SegmentUsingOtsuThreshold< ImageType > FilterType;
+  using FilterType = tube::SegmentUsingOtsuThreshold< ImageType >;
 
   // Load input image
   timeCollector.Start( "Load data" );
 
-  typedef typename FilterType::InputImageType     InputImageType;
-  typedef itk::ImageFileReader< InputImageType >  ImageReaderType;
+  using InputImageType = typename FilterType::InputImageType;
+  using ImageReaderType = itk::ImageFileReader< InputImageType >;
 
   typename ImageReaderType::Pointer inputReader = ImageReaderType::New();
 
@@ -84,8 +84,8 @@ int DoIt( int argc, char * argv[] )
     }
 
   // Load mask image if provided
-  typedef typename FilterType::MaskImageType     MaskImageType;
-  typedef itk::ImageFileReader< MaskImageType >  MaskReaderType;
+  using MaskImageType = typename FilterType::MaskImageType;
+  using MaskReaderType = itk::ImageFileReader< MaskImageType >;
 
   typename MaskReaderType::Pointer maskReader = MaskReaderType::New();
 
@@ -131,8 +131,8 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // write output
-  typedef typename FilterType::OutputImageType      OutputImageType;
-  typedef itk::ImageFileWriter< OutputImageType >   OutputWriterType;
+  using OutputImageType = typename FilterType::OutputImageType;
+  using OutputWriterType = itk::ImageFileWriter< OutputImageType >;
 
   timeCollector.Start( "Write segmentation mask" );
 

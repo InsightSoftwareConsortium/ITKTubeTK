@@ -32,8 +32,8 @@ void GetImageInformation( const std::string & fileName,
                           itk::ImageIOBase::IOComponentEnum & componentType,
                           unsigned int & dimension )
 {
-  typedef itk::ImageIOBase     ImageIOType;
-  typedef itk::ImageIOFactory  ImageIOFactoryType;
+  using ImageIOType = itk::ImageIOBase;
+  using ImageIOFactoryType = itk::ImageIOFactory;
 
   ImageIOType::Pointer imageIO =
     ImageIOFactoryType::CreateImageIO( fileName.c_str(),
@@ -82,24 +82,23 @@ int DoIt( int argc, char * argv[] )
 
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef T                                            InputImagePixelType;
-  typedef itk::Image< InputImagePixelType, dimension > InputImageType;
-  typedef itk::Image< float, dimension >               ProbImageType;
-  typedef unsigned short                               LabelMapPixelType;
-  typedef itk::Image< LabelMapPixelType, dimension >   LabelMapType;
+  using InputImagePixelType = T;
+  using InputImageType = itk::Image< InputImagePixelType, dimension >;
+  using ProbImageType = itk::Image< float, dimension >;
+  using LabelMapPixelType = unsigned short;
+  using LabelMapType = itk::Image< LabelMapPixelType, dimension >;
 
-  typedef tube::SegmentConnectedComponentsUsingParzenPDFs< InputImageType,
-    LabelMapType >                                     PDFSegmenterType;
+  using PDFSegmenterType = tube::SegmentConnectedComponentsUsingParzenPDFs< InputImageType,
+    LabelMapType >;
 
-  typedef itk::Image< float, PARZEN_MAX_NUMBER_OF_FEATURES >
-                                                   PDFImageType;
+  using PDFImageType = itk::Image< float, PARZEN_MAX_NUMBER_OF_FEATURES >;
 
-  typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
-  typedef itk::ImageFileReader< LabelMapType >     LabelMapReaderType;
-  typedef itk::ImageFileWriter< LabelMapType >     LabelMapWriterType;
-  typedef itk::ImageFileWriter< ProbImageType >    ProbImageWriterType;
-  typedef itk::ImageFileWriter< PDFImageType >     PDFImageWriterType;
-  typedef itk::ImageFileReader< PDFImageType >     PDFImageReaderType;
+  using ImageReaderType = itk::ImageFileReader< InputImageType >;
+  using LabelMapReaderType = itk::ImageFileReader< LabelMapType >;
+  using LabelMapWriterType = itk::ImageFileWriter< LabelMapType >;
+  using ProbImageWriterType = itk::ImageFileWriter< ProbImageType >;
+  using PDFImageWriterType = itk::ImageFileWriter< PDFImageType >;
+  using PDFImageReaderType = itk::ImageFileReader< PDFImageType >;
 
   typename PDFSegmenterType::Pointer pdfSegmenter =
     PDFSegmenterType::New();

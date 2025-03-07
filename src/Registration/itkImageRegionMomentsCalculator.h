@@ -67,11 +67,11 @@ template <class TImage>
 class ImageRegionMomentsCalculator : public Object
 {
 public:
-  /** Standard class typedefs. */
-  typedef ImageRegionMomentsCalculator<TImage> Self;
-  typedef Object                               Superclass;
-  typedef SmartPointer<Self>                   Pointer;
-  typedef SmartPointer<const Self>             ConstPointer;
+  /** Standard class type alias. */
+  using Self = ImageRegionMomentsCalculator<TImage>;
+  using Superclass = Object;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -84,36 +84,33 @@ public:
                       TImage::ImageDimension );
 
   /** Standard scalar type within this class. */
-  typedef double ScalarType;
+  using ScalarType = double;
 
-  typedef typename TImage::PointType PointType;
+  using PointType = typename TImage::PointType;
 
   /** Standard vector type within this class. */
-  typedef Vector<ScalarType, itkGetStaticConstMacro( ImageDimension )>
-    VectorType;
+  using VectorType = Vector<ScalarType, itkGetStaticConstMacro( ImageDimension )>;
 
   /** Spatial Object type within this class. */
-  typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
-    SpatialObjectType;
+  using SpatialObjectType = SpatialObject<itkGetStaticConstMacro( ImageDimension )>;
 
   /** Spatial Object member types used within this class. */
-  typedef typename SpatialObjectType::Pointer      SpatialObjectPointer;
-  typedef typename SpatialObjectType::ConstPointer SpatialObjectConstPointer;
+  using SpatialObjectPointer = typename SpatialObjectType::Pointer;
+  using SpatialObjectConstPointer = typename SpatialObjectType::ConstPointer;
 
   /** Standard matrix type within this class. */
-  typedef Matrix<ScalarType, itkGetStaticConstMacro( ImageDimension ),
-    itkGetStaticConstMacro( ImageDimension )>      MatrixType;
+  using MatrixType = Matrix<ScalarType, itkGetStaticConstMacro( ImageDimension ),
+    itkGetStaticConstMacro( ImageDimension )>;
 
   /** Standard image type within this class. */
-  typedef TImage ImageType;
+  using ImageType = TImage;
 
   /** Standard image type pointer within this class. */
-  typedef typename ImageType::Pointer      ImagePointer;
-  typedef typename ImageType::ConstPointer ImageConstPointer;
+  using ImagePointer = typename ImageType::Pointer;
+  using ImageConstPointer = typename ImageType::ConstPointer;
 
   /** Affine transform for mapping to and from principal axis */
-  typedef AffineTransform<double, itkGetStaticConstMacro( ImageDimension )>
-    AffineTransformType;
+  using AffineTransformType = AffineTransform<double, itkGetStaticConstMacro( ImageDimension )>;
   typedef typename AffineTransformType::Pointer
     AffineTransformPointer;
 

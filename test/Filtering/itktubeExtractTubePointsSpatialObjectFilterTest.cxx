@@ -37,11 +37,11 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
   const char * inputTubeTree = argv[1];
 
   static const unsigned int Dimension = 3;
-  typedef itk::TubeSpatialObject< Dimension >   TubeSpatialObjectType;
-  typedef itk::GroupSpatialObject< Dimension >  GroupSpatialObjectType;
+  using TubeSpatialObjectType = itk::TubeSpatialObject< Dimension >;
+  using GroupSpatialObjectType = itk::GroupSpatialObject< Dimension >;
 
   // Read input tube tree.
-  typedef itk::SpatialObjectReader< Dimension >  ReaderType;
+  using ReaderType = itk::SpatialObjectReader< Dimension >;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputTubeTree );
   try
@@ -63,8 +63,8 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
   std::cout << "Number of children = "
     << groupSpatialObject->GetNumberOfChildren() << std::endl;
 
-  typedef itk::tube::ExtractTubePointsSpatialObjectFilter<
-    TubeSpatialObjectType > ExtractTubePointsSpatialObjectFilterType;
+  using ExtractTubePointsSpatialObjectFilterType = itk::tube::ExtractTubePointsSpatialObjectFilter<
+    TubeSpatialObjectType >;
   ExtractTubePointsSpatialObjectFilterType::Pointer extractTubePointsFilter =
     ExtractTubePointsSpatialObjectFilterType::New();
   extractTubePointsFilter->SetInput( reader->GetGroup() );

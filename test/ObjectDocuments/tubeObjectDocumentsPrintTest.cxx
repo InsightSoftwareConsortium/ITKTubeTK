@@ -34,32 +34,32 @@ limitations under the License.
 int tubeObjectDocumentsPrintTest( int tubeNotUsed( argc ),
                                       char * tubeNotUsed( argv )[] )
 {
-  typedef itk::tube::BlobSpatialObjectDocument BlobSpatialObjectDocumentType;
+  using BlobSpatialObjectDocumentType = itk::tube::BlobSpatialObjectDocument;
 
   BlobSpatialObjectDocumentType::Pointer blobSpatialObjectDocument
     = BlobSpatialObjectDocumentType::New();
   tubeStandardOutputMacro( << "-------------itk::tube::BlobSpatialObjectDocument"
                            << blobSpatialObjectDocument );
 
-  typedef itk::tube::Document DocumentType;
+  using DocumentType = itk::tube::Document;
 
   DocumentType::Pointer document = DocumentType::New();
   tubeStandardOutputMacro( << "-------------itk::tube::Document" << document );
 
-  typedef itk::tube::ImageDocument ImageDocumentType;
+  using ImageDocumentType = itk::tube::ImageDocument;
 
   ImageDocumentType::Pointer imageDocument = ImageDocumentType::New();
   tubeStandardOutputMacro( << "-------------itk::tube::ImageDocument"
                            << imageDocument );
 
-  typedef tube::MetaDocument MetaDocumentType;
+  using MetaDocumentType = tube::MetaDocument;
 
   MetaDocumentType::Pointer metaDocument = new MetaDocumentType();
   tubeStandardOutputMacro( << "-------------tube::MetaDocument"
                            << metaDocument );
   delete metaDocument;
 
-  typedef tube::MetaObjectDocument MetaObjectDocumentType;
+  using MetaObjectDocumentType = tube::MetaObjectDocument;
 
   MetaObjectDocumentType::Pointer metaObjectDocument
     = new MetaObjectDocumentType();
@@ -67,36 +67,34 @@ int tubeObjectDocumentsPrintTest( int tubeNotUsed( argc ),
                            << metaObjectDocument );
   delete metaObjectDocument;
 
-  typedef itk::tube::ObjectDocument ObjectDocumentType;
+  using ObjectDocumentType = itk::tube::ObjectDocument;
 
   ObjectDocumentType::Pointer objectDocument = ObjectDocumentType::New();
   tubeStandardOutputMacro( << "-------------itk::tube::ObjectDocument"
                            << objectDocument );
 
-  typedef itk::Image< float, 3 > ImageType;
-  typedef itk::tube::ObjectDocumentToImageFilter< ObjectDocumentType, ImageType >
-    ObjectDocumentToImageFilterType;
+  using ImageType = itk::Image< float, 3 >;
+  using ObjectDocumentToImageFilterType = itk::tube::ObjectDocumentToImageFilter< ObjectDocumentType, ImageType >;
 
   ObjectDocumentToImageFilterType::Pointer objectDocumentToImageFilter
     = ObjectDocumentToImageFilterType::New();
   tubeStandardOutputMacro( << "-------------itk::tube::ObjectDocumentToImageFilter"
                            << objectDocumentToImageFilter );
 
-  typedef itk::tube::ObjectDocumentToObjectSource< ObjectDocumentType, 3 >
-    ObjectDocumentToObjectSourceType;
+  using ObjectDocumentToObjectSourceType = itk::tube::ObjectDocumentToObjectSource< ObjectDocumentType, 3 >;
 
   ObjectDocumentToObjectSourceType::Pointer objectDocumentToObjectSource
     = ObjectDocumentToObjectSourceType::New();
   tubeStandardOutputMacro( << "-------------itk::tube::ObjectDocumentToObjectSource"
                            << objectDocumentToObjectSource );
 
-  typedef tube::OptionList OptionListType;
+  using OptionListType = tube::OptionList;
 
   OptionListType::Pointer optionList = new OptionListType();
   tubeStandardOutputMacro( << "-------------tube::OptionList" << optionList );
   delete optionList;
 
-  typedef itk::tube::SpatialObjectDocument SpatialObjectDocumentType;
+  using SpatialObjectDocumentType = itk::tube::SpatialObjectDocument;
 
   SpatialObjectDocumentType::Pointer spatialObjectDocument
     = SpatialObjectDocumentType::New();

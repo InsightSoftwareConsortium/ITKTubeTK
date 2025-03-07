@@ -65,12 +65,12 @@ class MeanSquareRegistrationFunction
                                               TDeformationField >
 {
 public:
-  /** Standard class typedefs. */
-  typedef MeanSquareRegistrationFunction    Self;
-  typedef PDEDeformableRegistrationFunction< TFixedImage,
-    TMovingImage, TDeformationField >       Superclass;
-  typedef SmartPointer< Self >              Pointer;
-  typedef SmartPointer< const Self >        ConstPointer;
+  /** Standard class type alias. */
+  using Self = MeanSquareRegistrationFunction;
+  using Superclass = PDEDeformableRegistrationFunction< TFixedImage,
+    TMovingImage, TDeformationField >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -80,16 +80,16 @@ public:
     PDEDeformableRegistrationFunction );
 
   /** MovingImage image type. */
-  typedef typename Superclass::MovingImageType     MovingImageType;
-  typedef typename Superclass::MovingImagePointer  MovingImagePointer;
-  typedef typename MovingImageType::PixelType      MovingImagePixelType;
+  using MovingImageType = typename Superclass::MovingImageType;
+  using MovingImagePointer = typename Superclass::MovingImagePointer;
+  using MovingImagePixelType = typename MovingImageType::PixelType;
 
   /** FixedImage image type. */
-  typedef typename Superclass::FixedImageType     FixedImageType;
-  typedef typename Superclass::FixedImagePointer  FixedImagePointer;
-  typedef typename FixedImageType::IndexType      IndexType;
-  typedef typename FixedImageType::SizeType       SizeType;
-  typedef typename FixedImageType::SpacingType    SpacingType;
+  using FixedImageType = typename Superclass::FixedImageType;
+  using FixedImagePointer = typename Superclass::FixedImagePointer;
+  using IndexType = typename FixedImageType::IndexType;
+  using SizeType = typename FixedImageType::SizeType;
+  using SpacingType = typename FixedImageType::SpacingType;
 
   /** Deformation field type. */
   typedef typename Superclass::DisplacementFieldType
@@ -104,28 +104,24 @@ public:
     Superclass::ImageDimension );
 
   /** Inherit some enums from the superclass. */
-  typedef typename Superclass::PixelType        PixelType;
-  typedef typename Superclass::RadiusType       RadiusType;
-  typedef typename Superclass::NeighborhoodType NeighborhoodType;
-  typedef typename Superclass::FloatOffsetType  FloatOffsetType;
-  typedef typename Superclass::TimeStepType     TimeStepType;
+  using PixelType = typename Superclass::PixelType;
+  using RadiusType = typename Superclass::RadiusType;
+  using NeighborhoodType = typename Superclass::NeighborhoodType;
+  using FloatOffsetType = typename Superclass::FloatOffsetType;
+  using TimeStepType = typename Superclass::TimeStepType;
 
   /** Interpolator type. */
-  typedef double                                     CoordRepType;
-  typedef InterpolateImageFunction<MovingImageType, CoordRepType>
-                                                     InterpolatorType;
-  typedef typename InterpolatorType::Pointer         InterpolatorPointer;
-  typedef typename InterpolatorType::PointType       PointType;
-  typedef LinearInterpolateImageFunction<MovingImageType, CoordRepType>
-                                                     DefaultInterpolatorType;
+  using CoordRepType = double;
+  using InterpolatorType = InterpolateImageFunction<MovingImageType, CoordRepType>;
+  using InterpolatorPointer = typename InterpolatorType::Pointer;
+  using PointType = typename InterpolatorType::PointType;
+  using DefaultInterpolatorType = LinearInterpolateImageFunction<MovingImageType, CoordRepType>;
 
   /** Covariant vector type. */
-  typedef CovariantVector< double, itkGetStaticConstMacro( ImageDimension ) >
-    CovariantVectorType;
+  using CovariantVectorType = CovariantVector< double, itkGetStaticConstMacro( ImageDimension ) >;
 
   /** Gradient calculator type. */
-  typedef CentralDifferenceImageFunction<FixedImageType>
-    GradientCalculatorType;
+  using GradientCalculatorType = CentralDifferenceImageFunction<FixedImageType>;
   typedef typename GradientCalculatorType::Pointer
     GradientCalculatorPointer;
 
@@ -195,8 +191,7 @@ protected:
   void PrintSelf( std::ostream& os, Indent indent ) const override;
 
   /** FixedImage image neighborhood iterator type. */
-  typedef ConstNeighborhoodIterator<FixedImageType>
-    FixedImageNeighborhoodIteratorType;
+  using FixedImageNeighborhoodIteratorType = ConstNeighborhoodIterator<FixedImageType>;
 
   /** A global data type for this class of equation. Used to store
    * iterators for the fixed image. */

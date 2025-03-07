@@ -42,23 +42,23 @@ class InverseIntensityImageFilter
 {
 public:
 
-  /** Standard class typedefs. */
-  typedef InverseIntensityImageFilter                     Self;
-  typedef ImageToImageFilter< TInputImage, TInputImage>   SuperClass;
+  /** Standard class type alias. */
+  using Self = InverseIntensityImageFilter;
+  using SuperClass = ImageToImageFilter< TInputImage, TInputImage>;
 
-  typedef SmartPointer< Self >                            Pointer;
-  typedef SmartPointer< const Self >                      ConstPointer;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef TInputImage                             InputImageType;
-  typedef typename InputImageType::PixelType      InputPixelType;
-  typedef typename InputImageType::Pointer        InputImagePointer;
-  typedef typename InputImageType::ConstPointer   InputImageConstPointer;
+  using InputImageType = TInputImage;
+  using InputPixelType = typename InputImageType::PixelType;
+  using InputImagePointer = typename InputImageType::Pointer;
+  using InputImageConstPointer = typename InputImageType::ConstPointer;
 
-  typedef TInputImage                             OutputImageType;
-  typedef typename OutputImageType::PixelType     OutputPixelType;
-  typedef typename OutputImageType::Pointer       OutputImagePointer;
+  using OutputImageType = TInputImage;
+  using OutputPixelType = typename OutputImageType::PixelType;
+  using OutputImagePointer = typename OutputImageType::Pointer;
 
-  typedef typename InputImageType::RegionType     RegionType;
+  using RegionType = typename InputImageType::RegionType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

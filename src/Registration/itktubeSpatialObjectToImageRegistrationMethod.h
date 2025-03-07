@@ -51,10 +51,10 @@ class SpatialObjectToImageRegistrationMethod
 
 public:
 
-  typedef SpatialObjectToImageRegistrationMethod Self;
-  typedef ProcessObject                  Superclass;
-  typedef SmartPointer<Self>             Pointer;
-  typedef SmartPointer<const Self>       ConstPointer;
+  using Self = SpatialObjectToImageRegistrationMethod;
+  using Superclass = ProcessObject;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   itkTypeMacro( SpatialObjectToImageRegistrationMethod, ProcessObject );
 
@@ -66,25 +66,23 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
 
-  typedef Transform<double, ObjectDimension,
-          itkGetStaticConstMacro( ImageDimension )>  TransformType;
+  using TransformType = Transform<double, ObjectDimension,
+          itkGetStaticConstMacro( ImageDimension )>;
 
-  typedef DataObjectDecorator<TransformType>         TransformOutputType;
+  using TransformOutputType = DataObjectDecorator<TransformType>;
 
-  typedef typename DataObject::Pointer               DataObjectPointer;
-  typedef Superclass::DataObjectPointerArraySizeType DataObjectPointerArraySizeType;
+  using DataObjectPointer = typename DataObject::Pointer;
+  using DataObjectPointerArraySizeType = Superclass::DataObjectPointerArraySizeType;
 
-  typedef SpatialObject<ObjectDimension>             SpatialObjectType;
-  typedef TImage                                     ImageType;
+  using SpatialObjectType = SpatialObject<ObjectDimension>;
+  using ImageType = TImage;
 
-  typedef typename SpatialObjectType::PointType      SpatialObjectPointType;
-  typedef typename ImageType::PointType              PointType;
+  using SpatialObjectPointType = typename SpatialObjectType::PointType;
+  using PointType = typename ImageType::PointType;
 
-  typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
-                                                     ImageMaskObjectType;
+  using ImageMaskObjectType = SpatialObject<itkGetStaticConstMacro( ImageDimension )>;
 
-  typedef SpatialObject< ObjectDimension >
-                                                     SpatialObjectMaskObjectType;
+  using SpatialObjectMaskObjectType = SpatialObject< ObjectDimension >;
 
   //
   // Custom Methods

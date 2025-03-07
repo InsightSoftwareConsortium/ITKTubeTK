@@ -45,18 +45,18 @@ class ConvertTubesToDensityImage:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ConvertTubesToDensityImage                 Self;
-  typedef itk::ProcessObject                         Superclass;
-  typedef itk::SmartPointer< Self >                  Pointer;
-  typedef itk::SmartPointer< const Self >            ConstPointer;
+  /** Standard class type alias. */
+  using Self = ConvertTubesToDensityImage;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
   /** Typdefs */
-  typedef itk::Image< TOutputPixel, Dimension >          DensityImageType;
-  typedef typename DensityImageType::PixelType           DensityPixelType;
-  typedef typename DensityImageType::Pointer             DensityImagePointer;
-  typedef typename DensityImageType::SizeType            SizeType;
-  typedef typename DensityImageType::SpacingType         SpacingType;
+  using DensityImageType = itk::Image< TOutputPixel, Dimension >;
+  using DensityPixelType = typename DensityImageType::PixelType;
+  using DensityImagePointer = typename DensityImageType::Pointer;
+  using SizeType = typename DensityImageType::SizeType;
+  using SpacingType = typename DensityImageType::SpacingType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -64,17 +64,17 @@ public:
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ConvertTubesToDensityImage, Object );
 
-  typedef itk::Image< TOutputPixel, Dimension >          RadiusImageType;
-  typedef typename RadiusImageType::Pointer              RadiusImagePointer;
-  typedef itk::Vector< TOutputPixel, Dimension >         TangentPixelType;
-  typedef itk::Image< TangentPixelType, Dimension >      TangentImageType;
-  typedef typename TangentImageType::Pointer             TangentImagePointer;
+  using RadiusImageType = itk::Image< TOutputPixel, Dimension >;
+  using RadiusImagePointer = typename RadiusImageType::Pointer;
+  using TangentPixelType = itk::Vector< TOutputPixel, Dimension >;
+  using TangentImageType = itk::Image< TangentPixelType, Dimension >;
+  using TangentImagePointer = typename TangentImageType::Pointer;
 
-  typedef itk::GroupSpatialObject< Dimension >           TubeGroupType;
-  typedef typename TubeGroupType::Pointer                TubeGroupPointer;
+  using TubeGroupType = itk::GroupSpatialObject< Dimension >;
+  using TubeGroupPointer = typename TubeGroupType::Pointer;
 
-  typedef itk::tube::TubeSpatialObjectToDensityImageFilter<
-  DensityImageType, RadiusImageType, TangentImageType >  FilterType;
+  using FilterType = itk::tube::TubeSpatialObjectToDensityImageFilter<
+  DensityImageType, RadiusImageType, TangentImageType >;
 
   /** Set maximum density intensity value. Its a constant */
   tubeWrapSetMacro( MaxDensityIntensity, DensityPixelType, Filter );

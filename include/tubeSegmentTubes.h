@@ -43,29 +43,29 @@ class SegmentTubes:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef SegmentTubes                                 Self;
-  typedef itk::ProcessObject                           Superclass;
-  typedef itk::SmartPointer< Self >                    Pointer;
-  typedef itk::SmartPointer< const Self >              ConstPointer;
+  /** Standard class type alias. */
+  using Self = SegmentTubes;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef TInputImage                                  ImageType;
-  typedef typename ImageType::PixelType                PixelType;
-  typedef typename ImageType::IndexType                IndexType;
+  using ImageType = TInputImage;
+  using PixelType = typename ImageType::PixelType;
+  using IndexType = typename ImageType::IndexType;
 
-  typedef itk::tube::TubeExtractor< ImageType >        FilterType;
-  typedef itk::tube::RidgeExtractor< ImageType >       RidgeFilterType;
-  typedef itk::tube::RadiusExtractor3< ImageType >     RadiusFilterType;
+  using FilterType = itk::tube::TubeExtractor< ImageType >;
+  using RidgeFilterType = itk::tube::RidgeExtractor< ImageType >;
+  using RadiusFilterType = itk::tube::RadiusExtractor3< ImageType >;
 
-  typedef typename FilterType::TubeMaskImageType       TubeMaskImageType;
-  typedef typename FilterType::TubeType                TubeType;
-  typedef typename FilterType::TubeGroupType           TubeGroupType;
+  using TubeMaskImageType = typename FilterType::TubeMaskImageType;
+  using TubeType = typename FilterType::TubeType;
+  using TubeGroupType = typename FilterType::TubeGroupType;
 
-  typedef typename FilterType::ContinuousIndexType     ContinuousIndexType;
-  typedef std::vector< ContinuousIndexType >           ContinuousIndexListType;
-  typedef typename FilterType::RadiusListType          RadiusListType;
-  typedef typename FilterType::PointType               PointType;
-  typedef std::vector< PointType >                     PointListType;
+  using ContinuousIndexType = typename FilterType::ContinuousIndexType;
+  using ContinuousIndexListType = std::vector< ContinuousIndexType >;
+  using RadiusListType = typename FilterType::RadiusListType;
+  using PointType = typename FilterType::PointType;
+  using PointListType = std::vector< PointType >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

@@ -56,16 +56,16 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-  typedef TPixel                                    InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension >  InputImageType;
-  typedef itk::ImageFileReader< InputImageType >    ReaderType;
+  using InputPixelType = TPixel;
+  using InputImageType = itk::Image< InputPixelType, VDimension >;
+  using ReaderType = itk::ImageFileReader< InputImageType >;
 
-  typedef float                                     OutputPixelType;
-  typedef itk::Image< OutputPixelType, VDimension > OutputImageType;
-  typedef itk::ImageFileWriter< OutputImageType  >  WriterType;
+  using OutputPixelType = float;
+  using OutputImageType = itk::Image< OutputPixelType, VDimension >;
+  using WriterType = itk::ImageFileWriter< OutputImageType  >;
 
-  typedef itk::DiscreteGaussianImageFilter< InputImageType,
-    OutputImageType > FilterType;
+  using FilterType = itk::DiscreteGaussianImageFilter< InputImageType,
+    OutputImageType >;
 
   timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();

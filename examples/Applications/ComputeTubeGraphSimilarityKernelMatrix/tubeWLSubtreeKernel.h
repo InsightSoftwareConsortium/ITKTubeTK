@@ -58,8 +58,8 @@ class WLSubtreeKernel : public GraphKernel
 {
 public:
 
-  typedef std::map<std::string, int>  LabelMapType;
-  typedef std::vector<LabelMapType>   LabelMapVectorType;
+  using LabelMapType = std::map<std::string, int>;
+  using LabelMapVectorType = std::vector<LabelMapType>;
 
   /** CTOR - Variant with no vertex label information */
   WLSubtreeKernel( const GraphType &G0,

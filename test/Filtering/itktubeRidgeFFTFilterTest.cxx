@@ -40,17 +40,17 @@ int itktubeRidgeFFTFilterTest( int argc, char * argv[] )
   enum { Dimension = 3 };
 
   // Define the pixel type
-  typedef float PixelType;
+  using PixelType = float;
 
   // Declare the types of the images
-  typedef itk::Image<PixelType, Dimension>  ImageType;
+  using ImageType = itk::Image<PixelType, Dimension>;
 
   // Declare the reader and writer
-  typedef itk::ImageFileReader< ImageType > ReaderType;
-  typedef itk::ImageFileWriter< ImageType > WriterType;
+  using ReaderType = itk::ImageFileReader< ImageType >;
+  using WriterType = itk::ImageFileWriter< ImageType >;
 
   // Declare the type for the Filter
-  typedef itk::tube::RidgeFFTFilter< ImageType > FunctionType;
+  using FunctionType = itk::tube::RidgeFFTFilter< ImageType >;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();

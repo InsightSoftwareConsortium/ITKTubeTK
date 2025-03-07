@@ -82,8 +82,8 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
 
     tubes->ComputeFamilyBoundingBox( 99999 );
 
-    typedef TubeSpatialObjectToImageFilter<ImageDimension, DensityImageType,
-      RadiusImageType, TangentImageType> FilterType;
+    using FilterType = TubeSpatialObjectToImageFilter<ImageDimension, DensityImageType,
+      RadiusImageType, TangentImageType>;
     typename FilterType::Pointer tubefilter = FilterType::New();
 
     //Set record radius value for filter
@@ -115,8 +115,8 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
     m_TangentMapImage  = tubefilter->GetTangentImage();
     m_DensityMapImage  = danFilter->GetDistanceMap();
 
-    typedef ImageRegionIterator<VectorImageType>   VectorIteratorType;
-    typedef ImageRegionIterator<RadiusImageType>   RadiusIteratorType;
+    using VectorIteratorType = ImageRegionIterator<VectorImageType>;
+    using RadiusIteratorType = ImageRegionIterator<RadiusImageType>;
 
     VectorIteratorType it_vector( vectorImage,
       vectorImage->GetLargestPossibleRegion() );
@@ -145,7 +145,7 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
 
     // Use Vector Image to find the closest vessel and add the tangent
     // direction
-    typedef ImageRegionIterator<TangentImageType>   TangentIteratorType;
+    using TangentIteratorType = ImageRegionIterator<TangentImageType>;
     TangentIteratorType it_tangent( m_TangentMapImage,
       m_TangentMapImage->GetLargestPossibleRegion() );
 

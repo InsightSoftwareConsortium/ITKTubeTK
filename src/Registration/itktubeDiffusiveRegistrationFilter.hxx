@@ -1752,7 +1752,7 @@ DiffusiveRegistrationFilter
 {
   ImageRegionIterator< UpdateBufferType > updateIt( m_UpdateBuffer,
     regionToProcess );
-  typedef ImageRegionIterator< OutputImageType > OutputImageIteratorType;
+  using OutputImageIteratorType = ImageRegionIterator< OutputImageType >;
   OutputImageIteratorType outputIt1( this->GetOutput(), regionToProcess );
   OutputImageIteratorType outputIt2( outputImage, regionToProcess );
 

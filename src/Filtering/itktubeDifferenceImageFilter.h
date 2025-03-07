@@ -49,11 +49,11 @@ class DifferenceImageFilter
   : public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
-  /** Standard class typedefs. */
-  typedef DifferenceImageFilter                           Self;
-  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
-  typedef SmartPointer< Self >                            Pointer;
-  typedef SmartPointer< const Self >                      ConstPointer;
+  /** Standard class type alias. */
+  using Self = DifferenceImageFilter;
+  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -61,14 +61,14 @@ public:
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( DifferenceImageFilter, ImageToImageFilter );
 
-  /** Some convenient typedefs. */
-  typedef TInputImage                               InputImageType;
-  typedef TOutputImage                              OutputImageType;
-  typedef typename OutputImageType::PixelType       OutputPixelType;
-  typedef typename OutputImageType::RegionType      OutputImageRegionType;
+  /** Some convenient type alias. */
+  using InputImageType = TInputImage;
+  using OutputImageType = TOutputImage;
+  using OutputPixelType = typename OutputImageType::PixelType;
+  using OutputImageRegionType = typename OutputImageType::RegionType;
 
-  typedef typename NumericTraits<OutputPixelType>::RealType RealType;
-  typedef typename NumericTraits<RealType>::AccumulateType  AccumulateType;
+  using RealType = typename NumericTraits<OutputPixelType>::RealType;
+  using AccumulateType = typename NumericTraits<RealType>::AccumulateType;
 
   /** Set the valid image input.  This will be input 0.  */
   virtual void SetValidInput( const InputImageType* validImage );

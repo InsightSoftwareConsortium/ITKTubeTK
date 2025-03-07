@@ -55,17 +55,17 @@ int DoIt( int argc, char * argv[] )
     verbosity = VERBOSE;
     }
 
-  typedef typename itk::Image< TPixelType, TDimension > ImageType;
+  using ImageType = typename itk::Image< TPixelType, TDimension >;
 
-  typedef itk::ImageFileReader< ImageType  > ImageReaderType;
-  typedef itk::SpatialObjectReader< TDimension, float > SpatialObjectReaderType;
+  using ImageReaderType = itk::ImageFileReader< ImageType  >;
+  using SpatialObjectReaderType = itk::SpatialObjectReader< TDimension, float >;
 
-  typedef typename itk::tube::SpatialObjectToImageRegistrationHelper<
-    TDimension, ImageType > RegistrationType;
+  using RegistrationType = typename itk::tube::SpatialObjectToImageRegistrationHelper<
+    TDimension, ImageType >;
 
   typename RegistrationType::Pointer reger = RegistrationType::New();
 
-  typedef typename RegistrationType::SpatialObjectType SpatialObjectType;
+  using SpatialObjectType = typename RegistrationType::SpatialObjectType;
 
   reger->SetReportProgress( true );
 
@@ -236,10 +236,9 @@ int DoIt( int argc, char * argv[] )
                                       ::IMAGE_INTENSITY_METRIC );
     }
 
-  typedef typename itk::ImageFileReader<
-    itk::Image< unsigned char, TDimension > > ImageReader;
-  typedef typename itk::ImageMaskSpatialObject< TDimension >
-    ImageMaskSpatialObject;
+  using ImageReader = typename itk::ImageFileReader<
+    itk::Image< unsigned char, TDimension > >;
+  using ImageMaskSpatialObject = typename itk::ImageMaskSpatialObject< TDimension >;
 
   if( fixedImageMask != "" )
     {
@@ -425,7 +424,7 @@ int DoIt( int argc, char * argv[] )
 
     try
       {
-      typedef itk::SpatialObjectWriter< TDimension > SOWriterType;
+      using SOWriterType = itk::SpatialObjectWriter< TDimension >;
       typename SOWriterType::Pointer soWriter =
         SOWriterType::New();
       soWriter->SetFileName( resampledSpatialObject );

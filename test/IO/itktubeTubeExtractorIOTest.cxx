@@ -34,10 +34,10 @@ int itktubeTubeExtractorIOTest( int argc, char * argv[] )
     }
 
   // Prep
-  typedef itk::Image< float, 3 >                     ImageType;
+  using ImageType = itk::Image< float, 3 >;
 
   // Declare the type for the Filter
-  typedef itk::tube::TubeExtractorIO< ImageType >    IOMethodType;
+  using IOMethodType = itk::tube::TubeExtractorIO< ImageType >;
 
   // TubeExtractor must have been assigned an input image prior to
   //   reading parameters into it.

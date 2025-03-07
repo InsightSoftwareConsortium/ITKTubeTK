@@ -49,20 +49,20 @@ template< unsigned int Dimension, class TInputPixel >
 class SegmentTubeUsingMinimalPathFilter: public Object
 {
 public:
-  /** Standard class typedefs. */
-  typedef SegmentTubeUsingMinimalPathFilter Self;
-  typedef Object                             Superclass;
-  typedef SmartPointer< Self >               Pointer;
-  typedef SmartPointer< const Self >         ConstPointer;
+  /** Standard class type alias. */
+  using Self = SegmentTubeUsingMinimalPathFilter;
+  using Superclass = Object;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef itk::Image< TInputPixel, Dimension > InputImageType;
-  typedef itk::GroupSpatialObject< Dimension > InputSpatialObjectType;
+  using InputImageType = itk::Image< TInputPixel, Dimension >;
+  using InputSpatialObjectType = itk::GroupSpatialObject< Dimension >;
 
-  typedef typename InputSpatialObjectType::Pointer TubeGroupPointer;
+  using TubeGroupPointer = typename InputSpatialObjectType::Pointer;
 
-  typedef itk::Point< double, Dimension >           PointType;
-  typedef itk::TubeSpatialObjectPoint< Dimension >  TubePointType;
-  typedef itk::TubeSpatialObject< Dimension >       TubeType;
+  using PointType = itk::Point< double, Dimension >;
+  using TubePointType = itk::TubeSpatialObjectPoint< Dimension >;
+  using TubeType = itk::TubeSpatialObject< Dimension >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

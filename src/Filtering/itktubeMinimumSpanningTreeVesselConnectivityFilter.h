@@ -51,21 +51,20 @@ class MinimumSpanningTreeVesselConnectivityFilter
     GroupSpatialObject< ObjectDimension >, GroupSpatialObject< ObjectDimension > >
 {
 public:
-  /** Standard class typedefs. */
-  typedef GroupSpatialObject< ObjectDimension >      TubeGroupType;
+  /** Standard class type alias. */
+  using TubeGroupType = GroupSpatialObject< ObjectDimension >;
 
   typedef MinimumSpanningTreeVesselConnectivityFilter
                                                 Self;
-  typedef SpatialObjectToSpatialObjectFilter< TubeGroupType, TubeGroupType >
-                                                Superclass;
-  typedef SmartPointer< Self >                  Pointer;
-  typedef SmartPointer< const Self >            ConstPointer;
+  using Superclass = SpatialObjectToSpatialObjectFilter< TubeGroupType, TubeGroupType >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef TubeSpatialObject< ObjectDimension > TubeType;
-  typedef typename TubeType::Pointer            TubePointerType;
-  typedef typename TubeType::ConstPointer       TubeConstPointerType;
-  typedef itk::IndexValueType                   TubeIdType;
-  typedef std::vector< TubeIdType >             TubeIdListType;
+  using TubeType = TubeSpatialObject< ObjectDimension >;
+  using TubePointerType = typename TubeType::Pointer;
+  using TubeConstPointerType = typename TubeType::ConstPointer;
+  using TubeIdType = itk::IndexValueType;
+  using TubeIdListType = std::vector< TubeIdType >;
 
   /** Run-time type information ( and related methods ).   */
   itkTypeMacro( MinimumSpanningTreeVesselConnectivityFilter,
@@ -138,12 +137,9 @@ private:
     bool operator>( const ConnectionPointType & rhs ) const;
     };
 
-  typedef std::unordered_map< TubeIdType, GraphEdgeType >
-  GraphEdgeListType;
-  typedef std::unordered_map< TubeIdType, GraphEdgeListType >
-  TubeAdjacencyListGraphType;
-  typedef std::unordered_map< TubeIdType, TubePointerType >
-  TubeIdToPointerMapType;
+  using GraphEdgeListType = std::unordered_map< TubeIdType, GraphEdgeType >;
+  using TubeAdjacencyListGraphType = std::unordered_map< TubeIdType, GraphEdgeListType >;
+  using TubeIdToPointerMapType = std::unordered_map< TubeIdType, TubePointerType >;
 
   struct TubePQElementType
     {

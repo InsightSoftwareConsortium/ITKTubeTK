@@ -54,11 +54,11 @@ class VotingResampleImageFunction
   : public InterpolateImageFunction< TInputImage, TCoordRep >
 {
 public:
-  /** Standard class typedefs. */
-  typedef VotingResampleImageFunction                      Self;
-  typedef InterpolateImageFunction<TInputImage, TCoordRep> Superclass;
-  typedef SmartPointer< Self >                             Pointer;
-  typedef SmartPointer< const Self >                       ConstPointer;
+  /** Standard class type alias. */
+  using Self = VotingResampleImageFunction;
+  using Superclass = InterpolateImageFunction<TInputImage, TCoordRep>;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( VotingResampleImageFunction, InterpolateImageFunction );
@@ -66,27 +66,27 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** OutputType typedef support. */
-  typedef typename Superclass::OutputType OutputType;
+  /** OutputType type alias support. */
+  using OutputType = typename Superclass::OutputType;
 
-  /** InputImageType typedef support. */
-  typedef typename Superclass::InputImageType InputImageType;
+  /** InputImageType type alias support. */
+  using InputImageType = typename Superclass::InputImageType;
 
-  /** SizeType typedef support. */
-  typedef typename Superclass::SizeType SizeType;
+  /** SizeType type alias support. */
+  using SizeType = typename Superclass::SizeType;
 
-  /** RealType typedef support. */
-  typedef typename Superclass::RealType RealType;
+  /** RealType type alias support. */
+  using RealType = typename Superclass::RealType;
 
   /** Dimension underlying input image. */
   itkStaticConstMacro( ImageDimension, unsigned int,
     Superclass::ImageDimension );
 
-  /** Index typedef support. */
-  typedef typename Superclass::IndexType IndexType;
+  /** Index type alias support. */
+  using IndexType = typename Superclass::IndexType;
 
-  /** ContinuousIndex typedef support. */
-  typedef typename Superclass::ContinuousIndexType ContinuousIndexType;
+  /** ContinuousIndex type alias support. */
+  using ContinuousIndexType = typename Superclass::ContinuousIndexType;
 
   /** Evaluate the function at a ContinuousIndex position
    *

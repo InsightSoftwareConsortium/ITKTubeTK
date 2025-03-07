@@ -62,8 +62,7 @@ SubSampleSpatialObjectFilter< ObjectDimension >
   typename SpatialObjectType::Pointer newParent;
   if( inputAsTube != NULL )
     {
-    typedef SubSampleTubeSpatialObjectFilter< ObjectDimension >
-      SubSampleTubeFilterType;
+    using SubSampleTubeFilterType = SubSampleTubeSpatialObjectFilter< ObjectDimension >;
     typename SubSampleTubeFilterType::Pointer subSampleTubeFilter
       = SubSampleTubeFilterType::New();
 
@@ -99,7 +98,7 @@ SubSampleSpatialObjectFilter< ObjectDimension >
       }
     }
 
-  typedef typename SpatialObjectType::ChildrenListType ChildrenListType;
+  using ChildrenListType = typename SpatialObjectType::ChildrenListType;
   ChildrenListType *children = input->GetChildren();
   typename ChildrenListType::const_iterator it = children->begin();
   while( it != children->end() )

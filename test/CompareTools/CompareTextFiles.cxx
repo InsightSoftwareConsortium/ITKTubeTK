@@ -136,7 +136,7 @@ int CompareTextFiles( int argc, char * argv[] )
       }
     else
       {
-      typedef std::list< std::string >::const_iterator  nameIterator;
+      using nameIterator = std::list< std::string >::const_iterator;
       nameIterator baselineFileItr = baselineFilenames.begin();
       while( baselineFileItr != baselineFilenames.end() )
         {

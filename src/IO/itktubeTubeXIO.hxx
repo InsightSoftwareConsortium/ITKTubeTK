@@ -471,7 +471,7 @@ TubeXIO< TDimension >
     tmpWriteStream << "Points:" << std::endl;
     for( unsigned int i=0; i<nPoints; ++i )
       {
-      typedef const typename TubeType::TubePointType  TubePointType;
+      using TubePointType = const typename TubeType::TubePointType;
       TubePointType * pnt;
       pnt = static_cast< TubePointType * >( tube->GetPoint( i ) );
       for( unsigned int k=0; k<TDimension; ++k )

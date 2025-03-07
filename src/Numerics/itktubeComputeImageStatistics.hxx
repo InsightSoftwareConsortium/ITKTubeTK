@@ -84,7 +84,7 @@ ComputeImageStatistics< TPixel, VDimension >
     this->GetInput()->GetLargestPossibleRegion() );
   this->GetOutput()->Allocate();
 
-  typedef std::map< TPixel, unsigned int > MapType;
+  using MapType = std::map< TPixel, unsigned int >;
   MapType maskMap;
 
   itk::ImageRegionIterator< MaskType > maskIter( m_InputMask,

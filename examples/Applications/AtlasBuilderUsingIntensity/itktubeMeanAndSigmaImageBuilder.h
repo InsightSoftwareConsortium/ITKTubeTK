@@ -55,10 +55,10 @@ class MeanAndSigmaImageBuilder : public Object
 {
 public:
 
-  typedef MeanAndSigmaImageBuilder                      Self;
-  typedef Object                                        Superclass;
-  typedef SmartPointer< Self >                          Pointer;
-  typedef SmartPointer< const Self >                    ConstPointer;
+  using Self = MeanAndSigmaImageBuilder;
+  using Superclass = Object;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TInputImageType::ImageDimension );
@@ -66,29 +66,28 @@ public:
   itkNewMacro( Self );
   itkTypeMacro( MeanAndSigmaImageBuilder, Object );
 
-  typedef TInputImageType                               InputImageType;
-  typedef TOutputMeanImageType                          OutputMeanImageType;
-  typedef TOutputSigmaImageType                         OutputSigmaImageType;
-  typedef Image<
-    float, itkGetStaticConstMacro( ImageDimension )>           CountImageType;
+  using InputImageType = TInputImageType;
+  using OutputMeanImageType = TOutputMeanImageType;
+  using OutputSigmaImageType = TOutputSigmaImageType;
+  using CountImageType = Image<
+    float, itkGetStaticConstMacro( ImageDimension )>;
 
-  typedef typename InputImageType::PixelType            InputPixelType;
-  typedef typename OutputMeanImageType::PixelType       OutputMeanPixelType;
-  typedef typename OutputSigmaImageType::PixelType      OutputSigmaPixelType;
-  typedef typename CountImageType::PixelType            CountPixelType;
+  using InputPixelType = typename InputImageType::PixelType;
+  using OutputMeanPixelType = typename OutputMeanImageType::PixelType;
+  using OutputSigmaPixelType = typename OutputSigmaImageType::PixelType;
+  using CountPixelType = typename CountImageType::PixelType;
 
-  typedef typename InputImageType::Pointer              InputImagePointer;
-  typedef typename OutputMeanImageType::Pointer         OutputMeanImagePointer;
-  typedef typename OutputSigmaImageType::Pointer        OutputSigmaImagePointer;
-  typedef typename CountImageType::Pointer              CountImagePointer;
+  using InputImagePointer = typename InputImageType::Pointer;
+  using OutputMeanImagePointer = typename OutputMeanImageType::Pointer;
+  using OutputSigmaImagePointer = typename OutputSigmaImageType::Pointer;
+  using CountImagePointer = typename CountImageType::Pointer;
 
-  typedef typename InputImageType::RegionType           RegionType;
-  typedef typename InputImageType::SizeType             SizeType;
-  typedef typename InputImageType::SpacingType          SpacingType;
-  typedef typename InputImageType::PointType            PointType;
+  using RegionType = typename InputImageType::RegionType;
+  using SizeType = typename InputImageType::SizeType;
+  using SpacingType = typename InputImageType::SpacingType;
+  using PointType = typename InputImageType::PointType;
 
-  typedef Image< float, itkGetStaticConstMacro( ImageDimension ) >
-    ProcessImageType;
+  using ProcessImageType = Image< float, itkGetStaticConstMacro( ImageDimension ) >;
 
   /**
    * Add an image to the group being summed.
@@ -222,16 +221,16 @@ protected:
   ~MeanAndSigmaImageBuilder( void ) {}
 
   /** Processing image types */
-  typedef typename ProcessImageType::PixelType         ProcessPixelType;
-  typedef typename ProcessImageType::Pointer           ProcessImagePointer;
+  using ProcessPixelType = typename ProcessImageType::PixelType;
+  using ProcessImagePointer = typename ProcessImageType::Pointer;
 
-  typedef ImageRegionConstIterator< InputImageType >   InputConstIteratorType;
-  typedef ImageRegionConstIterator< ProcessImageType > ProcessConstIteratorType;
-  typedef ImageRegionIterator< ProcessImageType >      ProcessIteratorType;
-  typedef ImageRegionConstIterator< CountImageType >   CountConstIteratorType;
-  typedef ImageRegionIterator< CountImageType >        CountIteratorType;
-  typedef ImageRegionIterator< OutputMeanImageType >   OutputMeanIteratorType;
-  typedef ImageRegionIterator< OutputSigmaImageType >  OutputSigmaIteratorType;
+  using InputConstIteratorType = ImageRegionConstIterator< InputImageType >;
+  using ProcessConstIteratorType = ImageRegionConstIterator< ProcessImageType >;
+  using ProcessIteratorType = ImageRegionIterator< ProcessImageType >;
+  using CountConstIteratorType = ImageRegionConstIterator< CountImageType >;
+  using CountIteratorType = ImageRegionIterator< CountImageType >;
+  using OutputMeanIteratorType = ImageRegionIterator< OutputMeanImageType >;
+  using OutputSigmaIteratorType = ImageRegionIterator< OutputSigmaImageType >;
 
   itkSetObjectMacro( SumImage, ProcessImageType );
 

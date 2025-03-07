@@ -41,11 +41,11 @@ class ShrinkImageWithBlending:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ShrinkImageWithBlending                         Self;
-  typedef itk::ProcessObject                              Superclass;
-  typedef itk::SmartPointer< Self >                       Pointer;
-  typedef itk::SmartPointer< const Self >                 ConstPointer;
+  /** Standard class type alias. */
+  using Self = ShrinkImageWithBlending;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -55,17 +55,17 @@ public:
 
 
   /** Typedef to images */
-  typedef TInputImage                                InputImageType;
-  typedef TOutputImage                               OutputImageType;
-  typedef typename TInputImage::IndexType            InputIndexType;
-  typedef typename TInputImage::SizeType             InputSizeType;
+  using InputImageType = TInputImage;
+  using OutputImageType = TOutputImage;
+  using InputIndexType = typename TInputImage::IndexType;
+  using InputSizeType = typename TInputImage::SizeType;
 
-  typedef itk::tube::ShrinkWithBlendingImageFilter< InputImageType,
-    OutputImageType >                                FilterType;
+  using FilterType = itk::tube::ShrinkWithBlendingImageFilter< InputImageType,
+    OutputImageType >;
 
-  typedef typename FilterType::PointImagePixelType   PointImagePixelType;
-  typedef typename FilterType::PointImageType        PointImageType;
-  typedef typename FilterType::ShrinkFactorsType     ShrinkFactorsType;
+  using PointImagePixelType = typename FilterType::PointImagePixelType;
+  using PointImageType = typename FilterType::PointImageType;
+  using ShrinkFactorsType = typename FilterType::ShrinkFactorsType;
 
   /** Set the shrink factors. Values are clamped to
    * a minimum value of 1. Default is 1 for all dimensions. */

@@ -28,7 +28,7 @@ limitations under the License.
 
 double tubeLength( itk::TubeSpatialObject<3> * tube )
 {
-  typedef itk::TubeSpatialObject<3>   TubeType;
+  using TubeType = itk::TubeSpatialObject<3>;
 
   TubeType::TubePointListType tubePointList = tube->GetPoints();
   TubeType::TubePointListType::iterator tubePointItr;
@@ -62,7 +62,7 @@ int tubeTubeMathFiltersTest( int tubeNotUsed( argc ),
 {
   bool returnStatus = EXIT_SUCCESS;
 
-  typedef itk::TubeSpatialObject<3>   TubeType;
+  using TubeType = itk::TubeSpatialObject<3>;
 
   TubeType::Pointer tube = TubeType::New();
   TubeType::Pointer tube0 = TubeType::New();
@@ -70,7 +70,7 @@ int tubeTubeMathFiltersTest( int tubeNotUsed( argc ),
   TubeType::TubePointListType tubePointList;
   TubeType::TubePointType tubePoint;
 
-  typedef itk::Statistics::MersenneTwisterRandomVariateGenerator RandomType;
+  using RandomType = itk::Statistics::MersenneTwisterRandomVariateGenerator;
   RandomType::Pointer rndGen = RandomType::New();
   rndGen->Initialize( 1 );
 

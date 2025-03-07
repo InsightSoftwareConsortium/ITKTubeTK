@@ -42,11 +42,11 @@ class CropImage:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef CropImage                       Self;
-  typedef itk::ProcessObject              Superclass;
-  typedef itk::SmartPointer< Self >       Pointer;
-  typedef itk::SmartPointer< const Self > ConstPointer;
+  /** Standard class type alias. */
+  using Self = CropImage;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -56,13 +56,13 @@ public:
 
 
   /** Typedef to images */
-  typedef TInputImage                          InputImageType;
-  typedef TOutputImage                         OutputImageType;
-  typedef typename InputImageType::IndexType   InputIndexType;
-  typedef typename InputImageType::SizeType    InputSizeType;
+  using InputImageType = TInputImage;
+  using OutputImageType = TOutputImage;
+  using InputIndexType = typename InputImageType::IndexType;
+  using InputSizeType = typename InputImageType::SizeType;
 
-  typedef itk::tube::CropImageFilter< InputImageType,
-    OutputImageType >                          FilterType;
+  using FilterType = itk::tube::CropImageFilter< InputImageType,
+    OutputImageType >;
 
   tubeWrapSetMacro( Min, InputIndexType, Filter );
   tubeWrapGetMacro( Min, InputIndexType, Filter );

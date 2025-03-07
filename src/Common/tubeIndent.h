@@ -38,9 +38,9 @@ class Indent
 {
 public:
 
-  typedef Indent        Self;
-  typedef Self *        Pointer;
-  typedef const Self *  ConstPointer;
+  using Self = Indent;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
   /** Constructor with initial level of indentation. */
   Indent( unsigned int indent = 0 )

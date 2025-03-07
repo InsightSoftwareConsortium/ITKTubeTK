@@ -45,17 +45,17 @@ class ComputeImageStatistics
 {
 public:
 
-  /** Standard class typedefs. */
-  typedef ComputeImageStatistics                   Self;
-  typedef itk::ImageToImageFilter< itk::Image< float, VDimension >,
-      itk::Image< float, VDimension > >            Superclass;
-  typedef SmartPointer< Self >                     Pointer;
-  typedef SmartPointer< const Self >               ConstPointer;
+  /** Standard class type alias. */
+  using Self = ComputeImageStatistics;
+  using Superclass = itk::ImageToImageFilter< itk::Image< float, VDimension >,
+      itk::Image< float, VDimension > >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  /** Custom typedefs */
-  typedef itk::Image< TPixel, VDimension >         MaskType;
-  typedef itk::Image< unsigned int, VDimension >   ConnCompType;
-  typedef itk::Image< float, VDimension >          VolumeType;
+  /** Custom type alias */
+  using MaskType = itk::Image< TPixel, VDimension >;
+  using ConnCompType = itk::Image< unsigned int, VDimension >;
+  using VolumeType = itk::Image< float, VDimension >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

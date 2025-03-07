@@ -40,28 +40,28 @@ class ConvertShrunkenSeedImageToListFilter
   : public ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ConvertShrunkenSeedImageToListFilter             Self;
-  typedef ProcessObject                                    Superclass;
-  typedef SmartPointer< Self >                             Pointer;
-  typedef SmartPointer< const Self >                       ConstPointer;
+  /** Standard class type alias. */
+  using Self = ConvertShrunkenSeedImageToListFilter;
+  using Superclass = ProcessObject;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef TImage                                           ImageType;
-  typedef typename ImageType::Pointer                      ImagePointer;
-  typedef typename ImageType::PixelType                    PixelType;
-  typedef typename ImageType::IndexType                    IndexType;
-  typedef ImageFileReader< ImageType >                     ReaderType;
-  typedef ImageRegionIterator< ImageType >                 IteratorType;
+  using ImageType = TImage;
+  using ImagePointer = typename ImageType::Pointer;
+  using PixelType = typename ImageType::PixelType;
+  using IndexType = typename ImageType::IndexType;
+  using ReaderType = ImageFileReader< ImageType >;
+  using IteratorType = ImageRegionIterator< ImageType >;
 
-  typedef TPointsImage                                     PointsImageType;
-  typedef typename PointsImageType::Pointer                PointsImagePointer;
-  typedef typename PointsImageType::PixelType              PointsPixelType;
-  typedef typename PointsImageType::IndexType              PointsIndexType;
-  typedef ImageFileReader< PointsImageType >               PointsReaderType;
-  typedef ImageRegionIterator< PointsImageType >           PointsIteratorType;
+  using PointsImageType = TPointsImage;
+  using PointsImagePointer = typename PointsImageType::Pointer;
+  using PointsPixelType = typename PointsImageType::PixelType;
+  using PointsIndexType = typename PointsImageType::IndexType;
+  using PointsReaderType = ImageFileReader< PointsImageType >;
+  using PointsIteratorType = ImageRegionIterator< PointsImageType >;
 
-  typedef vnl_matrix< PixelType >                          VnlMatrixType;
-  typedef SimpleDataObjectDecorator< VnlMatrixType >       OutputType;
+  using VnlMatrixType = vnl_matrix< PixelType >;
+  using OutputType = SimpleDataObjectDecorator< VnlMatrixType >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

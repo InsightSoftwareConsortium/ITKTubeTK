@@ -41,13 +41,13 @@ class MetaDocument : public Object
 {
 public:
 
-  typedef MetaDocument                Self;
-  typedef Object                      Superclass;
-  typedef Self *                      Pointer;
-  typedef const Self *                ConstPointer;
+  using Self = MetaDocument;
+  using Superclass = Object;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef MET_FieldRecordType         FieldType;
-  typedef std::vector< FieldType * >  FieldListType;
+  using FieldType = MET_FieldRecordType;
+  using FieldListType = std::vector< FieldType * >;
 
   /** Constructor. */
   MetaDocument( void );

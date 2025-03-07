@@ -54,11 +54,11 @@ class ITK_TEMPLATE_EXPORT ScaleSkewAngle2DTransform :
   public Rigid2DTransform<TParametersValueType>
 {
 public:
-  /** Standard class typedefs. */
-  typedef ScaleSkewAngle2DTransform                    Self;
-  typedef Rigid2DTransform<TParametersValueType>       Superclass;
-  typedef SmartPointer<Self>                           Pointer;
-  typedef SmartPointer<const Self>                     ConstPointer;
+  /** Standard class type alias. */
+  using Self = ScaleSkewAngle2DTransform;
+  using Superclass = Rigid2DTransform<TParametersValueType>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** New macro for creation of through a Smart Pointer. */
   itkNewMacro(Self);
@@ -72,34 +72,34 @@ public:
   itkStaticConstMacro(ParametersDimension, unsigned int, 7);
 
   /** Parameters Type   */
-  typedef typename Superclass::ParametersType            ParametersType;
-  typedef typename Superclass::FixedParametersType       FixedParametersType;
-  typedef typename Superclass::JacobianType              JacobianType;
-  typedef typename Superclass::ScalarType                ScalarType;
-  typedef typename Superclass::InputPointType            InputPointType;
-  typedef typename Superclass::OutputPointType           OutputPointType;
-  typedef typename Superclass::InputVectorType           InputVectorType;
-  typedef typename Superclass::OutputVectorType          OutputVectorType;
-  typedef typename Superclass::InputVnlVectorType        InputVnlVectorType;
-  typedef typename Superclass::OutputVnlVectorType       OutputVnlVectorType;
-  typedef typename Superclass::InputCovariantVectorType  InputCovariantVectorType;
-  typedef typename Superclass::OutputCovariantVectorType OutputCovariantVectorType;
-  typedef typename Superclass::MatrixType                MatrixType;
-  typedef typename Superclass::MatrixValueType           MatrixValueType;
-  typedef typename Superclass::InverseMatrixType         InverseMatrixType;
-  typedef typename Superclass::CenterType                CenterType;
-  typedef typename Superclass::OffsetType                OffsetType;
-  typedef typename Superclass::TranslationType           TranslationType;
+  using ParametersType = typename Superclass::ParametersType;
+  using FixedParametersType = typename Superclass::FixedParametersType;
+  using JacobianType = typename Superclass::JacobianType;
+  using ScalarType = typename Superclass::ScalarType;
+  using InputPointType = typename Superclass::InputPointType;
+  using OutputPointType = typename Superclass::OutputPointType;
+  using InputVectorType = typename Superclass::InputVectorType;
+  using OutputVectorType = typename Superclass::OutputVectorType;
+  using InputVnlVectorType = typename Superclass::InputVnlVectorType;
+  using OutputVnlVectorType = typename Superclass::OutputVnlVectorType;
+  using InputCovariantVectorType = typename Superclass::InputCovariantVectorType;
+  using OutputCovariantVectorType = typename Superclass::OutputCovariantVectorType;
+  using MatrixType = typename Superclass::MatrixType;
+  using MatrixValueType = typename Superclass::MatrixValueType;
+  using InverseMatrixType = typename Superclass::InverseMatrixType;
+  using CenterType = typename Superclass::CenterType;
+  using OffsetType = typename Superclass::OffsetType;
+  using TranslationType = typename Superclass::TranslationType;
 
   /** Scale & Skew Vector Type. */
-  typedef Vector<TParametersValueType, 2> ScaleVectorType;
-  typedef Vector<TParametersValueType, 2> SkewVectorType;
+  using ScaleVectorType = Vector<TParametersValueType, 2>;
+  using SkewVectorType = Vector<TParametersValueType, 2>;
 
-  typedef typename ScaleVectorType::ValueType ScaleVectorValueType;
-  typedef typename SkewVectorType::ValueType  SkewVectorValueType;
-  typedef typename TranslationType::ValueType TranslationValueType;
+  using ScaleVectorValueType = typename ScaleVectorType::ValueType;
+  using SkewVectorValueType = typename SkewVectorType::ValueType;
+  using TranslationValueType = typename TranslationType::ValueType;
 
-  typedef typename Superclass::ParametersValueType ParametersValueType;
+  using ParametersValueType = typename Superclass::ParametersValueType;
 
   /** Directly set the matrix of the transform.
    *

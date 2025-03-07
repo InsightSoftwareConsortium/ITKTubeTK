@@ -46,13 +46,13 @@ class SubSampleSpatialObjectFilter
   : public SpatialObjectFilter< ObjectDimension >
 {
 public:
-  /** Standard class typedefs. */
-  typedef SubSampleSpatialObjectFilter              Self;
-  typedef SpatialObjectFilter< ObjectDimension >    Superclass;
-  typedef SmartPointer< Self >                      Pointer;
-  typedef SmartPointer< const Self >                ConstPointer;
+  /** Standard class type alias. */
+  using Self = SubSampleSpatialObjectFilter;
+  using Superclass = SpatialObjectFilter< ObjectDimension >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef SpatialObject<ObjectDimension>            SpatialObjectType;
+  using SpatialObjectType = SpatialObject<ObjectDimension>;
 
   /** Run-time type information ( and related methods ).   */
   itkTypeMacro( SubSampleSpatialObjectFilter,
@@ -68,7 +68,7 @@ public:
   itkGetConstMacro( Sampling, SizeValueType );
 
 protected:
-  typedef TubeSpatialObject< ObjectDimension > TubeSpatialObjectType;
+  using TubeSpatialObjectType = TubeSpatialObject< ObjectDimension >;
 
   SubSampleSpatialObjectFilter( void );
   virtual ~SubSampleSpatialObjectFilter( void );

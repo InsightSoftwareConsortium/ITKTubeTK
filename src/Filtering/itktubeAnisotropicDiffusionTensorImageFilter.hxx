@@ -206,7 +206,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   this->GetMultiThreader()->SingleMethodExecute();
 
 #ifdef INTERMEDIATE_OUTPUTS
-  typedef ImageFileWriter< OutputImageType > WriterType;
+  using WriterType = ImageFileWriter< OutputImageType >;
   typename WriterType::Pointer   writer = WriterType::New();
   writer->SetFileName( "UpdatedOutputImage.mha" );
   writer->SetInput( m_UpdateBuffer );
@@ -362,8 +362,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     SizeType;
   typedef typename FiniteDifferenceFunctionType::NeighborhoodType
     NeighborhoodIteratorType;
-  typedef ImageRegionIterator<UpdateBufferType>
-    UpdateIteratorType;
+  using UpdateIteratorType = ImageRegionIterator<UpdateBufferType>;
 
   typename OutputImageType::Pointer output = this->GetOutput();
   typename FiniteDifferenceFunctionType::SpacingType spacing =
@@ -382,19 +381,18 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   // Break the input into a series of regions.  The first region is free
   // of boundary conditions, the rest with boundary conditions.  We operate
   // on the output region because input has been copied to output.
-  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<
-    OutputImageType >   FaceCalculatorType;
+  using FaceCalculatorType = NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<
+    OutputImageType >;
 
-  typedef typename FaceCalculatorType::FaceListType FaceListType;
+  using FaceListType = typename FaceCalculatorType::FaceListType;
 
   FaceCalculatorType faceCalculator;
 
   FaceListType faceList = faceCalculator( output, regionToProcess, radius );
   typename FaceListType::iterator fIt = faceList.begin();
 
-  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<
-    DiffusionTensorImageType>
-    DiffusionTensorFaceCalculatorType;
+  using DiffusionTensorFaceCalculatorType = NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<
+    DiffusionTensorImageType>;
 
   typedef typename DiffusionTensorFaceCalculatorType::FaceListType
     DiffusionTensorFaceListType;

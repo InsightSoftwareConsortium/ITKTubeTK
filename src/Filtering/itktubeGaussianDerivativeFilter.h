@@ -34,11 +34,11 @@ class GaussianDerivativeFilter :
 {
 public:
 
-  /** Standard class typedefs. */
-  typedef GaussianDerivativeFilter                        Self;
-  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
-  typedef SmartPointer< Self >                            Pointer;
-  typedef SmartPointer< const Self >                      ConstPointer;
+  /** Standard class type alias. */
+  using Self = GaussianDerivativeFilter;
+  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( GaussianDerivativeFilter, ImageToImageFilter );
@@ -46,12 +46,11 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TInputImage::ImageDimension );
 
-  typedef TInputImage                         InputImageType;
-  typedef TOutputImage                        OutputImageType;
-  typedef Image< double, ImageDimension >     RealImageType;
-  typedef typename RealImageType::Pointer     RealImagePointerType;
-  typedef GaussianDerivativeImageSource< RealImageType >
-                                              GaussianDerivativeImageSourceType;
+  using InputImageType = TInputImage;
+  using OutputImageType = TOutputImage;
+  using RealImageType = Image< double, ImageDimension >;
+  using RealImagePointerType = typename RealImageType::Pointer;
+  using GaussianDerivativeImageSourceType = GaussianDerivativeImageSource< RealImageType >;
   typedef typename GaussianDerivativeImageSourceType::OrdersType
                                               OrdersType;
   typedef typename GaussianDerivativeImageSourceType::SigmasType

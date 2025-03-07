@@ -44,21 +44,20 @@ class CropTubesFilter
     GroupSpatialObject< VDimension >, GroupSpatialObject< VDimension > >
 {
 public:
-  /** Standard class typedefs. */
-  typedef GroupSpatialObject< VDimension >      TubeGroupType;
+  /** Standard class type alias. */
+  using TubeGroupType = GroupSpatialObject< VDimension >;
 
-  typedef CropTubesFilter                            Self;
-  typedef SpatialObjectToSpatialObjectFilter< TubeGroupType, TubeGroupType >
-                                                     Superclass;
-  typedef SmartPointer< Self >                       Pointer;
-  typedef SmartPointer< const Self >                 ConstPointer;
-  typedef TubeSpatialObject< VDimension >      TubeType;
-  typedef TubeSpatialObjectPoint< VDimension > TubePointType;
+  using Self = CropTubesFilter;
+  using Superclass = SpatialObjectToSpatialObjectFilter< TubeGroupType, TubeGroupType >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
+  using TubeType = TubeSpatialObject< VDimension >;
+  using TubePointType = TubeSpatialObjectPoint< VDimension >;
 
-  typedef double                                     PixelType;
-  typedef itk::Image< PixelType, VDimension >        ImageType;
-  typedef itk::Vector< PixelType, VDimension >       VectorType;
-  typedef itk::Point< double, VDimension >           PointType;
+  using PixelType = double;
+  using ImageType = itk::Image< PixelType, VDimension >;
+  using VectorType = itk::Vector< PixelType, VDimension >;
+  using PointType = itk::Point< double, VDimension >;
 
   /** Run-time type information ( and related methods ).   */
   itkTypeMacro( CropTubesFilter,

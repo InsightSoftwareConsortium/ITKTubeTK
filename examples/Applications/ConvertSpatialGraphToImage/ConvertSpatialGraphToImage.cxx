@@ -50,12 +50,11 @@ int DoIt( int argc, char * argv[] )
 
   std::stringstream logMsg;
 
-  typedef itk::Image< float, VDimension >       ImageType;
-  typedef itk::Image< TPixel, VDimension >      CVTImageType;
-  typedef itk::ImageFileReader< CVTImageType >  ImageReaderType;
+  using ImageType = itk::Image< float, VDimension >;
+  using CVTImageType = itk::Image< TPixel, VDimension >;
+  using ImageReaderType = itk::ImageFileReader< CVTImageType >;
 
-  typedef tube::ConvertSpatialGraphToImage< CVTImageType, ImageType >
-    ConvertSpatialGraphToImageFilterType;
+  using ConvertSpatialGraphToImageFilterType = tube::ConvertSpatialGraphToImage< CVTImageType, ImageType >;
   typename ConvertSpatialGraphToImageFilterType::Pointer filter =
     ConvertSpatialGraphToImageFilterType::New();
 
@@ -182,7 +181,7 @@ int DoIt( int argc, char * argv[] )
 
   filter->Update();
 
-  typedef itk::ImageFileWriter< ImageType > ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< ImageType >;
   typename ImageWriterType::Pointer imageWriter;
   std::string filename;
 

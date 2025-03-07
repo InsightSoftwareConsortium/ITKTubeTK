@@ -60,19 +60,18 @@ void
 SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
 ::Update( void )
 {
-  typedef itk::PolyLineParametricPath< Dimension > PathType;
-  typedef itk::SpeedFunctionToPathFilter
-    < InputImageType, PathType > PathFilterType;
-  typedef itk::LinearInterpolateImageFunction< InputImageType, double >
-    InterpolatorType;
+  using PathType = itk::PolyLineParametricPath< Dimension >;
+  using PathFilterType = itk::SpeedFunctionToPathFilter
+    < InputImageType, PathType >;
+  using InterpolatorType = itk::LinearInterpolateImageFunction< InputImageType, double >;
   typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
-  typedef itk::SingleImageCostFunction< InputImageType > CostFunctionType;
+  using CostFunctionType = itk::SingleImageCostFunction< InputImageType >;
   typename CostFunctionType::Pointer costFunction = CostFunctionType::New();
   costFunction->SetInterpolator( interpolator );
 
   //Get Input image information
-  typedef typename TubeType::TransformType TransformType;
+  using TransformType = typename TubeType::TransformType;
   typename TransformType::InputVectorType scaleVector;
   typename TransformType::OffsetType offsetVector;
   typename InputImageType::SpacingType spacing = m_SpeedImage->GetSpacing();
@@ -84,7 +83,7 @@ SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
     offsetVector[k] = origin[k];
     }
   // Create path information
-  typedef itk::SpeedFunctionPathInformation< PointType > PathInformationType;
+  using PathInformationType = itk::SpeedFunctionPathInformation< PointType >;
   typename PathInformationType::Pointer pathInfo = PathInformationType::New();
   pathInfo->SetStartPoint( m_StartPoint );
   for( unsigned int i = 0; i < m_IntermediatePoints.size(); i++ )
@@ -113,7 +112,7 @@ SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
   if( m_OptimizationMethod == "Iterate_Neighborhood" )
     {
     // Create IterateNeighborhoodOptimizer
-    typedef itk::IterateNeighborhoodOptimizer OptimizerType;
+    using OptimizerType = itk::IterateNeighborhoodOptimizer;
     typename OptimizerType::Pointer optimizer = OptimizerType::New();
     optimizer->MinimizeOn();
     optimizer->FullyConnectedOn();
@@ -128,7 +127,7 @@ SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
   else if( m_OptimizationMethod == "Gradient_Descent" )
     {
     // Create GradientDescentOptimizer
-    typedef itk::GradientDescentOptimizer OptimizerType;
+    using OptimizerType = itk::GradientDescentOptimizer;
     typename OptimizerType::Pointer optimizer = OptimizerType::New();
     optimizer->SetNumberOfIterations( m_OptimizerNumberOfIterations );
     pathFilter->SetOptimizer( optimizer );
@@ -145,7 +144,7 @@ SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
         }
       }
     // Create RegularStepGradientDescentOptimizer
-    typedef itk::RegularStepGradientDescentOptimizer OptimizerType;
+    using OptimizerType = itk::RegularStepGradientDescentOptimizer;
     typename OptimizerType::Pointer optimizer = OptimizerType::New();
     optimizer->SetNumberOfIterations( m_OptimizerNumberOfIterations );
     optimizer->SetMaximumStepLength
@@ -234,8 +233,7 @@ SegmentTubeUsingMinimalPathFilter< Dimension, TInputPixel >
     // Extract Radius
     if( m_RadiusImage )
       {
-      typedef itk::tube::RadiusExtractor3< InputImageType >
-        RadiusExtractorType;
+      using RadiusExtractorType = itk::tube::RadiusExtractor3< InputImageType >;
       typename RadiusExtractorType::Pointer radiusExtractor
         = RadiusExtractorType::New();
       radiusExtractor->SetInputImage( m_RadiusImage );

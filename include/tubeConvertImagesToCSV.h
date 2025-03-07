@@ -42,11 +42,11 @@ class ConvertImagesToCSV:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ConvertImagesToCSV                              Self;
-  typedef itk::ProcessObject                              Superclass;
-  typedef itk::SmartPointer< Self >                       Pointer;
-  typedef itk::SmartPointer< const Self >                 ConstPointer;
+  /** Standard class type alias. */
+  using Self = ConvertImagesToCSV;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -54,14 +54,13 @@ public:
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ConvertImagesToCSV, ProcessObject );
 
-  typedef TInputMask                                      InputMaskType;
-  typedef typename InputMaskType::PixelType               MaskPixelType;
+  using InputMaskType = TInputMask;
+  using MaskPixelType = typename InputMaskType::PixelType;
 
-  typedef TInputImage                                     InputImageType;
-  typedef typename InputImageType::PixelType              InputPixelType;
+  using InputImageType = TInputImage;
+  using InputPixelType = typename InputImageType::PixelType;
 
-  typedef itk::tube::ConvertImagesToCSVFilter< InputImageType, InputMaskType >
-    ConvertImagesToCSVFilterType;
+  using ConvertImagesToCSVFilterType = itk::tube::ConvertImagesToCSVFilter< InputImageType, InputMaskType >;
 
   tubeWrapSetObjectMacro( InputMask, InputMaskType, ConvertImagesToCSVFilter );
   tubeWrapGetObjectMacro( InputMask, InputMaskType, ConvertImagesToCSVFilter );

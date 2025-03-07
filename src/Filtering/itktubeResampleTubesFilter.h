@@ -43,26 +43,25 @@ class ResampleTubesFilter
   : public SpatialObjectFilter< ObjectDimension >
 {
 public:
-  /** Standard class typedefs. */
-  typedef itk::SpatialObject< ObjectDimension >      SpatialObjectType;
+  /** Standard class type alias. */
+  using SpatialObjectType = itk::SpatialObject< ObjectDimension >;
 
-  typedef ResampleTubesFilter< ObjectDimension >     Self;
-  typedef SpatialObjectFilter< ObjectDimension >     Superclass;
-  typedef SmartPointer< Self >                  Pointer;
-  typedef SmartPointer< const Self >            ConstPointer;
+  using Self = ResampleTubesFilter< ObjectDimension >;
+  using Superclass = SpatialObjectFilter< ObjectDimension >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef char                                  PixelType;
-  typedef itk::Image< PixelType, ObjectDimension >   ImageType;
+  using PixelType = char;
+  using ImageType = itk::Image< PixelType, ObjectDimension >;
 
   /** Typedefs for Displacement field tranform.    */
-  typedef itk::DisplacementFieldTransform< double, ObjectDimension >
-    DisplacementFieldTransformType;
+  using DisplacementFieldTransformType = itk::DisplacementFieldTransform< double, ObjectDimension >;
   typedef typename DisplacementFieldTransformType::DisplacementFieldType
     DisplacementFieldType;
 
   /** Typedefs for transform read from a file    */
-  typedef itk::TransformBaseTemplate< double >        BaseTransformType;
-  typedef std::list< BaseTransformType::Pointer >     BaseTransformListType;
+  using BaseTransformType = itk::TransformBaseTemplate< double >;
+  using BaseTransformListType = std::list< BaseTransformType::Pointer >;
 
   /** Run-time type information ( and related methods ).   */
   itkTypeMacro( ResampleTubesFilter,

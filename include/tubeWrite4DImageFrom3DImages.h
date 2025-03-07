@@ -43,13 +43,13 @@ class Write4DImageFrom3DImages:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef Write4DImageFrom3DImages                     Self;
-  typedef itk::ProcessObject                           Superclass;
-  typedef itk::SmartPointer< Self >                    Pointer;
-  typedef itk::SmartPointer< const Self >              ConstPointer;
+  /** Standard class type alias. */
+  using Self = Write4DImageFrom3DImages;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef InputImageT                                  InputImageType;
+  using InputImageType = InputImageT;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -90,7 +90,7 @@ private:
   void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) 
     override {};
 
-  typedef itk::Image< typename InputImageType::PixelType, 4 >  OutputImageType;
+  using OutputImageType = itk::Image< typename InputImageType::PixelType, 4 >;
 
   unsigned int                       m_NumberOfInputImages;
   typename OutputImageType::Pointer  m_OutputImage;

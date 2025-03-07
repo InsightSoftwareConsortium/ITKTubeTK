@@ -54,9 +54,9 @@ class MetaLDA : public MetaForm
 {
 public:
 
-  typedef std::vector< double >  ValueListType;
-  typedef vnl_vector< double >   LDAValuesType;
-  typedef vnl_matrix< double >   LDAMatrixType;
+  using ValueListType = std::vector< double >;
+  using LDAValuesType = vnl_vector< double >;
+  using LDAMatrixType = vnl_matrix< double >;
 
   MetaLDA( void );
 

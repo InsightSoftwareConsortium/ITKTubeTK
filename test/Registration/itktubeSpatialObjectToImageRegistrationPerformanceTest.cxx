@@ -40,9 +40,9 @@ limitations under the License.
 class CommandIterationUpdate : public itk::Command
 {
 public:
-  typedef  CommandIterationUpdate   Self;
-  typedef  itk::Command             Superclass;
-  typedef itk::SmartPointer<Self>   Pointer;
+  using Self = CommandIterationUpdate;
+  using Superclass = itk::Command;
+  using Pointer = itk::SmartPointer<Self>;
   itkNewMacro( Self );
 
 protected:
@@ -58,8 +58,8 @@ protected:
   std::ofstream measuresFileStream;
 
 public:
-  typedef itk::OnePlusOneEvolutionaryOptimizer EvoOptimizerType;
-  typedef itk::GradientDescentOptimizer GradOptimizerType;
+  using EvoOptimizerType = itk::OnePlusOneEvolutionaryOptimizer;
+  using GradOptimizerType = itk::GradientDescentOptimizer;
 
   void Execute( itk::Object *caller, const itk::EventObject & event ) override
     {
@@ -111,11 +111,10 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
     return EXIT_FAILURE;
     }
 
-  typedef itk::SpatialObjectReader<3>                    GroupReaderType;
-  typedef itk::Image<double, 3>                          ImageType;
-  typedef itk::ImageFileReader<ImageType>                ImageReaderType;
-  typedef itk::tube::SpatialObjectToImageRegistrationHelper<3, ImageType>
-                                                         RegistrationHelperType;
+  using GroupReaderType = itk::SpatialObjectReader<3>;
+  using ImageType = itk::Image<double, 3>;
+  using ImageReaderType = itk::ImageFileReader<ImageType>;
+  using RegistrationHelperType = itk::tube::SpatialObjectToImageRegistrationHelper<3, ImageType>;
 
   // read image
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
@@ -133,8 +132,8 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
   // Gaussian blur the original input image to increase the likelihood of vessel
   // spatial object overlapping with the vessel image at their initial alignment.
   // this enlarges the convergence zone.
-  typedef itk::RecursiveGaussianImageFilter
-    <ImageType, ImageType> GaussianBlurFilterType;
+  using GaussianBlurFilterType = itk::RecursiveGaussianImageFilter
+    <ImageType, ImageType>;
 
   GaussianBlurFilterType::Pointer blurFilters[3];
   for( int i = 0; i < 3; i++ )
@@ -173,8 +172,8 @@ int itktubeSpatialObjectToImageRegistrationPerformanceTest( int argc, char * arg
     }
 
   // subsample points in group
-  typedef itk::tube::SubSampleSpatialObjectFilter<>
-    SubSampleFilterType;
+  using SubSampleFilterType =
+      itk::tube::SubSampleSpatialObjectFilter<>;
   SubSampleFilterType::Pointer subSampleFilter =
     SubSampleFilterType::New();
   subSampleFilter->SetInput( groupReader->GetGroup() );

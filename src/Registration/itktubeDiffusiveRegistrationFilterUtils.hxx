@@ -90,7 +90,7 @@ DiffusiveRegistrationFilterUtils
 {
   // We have to implement nearest neighbors by hand, since we are dealing with
   // pixel types that do not have Numeric Traits
-  typedef typename TResampleImagePointer::ObjectType ResampleImageType;
+  using ResampleImageType = typename TResampleImagePointer::ObjectType;
 
   // Create the resized resampled image
   resampledImage = ResampleImageType::New();
@@ -98,8 +98,7 @@ DiffusiveRegistrationFilterUtils
     templateImage );
 
   // Do NN interpolation
-  typedef itk::ImageRegionIteratorWithIndex< ResampleImageType >
-      ResampleImageRegionType;
+  using ResampleImageRegionType = itk::ImageRegionIteratorWithIndex< ResampleImageType >;
   ResampleImageRegionType resampledImageIt = ResampleImageRegionType(
       resampledImage, resampledImage->GetLargestPossibleRegion() );
 
@@ -133,9 +132,9 @@ DiffusiveRegistrationFilterUtils
                        TResampleImagePointer & resampledImage )
 {
   // Do linear interpolation
-  typedef itk::ResampleImageFilter
+  using ResampleFilterType = itk::ResampleImageFilter
       < typename TResampleImagePointer::ObjectType,
-        typename TResampleImagePointer::ObjectType > ResampleFilterType;
+        typename TResampleImagePointer::ObjectType >;
   typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
   resampler->SetInput( highResolutionImage );
   resampler->SetOutputParametersFromImage( templateImage );
@@ -156,9 +155,9 @@ DiffusiveRegistrationFilterUtils
     bool normalize )
 {
   // Do linear interpolation
-  typedef itk::ResampleImageFilter
+  using ResampleFilterType = itk::ResampleImageFilter
       < typename TVectorResampleImagePointer::ObjectType,
-        typename TVectorResampleImagePointer::ObjectType > ResampleFilterType;
+        typename TVectorResampleImagePointer::ObjectType >;
   typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
   resampler->SetInput( highResolutionImage );
   resampler->SetOutputOrigin( templateImage->GetOrigin() );
@@ -184,8 +183,7 @@ void
 DiffusiveRegistrationFilterUtils
 ::NormalizeVectorField( TVectorImagePointer & image )
 {
-  typedef ImageRegionIterator< typename TVectorImagePointer::ObjectType >
-      DeformationVectorImageRegionType;
+  using DeformationVectorImageRegionType = ImageRegionIterator< typename TVectorImagePointer::ObjectType >;
   DeformationVectorImageRegionType vectorIt(
       image, image->GetLargestPossibleRegion() );
   for( vectorIt.GoToBegin(); !vectorIt.IsAtEnd(); ++vectorIt )
@@ -203,7 +201,7 @@ bool
 DiffusiveRegistrationFilterUtils
 ::IsIntensityRangeBetween0And1( TImage * image )
 {
-  typedef itk::MinimumMaximumImageCalculator< TImage > CalculatorType;
+  using CalculatorType = itk::MinimumMaximumImageCalculator< TImage >;
   typename CalculatorType::Pointer calculator = CalculatorType::New();
   calculator->SetImage( image );
   calculator->Compute();
@@ -227,10 +225,9 @@ DiffusiveRegistrationFilterUtils
 {
   assert( deformationField );
 
-  typedef itk::VectorIndexSelectionCastImageFilter
+  using VectorIndexSelectionFilterType = itk::VectorIndexSelectionCastImageFilter
       < TDeformationField,
-      typename TDeformationComponentImageArray::ValueType::ObjectType >
-      VectorIndexSelectionFilterType;
+      typename TDeformationComponentImageArray::ValueType::ObjectType >;
   typename VectorIndexSelectionFilterType::Pointer indexSelector;
   for( unsigned int i = 0; i < TDeformationField::ImageDimension; i++ )
     {

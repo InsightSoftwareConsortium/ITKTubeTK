@@ -53,11 +53,11 @@ class AnisotropicDiffusionTensorFunction
   : public FiniteDifferenceFunction< TImageType >
 {
 public:
-  /** Standard class typedefs. */
-  typedef AnisotropicDiffusionTensorFunction          Self;
-  typedef FiniteDifferenceFunction<TImageType>        Superclass;
-  typedef SmartPointer< Self >                        Pointer;
-  typedef SmartPointer< const Self >                  ConstPointer;
+  /** Standard class type alias. */
+  using Self = AnisotropicDiffusionTensorFunction;
+  using Superclass = FiniteDifferenceFunction<TImageType>;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -70,40 +70,37 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     Superclass::ImageDimension );
 
-  /** Convenient typedefs. */
-  typedef typename Superclass::TimeStepType             TimeStepType;
-  typedef typename Superclass::PixelType                PixelType;
-  typedef double                                        ScalarValueType;
-  typedef typename Superclass::NeighborhoodType         NeighborhoodType;
-  typedef typename Superclass::FloatOffsetType          FloatOffsetType;
-  typedef typename Superclass::ImageType::SpacingType   SpacingType;
+  /** Convenient type alias. */
+  using TimeStepType = typename Superclass::TimeStepType;
+  using PixelType = typename Superclass::PixelType;
+  using ScalarValueType = double;
+  using NeighborhoodType = typename Superclass::NeighborhoodType;
+  using FloatOffsetType = typename Superclass::FloatOffsetType;
+  using SpacingType = typename Superclass::ImageType::SpacingType;
 
-  /** Diffusion tensor typedefs. */
-  typedef DiffusionTensor3D< double >              DiffusionTensorType;
-  typedef itk::Image< DiffusionTensorType, 3 >     DiffusionTensorImageType;
+  /** Diffusion tensor type alias. */
+  using DiffusionTensorType = DiffusionTensor3D< double >;
+  using DiffusionTensorImageType = itk::Image< DiffusionTensorType, 3 >;
 
   /** The default boundary condition for finite difference
    * functions that is used unless overridden in the Evaluate() method. */
-  typedef ZeroFluxNeumannBoundaryCondition< DiffusionTensorImageType >
-                                           DefaultBoundaryConditionType;
-  typedef ConstNeighborhoodIterator< DiffusionTensorImageType,
-    DefaultBoundaryConditionType>          DiffusionTensorNeighborhoodType;
+  using DefaultBoundaryConditionType = ZeroFluxNeumannBoundaryCondition< DiffusionTensorImageType >;
+  using DiffusionTensorNeighborhoodType = ConstNeighborhoodIterator< DiffusionTensorImageType,
+    DefaultBoundaryConditionType>;
 
-  /** Scalar derivative typedefs. */
-  typedef itk::Vector< ScalarValueType,
-    itkGetStaticConstMacro( ImageDimension )>    ScalarDerivativeType;
-  typedef itk::Image< ScalarDerivativeType, 3 >  ScalarDerivativeImageType;
+  /** Scalar derivative type alias. */
+  using ScalarDerivativeType = itk::Vector< ScalarValueType,
+    itkGetStaticConstMacro( ImageDimension )>;
+  using ScalarDerivativeImageType = itk::Image< ScalarDerivativeType, 3 >;
 
-  typedef ImageRegionIterator< ScalarDerivativeImageType >
-    ScalarDerivativeImageRegionType;
+  using ScalarDerivativeImageRegionType = ImageRegionIterator< ScalarDerivativeImageType >;
 
-  /** Tensor derivative typedefs. */
-  typedef itk::Matrix< ScalarValueType,
+  /** Tensor derivative type alias. */
+  using TensorDerivativeType = itk::Matrix< ScalarValueType,
     itkGetStaticConstMacro( ImageDimension ),
-    itkGetStaticConstMacro( ImageDimension ) >  TensorDerivativeType;
-  typedef itk::Image< TensorDerivativeType, 3 > TensorDerivativeImageType;
-  typedef ImageRegionIterator< TensorDerivativeImageType >
-    TensorDerivativeImageRegionType;
+    itkGetStaticConstMacro( ImageDimension ) >;
+  using TensorDerivativeImageType = itk::Image< TensorDerivativeType, 3 >;
+  using TensorDerivativeImageRegionType = ImageRegionIterator< TensorDerivativeImageType >;
 
   /** A global data type for this class of equations.  Used to store
    * values that are needed in calculating the time step and other

@@ -34,8 +34,8 @@ template< unsigned int VDimension >
 class ImageMathFilters 
 {
 public:
-  typedef float                                    PixelType;
-  typedef itk::Image< PixelType, VDimension >      ImageType;
+  using PixelType = float;
+  using ImageType = itk::Image< PixelType, VDimension >;
 
   ImageMathFilters();
   ~ImageMathFilters();
@@ -90,7 +90,7 @@ public:
   /** Use mirroring to pad an image. */
   void MirrorAndPadImage( int numPadVoxels );
 
-  /** Normalize: = mean/std; 1 = FWHM ; 2 = FWHM mean ( shift ) only */
+  /** Normalize: = mean/std; 1 = FWHM; 2 = FWHM mean ( shift ) only */
   void NormalizeImage( int normType );
 
   /** Fuse two images by max, applying offset to second image. */

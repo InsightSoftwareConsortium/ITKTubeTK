@@ -43,16 +43,15 @@ template< class TOutputSpatialObject >
 class SpatialObjectSource : public ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef SpatialObjectSource        Self;
-  typedef ProcessObject              Superclass;
-  typedef SmartPointer< Self >       Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+  /** Standard class type alias. */
+  using Self = SpatialObjectSource;
+  using Superclass = ProcessObject;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef TOutputSpatialObject       OutputSpatialObjectType;
+  using OutputSpatialObjectType = TOutputSpatialObject;
 
-  typedef SpatialObject< TOutputSpatialObject::ObjectDimension >
-    SpatialObjectType;
+  using SpatialObjectType = SpatialObject< TOutputSpatialObject::ObjectDimension >;
   typedef Superclass::DataObjectIdentifierType
     DataObjectIdentifierType;
   typedef Superclass::DataObjectPointerArraySizeType

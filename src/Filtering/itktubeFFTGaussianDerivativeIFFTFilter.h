@@ -46,11 +46,11 @@ class FFTGaussianDerivativeIFFTFilter :
 {
 public:
 
-  typedef FFTGaussianDerivativeIFFTFilter               Self;
-  typedef GaussianDerivativeFilter< TInputImage,
-    TOutputImage >                                      Superclass;
-  typedef SmartPointer< Self >                          Pointer;
-  typedef SmartPointer< const Self >                    ConstPointer;
+  using Self = FFTGaussianDerivativeIFFTFilter;
+  using Superclass = GaussianDerivativeFilter< TInputImage,
+    TOutputImage >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkNewMacro( Self );
 
@@ -59,14 +59,14 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TInputImage::ImageDimension );
 
-  typedef TInputImage                         InputImageType;
-  typedef TOutputImage                        OutputImageType;
-  typedef Image< double, ImageDimension >     RealImageType;
-  typedef typename RealImageType::Pointer     RealImagePointerType;
+  using InputImageType = TInputImage;
+  using OutputImageType = TOutputImage;
+  using RealImageType = Image< double, ImageDimension >;
+  using RealImagePointerType = typename RealImageType::Pointer;
   typedef typename Superclass::GaussianDerivativeImageSourceType
                                               GaussianDerivativeImageSourceType;
-  typedef typename Superclass::OrdersType     OrdersType;
-  typedef typename Superclass::SigmasType     SigmasType;
+  using OrdersType = typename Superclass::OrdersType;
+  using SigmasType = typename Superclass::SigmasType;
 
   void GenerateNJet( typename OutputImageType::Pointer & D,
     std::vector< typename TOutputImage::Pointer > & Dx,
@@ -75,18 +75,16 @@ public:
   void GenerateData() override;
 
 protected:
-  typedef ForwardFFTImageFilter< RealImageType >          FFTFilterType;
+  using FFTFilterType = ForwardFFTImageFilter< RealImageType >;
 
-  typedef typename FFTFilterType::OutputImageType         ComplexImageType;
+  using ComplexImageType = typename FFTFilterType::OutputImageType;
 
-  typedef FFTShiftImageFilter< RealImageType, RealImageType >
-                                                          FFTShiftFilterType;
+  using FFTShiftFilterType = FFTShiftImageFilter< RealImageType, RealImageType >;
 
-  typedef InverseFFTImageFilter< ComplexImageType, RealImageType >
-                                                          InverseFFTFilterType;
+  using InverseFFTFilterType = InverseFFTImageFilter< ComplexImageType, RealImageType >;
 
-  typedef MultiplyImageFilter< ComplexImageType, ComplexImageType,
-    ComplexImageType >                                    MultiplyFilterType;
+  using MultiplyFilterType = MultiplyImageFilter< ComplexImageType, ComplexImageType,
+    ComplexImageType >;
 
   FFTGaussianDerivativeIFFTFilter( void );
   virtual ~FFTGaussianDerivativeIFFTFilter( void ) {}

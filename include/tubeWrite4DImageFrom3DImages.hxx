@@ -133,7 +133,7 @@ void
 Write4DImageFrom3DImages< InputImageT >::
 Update()
 {
-  typedef itk::ImageFileWriter< OutputImageType >  WriterType;
+  using WriterType = itk::ImageFileWriter< OutputImageType >;
   typename WriterType::Pointer writer = WriterType::New();
   writer->SetInput( m_OutputImage );
   writer->SetFileName( m_FileName );

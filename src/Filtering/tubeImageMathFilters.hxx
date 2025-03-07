@@ -154,8 +154,8 @@ ResampleImage( ImageType * ref )
 
   if( doResample )
     {
-    typedef typename itk::ResampleImageFilter< ImageType,
-      ImageType> ResampleFilterType;
+    using ResampleFilterType = typename itk::ResampleImageFilter< ImageType,
+      ImageType>;
     typename ResampleFilterType::Pointer filter =
       ResampleFilterType::New();
     typename ImageType::Pointer imTemp;
@@ -175,7 +175,7 @@ ImageMathFilters<VDimension>::
 AddUniformNoise( float valMin, float valMax, float noiseMin,
   float noiseMax, int seed )
 {
-  typedef itk::Statistics::MersenneTwisterRandomVariateGenerator UniformGenType;
+  using UniformGenType = itk::Statistics::MersenneTwisterRandomVariateGenerator;
   typename UniformGenType::Pointer uniformGen = UniformGenType::New();
   std::srand( seed );
   uniformGen->Initialize( ( int )seed );
@@ -202,7 +202,7 @@ ImageMathFilters<VDimension>::
 AddGaussianNoise( float valMin, float valMax, float noiseMean,
   float noiseStdDev, int seed )
 {
-  typedef itk::Statistics::NormalVariateGenerator GaussGenType;
+  using GaussGenType = itk::Statistics::NormalVariateGenerator;
   typename GaussGenType::Pointer gaussGen = GaussGenType::New();
   std::srand( seed );
   gaussGen->Initialize( ( int )seed );
@@ -272,7 +272,7 @@ void
 ImageMathFilters<VDimension>::
 MirrorAndPadImage( int numPadVoxels )
 {
-  typedef itk::MirrorPadImageFilter< ImageType, ImageType > PadFilterType;
+  using PadFilterType = itk::MirrorPadImageFilter< ImageType, ImageType >;
   typename PadFilterType::Pointer padFilter = PadFilterType::New();
   padFilter->SetInput( m_Input );
   typename PadFilterType::InputImageSizeType bounds;
@@ -290,8 +290,7 @@ NormalizeImage( int normType )
 {
   if( normType == 0 )
     {
-    typedef itk::NormalizeImageFilter< ImageType, ImageType >
-                                                  NormFilterType;
+    using NormFilterType = itk::NormalizeImageFilter< ImageType, ImageType >;
     typename NormFilterType::Pointer normFilter = NormFilterType::New();
     normFilter->SetInput( m_Input );
     normFilter->Update();
@@ -470,8 +469,7 @@ void
 ImageMathFilters<VDimension>::
 MedianImage( int filterSize )
 {
-  typedef itk::MedianImageFilter< ImageType, ImageType >
-    FilterType;
+  using FilterType = itk::MedianImageFilter< ImageType, ImageType >;
   typename ImageType::Pointer imTemp;
   typename FilterType::Pointer filter = FilterType::New();
   filter->SetInput( m_Input );
@@ -601,16 +599,13 @@ ImageMathFilters<VDimension>
 ::MorphImage( int mode, int radius, float foregroundValue,
   float backgroundValue )
 {
-  typedef itk::BinaryBallStructuringElement<PixelType, VDimension>
-    BallType;
+  using BallType = itk::BinaryBallStructuringElement<PixelType, VDimension>;
   BallType ball;
   ball.SetRadius( radius );
   ball.CreateStructuringElement();
 
-  typedef itk::BinaryErodeImageFilter<ImageType, ImageType, BallType>
-    ErodeFilterType;
-  typedef itk::BinaryDilateImageFilter<ImageType, ImageType, BallType>
-    DilateFilterType;
+  using ErodeFilterType = itk::BinaryErodeImageFilter<ImageType, ImageType, BallType>;
+  using DilateFilterType = itk::BinaryDilateImageFilter<ImageType, ImageType, BallType>;
   switch( mode )
     {
     case 0:
@@ -790,9 +785,8 @@ ImageMathFilters<VDimension>
 ::CorrectIntensitySliceBySliceUsingHistogramMatching(
     unsigned int numberOfBins, unsigned int numberOfMatchPoints )
 {
-  typedef itk::Image<PixelType, 2> ImageType2D;
-  typedef itk::HistogramMatchingImageFilter< ImageType2D, ImageType2D >
-      HistogramMatchFilterType;
+  using ImageType2D = itk::Image<PixelType, 2>;
+  using HistogramMatchFilterType = itk::HistogramMatchingImageFilter< ImageType2D, ImageType2D >;
   typename HistogramMatchFilterType::Pointer matchFilter;
   typename ImageType2D::Pointer im2DRef = ImageType2D::New();
   typename ImageType2D::Pointer im2DIn = ImageType2D::New();
@@ -880,8 +874,7 @@ ImageMathFilters<VDimension>
 ::CorrectIntensityUsingHistogramMatching( unsigned int numberOfBins,
   unsigned int numberOfMatchPoints, ImageType * ref )
 {
-  typedef itk::HistogramMatchingImageFilter< ImageType, ImageType >
-      HistogramMatchFilterType;
+  using HistogramMatchFilterType = itk::HistogramMatchingImageFilter< ImageType, ImageType >;
   typename HistogramMatchFilterType::Pointer matchFilter;
   matchFilter = HistogramMatchFilterType::New();
   matchFilter->SetReferenceImage( ref );
@@ -963,8 +956,7 @@ void
 ImageMathFilters<VDimension>
 ::ExtractSlice( unsigned int dimension, unsigned int slice )
 {
-  typedef itk::ExtractImageFilter<ImageType, ImageType>
-    ExtractSliceFilterType;
+  using ExtractSliceFilterType = itk::ExtractImageFilter<ImageType, ImageType>;
 
   typename ExtractSliceFilterType::Pointer filter =
     ExtractSliceFilterType::New();
@@ -1002,7 +994,7 @@ ImageMathFilters<VDimension>
   double logScaleStep = ( std::log( scaleMax ) - std::log( scaleMin ) )
     / ( numScales-1 );
 
-  typedef itk::tube::NJetImageFunction< ImageType > ImageFunctionType;
+  using ImageFunctionType = itk::tube::NJetImageFunction< ImageType >;
   typename ImageFunctionType::Pointer imFunc = ImageFunctionType::New();
   imFunc->SetInputImage( m_Input );
 
@@ -1077,8 +1069,7 @@ ImageMathFilters<VDimension>
 ::SegmentUsingConnectedThreshold( float threshLow, float threshHigh,
   float labelValue, float x, float y, float z )
 {
-  typedef itk::ConnectedThresholdImageFilter<ImageType, ImageType>
-             FilterType;
+  using FilterType = itk::ConnectedThresholdImageFilter<ImageType, ImageType>;
   typename FilterType::Pointer filter = FilterType::New();
 
   typename ImageType::IndexType seed;
@@ -1106,7 +1097,7 @@ ImageMathFilters<VDimension>
 ::ComputeVoronoiTessellation( unsigned int numberOfCentroids,
   unsigned int numberOfIterations, unsigned int numberOfSamples )
 {
-  typedef itk::tube::CVTImageFilter<ImageType, ImageType> FilterType;
+  using FilterType = itk::tube::CVTImageFilter<ImageType, ImageType>;
   typename FilterType::Pointer filter = FilterType::New();
   filter->SetInput( m_Input );
   filter->SetNumberOfSamples( numberOfSamples );

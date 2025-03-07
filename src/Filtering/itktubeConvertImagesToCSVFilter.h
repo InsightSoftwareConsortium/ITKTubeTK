@@ -37,28 +37,28 @@ namespace tube
  class ConvertImagesToCSVFilter : public ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ConvertImagesToCSVFilter              Self;
-  typedef ProcessObject                         Superclass;
-  typedef SmartPointer< Self >                  Pointer;
-  typedef SmartPointer< const Self >            ConstPointer;
+  /** Standard class type alias. */
+  using Self = ConvertImagesToCSVFilter;
+  using Superclass = ProcessObject;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef TInputImage                                InputImageType;
-  typedef typename InputImageType::Pointer           ImagePointer;
-  typedef typename InputImageType::PixelType         InputPixelType;
-  typedef typename InputImageType::IndexType         IndexType;
-  typedef ImageFileReader< InputImageType >          ReaderType;
-  typedef ImageRegionConstIterator< InputImageType > InputImageIteratorType;
+  using InputImageType = TInputImage;
+  using ImagePointer = typename InputImageType::Pointer;
+  using InputPixelType = typename InputImageType::PixelType;
+  using IndexType = typename InputImageType::IndexType;
+  using ReaderType = ImageFileReader< InputImageType >;
+  using InputImageIteratorType = ImageRegionConstIterator< InputImageType >;
 
-  typedef TInputMask                                 InputMaskType;
-  typedef typename InputMaskType::Pointer            MaskPointer;
-  typedef typename InputMaskType::PixelType          MaskPixelType;
-  typedef typename InputMaskType::IndexType          MaskIndexType;
-  typedef ImageFileReader< InputMaskType >           MaskReaderType;
-  typedef ImageRegionConstIterator< InputMaskType >  MaskIteratorType;
+  using InputMaskType = TInputMask;
+  using MaskPointer = typename InputMaskType::Pointer;
+  using MaskPixelType = typename InputMaskType::PixelType;
+  using MaskIndexType = typename InputMaskType::IndexType;
+  using MaskReaderType = ImageFileReader< InputMaskType >;
+  using MaskIteratorType = ImageRegionConstIterator< InputMaskType >;
 
-  typedef vnl_matrix< InputPixelType >                VnlMatrixType;
-  typedef SimpleDataObjectDecorator< VnlMatrixType >  OutputType;
+  using VnlMatrixType = vnl_matrix< InputPixelType >;
+  using OutputType = SimpleDataObjectDecorator< VnlMatrixType >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

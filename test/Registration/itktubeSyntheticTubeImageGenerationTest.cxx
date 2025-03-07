@@ -50,21 +50,18 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typedef itk::Image<double, 3>                             Image3DType;
-  typedef itk::ImageRegionIteratorWithIndex< Image3DType >  Image3DIteratorType;
-  typedef itk::TubeSpatialObject<3>                         TubeType;
-  typedef itk::TubeSpatialObjectPoint<3>                    TubePointType;
-  typedef itk::GroupSpatialObject<3>                        GroupType;
+  using Image3DType = itk::Image<double, 3>;
+  using Image3DIteratorType = itk::ImageRegionIteratorWithIndex< Image3DType >;
+  using TubeType = itk::TubeSpatialObject<3>;
+  using TubePointType = itk::TubeSpatialObjectPoint<3>;
+  using GroupType = itk::GroupSpatialObject<3>;
 
-  typedef itk::SpatialObjectToImageFilter< GroupType, Image3DType >
-    SpatialObjectToImageFilterType;
-  typedef itk::Euler3DTransform<double>
-    TransformType;
-  typedef itk::tube::PointBasedSpatialObjectTransformFilter<TransformType, 3>
-    TubeTransformFilterType;
+  using SpatialObjectToImageFilterType = itk::SpatialObjectToImageFilter< GroupType, Image3DType >;
+  using TransformType = itk::Euler3DTransform<double>;
+  using TubeTransformFilterType = itk::tube::PointBasedSpatialObjectTransformFilter<TransformType, 3>;
 
-  typedef itk::ImageFileWriter<Image3DType>                 ImageWriterType;
-  typedef itk::SpatialObjectWriter<3>                       TubeWriterType;
+  using ImageWriterType = itk::ImageFileWriter<Image3DType>;
+  using TubeWriterType = itk::SpatialObjectWriter<3>;
 
   Image3DType::SizeType imageSize;
   imageSize[0] = 32;
@@ -96,8 +93,7 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
   // Gaussian blur the images to increase the likelihood of vessel
   // spatial object overlapping.
   std::cout << "Apply Gaussian blur..." << std::endl;
-  typedef itk::RecursiveGaussianImageFilter<Image3DType, Image3DType>
-    GaussianBlurFilterType;
+  using GaussianBlurFilterType = itk::RecursiveGaussianImageFilter<Image3DType, Image3DType>;
   GaussianBlurFilterType::Pointer blurFilters[3];
   for( int i = 0; i < 3; i++ )
     {
@@ -220,7 +216,7 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
   std::cout << "Transform and Convert the tube into an Image..." << std::endl;
 
   // read tube ( spatialObject )
-  typedef itk::SpatialObjectReader<3> SOReaderType;
+  using SOReaderType = itk::SpatialObjectReader<3>;
   SOReaderType::Pointer tubeReader = SOReaderType::New();
   std::cout << "Read VesselTube: " << argv[4] << std::endl;
   tubeReader->SetFileName( argv[4] );

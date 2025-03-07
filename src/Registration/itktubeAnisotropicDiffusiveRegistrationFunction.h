@@ -79,12 +79,12 @@ class AnisotropicDiffusiveRegistrationFunction
   TDeformationField >
 {
 public:
-  /** Standard class typedefs. */
-  typedef AnisotropicDiffusiveRegistrationFunction   Self;
-  typedef PDEDeformableRegistrationFunction<TFixedImage, TMovingImage,
-          TDeformationField>                         Superclass;
-  typedef SmartPointer< Self >                       Pointer;
-  typedef SmartPointer< const Self >                 ConstPointer;
+  /** Standard class type alias. */
+  using Self = AnisotropicDiffusiveRegistrationFunction;
+  using Superclass = PDEDeformableRegistrationFunction<TFixedImage, TMovingImage,
+          TDeformationField>;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -97,49 +97,42 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     Superclass::ImageDimension );
 
-  /** Convenient typedefs from the superclass. */
-  typedef typename Superclass::FixedImageType        FixedImageType;
-  typedef typename Superclass::FixedImagePointer     FixedImagePointer;
-  typedef typename Superclass::MovingImageType       MovingImageType;
-  typedef typename Superclass::MovingImagePointer    MovingImagePointer;
-  typedef typename MovingImageType::PixelType        MovingImagePixelType;
-  typedef typename Superclass::DisplacementFieldType DeformationFieldType;
-  typedef typename DeformationFieldType::Pointer     DeformationFieldPointer;
-  typedef typename Superclass::TimeStepType          TimeStepType;
-  typedef typename Superclass::NeighborhoodType      NeighborhoodType;
-  typedef typename Superclass::PixelType             PixelType;
-  typedef typename Superclass::FloatOffsetType       FloatOffsetType;
+  /** Convenient type alias from the superclass. */
+  using FixedImageType = typename Superclass::FixedImageType;
+  using FixedImagePointer = typename Superclass::FixedImagePointer;
+  using MovingImageType = typename Superclass::MovingImageType;
+  using MovingImagePointer = typename Superclass::MovingImagePointer;
+  using MovingImagePixelType = typename MovingImageType::PixelType;
+  using DeformationFieldType = typename Superclass::DisplacementFieldType;
+  using DeformationFieldPointer = typename DeformationFieldType::Pointer;
+  using TimeStepType = typename Superclass::TimeStepType;
+  using NeighborhoodType = typename Superclass::NeighborhoodType;
+  using PixelType = typename Superclass::PixelType;
+  using FloatOffsetType = typename Superclass::FloatOffsetType;
 
   /** Deformation field types */
   typedef typename DeformationFieldType::PixelType
     DeformationVectorType;
   typedef typename DeformationVectorType::ValueType
     DeformationVectorComponentType;
-  typedef itk::Image< DeformationVectorComponentType, ImageDimension >
-    DeformationVectorComponentImageType;
-  typedef ZeroFluxNeumannBoundaryCondition<
-    DeformationVectorComponentImageType >
-    DeformationVectorComponentImageBoundaryConditionType;
-  typedef ConstNeighborhoodIterator< DeformationVectorComponentImageType,
-    DeformationVectorComponentImageBoundaryConditionType >
-    DeformationVectorComponentNeighborhoodType;
-  typedef itk::FixedArray< DeformationVectorComponentNeighborhoodType,
-    ImageDimension >
-    DeformationVectorComponentNeighborhoodArrayType;
-  typedef std::vector< DeformationVectorComponentNeighborhoodArrayType >
-    DeformationVectorComponentNeighborhoodArrayVectorType;
+  using DeformationVectorComponentImageType = itk::Image< DeformationVectorComponentType, ImageDimension >;
+  using DeformationVectorComponentImageBoundaryConditionType = ZeroFluxNeumannBoundaryCondition<
+    DeformationVectorComponentImageType >;
+  using DeformationVectorComponentNeighborhoodType = ConstNeighborhoodIterator< DeformationVectorComponentImageType,
+    DeformationVectorComponentImageBoundaryConditionType >;
+  using DeformationVectorComponentNeighborhoodArrayType = itk::FixedArray< DeformationVectorComponentNeighborhoodType,
+    ImageDimension >;
+  using DeformationVectorComponentNeighborhoodArrayVectorType = std::vector< DeformationVectorComponentNeighborhoodArrayType >;
 
   /** Typedefs for the intensity-based distance function */
-  typedef MeanSquareRegistrationFunction< FixedImageType, MovingImageType,
-    DeformationFieldType >
-    IntensityDistanceFunctionType;
+  using IntensityDistanceFunctionType = MeanSquareRegistrationFunction< FixedImageType, MovingImageType,
+    DeformationFieldType >;
   typedef typename IntensityDistanceFunctionType::Pointer
     IntensityDistanceFunctionPointer;
 
   /** Typedefs for the regularization function */
-  typedef AnisotropicDiffusionTensorFunction<
-    DeformationVectorComponentImageType >
-    RegularizationFunctionType;
+  using RegularizationFunctionType = AnisotropicDiffusionTensorFunction<
+    DeformationVectorComponentImageType >;
   typedef typename RegularizationFunctionType::Pointer
     RegularizationFunctionPointer;
   typedef typename RegularizationFunctionType::SpacingType
@@ -153,8 +146,7 @@ public:
   typedef typename RegularizationFunctionType::
     DiffusionTensorNeighborhoodType
     DiffusionTensorNeighborhoodType;
-  typedef std::vector< DiffusionTensorNeighborhoodType >
-    DiffusionTensorNeighborhoodVectorType;
+  using DiffusionTensorNeighborhoodVectorType = std::vector< DiffusionTensorNeighborhoodType >;
 
   /** Typedefs for the scalar derivatives */
   typedef typename RegularizationFunctionType::ScalarDerivativeType
@@ -164,10 +156,8 @@ public:
   typedef typename RegularizationFunctionType::
     ScalarDerivativeImageRegionType
       ScalarDerivativeImageRegionType;
-  typedef itk::FixedArray< ScalarDerivativeImageRegionType, ImageDimension >
-      ScalarDerivativeImageRegionArrayType;
-  typedef std::vector < ScalarDerivativeImageRegionArrayType >
-      ScalarDerivativeImageRegionArrayVectorType;
+  using ScalarDerivativeImageRegionArrayType = itk::FixedArray< ScalarDerivativeImageRegionType, ImageDimension >;
+  using ScalarDerivativeImageRegionArrayVectorType = std::vector < ScalarDerivativeImageRegionArrayType >;
 
   /** Typedefs for the tensor derivatives */
   typedef typename RegularizationFunctionType::TensorDerivativeType
@@ -177,22 +167,16 @@ public:
   typedef typename RegularizationFunctionType::
     TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
-  typedef std::vector< TensorDerivativeImageRegionType >
-      TensorDerivativeImageRegionVectorType;
-  typedef itk::FixedArray < TensorDerivativeImageRegionType,
-    ImageDimension >
-      TensorDerivativeImageRegionArrayType;
-  typedef std::vector< TensorDerivativeImageRegionArrayType >
-      TensorDerivativeImageRegionArrayVectorType;
+  using TensorDerivativeImageRegionVectorType = std::vector< TensorDerivativeImageRegionType >;
+  using TensorDerivativeImageRegionArrayType = itk::FixedArray < TensorDerivativeImageRegionType,
+    ImageDimension >;
+  using TensorDerivativeImageRegionArrayVectorType = std::vector< TensorDerivativeImageRegionArrayType >;
 
   /** Typedefs for the multiplication vectors */
-  typedef ImageRegionIterator< DeformationFieldType >
-      DeformationVectorImageRegionType;
-  typedef itk::FixedArray < DeformationVectorImageRegionType,
-    ImageDimension >
-      DeformationVectorImageRegionArrayType;
-  typedef std::vector< DeformationVectorImageRegionArrayType >
-      DeformationVectorImageRegionArrayVectorType;
+  using DeformationVectorImageRegionType = ImageRegionIterator< DeformationFieldType >;
+  using DeformationVectorImageRegionArrayType = itk::FixedArray < DeformationVectorImageRegionType,
+    ImageDimension >;
+  using DeformationVectorImageRegionArrayVectorType = std::vector< DeformationVectorImageRegionArrayType >;
 
   /** Computes the time step for an update given a global data structure.
    *  Returns the time step supplied by the user. We don't need

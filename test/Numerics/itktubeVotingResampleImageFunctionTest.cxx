@@ -41,19 +41,17 @@ int itktubeVotingResampleImageFunctionTest( int argc, char * argv[] )
     }
 
   const unsigned int Dimension = 2;
-  typedef unsigned char                       PixelType;
-  typedef itk::Image<PixelType, Dimension>    ImageType;
+  using PixelType = unsigned char;
+  using ImageType = itk::Image<PixelType, Dimension>;
 
-  typedef ImageType::IndexType                ImageIndexType;
-  typedef ImageType::SizeType                 ImageSizeType;
-  typedef double                              CoordRepType;
-  typedef itk::AffineTransform<CoordRepType,Dimension>
-                                              AffineTransformType;
-  typedef itk::tube::VotingResampleImageFunction<ImageType,CoordRepType>
-                                              InterpolatorType;
+  using ImageIndexType = ImageType::IndexType;
+  using ImageSizeType = ImageType::SizeType;
+  using CoordRepType = double;
+  using AffineTransformType = itk::AffineTransform<CoordRepType,Dimension>;
+  using InterpolatorType = itk::tube::VotingResampleImageFunction<ImageType,CoordRepType>;
 
-  typedef itk::ImageFileReader< ImageType >   ImageReaderType;
-  typedef itk::ImageFileWriter< ImageType >   ImageWriterType;
+  using ImageReaderType = itk::ImageFileReader< ImageType >;
+  using ImageWriterType = itk::ImageFileWriter< ImageType >;
 
 
   // Create and configure an image

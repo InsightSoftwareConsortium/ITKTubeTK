@@ -61,10 +61,10 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // define types
-  typedef TPixel                                        PixelType;
-  typedef itk::Image< PixelType, VDimension >           ImageType;
-  typedef itk::ImageFileReader< ImageType >             ReaderType;
-  typedef itk::ImageFileWriter< ImageType  >            WriterType;
+  using PixelType = TPixel;
+  using ImageType = itk::Image< PixelType, VDimension >;
+  using ReaderType = itk::ImageFileReader< ImageType >;
+  using WriterType = itk::ImageFileWriter< ImageType  >;
 
   // Load input image 1
   timeCollector.Start( "Loading input image 1" );
@@ -113,8 +113,7 @@ int DoIt( int argc, char * argv[] )
   // Perform merging
   timeCollector.Start( "Merging images" );
 
-  typedef tube::MergeAdjacentImages< ImageType >
-    MergeAdjacentImagesFilterType;
+  using MergeAdjacentImagesFilterType = tube::MergeAdjacentImages< ImageType >;
 
   typename MergeAdjacentImagesFilterType::Pointer filter =
     MergeAdjacentImagesFilterType::New();

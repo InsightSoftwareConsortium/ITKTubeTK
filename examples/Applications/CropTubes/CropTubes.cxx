@@ -55,16 +55,16 @@ int DoIt ( int argc, char * argv[] )
   // Load TRE File
   tubeStandardOutputMacro( << "\n>> Loading TRE File" );
 
-  typedef itk::SpatialObjectReader< DimensionT >          TubesReaderType;
-  typedef double                                          PixelType;
-  typedef itk::Image< PixelType, DimensionT >             ImageType;
-  typedef itk::ImageFileReader< ImageType >               ImageReaderType;
-  typedef itk::Vector< double, DimensionT >               VectorType;
-  typedef itk::Point< double, DimensionT >                PointType;
+  using TubesReaderType = itk::SpatialObjectReader< DimensionT >;
+  using PixelType = double;
+  using ImageType = itk::Image< PixelType, DimensionT >;
+  using ImageReaderType = itk::ImageFileReader< ImageType >;
+  using VectorType = itk::Vector< double, DimensionT >;
+  using PointType = itk::Point< double, DimensionT >;
 
   timeCollector.Start( "Loading Input TRE File" );
 
-  typedef tube::CropTubes< DimensionT > FilterType;
+  using FilterType = tube::CropTubes< DimensionT >;
   typename FilterType::Pointer filter = FilterType::New();
 
   typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
@@ -144,7 +144,7 @@ int DoIt ( int argc, char * argv[] )
 
   timeCollector.Start( "Writing output TRE file" );
 
-  typedef itk::SpatialObjectWriter< DimensionT > TubeWriterType;
+  using TubeWriterType = itk::SpatialObjectWriter< DimensionT >;
   typename TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
 
   try

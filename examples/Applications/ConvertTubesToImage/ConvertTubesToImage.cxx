@@ -60,7 +60,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // read tubes
-  typedef itk::SpatialObjectReader< Dimension > TubesReaderType;
+  using TubesReaderType = itk::SpatialObjectReader< Dimension >;
 
   timeCollector.Start( "Reading tubes file" );
 
@@ -82,8 +82,8 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // read template image
-  typedef itk::Image< TPixel, Dimension >            TemplateImageType;
-  typedef itk::ImageFileReader< TemplateImageType >  TemplateImageReaderType;
+  using TemplateImageType = itk::Image< TPixel, Dimension >;
+  using TemplateImageReaderType = itk::ImageFileReader< TemplateImageType >;
 
   timeCollector.Start( "Reading template image" );
 
@@ -106,7 +106,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // call TubesToImageFilter
-  typedef tube::ConvertTubesToImage< TemplateImageType > TubesToImageFilterType;
+  using TubesToImageFilterType = tube::ConvertTubesToImage< TemplateImageType >;
 
   timeCollector.Start( "Converting Tubes To Image" );
 
@@ -125,7 +125,7 @@ int DoIt( int argc, char * argv[] )
   // write tube image to file
   timeCollector.Start( "Writing tube image to file" );
 
-  typedef itk::ImageFileWriter< TemplateImageType > TubeImageWriterType;
+  using TubeImageWriterType = itk::ImageFileWriter< TemplateImageType >;
   typename TubeImageWriterType::Pointer tubeImageWriter =
     TubeImageWriterType::New();
 

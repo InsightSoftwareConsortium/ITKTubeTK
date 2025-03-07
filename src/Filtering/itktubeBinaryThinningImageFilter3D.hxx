@@ -134,13 +134,13 @@ BinaryThinningImageFilter3D<TInputImage,TOutputImage>
   NeighborhoodIteratorType ot( radius, thinImage, region );
   ot.SetBoundaryCondition( boundaryCondition );
 
-  typedef typename OutputImageType::IndexType  IndexType;
+  using IndexType = typename OutputImageType::IndexType;
 
   std::vector < IndexType > simpleBorderPoints;
   typename std::vector < IndexType >::iterator simpleBorderPointsIt;
 
   // Define offsets
-  typedef typename NeighborhoodIteratorType::OffsetType OffsetType;
+  using OffsetType = typename NeighborhoodIteratorType::OffsetType;
   OffsetType N   = {{ 0,-1, 0}};  // north
   OffsetType S   = {{ 0, 1, 0}};  // south
   OffsetType E   = {{ 1, 0, 0}};  // east

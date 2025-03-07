@@ -45,16 +45,16 @@ class ComputeImageSimilarityMetrics:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ComputeImageSimilarityMetrics              Self;
-  typedef itk::ProcessObject                         Superclass;
-  typedef itk::SmartPointer< Self >                  Pointer;
-  typedef itk::SmartPointer< const Self >            ConstPointer;
+  /** Standard class type alias. */
+  using Self = ComputeImageSimilarityMetrics;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef itk::tube::ComputeImageSimilarityMetrics<
-    TInputImage >                                    FilterType;
+  using FilterType = itk::tube::ComputeImageSimilarityMetrics<
+    TInputImage >;
 
-  typedef typename FilterType::ImageType             ImageType;
+  using ImageType = typename FilterType::ImageType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

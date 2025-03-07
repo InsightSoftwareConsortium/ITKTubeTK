@@ -68,11 +68,11 @@ template< unsigned int VImageDimension >
 class ImageRegionSplitter:public ImageRegionSplitterBase
 {
 public:
-  /** Standard class typedefs. */
-  typedef ImageRegionSplitter        Self;
-  typedef ImageRegionSplitterBase    Superclass;
-  typedef SmartPointer< Self >       Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+  /** Standard class type alias. */
+  using Self = ImageRegionSplitter;
+  using Superclass = ImageRegionSplitterBase;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -87,15 +87,15 @@ public:
   static unsigned int GetImageDimension()
     { return VImageDimension; }
 
-  /** Index typedef support. An index is used to access pixel values. */
-  typedef Index< VImageDimension >           IndexType;
+  /** Index type alias support. An index is used to access pixel values. */
+  using IndexType = Index< VImageDimension >;
 
-  /** Size typedef support. A size is used to define region bounds. */
-  typedef Size< VImageDimension >          SizeType;
-  typedef typename SizeType::SizeValueType SizeValueType;
+  /** Size type alias support. A size is used to define region bounds. */
+  using SizeType = Size< VImageDimension >;
+  using SizeValueType = typename SizeType::SizeValueType;
 
-  /** Region typedef support.   */
-  typedef ImageRegion< VImageDimension > RegionType;
+  /** Region type alias support.   */
+  using RegionType = ImageRegion< VImageDimension >;
 
   /** How many pieces can the specifed region be split? A given region
    * cannot always be divided into the requested number of pieces.  For

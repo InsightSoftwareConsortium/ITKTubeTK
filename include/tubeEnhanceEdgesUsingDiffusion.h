@@ -43,17 +43,17 @@ class EnhanceEdgesUsingDiffusion:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef EnhanceEdgesUsingDiffusion                Self;
-  typedef itk::ProcessObject                        Superclass;
-  typedef itk::SmartPointer< Self >                 Pointer;
-  typedef itk::SmartPointer< const Self >           ConstPointer;
+  /** Standard class type alias. */
+  using Self = EnhanceEdgesUsingDiffusion;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef TInputImage                               InputImageType;
-  typedef TOutputImage                              OutputImageType;
+  using InputImageType = TInputImage;
+  using OutputImageType = TOutputImage;
 
-  typedef itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter<
-    InputImageType, OutputImageType>  FilterType;
+  using FilterType = itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter<
+    InputImageType, OutputImageType>;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

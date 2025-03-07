@@ -88,7 +88,7 @@ NJetFeatureVectorGenerator< TImage >
 
   const unsigned int numInputImages = this->GetNumberOfInputImages();
 
-  typedef NJetImageFunction< ImageType > NJetFunctionType;
+  using NJetFunctionType = NJetImageFunction< ImageType >;
   typename NJetFunctionType::Pointer njet = NJetFunctionType::New();
   typename NJetFunctionType::VectorType v;
   typename NJetFunctionType::MatrixType m;
@@ -206,7 +206,7 @@ NJetFeatureVectorGenerator< TImage >
 {
   const unsigned int numInputImages = this->GetNumberOfInputImages();
 
-  typedef NJetImageFunction< ImageType > NJetFunctionType;
+  using NJetFunctionType = NJetImageFunction< ImageType >;
   typename NJetFunctionType::Pointer njet = NJetFunctionType::New();
   typename NJetFunctionType::VectorType v;
   typename NJetFunctionType::MatrixType m;

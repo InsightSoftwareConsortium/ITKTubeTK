@@ -1993,7 +1993,7 @@ ScaleSubsample( double factor )
 {
   if( m_InputImage )
     {
-    typedef typename InputImageType::PixelType PixelType;
+    using PixelType = typename InputImageType::PixelType;
     typename InputImageType::SizeType size;
     size = m_InputImage->GetLargestPossibleRegion().GetSize();
     typename InputImageType::SpacingType spacing;
@@ -2010,7 +2010,7 @@ ScaleSubsample( double factor )
     newImage->SetOrigin( m_InputImage->GetOrigin() );
     newImage->Allocate();
 
-    typedef ImageRegionIteratorWithIndex<InputImageType> IteratorType;
+    using IteratorType = ImageRegionIteratorWithIndex<InputImageType>;
     IteratorType
         imageIt( newImage,
                 newImage->GetLargestPossibleRegion() );

@@ -94,7 +94,7 @@ OptionList
 {
   values.clear();
 
-  typedef OptionMapType::const_iterator OptionIterator;
+  using OptionIterator = OptionMapType::const_iterator;
 
   std::pair< OptionIterator, OptionIterator > bound
     = m_OptionMap.equal_range( tag );
@@ -114,7 +114,7 @@ int
 OptionList
 ::DumpOptions( const std::string & tag, bool withTag, bool withNewLine ) const
 {
-  typedef OptionMapType::const_iterator OptionIterator;
+  using OptionIterator = OptionMapType::const_iterator;
 
   std::pair< OptionIterator, OptionIterator > bound
     = m_OptionMap.equal_range( tag );

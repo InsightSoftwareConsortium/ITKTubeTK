@@ -43,17 +43,16 @@ class ComputeTubeMeasures:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ComputeTubeMeasures                        Self;
-  typedef itk::ProcessObject                         Superclass;
-  typedef itk::SmartPointer< Self >                  Pointer;
-  typedef itk::SmartPointer< const Self >            ConstPointer;
+  /** Standard class type alias. */
+  using Self = ComputeTubeMeasures;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef itk::tube::ComputeTubeMeasuresFilter< TPixel, Dimension >
-    FilterType;
+  using FilterType = itk::tube::ComputeTubeMeasuresFilter< TPixel, Dimension >;
 
-  typedef typename FilterType::InputImageType       InputImageType;
-  typedef typename FilterType::OutputImageType      OutputImageType;
+  using InputImageType = typename FilterType::InputImageType;
+  using OutputImageType = typename FilterType::OutputImageType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

@@ -41,12 +41,12 @@ class ObjectDocument : public Document
 {
 public:
 
-  typedef ObjectDocument                   Self;
-  typedef Document                         Superclass;
-  typedef SmartPointer< Self >             Pointer;
-  typedef SmartPointer< const Self >       ConstPointer;
+  using Self = ObjectDocument;
+  using Superclass = Document;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef std::vector< std::string >       TransformNameListType;
+  using TransformNameListType = std::vector< std::string >;
 
   itkNewMacro( Self );
   itkTypeMacro( ObjectDocument, Document );

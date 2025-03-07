@@ -43,11 +43,11 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef TPixel                                           PixelType;
-  typedef itk::Image< PixelType, VDimension  >             ImageType;
-  typedef itk::ImageFileReader< ImageType >                ReaderType;
-  typedef tube::EnhanceTubesUsingDiffusion< PixelType,
-    VDimension >                                           FilterType;
+  using PixelType = TPixel;
+  using ImageType = itk::Image< PixelType, VDimension  >;
+  using ReaderType = itk::ImageFileReader< ImageType >;
+  using FilterType = tube::EnhanceTubesUsingDiffusion< PixelType,
+    VDimension >;
 
   // read input image
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -84,7 +84,7 @@ int DoIt( int argc, char * argv[] )
   filter->Update();
 
   // write output image
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< ImageType  >;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
 
   try

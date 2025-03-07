@@ -37,16 +37,16 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typedef itk::Image<float, 3>   ImageType;
+  using ImageType = itk::Image<float, 3>;
 
-  typedef itk::ImageFileReader< ImageType > ImageReaderType;
+  using ImageReaderType = itk::ImageFileReader< ImageType >;
   ImageReaderType::Pointer imReader = ImageReaderType::New();
   imReader->SetFileName( argv[1] );
   imReader->Update();
 
   ImageType::Pointer im = imReader->GetOutput();
 
-  typedef itk::tube::RadiusExtractor2<ImageType> RadiusOpType;
+  using RadiusOpType = itk::tube::RadiusExtractor2<ImageType>;
   RadiusOpType::Pointer radiusOp = RadiusOpType::New();
 
   radiusOp->SetInputImage( im );
@@ -102,12 +102,12 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  typedef itk::SpatialObjectReader<>                   ReaderType;
-  typedef itk::SpatialObject<>::ChildrenListType       ObjectListType;
-  typedef itk::GroupSpatialObject<>                    GroupType;
-  typedef itk::TubeSpatialObject<>                     TubeType;
-  typedef TubeType::TubePointListType                  TubePointListType;
-  typedef TubeType::TubePointType                      TubePointType;
+  using ReaderType = itk::SpatialObjectReader<>;
+  using ObjectListType = itk::SpatialObject<>::ChildrenListType;
+  using GroupType = itk::GroupSpatialObject<>;
+  using TubeType = itk::TubeSpatialObject<>;
+  using TubePointListType = TubeType::TubePointListType;
+  using TubePointType = TubeType::TubePointType;
 
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[2] );

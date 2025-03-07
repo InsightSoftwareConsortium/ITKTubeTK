@@ -72,8 +72,8 @@ int DoIt( int argc, char * argv[] )
   // Load Input Image
   //std::cout << "Loading Input Image" << std::endl;
 
-  typedef itk::Image< TPixel, VDimension >              ImageType;
-  typedef itk::ImageFileReader< ImageType >             ImageReaderType;
+  using ImageType = itk::Image< TPixel, VDimension >;
+  using ImageReaderType = itk::ImageFileReader< ImageType >;
 
   timeCollector.Start( "Loading input image" );
 
@@ -99,7 +99,7 @@ int DoIt( int argc, char * argv[] )
   // Load TRE File
   //std::cout << "Loading TRE File" << std::endl;
 
-  typedef itk::SpatialObjectReader< VDimension >        TubesReaderType;
+  using TubesReaderType = itk::SpatialObjectReader< VDimension >;
 
   timeCollector.Start( "Loading input TRE file" );
 
@@ -123,8 +123,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // call ComputeTubeFlyThroughImage
-  typedef tube::ComputeTubeFlyThroughImage< TPixel, VDimension >
-    ComputeFlyThroughImageFilterType;
+  using ComputeFlyThroughImageFilterType = tube::ComputeTubeFlyThroughImage< TPixel, VDimension >;
 
   timeCollector.Start( "Computing tube fly through images" );
 
@@ -141,7 +140,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // Write fly through image
-  typedef itk::ImageFileWriter< ImageType > ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< ImageType >;
 
   timeCollector.Start( "Writing tube fly through image" );
 
@@ -168,8 +167,7 @@ int DoIt( int argc, char * argv[] )
   // Write tube mask fly through image
   typedef typename ComputeFlyThroughImageFilterType::OutputMaskType
     MaskType;
-  typedef itk::ImageFileWriter< MaskType >
-    MaskWriterType;
+  using MaskWriterType = itk::ImageFileWriter< MaskType >;
 
   timeCollector.Start( "Writing tube mask fly through image" );
 

@@ -51,9 +51,9 @@ class MetaClassPDF : private MetaImage
 {
 public:
 
-  typedef std::vector< int >                    VectorIntType;
-  typedef std::vector< unsigned int >           VectorUIntType;
-  typedef std::vector< double >                 VectorDoubleType;
+  using VectorIntType = std::vector< int >;
+  using VectorUIntType = std::vector< unsigned int >;
+  using VectorDoubleType = std::vector< double >;
 
   MetaClassPDF( void );
 

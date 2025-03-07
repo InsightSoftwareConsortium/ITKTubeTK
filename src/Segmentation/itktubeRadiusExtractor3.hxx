@@ -60,8 +60,8 @@ public:
 
   itkTypeMacro(ProfileCurve, SingleValuedCostFunction);
 
-  typedef SingleValuedCostFunction::ParametersType ParametersType;
-  typedef SingleValuedCostFunction::DerivativeType DerivativeType;
+  using ParametersType = SingleValuedCostFunction::ParametersType;
+  using DerivativeType = SingleValuedCostFunction::DerivativeType;
 
   void SetData( std::vector<double> * data )
     {
@@ -194,7 +194,7 @@ RadiusExtractor3<TInputImage>
 
   if( m_InputImage )
     {
-    typedef MinimumMaximumImageFilter<InputImageType> MinMaxFilterType;
+    using MinMaxFilterType = MinimumMaximumImageFilter<InputImageType>;
     typename MinMaxFilterType::Pointer minMaxFilter =
       MinMaxFilterType::New();
     minMaxFilter->SetInput( m_InputImage );
@@ -696,7 +696,7 @@ RadiusExtractor3<TInputImage>
 {
   m_KernelOptimalRadius = this->GetRadiusStart();
 
-  typedef FRPROptimizer OptimizerType;
+  using OptimizerType = FRPROptimizer;
   OptimizerType::Pointer opt = OptimizerType::New();
 
   itk::ProfileCurve::Pointer curvFunc = itk::ProfileCurve::New();

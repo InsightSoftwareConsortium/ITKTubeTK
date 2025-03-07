@@ -35,9 +35,9 @@ int itktubeBlurImageFunctionTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typedef itk::Image<float, 3>   ImageType;
-  typedef ImageType::SizeType    ImageSizeType;
-  typedef ImageType::SpacingType ImageSpacingType;
+  using ImageType = itk::Image<float, 3>;
+  using ImageSizeType = ImageType::SizeType;
+  using ImageSpacingType = ImageType::SpacingType;
 
   ImageType::Pointer im = ImageType::New();
 
@@ -72,7 +72,7 @@ int itktubeBlurImageFunctionTest( int argc, char * argv[] )
   index[2] = 15;
   im->SetPixel( index, 100 );
 
-  typedef itk::tube::BlurImageFunction<ImageType> ImageOpType;
+  using ImageOpType = itk::tube::BlurImageFunction<ImageType>;
   ImageOpType::Pointer imOp = ImageOpType::New();
 
   imOp->SetInputImage( im );
@@ -102,7 +102,7 @@ int itktubeBlurImageFunctionTest( int argc, char * argv[] )
     ++itOut;
     }
 
-  typedef itk::ImageFileWriter<ImageType> ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter<ImageType>;
   ImageWriterType::Pointer imWriter = ImageWriterType::New();
   imWriter->SetFileName( argv[1] );
   imWriter->SetInput( imOut );

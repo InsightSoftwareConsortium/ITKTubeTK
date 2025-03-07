@@ -58,54 +58,53 @@ class RidgeExtractor : public Object
 {
 public:
 
-  typedef RidgeExtractor             Self;
-  typedef Object                     Superclass;
-  typedef SmartPointer< Self >       Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+  using Self = RidgeExtractor;
+  using Superclass = Object;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkTypeMacro( RidgeExtractor, Object );
 
   itkNewMacro( RidgeExtractor );
 
   /** Type definition for the input image. */
-  typedef TInputImage                                      InputImageType;
+  using InputImageType = TInputImage;
 
   /** Standard for the number of dimension */
   itkStaticConstMacro( ImageDimension, unsigned int,
     TInputImage::ImageDimension );
 
   /** Type definition for the input image. */
-  typedef Image< float, TInputImage::ImageDimension >     TubeMaskImageType;
+  using TubeMaskImageType = Image< float, TInputImage::ImageDimension >;
 
   /** Type definition for the input image pixel type. */
-  typedef typename TInputImage::PixelType                 PixelType;
+  using PixelType = typename TInputImage::PixelType;
 
   /** Type definition for the input image index type. */
-  typedef typename TInputImage::IndexType                 IndexType;
+  using IndexType = typename TInputImage::IndexType;
 
   /** Type definition for the input image point type. */
-  typedef typename TInputImage::PointType                 PointType;
+  using PointType = typename TInputImage::PointType;
 
   /** Type definition for the input image index type. */
-  typedef ContinuousIndex< double, TInputImage::ImageDimension >
-                                                ContinuousIndexType;
+  using ContinuousIndexType = ContinuousIndex< double, TInputImage::ImageDimension >;
 
   /** Defines the type of vectors used */
-  typedef vnl_vector< unsigned int >            IntVectorType;
+  using IntVectorType = vnl_vector< unsigned int >;
 
   /** Defines the type of vectors used */
-  typedef vnl_vector< double >                  VectorType;
+  using VectorType = vnl_vector< double >;
 
   /** Defines the type of matrix used */
-  typedef vnl_matrix< double >                  MatrixType;
+  using MatrixType = vnl_matrix< double >;
 
-  /** Tube SpatialObject typedefs */
-  typedef TubeSpatialObject< TInputImage::ImageDimension > TubeType;
+  /** Tube SpatialObject type alias */
+  using TubeType = TubeSpatialObject< TInputImage::ImageDimension >;
 
-  typedef typename TubeType::TubePointType      TubePointType;
+  using TubePointType = typename TubeType::TubePointType;
 
   /** Defines the type of vectors used */
-  typedef typename TubeType::CovariantVectorType CovariantVectorType;
+  using CovariantVectorType = typename TubeType::CovariantVectorType;
 
   typedef enum { SUCCESS, EXITED_IMAGE, REVISITED_VOXEL, RIDGE_FAIL,
     ROUND_FAIL, CURVE_FAIL, LEVEL_FAIL, TANGENT_FAIL, DISTANCE_FAIL,

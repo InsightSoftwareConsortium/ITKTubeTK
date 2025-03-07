@@ -59,14 +59,13 @@ class AnisotropicHybridDiffusionImageFilter
   : public AnisotropicDiffusionTensorImageFilter< TInputImage, TOutputImage >
 {
 public:
-  /** Standard class typedefs */
-  typedef AnisotropicHybridDiffusionImageFilter Self;
+  /** Standard class type alias */
+  using Self = AnisotropicHybridDiffusionImageFilter;
 
-  typedef AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-                                                           Superclass;
+  using Superclass = AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>;
 
-  typedef SmartPointer< Self >                             Pointer;
-  typedef SmartPointer< const Self >                       ConstPointer;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
 
   /** Method for creation through the object factory */
@@ -75,43 +74,39 @@ public:
   /** Run-time type information ( and related methods ) */
   itkTypeMacro( AnisotropicHybridDiffusionImageFilter, ImageToImageFilter );
 
-  /** Convenient typedefs */
-  typedef typename Superclass::InputImageType  InputImageType;
-  typedef typename Superclass::OutputImageType OutputImageType;
-  typedef typename Superclass::PixelType       PixelType;
+  /** Convenient type alias */
+  using InputImageType = typename Superclass::InputImageType;
+  using OutputImageType = typename Superclass::OutputImageType;
+  using PixelType = typename Superclass::PixelType;
 
   typedef typename Superclass::DiffusionTensorImageType
                                                 DiffusionTensorImageType;
 
   // Structure tensor type
-  typedef StructureTensorRecursiveGaussianImageFilter < InputImageType >
-                                                StructureTensorFilterType;
+  using StructureTensorFilterType = StructureTensorRecursiveGaussianImageFilter < InputImageType >;
 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
   itkStaticConstMacro( ImageDimension, unsigned int,
                        Superclass::ImageDimension );
 
-  typedef Matrix<double, ImageDimension, ImageDimension> MatrixType;
+  using MatrixType = Matrix<double, ImageDimension, ImageDimension>;
 
   // Define image of matrix pixel type
-  typedef Image< MatrixType, ImageDimension>  OutputMatrixImageType;
+  using OutputMatrixImageType = Image< MatrixType, ImageDimension>;
 
   // Define the symmetric tensor pixel type
-  typedef SymmetricSecondRankTensor< double, ImageDimension>
-                                                         TensorPixelType;
-  typedef Image< TensorPixelType, ImageDimension>
-                                                         TensorImageType;
+  using TensorPixelType = SymmetricSecondRankTensor< double, ImageDimension>;
+  using TensorImageType = Image< TensorPixelType, ImageDimension>;
 
    // Define the type for storing the eigenvalue
-  typedef FixedArray< double, ImageDimension >      EigenValueArrayType;
+  using EigenValueArrayType = FixedArray< double, ImageDimension >;
 
   // Declare the types of the output images
-  typedef Image< EigenValueArrayType, ImageDimension >
-                                                  EigenAnalysisOutputImageType;
+  using EigenAnalysisOutputImageType = Image< EigenValueArrayType, ImageDimension >;
 
   /** The container type for the update buffer. */
-  typedef OutputImageType UpdateBufferType;
+  using UpdateBufferType = OutputImageType;
 
   /** Define diffusion image nbd type */
   typedef typename Superclass::DiffusionTensorNeighborhoodType

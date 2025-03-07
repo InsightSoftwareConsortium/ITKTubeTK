@@ -51,15 +51,15 @@ class SpatialObjectToImageRegistrationViewer
   : public Command
 {
 public:
-  typedef SpatialObjectToImageRegistrationViewer Self;
-  typedef Command                 Superclass;
-  typedef SmartPointer<Self>      Pointer;
+  using Self = SpatialObjectToImageRegistrationViewer;
+  using Superclass = Command;
+  using Pointer = SmartPointer<Self>;
 
   itkTypeMacro( SpatialObjectToImageRegistrationViewer, Command );
 
   itkNewMacro( SpatialObjectToImageRegistrationViewer );
 
-  typedef SingleValuedNonLinearOptimizer OptimizerType;
+  using OptimizerType = SingleValuedNonLinearOptimizer;
 
   itkSetMacro(DontShowParameters, bool);
   itkSetMacro(UpdateInterval, int);
@@ -191,8 +191,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
     default:
     case IMAGE_INTENSITY_METRIC:
         {
-        typedef PointBasedSpatialObjectToImageMetric<ObjectDimension, TImage>
-          TypedMetricType;
+        using TypedMetricType = PointBasedSpatialObjectToImageMetric<ObjectDimension, TImage>;
 
         typename TypedMetricType::Pointer typedMetric = TypedMetricType::New();
         typedMetric->SetSamplingRatio( m_SamplingRatio );
@@ -232,7 +231,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   catch( itk::ExceptionObject& exception )
     {
     std::cerr << "Optimization threw an exception." << std::endl;
-    std::cerr << exception << std::endl ;
+    std::cerr << exception << std::endl;
     }
 
   if( this->GetReportProgress() )
@@ -255,7 +254,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
         std::cout << "EVOLUTIONARY START" << std::endl;
         }
   
-      typedef OnePlusOneEvolutionaryOptimizer EvoOptimizerType;
+      using EvoOptimizerType = OnePlusOneEvolutionaryOptimizer;
       EvoOptimizerType::Pointer evoOpt = EvoOptimizerType::New();
   
       evoOpt->SetNormalVariateGenerator( Statistics::NormalVariateGenerator
@@ -274,7 +273,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   
       if( this->GetReportProgress() )
         {
-        typedef SpatialObjectToImageRegistrationViewer ViewerCommandType;
+        using ViewerCommandType = SpatialObjectToImageRegistrationViewer;
         typename ViewerCommandType::Pointer command = ViewerCommandType::New();
         if( this->GetTransform()->GetNumberOfParameters() > 16 )
           {
@@ -342,7 +341,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
       std::cout << "GRADIENT START" << std::endl;
       }
   
-    typedef FRPROptimizer GradOptimizerType;
+    using GradOptimizerType = FRPROptimizer;
     GradOptimizerType::Pointer gradOpt = GradOptimizerType::New();
   
     gradOpt->SetCatchGetValueException( true );
@@ -357,7 +356,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
   
     //if( this->GetReportProgress() )
       {
-      typedef SpatialObjectToImageRegistrationViewer ViewerCommandType;
+      using ViewerCommandType = SpatialObjectToImageRegistrationViewer;
       typename ViewerCommandType::Pointer command = ViewerCommandType::New();
       if( this->GetTransform()->GetNumberOfParameters() > 16 )
         {

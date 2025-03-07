@@ -367,8 +367,8 @@ ComputeTubeRegions( const ImageType * referenceImage )
   this->RenumberTubes();
   this->RenumberPoints();
 
-  typedef itk::tube::TubeSpatialObjectToImageFilter< DimensionT,
-    FloatImageType > TubeToImageFilterType;
+  using TubeToImageFilterType = itk::tube::TubeSpatialObjectToImageFilter< DimensionT,
+    FloatImageType >;
   typename TubeToImageFilterType::Pointer tubeToImageFilter =
     TubeToImageFilterType::New();
   tubeToImageFilter->SetInput( m_InputTubeGroup );
@@ -382,8 +382,7 @@ ComputeTubeRegions( const ImageType * referenceImage )
   m_TubePointIdImage = tubeToImageFilter->GetOutput();
   m_TubeRadiusImage  = tubeToImageFilter->GetRadiusImage();
 
-  typedef itk::DanielssonDistanceMapImageFilter< FloatImageType, FloatImageType>
-    DanielssonFilterType;
+  using DanielssonFilterType = itk::DanielssonDistanceMapImageFilter< FloatImageType, FloatImageType>;
   typename DanielssonFilterType::Pointer distF = DanielssonFilterType::New();
   distF->SetInput( m_TubePointIdImage );
   distF->SetUseImageSpacing( true );
@@ -406,9 +405,9 @@ SetPointValuesFromTubeRegions(
 {
   this->SetPointValues( propertyId, 0 );
 
-  typedef itk::ImageRegionConstIterator<ImageType>    ImageConstIteratorType;
-  typedef itk::ImageRegionIterator<VectorImageType>   VectorImageIteratorType;
-  typedef itk::ImageRegionIterator<FloatImageType>    FloatImageIteratorType;
+  using ImageConstIteratorType = itk::ImageRegionConstIterator<ImageType>;
+  using VectorImageIteratorType = itk::ImageRegionIterator<VectorImageType>;
+  using FloatImageIteratorType = itk::ImageRegionIterator<FloatImageType>;
 
   FloatImageIteratorType itDistImage( m_TubeDistanceImage,
       m_TubeDistanceImage->GetLargestPossibleRegion() );
@@ -546,7 +545,7 @@ SetPointValuesFromTubeRadius(
 {
   this->SetPointValues( propertyId, 0 );
 
-  typedef itk::ContinuousIndex<double, DimensionT> ContinuousIndexType;
+  using ContinuousIndexType = itk::ContinuousIndex<double, DimensionT>;
 
   // Get the list of tubes
   TubeListPointerType inputTubeList = m_InputTubeGroup->GetChildren(
@@ -1286,7 +1285,7 @@ ComputeTubeLength( void )
         {
         continue;
         }
-      typedef typename PositionType::VectorType PositionVectorType;
+      using PositionVectorType = typename PositionType::VectorType;
     
       typename TubePointListType::const_iterator itTubePoints =
         curTube->GetPoints().begin();

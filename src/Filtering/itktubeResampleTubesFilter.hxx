@@ -106,9 +106,8 @@ ResampleTubesFilter< ObjectDimension >
   typename SpatialObjectType::ConstPointer inSO = this->GetInput();
 
   /** Typedefs for Displacement field tranform filter.    */
-  typedef itk::tube::PointBasedSpatialObjectTransformFilter<
-    DisplacementFieldTransformType, ObjectDimension >
-    DisplacementFieldTransformFilterType;
+  using DisplacementFieldTransformFilterType = itk::tube::PointBasedSpatialObjectTransformFilter<
+    DisplacementFieldTransformType, ObjectDimension >;
 
   // Create new transform
   typename DisplacementFieldTransformType::Pointer transform =
@@ -139,12 +138,10 @@ ResampleTubesFilter< ObjectDimension >
   typename SpatialObjectType::ConstPointer inSO = this->GetInput();
 
   /** Typedefs for transform read from a file    */
-  typedef itk::MatrixOffsetTransformBase< double, ObjectDimension, ObjectDimension >
-    MatrixOffsetTransformType;
-  typedef itk::tube::PointBasedSpatialObjectTransformFilter<
+  using MatrixOffsetTransformType = itk::MatrixOffsetTransformBase< double, ObjectDimension, ObjectDimension >;
+  using MatrixOffsetTransformFilterType = itk::tube::PointBasedSpatialObjectTransformFilter<
     MatrixOffsetTransformType,
-    ObjectDimension >
-    MatrixOffsetTransformFilterType;
+    ObjectDimension >;
 
   BaseTransformListType::const_iterator tListIt;
   tListIt = m_ReadTransformList->begin();
@@ -184,12 +181,10 @@ ResampleTubesFilter< ObjectDimension >
   typename SpatialObjectType::ConstPointer inSO = this->GetInput();
 
   /** Typedefs for Affine Transform */
-  typedef itk::AffineTransform< double, ObjectDimension >
-    AffineTransformType;
-  typedef itk::tube::PointBasedSpatialObjectTransformFilter<
+  using AffineTransformType = itk::AffineTransform< double, ObjectDimension >;
+  using AffineTransformFilterType = itk::tube::PointBasedSpatialObjectTransformFilter<
     AffineTransformType,
-    ObjectDimension >
-    AffineTransformFilterType;
+    ObjectDimension >;
 
   typename AffineTransformType::Pointer identityAffineTransform =
     AffineTransformType::New();
@@ -249,8 +244,7 @@ ResampleTubesFilter< ObjectDimension >
   if( m_SamplingFactor != 1 )
     {
     /** Typedefs for Sub samppling filter     */
-    typedef itk::tube::SubSampleSpatialObjectFilter<ObjectDimension>
-      SubSampleFilterType;
+    using SubSampleFilterType = itk::tube::SubSampleSpatialObjectFilter<ObjectDimension>;
 
     typename SubSampleFilterType::Pointer subSampleFilter =
       SubSampleFilterType::New();

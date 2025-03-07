@@ -47,26 +47,25 @@ class RidgeSeedFilter : public ImageToImageFilter< TImage, TLabelMap >
 {
 public:
 
-  typedef RidgeSeedFilter                            Self;
-  typedef ImageToImageFilter< TImage, TLabelMap >    Superclass;
-  typedef SmartPointer< Self >                       Pointer;
-  typedef SmartPointer< const Self >                 ConstPointer;
+  using Self = RidgeSeedFilter;
+  using Superclass = ImageToImageFilter< TImage, TLabelMap >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkTypeMacro( RidgeSeedFilter, ImageToImageFilter );
 
   itkNewMacro( Self );
 
-  typedef TImage                                  InputImageType;
-  typedef Image< float, TImage::ImageDimension >  OutputImageType;
+  using InputImageType = TImage;
+  using OutputImageType = Image< float, TImage::ImageDimension >;
 
-  typedef TLabelMap                               LabelMapType;
-  typedef typename LabelMapType::PixelType        LabelMapPixelType;
+  using LabelMapType = TLabelMap;
+  using LabelMapPixelType = typename LabelMapType::PixelType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
-  typedef RidgeFFTFeatureVectorGenerator< InputImageType >
-    RidgeFeatureGeneratorType;
+  using RidgeFeatureGeneratorType = RidgeFFTFeatureVectorGenerator< InputImageType >;
 
   typedef typename RidgeFeatureGeneratorType::FeatureValueType
     FeatureValueType;
@@ -84,17 +83,14 @@ public:
   typedef typename RidgeFeatureGeneratorType::ValueListType
     WhitenStdDevsType;
 
-  typedef BasisFeatureVectorGenerator< InputImageType, LabelMapType >
-    SeedFeatureGeneratorType;
+  using SeedFeatureGeneratorType = BasisFeatureVectorGenerator< InputImageType, LabelMapType >;
 
-  typedef typename SeedFeatureGeneratorType::ObjectIdType ObjectIdType;
-  typedef typename SeedFeatureGeneratorType::VectorType   VectorType;
-  typedef typename SeedFeatureGeneratorType::MatrixType   MatrixType;
+  using ObjectIdType = typename SeedFeatureGeneratorType::ObjectIdType;
+  using VectorType = typename SeedFeatureGeneratorType::VectorType;
+  using MatrixType = typename SeedFeatureGeneratorType::MatrixType;
 
-  typedef PDFSegmenterBase< InputImageType, LabelMapType >
-    PDFSegmenterType;
-  typedef PDFSegmenterParzen< InputImageType, LabelMapType >
-    PDFSegmenterParzenType;
+  using PDFSegmenterType = PDFSegmenterBase< InputImageType, LabelMapType >;
+  using PDFSegmenterParzenType = PDFSegmenterParzen< InputImageType, LabelMapType >;
   typedef typename  PDFSegmenterType::ProbabilityPixelType
     ProbabilityPixelType;
   typedef typename  PDFSegmenterType::ProbabilityImageType

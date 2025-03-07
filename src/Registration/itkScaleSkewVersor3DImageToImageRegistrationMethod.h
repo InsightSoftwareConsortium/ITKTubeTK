@@ -39,11 +39,11 @@ class ScaleSkewVersor3DImageToImageRegistrationMethod
 
 public:
 
-  typedef ScaleSkewVersor3DImageToImageRegistrationMethod Self;
-  typedef OptimizedImageToImageRegistrationMethod<
-    Image< typename TImage::PixelType, 3 > >              Superclass;
-  typedef SmartPointer<Self>                              Pointer;
-  typedef SmartPointer<const Self>                        ConstPointer;
+  using Self = ScaleSkewVersor3DImageToImageRegistrationMethod;
+  using Superclass = OptimizedImageToImageRegistrationMethod<
+    Image< typename TImage::PixelType, 3 > >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   itkTypeMacro( ScaleSkewVersor3DImageToImageRegistrationMethod,
                 OptimizedImageToImageRegistrationMethod );
@@ -56,15 +56,13 @@ public:
   // Typedefs from Superclass
   // 
   // Overrides the superclass' TransformType typedef
-  typedef ::itk::ComposeScaleSkewVersor3DTransform< double >
-            ScaleSkewVersor3DTransformType;
+  using ScaleSkewVersor3DTransformType = ::itk::ComposeScaleSkewVersor3DTransform< double >;
   typedef typename ScaleSkewVersor3DTransformType::Pointer
             ScaleSkewVersor3DTransformPointer;
   typedef ScaleSkewVersor3DTransformType
             TransformType;
 
-  typedef AffineTransform<double, 3>
-            AffineTransformType;
+  using AffineTransformType = AffineTransform<double, 3>;
   typedef typename AffineTransformType::Pointer
             AffineTransformPointer;
 

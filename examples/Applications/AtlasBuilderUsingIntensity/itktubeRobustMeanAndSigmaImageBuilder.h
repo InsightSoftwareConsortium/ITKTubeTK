@@ -56,32 +56,32 @@ class RobustMeanAndSigmaImageBuilder
 {
 public:
 
-  typedef RobustMeanAndSigmaImageBuilder                    Self;
-  typedef MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
-    TOutputSigmaImageType>                                  Superclass;
+  using Self = RobustMeanAndSigmaImageBuilder;
+  using Superclass = MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
+    TOutputSigmaImageType>;
 
-  typedef SmartPointer< Self >                              Pointer;
-  typedef SmartPointer< const Self >                        ConstPointer;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkNewMacro( Self );
   itkTypeMacro( RobustMeanAndSigmaImageBuilder, MeanAndSigmaImageBuilder );
 
-  typedef TInputImageType                              InputImageType;
-  typedef TOutputMeanImageType                         OutputMeanImageType;
-  typedef TOutputSigmaImageType                        OutputSigmaImageType;
+  using InputImageType = TInputImageType;
+  using OutputMeanImageType = TOutputMeanImageType;
+  using OutputSigmaImageType = TOutputSigmaImageType;
 
-  typedef typename Superclass::InputPixelType          InputPixelType;
-  typedef typename Superclass::OutputMeanPixelType     OutputMeanPixelType;
-  typedef typename Superclass::OutputSigmaPixelType    OutputSigmaPixelType;
+  using InputPixelType = typename Superclass::InputPixelType;
+  using OutputMeanPixelType = typename Superclass::OutputMeanPixelType;
+  using OutputSigmaPixelType = typename Superclass::OutputSigmaPixelType;
 
-  typedef typename Superclass::InputImagePointer       InputImagePointer;
-  typedef typename Superclass::OutputMeanImagePointer  OutputMeanImagePointer;
-  typedef typename Superclass::OutputSigmaImagePointer OutputSigmaImagePointer;
+  using InputImagePointer = typename Superclass::InputImagePointer;
+  using OutputMeanImagePointer = typename Superclass::OutputMeanImagePointer;
+  using OutputSigmaImagePointer = typename Superclass::OutputSigmaImagePointer;
 
-  typedef typename Superclass::RegionType              RegionType;
-  typedef typename Superclass::SpacingType             SpacingType;
-  typedef typename Superclass::PointType               PointType;
-  typedef typename Superclass::SizeType                SizeType;
+  using RegionType = typename Superclass::RegionType;
+  using SpacingType = typename Superclass::SpacingType;
+  using PointType = typename Superclass::PointType;
+  using SizeType = typename Superclass::SizeType;
 
   /**
    * Add an image to the group being summed. No check is made to insure
@@ -138,16 +138,16 @@ protected:
   ~RobustMeanAndSigmaImageBuilder( void ) {}
 
   /** Processing image types */
-  typedef typename Superclass::ProcessImageType         ProcessImageType;
-  typedef typename Superclass::CountImageType           CountImageType;
+  using ProcessImageType = typename Superclass::ProcessImageType;
+  using CountImageType = typename Superclass::CountImageType;
 
-  typedef typename Superclass::ProcessPixelType         ProcessPixelType;
-  typedef typename Superclass::CountPixelType           CountPixelType;
+  using ProcessPixelType = typename Superclass::ProcessPixelType;
+  using CountPixelType = typename Superclass::CountPixelType;
 
-  typedef typename Superclass::ProcessImagePointer      ProcessImagePointer;
-  typedef typename Superclass::CountImagePointer        CountImagePointer;
+  using ProcessImagePointer = typename Superclass::ProcessImagePointer;
+  using CountImagePointer = typename Superclass::CountImagePointer;
 
-  typedef ImageRegionIterator<InputImageType>           InputIteratorType;
+  using InputIteratorType = ImageRegionIterator<InputImageType>;
 
   typedef typename Superclass::InputConstIteratorType
     InputConstIteratorType;
@@ -164,7 +164,7 @@ protected:
   typedef typename Superclass::OutputSigmaIteratorType
     OutputSigmaIteratorType;
 
-  typedef typename std::vector<InputImagePointer>       InputImageListType;
+  using InputImageListType = typename std::vector<InputImagePointer>;
 
   /**
    * Build new processing images ( i.e., sumImage, sumSquareImage,

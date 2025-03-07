@@ -41,17 +41,17 @@ class SpatialObjectFilter
     SpatialObject<ObjectDimension> >
 {
 public:
-  /** Standard class typedefs */
-  typedef SpatialObjectFilter                                  Self;
-  typedef SpatialObjectToSpatialObjectFilter< SpatialObject<ObjectDimension >,
-          SpatialObject<ObjectDimension> >                     Superclass;
-  typedef SmartPointer< Self >                                 Pointer;
-  typedef SmartPointer< const Self >                           ConstPointer;
+  /** Standard class type alias */
+  using Self = SpatialObjectFilter;
+  using Superclass = SpatialObjectToSpatialObjectFilter< SpatialObject<ObjectDimension >,
+          SpatialObject<ObjectDimension> >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( SpatialObjectFilter, SpatialObjectSource );
 
-  typedef SpatialObject<ObjectDimension>  SpatialObjectType;
+  using SpatialObjectType = SpatialObject<ObjectDimension>;
 
   virtual void SetInput( const SpatialObjectType * spatialObject ) override;
 

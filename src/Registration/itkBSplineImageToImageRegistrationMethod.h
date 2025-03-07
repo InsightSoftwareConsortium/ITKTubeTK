@@ -38,10 +38,10 @@ class BSplineImageToImageRegistrationMethod
 
 public:
 
-  typedef BSplineImageToImageRegistrationMethod           Self;
-  typedef OptimizedImageToImageRegistrationMethod<TImage> Superclass;
-  typedef SmartPointer<Self>                              Pointer;
-  typedef SmartPointer<const Self>                        ConstPointer;
+  using Self = BSplineImageToImageRegistrationMethod;
+  using Superclass = OptimizedImageToImageRegistrationMethod<TImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   itkTypeMacro( BSplineImageToImageRegistrationMethod,
                 OptimizedImageToImageRegistrationMethod );
@@ -51,18 +51,17 @@ public:
   //
   // Typedefs from Superclass
   //
-  typedef TImage ImageType;
+  using ImageType = TImage;
   itkStaticConstMacro( ImageDimension, unsigned int, TImage::ImageDimension );
 
   // Overrides the superclass' TransformType typedef
-  typedef BSplineTransform<double, itkGetStaticConstMacro( ImageDimension ), 3>
-      BSplineTransformType;
+  using BSplineTransformType = BSplineTransform<double, itkGetStaticConstMacro( ImageDimension ), 3>;
 
-  typedef typename BSplineTransformType::Pointer BSplineTransformPointer;
+  using BSplineTransformPointer = typename BSplineTransformType::Pointer;
 
-  typedef BSplineTransformType TransformType;
+  using TransformType = BSplineTransformType;
 
-  typedef typename BSplineTransformType::ParametersType ParametersType;
+  using ParametersType = typename BSplineTransformType::ParametersType;
 
   //
   // Methods from Superclass
@@ -111,8 +110,8 @@ protected:
   BSplineImageToImageRegistrationMethod( void );
   virtual ~BSplineImageToImageRegistrationMethod( void );
 
-  typedef InterpolateImageFunction<TImage, double> InterpolatorType;
-  typedef ImageToImageMetric<TImage, TImage>       MetricType;
+  using InterpolatorType = InterpolateImageFunction<TImage, double>;
+  using MetricType = ImageToImageMetric<TImage, TImage>;
 
   virtual void Optimize( MetricType * metric, InterpolatorType * interpolator )
     override;

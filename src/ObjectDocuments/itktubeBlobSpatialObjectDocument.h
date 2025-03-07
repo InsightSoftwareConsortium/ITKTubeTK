@@ -44,12 +44,12 @@ class BlobSpatialObjectDocument : public SpatialObjectDocument
 {
 public:
 
-  typedef BlobSpatialObjectDocument          Self;
-  typedef SpatialObjectDocument              Superclass;
-  typedef SmartPointer< Self >               Pointer;
-  typedef SmartPointer< const Self >         ConstPointer;
+  using Self = BlobSpatialObjectDocument;
+  using Superclass = SpatialObjectDocument;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef Superclass::TransformNameListType  TransformNameListType;
+  using TransformNameListType = Superclass::TransformNameListType;
 
   itkNewMacro( Self );
   itkTypeMacro( BlobSpatialObjectDocument, SpatialObjectDocument );

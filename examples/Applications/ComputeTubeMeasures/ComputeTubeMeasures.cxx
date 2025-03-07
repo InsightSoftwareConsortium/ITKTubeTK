@@ -57,16 +57,16 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-  typedef TPixel                                       InputPixelType;
+  using InputPixelType = TPixel;
 
-  typedef tube::ComputeTubeMeasures
-  < InputPixelType, VDimension > FilterType;
+  using FilterType = tube::ComputeTubeMeasures
+  < InputPixelType, VDimension >;
   typename FilterType::Pointer filter = FilterType::New();
 
-  typedef typename FilterType::InputImageType       InputImageType;
-  typedef itk::ImageFileReader< InputImageType >    ReaderType;
-  typedef typename FilterType::OutputImageType      OutputImageType;
-  typedef itk::ImageFileWriter< OutputImageType  >  WriterType;
+  using InputImageType = typename FilterType::InputImageType;
+  using ReaderType = itk::ImageFileReader< InputImageType >;
+  using OutputImageType = typename FilterType::OutputImageType;
+  using WriterType = itk::ImageFileWriter< OutputImageType  >;
 
   timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();

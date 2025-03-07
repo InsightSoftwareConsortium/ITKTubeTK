@@ -39,24 +39,23 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   enum { Dimension = 2 };
 
   // Define the pixel type
-  typedef float PixelType;
+  using PixelType = float;
 
   // Declare the types of the images
-  typedef itk::Image<PixelType, Dimension>  ImageType;
+  using ImageType = itk::Image<PixelType, Dimension>;
 
   // Declare the reader and writer
-  typedef itk::ImageFileReader< ImageType > ReaderType;
+  using ReaderType = itk::ImageFileReader< ImageType >;
 
-  typedef itk::Image< unsigned char, Dimension >    LabelMapType;
-  typedef itk::ImageFileReader< LabelMapType >      LabelMapReaderType;
-  typedef itk::ImageFileWriter< LabelMapType >      LabelMapWriterType;
+  using LabelMapType = itk::Image< unsigned char, Dimension >;
+  using LabelMapReaderType = itk::ImageFileReader< LabelMapType >;
+  using LabelMapWriterType = itk::ImageFileWriter< LabelMapType >;
 
-  typedef itk::Image< float, Dimension >            FeatureImageType;
-  typedef itk::ImageFileWriter< FeatureImageType >  FeatureImageWriterType;
+  using FeatureImageType = itk::Image< float, Dimension >;
+  using FeatureImageWriterType = itk::ImageFileWriter< FeatureImageType >;
 
   // Declare the type for the Filter
-  typedef itk::tube::RidgeSeedFilter< ImageType, LabelMapType >
-    FilterType;
+  using FilterType = itk::tube::RidgeSeedFilter< ImageType, LabelMapType >;
 
   // Create the reader
   ReaderType::Pointer reader = ReaderType::New();

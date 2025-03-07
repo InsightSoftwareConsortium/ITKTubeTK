@@ -230,8 +230,7 @@ GenerateData( void )
       }
     }
 
-  typedef DanielssonDistanceMapImageFilter<OutputImageType, OutputImageType>
-    DDFilterType;
+  using DDFilterType = DanielssonDistanceMapImageFilter<OutputImageType, OutputImageType>;
   typename DDFilterType::Pointer ddFilter = DDFilterType::New();
   ddFilter->SetInput( m_OutputImage );
   ddFilter->SetInputIsBinary( false );

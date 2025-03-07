@@ -287,8 +287,7 @@ PDFSegmenterBase< TImage, TLabelMap >
     }
   m_OutClassList.clear();
 
-  typedef itk::ImageRegionConstIteratorWithIndex< LabelMapType >
-    ConstLabelMapIteratorType;
+  using ConstLabelMapIteratorType = itk::ImageRegionConstIteratorWithIndex< LabelMapType >;
   ConstLabelMapIteratorType itInLabelMap( m_InputLabelMap,
     m_InputLabelMap->GetLargestPossibleRegion() );
   itInLabelMap.GoToBegin();
@@ -431,8 +430,7 @@ PDFSegmenterBase< TImage, TLabelMap >
   //
   m_ProbabilityImageVector.resize( numClasses );
 
-  typedef itk::ImageRegionIterator<ProbabilityImageType>
-    ProbabilityImageIteratorType;
+  using ProbabilityImageIteratorType = itk::ImageRegionIterator<ProbabilityImageType>;
   std::vector< ProbabilityImageIteratorType * > probIt( numClasses );
 
   for( unsigned int c = 0; c < numClasses; c++ )
@@ -461,8 +459,7 @@ PDFSegmenterBase< TImage, TLabelMap >
     m_ForceClassification = true;
     }
 
-  typedef itk::ImageRegionConstIteratorWithIndex< LabelMapType >
-    ConstLabelMapIteratorType;
+  using ConstLabelMapIteratorType = itk::ImageRegionConstIteratorWithIndex< LabelMapType >;
   ConstLabelMapIteratorType itInLabelMap( m_InputLabelMap,
     m_InputLabelMap->GetLargestPossibleRegion() );
   itInLabelMap.GoToBegin();
@@ -503,12 +500,11 @@ PDFSegmenterBase< TImage, TLabelMap >
 
   if( m_ProbabilityImageSmoothingStandardDeviation > 0 )
     {
-    typedef itk::SmoothingRecursiveGaussianImageFilter<
-      ProbabilityImageType, ProbabilityImageType > ProbImageFilterType;
+    using ProbImageFilterType = itk::SmoothingRecursiveGaussianImageFilter<
+      ProbabilityImageType, ProbabilityImageType >;
     typename ProbImageFilterType::Pointer probImageFilter;
 
-    typedef itk::ThresholdImageFilter< ProbabilityImageType >
-      ThresholdProbImageFilterType;
+    using ThresholdProbImageFilterType = itk::ThresholdImageFilter< ProbabilityImageType >;
     typename ThresholdProbImageFilterType::Pointer
       thresholdProbImageFilter = ThresholdProbImageFilterType::New();
 
@@ -591,8 +587,8 @@ PDFSegmenterBase< TImage, TLabelMap >
         ++labelIt;
         }
 
-      typedef itk::ConnectedThresholdImageFilter<LabelMapType,
-        LabelMapType> ConnectedFilterType;
+      using ConnectedFilterType = itk::ConnectedThresholdImageFilter<LabelMapType,
+        LabelMapType>;
       typename ConnectedFilterType::Pointer insideConnecter =
         ConnectedFilterType::New();
 
@@ -685,8 +681,8 @@ PDFSegmenterBase< TImage, TLabelMap >
       //
       if( holeFillIterations > 0 )
         {
-        typedef itk::VotingBinaryIterativeHoleFillingImageFilter<
-          LabelMapType > HoleFillingFilterType;
+        using HoleFillingFilterType = itk::VotingBinaryIterativeHoleFillingImageFilter<
+          LabelMapType >;
 
         typename HoleFillingFilterType::Pointer holeFiller =
           HoleFillingFilterType::New();
@@ -705,12 +701,12 @@ PDFSegmenterBase< TImage, TLabelMap >
       //
       // Erode
       //
-      typedef BinaryBallStructuringElement< LabelMapPixelType,
-        InputImageType::ImageDimension >             StructuringElementType;
-      typedef BinaryErodeImageFilter< LabelMapType, LabelMapType,
-        StructuringElementType >                     ErodeFilterType;
-      typedef itk::BinaryDilateImageFilter< LabelMapType,
-        LabelMapType, StructuringElementType >       DilateFilterType;
+      using StructuringElementType = BinaryBallStructuringElement< LabelMapPixelType,
+        InputImageType::ImageDimension >;
+      using ErodeFilterType = BinaryErodeImageFilter< LabelMapType, LabelMapType,
+        StructuringElementType >;
+      using DilateFilterType = itk::BinaryDilateImageFilter< LabelMapType,
+        LabelMapType, StructuringElementType >;
 
       StructuringElementType sphereOp;
       if( erodeRadius > 0 )
@@ -745,8 +741,8 @@ PDFSegmenterBase< TImage, TLabelMap >
       //
       if( true ) // creating a local context to limit memory footprint
         {
-        typedef itk::ConnectedThresholdImageFilter<LabelMapType,
-          LabelMapType> ConnectedLabelMapFilterType;
+        using ConnectedLabelMapFilterType = itk::ConnectedThresholdImageFilter<LabelMapType,
+          LabelMapType>;
 
         typename ConnectedLabelMapFilterType::Pointer
           insideConnectedLabelMapFilter = ConnectedLabelMapFilterType::New();
@@ -803,8 +799,7 @@ PDFSegmenterBase< TImage, TLabelMap >
         }
 
       // Merge with input mask
-      typedef itk::ImageRegionIterator< LabelMapType >
-        LabelMapIteratorType;
+      using LabelMapIteratorType = itk::ImageRegionIterator< LabelMapType >;
       LabelMapIteratorType itOutLM( m_OutputLabelMap,
         m_OutputLabelMap->GetLargestPossibleRegion() );
       itOutLM.GoToBegin();
@@ -865,8 +860,7 @@ PDFSegmenterBase< TImage, TLabelMap >
   else
     {
     // Merge with input mask
-    typedef itk::ImageRegionIteratorWithIndex< LabelMapType >
-      LabelMapIteratorType;
+    using LabelMapIteratorType = itk::ImageRegionIteratorWithIndex< LabelMapType >;
     LabelMapIteratorType itOutLM( m_OutputLabelMap,
       m_OutputLabelMap->GetLargestPossibleRegion() );
     itOutLM.GoToBegin();

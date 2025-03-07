@@ -39,10 +39,10 @@ int itktubeSubSampleSpatialObjectFilterTest( int argc, char * argv[] )
   const char * outputTubeNetwork = argv[2];
 
   enum { Dimension = 3 };
-  typedef itk::GroupSpatialObject< Dimension >  GroupSpatialObjectType;
+  using GroupSpatialObjectType = itk::GroupSpatialObject< Dimension >;
 
   // Read input tube tree.
-  typedef itk::SpatialObjectReader< Dimension >  ReaderType;
+  using ReaderType = itk::SpatialObjectReader< Dimension >;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputTubeNetwork );
   try
@@ -60,8 +60,8 @@ int itktubeSubSampleSpatialObjectFilterTest( int argc, char * argv[] )
     << std::endl;
 
   // Sub-sample the tube tree.
-  typedef itk::tube::SubSampleSpatialObjectFilter<>
-      SubSampleFilterType;
+  using SubSampleFilterType =
+      itk::tube::SubSampleSpatialObjectFilter<>;
   SubSampleFilterType::Pointer subSampleFilter =
     SubSampleFilterType::New();
   subSampleFilter->SetInput( reader->GetGroup() );
@@ -75,7 +75,7 @@ int itktubeSubSampleSpatialObjectFilterTest( int argc, char * argv[] )
     }
 
   // Write output tube tree.
-  typedef itk::SpatialObjectWriter< Dimension > WriterType;
+  using WriterType = itk::SpatialObjectWriter< Dimension >;
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputTubeNetwork );
   writer->SetInput( subSampleFilter->GetOutput() );

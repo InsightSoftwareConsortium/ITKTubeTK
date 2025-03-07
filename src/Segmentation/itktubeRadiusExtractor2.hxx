@@ -150,7 +150,7 @@ RadiusExtractor2<TInputImage>
 
   if( m_InputImage )
     {
-    typedef MinimumMaximumImageFilter<InputImageType> MinMaxFilterType;
+    using MinMaxFilterType = MinimumMaximumImageFilter<InputImageType>;
     typename MinMaxFilterType::Pointer minMaxFilter =
       MinMaxFilterType::New();
     minMaxFilter->SetInput( m_InputImage );

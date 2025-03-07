@@ -44,26 +44,26 @@ class BlurImageFunction
 {
 public:
   /**
-   * Standard "Self" typedef */
-  typedef BlurImageFunction                            Self;
-  typedef ImageFunction<TInputImage, double, double>   Superclass;
-  typedef SmartPointer< Self >                         Pointer;
-  typedef SmartPointer< const Self >                   ConstPointer;
+   * Standard "Self" type alias */
+  using Self = BlurImageFunction;
+  using Superclass = ImageFunction<TInputImage, double, double>;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkTypeMacro( BlurImageFunction, ImageFunction );
 
   itkNewMacro( Self );
 
   /**
-   * InputImageType typedef support. */
-  typedef TInputImage                                InputImageType;
-  typedef typename InputImageType::SpacingType       SpacingType;
-  typedef typename InputImageType::SpacingType       SizeType;
+   * InputImageType type alias support. */
+  using InputImageType = TInputImage;
+  using SpacingType = typename InputImageType::SpacingType;
+  using SizeType = typename InputImageType::SpacingType;
 
   /**
-   * IndexType typedef support. */
-  typedef typename InputImageType::IndexType         IndexType;
-  typedef typename Superclass::ContinuousIndexType   ContinuousIndexType;
+   * IndexType type alias support. */
+  using IndexType = typename InputImageType::IndexType;
+  using ContinuousIndexType = typename Superclass::ContinuousIndexType;
 
   /**
    * Dimension of the underlying image. */
@@ -71,8 +71,8 @@ public:
     InputImageType::ImageDimension );
 
   /**
-   * Point typedef support. */
-  typedef typename Superclass::PointType             PointType;
+   * Point type alias support. */
+  using PointType = typename Superclass::PointType;
 
   /**
    * Set the input image. */
@@ -131,9 +131,9 @@ private:
   BlurImageFunction( const Self& );
   void operator=( const Self& );
 
-  typedef std::list< double > KernelWeightsListType;
+  using KernelWeightsListType = std::list< double >;
 
-  typedef std::list< typename InputImageType::IndexType > KernelXListType;
+  using KernelXListType = std::list< typename InputImageType::IndexType >;
 
   bool                    m_UseRelativeSpacing;
   SpacingType             m_Spacing;

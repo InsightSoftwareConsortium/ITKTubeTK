@@ -59,11 +59,11 @@ template <unsigned int ObjectDimension>
 class SpatialObjectMomentsCalculator : public Object
 {
 public:
-  /** Standard class typedefs. */
-  typedef SpatialObjectMomentsCalculator<TImage> Self;
-  typedef Object                               Superclass;
-  typedef SmartPointer<Self>                   Pointer;
-  typedef SmartPointer<const Self>             ConstPointer;
+  /** Standard class type alias. */
+  using Self = SpatialObjectMomentsCalculator<TImage>;
+  using Superclass = Object;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -72,26 +72,26 @@ public:
   itkTypeMacro( SpatialObjectMomentsCalculator, Object );
 
   /** Standard scalar type within this class. */
-  typedef double ScalarType;
+  using ScalarType = double;
 
-  typedef typename TImage::PointType PointType;
+  using PointType = typename TImage::PointType;
 
   /** Standard vector type within this class. */
-  typedef Vector<ScalarType, ObjectDimension> VectorType;
+  using VectorType = Vector<ScalarType, ObjectDimension>;
 
   /** Spatial Object type within this class. */
-  typedef SpatialObject<ObjectDimension> SpatialObjectType;
+  using SpatialObjectType = SpatialObject<ObjectDimension>;
 
   /** Spatial Object member types used within this class. */
-  typedef typename SpatialObjectType::Pointer      SpatialObjectPointer;
-  typedef typename SpatialObjectType::ConstPointer SpatialObjectConstPointer;
+  using SpatialObjectPointer = typename SpatialObjectType::Pointer;
+  using SpatialObjectConstPointer = typename SpatialObjectType::ConstPointer;
 
   /** Standard matrix type within this class. */
-  typedef Matrix<ScalarType, ObjectDimension, ObjectDimension>      MatrixType;
+  using MatrixType = Matrix<ScalarType, ObjectDimension, ObjectDimension>;
 
   /** Affine transform for mapping to and from principal axis */
-  typedef AffineTransform<double, ObjectDimension> AffineTransformType;
-  typedef typename AffineTransformType::Pointer    AffineTransformPointer;
+  using AffineTransformType = AffineTransform<double, ObjectDimension>;
+  using AffineTransformPointer = typename AffineTransformType::Pointer;
 
   /** Set the spatial object. */
   virtual void SetSpatialObject( const SpatialObject<ObjectDimension> * so )

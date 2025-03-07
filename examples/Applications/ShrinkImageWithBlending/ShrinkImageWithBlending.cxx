@@ -57,20 +57,20 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                 PixelType;
-  typedef itk::Image< PixelType, VDimension >   InputImageType;
-  typedef itk::Image< PixelType, VDimension >   OutputImageType;
+  using PixelType = float;
+  using InputImageType = itk::Image< PixelType, VDimension >;
+  using OutputImageType = itk::Image< PixelType, VDimension >;
 
-  typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
-  typedef itk::ImageFileWriter< OutputImageType  > ImageWriterType;
+  using ImageReaderType = itk::ImageFileReader< InputImageType >;
+  using ImageWriterType = itk::ImageFileWriter< OutputImageType  >;
 
-  typedef itk::Vector< float, VDimension >         PointPixelType;
-  typedef itk::Image< PointPixelType, VDimension > PointImageType;
-  typedef itk::ImageFileWriter< PointImageType >   PointImageWriterType;
-  typedef itk::ImageFileReader< PointImageType >   PointImageReaderType;
+  using PointPixelType = itk::Vector< float, VDimension >;
+  using PointImageType = itk::Image< PointPixelType, VDimension >;
+  using PointImageWriterType = itk::ImageFileWriter< PointImageType >;
+  using PointImageReaderType = itk::ImageFileReader< PointImageType >;
 
-  typedef tube::ShrinkImageWithBlending< InputImageType,
-    OutputImageType > FilterType;
+  using FilterType = tube::ShrinkImageWithBlending< InputImageType,
+    OutputImageType >;
 
   timeCollector.Start( "Load data" );
   typename ImageReaderType::Pointer reader = ImageReaderType::New();

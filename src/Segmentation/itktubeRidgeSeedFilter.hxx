@@ -497,8 +497,7 @@ RidgeSeedFilter< TImage, TLabelMap >
   if( false ) // m_Skeletonize )
     {
     std::cout << "Skeletonize" << std::endl;
-    typedef itk::BinaryThinningImageFilter< LabelMapType, LabelMapType >
-      FilterType;
+    using FilterType = itk::BinaryThinningImageFilter< LabelMapType, LabelMapType >;
 
     typename FilterType::Pointer filter;
 

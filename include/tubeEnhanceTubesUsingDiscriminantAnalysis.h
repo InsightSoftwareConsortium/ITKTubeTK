@@ -44,29 +44,29 @@ class EnhanceTubesUsingDiscriminantAnalysis:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef EnhanceTubesUsingDiscriminantAnalysis        Self;
-  typedef itk::ProcessObject                           Superclass;
-  typedef itk::SmartPointer< Self >                    Pointer;
-  typedef itk::SmartPointer< const Self >              ConstPointer;
+  /** Standard class type alias. */
+  using Self = EnhanceTubesUsingDiscriminantAnalysis;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef TImage                                       ImageType;
-  typedef typename ImageType::PixelType                PixelType;
-  typedef typename ImageType::IndexType                IndexType;
+  using ImageType = TImage;
+  using PixelType = typename ImageType::PixelType;
+  using IndexType = typename ImageType::IndexType;
 
-  typedef TLabelMap                                    LabelMapType;
+  using LabelMapType = TLabelMap;
 
-  typedef itk::tube::RidgeSeedFilter< ImageType, LabelMapType >   FilterType;
-  typedef itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > FilterIOType;
+  using FilterType = itk::tube::RidgeSeedFilter< ImageType, LabelMapType >;
+  using FilterIOType = itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType >;
 
-  typedef typename FilterType::ProbabilityImageType    OutputImageType;
+  using OutputImageType = typename FilterType::ProbabilityImageType;
 
-  typedef typename FilterType::ObjectIdType            ObjectIdType;
-  typedef typename FilterType::RidgeScalesType         RidgeScalesType;
-  typedef typename FilterType::WhitenMeansType         WhitenMeansType;
-  typedef typename FilterType::WhitenStdDevsType       WhitenStdDevsType;
-  typedef typename FilterType::VectorType              VectorType;
-  typedef typename FilterType::MatrixType              MatrixType;
+  using ObjectIdType = typename FilterType::ObjectIdType;
+  using RidgeScalesType = typename FilterType::RidgeScalesType;
+  using WhitenMeansType = typename FilterType::WhitenMeansType;
+  using WhitenStdDevsType = typename FilterType::WhitenStdDevsType;
+  using VectorType = typename FilterType::VectorType;
+  using MatrixType = typename FilterType::MatrixType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

@@ -47,15 +47,15 @@ class ComputeImageStatistics
   : public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ComputeImageStatistics           Self;
-  typedef itk::ProcessObject               Superclass;
-  typedef itk::SmartPointer< Self >        Pointer;
-  typedef itk::SmartPointer< const Self >  ConstPointer;
+  /** Standard class type alias. */
+  using Self = ComputeImageStatistics;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef itk::tube::ComputeImageStatistics< TPixel, VDimension > FilterType;
-  typedef typename FilterType::MaskType                           MaskType;
-  typedef typename FilterType::VolumeType                         VolumeType;
+  using FilterType = itk::tube::ComputeImageStatistics< TPixel, VDimension >;
+  using MaskType = typename FilterType::MaskType;
+  using VolumeType = typename FilterType::VolumeType;
 
 
   /** Method for creation through the object factory. */

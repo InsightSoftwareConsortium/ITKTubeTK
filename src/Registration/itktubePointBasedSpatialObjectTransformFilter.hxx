@@ -167,7 +167,7 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
     outputSO->SetObjectToParentTransform( tfm );
     }
 
-  typedef typename PointBasedType::SpatialObjectPointListType SpatialObjectPointListType;
+  using SpatialObjectPointListType = typename PointBasedType::SpatialObjectPointListType;
   SpatialObjectPointListType pointBasedPointList = inputSO->GetPoints();
   typename SpatialObjectPointListType::const_iterator pointBasedPointIterator =
     pointBasedPointList.begin();
@@ -213,7 +213,7 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
     outputSO->SetObjectToParentTransform( tfm );
     }
 
-  typedef typename TubeType::TubePointListType      TubePointListType;
+  using TubePointListType = typename TubeType::TubePointListType;
   TubePointListType tubePointList = inputSO->GetPoints();
   typename TubePointListType::const_iterator tubePointIterator =
     tubePointList.begin();
@@ -301,7 +301,7 @@ PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
     outputSO->SetObjectToParentTransform( tfm );
     }
 
-  typedef typename SurfaceType::SurfacePointListType SurfacePointListType;
+  using SurfacePointListType = typename SurfaceType::SurfacePointListType;
   SurfacePointListType surfacePointList = inputSO->GetPoints();
   typename SurfacePointListType::const_iterator surfacePointIterator =
     surfacePointList.begin();

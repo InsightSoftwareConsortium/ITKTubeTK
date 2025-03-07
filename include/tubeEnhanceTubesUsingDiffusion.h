@@ -45,16 +45,16 @@ class EnhanceTubesUsingDiffusion:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef EnhanceTubesUsingDiffusion                Self;
-  typedef itk::ProcessObject                        Superclass;
-  typedef itk::SmartPointer< Self >                 Pointer;
-  typedef itk::SmartPointer< const Self >           ConstPointer;
+  /** Standard class type alias. */
+  using Self = EnhanceTubesUsingDiffusion;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef itk::Image< TPixel, Dimension >           ImageType;
+  using ImageType = itk::Image< TPixel, Dimension >;
 
-  typedef itk::tube::TubeEnhancingDiffusion2DImageFilter< TPixel,
-    Dimension >                                     FilterType;
+  using FilterType = itk::tube::TubeEnhancingDiffusion2DImageFilter< TPixel,
+    Dimension >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

@@ -187,7 +187,7 @@ void CreateEmptyImage( typename ImageT::Pointer & outImage,
  */
 bool IsDiscrete( const std::string & fileName )
 {
-  typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
+  using ScalarPixelType = itk::ImageIOBase::IOComponentType;
 
   itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO(
     fileName.c_str(), itk::ImageIOFactory::ReadMode );
@@ -230,22 +230,20 @@ int DoIt( int argc, char **argv )
   PARSE_ARGS;
 
   // Commonly-used types
-  typedef TPixel                                          InputPixelType;
-  typedef itk::Image< InputPixelType, VImageDimension >   InputImageType;
+  using InputPixelType = TPixel;
+  using InputImageType = itk::Image< InputPixelType, VImageDimension >;
 
-  typedef InputPixelType                                  OutputPixelType;
-  typedef itk::Image< OutputPixelType, VImageDimension >  OutputImageType;
+  using OutputPixelType = InputPixelType;
+  using OutputImageType = itk::Image< OutputPixelType, VImageDimension >;
 
-  typedef itk::ImageFileReader< InputImageType >          InputReaderType;
-  typedef itk::ImageFileWriter< OutputImageType >         OutputWriterType;
+  using InputReaderType = itk::ImageFileReader< InputImageType >;
+  using OutputWriterType = itk::ImageFileWriter< OutputImageType >;
 
-  typedef itk::ImageRegionIteratorWithIndex< InputImageType >
-    ImageIteratorType;
+  using ImageIteratorType = itk::ImageRegionIteratorWithIndex< InputImageType >;
 
-  typedef std::vector< typename InputImageType::IndexType >
-    InputIndexVectorType;
+  using InputIndexVectorType = std::vector< typename InputImageType::IndexType >;
 
-  typedef std::map< TPixel, InputIndexVectorType >    IdToIndexVectorType;
+  using IdToIndexVectorType = std::map< TPixel, InputIndexVectorType >;
 
 
   // Read segmenation image and image of Central-Voronoi-Tesellation ( CVT )
@@ -516,9 +514,9 @@ int DoIt( int argc, char **argv )
         outImage->SetPixel( indices[v], 1 );
         }
 
-      typedef typename itk::DanielssonDistanceMapImageFilter<
+      using DistanceMapType = typename itk::DanielssonDistanceMapImageFilter<
         InputImageType,
-        OutputImageType > DistanceMapType;
+        OutputImageType >;
 
       typename DistanceMapType::Pointer distanceMap =
         DistanceMapType::New();
@@ -569,8 +567,8 @@ int DoIt( int argc, char **argv )
       case SIGNATURE_CVT_MIN:
         {
         namespace acc = boost::accumulators;
-        typedef acc::stats< acc::tag::min >               StatsType;
-        typedef acc::accumulator_set< TPixel, StatsType > AccumulatorType;
+        using StatsType = acc::stats< acc::tag::min >;
+        using AccumulatorType = acc::accumulator_set< TPixel, StatsType >;
 
         typename IdToIndexVectorType::iterator cvtToIndexVectorIt =
           cvtToIndexVector.begin();

@@ -51,23 +51,22 @@ public:
 
   enum { Dimension = 3 };
 
-  typedef ObjectDocumentToImageFilter                     Self;
-  typedef ObjectDocumentToObjectSource< TObjectDocument,
-    TImageType::ImageDimension >                           Superclass;
-  typedef SmartPointer< Self >                            Pointer;
-  typedef SmartPointer< const Self >                      ConstPointer;
+  using Self = ObjectDocumentToImageFilter;
+  using Superclass = ObjectDocumentToObjectSource< TObjectDocument,
+    TImageType::ImageDimension >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef TObjectDocument                      DocumentType;
-  typedef typename DocumentType::ConstPointer  ConstDocumentPointer;
+  using DocumentType = TObjectDocument;
+  using ConstDocumentPointer = typename DocumentType::ConstPointer;
 
-  typedef TImageType                           ImageType;
-  typedef typename ImageType::Pointer          ImagePointer;
+  using ImageType = TImageType;
+  using ImagePointer = typename ImageType::Pointer;
 
-  typedef typename Superclass::TransformType   TransformType;
-  typedef typename TransformType::Pointer      TransformPointer;
+  using TransformType = typename Superclass::TransformType;
+  using TransformPointer = typename TransformType::Pointer;
 
-  typedef InterpolateImageFunction< ImageType, double >
-    InterpolateImageFunctionType;
+  using InterpolateImageFunctionType = InterpolateImageFunction< ImageType, double >;
   typedef typename InterpolateImageFunctionType::Pointer
     InterpolateImageFunctionPointer;
 
@@ -86,10 +85,10 @@ public:
 
 protected:
 
-  typedef ImageFileReader< ImageType >                ImageFileReaderType;
-  typedef ResampleImageFilter< ImageType, ImageType > ResampleImageFilterType;
-  typedef typename ImageType::SizeType                SizeType;
-  typedef typename ImageType::PointType               PointType;
+  using ImageFileReaderType = ImageFileReader< ImageType >;
+  using ResampleImageFilterType = ResampleImageFilter< ImageType, ImageType >;
+  using SizeType = typename ImageType::SizeType;
+  using PointType = typename ImageType::PointType;
 
   /** Constructor. */
   ObjectDocumentToImageFilter( void );

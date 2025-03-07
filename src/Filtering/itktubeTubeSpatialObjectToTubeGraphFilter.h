@@ -46,20 +46,20 @@ class TubeSpatialObjectToTubeGraphFilter
 {
 public:
 
-  /** Standard class typedefs. */
-  typedef TubeSpatialObjectToTubeGraphFilter             Self;
-  typedef Object                                         SuperClass;
-  typedef SmartPointer< Self >                           Pointer;
-  typedef SmartPointer< const Self >                     ConstPointer;
+  /** Standard class type alias. */
+  using Self = TubeSpatialObjectToTubeGraphFilter;
+  using SuperClass = Object;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  /** Tube class typedef */
-  typedef Image< TPixel, Dimension >                     InputImageType;
-  typedef typename InputImageType::Pointer               InputImagePointer;
-  typedef GroupSpatialObject< Dimension >                TubeGroupType;
-  typedef typename TubeGroupType::Pointer                TubeGroupPointer;
-  typedef TubeSpatialObject< Dimension >                 TubeSpatialObjectType;
-  typedef typename TubeSpatialObjectType::TubePointType  TubePointType;
-  typedef typename TubeSpatialObjectType::TransformType  TubeTransformType;
+  /** Tube class type alias */
+  using InputImageType = Image< TPixel, Dimension >;
+  using InputImagePointer = typename InputImageType::Pointer;
+  using TubeGroupType = GroupSpatialObject< Dimension >;
+  using TubeGroupPointer = typename TubeGroupType::Pointer;
+  using TubeSpatialObjectType = TubeSpatialObject< Dimension >;
+  using TubePointType = typename TubeSpatialObjectType::TubePointType;
+  using TubeTransformType = typename TubeSpatialObjectType::TransformType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

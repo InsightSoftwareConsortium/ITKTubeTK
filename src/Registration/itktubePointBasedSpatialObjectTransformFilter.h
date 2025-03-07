@@ -68,25 +68,24 @@ class PointBasedSpatialObjectTransformFilter :
 {
 public:
 
-  typedef TTransformType                                TransformType;
+  using TransformType = TTransformType;
 
-  typedef SpatialObject< TDimension >                   SpatialObjectType;
+  using SpatialObjectType = SpatialObject< TDimension >;
 
-  /** Standard class typedefs. */
-  typedef PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >
-    Self;
+  /** Standard class type alias. */
+  using Self = PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >;
 
-  typedef SpatialObjectFilter< TDimension >                  Superclass;
+  using Superclass = SpatialObjectFilter< TDimension >;
 
-  typedef SmartPointer< Self >                               Pointer;
-  typedef SmartPointer< const Self >                         ConstPointer;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef PointBasedSpatialObject< TDimension >              PointBasedType;
-  typedef TubeSpatialObject< TDimension >                    TubeType;
-  typedef SurfaceSpatialObject< TDimension >                 SurfaceType;
-  typedef LineSpatialObject< TDimension >                    LineType;
-  typedef DTITubeSpatialObject< TDimension >                 DTITubeType;
-  typedef ContourSpatialObject< TDimension >                 ContourType;
+  using PointBasedType = PointBasedSpatialObject< TDimension >;
+  using TubeType = TubeSpatialObject< TDimension >;
+  using SurfaceType = SurfaceSpatialObject< TDimension >;
+  using LineType = LineSpatialObject< TDimension >;
+  using DTITubeType = DTITubeSpatialObject< TDimension >;
+  using ContourType = ContourSpatialObject< TDimension >;
 
   typedef typename SpatialObject< TDimension >::TransformType
     SpatialObjectTransformType;

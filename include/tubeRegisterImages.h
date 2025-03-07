@@ -42,27 +42,27 @@ class RegisterImages:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef RegisterImages                  Self;
-  typedef itk::ProcessObject              Superclass;
-  typedef itk::SmartPointer< Self >       Pointer;
-  typedef itk::SmartPointer< const Self > ConstPointer;
+  /** Standard class type alias. */
+  using Self = RegisterImages;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef TImage                                             ImageType;
+  using ImageType = TImage;
 
-  typedef itk::ImageToImageRegistrationHelper< ImageType >   FilterType;
+  using FilterType = itk::ImageToImageRegistrationHelper< ImageType >;
 
-  typedef typename FilterType::MaskObjectType       MaskObjectType;
-  typedef typename FilterType::PointType            PointType;
-  typedef typename FilterType::PixelType            PixelType;
+  using MaskObjectType = typename FilterType::MaskObjectType;
+  using PointType = typename FilterType::PointType;
+  using PixelType = typename FilterType::PixelType;
 
-  typedef typename FilterType::LandmarkVectorType   LandmarkVectorType;
+  using LandmarkVectorType = typename FilterType::LandmarkVectorType;
 
-  typedef typename FilterType::RigidTransformType   RigidTransformType;
-  typedef typename FilterType::AffineTransformType  AffineTransformType;
+  using RigidTransformType = typename FilterType::RigidTransformType;
+  using AffineTransformType = typename FilterType::AffineTransformType;
 
-  typedef typename FilterType::MatrixTransformType  MatrixTransformType;
-  typedef typename FilterType::BSplineTransformType BSplineTransformType;
+  using MatrixTransformType = typename FilterType::MatrixTransformType;
+  using BSplineTransformType = typename FilterType::BSplineTransformType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

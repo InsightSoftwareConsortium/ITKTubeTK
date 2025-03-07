@@ -48,10 +48,9 @@ int DoIt( int argc, char * argv[] )
     verbosity = VERBOSE;
     }
 
-  typedef typename itk::Image< TPixelType, TDimension > ImageType;
+  using ImageType = typename itk::Image< TPixelType, TDimension >;
 
-  typedef typename itk::ImageToImageRegistrationHelper< ImageType >
-    RegistrationType;
+  using RegistrationType = typename itk::ImageToImageRegistrationHelper< ImageType >;
 
   typename RegistrationType::Pointer reger = RegistrationType::New();
 
@@ -296,10 +295,9 @@ int DoIt( int argc, char * argv[] )
     std::cout << "###sampleFromOverlap: " << sampleFromOverlap << std::endl;
     }
 
-  typedef typename itk::ImageFileReader<
-    itk::Image< unsigned char, TDimension > > ImageReader;
-  typedef typename itk::ImageMaskSpatialObject< TDimension >
-    ImageMaskSpatialObject;
+  using ImageReader = typename itk::ImageFileReader<
+    itk::Image< unsigned char, TDimension > >;
+  using ImageMaskSpatialObject = typename itk::ImageMaskSpatialObject< TDimension >;
 
   if( fixedImageMask != "" )
     {

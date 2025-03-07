@@ -44,20 +44,20 @@ class ImageMath:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ImageMath                                  Self;
-  typedef itk::ProcessObject                         Superclass;
-  typedef itk::SmartPointer< Self >                  Pointer;
-  typedef itk::SmartPointer< const Self >            ConstPointer;
+  /** Standard class type alias. */
+  using Self = ImageMath;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef tube::ImageMathFilters< TInputImage::ImageDimension >  FilterType;
+  using FilterType = tube::ImageMathFilters< TInputImage::ImageDimension >;
 
-  typedef TInputImage                                InputImageType;
-  typedef typename FilterType::ImageType             ImageType;
-  typedef TInputImage                                OutputImageType;
+  using InputImageType = TInputImage;
+  using ImageType = typename FilterType::ImageType;
+  using OutputImageType = TInputImage;
 
-  typedef itk::Image< unsigned char, TInputImage::ImageDimension> ImageTypeUChar;
-  typedef itk::Image< short, TInputImage::ImageDimension>         ImageTypeShort;
+  using ImageTypeUChar = itk::Image< unsigned char, TInputImage::ImageDimension>;
+  using ImageTypeShort = itk::Image< short, TInputImage::ImageDimension>;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -66,7 +66,7 @@ public:
   itkTypeMacro( ImageMath, ProcessObject );
 
   void SetInput( InputImageType * input )
-  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< InputImageType, ImageType >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( input );
     castFilter->Update();
@@ -82,7 +82,7 @@ public:
 
   /** Get current result */
   OutputImageType * GetOutput( void )
-  { typedef itk::CastImageFilter< ImageType,InputImageType > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< ImageType,InputImageType >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( m_Filter.GetOutput() );
     castFilter->Update();
@@ -96,7 +96,7 @@ public:
 
   /** Get current result */
   ImageTypeUChar * GetOutputUChar( void )
-  { typedef itk::CastImageFilter< ImageType, ImageTypeUChar > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< ImageType, ImageTypeUChar >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( m_Filter.GetOutput() );
     castFilter->Update();
@@ -106,7 +106,7 @@ public:
 
   /** Get current result */
   ImageTypeShort * GetOutputShort( void )
-  { typedef itk::CastImageFilter< ImageType, ImageTypeShort > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< ImageType, ImageTypeShort >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( m_Filter.GetOutput() );
     castFilter->Update();
@@ -138,7 +138,7 @@ public:
     this->Modified(); };
 
   void AddImages( InputImageType * input2, float weight1, float weight2 )
-  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< InputImageType, ImageType >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( input2 );
     castFilter->Update();
@@ -146,7 +146,7 @@ public:
     this->Modified(); };
 
   void MultiplyImages( InputImageType * input2 )
-  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< InputImageType, ImageType >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( input2 );
     castFilter->Update();
@@ -166,7 +166,7 @@ public:
   { m_Filter.NormalizeImage( 2 ); this->Modified(); };
 
   void FuseUsingMax( InputImageType * input2, float offset2 )
-  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< InputImageType, ImageType >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( input2 );
     castFilter->Update();
@@ -183,7 +183,7 @@ public:
 
   double MeanWithinMaskRange( InputImageType * mask, float maskThreshLow,
     float maskThreshHigh )
-  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< InputImageType, ImageType >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( mask );
     castFilter->Update();
@@ -192,7 +192,7 @@ public:
 
   double StdDevWithinMaskRange( InputImageType * mask, float maskThreshLow,
     float maskThreshHigh )
-  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< InputImageType, ImageType >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( mask );
     castFilter->Update();
@@ -204,7 +204,7 @@ public:
 
   void ReplaceValuesOutsideMaskRange( InputImageType * mask, float maskThreshLow,
     float maskThreshHigh, float valFalse )
-  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< InputImageType, ImageType >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( mask );
     castFilter->Update();
@@ -219,7 +219,7 @@ public:
 
   void ReplaceValueWithinMaskRange( InputImageType * mask, float maskThreshLow,
     float maskThreshHigh, float imageVal, float newImageVal )
-  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< InputImageType, ImageType >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( mask );
     castFilter->Update();
@@ -264,7 +264,7 @@ public:
 
   void IntensityCorrection( unsigned int nBins, unsigned int nMatchPoints,
     InputImageType * referenceImage )
-  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< InputImageType, ImageType >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( referenceImage );
     castFilter->Update();
@@ -275,7 +275,7 @@ public:
   { m_Filter.Resize( factor ); this->Modified(); };
 
   void Resize( InputImageType * referenceImage )
-  { typedef itk::CastImageFilter< InputImageType, ImageType > CastFilterType;
+  { using CastFilterType = itk::CastImageFilter< InputImageType, ImageType >;
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( referenceImage );
     castFilter->Update();

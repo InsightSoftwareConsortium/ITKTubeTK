@@ -39,11 +39,11 @@ class ContrastCostFunction : public itk::SingleValuedCostFunction
 {
 public:
 
-  /** Tube class typedef */
-  typedef ContrastCostFunction                    Self;
-  typedef SingleValuedCostFunction                Superclass;
-  typedef SmartPointer< Self >                    Pointer;
-  typedef SmartPointer< const Self >              ConstPointer;
+  /** Tube class type alias */
+  using Self = ContrastCostFunction;
+  using Superclass = SingleValuedCostFunction;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -51,13 +51,12 @@ public:
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ContrastCostFunction, SingleValuedCostFunction );
 
-  typedef Superclass::MeasureType          MeasureType;
-  typedef Superclass::ParametersType       ParametersType;
-  typedef Superclass::DerivativeType       DerivativeType;
-  typedef itk::Image< TPixel, VDimension > ImageType;
+  using MeasureType = Superclass::MeasureType;
+  using ParametersType = Superclass::ParametersType;
+  using DerivativeType = Superclass::DerivativeType;
+  using ImageType = itk::Image< TPixel, VDimension >;
 
-  typedef itk::SmoothingRecursiveGaussianImageFilter< ImageType, ImageType >
-                                                  BlurFilterType;
+  using BlurFilterType = itk::SmoothingRecursiveGaussianImageFilter< ImageType, ImageType >;
   /** Set/Get input image */
   itkSetConstObjectMacro( InputImage, ImageType );
   itkGetConstObjectMacro( InputImage, ImageType );

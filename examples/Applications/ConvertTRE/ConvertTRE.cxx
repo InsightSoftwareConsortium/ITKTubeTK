@@ -39,14 +39,14 @@ int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef itk::tube::TubeXIO< 3 >       TubeXIOType;
-  typedef itk::SpatialObjectReader< 3 > SOReaderType;
-  typedef itk::SpatialObjectWriter< 3 > SOWriterType;
+  using TubeXIOType = itk::tube::TubeXIO< 3 >;
+  using SOReaderType = itk::SpatialObjectReader< 3 >;
+  using SOWriterType = itk::SpatialObjectWriter< 3 >;
 
   // The image type does not matter. We're only interested in the image size.
-  typedef itk::Image< float, 3 >            ImageType;
-  typedef itk::ImageFileReader< ImageType > ImageReaderType;
-  typedef TubeXIOType::SizeType             SizeType;
+  using ImageType = itk::Image< float, 3 >;
+  using ImageReaderType = itk::ImageFileReader< ImageType >;
+  using SizeType = TubeXIOType::SizeType;
 
 
   // The timeCollector is used to perform basic profiling of the components

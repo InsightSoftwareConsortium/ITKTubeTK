@@ -209,7 +209,7 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
   ProgressReporter progress( this, threadId,
     outputRegionForThread.GetNumberOfPixels() );
 
-  typedef ImageRegionIteratorWithIndex< OutputImageType > ImageIteratorType;
+  using ImageIteratorType = ImageRegionIteratorWithIndex< OutputImageType >;
   ImageIteratorType imageIt( outputImage, outputRegionForThread );
   for( imageIt.GoToBegin(); !imageIt.IsAtEnd(); ++imageIt )
     {

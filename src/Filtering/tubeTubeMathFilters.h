@@ -33,21 +33,21 @@ template< unsigned int DimensionT, class ImagePixelT=float >
 class TubeMathFilters
 {
 public:
-  //typedefs
-  typedef itk::GroupSpatialObject< DimensionT >         TubeGroupType;
-  typedef typename TubeGroupType::ChildrenListPointer   TubeListPointerType;
+  //type alias
+  using TubeGroupType = itk::GroupSpatialObject< DimensionT >;
+  using TubeListPointerType = typename TubeGroupType::ChildrenListPointer;
 
-  typedef itk::TubeSpatialObject< DimensionT >          TubeType;
-  typedef typename TubeType::TubePointType              TubePointType;
+  using TubeType = itk::TubeSpatialObject< DimensionT >;
+  using TubePointType = typename TubeType::TubePointType;
 
-  typedef itk::Image< ImagePixelT, DimensionT >         ImageType;
-  typedef itk::Image< float, DimensionT >               FloatImageType;
-  typedef typename FloatImageType::OffsetType           VectorPixelType;
-  typedef itk::Image< VectorPixelType, DimensionT >     VectorImageType;
+  using ImageType = itk::Image< ImagePixelT, DimensionT >;
+  using FloatImageType = itk::Image< float, DimensionT >;
+  using VectorPixelType = typename FloatImageType::OffsetType;
+  using VectorImageType = itk::Image< VectorPixelType, DimensionT >;
 
-  typedef typename TubeType::PointType                  PositionType;
-  typedef itk::IndexValueType                           TubeIdType;
-  typedef typename TubeType::TubePointListType          TubePointListType;
+  using PositionType = typename TubeType::PointType;
+  using TubeIdType = itk::IndexValueType;
+  using TubePointListType = typename TubeType::TubePointListType;
 
   TubeMathFilters();
   ~TubeMathFilters();

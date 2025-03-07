@@ -37,9 +37,9 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typedef itk::Image<float, 3>   ImageType;
+  using ImageType = itk::Image<float, 3>;
 
-  typedef itk::ImageFileReader< ImageType > ImageReaderType;
+  using ImageReaderType = itk::ImageFileReader< ImageType >;
   ImageReaderType::Pointer imReader = ImageReaderType::New();
   imReader->SetFileName( argv[1] );
   imReader->Update();
@@ -48,7 +48,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
 
   ImageType::SizeType size = im->GetLargestPossibleRegion().GetSize();
 
-  typedef itk::tube::RidgeExtractor<ImageType> RidgeOpType;
+  using RidgeOpType = itk::tube::RidgeExtractor<ImageType>;
   RidgeOpType::Pointer ridgeOp = RidgeOpType::New();
 
   ridgeOp->SetInputImage( im );
@@ -191,7 +191,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
     }
   std::cout << "...end" << std::endl;
 
-  typedef itk::ImageFileWriter<ImageType> ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter<ImageType>;
   ImageWriterType::Pointer imWriter = ImageWriterType::New();
   imWriter->SetFileName( argv[2] );
   imWriter->SetInput( imOut );

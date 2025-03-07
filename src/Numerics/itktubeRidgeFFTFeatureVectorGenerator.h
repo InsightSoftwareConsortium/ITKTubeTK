@@ -45,10 +45,10 @@ class RidgeFFTFeatureVectorGenerator
 {
 public:
 
-  typedef RidgeFFTFeatureVectorGenerator       Self;
-  typedef FeatureVectorGenerator< TImage >     Superclass;
-  typedef SmartPointer< Self >                 Pointer;
-  typedef SmartPointer< const Self >           ConstPointer;
+  using Self = RidgeFFTFeatureVectorGenerator;
+  using Superclass = FeatureVectorGenerator< TImage >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkTypeMacro( RidgeFFTFeatureVectorGenerator, FeatureVectorGenerator );
 
@@ -58,22 +58,21 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
-  typedef typename Superclass::FeatureValueType      FeatureValueType;
+  using FeatureValueType = typename Superclass::FeatureValueType;
 
-  typedef typename Superclass::FeatureVectorType     FeatureVectorType;
+  using FeatureVectorType = typename Superclass::FeatureVectorType;
 
-  typedef typename Superclass::FeatureImageType      FeatureImageType;
+  using FeatureImageType = typename Superclass::FeatureImageType;
 
-  typedef typename Superclass::ValueListType         ValueListType;
+  using ValueListType = typename Superclass::ValueListType;
 
-  typedef typename Superclass::ImageType             ImageType;
+  using ImageType = typename Superclass::ImageType;
 
-  typedef typename Superclass::IndexType             IndexType;
+  using IndexType = typename Superclass::IndexType;
 
-  typedef std::vector< double >                      RidgeScalesType;
+  using RidgeScalesType = std::vector< double >;
 
-  typedef std::vector< typename FeatureImageType::Pointer >
-                                                     FeatureImageListType;
+  using FeatureImageListType = std::vector< typename FeatureImageType::Pointer >;
 
   //
   virtual unsigned int GetNumberOfImageFeaturesPerScale( void ) const;

@@ -45,52 +45,52 @@ class TubeSpatialObjectToDensityImageFilter : public Object
 {
 public:
 
-  typedef TubeSpatialObjectToDensityImageFilter   Self;
-  typedef Object                                  Superclass;
-  typedef SmartPointer< Self >                    Pointer;
+  using Self = TubeSpatialObjectToDensityImageFilter;
+  using Superclass = Object;
+  using Pointer = SmartPointer< Self >;
 
   itkNewMacro( Self );
   itkTypeMacro( TubeSpatialObjectToDensityImageFilter, Object );
 
   /** Typdefs */
-  typedef TDensityImageType                              DensityImageType;
-  typedef typename DensityImageType::PixelType           DensityPixelType;
-  typedef typename DensityImageType::Pointer             DensityImagePointer;
+  using DensityImageType = TDensityImageType;
+  using DensityPixelType = typename DensityImageType::PixelType;
+  using DensityImagePointer = typename DensityImageType::Pointer;
 
-  typedef TRadiusImageType                               RadiusImageType;
-  typedef typename RadiusImageType::PixelType            RadiusPixelType;
-  typedef typename RadiusImageType::Pointer              RadiusImagePointer;
+  using RadiusImageType = TRadiusImageType;
+  using RadiusPixelType = typename RadiusImageType::PixelType;
+  using RadiusImagePointer = typename RadiusImageType::Pointer;
 
-  typedef TTangentImageType                              TangentImageType;
-  typedef typename TangentImageType::PixelType           TangentPixelType;
-  typedef typename TangentImageType::Pointer             TangentImagePointer;
+  using TangentImageType = TTangentImageType;
+  using TangentPixelType = typename TangentImageType::PixelType;
+  using TangentImagePointer = typename TangentImageType::Pointer;
 
   /** Define the Dimension variable */
   itkStaticConstMacro( ImageDimension, unsigned int,
                        DensityImageType::ImageDimension );
 
-  typedef GroupSpatialObject<
-    itkGetStaticConstMacro( ImageDimension ) >  TubeGroupType;
-  typedef typename TubeGroupType::Pointer       TubeGroupPointer;
+  using TubeGroupType = GroupSpatialObject<
+    itkGetStaticConstMacro( ImageDimension ) >;
+  using TubeGroupPointer = typename TubeGroupType::Pointer;
 
-  typedef TubeSpatialObject<
-    itkGetStaticConstMacro( ImageDimension ) >  TubeType;
+  using TubeType = TubeSpatialObject<
+    itkGetStaticConstMacro( ImageDimension ) >;
 
-  typedef typename DensityImageType::OffsetType VectorPixelType;
-  typedef Image<
+  using VectorPixelType = typename DensityImageType::OffsetType;
+  using VectorImageType = Image<
     VectorPixelType,
-    itkGetStaticConstMacro( ImageDimension ) >  VectorImageType;
-  typedef typename VectorImageType::Pointer     VectorImagePointer;
+    itkGetStaticConstMacro( ImageDimension ) >;
+  using VectorImagePointer = typename VectorImageType::Pointer;
 
-  typedef typename DensityImageType::SizeType     SizeType;
-  typedef typename DensityImageType::SpacingType  SpacingType;
+  using SizeType = typename DensityImageType::SizeType;
+  using SpacingType = typename DensityImageType::SpacingType;
 
-  typedef TubeSpatialObjectToImageFilter<
+  using TubetoImageFilterType = TubeSpatialObjectToImageFilter<
     itkGetStaticConstMacro( ImageDimension ),
-    DensityImageType > TubetoImageFilterType;
+    DensityImageType >;
 
-  typedef DanielssonDistanceMapImageFilter<
-    DensityImageType, DensityImageType > DanielssonFilterType;
+  using DanielssonFilterType = DanielssonDistanceMapImageFilter<
+    DensityImageType, DensityImageType >;
 
   /** Retrieve Density map created by inverted Danielsson Distance Map */
   itkSetMacro( DensityMapImage, DensityImagePointer );

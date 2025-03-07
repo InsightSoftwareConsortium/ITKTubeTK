@@ -48,7 +48,7 @@ class TubeExtractorIO
 {
 public:
 
-  typedef TubeExtractor< TImage >    TubeExtractorType;
+  using TubeExtractorType = TubeExtractor< TImage >;
 
   TubeExtractorIO( void );
 

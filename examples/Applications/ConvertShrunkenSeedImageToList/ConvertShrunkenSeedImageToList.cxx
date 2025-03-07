@@ -60,16 +60,16 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                     PixelType;
-  typedef itk::Image< PixelType, VDimension >       ImageType;
-  typedef itk::ImageFileReader< ImageType >         ImageReaderType;
+  using PixelType = float;
+  using ImageType = itk::Image< PixelType, VDimension >;
+  using ImageReaderType = itk::ImageFileReader< ImageType >;
 
-  typedef itk::Vector< float, VDimension >          PointsPixelType;
-  typedef itk::Image< PointsPixelType, VDimension > PointsImageType;
-  typedef itk::ImageFileReader< PointsImageType >   PointsImageReaderType;
+  using PointsPixelType = itk::Vector< float, VDimension >;
+  using PointsImageType = itk::Image< PointsPixelType, VDimension >;
+  using PointsImageReaderType = itk::ImageFileReader< PointsImageType >;
 
-  typedef tube::ConvertShrunkenSeedImageToList
-    < ImageType, PointsImageType > ConvertShrunkenSeedImageToListFilterType;
+  using ConvertShrunkenSeedImageToListFilterType = tube::ConvertShrunkenSeedImageToList
+    < ImageType, PointsImageType >;
   typename ConvertShrunkenSeedImageToListFilterType::Pointer filter
     = ConvertShrunkenSeedImageToListFilterType::New();
 
@@ -149,7 +149,7 @@ int DoIt( int argc, char * argv[] )
 
   filter->Update();
 
-  typedef vnl_matrix<PixelType> MatrixType;
+  using MatrixType = vnl_matrix<PixelType>;
   const unsigned int ARows =
     inImage->GetLargestPossibleRegion().GetNumberOfPixels();
   const unsigned int ACols = VDimension + 1;
@@ -158,7 +158,7 @@ int DoIt( int argc, char * argv[] )
   matrix = filter->GetOutput();
 
   // write out the vnl_matrix object
-  typedef itk::CSVNumericObjectFileWriter<PixelType> WriterType;
+  using WriterType = itk::CSVNumericObjectFileWriter<PixelType>;
   WriterType::Pointer writer = WriterType::New();
 
   writer->SetFieldDelimiterCharacter( ',' );

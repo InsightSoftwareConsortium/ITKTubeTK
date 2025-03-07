@@ -55,9 +55,9 @@ class MetaNJetLDA : public MetaLDA
 {
 public:
 
-  typedef std::vector< double >   NJetScalesType;
-  typedef MetaLDA::LDAValuesType  LDAValuesType;
-  typedef MetaLDA::LDAMatrixType  LDAMatrixType;
+  using NJetScalesType = std::vector< double >;
+  using LDAValuesType = MetaLDA::LDAValuesType;
+  using LDAMatrixType = MetaLDA::LDAMatrixType;
 
   MetaNJetLDA( void );
 

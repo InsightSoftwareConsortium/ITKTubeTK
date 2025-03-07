@@ -58,16 +58,16 @@ int DoIt( int argc, char * argv[] )
   // but use double for the filter to avoid rounding off errors in the
   // filter's floating point operations
   enum { Dimension = 3 };
-  typedef TPixel                                   ImagePixelType;
-  typedef itk::Image< ImagePixelType, Dimension >  InputImageType;
-  typedef itk::Image< ImagePixelType, Dimension >  OutputImageType;
-  typedef double                                   FilterPixelType;
-  typedef itk::Image< FilterPixelType, Dimension > FilterInputImageType;
-  typedef itk::Image< FilterPixelType, Dimension > FilterOutputImageType;
+  using ImagePixelType = TPixel;
+  using InputImageType = itk::Image< ImagePixelType, Dimension >;
+  using OutputImageType = itk::Image< ImagePixelType, Dimension >;
+  using FilterPixelType = double;
+  using FilterInputImageType = itk::Image< FilterPixelType, Dimension >;
+  using FilterOutputImageType = itk::Image< FilterPixelType, Dimension >;
 
   // Read the input volume
   timeCollector.Start( "Load data" );
-  typedef itk::ImageFileReader< InputImageType  >  ImageReaderType;
+  using ImageReaderType = itk::ImageFileReader< InputImageType  >;
   typename ImageReaderType::Pointer   reader = ImageReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
   try
@@ -86,8 +86,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // C-style cast from input image type to type 'double'
-  typedef itk::CastImageFilter< InputImageType, FilterInputImageType >
-    CastInputImageFilterType;
+  using CastInputImageFilterType = itk::CastImageFilter< InputImageType, FilterInputImageType >;
   typename CastInputImageFilterType::Pointer castInputImageFilter =
     CastInputImageFilterType::New();
   castInputImageFilter->SetInput( reader->GetOutput() );
@@ -95,8 +94,7 @@ int DoIt( int argc, char * argv[] )
 
   // Reorient to axial because the anisotropic diffusion tensor function does
   // not handle direction
-  typedef itk::OrientImageFilter< FilterInputImageType, FilterInputImageType >
-      OrientInputFilterType;
+  using OrientInputFilterType = itk::OrientImageFilter< FilterInputImageType, FilterInputImageType >;
   typename OrientInputFilterType::Pointer orientInputFilter
       = OrientInputFilterType::New();
   orientInputFilter->UseImageDirectionOn();
@@ -108,8 +106,8 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Edge enhancing anisotropic diffusion" );
 
   // Declare the anisotropic diffusion edge enhancement filter
-  typedef tube::EnhanceEdgesUsingDiffusion<
-    FilterInputImageType, FilterOutputImageType>  EdgeEnhancementFilterType;
+  using EdgeEnhancementFilterType = tube::EnhanceEdgesUsingDiffusion<
+    FilterInputImageType, FilterOutputImageType>;
 
   // Create a edge enhancement Filter
   typename EdgeEnhancementFilterType::Pointer EdgeEnhancementFilter =
@@ -146,16 +144,14 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // C-style cast from double to output image type
-  typedef itk::CastImageFilter< FilterOutputImageType, OutputImageType >
-    CastOutputImageFilterType;
+  using CastOutputImageFilterType = itk::CastImageFilter< FilterOutputImageType, OutputImageType >;
   typename CastOutputImageFilterType::Pointer castOutputImageFilter =
     CastOutputImageFilterType::New();
   castOutputImageFilter->SetInput( EdgeEnhancementFilter->GetOutput() );
   castOutputImageFilter->Update();
 
   // Reorient back from axial to whatever direction we had before
-  typedef itk::OrientImageFilter< OutputImageType, OutputImageType >
-      OrientOutputFilterType;
+  using OrientOutputFilterType = itk::OrientImageFilter< OutputImageType, OutputImageType >;
   typename OrientOutputFilterType::Pointer orientOutputFilter
       = OrientOutputFilterType::New();
   orientOutputFilter->UseImageDirectionOn();
@@ -166,7 +162,7 @@ int DoIt( int argc, char * argv[] )
 
   // Save output data
   timeCollector.Start( "Save data" );
-  typedef itk::ImageFileWriter< OutputImageType  >      ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< OutputImageType  >;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
   writer->SetInput ( orientOutputFilter->GetOutput() );

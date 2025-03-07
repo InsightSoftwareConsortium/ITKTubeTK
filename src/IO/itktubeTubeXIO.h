@@ -39,15 +39,15 @@ class TubeXIO : public Object
 {
 public:
 
-  typedef TubeXIO                                 Self;
-  typedef Object                                  Superclass;
-  typedef SmartPointer< Self >                    Pointer;
-  typedef SmartPointer< const Self >              ConstPointer;
+  using Self = TubeXIO;
+  using Superclass = Object;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef TubeSpatialObject< TDimension >         TubeType;
-  typedef GroupSpatialObject< TDimension >        TubeGroupType;
+  using TubeType = TubeSpatialObject< TDimension >;
+  using TubeGroupType = GroupSpatialObject< TDimension >;
 
-  typedef Size< TDimension >                      SizeType;
+  using SizeType = Size< TDimension >;
 
   itkTypeMacro( TubeXIO, Object );
 

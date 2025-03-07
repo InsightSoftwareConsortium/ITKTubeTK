@@ -60,12 +60,12 @@ class OptionList : public Object
 {
 public:
 
-  typedef OptionList                                 Self;
-  typedef Object                                     Superclass;
-  typedef Self *                                     Pointer;
-  typedef const Self *                               ConstPointer;
+  using Self = OptionList;
+  using Superclass = Object;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef std::multimap< std::string, std::string >  OptionMapType;
+  using OptionMapType = std::multimap< std::string, std::string >;
 
   /** Encodes a required option that is missing.  */
   class RequiredOptionMissing

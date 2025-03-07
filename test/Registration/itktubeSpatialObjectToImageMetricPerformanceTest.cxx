@@ -49,14 +49,13 @@ int itktubeSpatialObjectToImageMetricPerformanceTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typedef itk::Image<double, 3>                             Image3DType;
+  using Image3DType = itk::Image<double, 3>;
 
-  typedef itk::ImageFileReader<Image3DType>                 ImageReaderType;
-  typedef itk::SpatialObjectReader<3>                       SOReaderType;
+  using ImageReaderType = itk::ImageFileReader<Image3DType>;
+  using SOReaderType = itk::SpatialObjectReader<3>;
 
-  typedef itk::tube::PointBasedSpatialObjectToImageMetric<3, Image3DType >
-                                                            MetricType;
-  typedef itk::ComposeScaleSkewVersor3DTransform<double>    TransformType;
+  using MetricType = itk::tube::PointBasedSpatialObjectToImageMetric<3, Image3DType >;
+  using TransformType = itk::ComposeScaleSkewVersor3DTransform<double>;
 
   // read image ( fixedImage )
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
@@ -85,8 +84,8 @@ int itktubeSpatialObjectToImageMetricPerformanceTest( int argc, char * argv[] )
     }
 
   // subsample points in vessel
-  typedef itk::tube::SubSampleSpatialObjectFilter<>
-    SubSampleFilterType;
+  using SubSampleFilterType =
+      itk::tube::SubSampleSpatialObjectFilter<>;
   SubSampleFilterType::Pointer subSampleFilter =
     SubSampleFilterType::New();
   subSampleFilter->SetInput( tubeReader->GetGroup() );

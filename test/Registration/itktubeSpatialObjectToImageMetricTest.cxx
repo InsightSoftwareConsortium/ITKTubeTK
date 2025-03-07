@@ -47,18 +47,17 @@ int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typedef double            FloatType;
+  using FloatType = double;
   static const unsigned int ImageDimension = 3;
   static const unsigned int ObjectDimension = 3;
 
-  typedef itk::Image< FloatType, ImageDimension >         ImageType;
+  using ImageType = itk::Image< FloatType, ImageDimension >;
 
-  typedef itk::ImageFileReader< ImageType >               ImageReaderType;
-  typedef itk::SpatialObjectReader< ObjectDimension >     GroupReaderType;
+  using ImageReaderType = itk::ImageFileReader< ImageType >;
+  using GroupReaderType = itk::SpatialObjectReader< ObjectDimension >;
 
-  typedef itk::tube::PointBasedSpatialObjectToImageMetric< 3, ImageType >
-                                                          MetricType;
-  typedef itk::ComposeScaleSkewVersor3DTransform< double >       TransformType;
+  using MetricType = itk::tube::PointBasedSpatialObjectToImageMetric< 3, ImageType >;
+  using TransformType = itk::ComposeScaleSkewVersor3DTransform< double >;
 
   // read image ( fixedImage )
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
@@ -87,8 +86,8 @@ int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
     }
 
   // subsample points in vessel
-  typedef itk::tube::SubSampleSpatialObjectFilter<>
-    SubSampleFilterType;
+  using SubSampleFilterType =
+      itk::tube::SubSampleSpatialObjectFilter<>;
   SubSampleFilterType::Pointer subSampleFilter =
     SubSampleFilterType::New();
   subSampleFilter->SetInput( groupReader->GetGroup() );

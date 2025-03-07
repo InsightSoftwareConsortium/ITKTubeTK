@@ -44,21 +44,21 @@ class SegmentUsingOtsuThreshold:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef SegmentUsingOtsuThreshold                 Self;
-  typedef itk::ProcessObject                        Superclass;
-  typedef itk::SmartPointer< Self >                 Pointer;
-  typedef itk::SmartPointer< const Self >           ConstPointer;
+  /** Standard class type alias. */
+  using Self = SegmentUsingOtsuThreshold;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef TImageType                                InputImageType;
-  typedef TMaskType                                 MaskImageType;
-  typedef MaskImageType                             OutputImageType;
+  using InputImageType = TImageType;
+  using MaskImageType = TMaskType;
+  using OutputImageType = MaskImageType;
 
-  typedef typename InputImageType::PixelType        InputPixelType;
-  typedef typename MaskImageType::PixelType         MaskPixelType;
+  using InputPixelType = typename InputImageType::PixelType;
+  using MaskPixelType = typename MaskImageType::PixelType;
 
-  typedef itk::OtsuThresholdImageFilter< InputImageType,
-    OutputImageType >                               FilterType;
+  using FilterType = itk::OtsuThresholdImageFilter< InputImageType,
+    OutputImageType >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

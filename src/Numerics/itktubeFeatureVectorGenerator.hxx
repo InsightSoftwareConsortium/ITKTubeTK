@@ -264,8 +264,7 @@ FeatureVectorGenerator< TImage >
   const unsigned int numFeatures = this->GetNumberOfFeatures();
   if( featureNum < numFeatures )
     {
-    typedef itk::ImageRegionIteratorWithIndex< FeatureImageType >
-      ImageIteratorType;
+    using ImageIteratorType = itk::ImageRegionIteratorWithIndex< FeatureImageType >;
 
     typename FeatureImageType::Pointer fi;
 
@@ -336,8 +335,7 @@ UpdateWhitenStatistics( void )
     }
   unsigned int imCount = 0;
 
-  typedef itk::ImageRegionConstIteratorWithIndex< TImage >
-    ImageConstIteratorType;
+  using ImageConstIteratorType = itk::ImageRegionConstIteratorWithIndex< TImage >;
   ImageConstIteratorType itIm( m_InputImageList[0],
     m_InputImageList[0]->GetLargestPossibleRegion() );
 

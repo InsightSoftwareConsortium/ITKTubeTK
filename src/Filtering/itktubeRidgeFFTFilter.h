@@ -34,14 +34,14 @@ class RidgeFFTFilter :
 {
 public:
 
-  typedef TInputImage                                       InputImageType;
+  using InputImageType = TInputImage;
 
-  typedef Image< float, TInputImage::ImageDimension >       OutputImageType;
+  using OutputImageType = Image< float, TInputImage::ImageDimension >;
 
-  typedef RidgeFFTFilter                                     Self;
-  typedef ImageToImageFilter< TInputImage, OutputImageType > Superclass;
-  typedef SmartPointer< Self >                               Pointer;
-  typedef SmartPointer< const Self >                         ConstPointer;
+  using Self = RidgeFFTFilter;
+  using Superclass = ImageToImageFilter< TInputImage, OutputImageType >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkNewMacro( Self );
 
@@ -75,8 +75,7 @@ private:
   RidgeFFTFilter( const Self & );
   void operator = ( const Self & );
 
-  typedef GaussianDerivativeFilter< InputImageType, OutputImageType >
-    DerivativeFilterType;
+  using DerivativeFilterType = GaussianDerivativeFilter< InputImageType, OutputImageType >;
 
   typename DerivativeFilterType::Pointer                m_DerivativeFilter;
 

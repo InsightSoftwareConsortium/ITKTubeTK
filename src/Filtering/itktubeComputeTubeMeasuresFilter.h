@@ -43,20 +43,20 @@ class ComputeTubeMeasuresFilter
 {
 public:
 
-  /** Tube class typedef */
-  typedef Image< TPixel, Dimension >                     InputImageType;
-  typedef Image< float, Dimension >                      OutputImageType;
+  /** Tube class type alias */
+  using InputImageType = Image< TPixel, Dimension >;
+  using OutputImageType = Image< float, Dimension >;
 
-  /** Standard class typedefs. */
-  typedef ComputeTubeMeasuresFilter                      Self;
-  typedef ImageToImageFilter
-    < InputImageType, OutputImageType >                  SuperClass;
-  typedef SmartPointer< Self >                           Pointer;
-  typedef SmartPointer< const Self >                     ConstPointer;
+  /** Standard class type alias. */
+  using Self = ComputeTubeMeasuresFilter;
+  using SuperClass = ImageToImageFilter
+    < InputImageType, OutputImageType >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef itk::RescaleIntensityImageFilter
-    < InputImageType, OutputImageType >                  RescaleFilterType;
-  typedef itk::tube::RidgeFFTFilter< OutputImageType >   RidgeFilterType;
+  using RescaleFilterType = itk::RescaleIntensityImageFilter
+    < InputImageType, OutputImageType >;
+  using RidgeFilterType = itk::tube::RidgeFFTFilter< OutputImageType >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

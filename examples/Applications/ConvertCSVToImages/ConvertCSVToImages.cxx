@@ -52,9 +52,9 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef float                                     InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension >  InputImageType;
-  typedef itk::ImageFileReader< InputImageType >    ReaderType;
+  using InputPixelType = float;
+  using InputImageType = itk::Image< InputPixelType, VDimension >;
+  using ReaderType = itk::ImageFileReader< InputImageType >;
 
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImageFileName );
@@ -90,7 +90,7 @@ int DoIt( int argc, char * argv[] )
     imageList[i]->FillBuffer( 0 );
     }
 
-  typedef typename itk::ImageRegionIterator< InputImageType > ImageIterType;
+  using ImageIterType = typename itk::ImageRegionIterator< InputImageType >;
   std::vector< ImageIterType * > imageIter;
   imageIter.resize( numImages );
   for( unsigned int i = 0; i < numImages; ++i )
@@ -132,7 +132,7 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  typedef itk::ImageFileWriter< InputImageType > WriterType;
+  using WriterType = itk::ImageFileWriter< InputImageType >;
   typename WriterType::Pointer writer = WriterType::New();
   for( unsigned int i=0; i<imageIter.size(); ++i )
     {

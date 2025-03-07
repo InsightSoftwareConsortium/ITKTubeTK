@@ -47,10 +47,10 @@ class ImageToImageRegistrationMethod
 
 public:
 
-  typedef ImageToImageRegistrationMethod Self;
-  typedef ProcessObject                  Superclass;
-  typedef SmartPointer<Self>             Pointer;
-  typedef SmartPointer<const Self>       ConstPointer;
+  using Self = ImageToImageRegistrationMethod;
+  using Superclass = ProcessObject;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   itkTypeMacro( ImageToImageRegistrationMethod, ProcessObject );
 
@@ -62,23 +62,21 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
 
-  typedef Transform<double,
+  using TransformType = Transform<double,
                     itkGetStaticConstMacro( ImageDimension ),
-                    itkGetStaticConstMacro( ImageDimension )>
-  TransformType;
+                    itkGetStaticConstMacro( ImageDimension )>;
 
-  typedef DataObjectDecorator<TransformType> TransformOutputType;
+  using TransformOutputType = DataObjectDecorator<TransformType>;
 
-  typedef typename DataObject::Pointer DataObjectPointer;
+  using DataObjectPointer = typename DataObject::Pointer;
   typedef Superclass::DataObjectPointerArraySizeType
                                        DataObjectPointerArraySizeType;
 
-  typedef TImage ImageType;
+  using ImageType = TImage;
 
-  typedef typename TImage::PointType PointType;
+  using PointType = typename TImage::PointType;
 
-  typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
-  MaskObjectType;
+  using MaskObjectType = SpatialObject<itkGetStaticConstMacro( ImageDimension )>;
 
   //
   // Custom Methods

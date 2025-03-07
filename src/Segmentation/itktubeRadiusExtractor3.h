@@ -54,11 +54,11 @@ class RadiusExtractor3 : public Object
 public:
 
   /**
-   * Standard self typedef */
-  typedef RadiusExtractor3                                   Self;
-  typedef Object                                             Superclass;
-  typedef SmartPointer< Self >                               Pointer;
-  typedef SmartPointer< const Self >                         ConstPointer;
+   * Standard self type alias */
+  using Self = RadiusExtractor3;
+  using Superclass = Object;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkTypeMacro( RadiusExtractor3, Object );
   itkNewMacro( RadiusExtractor3 );
@@ -69,27 +69,27 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TInputImage::ImageDimension );
 
-  typedef TubeSpatialObject< TInputImage::ImageDimension > TubeType;
+  using TubeType = TubeSpatialObject< TInputImage::ImageDimension >;
 
-  typedef typename TubeType::TubePointType                   TubePointType;
+  using TubePointType = typename TubeType::TubePointType;
 
-  typedef typename TubeType::PointType                       PointType;
-  typedef typename TubeType::VectorType                      VectorType;
+  using PointType = typename TubeType::PointType;
+  using VectorType = typename TubeType::VectorType;
 
   /**
    * Type definition for the input image. */
-  typedef TInputImage                                        InputImageType;
+  using InputImageType = TInputImage;
 
-  typedef typename InputImageType::IndexType                 IndexType;
+  using IndexType = typename InputImageType::IndexType;
 
   /**
    * Type definition for the input image pixel type. */
-  typedef typename TInputImage::PixelType                    PixelType;
+  using PixelType = typename TInputImage::PixelType;
 
   /**
    * Defines the type of matrix used
    */
-  typedef vnl_matrix< double >                               MatrixType;
+  using MatrixType = vnl_matrix< double >;
 
 
   /**

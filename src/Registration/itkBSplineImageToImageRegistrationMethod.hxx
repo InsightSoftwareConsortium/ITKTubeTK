@@ -45,15 +45,15 @@ class BSplineImageRegistrationViewer
   : public Command
 {
 public:
-  typedef BSplineImageRegistrationViewer Self;
-  typedef Command                        Superclass;
-  typedef SmartPointer<Self>             Pointer;
+  using Self = BSplineImageRegistrationViewer;
+  using Superclass = Command;
+  using Pointer = SmartPointer<Self>;
 
   itkTypeMacro( BSplineImageRegistrationViewer, Command );
 
   itkNewMacro( BSplineImageRegistrationViewer );
 
-  typedef SingleValuedNonLinearOptimizer OptimizerType;
+  using OptimizerType = SingleValuedNonLinearOptimizer;
 
   itkSetMacro(DontShowParameters, bool);
   itkSetMacro(UpdateInterval, int);
@@ -232,7 +232,7 @@ BSplineImageToImageRegistrationMethod<TImage>
     }
 
   /* Setup FRPR - set params specific to this optimizer
-  typedef FRPROptimizer GradOptimizerType;
+  using GradOptimizerType = FRPROptimizer;
   GradOptimizerType::Pointer gradOpt;
   gradOpt = GradOptimizerType::New();
   gradOpt->SetMaximize( false );
@@ -247,7 +247,7 @@ BSplineImageToImageRegistrationMethod<TImage>
   gradOpt->SetToFletchReeves();*/
 
   /* GradientDescent */
-  typedef GradientDescentOptimizer         GradOptimizerType;
+  using GradOptimizerType = GradientDescentOptimizer;
   GradOptimizerType::Pointer gradOpt;
   gradOpt = GradOptimizerType::New();
   gradOpt->SetLearningRate( 0.25 );
@@ -257,7 +257,7 @@ BSplineImageToImageRegistrationMethod<TImage>
   /* LBFGSB */
   /*
   int numberOfParameters = this->GetTransform()->GetNumberOfParameters();
-  typedef LBFGSBOptimizer                  GradOptimizerType;
+  using GradOptimizerType = LBFGSBOptimizer;
   GradOptimizerType::Pointer gradOpt;
   gradOpt = GradOptimizerType::New();
   GradOptimizerType::Pointer tmpOpt = static_cast<GradOptimizerType *>(
@@ -284,7 +284,7 @@ BSplineImageToImageRegistrationMethod<TImage>
   /**/
   //if( this->GetReportProgress() )
     {
-    typedef BSplineImageRegistrationViewer ViewerCommandType;
+    using ViewerCommandType = BSplineImageRegistrationViewer;
     typename ViewerCommandType::Pointer command = ViewerCommandType::New();
     if( this->GetTransform()->GetNumberOfParameters() > 16 )
       {
@@ -302,7 +302,7 @@ BSplineImageToImageRegistrationMethod<TImage>
   /* Setup a standard itk::ImageToImageRegistration method
    *  and plug-in optimizer, interpolator, etc. */
   /**/
-  typedef ImageRegistrationMethod<TImage, TImage> ImageRegistrationType;
+  using ImageRegistrationType = ImageRegistrationMethod<TImage, TImage>;
   typename ImageRegistrationType::Pointer reg =
     ImageRegistrationType::New();
   typename ImageType::ConstPointer fixedImage = this->GetFixedImage();
@@ -435,9 +435,8 @@ BSplineImageToImageRegistrationMethod<TImage>
     std::cout << "BSpline MULTIRESOLUTION START" << std::endl;
     }
 
-  typedef RecursiveMultiResolutionPyramidImageFilter<ImageType,
-                                                     ImageType>
-  PyramidType;
+  using PyramidType = RecursiveMultiResolutionPyramidImageFilter<ImageType,
+                                                     ImageType>;
   typename PyramidType::Pointer fixedPyramid = PyramidType::New();
   typename PyramidType::Pointer movingPyramid = PyramidType::New();
 
@@ -558,7 +557,7 @@ BSplineImageToImageRegistrationMethod<TImage>
       movingPyramid->GetOutput(level);
 
     /*
-    typedef itk::ImageFileWriter< ImageType > FileWriterType;
+    using FileWriterType = itk::ImageFileWriter< ImageType >;
     typename FileWriterType::Pointer writer = FileWriterType::New();
     std::stringstream ss;
     std::string name;
@@ -610,8 +609,7 @@ BSplineImageToImageRegistrationMethod<TImage>
      * will perform gradient optimization (instead of pyramid
      * optimization). */
     /**/
-    typedef BSplineImageToImageRegistrationMethod<ImageType>
-      BSplineRegType;
+    using BSplineRegType = BSplineImageToImageRegistrationMethod<ImageType>;
     typename BSplineRegType::Pointer reg = BSplineRegType::New();
     reg->SetReportProgress( this->GetReportProgress() );
     reg->SetFixedImage( fixedImage );
@@ -792,12 +790,9 @@ BSplineImageToImageRegistrationMethod<TImage>
 
   typedef typename BSplineTransformType::ImageType
     ParametersImageType;
-  typedef ResampleImageFilter<ParametersImageType, ParametersImageType>
-    ResamplerType;
-  typedef BSplineResampleImageFunction<ParametersImageType, double>
-    ResamplerFunctionType;
-  typedef IdentityTransform<double, ImageDimension>
-    IdentityTransformType;
+  using ResamplerType = ResampleImageFilter<ParametersImageType, ParametersImageType>;
+  using ResamplerFunctionType = BSplineResampleImageFunction<ParametersImageType, double>;
+  using IdentityTransformType = IdentityTransform<double, ImageDimension>;
   for( unsigned int k = 0; k < ImageDimension; k++ )
     {
     typename ResamplerType::Pointer upsampler = ResamplerType::New();
@@ -812,7 +807,7 @@ BSplineImageToImageRegistrationMethod<TImage>
     /*
     if( this->GetReportProgress() )
       {
-      /typedef itk::ImageFileWriter<ParametersImageType> WriterType;
+      /using WriterType = itk::ImageFileWriter<ParametersImageType>;
       typename WriterType::Pointer writer = WriterType::New();
       std::stringstream ss;
       std::string name;
@@ -858,9 +853,8 @@ BSplineImageToImageRegistrationMethod<TImage>
       std::cout << "Uncaught exception in upsampler" << std::endl;
       }
 
-    typedef BSplineDecompositionImageFilter<ParametersImageType,
-                                            ParametersImageType>
-    DecompositionType;
+    using DecompositionType = BSplineDecompositionImageFilter<ParametersImageType,
+                                            ParametersImageType>;
     typename DecompositionType::Pointer decomposition =
       DecompositionType::New();
 
@@ -885,7 +879,7 @@ BSplineImageToImageRegistrationMethod<TImage>
     /*
     if( this->GetReportProgress() )
       {
-      /typedef itk::ImageFileWriter<ParametersImageType> WriterType;
+      /using WriterType = itk::ImageFileWriter<ParametersImageType>;
       typename WriterType::Pointer writer = WriterType::New();
       std::stringstream ss;
       std::string name;
@@ -907,7 +901,7 @@ BSplineImageToImageRegistrationMethod<TImage>
 
     std::cout << "Copying new coefficients for dim " << k << std::endl;
     // copy the coefficients into the parameter array
-    typedef ImageRegionIterator<ParametersImageType> Iterator;
+    using Iterator = ImageRegionIterator<ParametersImageType>;
     Iterator it( newCoefficients,
                  newCoefficients->GetLargestPossibleRegion() );
     while( !it.IsAtEnd() )

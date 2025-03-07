@@ -39,13 +39,13 @@ class BrentOptimizer1D : public Optimizer1D
 {
 public:
 
-  typedef BrentOptimizer1D                    Self;
-  typedef Optimizer1D                         Superclass;
-  typedef Self *                              Pointer;
-  typedef const Self *                        ConstPointer;
+  using Self = BrentOptimizer1D;
+  using Superclass = Optimizer1D;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef Superclass::ValueFunctionType       ValueFunctionType;
-  typedef Superclass::DerivativeFunctionType  DerivativeFunctionType;
+  using ValueFunctionType = Superclass::ValueFunctionType;
+  using DerivativeFunctionType = Superclass::DerivativeFunctionType;
 
   /** Return the type of this object. */
   tubeTypeMacro( BrentOptimizer1D );

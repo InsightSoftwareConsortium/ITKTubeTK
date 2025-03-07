@@ -35,12 +35,12 @@ class UserFunction
 {
 public:
 
-  typedef UserFunction  Self;
-  typedef Self *        Pointer;
-  typedef const Self *  ConstPointer;
+  using Self = UserFunction;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef TInput        InputType;
-  typedef TOutput       OutputType;
+  using InputType = TInput;
+  using OutputType = TOutput;
 
   /** Return the type of this object. */
   tubeTypeMacroNoOverride( UserFunction );

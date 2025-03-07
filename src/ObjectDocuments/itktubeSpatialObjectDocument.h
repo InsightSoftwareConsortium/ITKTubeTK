@@ -44,12 +44,12 @@ class SpatialObjectDocument : public ObjectDocument
 {
 public:
 
-  typedef SpatialObjectDocument              Self;
-  typedef ObjectDocument                     Superclass;
-  typedef SmartPointer< Self >               Pointer;
-  typedef SmartPointer< const Self >         ConstPointer;
+  using Self = SpatialObjectDocument;
+  using Superclass = ObjectDocument;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef Superclass::TransformNameListType  TransformNameListType;
+  using TransformNameListType = Superclass::TransformNameListType;
 
   itkNewMacro( Self );
   itkTypeMacro( SpatialObjectDocument, ObjectDocument );

@@ -50,16 +50,16 @@ class TortuositySpatialObjectFilter : public
   TTubeSpatialObject >
 {
 public:
-  /** Standard class typedefs. */
-  typedef TortuositySpatialObjectFilter     Self;
-  typedef SpatialObjectToSpatialObjectFilter< TTubeSpatialObject,
-    TTubeSpatialObject >                    Superclass;
-  typedef SmartPointer< Self >              Pointer;
-  typedef SmartPointer< const Self >        ConstPointer;
+  /** Standard class type alias. */
+  using Self = TortuositySpatialObjectFilter;
+  using Superclass = SpatialObjectToSpatialObjectFilter< TTubeSpatialObject,
+    TTubeSpatialObject >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef TTubeSpatialObject                TubeSpatialObject;
+  using TubeSpatialObject = TTubeSpatialObject;
 
-  typedef typename TTubeSpatialObject::VectorType SOVectorType;
+  using SOVectorType = typename TTubeSpatialObject::VectorType;
 
   typedef typename TubeSpatialObject::Pointer
     TubeSpatialObjectPointer;

@@ -42,13 +42,13 @@ int itktubeAnisotropicHybridDiffusionImageFilterTest( int argc,
 
   // Define the dimension of the images
   enum { Dimension = 3 };
-  typedef double      InputPixelType;
+  using InputPixelType = double;
 
   // Declare the types of the images
-  typedef itk::Image< InputPixelType, Dimension>           InputImageType;
-  typedef itk::Image< InputPixelType, Dimension>           OutputImageType;
+  using InputImageType = itk::Image< InputPixelType, Dimension>;
+  using OutputImageType = itk::Image< InputPixelType, Dimension>;
 
-  typedef itk::ImageFileReader< InputImageType  >      ImageReaderType;
+  using ImageReaderType = itk::ImageFileReader< InputImageType  >;
 
   ImageReaderType::Pointer   reader = ImageReaderType::New();
   reader->SetFileName ( argv[1] );
@@ -66,8 +66,8 @@ int itktubeAnisotropicHybridDiffusionImageFilterTest( int argc,
 
 
   // Declare the anisotropic diffusion hybrid enhancement filter
-  typedef itk::tube::AnisotropicHybridDiffusionImageFilter< InputImageType,
-                                            OutputImageType>  HybridFilterType;
+  using HybridFilterType = itk::tube::AnisotropicHybridDiffusionImageFilter< InputImageType,
+                                            OutputImageType>;
 
   // Create a hybrid diffusion Filter
   HybridFilterType::Pointer HybridFilter =
@@ -141,7 +141,7 @@ int itktubeAnisotropicHybridDiffusionImageFilterTest( int argc,
 
   std::cout << "Writing out the enhanced image to " <<  argv[2] << std::endl;
 
-  typedef itk::ImageFileWriter< OutputImageType  >      ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< OutputImageType  >;
   ImageWriterType::Pointer writer = ImageWriterType::New();
 
   writer->SetFileName( argv[2] );

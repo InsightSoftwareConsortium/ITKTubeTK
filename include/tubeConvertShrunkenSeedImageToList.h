@@ -42,11 +42,11 @@ class ConvertShrunkenSeedImageToList
   : public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ConvertShrunkenSeedImageToList                        Self;
-  typedef itk::ProcessObject                                    Superclass;
-  typedef itk::SmartPointer< Self >                             Pointer;
-  typedef itk::SmartPointer< const Self >                       ConstPointer;
+  /** Standard class type alias. */
+  using Self = ConvertShrunkenSeedImageToList;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -54,14 +54,14 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro( ConvertShrunkenSeedImageToList, ProcessObject );
 
-  typedef TImage                                           ImageType;
-  typedef typename ImageType::PixelType                    PixelType;
+  using ImageType = TImage;
+  using PixelType = typename ImageType::PixelType;
 
-  typedef TPointsImage                                     PointsImageType;
-  typedef typename PointsImageType::PixelType              PointsPixelType;
+  using PointsImageType = TPointsImage;
+  using PointsPixelType = typename PointsImageType::PixelType;
 
-  typedef itk::tube::ConvertShrunkenSeedImageToListFilter< ImageType,
-    PointsImageType > ConvertShrunkenSeedImageToListFilterType;
+  using ConvertShrunkenSeedImageToListFilterType = itk::tube::ConvertShrunkenSeedImageToListFilter< ImageType,
+    PointsImageType >;
 
   tubeWrapSetConstObjectMacro( Input, ImageType,
     ConvertShrunkenSeedImageToListFilter );

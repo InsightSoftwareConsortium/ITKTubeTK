@@ -39,21 +39,21 @@ int DoIt( int argc, char * argv[] )
   PARSE_ARGS;
 
   /*Typedefs..*/
-  typedef float                                         TPixel;
-  typedef itk::Vector< TPixel, Dimension >              TangentPixelType;
-  typedef itk::Image< TPixel, Dimension >               DensityImageType;
-  typedef itk::Image< TPixel, Dimension >               RadiusImageType;
-  typedef itk::Image< TangentPixelType, Dimension >     TangentImageType;
-  typedef itk::Image< unsigned char, Dimension >        TemplateImageType;
-  typedef itk::ImageFileReader< TemplateImageType >     TemplateImageReaderType;
+  using TPixel = float;
+  using TangentPixelType = itk::Vector< TPixel, Dimension >;
+  using DensityImageType = itk::Image< TPixel, Dimension >;
+  using RadiusImageType = itk::Image< TPixel, Dimension >;
+  using TangentImageType = itk::Image< TangentPixelType, Dimension >;
+  using TemplateImageType = itk::Image< unsigned char, Dimension >;
+  using TemplateImageReaderType = itk::ImageFileReader< TemplateImageType >;
 
   /** Max Intensity value */
   TPixel   max_densityIntensity = 2048;
 
-  typedef tube::ConvertTubesToDensityImage<
-  TPixel, Dimension > TubeToDensityImageBuilderType;
+  using TubeToDensityImageBuilderType = tube::ConvertTubesToDensityImage<
+  TPixel, Dimension >;
 
-  typedef itk::SpatialObjectReader< Dimension >         TubesReaderType;
+  using TubesReaderType = itk::SpatialObjectReader< Dimension >;
 
 
   double progress = 0.0;

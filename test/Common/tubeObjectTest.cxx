@@ -33,7 +33,7 @@ int tubeObjectTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typedef tube::Object ObjectType;
+  using ObjectType = tube::Object;
 
   ObjectType::Pointer object = new ObjectType();
   std::ostringstream oss;

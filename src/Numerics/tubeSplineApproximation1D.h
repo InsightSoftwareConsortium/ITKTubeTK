@@ -38,14 +38,14 @@ class SplineApproximation1D : public Spline1D
 {
 public:
 
-  typedef SplineApproximation1D             Self;
-  typedef Spline1D                          Superclass;
-  typedef Self *                            Pointer;
-  typedef const Self *                      ConstPointer;
+  using Self = SplineApproximation1D;
+  using Superclass = Spline1D;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef vnl_matrix_fixed< double, 4, 4 >  MatrixType;
-  typedef Superclass::VectorType            VectorType;
-  typedef Superclass::ValueFunctionType     ValueFunctionType;
+  using MatrixType = vnl_matrix_fixed< double, 4, 4 >;
+  using VectorType = Superclass::VectorType;
+  using ValueFunctionType = Superclass::ValueFunctionType;
 
   /** Return the type of this object. */
   tubeTypeMacro( SplineApproximation1D );

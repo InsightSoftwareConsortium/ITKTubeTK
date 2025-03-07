@@ -50,27 +50,27 @@ class TubeSpatialObjectToImageFilter
 {
 public:
 
-  /** Standard class typedefs. */
-  typedef TubeSpatialObjectToImageFilter                 Self;
-  typedef SpatialObjectToImageFilter< SpatialObject< ObjectDimension >,
-                                      TOutputImage>      SuperClass;
-  typedef SmartPointer< Self >                           Pointer;
-  typedef SmartPointer< const Self >                     ConstPointer;
+  /** Standard class type alias. */
+  using Self = TubeSpatialObjectToImageFilter;
+  using SuperClass = SpatialObjectToImageFilter< SpatialObject< ObjectDimension >,
+                                      TOutputImage>;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  /** Tube class typedef */
-  typedef TOutputImage                                   OutputImageType;
+  /** Tube class type alias */
+  using OutputImageType = TOutputImage;
 
-  typedef SpatialObject<ObjectDimension>                 SpatialObjectType;
-  typedef typename SpatialObjectType::ChildrenListType   ChildrenListType;
-  typedef TubeSpatialObject<ObjectDimension>             TubeType;
+  using SpatialObjectType = SpatialObject<ObjectDimension>;
+  using ChildrenListType = typename SpatialObjectType::ChildrenListType;
+  using TubeType = TubeSpatialObject<ObjectDimension>;
 
-  typedef TRadiusImage                                   RadiusImage;
-  typedef typename TRadiusImage::Pointer                 RadiusImagePointer;
-  typedef typename TRadiusImage::PixelType               RadiusPixelType;
+  using RadiusImage = TRadiusImage;
+  using RadiusImagePointer = typename TRadiusImage::Pointer;
+  using RadiusPixelType = typename TRadiusImage::PixelType;
 
-  typedef TTangentImage                                  TangentImage;
-  typedef typename TTangentImage::Pointer                TangentImagePointer;
-  typedef typename TTangentImage::PixelType              TangentPixelType;
+  using TangentImage = TTangentImage;
+  using TangentImagePointer = typename TTangentImage::Pointer;
+  using TangentPixelType = typename TTangentImage::PixelType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

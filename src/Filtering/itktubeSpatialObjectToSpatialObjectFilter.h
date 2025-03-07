@@ -40,17 +40,17 @@ class SpatialObjectToSpatialObjectFilter
   : public SpatialObjectSource< TOutputSpatialObject >
 {
 public:
-  /** Standard class typedefs */
-  typedef SpatialObjectToSpatialObjectFilter          Self;
-  typedef SpatialObjectSource< TOutputSpatialObject > Superclass;
-  typedef SmartPointer< Self >                        Pointer;
-  typedef SmartPointer< const Self >                  ConstPointer;
+  /** Standard class type alias */
+  using Self = SpatialObjectToSpatialObjectFilter;
+  using Superclass = SpatialObjectSource< TOutputSpatialObject >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( SpatialObjectToSpatialObjectFilter, SpatialObjectSource );
 
-  typedef TInputSpatialObject  InputSpatialObjectType;
-  typedef TOutputSpatialObject OutputSpatialObjectType;
+  using InputSpatialObjectType = TInputSpatialObject;
+  using OutputSpatialObjectType = TOutputSpatialObject;
 
   virtual void SetInput( const InputSpatialObjectType * spatialObject );
 

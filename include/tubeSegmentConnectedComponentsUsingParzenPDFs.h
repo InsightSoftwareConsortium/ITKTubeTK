@@ -44,31 +44,31 @@ class SegmentConnectedComponentsUsingParzenPDFs:
   public itk::ProcessObject
 {
 public:
-  typedef TImage                                InputImageType;
-  typedef typename TImage::PixelType            InputImagePixelType;
+  using InputImageType = TImage;
+  using InputImagePixelType = typename TImage::PixelType;
 
-  typedef TLabelMap                             LabelMapType;
-  typedef typename TLabelMap::PixelType         LabelMapPixelType;
+  using LabelMapType = TLabelMap;
+  using LabelMapPixelType = typename TLabelMap::PixelType;
 
-  /** Standard class typedefs. */
-  typedef SegmentConnectedComponentsUsingParzenPDFs  Self;
-  typedef itk::ProcessObject                         Superclass;
-  typedef itk::SmartPointer< Self >                  Pointer;
-  typedef itk::SmartPointer< const Self >            ConstPointer;
+  /** Standard class type alias. */
+  using Self = SegmentConnectedComponentsUsingParzenPDFs;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
 
-  typedef itk::tube::PDFSegmenterParzen< InputImageType,
-    LabelMapType >                                  FilterType;
+  using FilterType = itk::tube::PDFSegmenterParzen< InputImageType,
+    LabelMapType >;
 
-  typedef typename FilterType::PDFImageType            PDFImageType;
-  //typedef typename FilterType::LabeledFeatureSpaceType LabeledFeatureSpaceType;
+  using PDFImageType = typename FilterType::PDFImageType;
+  //using LabeledFeatureSpaceType = typename FilterType::LabeledFeatureSpaceType;
 
-  typedef typename FilterType::ProbabilityImageType  ProbabilityImageType;
-  typedef typename FilterType::ProbabilityVectorType ProbabilityVectorType;
-  typedef typename FilterType::FeatureVectorType     FeatureVectorType;
-  typedef typename FilterType::VectorDoubleType      VectorDoubleType;
-  typedef typename FilterType::VectorUIntType        VectorUIntType;
-  typedef typename FilterType::ObjectIdListType      ObjectIdListType;
+  using ProbabilityImageType = typename FilterType::ProbabilityImageType;
+  using ProbabilityVectorType = typename FilterType::ProbabilityVectorType;
+  using FeatureVectorType = typename FilterType::FeatureVectorType;
+  using VectorDoubleType = typename FilterType::VectorDoubleType;
+  using VectorUIntType = typename FilterType::VectorUIntType;
+  using ObjectIdListType = typename FilterType::ObjectIdListType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -174,8 +174,7 @@ private:
   void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
     {};
 
-  typedef itk::tube::FeatureVectorGenerator< InputImageType >
-                                                  FeatureVectorGeneratorType;
+  using FeatureVectorGeneratorType = itk::tube::FeatureVectorGenerator< InputImageType >;
 
   typename FilterType::Pointer                    m_Filter;
   typename FeatureVectorGeneratorType::Pointer    m_FVGenerator;

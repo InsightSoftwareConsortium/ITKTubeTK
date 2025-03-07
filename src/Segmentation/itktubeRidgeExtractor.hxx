@@ -209,7 +209,7 @@ RidgeExtractor<TInputImage>
     m_DataFunc->SetUseRelativeSpacing( true );
     m_DataFunc->SetInputImage( inputImage );
 
-    typedef MinimumMaximumImageFilter<InputImageType> MinMaxFilterType;
+    using MinMaxFilterType = MinimumMaximumImageFilter<InputImageType>;
     typename MinMaxFilterType::Pointer minMaxFilter =
       MinMaxFilterType::New();
     minMaxFilter->SetInput( m_InputImage );
@@ -2042,8 +2042,8 @@ bool
 RidgeExtractor<TInputImage>
 ::DeleteTube( const TubeType * tube, TDrawMask * drawMask )
 {
-  typedef typename TDrawMask::PixelType      DrawPixelType;
-  typedef NeighborhoodIterator< TDrawMask >  NeighborhoodIteratorType;
+  using DrawPixelType = typename TDrawMask::PixelType;
+  using NeighborhoodIteratorType = NeighborhoodIterator< TDrawMask >;
 
   if( tube->GetPoints().size() == 0 )
     {
@@ -2172,7 +2172,7 @@ RidgeExtractor<TInputImage>
     std::cout << "*** START: AddTube" << std::endl;
     }
 
-  typedef NeighborhoodIterator< TDrawMask > NeighborhoodIteratorType;
+  using NeighborhoodIteratorType = NeighborhoodIterator< TDrawMask >;
 
   int tubeId = tube->GetId();
   int tubePointCount = 0;

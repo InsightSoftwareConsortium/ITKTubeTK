@@ -43,10 +43,9 @@ public:
 
   typedef OptimizedSpatialObjectToImageRegistrationMethod
                                                   Self;
-  typedef SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-                                                  Superclass;
-  typedef SmartPointer<Self>                      Pointer;
-  typedef SmartPointer<const Self>                ConstPointer;
+  using Superclass = SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   itkTypeMacro( OptimizedSpatialObjectToImageRegistrationMethod,
                 SpatialObjectToImageRegistrationMethod );
@@ -56,16 +55,16 @@ public:
   //
   // Typedefs from Superclass
   //
-  typedef TImage                         ImageType;
-  typedef SpatialObject<ObjectDimension> SpatialObjectType;
+  using ImageType = TImage;
+  using SpatialObjectType = SpatialObject<ObjectDimension>;
 
-  typedef typename ImageType::PixelType PixelType;
+  using PixelType = typename ImageType::PixelType;
 
-  typedef typename Superclass::TransformType TransformType;
+  using TransformType = typename Superclass::TransformType;
 
-  typedef typename TransformType::ParametersType TransformParametersType;
+  using TransformParametersType = typename TransformType::ParametersType;
 
-  typedef typename TransformType::ParametersType TransformParametersScalesType;
+  using TransformParametersScalesType = typename TransformType::ParametersType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
@@ -134,7 +133,7 @@ protected:
 
   itkSetMacro( TransformMethodEnum, TransformMethodEnumType );
 
-  typedef SpatialObjectToImageMetric<ObjectDimension, TImage>       MetricType;
+  using MetricType = SpatialObjectToImageMetric<ObjectDimension, TImage>;
 
   virtual void Optimize( MetricType * metric );
 

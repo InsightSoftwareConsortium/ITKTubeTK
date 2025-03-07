@@ -140,7 +140,7 @@ SpatialObjectSource< TOutputSpatialObject >
   //    CopyInformation, so implementations are equivalent.
   outputObject->CopyInformation( graft );
 
-  typedef typename SpatialObjectType::ChildrenListType ChildrenListType;
+  using ChildrenListType = typename SpatialObjectType::ChildrenListType;
   ChildrenListType *children = graftObject->GetChildren();
   typename ChildrenListType::const_iterator it = children->begin();
   while( it != children->end() )

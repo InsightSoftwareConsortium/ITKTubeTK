@@ -39,13 +39,13 @@ int itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest( int argc,
     }
   // Define the dimension of the images
   enum { Dimension = 3 };
-  typedef double      InputPixelType;
+  using InputPixelType = double;
 
   // Declare the types of the images
-  typedef itk::Image< InputPixelType, Dimension>           InputImageType;
-  typedef itk::Image< InputPixelType, Dimension>           OutputImageType;
+  using InputImageType = itk::Image< InputPixelType, Dimension>;
+  using OutputImageType = itk::Image< InputPixelType, Dimension>;
 
-  typedef itk::ImageFileReader< InputImageType  >      ImageReaderType;
+  using ImageReaderType = itk::ImageFileReader< InputImageType  >;
 
   ImageReaderType::Pointer   reader = ImageReaderType::New();
   reader->SetFileName ( argv[1] );
@@ -63,8 +63,8 @@ int itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest( int argc,
 
 
   // Declare the anisotropic diffusion edge enhancement filter
-  typedef itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter<
-    InputImageType, OutputImageType>  CoherenceEnhancingFilterType;
+  using CoherenceEnhancingFilterType = itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter<
+    InputImageType, OutputImageType>;
 
   // Create a edge enhancement Filter
   CoherenceEnhancingFilterType::Pointer CoherenceEnhancingFilter =
@@ -136,7 +136,7 @@ int itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest( int argc,
 
   std::cout << "Writing out the enhanced image to " <<  argv[2] << std::endl;
 
-  typedef itk::ImageFileWriter< OutputImageType  >      ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< OutputImageType  >;
   ImageWriterType::Pointer writer = ImageWriterType::New();
 
   writer->SetFileName( argv[2] );

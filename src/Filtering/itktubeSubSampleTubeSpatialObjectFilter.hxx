@@ -59,7 +59,7 @@ SubSampleTubeSpatialObjectFilter< ObjectDimension >
   typename TubeSpatialObjectType::Pointer output =
     dynamic_cast<TubeSpatialObjectType *>( this->GetOutput() );
 
-  typedef typename TubeSpatialObjectType::TubePointListType TubePointListType;
+  using TubePointListType = typename TubeSpatialObjectType::TubePointListType;
   const TubePointListType & inputPoints = input->GetPoints();
   TubePointListType & outputPoints = output->GetPoints();
 

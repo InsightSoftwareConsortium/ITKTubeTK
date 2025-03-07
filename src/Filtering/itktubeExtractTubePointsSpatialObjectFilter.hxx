@@ -126,7 +126,7 @@ ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
   const GroupSpatialObjectType * inputGroup = this->GetInput();
 
   char childName[] = "Tube";
-  typedef typename TubeSpatialObjectType::ChildrenListType ChildrenListType;
+  using ChildrenListType = typename TubeSpatialObjectType::ChildrenListType;
   ChildrenListType * childrenList =
     inputGroup->GetChildren( inputGroup->GetMaximumDepth(), childName );
 

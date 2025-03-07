@@ -83,8 +83,8 @@ InverseIntensityImageFilter<TInputImage>
   if( m_InverseMaximumIntensity ) { myMax = m_InverseMaximumIntensity;  }
 
   // ** Build Input and output iterators for inversion ** //
-  typedef  ImageRegionConstIterator<InputImageType>      InputIteratorType;
-  typedef  ImageRegionIterator<OutputImageType>          OutputIteratorType;
+  using InputIteratorType = ImageRegionConstIterator<InputImageType>;
+  using OutputIteratorType = ImageRegionIterator<OutputImageType>;
   InputIteratorType it_input( InputImage, region );
   OutputIteratorType it_output( OutputImage, region );
 

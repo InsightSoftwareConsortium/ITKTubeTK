@@ -67,7 +67,7 @@ ComputeImageSimilarityMetrics< TInputImage >
     }
 
   // Normalize the images
-  typedef itk::NormalizeImageFilter< ImageType, ImageType > NormFilterType;
+  using NormFilterType = itk::NormalizeImageFilter< ImageType, ImageType >;
 
   typename NormFilterType::Pointer norm1 = NormFilterType::New();
   norm1->SetInput( m_Input1 );
@@ -78,28 +78,27 @@ ComputeImageSimilarityMetrics< TInputImage >
   norm2->Update();
 
   // Compute similarity
-  typedef itk::ImageToImageMetric< ImageType, ImageType > MetricType;
+  using MetricType = itk::ImageToImageMetric< ImageType, ImageType >;
   typename MetricType::Pointer metric;
 
-  typedef itk::IdentityTransform< double,
-    TInputImage::ImageDimension > TransformType;
+  using TransformType = itk::IdentityTransform< double,
+    TInputImage::ImageDimension >;
   typename TransformType::Pointer transform = TransformType::New();
 
-  typedef itk::LinearInterpolateImageFunction< ImageType, double >
-    InterpolatorType;
+  using InterpolatorType = itk::LinearInterpolateImageFunction< ImageType, double >;
   typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
   interpolator->SetInputImage( norm2->GetOutput() );
 
   if( !m_UseCorrelation )
     {
-    typedef itk::MutualInformationImageToImageMetric< ImageType,
-      ImageType >                                          MIMetricType;
+    using MIMetricType = itk::MutualInformationImageToImageMetric< ImageType,
+      ImageType >;
     metric = MIMetricType::New();
     }
   else
     {
-    typedef itk::NormalizedCorrelationImageToImageMetric< ImageType,
-      ImageType >                                          CorMetricType;
+    using CorMetricType = itk::NormalizedCorrelationImageToImageMetric< ImageType,
+      ImageType >;
     metric = CorMetricType::New();
     }
 

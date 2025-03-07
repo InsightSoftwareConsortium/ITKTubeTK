@@ -131,13 +131,13 @@ class DiffusiveRegistrationFilter
                                             TDeformationField >
 {
 public:
-  /** Standard class typedefs. */
-  typedef DiffusiveRegistrationFilter                         Self;
-  typedef PDEDeformableRegistrationFilter< TFixedImage,
+  /** Standard class type alias. */
+  using Self = DiffusiveRegistrationFilter;
+  using Superclass = PDEDeformableRegistrationFilter< TFixedImage,
                                           TMovingImage,
-                                          TDeformationField > Superclass;
-  typedef SmartPointer< Self >                                Pointer;
-  typedef SmartPointer< const Self >                          ConstPointer;
+                                          TDeformationField >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory.  Usually defined with
     * itkNewMacro(), but the type of the registration function depends on
@@ -156,14 +156,14 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     Superclass::ImageDimension );
 
-  /** Convenient typedefs from the superclass. */
-  typedef typename Superclass::FixedImageType        FixedImageType;
-  typedef typename Superclass::FixedImagePointer     FixedImagePointer;
-  typedef typename Superclass::MovingImageType       MovingImageType;
-  typedef typename Superclass::MovingImagePointer    MovingImagePointer;
-  typedef typename MovingImageType::PixelType        MovingImagePixelType;
-  typedef typename Superclass::DisplacementFieldType DeformationFieldType;
-  typedef typename Superclass::TimeStepType          TimeStepType;
+  /** Convenient type alias from the superclass. */
+  using FixedImageType = typename Superclass::FixedImageType;
+  using FixedImagePointer = typename Superclass::FixedImagePointer;
+  using MovingImageType = typename Superclass::MovingImageType;
+  using MovingImagePointer = typename Superclass::MovingImagePointer;
+  using MovingImagePixelType = typename MovingImageType::PixelType;
+  using DeformationFieldType = typename Superclass::DisplacementFieldType;
+  using TimeStepType = typename Superclass::TimeStepType;
 
   typedef typename Superclass::DisplacementFieldPointer
       DeformationFieldPointer;
@@ -171,31 +171,28 @@ public:
       FiniteDifferenceFunctionType;
 
   /** Typedefs used in multithreading */
-  typedef typename Superclass::OutputImageType          OutputImageType;
-  typedef typename Superclass::OutputImagePointer       OutputImagePointer;
-  typedef typename Superclass::UpdateBufferType         UpdateBufferType;
-  typedef typename UpdateBufferType::RegionType         ThreadRegionType;
+  using OutputImageType = typename Superclass::OutputImageType;
+  using OutputImagePointer = typename Superclass::OutputImagePointer;
+  using UpdateBufferType = typename Superclass::UpdateBufferType;
+  using ThreadRegionType = typename UpdateBufferType::RegionType;
 
   /** Output image and update buffer types */
-  typedef itk::ImageRegionIterator< OutputImageType >
-      OutputImageRegionType;
+  using OutputImageRegionType = itk::ImageRegionIterator< OutputImageType >;
   typedef typename FiniteDifferenceFunctionType::NeighborhoodType
       NeighborhoodType;
 
   /** The registration function type */
-  typedef AnisotropicDiffusiveRegistrationFunction
-      < FixedImageType, MovingImageType, DeformationFieldType >
-      RegistrationFunctionType;
+  using RegistrationFunctionType = AnisotropicDiffusiveRegistrationFunction
+      < FixedImageType, MovingImageType, DeformationFieldType >;
   typedef typename RegistrationFunctionType::RegularizationFunctionType
       RegularizationFunctionType;
   typedef typename RegistrationFunctionType::RegularizationFunctionPointer
       RegularizationFunctionPointer;
-  typedef typename RegistrationFunctionType::SpacingType SpacingType;
+  using SpacingType = typename RegistrationFunctionType::SpacingType;
 
   /** Deformation component types ( i.e. component of a deformation field,
    *  still a vector */
-  typedef std::vector< DeformationFieldPointer >
-      DeformationFieldArrayType;
+  using DeformationFieldArrayType = std::vector< DeformationFieldPointer >;
   typedef typename RegistrationFunctionType::DeformationVectorType
       DeformationVectorType;
 
@@ -207,9 +204,8 @@ public:
       DeformationVectorComponentImageType;
   typedef typename DeformationVectorComponentImageType::Pointer
       DeformationVectorComponentImagePointer;
-  typedef typename itk::FixedArray< DeformationVectorComponentImagePointer,
-    ImageDimension >
-      DeformationComponentImageArrayType;
+  using DeformationComponentImageArrayType = typename itk::FixedArray< DeformationVectorComponentImagePointer,
+    ImageDimension >;
   typedef typename RegistrationFunctionType
     ::DeformationVectorComponentNeighborhoodType
       DeformationVectorComponentNeighborhoodType;
@@ -223,8 +219,7 @@ public:
       DiffusionTensorImageType;
   typedef typename DiffusionTensorImageType::Pointer
       DiffusionTensorImagePointer;
-  typedef std::vector< DiffusionTensorImagePointer >
-      DiffusionTensorImageArrayType;
+  using DiffusionTensorImageArrayType = std::vector< DiffusionTensorImagePointer >;
   typedef typename RegistrationFunctionType::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodType;
   typedef typename
@@ -238,10 +233,8 @@ public:
       ScalarDerivativeImageType;
   typedef typename ScalarDerivativeImageType::Pointer
       ScalarDerivativeImagePointer;
-  typedef typename itk::FixedArray< ScalarDerivativeImagePointer >
-      ScalarDerivativeImageArrayType;
-  typedef std::vector< ScalarDerivativeImageArrayType >
-      ScalarDerivativeImageArrayVectorType;
+  using ScalarDerivativeImageArrayType = typename itk::FixedArray< ScalarDerivativeImagePointer >;
+  using ScalarDerivativeImageArrayVectorType = std::vector< ScalarDerivativeImageArrayType >;
   typedef typename RegistrationFunctionType::ScalarDerivativeImageRegionType
       ScalarDerivativeImageRegionType;
   typedef typename
@@ -255,12 +248,9 @@ public:
       TensorDerivativeImageType;
   typedef typename TensorDerivativeImageType::Pointer
       TensorDerivativeImagePointer;
-  typedef std::vector< TensorDerivativeImagePointer >
-      TensorDerivativeImageVectorType;
-  typedef typename itk::FixedArray< TensorDerivativeImagePointer >
-      TensorDerivativeImageArrayType;
-  typedef std::vector< TensorDerivativeImageArrayType >
-      TensorDerivativeImageArrayVectorType;
+  using TensorDerivativeImageVectorType = std::vector< TensorDerivativeImagePointer >;
+  using TensorDerivativeImageArrayType = typename itk::FixedArray< TensorDerivativeImagePointer >;
+  using TensorDerivativeImageArrayVectorType = std::vector< TensorDerivativeImageArrayType >;
   typedef typename RegistrationFunctionType::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
   typedef typename
@@ -273,10 +263,8 @@ public:
       ThreadTensorDerivativeImageRegionType;
 
   /** Typedefs for the multiplication vectors */
-  typedef typename itk::FixedArray< DeformationFieldPointer >
-      DeformationVectorImageArrayType;
-  typedef std::vector< DeformationVectorImageArrayType >
-      DeformationVectorImageArrayVectorType;
+  using DeformationVectorImageArrayType = typename itk::FixedArray< DeformationFieldPointer >;
+  using DeformationVectorImageArrayVectorType = std::vector< DeformationVectorImageArrayType >;
   typedef typename RegistrationFunctionType
     ::DeformationVectorImageRegionType
       DeformationVectorImageRegionType;
@@ -285,12 +273,11 @@ public:
       DeformationVectorImageRegionArrayVectorType;
 
   /** Stopping criterion mask types */
-  typedef FixedImageType    StoppingCriterionMaskImageType;
-  typedef FixedImagePointer StoppingCriterionMaskPointer;
+  using StoppingCriterionMaskImageType = FixedImageType;
+  using StoppingCriterionMaskPointer = FixedImagePointer;
   typedef typename StoppingCriterionMaskImageType::RegionType
     ThreadStoppingCriterionMaskImageRegionType;
-  typedef ImageRegionIterator< StoppingCriterionMaskImageType >
-    StoppingCriterionMaskImageRegionType;
+  using StoppingCriterionMaskImageRegionType = ImageRegionIterator< StoppingCriterionMaskImageType >;
 
   /** Convenience functions to set/get the registration functions
    * timestep. */

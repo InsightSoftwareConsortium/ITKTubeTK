@@ -129,11 +129,11 @@ class GeneralizedDistanceTransformImageFilter
 : public ImageToImageFilter<TFunctionImage, TDistanceImage>
 {
 public:
-  /** Standard class typedefs. */
-  typedef GeneralizedDistanceTransformImageFilter            Self;
-  typedef ImageToImageFilter<TFunctionImage, TDistanceImage> Superclass;
-  typedef SmartPointer<Self>                                 Pointer;
-  typedef SmartPointer<const Self>                           ConstPointer;
+  /** Standard class type alias. */
+  using Self = GeneralizedDistanceTransformImageFilter;
+  using Superclass = ImageToImageFilter<TFunctionImage, TDistanceImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory */
   itkNewMacro( Self );
@@ -143,17 +143,17 @@ public:
     ImageToImageFilter );
 
   /** Types and pointer types for the images and their content. */
-  typedef TFunctionImage                                  FunctionImageType;
-  typedef TDistanceImage                                  DistanceImageType;
-  typedef TLabelImage                                     LabelImageType;
-  typedef typename TFunctionImage::SpacingType::ValueType SpacingType;
+  using FunctionImageType = TFunctionImage;
+  using DistanceImageType = TDistanceImage;
+  using LabelImageType = TLabelImage;
+  using SpacingType = typename TFunctionImage::SpacingType::ValueType;
 
-  typedef typename FunctionImageType::ConstPointer   FunctionImageConstPointer;
-  typedef typename DistanceImageType::Pointer        DistanceImagePointer;
-  typedef typename LabelImageType::Pointer           LabelImagePointer;
-  typedef typename FunctionImageType::IndexValueType IndexValueType;
-  typedef typename LabelImageType::PixelType         LabelPixelType;
-  typedef typename DistanceImageType::PixelType      DistancePixelType;
+  using FunctionImageConstPointer = typename FunctionImageType::ConstPointer;
+  using DistanceImagePointer = typename DistanceImageType::Pointer;
+  using LabelImagePointer = typename LabelImageType::Pointer;
+  using IndexValueType = typename FunctionImageType::IndexValueType;
+  using LabelPixelType = typename LabelImageType::PixelType;
+  using DistancePixelType = typename DistanceImageType::PixelType;
 
   /** Set if a voronoi map should be created. */
   void SetCreateVoronoiMap( bool );
@@ -236,7 +236,7 @@ private:
   // functions and types help with this.
 
   /** The index positions on which a parabola apex can be. */
-  typedef typename DistanceImageType::IndexValueType AbscissaIndexType;
+  using AbscissaIndexType = typename DistanceImageType::IndexValueType;
 
   /** A parabola p( x ) = ( x-is )^2+y is defined by the apex abscissa
    * index i and the apex height y. The label is additional information
@@ -252,7 +252,7 @@ private:
 
   /** The envelope is a vector of parabolas, ordered from left to right by
    * their abscissa ordinate. */
-  typedef std::vector<Parabola> Parabolas;
+  using Parabolas = std::vector<Parabola>;
 
   /** Compute the intersection abscissa of two parabolas p and q. Their apex
    * ordinates have to be different.

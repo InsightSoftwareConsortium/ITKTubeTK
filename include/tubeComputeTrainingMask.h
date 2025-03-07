@@ -43,11 +43,11 @@ template< class TImage, class TLabelMap=itk::Image< typename TImage::PixelType,
 class ComputeTrainingMask : public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ComputeTrainingMask                             Self;
-  typedef itk::ProcessObject                              Superclass;
-  typedef itk::SmartPointer< Self >                       Pointer;
-  typedef itk::SmartPointer< const Self >                 ConstPointer;
+  /** Standard class type alias. */
+  using Self = ComputeTrainingMask;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -57,14 +57,13 @@ public:
 
 
   /** Typedef to images */
-  typedef TImage                                          ImageType;
-  typedef TLabelMap                                       LabelMapType;
+  using ImageType = TImage;
+  using LabelMapType = TLabelMap;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageType::ImageDimension );
 
-  typedef typename itk::tube::ComputeTrainingMaskFilter< ImageType, LabelMapType >
-                                                          FilterType;
+  using FilterType = typename itk::tube::ComputeTrainingMaskFilter< ImageType, LabelMapType >;
 
   tubeWrapSetMacro( Gap, double, Filter );
   tubeWrapGetMacro( Gap, double, Filter );

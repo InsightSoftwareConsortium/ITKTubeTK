@@ -452,7 +452,7 @@ Read( const char * _headerName )
 
   for( unsigned int i = 0; i < nObjects; ++i )
     {
-    typedef Image< float, PARZEN_MAX_NUMBER_OF_FEATURES >  pdfImageType;
+    using pdfImageType = Image< float, PARZEN_MAX_NUMBER_OF_FEATURES >;
 
     std::string filePath;
     MET_GetFilePath( _headerName, filePath );

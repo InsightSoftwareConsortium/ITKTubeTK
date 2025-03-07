@@ -39,12 +39,12 @@ class ParabolicFitOptimizer1D : public Optimizer1D
 {
 public:
 
-  typedef ParabolicFitOptimizer1D        Self;
-  typedef Optimizer1D                    Superclass;
-  typedef Self *                         Pointer;
-  typedef const Self *                   ConstPointer;
+  using Self = ParabolicFitOptimizer1D;
+  using Superclass = Optimizer1D;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef Superclass::ValueFunctionType  ValueFunctionType;
+  using ValueFunctionType = Superclass::ValueFunctionType;
 
   /** Return the type of this object. */
   tubeTypeMacro( ParabolicFitOptimizer1D );

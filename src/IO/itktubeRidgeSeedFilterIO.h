@@ -47,9 +47,9 @@ class RidgeSeedFilterIO
 {
 public:
 
-  typedef RidgeSeedFilterIO< TImage, TLabelMap >  RidgeSeedFilterIOType;
+  using RidgeSeedFilterIOType = RidgeSeedFilterIO< TImage, TLabelMap >;
 
-  typedef RidgeSeedFilter< TImage, TLabelMap >    RidgeSeedFilterType;
+  using RidgeSeedFilterType = RidgeSeedFilter< TImage, TLabelMap >;
 
   RidgeSeedFilterIO( void );
 

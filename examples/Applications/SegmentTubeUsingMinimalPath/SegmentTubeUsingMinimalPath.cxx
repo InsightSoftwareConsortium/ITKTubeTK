@@ -56,16 +56,15 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-  typedef TPixel                                           PixelType;
-  typedef itk::Image< PixelType, DimensionT >              ImageType;
-  typedef itk::ImageFileReader< ImageType >                ReaderType;
-  typedef itk::SpatialObjectReader< DimensionT >           TubesReaderType;
-  typedef itk::Point< double, DimensionT >                 PointType;
+  using PixelType = TPixel;
+  using ImageType = itk::Image< PixelType, DimensionT >;
+  using ReaderType = itk::ImageFileReader< ImageType >;
+  using TubesReaderType = itk::SpatialObjectReader< DimensionT >;
+  using PointType = itk::Point< double, DimensionT >;
 
   timeCollector.Start( "Load data" );
 
-  typedef tube::SegmentTubeUsingMinimalPath< DimensionT, PixelType >
-                                                         FilterType;
+  using FilterType = tube::SegmentTubeUsingMinimalPath< DimensionT, PixelType >;
   typename FilterType::Pointer filter = FilterType::New();
 
   //Read input Image
@@ -219,7 +218,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Write output data" );
 
   // Write output TRE file
-  typedef itk::SpatialObjectWriter< DimensionT > TubeWriterType;
+  using TubeWriterType = itk::SpatialObjectWriter< DimensionT >;
   typename TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
   try
     {

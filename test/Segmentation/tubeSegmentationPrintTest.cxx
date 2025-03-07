@@ -31,8 +31,8 @@ limitations under the License.
 int tubeSegmentationPrintTest( int itkNotUsed( argc ),
   char * itkNotUsed( argv )[] )
 {
-  typedef itk::Image< float, 2 >         ImageType;
-  typedef itk::Image< unsigned char, 2 > CharImageType;
+  using ImageType = itk::Image< float, 2 >;
+  using CharImageType = itk::Image< unsigned char, 2 >;
 
   itk::tube::PDFSegmenterParzen< ImageType, ImageType >::Pointer
     pdfSegmenterParzen = itk::tube::PDFSegmenterParzen< ImageType,

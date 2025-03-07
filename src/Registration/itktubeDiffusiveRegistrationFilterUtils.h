@@ -92,10 +92,10 @@ public:
 template< class TImage >
 struct FaceStruct
 {
-  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<
-    typename TImage::ObjectType >                     FaceCalculatorType;
-    typedef typename FaceCalculatorType::FaceListType FaceListType;
-    typedef typename FaceListType::iterator           FaceListIteratorType;
+  using FaceCalculatorType = NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<
+    typename TImage::ObjectType >;
+    using FaceListType = typename FaceCalculatorType::FaceListType;
+    using FaceListIteratorType = typename FaceListType::iterator;
 
   FaceStruct( void )
     {

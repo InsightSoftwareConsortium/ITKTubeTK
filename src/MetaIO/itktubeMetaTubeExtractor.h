@@ -53,11 +53,11 @@ class MetaTubeExtractor : public MetaForm
 {
 public:
 
-  typedef std::vector< double >   ValueListType;
+  using ValueListType = std::vector< double >;
 
-  typedef vnl_vector< double >    VectorType;
+  using VectorType = vnl_vector< double >;
 
-  typedef vnl_matrix< double >    MatrixType;
+  using MatrixType = vnl_matrix< double >;
 
   MetaTubeExtractor( void );
 

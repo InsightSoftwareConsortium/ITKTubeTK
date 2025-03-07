@@ -479,7 +479,7 @@ typename PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >::M
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::GetValue( const ParametersType & parameters ) const
 {
-  typedef vnl_vector_fixed<double, ImageDimension> VnlVectorType;
+  using VnlVectorType = vnl_vector_fixed<double, ImageDimension>;
 
   itkDebugMacro( << "**** Get Value ****" );
   itkDebugMacro( << "Parameters = " << parameters );
@@ -573,8 +573,8 @@ void
 PointBasedSpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 ::GetValueAndDerivative( const ParametersType & parameters, MeasureType & value, DerivativeType & derivative ) const
 {
-  typedef vnl_matrix_fixed<double, ImageDimension, ImageDimension> VnlMatrixType;
-  typedef vnl_vector_fixed<double, ImageDimension> VnlVectorType;
+  using VnlMatrixType = vnl_matrix_fixed<double, ImageDimension, ImageDimension>;
+  using VnlVectorType = vnl_vector_fixed<double, ImageDimension>;
 
   itkDebugMacro( << "**** Get Derivative ****" );
   itkDebugMacro( << "Parameters = " << parameters );

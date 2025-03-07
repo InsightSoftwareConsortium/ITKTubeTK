@@ -129,16 +129,16 @@ PadImageFilter<TInputImage, TOutputImage>
   ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
   progress->SetMiniPipelineFilter( this );
 
-  typedef typename itk::PadImageFilter
-    < InputImageType, OutputImageType > PadType;
-  typedef typename itk::ConstantPadImageFilter
-    < InputImageType, OutputImageType > ConstantPadType;
-  typedef typename itk::ZeroFluxNeumannPadImageFilter
-    < InputImageType, OutputImageType > ZeroFluxPadType;
-  typedef typename itk::MirrorPadImageFilter
-    < InputImageType, OutputImageType > MirrorPadType;
-  typedef typename itk::WrapPadImageFilter
-    < InputImageType, OutputImageType > WrapPadType;
+  using PadType = typename itk::PadImageFilter
+    < InputImageType, OutputImageType >;
+  using ConstantPadType = typename itk::ConstantPadImageFilter
+    < InputImageType, OutputImageType >;
+  using ZeroFluxPadType = typename itk::ZeroFluxNeumannPadImageFilter
+    < InputImageType, OutputImageType >;
+  using MirrorPadType = typename itk::MirrorPadImageFilter
+    < InputImageType, OutputImageType >;
+  using WrapPadType = typename itk::WrapPadImageFilter
+    < InputImageType, OutputImageType >;
   SizeType s;
  
   typename PadType::Pointer pad0;

@@ -84,7 +84,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
   m_ReportProgress = false;
 
   // Optimizer
-  m_UseEvolutionaryOptimization = true ;
+  m_UseEvolutionaryOptimization = true;
 
   // Loaded
   m_LoadedMatrixTransform = NULL;
@@ -680,8 +680,8 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::ResampleSpatialObject( const SpatialObjectType * movingSpatialObject,
                  const MatrixTransformType * matrixTransform, double portion)
 {
-  typedef PointBasedSpatialObjectTransformFilter<MatrixTransformType,
-    ObjectDimension> ResampleFilterType;
+  using ResampleFilterType = PointBasedSpatialObjectTransformFilter<MatrixTransformType,
+    ObjectDimension>;
 
   if( movingSpatialObject == NULL
       && matrixTransform == NULL
@@ -799,8 +799,8 @@ void
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::LoadTransform( const std::string & filename, bool invert )
 {
-  typedef TransformFileReader                    TransformReaderType;
-  typedef TransformReaderType::TransformListType TransformListType;
+  using TransformReaderType = TransformFileReader;
+  using TransformListType = TransformReaderType::TransformListType;
 
   TransformReaderType::Pointer transformReader = TransformReaderType::New();
   transformReader->SetFileName( filename );
@@ -829,7 +829,7 @@ void
 SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>
 ::SaveTransform( const std::string & filename )
 {
-  typedef TransformFileWriter TransformWriterType;
+  using TransformWriterType = TransformFileWriter;
 
   TransformWriterType::Pointer transformWriter = TransformWriterType::New();
   transformWriter->SetFileName( filename );

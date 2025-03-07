@@ -44,13 +44,12 @@ int itktubePointBasedSpatialObjectTransformFilterTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typedef itk::GroupSpatialObject<3>                      GroupType;
-  typedef itk::SpatialObjectReader<3>                     SOReaderType;
-  typedef itk::SpatialObjectWriter<3>                     SOWriterType;
-  typedef itk::Euler3DTransform<double>                   TransformType;
+  using GroupType = itk::GroupSpatialObject<3>;
+  using SOReaderType = itk::SpatialObjectReader<3>;
+  using SOWriterType = itk::SpatialObjectWriter<3>;
+  using TransformType = itk::Euler3DTransform<double>;
 
-  typedef itk::tube::PointBasedSpatialObjectTransformFilter<TransformType,3>
-    TransformFilterType;
+  using TransformFilterType = itk::tube::PointBasedSpatialObjectTransformFilter<TransformType,3>;
 
   // read in vessel
   SOReaderType::Pointer reader = SOReaderType::New();
@@ -152,16 +151,15 @@ int itktubePointBasedSpatialObjectTransformFilterTest( int argc, char * argv[] )
   if( std::atoi( argv[11] ) )
     {
     // Write vessel as an image
-    typedef itk::Image<double, 3>                           ImageType;
-    typedef itk::ImageFileReader<ImageType>                 ImageReaderType;
-    typedef itk::ImageFileWriter<ImageType>                 ImageWriterType;
+    using ImageType = itk::Image<double, 3>;
+    using ImageReaderType = itk::ImageFileReader<ImageType>;
+    using ImageWriterType = itk::ImageFileWriter<ImageType>;
 
     ImageReaderType::Pointer imageReader = ImageReaderType::New();
     imageReader->SetFileName( argv[3] );
     imageReader->Update();
 
-    typedef itk::SpatialObjectToImageFilter<GroupType, ImageType>
-      SpatialObjectToImageFilterType;
+    using SpatialObjectToImageFilterType = itk::SpatialObjectToImageFilter<GroupType, ImageType>;
     SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
       SpatialObjectToImageFilterType::New();
 

@@ -53,57 +53,54 @@ class PointBasedSpatialObjectToImageMetric
   : public SpatialObjectToImageMetric< ObjectDimension, TFixedImage >
 {
 public:
-  /** Standard class typedefs. */
-  typedef PointBasedSpatialObjectToImageMetric     Self;
-  typedef SpatialObjectToImageMetric< ObjectDimension, TFixedImage >
-                                                   Superclass;
-  typedef SmartPointer< Self >                     Pointer;
-  typedef SmartPointer< const Self >               ConstPointer;
+  /** Standard class type alias. */
+  using Self = PointBasedSpatialObjectToImageMetric;
+  using Superclass = SpatialObjectToImageMetric< ObjectDimension, TFixedImage >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /**  Dimension of the image and tube.  */
   itkStaticConstMacro( ImageDimension, unsigned int,
     TFixedImage::ImageDimension );
 
-  typedef TFixedImage                              FixedImageType;
-  typedef SpatialObject< ObjectDimension >         MovingSpatialObjectType;
+  using FixedImageType = TFixedImage;
+  using MovingSpatialObjectType = SpatialObject< ObjectDimension >;
 
   /**  Type of the Transform Base class */
-  typedef typename Superclass::TransformType       TransformType;
-  typedef typename TransformType::Pointer          TransformPointer;
-  typedef typename TransformType::ParametersType   TransformParametersType;
-  typedef typename TransformType::JacobianType     TransformJacobianType;
+  using TransformType = typename Superclass::TransformType;
+  using TransformPointer = typename TransformType::Pointer;
+  using TransformParametersType = typename TransformType::ParametersType;
+  using TransformJacobianType = typename TransformType::JacobianType;
 
-  typedef typename Superclass::MovingPointType     MovingPointType;
-  typedef typename Superclass::FixedPointType      FixedPointType;
+  using MovingPointType = typename Superclass::MovingPointType;
+  using FixedPointType = typename Superclass::FixedPointType;
 
-  typedef PointBasedSpatialObject< ObjectDimension >
-                                                   PointBasedSpatialObjectType;
+  using PointBasedSpatialObjectType = PointBasedSpatialObject< ObjectDimension >;
   typedef typename PointBasedSpatialObjectType::SpatialObjectPointType
                                                    PointBasedSpatialObjectPointType;
 
-  typedef PointBasedSpatialObject< ObjectDimension >
-                                                   BlobType;
+  using BlobType = PointBasedSpatialObject< ObjectDimension >;
   typedef typename BlobType::SpatialObjectPointType
                                                    BlobPointType;
   typedef typename BlobType::SpatialObjectPointListType
                                                    BlobPointListType;
-  typedef std::vector< double >                    BlobPointWeightListType;
+  using BlobPointWeightListType = std::vector< double >;
 
-  typedef TubeSpatialObject< ObjectDimension >     TubeType;
-  typedef typename TubeType::TubePointType         TubePointType;
-  typedef typename TubeType::TubePointListType     TubePointListType;
-  typedef std::vector< double >                    TubePointWeightListType;
+  using TubeType = TubeSpatialObject< ObjectDimension >;
+  using TubePointType = typename TubeType::TubePointType;
+  using TubePointListType = typename TubeType::TubePointListType;
+  using TubePointWeightListType = std::vector< double >;
 
-  typedef SurfaceSpatialObject< ObjectDimension >    SurfaceType;
-  typedef typename SurfaceType::SurfacePointType     SurfacePointType;
-  typedef typename SurfaceType::SurfacePointListType SurfacePointListType;
-  typedef std::vector< double >                      SurfacePointWeightListType;
+  using SurfaceType = SurfaceSpatialObject< ObjectDimension >;
+  using SurfacePointType = typename SurfaceType::SurfacePointType;
+  using SurfacePointListType = typename SurfaceType::SurfacePointListType;
+  using SurfacePointWeightListType = std::vector< double >;
 
-  typedef typename Superclass::ParametersType      ParametersType;
-  typedef typename Superclass::MeasureType         MeasureType;
-  typedef typename Superclass::FixedVectorType     FixedVectorType;
-  typedef typename Superclass::MovingVectorType    MovingVectorType;
-  typedef typename Superclass::DerivativeType      DerivativeType;
+  using ParametersType = typename Superclass::ParametersType;
+  using MeasureType = typename Superclass::MeasureType;
+  using FixedVectorType = typename Superclass::FixedVectorType;
+  using MovingVectorType = typename Superclass::MovingVectorType;
+  using DerivativeType = typename Superclass::DerivativeType;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( PointBasedSpatialObjectToImageMetric,

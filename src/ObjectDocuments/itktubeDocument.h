@@ -42,10 +42,10 @@ class Document : public DataObject
 {
 public:
 
-  typedef Document                    Self;
-  typedef DataObject                  Superclass;
-  typedef SmartPointer< Self >        Pointer;
-  typedef SmartPointer< const Self >  ConstPointer;
+  using Self = Document;
+  using Superclass = DataObject;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkNewMacro( Self );
   itkTypeMacro( Document, DataObject );

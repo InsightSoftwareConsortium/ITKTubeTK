@@ -39,9 +39,9 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef TPixel                                              PixelType;
-  typedef itk::Image< PixelType, VDimension >                 ImageType;
-  typedef itk::ImageFileReader< ImageType >                   ReaderType;
+  using PixelType = TPixel;
+  using ImageType = itk::Image< PixelType, VDimension >;
+  using ReaderType = itk::ImageFileReader< ImageType >;
 
   typename ReaderType::Pointer reader1 = ReaderType::New();
   typename ReaderType::Pointer reader2 = ReaderType::New();
@@ -75,8 +75,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer image1 = reader1->GetOutput();
   typename ImageType::Pointer image2 = reader2->GetOutput();
 
-  typedef tube::ComputeBinaryImageSimilarityMetrics< ImageType >
-    MetricFilterType;
+  using MetricFilterType = tube::ComputeBinaryImageSimilarityMetrics< ImageType >;
 
   typename MetricFilterType::Pointer metric = MetricFilterType::New();
   metric->SetSourceImage( image1 );

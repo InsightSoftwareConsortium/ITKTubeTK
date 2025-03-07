@@ -39,12 +39,12 @@ class GoldenMeanOptimizer1D : public Optimizer1D
 {
 public:
 
-  typedef GoldenMeanOptimizer1D          Self;
-  typedef Optimizer1D                    Superclass;
-  typedef Self *                         Pointer;
-  typedef const Self *                   ConstPointer;
+  using Self = GoldenMeanOptimizer1D;
+  using Superclass = Optimizer1D;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef Superclass::ValueFunctionType  ValueFunctionType;
+  using ValueFunctionType = Superclass::ValueFunctionType;
 
   /** Return the type of this object. */
   tubeTypeMacro( GoldenMeanOptimizer1D );

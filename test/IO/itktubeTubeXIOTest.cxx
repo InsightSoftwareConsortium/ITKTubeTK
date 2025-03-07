@@ -35,7 +35,7 @@ int itktubeTubeXIOTest( int argc, char * argv[] )
     }
 
   // Declare the type for the Filter
-  typedef itk::tube::TubeXIO< 3 >    IOMethodType;
+  using IOMethodType = itk::tube::TubeXIO< 3 >;
   IOMethodType::Pointer ioMethod = IOMethodType::New();
 
   if( !ioMethod->Read( argv[1] ) )

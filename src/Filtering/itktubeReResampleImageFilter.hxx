@@ -186,31 +186,30 @@ Update( void )
       }
     }
 
-  typedef typename itk::InterpolateImageFunction< ImageType, double >
-    InterpType;
+  using InterpType = typename itk::InterpolateImageFunction< ImageType, double >;
   typename InterpType::Pointer interp;
   if( m_Interpolator == "Sinc" )
     {
-    typedef typename itk::WindowedSincInterpolateImageFunction<
-      ImageType, VDimension >     SincInterpType;
+    using SincInterpType = typename itk::WindowedSincInterpolateImageFunction<
+      ImageType, VDimension >;
     interp = SincInterpType::New();
     }
   else if( m_Interpolator == "BSpline" )
     {
-    typedef typename itk::BSplineInterpolateImageFunction<
-      ImageType, double >         BSplineInterpType;
+    using BSplineInterpType = typename itk::BSplineInterpolateImageFunction<
+      ImageType, double >;
     interp = BSplineInterpType::New();
     }
   else if( m_Interpolator == "NearestNeighbor" )
     {
-    typedef typename itk::NearestNeighborInterpolateImageFunction<
-      ImageType, double >    NearestNeighborInterpType;
+    using NearestNeighborInterpType = typename itk::NearestNeighborInterpolateImageFunction<
+      ImageType, double >;
     interp = NearestNeighborInterpType::New();
     }
   else // default = if( interpolator == "Linear" )
     {
-    typedef typename itk::LinearInterpolateImageFunction<
-      ImageType, double >    LinearInterpType;
+    using LinearInterpType = typename itk::LinearInterpolateImageFunction<
+      ImageType, double >;
     interp = LinearInterpType::New();
     }
   m_Filter->SetInterpolator( interp );

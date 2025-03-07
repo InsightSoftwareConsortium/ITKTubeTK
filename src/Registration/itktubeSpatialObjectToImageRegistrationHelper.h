@@ -46,10 +46,10 @@ class SpatialObjectToImageRegistrationHelper : public Object
 
 public:
 
-  typedef SpatialObjectToImageRegistrationHelper Self;
-  typedef Object                                 Superclass;
-  typedef SmartPointer<Self>                     Pointer;
-  typedef SmartPointer<const Self>               ConstPointer;
+  using Self = SpatialObjectToImageRegistrationHelper;
+  using Superclass = Object;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   itkTypeMacro( SpatialObjectToImageRegistrationHelper, Object );
 
@@ -58,10 +58,10 @@ public:
   //
   // Custom Typedefs
   //
-  typedef TImage ImageType;
-  typedef typename TImage::PixelType PixelType;
+  using ImageType = TImage;
+  using PixelType = typename TImage::PixelType;
 
-  typedef SpatialObject< ObjectDimension > SpatialObjectType;
+  using SpatialObjectType = SpatialObject< ObjectDimension >;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TImage::ImageDimension );
@@ -69,26 +69,20 @@ public:
   //
   // Available Registration Methods
   //
-  typedef SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-    RegistrationMethodType;
+  using RegistrationMethodType = SpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>;
 
-  typedef InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-    InitialRegistrationMethodType;
+  using InitialRegistrationMethodType = InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>;
 
-  typedef OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension,
-    TImage> OptimizedRegistrationMethodType;
+  using OptimizedRegistrationMethodType = OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension,
+    TImage>;
 
-  typedef RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-    RigidRegistrationMethodType;
+  using RigidRegistrationMethodType = RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>;
 
-  typedef AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>
-    AffineRegistrationMethodType;
+  using AffineRegistrationMethodType = AffineSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>;
 
-  typedef ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TImage>
-    Affine2DRegistrationMethodType;
+  using Affine2DRegistrationMethodType = ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod<TImage>;
 
-  typedef ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>
-    Affine3DRegistrationMethodType;
+  using Affine3DRegistrationMethodType = ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>;
 
   //
   // Typedefs for the parameters of the registration methods
@@ -124,9 +118,9 @@ public:
   typedef typename InitialRegistrationMethodType::TransformType
     InitialTransformType;
 
-  typedef std::vector<std::vector<float>  > LandmarkVectorType;
+  using LandmarkVectorType = std::vector<std::vector<float>  >;
 
-  typedef typename TImage::PointType PointType;
+  using PointType = typename TImage::PointType;
 
   typedef typename RigidRegistrationMethodType::TransformType
     RigidTransformType;
@@ -140,7 +134,7 @@ public:
   typedef typename Affine3DRegistrationMethodType::TransformType
     Affine3DTransformType;
 
-  typedef AffineTransformType MatrixTransformType;
+  using MatrixTransformType = AffineTransformType;
 
   //
   // Custom Methods

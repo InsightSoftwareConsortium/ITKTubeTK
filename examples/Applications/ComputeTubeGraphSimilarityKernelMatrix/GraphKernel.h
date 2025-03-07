@@ -64,12 +64,12 @@ public:
     }; // End struct nodeInfoType
 
   /** The graph type */
-  typedef boost::adjacency_list< boost::listS,
+  using GraphType = boost::adjacency_list< boost::listS,
                                  boost::vecS,
                                  boost::undirectedS,
                                  nodeInfoType,
                                  boost::property< boost::edge_weight_t,
-                                                  double> > GraphType;
+                                                  double> >;
   /** Access vertex index information */
   typedef boost::property_map<
     GraphType, boost::vertex_index_t>::type     IndexMapType;
@@ -78,14 +78,14 @@ public:
   typedef boost::graph_traits<GraphType>
     ::adjacency_iterator                        AdjacencyIteratorType;
 
-  typedef std::pair< AdjacencyIteratorType,
-                     AdjacencyIteratorType>     VertexNeighborType;
+  using VertexNeighborType = std::pair< AdjacencyIteratorType,
+                     AdjacencyIteratorType>;
 
   /** Access to shortest-path information */
-  typedef boost::exterior_vertex_property<
-    GraphType, double>                          DistancePropertyType;
-  typedef DistancePropertyType::matrix_type     DistanceMatrixType;
-  typedef DistancePropertyType::matrix_map_type DistanceMatrixMapType;
+  using DistancePropertyType = boost::exterior_vertex_property<
+    GraphType, double>;
+  using DistanceMatrixType = DistancePropertyType::matrix_type;
+  using DistanceMatrixMapType = DistancePropertyType::matrix_map_type;
 
   /** Vertex descriptor and vertex iterator */
   typedef boost::graph_traits<

@@ -46,20 +46,20 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
-  typedef signed short PixelType;
+  using PixelType = signed short;
   const unsigned int Dimension = 3;
 
-  typedef itk::Image<PixelType, Dimension> ImageType;
+  using ImageType = itk::Image<PixelType, Dimension>;
 
-  typedef itk::ImageFileReader<ImageType> Reader2DType;
-  typedef itk::ImageSeriesReader<ImageType> ReaderType;
-  typedef itk::GDCMImageIO ImageIOType;
+  using Reader2DType = itk::ImageFileReader<ImageType>;
+  using ReaderType = itk::ImageSeriesReader<ImageType>;
+  using ImageIOType = itk::GDCMImageIO;
 
-  typedef std::vector<std::string> SeriesIdContainer;
-  typedef std::vector<std::string> FileNamesContainer;
-  typedef itk::ImageFileWriter<ImageType> WriterType;
+  using SeriesIdContainer = std::vector<std::string>;
+  using FileNamesContainer = std::vector<std::string>;
+  using WriterType = itk::ImageFileWriter<ImageType>;
 
-  typedef itk::GDCMSeriesFileNames NamesGeneratorType;
+  using NamesGeneratorType = itk::GDCMSeriesFileNames;
 
   ReaderType::Pointer reader;
   ImageIOType::Pointer dicomIO;

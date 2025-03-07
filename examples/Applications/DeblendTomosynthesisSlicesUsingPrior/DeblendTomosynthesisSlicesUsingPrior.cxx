@@ -51,19 +51,19 @@ class BlendCostFunction : public SingleValuedCostFunction
 {
 public:
 
-  typedef BlendCostFunction                       Self;
-  typedef SingleValuedCostFunction                Superclass;
-  typedef SmartPointer< Self >                    Pointer;
-  typedef SmartPointer< const Self >              ConstPointer;
+  using Self = BlendCostFunction;
+  using Superclass = SingleValuedCostFunction;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkTypeMacro( BlendCostFunction, SingleValuedCostFunction );
 
   itkNewMacro( Self );
 
-  typedef Superclass::MeasureType         MeasureType;
-  typedef Superclass::ParametersType      ParametersType;
-  typedef Superclass::DerivativeType      DerivativeType;
-  typedef itk::Image<TPixel, VDimension>  ImageType;
+  using MeasureType = Superclass::MeasureType;
+  using ParametersType = Superclass::ParametersType;
+  using DerivativeType = Superclass::DerivativeType;
+  using ImageType = itk::Image<TPixel, VDimension>;
 
   unsigned int GetNumberOfParameters( void ) const override
     {
@@ -128,10 +128,8 @@ public:
 
   MeasureType GetValue( const ParametersType & params ) const override
     {
-    typedef itk::ImageRegionConstIterator< ImageType >
-      ConstImageIteratorType;
-    typedef itk::ImageRegionIterator< ImageType >
-      ImageIteratorType;
+    using ConstImageIteratorType = itk::ImageRegionConstIterator< ImageType >;
+    using ImageIteratorType = itk::ImageRegionIterator< ImageType >;
 
     double result = 0;
     double sum255 = 0;
@@ -256,22 +254,22 @@ class BlendScaleCostFunction : public SingleValuedCostFunction
 {
 public:
 
-  typedef BlendScaleCostFunction                  Self;
-  typedef SingleValuedCostFunction                Superclass;
-  typedef SmartPointer< Self >                    Pointer;
-  typedef SmartPointer< const Self >              ConstPointer;
+  using Self = BlendScaleCostFunction;
+  using Superclass = SingleValuedCostFunction;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   itkTypeMacro( BlendScaleCostFunction, SingleValuedCostFunction );
 
   itkNewMacro( Self );
 
-  typedef Superclass::MeasureType         MeasureType;
-  typedef Superclass::ParametersType      ParametersType;
-  typedef Superclass::DerivativeType      DerivativeType;
-  typedef itk::Image<TPixel, VDimension>  ImageType;
+  using MeasureType = Superclass::MeasureType;
+  using ParametersType = Superclass::ParametersType;
+  using DerivativeType = Superclass::DerivativeType;
+  using ImageType = itk::Image<TPixel, VDimension>;
 
-  typedef itk::tube::SmoothingRecursiveGaussianImageFilter< ImageType,
-    ImageType >                           BlurFilterType;
+  using BlurFilterType = itk::tube::SmoothingRecursiveGaussianImageFilter< ImageType,
+    ImageType >;
 
   unsigned int GetNumberOfParameters( void ) const override
     {
@@ -336,10 +334,8 @@ public:
 
   MeasureType GetValue( const ParametersType & params ) const override
     {
-    typedef itk::ImageRegionConstIterator< ImageType >
-      ConstImageIteratorType;
-    typedef itk::ImageRegionIterator< ImageType >
-      ImageIteratorType;
+    using ConstImageIteratorType = itk::ImageRegionConstIterator< ImageType >;
+    using ImageIteratorType = itk::ImageRegionIterator< ImageType >;
 
     typename BlurFilterType::Pointer filterBottom = BlurFilterType::New();
     filterBottom->SetInput( m_ImageBottom );
@@ -497,8 +493,8 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                PixelType;
-  typedef itk::Image< PixelType, VDimension >  ImageType;
+  using PixelType = float;
+  using ImageType = itk::Image< PixelType, VDimension >;
 
   /** Read input images */
   typename ImageType::Pointer imageBottom;
@@ -508,7 +504,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start( "Read" );
     {
-    typedef itk::ImageFileReader< ImageType >   ReaderType;
+    using ReaderType = itk::ImageFileReader< ImageType >;
 
     typename ReaderType::Pointer readerBottom = ReaderType::New();
     typename ReaderType::Pointer readerMiddle = ReaderType::New();
@@ -591,10 +587,9 @@ int DoIt( int argc, char * argv[] )
   blendParams[2] = offset;
   if( 1 )
     {
-    typedef itk::tube::BlendCostFunction< PixelType, VDimension >
-                                                  BlendCostFunctionType;
-    typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
-    typedef itk::FRPROptimizer                    OptimizerType;
+    using BlendCostFunctionType = itk::tube::BlendCostFunction< PixelType, VDimension >;
+    using InitialOptimizerType = itk::OnePlusOneEvolutionaryOptimizer;
+    using OptimizerType = itk::FRPROptimizer;
 
     typename BlendCostFunctionType::Pointer costFunc =
       BlendCostFunctionType::New();
@@ -605,7 +600,7 @@ int DoIt( int argc, char * argv[] )
 
     if( metricMask.size() > 0 )
       {
-      typedef itk::ImageFileReader< ImageType >   ReaderType;
+      using ReaderType = itk::ImageFileReader< ImageType >;
       typename ReaderType::Pointer readerMask = ReaderType::New();
       readerMask->SetFileName( metricMask.c_str() );
       readerMask->Update();
@@ -688,10 +683,9 @@ int DoIt( int argc, char * argv[] )
   blendScaleParams[3] = sigma;
   if( 1 )
     {
-    typedef itk::tube::BlendScaleCostFunction< PixelType, VDimension >
-                                                  BlendScaleCostFunctionType;
-    typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
-    typedef itk::FRPROptimizer                    OptimizerType;
+    using BlendScaleCostFunctionType = itk::tube::BlendScaleCostFunction< PixelType, VDimension >;
+    using InitialOptimizerType = itk::OnePlusOneEvolutionaryOptimizer;
+    using OptimizerType = itk::FRPROptimizer;
 
     typename BlendScaleCostFunctionType::Pointer costFunc =
       BlendScaleCostFunctionType::New();
@@ -702,7 +696,7 @@ int DoIt( int argc, char * argv[] )
 
     if( metricMask.size() > 0 )
       {
-      typedef itk::ImageFileReader< ImageType >   ReaderType;
+      using ReaderType = itk::ImageFileReader< ImageType >;
       typename ReaderType::Pointer readerMask = ReaderType::New();
       readerMask->SetFileName( metricMask.c_str() );
       readerMask->Update();
@@ -780,7 +774,7 @@ int DoIt( int argc, char * argv[] )
               << " Result = " << result << std::endl;
     }
 
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+  using ImageWriterType = itk::ImageFileWriter< ImageType  >;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
 
   writer->SetFileName( outputMiddle.c_str() );

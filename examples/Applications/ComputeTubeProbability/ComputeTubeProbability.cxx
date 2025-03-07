@@ -40,12 +40,12 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef itk::Image< TPixel, VDimension >            ImageType;
-  typedef itk::GroupSpatialObject< VDimension >       GroupType;
-  typedef itk::ImageFileReader< ImageType >           ImageReaderType;
-  typedef itk::SpatialObjectReader< VDimension >      SOReaderType;
-  typedef itk::TubeSpatialObject< VDimension >        TubeType;
-  typedef typename TubeType::TubePointType            TubePointType;
+  using ImageType = itk::Image< TPixel, VDimension >;
+  using GroupType = itk::GroupSpatialObject< VDimension >;
+  using ImageReaderType = itk::ImageFileReader< ImageType >;
+  using SOReaderType = itk::SpatialObjectReader< VDimension >;
+  using TubeType = itk::TubeSpatialObject< VDimension >;
+  using TubePointType = typename TubeType::TubePointType;
 
 
   tube::CLIProgressReporter progressReporter( "tubeDensityProbability",

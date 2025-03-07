@@ -58,9 +58,9 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef TPixel                               PixelType;
-  typedef itk::Image< PixelType, VDimension >  ImageType;
-  typedef itk::ImageFileReader< ImageType >    ReaderType;
+  using PixelType = TPixel;
+  using ImageType = itk::Image< PixelType, VDimension >;
+  using ReaderType = itk::ImageFileReader< ImageType >;
 
   timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -100,7 +100,7 @@ int DoIt( int argc, char * argv[] )
 
     timeCollector.Start( "CropFilter" );
 
-    typedef tube::CropImage< ImageType, ImageType > CropFilterType;
+    using CropFilterType = tube::CropImage< ImageType, ImageType >;
     typename CropFilterType::Pointer cropFilter = CropFilterType::New();
 
     cropFilter->SetInput( reader->GetOutput() );
@@ -209,7 +209,7 @@ int DoIt( int argc, char * argv[] )
     progressReporter.Report( 0.8 );
     timeCollector.Start( "Save data" );
 
-    typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+    using ImageWriterType = itk::ImageFileWriter< ImageType  >;
 
     typename ImageWriterType::Pointer writer = ImageWriterType::New();
     writer->SetFileName( outputVolume.c_str() );
@@ -246,7 +246,7 @@ int DoIt( int argc, char * argv[] )
       {
       //Create new instance of cropFilter each time we extract a portion of
       // the image to reset parameters
-      typedef tube::CropImage<ImageType, ImageType> CropFilterType;
+      using CropFilterType = tube::CropImage<ImageType, ImageType>;
       typename CropFilterType::Pointer cropFilter = CropFilterType::New();
       cropFilter->SetInput( inputImage );
 
@@ -298,7 +298,7 @@ int DoIt( int argc, char * argv[] )
       progressReporter.Report( 0.8 );
       timeCollector.Start( "Save data" );
 
-      typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+      using ImageWriterType = itk::ImageFileWriter< ImageType  >;
       typename ImageWriterType::Pointer writer = ImageWriterType::New();
 
       std::stringstream out;

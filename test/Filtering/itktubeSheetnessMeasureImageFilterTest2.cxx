@@ -45,13 +45,13 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   enum { Dimension = 3 };
 
   // Define the pixel type
-  typedef short PixelType;
+  using PixelType = short;
 
   // Declare the types of the images
-  typedef itk::Image<PixelType, Dimension>           InputImageType;
+  using InputImageType = itk::Image<PixelType, Dimension>;
 
   // Declare the reader
-  typedef itk::ImageFileReader< InputImageType > ReaderType;
+  using ReaderType = itk::ImageFileReader< InputImageType >;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
@@ -59,11 +59,11 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   reader->Update();
 
   // Declare the type for the Hessian filter
-  typedef itk::HessianRecursiveGaussianImageFilter<
-                                            InputImageType >  HessianFilterType;
+  using HessianFilterType = itk::HessianRecursiveGaussianImageFilter<
+                                            InputImageType >;
 
   // Declare the type for the sheetness measure filter
-  typedef itk::tube::SheetnessMeasureImageFilter< float >  SheetnessFilterType;
+  using SheetnessFilterType = itk::tube::SheetnessMeasureImageFilter< float >;
 
   // Create a Hessian Filter
   HessianFilterType::Pointer filterHessian = HessianFilterType::New();
@@ -90,10 +90,10 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
 
   //Write out the sheetness image
   //Define output type
-  typedef SheetnessFilterType::OutputImageType SheetnessImageType;
+  using SheetnessImageType = SheetnessFilterType::OutputImageType;
 
   std::cout << "Write out the sheetness image" << std::endl;
-  typedef itk::ImageFileWriter<SheetnessImageType>     SheetnessImageWriterType;
+  using SheetnessImageWriterType = itk::ImageFileWriter<SheetnessImageType>;
   SheetnessImageWriterType::Pointer writer= SheetnessImageWriterType::New();
   writer->SetFileName( argv[2] );
   writer->SetInput( filterSheetness->GetOutput() );
@@ -111,14 +111,11 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   //Compute the eigenvalues
   typedef  SheetnessFilterType::InputImageType
     SymmetricSecondRankTensorImageType;
-  typedef  itk::FixedArray< double, Dimension>
-    EigenValueArrayType;
-  typedef  itk::Image< EigenValueArrayType, Dimension>
-    EigenValueImageType;
+  using EigenValueArrayType = itk::FixedArray< double, Dimension>;
+  using EigenValueImageType = itk::Image< EigenValueArrayType, Dimension>;
 
-  typedef itk::SymmetricEigenAnalysisImageFilter<
-    SymmetricSecondRankTensorImageType, EigenValueImageType>
-    EigenAnalysisFilterType;
+  using EigenAnalysisFilterType = itk::SymmetricEigenAnalysisImageFilter<
+    SymmetricSecondRankTensorImageType, EigenValueImageType>;
 
   EigenAnalysisFilterType::Pointer eigenAnalysisFilter =
     EigenAnalysisFilterType::New();
@@ -131,14 +128,12 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
 
 
   //Generate and write out the primary eigenvector image
-  typedef  itk::Matrix< double, 3, 3>
-    EigenVectorMatrixType;
-  typedef  itk::Image< EigenVectorMatrixType, Dimension>
-    EigenVectorImageType;
+  using EigenVectorMatrixType = itk::Matrix< double, 3, 3>;
+  using EigenVectorImageType = itk::Image< EigenVectorMatrixType, Dimension>;
 
-  typedef  itk::tube::SymmetricEigenVectorAnalysisImageFilter<
+  using EigenVectorAnalysisFilterType = itk::tube::SymmetricEigenVectorAnalysisImageFilter<
     SymmetricSecondRankTensorImageType, EigenValueImageType,
-    EigenVectorImageType> EigenVectorAnalysisFilterType;
+    EigenVectorImageType>;
 
   EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter =
     EigenVectorAnalysisFilterType::New();
@@ -154,7 +149,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   EigenVectorImageType::ConstPointer eigenVectorImage =
     eigenVectorAnalysisFilter->GetOutput();
 
-  typedef itk::VectorImage< double, 3 >    VectorImageType;
+  using VectorImageType = itk::VectorImage< double, 3 >;
   VectorImageType::Pointer primaryEigenVectorImage = VectorImageType::New();
 
   unsigned int vectorLength = 3; // Eigenvector length
@@ -265,7 +260,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
     ++primaryEigenVectorImageIterator;
     }
 
-  typedef itk::ImageFileWriter< VectorImageType > EigenVectorWriterType;
+  using EigenVectorWriterType = itk::ImageFileWriter< VectorImageType >;
   EigenVectorWriterType::Pointer eigenVectorWriter =
     EigenVectorWriterType::New();
   eigenVectorWriter->SetFileName( argv[3] );

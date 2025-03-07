@@ -67,11 +67,11 @@ template< class TImage, class TMaskImage >
 class VectorImageToListGenerator : public ProcessObject
 {
 public:
-  /** Standard class typedefs */
-  typedef VectorImageToListGenerator        Self;
-  typedef ProcessObject                     Superclass;
-  typedef SmartPointer< Self >              Pointer;
-  typedef SmartPointer< const Self >        ConstPointer;
+  /** Standard class type alias */
+  using Self = VectorImageToListGenerator;
+  using Superclass = ProcessObject;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( VectorImageToListGenerator, ProcessObject );
@@ -79,33 +79,33 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Image typedefs */
-  typedef TImage                           ImageType;
-  typedef typename ImageType::Pointer      ImagePointer;
-  typedef typename ImageType::ConstPointer ImageConstPointer;
-  typedef typename ImageType::PixelType    PixelType;
-  typedef PixelType                        MeasurementVectorType;
+  /** Image type alias */
+  using ImageType = TImage;
+  using ImagePointer = typename ImageType::Pointer;
+  using ImageConstPointer = typename ImageType::ConstPointer;
+  using PixelType = typename ImageType::PixelType;
+  using MeasurementVectorType = PixelType;
 
-  /** Mask Image typedefs */
-  typedef TMaskImage                           MaskImageType;
-  typedef typename MaskImageType::Pointer      MaskImagePointer;
-  typedef typename MaskImageType::ConstPointer MaskImageConstPointer;
-  typedef typename MaskImageType::PixelType    MaskPixelType;
+  /** Mask Image type alias */
+  using MaskImageType = TMaskImage;
+  using MaskImagePointer = typename MaskImageType::Pointer;
+  using MaskImageConstPointer = typename MaskImageType::ConstPointer;
+  using MaskPixelType = typename MaskImageType::PixelType;
 
    /** Type of the output list sample */
-  typedef itk::Statistics::ListSample< MeasurementVectorType >  ListSampleType;
+  using ListSampleType = itk::Statistics::ListSample< MeasurementVectorType >;
 
-  /** Superclass typedefs for Measurement vector, measurement,
+  /** Superclass type alias for Measurement vector, measurement,
    * Instance Identifier, frequency, size, size element value */
-  typedef PixelTraits< typename ImageType::PixelType > PixelTraitsType;
+  using PixelTraitsType = PixelTraits< typename ImageType::PixelType >;
   typedef typename ListSampleType::MeasurementVectorSizeType
                                      MeasurementVectorSizeType;
 
-  typedef DataObject::Pointer DataObjectPointer;
+  using DataObjectPointer = DataObject::Pointer;
 
   /** ListSample is not a DataObject, we need to decorate it to push it down
    * a ProcessObject's pipeline */
-  typedef DataObjectDecorator< ListSampleType >  ListSampleOutputType;
+  using ListSampleOutputType = DataObjectDecorator< ListSampleType >;
 
   /** the number of components in a measurement vector */
   itkStaticConstMacro( MeasurementVectorSize, unsigned int,

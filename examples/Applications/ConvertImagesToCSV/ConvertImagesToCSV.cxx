@@ -54,16 +54,15 @@ template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
-  typedef float                                     InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension >  InputImageType;
-  typedef itk::ImageFileReader< InputImageType >    ReaderType;
+  using InputPixelType = float;
+  using InputImageType = itk::Image< InputPixelType, VDimension >;
+  using ReaderType = itk::ImageFileReader< InputImageType >;
 
-  typedef float                                     MaskPixelType;
-  typedef itk::Image< MaskPixelType, VDimension >   InputMaskType;
-  typedef itk::ImageFileReader< InputMaskType >     MaskReaderType;
+  using MaskPixelType = float;
+  using InputMaskType = itk::Image< MaskPixelType, VDimension >;
+  using MaskReaderType = itk::ImageFileReader< InputMaskType >;
 
-  typedef tube::ConvertImagesToCSV< InputImageType, InputMaskType >
-    ConvertImagesToCSVFilterType;
+  using ConvertImagesToCSVFilterType = tube::ConvertImagesToCSV< InputImageType, InputMaskType >;
   typename ConvertImagesToCSVFilterType::Pointer filter
           = ConvertImagesToCSVFilterType::New();
 
@@ -119,7 +118,7 @@ int DoIt( int argc, char * argv[] )
     ++numImages;
     }
 
-  typedef vnl_matrix<InputPixelType> MatrixType;
+  using MatrixType = vnl_matrix<InputPixelType>;
   const unsigned int ARows =
     inputMask->GetLargestPossibleRegion().GetNumberOfPixels() / stride;
   const unsigned int ACols = imageFileNameList.size() + 1;
@@ -137,7 +136,7 @@ int DoIt( int argc, char * argv[] )
   MatrixType submatrix = matrix.extract( numberRows, ACols );
 
   // write out the vnl_matrix object
-  typedef itk::CSVNumericObjectFileWriter<InputPixelType> WriterType;
+  using WriterType = itk::CSVNumericObjectFileWriter<InputPixelType>;
   WriterType::Pointer writer = WriterType::New();
 
   writer->SetFieldDelimiterCharacter( ',' );

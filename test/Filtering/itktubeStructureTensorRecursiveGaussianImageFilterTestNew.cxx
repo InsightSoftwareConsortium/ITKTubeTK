@@ -30,8 +30,8 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTestNew( int argc, char * 
 {
   // Define image
   enum { Dimension = 3 };
-  typedef double PixelType;
-  typedef itk::Image<PixelType, Dimension>  ImageType;
+  using PixelType = double;
+  using ImageType = itk::Image<PixelType, Dimension>;
 
   // Set the value of sigma if specified in command line
   double sigma = 0.1;
@@ -88,14 +88,14 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTestNew( int argc, char * 
     it.Set( static_cast<ImageType::PixelType>( std::sin( point[0] ) ) ); //sinx
     }
 
-  typedef itk::ImageFileWriter<ImageType>        WriterType;
+  using WriterType = itk::ImageFileWriter<ImageType>;
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( "sin.mha" );
   writer->SetInput( inImage );
   writer->Update();
 
   // Create a copy of the image
-  typedef itk::ImageDuplicator<ImageType>        ImageDuplicatorType;
+  using ImageDuplicatorType = itk::ImageDuplicator<ImageType>;
 
   ImageDuplicatorType::Pointer duplicator = ImageDuplicatorType::New();
   duplicator->SetInputImage( inImage );
@@ -116,8 +116,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTestNew( int argc, char * 
     }
 
   // Compute reference image as convolution of Gaussian and product of gradient
-  typedef itk::RecursiveGaussianImageFilter<ImageType, ImageType>
-                                                 GaussianFilterType;
+  using GaussianFilterType = itk::RecursiveGaussianImageFilter<ImageType, ImageType>;
 
   ImageType::Pointer refImage = prodImage;
   for( unsigned int i = 0; i < Dimension; i++ )
@@ -136,8 +135,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTestNew( int argc, char * 
   writer1->Update();
 
   // Declare the type for the filter
-  typedef itk::tube::StructureTensorRecursiveGaussianImageFilter<ImageType>
-                                                     StructureTensorFilterType;
+  using StructureTensorFilterType = itk::tube::StructureTensorRecursiveGaussianImageFilter<ImageType>;
 
   // Create a  Filter
   StructureTensorFilterType::Pointer filter = StructureTensorFilterType::New();
@@ -152,12 +150,12 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTestNew( int argc, char * 
   filter->Update();
 
   // Define output type
-  typedef StructureTensorFilterType::OutputImageType TensorImageType;
-  typedef StructureTensorFilterType::OutputPixelType TensorImagePixelType;
+  using TensorImageType = StructureTensorFilterType::OutputImageType;
+  using TensorImagePixelType = StructureTensorFilterType::OutputPixelType;
 
   TensorImageType::Pointer outImage = filter->GetOutput();
 
-  typedef itk::ImageFileWriter<TensorImageType>     TensorWriterType;
+  using TensorWriterType = itk::ImageFileWriter<TensorImageType>;
   TensorWriterType::Pointer writer2 = TensorWriterType::New();
   writer2->SetFileName( "tensor.nrrd" );
   writer2->SetInput( outImage );

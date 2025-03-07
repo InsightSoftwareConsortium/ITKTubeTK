@@ -30,13 +30,13 @@ class Spline1DValueFunction : public UserFunction< double, double >
 {
 public:
 
-  typedef Spline1DValueFunction           Self;
-  typedef UserFunction< double, double >  Superclass;
-  typedef Self *                          Pointer;
-  typedef const Self *                    ConstPointer;
+  using Self = Spline1DValueFunction;
+  using Superclass = UserFunction< double, double >;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef double                          InputType;
-  typedef double                          OutputType;
+  using InputType = double;
+  using OutputType = double;
 
   tubeTypeMacro( Spline1DValueFunction );
 
@@ -66,13 +66,13 @@ class Spline1DDerivativeFunction : public UserFunction< double, double >
 {
 public:
 
-  typedef Spline1DDerivativeFunction      Self;
-  typedef UserFunction< double, double >  Superclass;
-  typedef Self *                          Pointer;
-  typedef const Self *                    ConstPointer;
+  using Self = Spline1DDerivativeFunction;
+  using Superclass = UserFunction< double, double >;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef double                          InputType;
-  typedef double                          OutputType;
+  using InputType = double;
+  using OutputType = double;
 
   tubeTypeMacro( Spline1DDerivativeFunction );
 

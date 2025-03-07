@@ -38,11 +38,10 @@ class CompareImageWithPrior
 {
 public:
 
-  typedef float                                 PixelType;
-  typedef itk::Image< PixelType, VDimension >   ImageType;
+  using PixelType = float;
+  using ImageType = itk::Image< PixelType, VDimension >;
 
-  typedef itk::RigidImageToImageRegistrationMethod< ImageType >
-                                                    RegistrationMethodType;
+  using RegistrationMethodType = itk::RigidImageToImageRegistrationMethod< ImageType >;
 
   CompareImageWithPrior( void );
   ~CompareImageWithPrior( void );

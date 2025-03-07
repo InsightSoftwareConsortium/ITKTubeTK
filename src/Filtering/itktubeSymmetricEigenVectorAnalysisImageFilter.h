@@ -53,7 +53,7 @@ class SymmetricEigenVectorAnalysisFunction
 public:
   SymmetricEigenVectorAnalysisFunction( void ) {}
   ~SymmetricEigenVectorAnalysisFunction( void ) {}
-  typedef SymmetricEigenAnalysis< TInput, TOutput, TMatrix > CalculatorType;
+  using CalculatorType = SymmetricEigenAnalysis< TInput, TOutput, TMatrix >;
   bool operator!=( const SymmetricEigenVectorAnalysisFunction & ) const
     {
     return false;
@@ -129,20 +129,20 @@ class SymmetricEigenVectorAnalysisImageFilter
       typename TOutputMatrix::PixelType > >
 {
 public:
-  /** Standard class typedefs. */
-  typedef SymmetricEigenVectorAnalysisImageFilter  Self;
-  typedef UnaryFunctorImageFilter<TInputImage, TOutputMatrix,
+  /** Standard class type alias. */
+  using Self = SymmetricEigenVectorAnalysisImageFilter;
+  using Superclass = UnaryFunctorImageFilter<TInputImage, TOutputMatrix,
     Functor::SymmetricEigenVectorAnalysisFunction<
       typename TInputImage::PixelType, typename TOutputImage::PixelType,
-      typename TOutputMatrix::PixelType > >        Superclass;
+      typename TOutputMatrix::PixelType > >;
 
-  typedef SmartPointer< Self >                     Pointer;
-  typedef SmartPointer< const Self >               ConstPointer;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef typename Superclass::OutputImageType     OutputImageType;
-  typedef typename TOutputImage::PixelType         OutputPixelType;
-  typedef typename TInputImage::PixelType          InputPixelType;
-  typedef typename Superclass::FunctorType         FunctorType;
+  using OutputImageType = typename Superclass::OutputImageType;
+  using OutputPixelType = typename TOutputImage::PixelType;
+  using InputPixelType = typename TInputImage::PixelType;
+  using FunctorType = typename Superclass::FunctorType;
 
   /** Typedefs to order eigenvalues.
    * OrderByValue:      lambda_1 < lambda_2 < ....
@@ -150,7 +150,7 @@ public:
    * DoNotOrder:        Default order of eigenvalues obtained after QL
    *                    method
    */
-  //typedef typename FunctorType::EigenValueOrderEnum EigenValueOrderEnum;
+  //using EigenValueOrderEnum = typename FunctorType::EigenValueOrderEnum;
 
   /** Order eigenvalues. Default is to OrderByValue:
    * lambda_1 < lambda_2 < .... */

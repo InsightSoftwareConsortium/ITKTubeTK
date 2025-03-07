@@ -122,7 +122,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
 
   this->m_WhitenMean.resize(numFeatureImages);
   this->m_WhitenStdDev.resize(numFeatureImages);
-  typedef itk::StatisticsImageFilter<FeatureImageType> StatsFilterType;
+  using StatsFilterType = itk::StatisticsImageFilter<FeatureImageType>;
   for( unsigned int f=0; f<numFeatureImages; ++f )
     {
     typename StatsFilterType::Pointer stats = StatsFilterType::New();
@@ -159,8 +159,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
     unsigned int imageFirstFeat = feat;
     if( m_UseIntensityOnly )
       {
-      typedef itk::DiscreteGaussianImageFilter<TImage, FeatureImageType>
-        BlurFilterType;
+      using BlurFilterType = itk::DiscreteGaussianImageFilter<TImage, FeatureImageType>;
       for( unsigned int s=0; s<m_Scales.size(); ++s )
         {
         typename BlurFilterType::Pointer blurFilter = BlurFilterType::New();
@@ -171,8 +170,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
         m_FeatureImageList[feat++] = blurFilter->GetOutput();
         if( s == 0 )
           {
-          typedef itk::SubtractImageFilter< FeatureImageType, TImage >
-            DiffFilterType;
+          using DiffFilterType = itk::SubtractImageFilter< FeatureImageType, TImage >;
           typename DiffFilterType::Pointer diffFilter = DiffFilterType::New();
           diffFilter->SetInput1(m_FeatureImageList[feat-1]);
           diffFilter->SetInput2(this->m_InputImageList[img]);
@@ -181,8 +179,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
           }
         else
           {
-          typedef itk::SubtractImageFilter< FeatureImageType, FeatureImageType >
-            DiffFilterType;
+          using DiffFilterType = itk::SubtractImageFilter< FeatureImageType, FeatureImageType >;
           typename DiffFilterType::Pointer diffFilter = DiffFilterType::New();
           diffFilter->SetInput1(m_FeatureImageList[feat-1]);
           diffFilter->SetInput2(m_FeatureImageList[feat-numFeaturesPerScale-1]);
@@ -193,7 +190,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
       }
     else
       {
-      typedef RidgeFFTFilter< TImage > RidgeFilterType;
+      using RidgeFilterType = RidgeFFTFilter< TImage >;
       typename RidgeFilterType::Pointer ridgeF = RidgeFilterType::New();
       ridgeF->SetInput( this->m_InputImageList[img] );
       ridgeF->SetUseIntensityOnly( false );
@@ -209,7 +206,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
         }
       }
 
-    typedef ImageRegionIterator< FeatureImageType >  IterType;
+    using IterType = ImageRegionIterator< FeatureImageType >;
     unsigned int numIterators = numFeaturesPerScale * m_Scales.size() +
       numFeaturesPerScale + 1;
     std::vector< IterType > iterF( numIterators );

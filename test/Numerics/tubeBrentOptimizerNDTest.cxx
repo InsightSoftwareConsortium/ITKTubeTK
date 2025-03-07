@@ -72,7 +72,7 @@ int tubeBrentOptimizerNDTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv 
 
   tube::OptimizerND opt( 2, &myFunc, &myFuncD, &opt1D );
 
-  typedef vnl_vector< double > VectorType;
+  using VectorType = vnl_vector< double >;
 
   int returnStatus = EXIT_SUCCESS;
 

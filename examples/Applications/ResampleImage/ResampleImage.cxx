@@ -44,15 +44,15 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef itk::Image< TPixel, DimensionI >            ImageType;
+  using ImageType = itk::Image< TPixel, DimensionI >;
 
-  typedef typename tube::ResampleImage< ImageType >   FilterType;
+  using FilterType = typename tube::ResampleImage< ImageType >;
   typename FilterType::Pointer filter = FilterType::New();
 
-  typedef typename FilterType::TransformType     TransformType;
+  using TransformType = typename FilterType::TransformType;
 
-  typedef  itk::ImageFileReader< ImageType >     InputReaderType;
-  typedef  itk::ImageFileWriter< ImageType >     OutputWriterType;
+  using InputReaderType = itk::ImageFileReader< ImageType >;
+  using OutputWriterType = itk::ImageFileWriter< ImageType >;
 
   itk::TimeProbesCollectorBase timeCollector;
 

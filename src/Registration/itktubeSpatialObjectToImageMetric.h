@@ -89,10 +89,9 @@ public:
   /** Image dimension enumeration. */
   static constexpr unsigned int ImageDimension = FixedImageType::ImageDimension;
 
-  typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )>
-  ImageMaskObjectType;
+  using ImageMaskObjectType = SpatialObject<itkGetStaticConstMacro( ImageDimension )>;
 
-  typedef SpatialObject< ObjectDimension > SpatialObjectMaskObjectType;
+  using SpatialObjectMaskObjectType = SpatialObject< ObjectDimension >;
 
   /**  Type of the Transform Base class */
   using TransformType = Transform<CoordinateRepresentationType,

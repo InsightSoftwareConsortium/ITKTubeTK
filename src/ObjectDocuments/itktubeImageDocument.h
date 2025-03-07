@@ -43,12 +43,12 @@ class ImageDocument : public ObjectDocument
 {
 public:
 
-  typedef ImageDocument                      Self;
-  typedef ObjectDocument                     Superclass;
-  typedef SmartPointer< Self >               Pointer;
-  typedef SmartPointer< const Self >         ConstPointer;
+  using Self = ImageDocument;
+  using Superclass = ObjectDocument;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
-  typedef Superclass::TransformNameListType  TransformNameListType;
+  using TransformNameListType = Superclass::TransformNameListType;
 
   itkNewMacro( Self );
   itkTypeMacro( ImageDocument, ObjectDocument );

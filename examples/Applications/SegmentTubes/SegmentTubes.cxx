@@ -60,29 +60,29 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-  typedef TPixel                                     PixelType;
-  typedef itk::Image< PixelType, VDimension >        ImageType;
-  typedef itk::ImageFileReader< ImageType >          ReaderType;
+  using PixelType = TPixel;
+  using ImageType = itk::Image< PixelType, VDimension >;
+  using ReaderType = itk::ImageFileReader< ImageType >;
 
-  typedef tube::SegmentTubes< ImageType >            SegmentTubesFilterType;
+  using SegmentTubesFilterType = tube::SegmentTubes< ImageType >;
 
   typedef typename SegmentTubesFilterType::TubeMaskImageType
     MaskImageType;
 
-  typedef itk::ImageFileReader< MaskImageType >      MaskReaderType;
-  typedef itk::ImageFileWriter< MaskImageType >      MaskWriterType;
+  using MaskReaderType = itk::ImageFileReader< MaskImageType >;
+  using MaskWriterType = itk::ImageFileWriter< MaskImageType >;
 
-  typedef typename ImageType::PointType              PointType;
+  using PointType = typename ImageType::PointType;
 
   typedef typename SegmentTubesFilterType::ContinuousIndexType
     IndexType;
 
-  typedef std::vector< IndexType >                   IndexListType;
-  typedef std::vector< double >                      RadiusListType;
-  typedef std::vector< PointType >                   PointListType;
+  using IndexListType = std::vector< IndexType >;
+  using RadiusListType = std::vector< double >;
+  using PointListType = std::vector< PointType >;
 
-  typedef itk::SpatialObjectWriter< VDimension >     TubesWriterType;
-  typedef itk::SpatialObjectReader< VDimension >     TubesReaderType;
+  using TubesWriterType = itk::SpatialObjectWriter< VDimension >;
+  using TubesReaderType = itk::SpatialObjectReader< VDimension >;
 
   timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();

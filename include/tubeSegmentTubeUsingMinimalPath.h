@@ -45,20 +45,20 @@ class SegmentTubeUsingMinimalPath:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef SegmentTubeUsingMinimalPath               Self;
-  typedef itk::ProcessObject                         Superclass;
-  typedef itk::SmartPointer< Self >                  Pointer;
-  typedef itk::SmartPointer< const Self >            ConstPointer;
+  /** Standard class type alias. */
+  using Self = SegmentTubeUsingMinimalPath;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef itk::tube::SegmentTubeUsingMinimalPathFilter
-    < Dimension, TInputPixel >                       FilterType;
+  using FilterType = itk::tube::SegmentTubeUsingMinimalPathFilter
+    < Dimension, TInputPixel >;
 
-  typedef typename FilterType::InputImageType         InputImageType;
-  typedef typename InputImageType::Pointer            InputImagePointer;
-  typedef typename FilterType::InputSpatialObjectType TubeGroupType;
-  typedef typename TubeGroupType::Pointer             TubeGroupPointer;
-  typedef typename FilterType::PointType              PointType;
+  using InputImageType = typename FilterType::InputImageType;
+  using InputImagePointer = typename InputImageType::Pointer;
+  using TubeGroupType = typename FilterType::InputSpatialObjectType;
+  using TubeGroupPointer = typename TubeGroupType::Pointer;
+  using PointType = typename FilterType::PointType;
 
 
   /** Method for creation through the object factory. */

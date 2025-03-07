@@ -49,21 +49,19 @@ class SplineND : public Object
 {
 public:
 
-  typedef SplineND                                Self;
-  typedef Object                                  Superclass;
-  typedef Self *                                  Pointer;
-  typedef const Self *                            ConstPointer;
+  using Self = SplineND;
+  using Superclass = Object;
+  using Pointer = Self *;
+  using ConstPointer = const Self *;
 
-  typedef itk::Image< double, 4 >                 ImageType;
-  typedef vnl_vector< int >                       IntVectorType;
-  typedef vnl_matrix< double >                    MatrixType;
-  typedef vnl_vector< double >                    VectorType;
-  typedef UserFunction< IntVectorType, double >   ValueFunctionType;
+  using ImageType = itk::Image< double, 4 >;
+  using IntVectorType = vnl_vector< int >;
+  using MatrixType = vnl_matrix< double >;
+  using VectorType = vnl_vector< double >;
+  using ValueFunctionType = UserFunction< IntVectorType, double >;
 
-  typedef UserFunction< VectorType, double >
-    OptimizerValueFunctionType;
-  typedef UserFunction< VectorType, VectorType >
-    OptimizerDerivativeFunctionType;
+  using OptimizerValueFunctionType = UserFunction< VectorType, double >;
+  using OptimizerDerivativeFunctionType = UserFunction< VectorType, VectorType >;
 
   /** Return the type of this object. */
   tubeTypeMacro( SplineND );
@@ -250,8 +248,7 @@ public:
 
 protected:
 
-  typedef itk::VectorContainer< unsigned int, ImageType::Pointer >
-    VectorImageType;
+  using VectorImageType = itk::VectorContainer< unsigned int, ImageType::Pointer >;
 
   /** Print out information about this object. */
   void PrintSelf( std::ostream & os, Indent indent ) const override;

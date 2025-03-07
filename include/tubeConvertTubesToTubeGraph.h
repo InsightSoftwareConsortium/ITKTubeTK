@@ -45,17 +45,17 @@ class ConvertTubesToTubeGraph:
   public itk::ProcessObject
 {
 public:
-  /** Standard class typedefs. */
-  typedef ConvertTubesToTubeGraph                    Self;
-  typedef itk::ProcessObject                         Superclass;
-  typedef itk::SmartPointer< Self >                  Pointer;
-  typedef itk::SmartPointer< const Self >            ConstPointer;
+  /** Standard class type alias. */
+  using Self = ConvertTubesToTubeGraph;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
-  typedef itk::tube::TubeSpatialObjectToTubeGraphFilter
-    < TPixel, Dimension > FilterType;
+  using FilterType = itk::tube::TubeSpatialObjectToTubeGraphFilter
+    < TPixel, Dimension >;
 
-  typedef typename FilterType::InputImageType     InputImageType;
-  typedef typename FilterType::TubeGroupType      TubeGroupType;
+  using InputImageType = typename FilterType::InputImageType;
+  using TubeGroupType = typename FilterType::TubeGroupType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

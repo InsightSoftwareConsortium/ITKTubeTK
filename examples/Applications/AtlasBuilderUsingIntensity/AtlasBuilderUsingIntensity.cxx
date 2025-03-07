@@ -29,11 +29,11 @@ limitations under the License.
 
 enum { Dimension = 3 };
 
-typedef itk::Image< float, Dimension > FloatImageType;
+using FloatImageType = itk::Image< float, Dimension >;
 
 void WriteImage( FloatImageType::Pointer i, const std::string & name )
 {
-  typedef itk::ImageFileWriter< FloatImageType > WriterType;
+  using WriterType = itk::ImageFileWriter< FloatImageType >;
   WriterType::Pointer writer  = WriterType::New();
 
   writer->SetInput( i );
@@ -42,11 +42,11 @@ void WriteImage( FloatImageType::Pointer i, const std::string & name )
   writer->Update();
 }
 
-typedef itk::Image< unsigned short, Dimension > UShortImageType;
+using UShortImageType = itk::Image< unsigned short, Dimension >;
 
 void WriteImage( UShortImageType::Pointer i, const std::string & name )
 {
-  typedef itk::ImageFileWriter< UShortImageType > UShortWriterType;
+  using UShortWriterType = itk::ImageFileWriter< UShortImageType >;
   UShortWriterType::Pointer writer  = UShortWriterType::New();
 
   writer->SetInput( i );
@@ -59,12 +59,12 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef tube::AtlasSummation                       AtlasSummationType;
-  typedef AtlasSummationType::InputPixelType         InputPixelType;
-  typedef itk::Image< InputPixelType, Dimension >    InputImageType;
-  typedef tube::MetaObjectDocument                   DocumentReaderType;
-  typedef itk::tube::ImageDocument                   ImageDocumentType;
-  typedef DocumentReaderType::ObjectDocumentListType ImageDocumentListType;
+  using AtlasSummationType = tube::AtlasSummation;
+  using InputPixelType = AtlasSummationType::InputPixelType;
+  using InputImageType = itk::Image< InputPixelType, Dimension >;
+  using DocumentReaderType = tube::MetaObjectDocument;
+  using ImageDocumentType = itk::tube::ImageDocument;
+  using ImageDocumentListType = DocumentReaderType::ObjectDocumentListType;
   typedef
     itk::tube::ObjectDocumentToImageFilter< ImageDocumentType, InputImageType >
     DocumentToImageFilter;
