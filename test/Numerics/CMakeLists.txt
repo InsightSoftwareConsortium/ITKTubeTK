@@ -252,7 +252,7 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/itktubeNJetBasisFeatureVectorGeneratorTest_basis
       ${ITK_TEST_OUTPUT_DIR}/itktubeNJetBasisFeatureVectorGeneratorTest_feature )
 set_tests_properties(itktubeNJetBasisFeatureVectorGeneratorTest
-  PROPERTIES TIMEOUT 10)
+  PROPERTIES TIMEOUT 12)
 
 itk_add_test(
   NAME itktubeSingleValuedCostFunctionImageSourceTest

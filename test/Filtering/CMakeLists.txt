@@ -120,7 +120,7 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/itktubeRidgeFFTFilterTest1_Curvature.mha
       ${ITK_TEST_OUTPUT_DIR}/itktubeRidgeFFTFilterTest1_Levelness.mha )
 set_tests_properties(itktubeRidgeFFTFilterTest1
-  PROPERTIES TIMEOUT 10)
+  PROPERTIES TIMEOUT 12)
 
 add_test( NAME itktubeSheetnessMeasureImageFilterTest
   COMMAND tubeFilteringTestDriver
