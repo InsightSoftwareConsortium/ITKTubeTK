@@ -40,65 +40,65 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TImageType >
-class SegmentBinaryImageSkeleton3D:
-  public itk::ProcessObject
+template <class TImageType>
+class SegmentBinaryImageSkeleton3D : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = SegmentBinaryImageSkeleton3D;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   using ImageType = TImageType;
 
-  using FilterType = itk::tube::BinaryThinningImageFilter3D<
-    TImageType, TImageType >;
+  using FilterType = itk::tube::BinaryThinningImageFilter3D<TImageType, TImageType>;
 
   using EndPointListType = typename FilterType::EndPointListType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SegmentBinaryImageSkeleton3D, ProcessObject );
+  itkTypeMacro(SegmentBinaryImageSkeleton3D, ProcessObject);
 
   /** Set/Get input image */
-  tubeWrapSetConstObjectMacro( Input, ImageType, Filter );
-  tubeWrapGetConstObjectMacro( Input, ImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input, ImageType, Filter);
+  tubeWrapGetConstObjectMacro(Input, ImageType, Filter);
 
   /** Compute image similarity */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
   /** Get image similarity */
-  tubeWrapGetObjectMacro( Output, ImageType, Filter );
-  tubeWrapGetObjectMacro( Thinning, ImageType, Filter );
+  tubeWrapGetObjectMacro(Output, ImageType, Filter);
+  tubeWrapGetObjectMacro(Thinning, ImageType, Filter);
 
-  tubeWrapGetConstReferenceMacro( EndPoints, EndPointListType, Filter );
+  tubeWrapGetConstReferenceMacro(EndPoints, EndPointListType, Filter);
 
 protected:
-  SegmentBinaryImageSkeleton3D( void );
+  SegmentBinaryImageSkeleton3D(void);
   ~SegmentBinaryImageSkeleton3D() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const;
 
 private:
   /** itktubeSegmentBinaryImageSkeleton3DFilter parameters **/
-  SegmentBinaryImageSkeleton3D( const Self & );
-  void operator=( const Self & );
+  SegmentBinaryImageSkeleton3D(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) {};
 
   typename FilterType::Pointer m_Filter;
-
 };
 
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeSegmentBinaryImageSkeleton3D.hxx"
+#  include "tubeSegmentBinaryImageSkeleton3D.hxx"
 #endif
 
 #endif // End !defined( __tubeSegmentBinaryImageSkeleton3D_h )

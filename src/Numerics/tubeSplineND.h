@@ -48,26 +48,25 @@ namespace tube
 class SplineND : public Object
 {
 public:
-
   using Self = SplineND;
   using Superclass = Object;
   using Pointer = Self *;
   using ConstPointer = const Self *;
 
-  using ImageType = itk::Image< double, 4 >;
-  using IntVectorType = vnl_vector< int >;
-  using MatrixType = vnl_matrix< double >;
-  using VectorType = vnl_vector< double >;
-  using ValueFunctionType = UserFunction< IntVectorType, double >;
+  using ImageType = itk::Image<double, 4>;
+  using IntVectorType = vnl_vector<int>;
+  using MatrixType = vnl_matrix<double>;
+  using VectorType = vnl_vector<double>;
+  using ValueFunctionType = UserFunction<IntVectorType, double>;
 
-  using OptimizerValueFunctionType = UserFunction< VectorType, double >;
-  using OptimizerDerivativeFunctionType = UserFunction< VectorType, VectorType >;
+  using OptimizerValueFunctionType = UserFunction<VectorType, double>;
+  using OptimizerDerivativeFunctionType = UserFunction<VectorType, VectorType>;
 
   /** Return the type of this object. */
-  tubeTypeMacro( SplineND );
+  tubeTypeMacro(SplineND);
 
   /** Constructor. */
-  SplineND( void );
+  SplineND(void);
 
   /** Constructor.
    *  \param dimension dimensionality of the space being interpolated
@@ -79,59 +78,62 @@ public:
    *         that is used to find local extrema
    *  \warning xMin and xMax must be set!
    */
-  SplineND( unsigned int dimension,
-    ValueFunctionType::Pointer funcVal,
-    Spline1D::Pointer spline1D,
-    Optimizer1D::Pointer optimizer1D );
+  SplineND(unsigned int               dimension,
+           ValueFunctionType::Pointer funcVal,
+           Spline1D::Pointer          spline1D,
+           Optimizer1D::Pointer       optimizer1D);
 
   /** Destructor. */
-  virtual ~SplineND( void );
+  virtual ~SplineND(void);
 
   /** Returns the characteristics of spline evaluations near data bounds
    *   ( xMin and xMax ). If true, values beyond edges ( xMin and xMax ) are
    *   set to zero.  If false, values beyond edges are faded to 0 as a
    *   function of squared distance from edge.
    */
-  tubeGetMacro( Clip, bool );
+  tubeGetMacro(Clip, bool);
 
   /** Sets the characteristics of spline evaluations near data bounds
    *   ( xMin and xMax ). If true, values beyond edges ( xMin and xMax ) are
    *   set to zero.  If false, values beyond edges are faded to 0 as a
    *   function of squared distance from edge.
    */
-  tubeSetMacro( Clip, bool );
+  tubeSetMacro(Clip, bool);
 
-  tubeBooleanMacro( Clip );
+  tubeBooleanMacro(Clip);
 
   /** Returns the dimension of the problem's domain.  */
-  tubeGetMacro( Dimension, unsigned int );
+  tubeGetMacro(Dimension, unsigned int);
 
-  OptimizerND::Pointer GetOptimizerND( void );
+  OptimizerND::Pointer
+  GetOptimizerND(void);
 
   /** User specification of lower bound */
-  virtual void SetXMin( IntVectorType xMin );
+  virtual void
+  SetXMin(IntVectorType xMin);
 
   /** Returns the control points' ( integer value locations ) lower bound */
-  tubeGetMacro( XMin, IntVectorType );
+  tubeGetMacro(XMin, IntVectorType);
 
   /** User Specification of upper bound */
-  virtual void SetXMax( IntVectorType xMax );
+  virtual void
+  SetXMax(IntVectorType xMax);
 
   /** Sets control points' ( integer value locations ) upper bound */
-  tubeGetMacro( XMax, IntVectorType );
+  tubeGetMacro(XMax, IntVectorType);
 
   /** Tracks the validity of internally maintained intermediate
    * calculations and data. Returns true if a new spline instance has been
    * created ( e.g., use has been called )
    */
-  tubeGetMacro( NewData, bool );
+  tubeGetMacro(NewData, bool);
 
   /** User sets to true to force recalculation of internal data.
    * For example, use to flag that UserFunction has changed externally
    */
-  tubeSetMacro( NewData, bool );
+  tubeSetMacro(NewData, bool);
 
-  tubeBooleanMacro( NewData );
+  tubeBooleanMacro(NewData);
 
   /** Calculates the local extreme using the supplied instance of a
    * derivation of OptimizerND.  Function returns true on successful local
@@ -140,7 +142,8 @@ public:
    *         of extreme local to initial point
    *  \param extVal On return equals the value at the local extreme
    */
-  bool Extreme( VectorType & extX, double * extVal );
+  bool
+  Extreme(VectorType & extX, double * extVal);
 
   /** Calculates the local extreme in the specified direction using the supplied
    * instance of a derivation of OptimizerND. Function returns true on
@@ -150,7 +153,8 @@ public:
    *  \param extVal On return equals the value at the local extreme
    *  \param dir Direction to search for local extreme
    */
-  bool Extreme( VectorType & extX, double * extVal, VectorType & dir );
+  bool
+  Extreme(VectorType & extX, double * extVal, VectorType & dir);
 
   /** Calculates the local extreme in the basis space directions using the
    * supplied instance of a derivation of OptimizerND. Function returns
@@ -163,8 +167,8 @@ public:
    *  \param dirs TNT::Vectors that define the basis space to search for
    *         local extreme
    */
-  bool Extreme( VectorType & extX, double * extVal, unsigned int n,
-    MatrixType & dirs );
+  bool
+  Extreme(VectorType & extX, double * extVal, unsigned int n, MatrixType & dirs);
 
   /** Calculates the local extreme using an approximation to the conjugate
    * gradient descent method. Function returns true on successful local
@@ -173,7 +177,8 @@ public:
    *         extreme local to initial point
    *  \param extVal On return equals the value at the local extreme
    */
-  bool ExtremeConjGrad( VectorType & extX, double * extVal );
+  bool
+  ExtremeConjGrad(VectorType & extX, double * extVal);
 
   /** Returns spline interpolated Hessian at x.
    * Calculates the values at control ( integer ) points by calling the
@@ -182,7 +187,8 @@ public:
    * ( e.g., SplApprox1D ).  Intermediate calculations and control point
    * evaluations are stored to speed subsequent calls
    */
-  MatrixType & Hessian( const VectorType & x );
+  MatrixType &
+  Hessian(const VectorType & x);
 
   /** Specify a new spline function
    *  \param dimension dimensionality of the space being interpolated
@@ -194,10 +200,11 @@ public:
    *         that is used to find local extrema
    *  \warning xMin and xMax must be set!
    */
-  void Use( unsigned int dimension,
-    ValueFunctionType::Pointer funcVal,
-    Spline1D::Pointer spline1D,
-    Optimizer1D::Pointer optimizer1D );
+  void
+  Use(unsigned int               dimension,
+      ValueFunctionType::Pointer funcVal,
+      Spline1D::Pointer          spline1D,
+      Optimizer1D::Pointer       optimizer1D);
 
   /** Returns spline interpolated value at x.
    * Calculates the values at control ( integer ) points by calling the
@@ -206,7 +213,8 @@ public:
    * ( e.g., SplApprox1D ).   Intermediate calculations and control point
    * evaluations are stored to speed subsequent calls.
    */
-  double Value( const VectorType & x );
+  double
+  Value(const VectorType & x);
 
   /** Returns spline interpolated first derivative at x projected onto dx.
    *  Calculates the values at control ( integer ) points by calling the
@@ -215,7 +223,8 @@ public:
    *  is used ( e.g., SplApprox1D ).   Intermediate calculations and control
    *  point evaluations are stored to speed subsequent calls.
    */
-  double ValueD( const VectorType & x, IntVectorType & dx );
+  double
+  ValueD(const VectorType & x, IntVectorType & dx);
 
   /** Returns spline interpolated first derivative at x.
    * Calculates the values at control ( integer ) points by calling the
@@ -224,7 +233,8 @@ public:
    * is used ( e.g., SplApprox1D ).  Intermediate calculations and control
    * point evaluations are stored to speed subsequent calls.
    */
-  VectorType & ValueD( const VectorType & x );
+  VectorType &
+  ValueD(const VectorType & x);
 
   /** Returns spline interpolated derivative jet ( value, 1st derivative,
    * Hessian ) at x. Calculates the values at control ( integer ) points by
@@ -234,7 +244,8 @@ public:
    * calculations and control point evaluations are stored to speed
    * subsequent calls.
    */
-  double ValueJet( const VectorType & x, VectorType & d, MatrixType & h );
+  double
+  ValueJet(const VectorType & x, VectorType & d, MatrixType & h);
 
   /** Returns spline interpolated 1st derivatives and 2nd derivatives at x
    * Calculates the values at control ( integer ) points by calling the
@@ -244,44 +255,46 @@ public:
    * calculations and control point evaluations are stored to speed
    * subsequent calls
    */
-  double ValueVDD2( const VectorType & x, VectorType & d, VectorType & d2 );
+  double
+  ValueVDD2(const VectorType & x, VectorType & d, VectorType & d2);
 
 protected:
-
-  using VectorImageType = itk::VectorContainer< unsigned int, ImageType::Pointer >;
+  using VectorImageType = itk::VectorContainer<unsigned int, ImageType::Pointer>;
 
   /** Print out information about this object. */
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void m_GetData( const VectorType & x );
+  void
+  m_GetData(const VectorType & x);
 
-  unsigned int                              m_Dimension;
-  bool                                      m_Clip;
-  IntVectorType                             m_XMin;
-  IntVectorType                             m_XMax;
-  bool                                      m_NewData;
-  IntVectorType                             m_Xi;
-  double                                    m_Val;
-  VectorType                                m_D;
-  MatrixType                                m_H;
-  ImageType::Pointer                        m_Data;
-  ImageType::Pointer                        m_DataWS;
-  VectorType                                m_Data1D;
-  VectorImageType::Pointer                  m_DataWSX;
-  VectorImageType::Pointer                  m_DataWSXX;
-  ValueFunctionType::Pointer                m_FuncVal;
-  OptimizerValueFunctionType::Pointer       m_OptimizerNDVal;
-  OptimizerDerivativeFunctionType::Pointer  m_OptimizerNDDeriv;
-  OptimizerND::Pointer                      m_OptimizerND;
-  Spline1D::Pointer                         m_Spline1D;
+  unsigned int                             m_Dimension;
+  bool                                     m_Clip;
+  IntVectorType                            m_XMin;
+  IntVectorType                            m_XMax;
+  bool                                     m_NewData;
+  IntVectorType                            m_Xi;
+  double                                   m_Val;
+  VectorType                               m_D;
+  MatrixType                               m_H;
+  ImageType::Pointer                       m_Data;
+  ImageType::Pointer                       m_DataWS;
+  VectorType                               m_Data1D;
+  VectorImageType::Pointer                 m_DataWSX;
+  VectorImageType::Pointer                 m_DataWSXX;
+  ValueFunctionType::Pointer               m_FuncVal;
+  OptimizerValueFunctionType::Pointer      m_OptimizerNDVal;
+  OptimizerDerivativeFunctionType::Pointer m_OptimizerNDDeriv;
+  OptimizerND::Pointer                     m_OptimizerND;
+  Spline1D::Pointer                        m_Spline1D;
 
 private:
-
   // Copy constructor not implemented.
-  SplineND( const Self & self );
+  SplineND(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
 }; // End class SplineND
 

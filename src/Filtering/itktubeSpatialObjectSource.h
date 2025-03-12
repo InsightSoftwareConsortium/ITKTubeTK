@@ -39,31 +39,32 @@ namespace tube
  * SpatialObject data. Specifically, this class defines the GetOutput() method
  * that returns a pointer to the output SpatialObject.
  */
-template< class TOutputSpatialObject >
+template <class TOutputSpatialObject>
 class SpatialObjectSource : public ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = SpatialObjectSource;
   using Superclass = ProcessObject;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using OutputSpatialObjectType = TOutputSpatialObject;
 
-  using SpatialObjectType = SpatialObject< TOutputSpatialObject::ObjectDimension >;
-  typedef Superclass::DataObjectIdentifierType
-    DataObjectIdentifierType;
-  typedef Superclass::DataObjectPointerArraySizeType
-    DataObjectPointerArraySizeType;
+  using SpatialObjectType = SpatialObject<TOutputSpatialObject::ObjectDimension>;
+  typedef Superclass::DataObjectIdentifierType       DataObjectIdentifierType;
+  typedef Superclass::DataObjectPointerArraySizeType DataObjectPointerArraySizeType;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SpatialObjectSource, ProcessObject );
+  itkTypeMacro(SpatialObjectSource, ProcessObject);
 
-  OutputSpatialObjectType * GetOutput( void );
-  const OutputSpatialObjectType * GetOutput( void ) const;
+  OutputSpatialObjectType *
+  GetOutput(void);
+  const OutputSpatialObjectType *
+  GetOutput(void) const;
 
-  OutputSpatialObjectType * GetOutput( unsigned int idx );
+  OutputSpatialObjectType *
+  GetOutput(unsigned int idx);
 
   /** Graft the specified DataObject onto this ProcessObject's output.
    * This method grabs a handle to the specified DataObject's bulk
@@ -100,15 +101,16 @@ public:
    * filter's pipeline mechanism must be consistent with what the
    * mini-pipeline will do ).
    *  */
-  virtual void GraftOutput( DataObject *output );
+  virtual void
+  GraftOutput(DataObject * output);
 
   /** Graft the specified data object onto this ProcessObject's named
    * output. This is similar to the GraftOutput method except it
    * allows you to specify which output is affected.
    * See the GraftOutput for general usage information.
    */
-  virtual void GraftOutput( const DataObjectIdentifierType & key,
-    DataObject *output );
+  virtual void
+  GraftOutput(const DataObjectIdentifierType & key, DataObject * output);
 
   /** Graft the specified data object onto this ProcessObject's idx'th
    * output. This is similar to the GraftOutput method except it
@@ -116,18 +118,20 @@ public:
    * must be a valid output number ( less than
    * ProcessObject::GetNumberOfIndexedOutputs() ). See the GraftOutput for
    * general usage information. */
-  virtual void GraftNthOutput( unsigned int idx, DataObject *output );
+  virtual void
+  GraftNthOutput(unsigned int idx, DataObject * output);
   using Superclass::MakeOutput;
   virtual ProcessObject::DataObjectPointer
-    MakeOutput( ProcessObject::DataObjectPointerArraySizeType idx ) override;
+  MakeOutput(ProcessObject::DataObjectPointerArraySizeType idx) override;
 
 protected:
-  SpatialObjectSource( void );
-  virtual ~SpatialObjectSource( void ) {}
+  SpatialObjectSource(void);
+  virtual ~SpatialObjectSource(void) {}
 
 private:
-  SpatialObjectSource( const Self & ); // purposely not implemented
-  void operator=( const Self & );      // purposely not implemented
+  SpatialObjectSource(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
 }; // End class SpatialObjectSource
 
@@ -136,7 +140,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeSpatialObjectSource.hxx"
+#  include "itktubeSpatialObjectSource.hxx"
 #endif
 
 #endif // End !defined( __itktubeSpatialObjectSource_h )

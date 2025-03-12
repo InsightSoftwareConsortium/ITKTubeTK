@@ -39,63 +39,61 @@ namespace tube
  * mutual information
  */
 
-template< class TInputImage >
-class ComputeImageSimilarityMetrics
-  : public Object
+template <class TInputImage>
+class ComputeImageSimilarityMetrics : public Object
 {
 public:
-
   /** Standard class type alias. */
   using Self = ComputeImageSimilarityMetrics;
   using SuperClass = Object;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** custom type alias */
   using ImageType = TInputImage;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeImageSimilarityMetrics, Object );
+  itkTypeMacro(ComputeImageSimilarityMetrics, Object);
 
   /** Set/Get use of correlation or mutual information to compute similarity */
-  itkSetMacro( UseCorrelation, bool );
-  itkGetMacro( UseCorrelation, bool );
+  itkSetMacro(UseCorrelation, bool);
+  itkGetMacro(UseCorrelation, bool);
 
   /** Set/Get sampling rate */
-  itkSetMacro( SamplingRate, double );
-  itkGetMacro( SamplingRate, double );
+  itkSetMacro(SamplingRate, double);
+  itkGetMacro(SamplingRate, double);
 
   /** Set/Get input image 1 */
-  itkSetConstObjectMacro( Input1, ImageType );
-  itkGetConstObjectMacro( Input1, ImageType );
+  itkSetConstObjectMacro(Input1, ImageType);
+  itkGetConstObjectMacro(Input1, ImageType);
 
   /** Set/Get input image 2 */
-  itkSetConstObjectMacro( Input2, ImageType );
-  itkGetConstObjectMacro( Input2, ImageType );
+  itkSetConstObjectMacro(Input2, ImageType);
+  itkGetConstObjectMacro(Input2, ImageType);
 
   /** Compute image similarity */
-  void Update( void );
+  void
+  Update(void);
 
   /** Get image similarity */
-  itkGetMacro( Output, double );
+  itkGetMacro(Output, double);
 
 protected:
+  ComputeImageSimilarityMetrics(void);
+  ~ComputeImageSimilarityMetrics(void) {};
 
-  ComputeImageSimilarityMetrics( void );
-  ~ComputeImageSimilarityMetrics( void ) {};
-
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
-  typename ImageType::ConstPointer            m_Input1;
-  typename ImageType::ConstPointer            m_Input2;
-  bool                                        m_UseCorrelation;
-  double                                      m_SamplingRate;
-  double                                      m_Output;
+  typename ImageType::ConstPointer m_Input1;
+  typename ImageType::ConstPointer m_Input2;
+  bool                             m_UseCorrelation;
+  double                           m_SamplingRate;
+  double                           m_Output;
 
 }; // End class ComputeImageSimilarityMetrics
 
@@ -104,7 +102,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeComputeImageSimilarityMetrics.hxx"
+#  include "itktubeComputeImageSimilarityMetrics.hxx"
 #endif
 
 #endif // End !defined( __itktubeComputeImageSimilarityMetrics_h )

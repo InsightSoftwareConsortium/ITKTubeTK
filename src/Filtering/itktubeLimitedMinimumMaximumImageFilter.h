@@ -21,7 +21,7 @@
 #include "itkImageSink.h"
 #include "itkSimpleDataObjectDecorator.h"
 #ifndef wasi__
-#include <mutex>
+#  include <mutex>
 #endif
 
 #include <vector>
@@ -93,10 +93,10 @@ public:
   /** Return the computed Maximum. */
   itkGetDecoratedOutputMacro(Maximum, PixelType);
 
-  itkSetMacro( MinimumLimit, PixelType );
-  itkGetMacro( MinimumLimit, PixelType );
-  itkSetMacro( MaximumLimit, PixelType );
-  itkGetMacro( MaximumLimit, PixelType );
+  itkSetMacro(MinimumLimit, PixelType);
+  itkGetMacro(MinimumLimit, PixelType);
+  itkSetMacro(MaximumLimit, PixelType);
+  itkGetMacro(MaximumLimit, PixelType);
 
   /** Make a DataObject of the correct type to be used as the specified
    * output. */

@@ -42,42 +42,44 @@ namespace tube
 class ShortestPathKernel : public GraphKernel
 {
 public:
-
   /** Edge kernel types */
   static const int EDGE_KERNEL_DEL = 0;
 
   /** CTOR - Consumer sets graphs */
-  ShortestPathKernel( const GraphType & g0, const GraphType & g1 )
-    : GraphKernel( g0, g1 ), m_EdgeKernelType( EDGE_KERNEL_DEL )
-    {
-    }
+  ShortestPathKernel(const GraphType & g0, const GraphType & g1)
+    : GraphKernel(g0, g1)
+    , m_EdgeKernelType(EDGE_KERNEL_DEL)
+  {}
 
   /** Sets edge-kernel type */
-  void SetEdgeKernel( int edgeKernelType )
-    {
+  void
+  SetEdgeKernel(int edgeKernelType)
+  {
     m_EdgeKernelType = edgeKernelType;
-    }
+  }
 
   /** Computes the SP kernel value, see [1], Section 4.2 */
-  double Compute( void );
+  double
+  Compute(void);
 
 private:
-
   /** Computes a Floyd-transformed graph, see [1], Section 4.1 */
-  GraphType FloydTransform( const GraphType & in );
+  GraphType
+  FloydTransform(const GraphType & in);
 
-  void ensureOrder( int & first, int & second )
+  void
+  ensureOrder(int & first, int & second)
+  {
+    if (first > second)
     {
-    if( first > second )
-      {
-      std::swap( first, second );
-      }
+      std::swap(first, second);
     }
+  }
 
   /** Floyd-transformed graphs */
-  GraphType  m_FG0;
-  GraphType  m_FG1;
-  int        m_EdgeKernelType;
+  GraphType m_FG0;
+  GraphType m_FG1;
+  int       m_EdgeKernelType;
 
 }; // End class ShortestPathKernel
 

@@ -37,53 +37,54 @@ namespace tube
 class SplineApproximation1D : public Spline1D
 {
 public:
-
   using Self = SplineApproximation1D;
   using Superclass = Spline1D;
   using Pointer = Self *;
   using ConstPointer = const Self *;
 
-  using MatrixType = vnl_matrix_fixed< double, 4, 4 >;
+  using MatrixType = vnl_matrix_fixed<double, 4, 4>;
   using VectorType = Superclass::VectorType;
   using ValueFunctionType = Superclass::ValueFunctionType;
 
   /** Return the type of this object. */
-  tubeTypeMacro( SplineApproximation1D );
+  tubeTypeMacro(SplineApproximation1D);
 
   /** Constructor. */
-  SplineApproximation1D( void );
+  SplineApproximation1D(void);
 
   /** Constructor. */
-  SplineApproximation1D( ValueFunctionType::Pointer funcVal,
-    Optimizer1D::Pointer optimizer1D );
+  SplineApproximation1D(ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D);
 
   /** Destructor. */
-  virtual ~SplineApproximation1D( void );
+  virtual ~SplineApproximation1D(void);
 
-  double DataValue( const VectorType & y, double x ) override;
+  double
+  DataValue(const VectorType & y, double x) override;
 
-  double DataValueD( const VectorType & y, double x ) override;
+  double
+  DataValueD(const VectorType & y, double x) override;
 
-  double DataValueD2( const VectorType & y, double x ) override;
+  double
+  DataValueD2(const VectorType & y, double x) override;
 
-  double DataValueJet( const VectorType & y, double x, double * d,
-    double * d2 ) override;
+  double
+  DataValueJet(const VectorType & y, double x, double * d, double * d2) override;
 
 protected:
-
   /** Print out information about this object. */
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  double      m_SplineApproximation1DMatrixConst;
-  MatrixType  m_SplineApproximation1DMatrix;
+  double     m_SplineApproximation1DMatrixConst;
+  MatrixType m_SplineApproximation1DMatrix;
 
 private:
-
   // Copy constructor not implemented.
-  SplineApproximation1D( const Self & self );
+  SplineApproximation1D(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
 }; // End class SplineApproximation1D
 

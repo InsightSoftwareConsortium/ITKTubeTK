@@ -38,17 +38,15 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TImage,
-  class TLabelMap = itk::Image< unsigned short, TImage::ImageDimension> >
-class EnhanceTubesUsingDiscriminantAnalysis:
-  public itk::ProcessObject
+template <class TImage, class TLabelMap = itk::Image<unsigned short, TImage::ImageDimension>>
+class EnhanceTubesUsingDiscriminantAnalysis : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = EnhanceTubesUsingDiscriminantAnalysis;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   using ImageType = TImage;
   using PixelType = typename ImageType::PixelType;
@@ -56,8 +54,8 @@ public:
 
   using LabelMapType = TLabelMap;
 
-  using FilterType = itk::tube::RidgeSeedFilter< ImageType, LabelMapType >;
-  using FilterIOType = itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType >;
+  using FilterType = itk::tube::RidgeSeedFilter<ImageType, LabelMapType>;
+  using FilterIOType = itk::tube::RidgeSeedFilterIO<ImageType, LabelMapType>;
 
   using OutputImageType = typename FilterType::ProbabilityImageType;
 
@@ -69,127 +67,134 @@ public:
   using MatrixType = typename FilterType::MatrixType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( EnhanceTubesUsingDiscriminantAnalysis, ProcessObject );
+  itkTypeMacro(EnhanceTubesUsingDiscriminantAnalysis, ProcessObject);
 
   /***/
   /***/
   /***/
 
   /** Set the source image. */
-  tubeWrapSetConstObjectMacro( Input, ImageType, Filter );
-  tubeWrapAddConstObjectMacro( Input, ImageType, Filter );
-  tubeWrapGetNthConstObjectMacro( Input, ImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input, ImageType, Filter);
+  tubeWrapAddConstObjectMacro(Input, ImageType, Filter);
+  tubeWrapGetNthConstObjectMacro(Input, ImageType, Filter);
 
   /** Set the labelmap image.  Is the output image after computations. */
-  tubeWrapSetObjectMacro( LabelMap, LabelMapType, Filter );
-  tubeWrapGetObjectMacro( LabelMap, LabelMapType, Filter );
+  tubeWrapSetObjectMacro(LabelMap, LabelMapType, Filter);
+  tubeWrapGetObjectMacro(LabelMap, LabelMapType, Filter);
 
   /***/
   /***/
   /***/
 
-  tubeWrapSetMacro( RidgeId, ObjectIdType, Filter );
-  tubeWrapGetMacro( RidgeId, ObjectIdType, Filter );
+  tubeWrapSetMacro(RidgeId, ObjectIdType, Filter);
+  tubeWrapGetMacro(RidgeId, ObjectIdType, Filter);
 
-  tubeWrapSetMacro( BackgroundId, ObjectIdType, Filter );
-  tubeWrapGetMacro( BackgroundId, ObjectIdType, Filter );
+  tubeWrapSetMacro(BackgroundId, ObjectIdType, Filter);
+  tubeWrapGetMacro(BackgroundId, ObjectIdType, Filter);
 
-  tubeWrapSetMacro( UnknownId, ObjectIdType, Filter );
-  tubeWrapGetMacro( UnknownId, ObjectIdType, Filter );
+  tubeWrapSetMacro(UnknownId, ObjectIdType, Filter);
+  tubeWrapGetMacro(UnknownId, ObjectIdType, Filter);
 
-  tubeWrapSetMacro( IgnoreId, ObjectIdType, Filter );
-  tubeWrapGetMacro( IgnoreId, ObjectIdType, Filter );
+  tubeWrapSetMacro(IgnoreId, ObjectIdType, Filter);
+  tubeWrapGetMacro(IgnoreId, ObjectIdType, Filter);
 
-  tubeWrapSetMacro( Scales, RidgeScalesType, Filter );
-  tubeWrapGetMacro( Scales, RidgeScalesType, Filter );
+  tubeWrapSetMacro(Scales, RidgeScalesType, Filter);
+  tubeWrapGetMacro(Scales, RidgeScalesType, Filter);
 
-  tubeWrapSetMacro( InputWhitenMeans, WhitenMeansType, Filter );
-  tubeWrapGetMacro( InputWhitenMeans, WhitenMeansType, Filter );
+  tubeWrapSetMacro(InputWhitenMeans, WhitenMeansType, Filter);
+  tubeWrapGetMacro(InputWhitenMeans, WhitenMeansType, Filter);
 
-  tubeWrapSetMacro( InputWhitenStdDevs, WhitenStdDevsType, Filter );
-  tubeWrapGetMacro( InputWhitenStdDevs, WhitenStdDevsType, Filter );
+  tubeWrapSetMacro(InputWhitenStdDevs, WhitenStdDevsType, Filter);
+  tubeWrapGetMacro(InputWhitenStdDevs, WhitenStdDevsType, Filter);
 
-  tubeWrapSetMacro( OutputWhitenMeans, WhitenMeansType, Filter );
-  tubeWrapGetMacro( OutputWhitenMeans, WhitenMeansType, Filter );
+  tubeWrapSetMacro(OutputWhitenMeans, WhitenMeansType, Filter);
+  tubeWrapGetMacro(OutputWhitenMeans, WhitenMeansType, Filter);
 
-  tubeWrapSetMacro( OutputWhitenStdDevs, WhitenStdDevsType, Filter );
-  tubeWrapGetMacro( OutputWhitenStdDevs, WhitenStdDevsType, Filter );
+  tubeWrapSetMacro(OutputWhitenStdDevs, WhitenStdDevsType, Filter);
+  tubeWrapGetMacro(OutputWhitenStdDevs, WhitenStdDevsType, Filter);
 
-  tubeWrapGetMacro( NumberOfBasis, unsigned int, Filter );
+  tubeWrapGetMacro(NumberOfBasis, unsigned int, Filter);
 
-  tubeWrapGetNthMacro( BasisValue, double, Filter );
-  tubeWrapSetNthMacro( BasisValue, double, Filter );
+  tubeWrapGetNthMacro(BasisValue, double, Filter);
+  tubeWrapSetNthMacro(BasisValue, double, Filter);
 
-  tubeWrapGetNthMacro( BasisVector, VectorType, Filter );
-  tubeWrapSetNthMacro( BasisVector, VectorType, Filter );
+  tubeWrapGetNthMacro(BasisVector, VectorType, Filter);
+  tubeWrapSetNthMacro(BasisVector, VectorType, Filter);
 
-  tubeWrapGetMacro( BasisMatrix, MatrixType, Filter );
-  tubeWrapSetMacro( BasisMatrix, MatrixType, Filter );
+  tubeWrapGetMacro(BasisMatrix, MatrixType, Filter);
+  tubeWrapSetMacro(BasisMatrix, MatrixType, Filter);
 
-  tubeWrapGetMacro( BasisValues, VectorType, Filter );
-  tubeWrapSetMacro( BasisValues, VectorType, Filter );
+  tubeWrapGetMacro(BasisValues, VectorType, Filter);
+  tubeWrapSetMacro(BasisValues, VectorType, Filter);
 
-  tubeWrapGetNthObjectMacro( ClassProbabilityImage, OutputImageType, Filter );
-  tubeWrapGetNthObjectMacro( ClassLikelihoodRatioImage, OutputImageType, Filter );
+  tubeWrapGetNthObjectMacro(ClassProbabilityImage, OutputImageType, Filter);
+  tubeWrapGetNthObjectMacro(ClassLikelihoodRatioImage, OutputImageType, Filter);
 
   /** Load parameters of tube extraction from a file */
-  void LoadParameterFile( const std::string & filename )
-  { FilterIOType teReader( m_Filter );
-    teReader.Read( filename.c_str() ); };
+  void
+  LoadParameterFile(const std::string & filename)
+  {
+    FilterIOType teReader(m_Filter);
+    teReader.Read(filename.c_str());
+  };
 
-  void SaveParameterFile( const std::string & filename )
-  { FilterIOType teWriter( m_Filter );
-    teWriter.Write( filename.c_str() ); };
+  void
+  SaveParameterFile(const std::string & filename)
+  {
+    FilterIOType teWriter(m_Filter);
+    teWriter.Write(filename.c_str());
+  };
 
   /***/
   /***/
   /***/
 
-  tubeWrapSetMacro( SeedTolerance, double, Filter );
-  tubeWrapGetMacro( SeedTolerance, double, Filter );
+  tubeWrapSetMacro(SeedTolerance, double, Filter);
+  tubeWrapGetMacro(SeedTolerance, double, Filter);
 
-  tubeWrapSetMacro( Skeletonize, bool, Filter );
-  tubeWrapGetMacro( Skeletonize, bool, Filter );
+  tubeWrapSetMacro(Skeletonize, bool, Filter);
+  tubeWrapGetMacro(Skeletonize, bool, Filter);
 
-  tubeWrapSetMacro( UseIntensityOnly, bool, Filter );
-  tubeWrapGetMacro( UseIntensityOnly, bool, Filter );
+  tubeWrapSetMacro(UseIntensityOnly, bool, Filter);
+  tubeWrapGetMacro(UseIntensityOnly, bool, Filter);
 
-  tubeWrapSetMacro( UseFeatureMath, bool, Filter );
-  tubeWrapGetMacro( UseFeatureMath, bool, Filter );
+  tubeWrapSetMacro(UseFeatureMath, bool, Filter);
+  tubeWrapGetMacro(UseFeatureMath, bool, Filter);
 
-  tubeWrapSetMacro( TrainClassifier, bool, Filter );
-  tubeWrapGetMacro( TrainClassifier, bool, Filter );
+  tubeWrapSetMacro(TrainClassifier, bool, Filter);
+  tubeWrapGetMacro(TrainClassifier, bool, Filter);
 
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
-  tubeWrapCallMacro( ClassifyImages, Filter );
+  tubeWrapCallMacro(ClassifyImages, Filter);
 
-  tubeWrapGetObjectMacro( Output, LabelMapType, Filter);
-  tubeWrapGetObjectMacro( OutputSeedScales, OutputImageType, Filter);
+  tubeWrapGetObjectMacro(Output, LabelMapType, Filter);
+  tubeWrapGetObjectMacro(OutputSeedScales, OutputImageType, Filter);
 
 protected:
-  EnhanceTubesUsingDiscriminantAnalysis( void );
+  EnhanceTubesUsingDiscriminantAnalysis(void);
   ~EnhanceTubesUsingDiscriminantAnalysis() {};
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
-  EnhanceTubesUsingDiscriminantAnalysis( const Self & );
-  void operator=( const Self & );
+  EnhanceTubesUsingDiscriminantAnalysis(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) 
-    override {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  typename FilterType::Pointer           m_Filter;
-
+  typename FilterType::Pointer m_Filter;
 };
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeEnhanceTubesUsingDiscriminantAnalysis.hxx"
+#  include "tubeEnhanceTubesUsingDiscriminantAnalysis.hxx"
 #endif
 
 #endif // End !defined( __EnhanceTubesUsingDiscriminantAnalysis_h )

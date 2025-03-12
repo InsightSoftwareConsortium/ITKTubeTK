@@ -37,66 +37,66 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TInputImage >
-class ComputeBinaryImageSimilarityMetrics:
-  public itk::ProcessObject
+template <class TInputImage>
+class ComputeBinaryImageSimilarityMetrics : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ComputeBinaryImageSimilarityMetrics;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
   using InputImageType = TInputImage;
   using LabelType = typename TInputImage::PixelType;
 
-  using FilterType = itk::LabelOverlapMeasuresImageFilter< InputImageType >;
+  using FilterType = itk::LabelOverlapMeasuresImageFilter<InputImageType>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeBinaryImageSimilarityMetrics, ProcessObject );
+  itkTypeMacro(ComputeBinaryImageSimilarityMetrics, ProcessObject);
 
   /** Set the source image. */
-  tubeWrapSetConstObjectMacro( SourceImage, InputImageType, Filter );
+  tubeWrapSetConstObjectMacro(SourceImage, InputImageType, Filter);
 
   /** Set the target image. */
-  tubeWrapSetConstObjectMacro( TargetImage, InputImageType, Filter );
+  tubeWrapSetConstObjectMacro(TargetImage, InputImageType, Filter);
 
   /** measures over all labels */
-  tubeWrapGetMacro( TotalOverlap, float, Filter );
-  tubeWrapGetMacro( UnionOverlap, float, Filter );
-  tubeWrapGetMacro( MeanOverlap, float, Filter );
-  tubeWrapGetMacro( VolumeSimilarity, float, Filter );
-  tubeWrapGetMacro( FalseNegativeError, float, Filter );
-  tubeWrapGetMacro( FalsePositiveError, float, Filter );
+  tubeWrapGetMacro(TotalOverlap, float, Filter);
+  tubeWrapGetMacro(UnionOverlap, float, Filter);
+  tubeWrapGetMacro(MeanOverlap, float, Filter);
+  tubeWrapGetMacro(VolumeSimilarity, float, Filter);
+  tubeWrapGetMacro(FalseNegativeError, float, Filter);
+  tubeWrapGetMacro(FalsePositiveError, float, Filter);
 
   /** Compute image similarity */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
 protected:
-  ComputeBinaryImageSimilarityMetrics( void );
+  ComputeBinaryImageSimilarityMetrics(void);
   ~ComputeBinaryImageSimilarityMetrics() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkLabelOverlapMeasuresImageFilter parameters **/
-  ComputeBinaryImageSimilarityMetrics( const Self & );
-  void operator=( const Self & );
+  ComputeBinaryImageSimilarityMetrics(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename FilterType::Pointer m_Filter;
-
 };
 
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeComputeBinaryImageSimilarityMetrics.hxx"
+#  include "tubeComputeBinaryImageSimilarityMetrics.hxx"
 #endif
 
 #endif // End !defined( __tubeComputeBinaryImageSimilarityMetrics_h )

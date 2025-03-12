@@ -38,10 +38,8 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TImage, class TLabelMap=itk::Image<
-  typename TImage::PixelType, TImage::ImageDimension> >
-class SegmentConnectedComponentsUsingParzenPDFs:
-  public itk::ProcessObject
+template <class TImage, class TLabelMap = itk::Image<typename TImage::PixelType, TImage::ImageDimension>>
+class SegmentConnectedComponentsUsingParzenPDFs : public itk::ProcessObject
 {
 public:
   using InputImageType = TImage;
@@ -53,15 +51,14 @@ public:
   /** Standard class type alias. */
   using Self = SegmentConnectedComponentsUsingParzenPDFs;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
 
-  using FilterType = itk::tube::PDFSegmenterParzen< InputImageType,
-    LabelMapType >;
+  using FilterType = itk::tube::PDFSegmenterParzen<InputImageType, LabelMapType>;
 
   using PDFImageType = typename FilterType::PDFImageType;
-  //using LabeledFeatureSpaceType = typename FilterType::LabeledFeatureSpaceType;
+  // using LabeledFeatureSpaceType = typename FilterType::LabeledFeatureSpaceType;
 
   using ProbabilityImageType = typename FilterType::ProbabilityImageType;
   using ProbabilityVectorType = typename FilterType::ProbabilityVectorType;
@@ -71,121 +68,126 @@ public:
   using ObjectIdListType = typename FilterType::ObjectIdListType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SegmentConnectedComponentsUsingParzenPDFs, ProcessObject );
+  itkTypeMacro(SegmentConnectedComponentsUsingParzenPDFs, ProcessObject);
 
   /** Set/Get input image */
-  void SetFeatureImage( InputImageType * img );
-  void AddFeatureImage( InputImageType * img );
+  void
+  SetFeatureImage(InputImageType * img);
+  void
+  AddFeatureImage(InputImageType * img);
 
   /** Set/Get mask image */
-  tubeWrapSetObjectMacro( InputLabelMap, LabelMapType, Filter );
-  tubeWrapGetObjectMacro( InputLabelMap, LabelMapType, Filter );
+  tubeWrapSetObjectMacro(InputLabelMap, LabelMapType, Filter);
+  tubeWrapGetObjectMacro(InputLabelMap, LabelMapType, Filter);
 
-  tubeWrapForceSetMacro( ObjectId, LabelMapPixelType, Filter );
-  tubeWrapAddMacro( ObjectId, LabelMapPixelType, Filter );
-  tubeWrapGetMacro( ObjectId, ObjectIdListType, Filter );
-  tubeWrapGetNthObjectMacro( ObjectId, LabelMapPixelType, Filter );
+  tubeWrapForceSetMacro(ObjectId, LabelMapPixelType, Filter);
+  tubeWrapAddMacro(ObjectId, LabelMapPixelType, Filter);
+  tubeWrapGetMacro(ObjectId, ObjectIdListType, Filter);
+  tubeWrapGetNthObjectMacro(ObjectId, LabelMapPixelType, Filter);
 
-  tubeWrapSetMacro( VoidId, LabelMapPixelType, Filter );
-  tubeWrapGetMacro( VoidId, LabelMapPixelType, Filter );
+  tubeWrapSetMacro(VoidId, LabelMapPixelType, Filter);
+  tubeWrapGetMacro(VoidId, LabelMapPixelType, Filter);
 
-  tubeWrapSetMacro( IgnoreId, LabelMapPixelType, Filter );
-  tubeWrapGetMacro( IgnoreId, LabelMapPixelType, Filter );
+  tubeWrapSetMacro(IgnoreId, LabelMapPixelType, Filter);
+  tubeWrapGetMacro(IgnoreId, LabelMapPixelType, Filter);
 
-  tubeWrapSetMacro( ErodeDilateRadius, unsigned int, Filter );
-  tubeWrapGetMacro( ErodeDilateRadius, unsigned int, Filter );
+  tubeWrapSetMacro(ErodeDilateRadius, unsigned int, Filter);
+  tubeWrapGetMacro(ErodeDilateRadius, unsigned int, Filter);
 
-  tubeWrapSetMacro( DilateFirst, bool, Filter );
-  tubeWrapGetMacro( DilateFirst, bool, Filter );
+  tubeWrapSetMacro(DilateFirst, bool, Filter);
+  tubeWrapGetMacro(DilateFirst, bool, Filter);
 
-  tubeWrapSetMacro( HoleFillIterations, unsigned int, Filter );
-  tubeWrapGetMacro( HoleFillIterations, unsigned int, Filter );
+  tubeWrapSetMacro(HoleFillIterations, unsigned int, Filter);
+  tubeWrapGetMacro(HoleFillIterations, unsigned int, Filter);
 
-  tubeWrapSetNthMacro( ObjectPDFWeight, double, Filter );
-  tubeWrapGetNthObjectMacro( ObjectPDFWeight, double, Filter );
-  tubeWrapSetMacro( ObjectPDFWeight, VectorDoubleType, Filter );
-  tubeWrapGetMacro( ObjectPDFWeight, VectorDoubleType, Filter );
+  tubeWrapSetNthMacro(ObjectPDFWeight, double, Filter);
+  tubeWrapGetNthObjectMacro(ObjectPDFWeight, double, Filter);
+  tubeWrapSetMacro(ObjectPDFWeight, VectorDoubleType, Filter);
+  tubeWrapGetMacro(ObjectPDFWeight, VectorDoubleType, Filter);
 
-  tubeWrapSetMacro( ProbabilityImageSmoothingStandardDeviation, double, Filter );
-  tubeWrapGetMacro( ProbabilityImageSmoothingStandardDeviation, double, Filter );
+  tubeWrapSetMacro(ProbabilityImageSmoothingStandardDeviation, double, Filter);
+  tubeWrapGetMacro(ProbabilityImageSmoothingStandardDeviation, double, Filter);
 
-  tubeWrapSetMacro( HistogramSmoothingStandardDeviation, double, Filter );
-  tubeWrapGetMacro( HistogramSmoothingStandardDeviation, double, Filter );
+  tubeWrapSetMacro(HistogramSmoothingStandardDeviation, double, Filter);
+  tubeWrapGetMacro(HistogramSmoothingStandardDeviation, double, Filter);
 
-  tubeWrapSetMacro( OutlierRejectPortion, double, Filter );
-  tubeWrapGetMacro( OutlierRejectPortion, double, Filter );
+  tubeWrapSetMacro(OutlierRejectPortion, double, Filter);
+  tubeWrapGetMacro(OutlierRejectPortion, double, Filter);
 
-  tubeWrapSetMacro( ReclassifyNotObjectLabels, bool, Filter );
-  tubeWrapGetMacro( ReclassifyNotObjectLabels, bool, Filter );
+  tubeWrapSetMacro(ReclassifyNotObjectLabels, bool, Filter);
+  tubeWrapGetMacro(ReclassifyNotObjectLabels, bool, Filter);
 
-  tubeWrapSetMacro( ReclassifyObjectLabels, bool, Filter );
-  tubeWrapGetMacro( ReclassifyObjectLabels, bool, Filter );
+  tubeWrapSetMacro(ReclassifyObjectLabels, bool, Filter);
+  tubeWrapGetMacro(ReclassifyObjectLabels, bool, Filter);
 
-  tubeWrapSetMacro( ForceClassification, bool, Filter );
-  tubeWrapGetMacro( ForceClassification, bool, Filter );
+  tubeWrapSetMacro(ForceClassification, bool, Filter);
+  tubeWrapGetMacro(ForceClassification, bool, Filter);
 
-  tubeWrapSetMacro( NumberOfBinsPerFeature, VectorUIntType, Filter );
-  tubeWrapGetMacro( NumberOfBinsPerFeature, VectorUIntType, Filter );
+  tubeWrapSetMacro(NumberOfBinsPerFeature, VectorUIntType, Filter);
+  tubeWrapGetMacro(NumberOfBinsPerFeature, VectorUIntType, Filter);
 
-  tubeWrapSetMacro( BinMin, VectorDoubleType, Filter );
-  tubeWrapGetMacro( BinMin, VectorDoubleType, Filter );
+  tubeWrapSetMacro(BinMin, VectorDoubleType, Filter);
+  tubeWrapGetMacro(BinMin, VectorDoubleType, Filter);
 
-  tubeWrapSetMacro( BinSize, VectorDoubleType, Filter );
-  tubeWrapGetMacro( BinSize, VectorDoubleType, Filter );
+  tubeWrapSetMacro(BinSize, VectorDoubleType, Filter);
+  tubeWrapGetMacro(BinSize, VectorDoubleType, Filter);
 
-  tubeWrapSetNthObjectMacro( ClassPDFImage, PDFImageType, Filter );
-  tubeWrapGetNthObjectMacro( ClassPDFImage, PDFImageType, Filter );
-  
-  tubeWrapCallMacro( GenerateLabeledFeatureSpace, Filter );
-  
-  //tubeWrapSetObjectMacro( LabeledFeatureSpace, LabeledFeatureSpaceType, Filter );
-  //tubeWrapGetObjectMacro( LabeledFeatureSpace, LabeledFeatureSpaceType, Filter );
-  
-  ProbabilityVectorType GetProbabilityVector( const FeatureVectorType & fv )
-    const 
-  { return m_Filter->GetProbabilityVector( fv ); }; 
+  tubeWrapSetNthObjectMacro(ClassPDFImage, PDFImageType, Filter);
+  tubeWrapGetNthObjectMacro(ClassPDFImage, PDFImageType, Filter);
 
-  tubeWrapCallMacro( ClassifyImages, Filter );
+  tubeWrapCallMacro(GenerateLabeledFeatureSpace, Filter);
 
-  tubeWrapGetMacro( NumberOfClasses, unsigned int, Filter );
+  // tubeWrapSetObjectMacro( LabeledFeatureSpace, LabeledFeatureSpaceType, Filter );
+  // tubeWrapGetObjectMacro( LabeledFeatureSpace, LabeledFeatureSpaceType, Filter );
 
-  tubeWrapGetNthObjectMacro( ClassProbabilityImage, ProbabilityImageType,
-    Filter );
+  ProbabilityVectorType
+  GetProbabilityVector(const FeatureVectorType & fv) const
+  {
+    return m_Filter->GetProbabilityVector(fv);
+  };
 
-  void Update( void ) override;
+  tubeWrapCallMacro(ClassifyImages, Filter);
+
+  tubeWrapGetMacro(NumberOfClasses, unsigned int, Filter);
+
+  tubeWrapGetNthObjectMacro(ClassProbabilityImage, ProbabilityImageType, Filter);
+
+  void
+  Update(void) override;
 
   /** Get output segmentation mask */
-  tubeWrapGetObjectMacro( OutputLabelMap, LabelMapType, Filter );
+  tubeWrapGetObjectMacro(OutputLabelMap, LabelMapType, Filter);
 
 protected:
-  SegmentConnectedComponentsUsingParzenPDFs( void );
+  SegmentConnectedComponentsUsingParzenPDFs(void);
   ~SegmentConnectedComponentsUsingParzenPDFs() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkSegmentConnectedComponentsUsingParzenPDFs parameters **/
-  SegmentConnectedComponentsUsingParzenPDFs( const Self & );
-  void operator=( const Self & );
+  SegmentConnectedComponentsUsingParzenPDFs(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  using FeatureVectorGeneratorType = itk::tube::FeatureVectorGenerator< InputImageType >;
+  using FeatureVectorGeneratorType = itk::tube::FeatureVectorGenerator<InputImageType>;
 
-  typename FilterType::Pointer                    m_Filter;
-  typename FeatureVectorGeneratorType::Pointer    m_FVGenerator;
-
+  typename FilterType::Pointer                 m_Filter;
+  typename FeatureVectorGeneratorType::Pointer m_FVGenerator;
 };
 
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeSegmentConnectedComponentsUsingParzenPDFs.hxx"
+#  include "tubeSegmentConnectedComponentsUsingParzenPDFs.hxx"
 #endif
 
 #endif // End !defined( __tubeSegmentConnectedComponentsUsingParzenPDFs_h )

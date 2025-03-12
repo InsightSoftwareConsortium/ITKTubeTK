@@ -63,9 +63,8 @@ namespace itk
  *
  * \ingroup ITKTransform
  */
-template<typename TParametersValueType=double>
-class ITK_TEMPLATE_EXPORT Similarity2DTransform :
-  public Rigid2DTransform<TParametersValueType>
+template <typename TParametersValueType = double>
+class ITK_TEMPLATE_EXPORT Similarity2DTransform : public Rigid2DTransform<TParametersValueType>
 {
 public:
   /** Standard class type alias. */
@@ -81,10 +80,10 @@ public:
   itkTypeMacro(Similarity2DTransform, Rigid2DTransform);
 
   /** Dimension of parameters. */
-  itkStaticConstMacro(SpaceDimension,           unsigned int, 2);
-  itkStaticConstMacro(InputSpaceDimension,      unsigned int, 2);
-  itkStaticConstMacro(OutputSpaceDimension,     unsigned int, 2);
-  itkStaticConstMacro(ParametersDimension,      unsigned int, 4);
+  itkStaticConstMacro(SpaceDimension, unsigned int, 2);
+  itkStaticConstMacro(InputSpaceDimension, unsigned int, 2);
+  itkStaticConstMacro(OutputSpaceDimension, unsigned int, 2);
+  itkStaticConstMacro(ParametersDimension, unsigned int, 4);
 
   using ScalarType = typename Superclass::ScalarType;
   using ScaleType = TParametersValueType;
@@ -128,20 +127,22 @@ public:
   using InverseTransformBasePointer = typename InverseTransformBaseType::Pointer;
 
   /** Set the Scale part of the transform. */
-  void SetScale(ScaleType scale);
+  void
+  SetScale(ScaleType scale);
 
   itkGetConstReferenceMacro(Scale, ScaleType);
 
   /** Set the transformation from a container of parameters
-    * This is typically used by optimizers.
-    * There are 4 parameters. The first one represents the
-    * scale, the second represents the angle of rotation
-    * and the last two represent the translation.
-    * The center of rotation is fixed.
-    *
-    * \sa Transform::SetParameters()
-    * \sa Transform::SetFixedParameters() */
-  virtual void SetParameters(const ParametersType & parameters) override;
+   * This is typically used by optimizers.
+   * There are 4 parameters. The first one represents the
+   * scale, the second represents the angle of rotation
+   * and the last two represent the translation.
+   * The center of rotation is fixed.
+   *
+   * \sa Transform::SetParameters()
+   * \sa Transform::SetFixedParameters() */
+  virtual void
+  SetParameters(const ParametersType & parameters) override;
 
   /** Get the parameters that uniquely define the transform
    * This is typically used by optimizers.
@@ -152,33 +153,40 @@ public:
    *
    * \sa Transform::GetParameters()
    * \sa Transform::GetFixedParameters() */
-  virtual const ParametersType & GetParameters() const override;
+  virtual const ParametersType &
+  GetParameters() const override;
 
   /** This method computes the Jacobian matrix of the transformation
-  * at a given input point.
-  */
-  virtual void ComputeJacobianWithRespectToParameters( const InputPointType  & p, JacobianType & jacobian) const override;
+   * at a given input point.
+   */
+  virtual void
+  ComputeJacobianWithRespectToParameters(const InputPointType & p, JacobianType & jacobian) const override;
 
   /** Set the transformation to an identity. */
-  virtual void SetIdentity() override;
+  virtual void
+  SetIdentity() override;
 
   /**
    * This method creates and returns a new Similarity2DTransform object
    * which is the inverse of self.
    */
-  void CloneInverseTo(Pointer & newinverse) const;
+  void
+  CloneInverseTo(Pointer & newinverse) const;
 
   /** Get an inverse of this transform. */
-  bool GetInverse(Self *inverse) const;
+  bool
+  GetInverse(Self * inverse) const;
 
   /** Return an inverse of this transform. */
-  virtual InverseTransformBasePointer GetInverseTransform() const override;
+  virtual InverseTransformBasePointer
+  GetInverseTransform() const override;
 
   /**
    * This method creates and returns a new Similarity2DTransform object
    * which has the same parameters.
    */
-  void CloneTo(Pointer & clone) const;
+  void
+  CloneTo(Pointer & clone) const;
 
   /**
    * Set the rotation Matrix of a Similarity 2D Transform
@@ -193,7 +201,8 @@ public:
    * \sa MatrixOffsetTransformBase::SetMatrix()
    *
    */
-  virtual void SetMatrix(const MatrixType & matrix) override;
+  virtual void
+  SetMatrix(const MatrixType & matrix) override;
 
   /**
    * Set the rotation Matrix of a Similarity 2D Transform
@@ -208,32 +217,35 @@ public:
    * \sa MatrixOffsetTransformBase::SetMatrix()
    *
    */
-  virtual void SetMatrix(const MatrixType & matrix, const TParametersValueType tolerance) override;
+  virtual void
+  SetMatrix(const MatrixType & matrix, const TParametersValueType tolerance) override;
 
 protected:
   Similarity2DTransform(unsigned int outputSpaceDimension, unsigned int parametersDimension);
   Similarity2DTransform(unsigned int parametersDimension);
   Similarity2DTransform();
 
-  ~Similarity2DTransform()
-  {
-  }
+  ~Similarity2DTransform() {}
 
-  virtual void PrintSelf(std::ostream & os, Indent indent) const override;
+  virtual void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Compute matrix from angle and scale. This is used in Set methods
    * to update the underlying matrix whenever a transform parameter
    * is changed. */
-  virtual void ComputeMatrix(void) override;
+  virtual void
+  ComputeMatrix(void) override;
 
   /** Compute the angle and scale from the matrix. This is used to compute
    * transform parameters from a given matrix. This is used in
    * MatrixOffsetTransformBase::Compose() and
    * MatrixOffsetTransformBase::GetInverse(). */
-  virtual void ComputeMatrixParameters(void) override;
+  virtual void
+  ComputeMatrixParameters(void) override;
 
   /** Set the scale without updating underlying variables. */
-  void SetVarScale(ScaleType scale)
+  void
+  SetVarScale(ScaleType scale)
   {
     m_Scale = scale;
   }
@@ -243,10 +255,10 @@ private:
 
   ScaleType m_Scale;
 }; // class Similarity2DTransform
-}  // namespace itk
+} // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkSimilarity2DTransform.hxx"
+#  include "itkSimilarity2DTransform.hxx"
 #endif
 
 #endif /* itkSimilarity2DTransform_h */

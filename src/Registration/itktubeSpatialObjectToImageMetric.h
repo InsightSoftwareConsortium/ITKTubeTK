@@ -89,13 +89,12 @@ public:
   /** Image dimension enumeration. */
   static constexpr unsigned int ImageDimension = FixedImageType::ImageDimension;
 
-  using ImageMaskObjectType = SpatialObject<itkGetStaticConstMacro( ImageDimension )>;
+  using ImageMaskObjectType = SpatialObject<itkGetStaticConstMacro(ImageDimension)>;
 
-  using SpatialObjectMaskObjectType = SpatialObject< ObjectDimension >;
+  using SpatialObjectMaskObjectType = SpatialObject<ObjectDimension>;
 
   /**  Type of the Transform Base class */
-  using TransformType = Transform<CoordinateRepresentationType,
-    ObjectDimension, ImageDimension>;
+  using TransformType = Transform<CoordinateRepresentationType, ObjectDimension, ImageDimension>;
 
   using TransformPointer = typename TransformType::Pointer;
   using MovingPointType = typename TransformType::InputPointType;
@@ -132,25 +131,26 @@ public:
   itkTypeMacro(SpatialObjectToImageMetric, Object);
 
   /** Get/Set the FixedImage. */
-  void SetFixedImage( const FixedImageType * fixedImage );
+  void
+  SetFixedImage(const FixedImageType * fixedImage);
   itkGetConstObjectMacro(FixedImage, FixedImageType);
 
   /** Get/Set the MovingSpatialObject */
-  void SetMovingSpatialObject( const MovingSpatialObjectType *
-    movingSpatialObject );
+  void
+  SetMovingSpatialObject(const MovingSpatialObjectType * movingSpatialObject);
   itkGetConstObjectMacro(MovingSpatialObject, MovingSpatialObjectType);
 
-  void SetFixedImageMaskObject( const ImageMaskObjectType * maskObject );
-  itkGetConstObjectMacro( FixedImageMaskObject, ImageMaskObjectType );
-  itkSetMacro( UseFixedImageMaskObject, bool );
-  itkGetMacro( UseFixedImageMaskObject, bool );
+  void
+  SetFixedImageMaskObject(const ImageMaskObjectType * maskObject);
+  itkGetConstObjectMacro(FixedImageMaskObject, ImageMaskObjectType);
+  itkSetMacro(UseFixedImageMaskObject, bool);
+  itkGetMacro(UseFixedImageMaskObject, bool);
 
-  void SetMovingSpatialObjectMaskObject(
-    const SpatialObjectMaskObjectType * maskObject );
-  itkGetConstObjectMacro( MovingSpatialObjectMaskObject,
-    SpatialObjectMaskObjectType );
-  itkSetMacro( UseMovingSpatialObjectMaskObject, bool );
-  itkGetMacro( UseMovingSpatialObjectMaskObject, bool );
+  void
+  SetMovingSpatialObjectMaskObject(const SpatialObjectMaskObjectType * maskObject);
+  itkGetConstObjectMacro(MovingSpatialObjectMaskObject, SpatialObjectMaskObjectType);
+  itkSetMacro(UseMovingSpatialObjectMaskObject, bool);
+  itkGetMacro(UseMovingSpatialObjectMaskObject, bool);
 
   /** Get Value and Derivatives for MultipleValuedOptimizers */
   void
@@ -182,19 +182,17 @@ protected:
 
   MovingSpatialObjectConstPointer m_MovingSpatialObject;
 
-  FixedImageConstPointer          m_FixedImage;
+  FixedImageConstPointer m_FixedImage;
 
-  mutable TransformPointer        m_Transform;
+  mutable TransformPointer m_Transform;
 
-  ParametersType                  m_LastTransformParameters;
+  ParametersType m_LastTransformParameters;
 
   bool                                       m_UseFixedImageMaskObject;
   typename ImageMaskObjectType::ConstPointer m_FixedImageMaskObject;
 
-  bool                                       m_UseMovingSpatialObjectMaskObject;
-  typename SpatialObjectMaskObjectType::ConstPointer
-                                             m_MovingSpatialObjectMaskObject;
-
+  bool                                               m_UseMovingSpatialObjectMaskObject;
+  typename SpatialObjectMaskObjectType::ConstPointer m_MovingSpatialObjectMaskObject;
 };
 
 } // end namespace tube

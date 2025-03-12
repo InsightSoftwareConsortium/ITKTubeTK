@@ -40,26 +40,23 @@ class AffineSpatialObjectToImageRegistrationMethod
 {
 
 public:
-
   using Self = AffineSpatialObjectToImageRegistrationMethod;
   using Superclass = OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( AffineSpatialObjectToImageRegistrationMethod,
-                OptimizedSpatialObjectToImageRegistrationMethod );
+  itkTypeMacro(AffineSpatialObjectToImageRegistrationMethod, OptimizedSpatialObjectToImageRegistrationMethod);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
   //
   // Typedefs from Superclass
   //
 
   // Overrides the superclass' TransformType typedef
-  using AffineTransformType = AffineTransform<double, itkGetStaticConstMacro( ImageDimension )>;
+  using AffineTransformType = AffineTransform<double, itkGetStaticConstMacro(ImageDimension)>;
   using AffineTransformPointer = typename AffineTransformType::Pointer;
   using TransformType = AffineTransformType;
 
@@ -67,7 +64,8 @@ public:
   // Superclass Methods
   //
 
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
   //
   // Custom Methods
@@ -80,9 +78,11 @@ public:
    *   ( e.g., SetIdentity )
    *   can be called without the caller having to do the casting.
    */
-  TransformType * GetTypedTransform( void );
+  TransformType *
+  GetTypedTransform(void);
 
-  const TransformType * GetTypedTransform( void ) const;
+  const TransformType *
+  GetTypedTransform(void) const;
 
   /**
    * This function creates a new affine transforms that implements the
@@ -93,7 +93,8 @@ public:
    * SmartPointer to prevent it from being destroyed by depletion of its
    * reference counting.
    */
-  AffineTransformPointer GetAffineTransform( void ) const;
+  AffineTransformPointer
+  GetAffineTransform(void) const;
 
   /** Initialize the transform parameters from an AffineTransform.
    * This method is intended as an alternative to calling
@@ -103,23 +104,22 @@ public:
    * InitialSpatialObjectToImageRegistrationMethod
    * to directly initialize this rigid registration method.
    */
-  void SetInitialTransformParametersFromAffineTransform(
-    const AffineTransformType * affine );
+  void
+  SetInitialTransformParametersFromAffineTransform(const AffineTransformType * affine);
 
 protected:
+  AffineSpatialObjectToImageRegistrationMethod(void);
+  virtual ~AffineSpatialObjectToImageRegistrationMethod(void);
 
-  AffineSpatialObjectToImageRegistrationMethod( void );
-  virtual ~AffineSpatialObjectToImageRegistrationMethod( void );
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Purposely not implemented
-  AffineSpatialObjectToImageRegistrationMethod( const Self & );
+  AffineSpatialObjectToImageRegistrationMethod(const Self &);
   // Purposely not implemented
-  void operator =( const Self & );
-
+  void
+  operator=(const Self &);
 };
 
 } // end namespace tube
@@ -127,7 +127,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeAffineSpatialObjectToImageRegistrationMethod.hxx"
+#  include "itktubeAffineSpatialObjectToImageRegistrationMethod.hxx"
 #endif
 
 #endif // __SpatialObjectToImageRegistrationMethod_h

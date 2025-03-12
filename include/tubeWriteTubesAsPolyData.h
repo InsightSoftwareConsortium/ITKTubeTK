@@ -37,21 +37,20 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-class WriteTubesAsPolyData:
-  public itk::ProcessObject
+class WriteTubesAsPolyData : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = WriteTubesAsPolyData;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( WriteTubesAsPolyData, ProcessObject );
+  itkTypeMacro(WriteTubesAsPolyData, ProcessObject);
 
   /***/
   /***/
@@ -60,50 +59,62 @@ public:
   using TubeSpatialObjectType = itk::TubeSpatialObject<3>;
 
   /** Set the source image. */
-  void SetInput( GroupSpatialObjectType * grp )
-  { m_GroupSpatialObject = grp; };
+  void
+  SetInput(GroupSpatialObjectType * grp)
+  {
+    m_GroupSpatialObject = grp;
+  };
 
-  void SetTubeInput( TubeSpatialObjectType * tube )
-  { m_GroupSpatialObject = GroupSpatialObjectType::New();
-    m_GroupSpatialObject->AddChild( tube ); };
+  void
+  SetTubeInput(TubeSpatialObjectType * tube)
+  {
+    m_GroupSpatialObject = GroupSpatialObjectType::New();
+    m_GroupSpatialObject->AddChild(tube);
+  };
 
   /** Set the filename for saving. */
-  itkSetMacro( FileName, std::string );
-  itkGetMacro( FileName, std::string );
+  itkSetMacro(FileName, std::string);
+  itkGetMacro(FileName, std::string);
 
-  itkSetMacro( CenterlineFileName, std::string );
-  itkGetMacro( CenterlineFileName, std::string );
+  itkSetMacro(CenterlineFileName, std::string);
+  itkGetMacro(CenterlineFileName, std::string);
 
-  itkSetMacro( NumberOfSides, int );
-  itkGetMacro( NumberOfSides, int );
+  itkSetMacro(NumberOfSides, int);
+  itkGetMacro(NumberOfSides, int);
 
-  void Write( void )
-  { this->Update(); };
+  void
+  Write(void)
+  {
+    this->Update();
+  };
 
 
 protected:
-  WriteTubesAsPolyData( void );
+  WriteTubesAsPolyData(void);
   ~WriteTubesAsPolyData() {};
 
-  void Update() override;
+  void
+  Update() override;
 
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itktubeTubeExtractor parameters **/
-  WriteTubesAsPolyData( const Self & );
-  void operator=( const Self & );
+  WriteTubesAsPolyData(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) 
-    override {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  GroupSpatialObjectType::Pointer  m_GroupSpatialObject;
+  GroupSpatialObjectType::Pointer m_GroupSpatialObject;
 
-  std::string                      m_FileName;
-  std::string                      m_CenterlineFileName;
+  std::string m_FileName;
+  std::string m_CenterlineFileName;
 
-  int                              m_NumberOfSides;
+  int m_NumberOfSides;
 };
 
 } // End namespace tube

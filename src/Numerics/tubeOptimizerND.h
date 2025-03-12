@@ -37,108 +37,114 @@ namespace tube
 class OptimizerND : public Object
 {
 public:
-
   using Self = OptimizerND;
   using Superclass = Object;
   using Pointer = Self *;
   using ConstPointer = const Self *;
 
-  using MatrixType = vnl_matrix< double >;
-  using VectorType = vnl_vector< double >;
-  using ValueFunctionType = UserFunction< VectorType, double >;
-  using DerivativeFunctionType = UserFunction< VectorType, VectorType >;
+  using MatrixType = vnl_matrix<double>;
+  using VectorType = vnl_vector<double>;
+  using ValueFunctionType = UserFunction<VectorType, double>;
+  using DerivativeFunctionType = UserFunction<VectorType, VectorType>;
 
-  using OptimizerValueFunctionType = UserFunction< double, double >;
-  using OptimizerDerivativeFunctionType = UserFunction< double, double >;
+  using OptimizerValueFunctionType = UserFunction<double, double>;
+  using OptimizerDerivativeFunctionType = UserFunction<double, double>;
 
   /** Return the type of this object. */
-  tubeTypeMacro( OptimizerND );
+  tubeTypeMacro(OptimizerND);
 
   /** Constructor. */
-  OptimizerND( void );
+  OptimizerND(void);
 
   /** Constructor. */
-  OptimizerND( unsigned int dimension,
-    ValueFunctionType::Pointer funcValND,
-    DerivativeFunctionType::Pointer funcDerivND,
-    Optimizer1D::Pointer optimizer1D );
+  OptimizerND(unsigned int                    dimension,
+              ValueFunctionType::Pointer      funcValND,
+              DerivativeFunctionType::Pointer funcDerivND,
+              Optimizer1D::Pointer            optimizer1D);
 
   /** Destructor. */
-  virtual ~OptimizerND( void );
+  virtual ~OptimizerND(void);
 
-  tubeGetMacro( MaxIterations, unsigned int );
+  tubeGetMacro(MaxIterations, unsigned int);
 
-  virtual void SetMaxIterations( unsigned int maxIterations );
+  virtual void
+  SetMaxIterations(unsigned int maxIterations);
 
-  tubeGetMacro( MaxLineSearches, unsigned int );
+  tubeGetMacro(MaxLineSearches, unsigned int);
 
-  tubeSetMacro( MaxLineSearches, unsigned int );
+  tubeSetMacro(MaxLineSearches, unsigned int);
 
-  tubeGetMacro( SearchForMin, bool );
+  tubeGetMacro(SearchForMin, bool);
 
-  virtual void SetSearchForMin( bool searchForMin );
+  virtual void
+  SetSearchForMin(bool searchForMin);
 
-  tubeBooleanMacro( SearchForMin );
+  tubeBooleanMacro(SearchForMin);
 
-  tubeGetMacro( Tolerance, double );
+  tubeGetMacro(Tolerance, double);
 
-  virtual void SetTolerance( double tolerance );
+  virtual void
+  SetTolerance(double tolerance);
 
-  tubeGetMacro( XMax, VectorType );
+  tubeGetMacro(XMax, VectorType);
 
-  tubeSetMacro( XMax, VectorType );
+  tubeSetMacro(XMax, VectorType);
 
-  tubeGetMacro( XMin, VectorType );
+  tubeGetMacro(XMin, VectorType);
 
-  tubeSetMacro( XMin, VectorType );
+  tubeSetMacro(XMin, VectorType);
 
-  tubeGetMacro( XStep, VectorType );
+  tubeGetMacro(XStep, VectorType);
 
-  tubeSetMacro( XStep, VectorType );
+  tubeSetMacro(XStep, VectorType);
 
-  bool Extreme( VectorType & x, double * xVal );
+  bool
+  Extreme(VectorType & x, double * xVal);
 
-  bool Extreme( VectorType & x, double * xVal, unsigned int n,
-    MatrixType & directions );
+  bool
+  Extreme(VectorType & x, double * xVal, unsigned int n, MatrixType & directions);
 
-  double FuncDeriv( double x );
+  double
+  FuncDeriv(double x);
 
-  double FuncVal( double x );
+  double
+  FuncVal(double x);
 
-  void Use( unsigned int dimension,
-    ValueFunctionType::Pointer funcValND,
-    DerivativeFunctionType::Pointer funcDerivND,
-    Optimizer1D::Pointer optimizer1D );
+  void
+  Use(unsigned int                    dimension,
+      ValueFunctionType::Pointer      funcValND,
+      DerivativeFunctionType::Pointer funcDerivND,
+      Optimizer1D::Pointer            optimizer1D);
 
 protected:
-
   /** Print out information about this object. */
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  unsigned int                              m_Dimension;
-  VectorType                                m_XMin;
-  VectorType                                m_XMax;
-  VectorType                                m_XStep;
-  VectorType                                m_X0;
-  VectorType                                m_X0Dir;
-  VectorType                                m_X0Temp;
-  bool                                      m_SearchForMin;
-  double                                    m_Tolerance;
-  unsigned int                              m_MaxIterations;
-  unsigned int                              m_MaxLineSearches;
-  OptimizerValueFunctionType::Pointer       m_Optimizer1DVal;
-  OptimizerDerivativeFunctionType::Pointer  m_Optimizer1DDeriv;
-  Optimizer1D::Pointer                      m_Optimizer1D;
-  ValueFunctionType::Pointer                m_FuncValND;
-  DerivativeFunctionType::Pointer           m_FuncDerivND;
+  unsigned int                             m_Dimension;
+  VectorType                               m_XMin;
+  VectorType                               m_XMax;
+  VectorType                               m_XStep;
+  VectorType                               m_X0;
+  VectorType                               m_X0Dir;
+  VectorType                               m_X0Temp;
+  bool                                     m_SearchForMin;
+  double                                   m_Tolerance;
+  unsigned int                             m_MaxIterations;
+  unsigned int                             m_MaxLineSearches;
+  OptimizerValueFunctionType::Pointer      m_Optimizer1DVal;
+  OptimizerDerivativeFunctionType::Pointer m_Optimizer1DDeriv;
+  Optimizer1D::Pointer                     m_Optimizer1D;
+  ValueFunctionType::Pointer               m_FuncValND;
+  DerivativeFunctionType::Pointer          m_FuncDerivND;
 
 private:
-
   // Copy constructor not implemented.
-  OptimizerND( const Self & self );
+  OptimizerND(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
 }; // End class OptimizerND
 

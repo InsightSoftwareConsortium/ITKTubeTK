@@ -33,44 +33,38 @@ namespace itk
 
 template <class TImage>
 class ScaleSkewVersor3DImageToImageRegistrationMethod
-  : public OptimizedImageToImageRegistrationMethod<
-    Image< typename TImage::PixelType, 3 > >
+  : public OptimizedImageToImageRegistrationMethod<Image<typename TImage::PixelType, 3>>
 {
 
 public:
-
   using Self = ScaleSkewVersor3DImageToImageRegistrationMethod;
-  using Superclass = OptimizedImageToImageRegistrationMethod<
-    Image< typename TImage::PixelType, 3 > >;
+  using Superclass = OptimizedImageToImageRegistrationMethod<Image<typename TImage::PixelType, 3>>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( ScaleSkewVersor3DImageToImageRegistrationMethod,
-                OptimizedImageToImageRegistrationMethod );
+  itkTypeMacro(ScaleSkewVersor3DImageToImageRegistrationMethod, OptimizedImageToImageRegistrationMethod);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkStaticConstMacro( ImageDimension, unsigned int, 3 );
+  itkStaticConstMacro(ImageDimension, unsigned int, 3);
 
   //
   // Typedefs from Superclass
-  // 
+  //
   // Overrides the superclass' TransformType typedef
-  using ScaleSkewVersor3DTransformType = ::itk::ComposeScaleSkewVersor3DTransform< double >;
-  typedef typename ScaleSkewVersor3DTransformType::Pointer
-            ScaleSkewVersor3DTransformPointer;
-  typedef ScaleSkewVersor3DTransformType
-            TransformType;
+  using ScaleSkewVersor3DTransformType = ::itk::ComposeScaleSkewVersor3DTransform<double>;
+  typedef typename ScaleSkewVersor3DTransformType::Pointer ScaleSkewVersor3DTransformPointer;
+  typedef ScaleSkewVersor3DTransformType                   TransformType;
 
   using AffineTransformType = AffineTransform<double, 3>;
-  typedef typename AffineTransformType::Pointer
-            AffineTransformPointer;
+  typedef typename AffineTransformType::Pointer AffineTransformPointer;
 
   //
   // Superclass Methods
   //
 
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
   //
   // Custom Methods
@@ -83,9 +77,11 @@ public:
    *   ( e.g., SetIdentity )
    *   can be called without the caller having to do the casting.
    */
-  TransformType * GetTypedTransform( void );
+  TransformType *
+  GetTypedTransform(void);
 
-  const TransformType * GetTypedTransform( void ) const;
+  const TransformType *
+  GetTypedTransform(void) const;
 
   /**
    * This function creates a new affine transforms that implements the
@@ -96,7 +92,8 @@ public:
    * SmartPointer to prevent it from being destroyed by depletion of its
    * reference counting.
    */
-  AffineTransformPointer GetAffineTransform( void ) const;
+  AffineTransformPointer
+  GetAffineTransform(void) const;
 
   /** Initialize the transform parameters from an AffineTransform.
    * This method is intended as an alternative to calling
@@ -106,29 +103,28 @@ public:
    * InitialImageToImageRegistrationMethod
    * to directly initialize this registration method.
    */
-  void SetInitialTransformParametersFromAffineTransform(
-    const AffineTransformType * transform );
+  void
+  SetInitialTransformParametersFromAffineTransform(const AffineTransformType * transform);
 
 protected:
+  ScaleSkewVersor3DImageToImageRegistrationMethod(void);
+  virtual ~ScaleSkewVersor3DImageToImageRegistrationMethod(void);
 
-  ScaleSkewVersor3DImageToImageRegistrationMethod( void );
-  virtual ~ScaleSkewVersor3DImageToImageRegistrationMethod( void );
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Purposely not implemented
-  ScaleSkewVersor3DImageToImageRegistrationMethod( const Self & );
+  ScaleSkewVersor3DImageToImageRegistrationMethod(const Self &);
   // Purposely not implemented
-  void operator =( const Self & );
-
+  void
+  operator=(const Self &);
 };
 
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkScaleSkewVersor3DImageToImageRegistrationMethod.hxx"
+#  include "itkScaleSkewVersor3DImageToImageRegistrationMethod.hxx"
 #endif
 
 #endif // __ImageToImageRegistrationMethod_h

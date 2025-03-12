@@ -6,5 +6,5 @@
 #  define MinimalPathExtraction_EXPORT
 #  define MinimalPathExtraction_HIDDEN
 #else
-#include "MinimalPathExtractionExport.h"
+#  include "MinimalPathExtractionExport.h"
 #endif

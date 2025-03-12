@@ -37,22 +37,21 @@ namespace tube
  *
  *  \ingroup TubeTK
  */
-template< class TImage, class TPointsImage>
-class ConvertShrunkenSeedImageToList
-  : public itk::ProcessObject
+template <class TImage, class TPointsImage>
+class ConvertShrunkenSeedImageToList : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ConvertShrunkenSeedImageToList;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( ConvertShrunkenSeedImageToList, ProcessObject );
+  itkTypeMacro(ConvertShrunkenSeedImageToList, ProcessObject);
 
   using ImageType = TImage;
   using PixelType = typename ImageType::PixelType;
@@ -60,50 +59,46 @@ public:
   using PointsImageType = TPointsImage;
   using PointsPixelType = typename PointsImageType::PixelType;
 
-  using ConvertShrunkenSeedImageToListFilterType = itk::tube::ConvertShrunkenSeedImageToListFilter< ImageType,
-    PointsImageType >;
+  using ConvertShrunkenSeedImageToListFilterType =
+    itk::tube::ConvertShrunkenSeedImageToListFilter<ImageType, PointsImageType>;
 
-  tubeWrapSetConstObjectMacro( Input, ImageType,
-    ConvertShrunkenSeedImageToListFilter );
-  tubeWrapGetConstObjectMacro( Input, ImageType,
-    ConvertShrunkenSeedImageToListFilter );
-  tubeWrapSetConstObjectMacro( ScaleImage, ImageType,
-    ConvertShrunkenSeedImageToListFilter );
-  tubeWrapGetConstObjectMacro( ScaleImage, ImageType,
-    ConvertShrunkenSeedImageToListFilter );
-  tubeWrapSetConstObjectMacro( PointsImage, PointsImageType,
-    ConvertShrunkenSeedImageToListFilter );
-  tubeWrapGetConstObjectMacro( PointsImage, PointsImageType,
-    ConvertShrunkenSeedImageToListFilter );
+  tubeWrapSetConstObjectMacro(Input, ImageType, ConvertShrunkenSeedImageToListFilter);
+  tubeWrapGetConstObjectMacro(Input, ImageType, ConvertShrunkenSeedImageToListFilter);
+  tubeWrapSetConstObjectMacro(ScaleImage, ImageType, ConvertShrunkenSeedImageToListFilter);
+  tubeWrapGetConstObjectMacro(ScaleImage, ImageType, ConvertShrunkenSeedImageToListFilter);
+  tubeWrapSetConstObjectMacro(PointsImage, PointsImageType, ConvertShrunkenSeedImageToListFilter);
+  tubeWrapGetConstObjectMacro(PointsImage, PointsImageType, ConvertShrunkenSeedImageToListFilter);
 
-  typename ConvertShrunkenSeedImageToListFilterType::VnlMatrixType GetOutput();
+  typename ConvertShrunkenSeedImageToListFilterType::VnlMatrixType
+  GetOutput();
 
-  tubeWrapGetMacro( Threshold, double, ConvertShrunkenSeedImageToListFilter );
-  tubeWrapSetMacro( Threshold, double, ConvertShrunkenSeedImageToListFilter );
+  tubeWrapGetMacro(Threshold, double, ConvertShrunkenSeedImageToListFilter);
+  tubeWrapSetMacro(Threshold, double, ConvertShrunkenSeedImageToListFilter);
 
-  tubeWrapUpdateMacro( ConvertShrunkenSeedImageToListFilter );
+  tubeWrapUpdateMacro(ConvertShrunkenSeedImageToListFilter);
 
 protected:
-  ConvertShrunkenSeedImageToList( void );
+  ConvertShrunkenSeedImageToList(void);
   ~ConvertShrunkenSeedImageToList() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkConvertShrunkenSeedImageToListFilter parameters **/
-  ConvertShrunkenSeedImageToList( const Self & );
-  void operator=( const Self & );
+  ConvertShrunkenSeedImageToList(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  typename ConvertShrunkenSeedImageToListFilterType::Pointer
-    m_ConvertShrunkenSeedImageToListFilter;
+  typename ConvertShrunkenSeedImageToListFilterType::Pointer m_ConvertShrunkenSeedImageToListFilter;
 };
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeConvertShrunkenSeedImageToList.hxx"
+#  include "tubeConvertShrunkenSeedImageToList.hxx"
 #endif
 
 #endif // End !defined( __tubeConvertShrunkenSeedImageToList_h )

@@ -42,26 +42,21 @@ class CLIProgressReporter
 {
 
 public:
-
-  CLIProgressReporter( const char * process,
-                       ModuleProcessInformation * inf,
-                       bool useStdCout = false )
-    {
+  CLIProgressReporter(const char * process, ModuleProcessInformation * inf, bool useStdCout = false)
+  {
     m_Process = process;
     m_ProcessInformation = inf;
     m_UseStdCout = useStdCout;
-    }
+  }
 
-  virtual ~CLIProgressReporter( void )
-    {
-    }
+  virtual ~CLIProgressReporter(void) {}
 
-  virtual bool Report( double fraction )
+  virtual bool
+  Report(double fraction)
+  {
+    if (m_ProcessInformation)
     {
-    if( m_ProcessInformation )
-      {
-      std::strncpy( m_ProcessInformation->ProgressMessage,
-              this->m_Process.c_str(), 1023 );
+      std::strncpy(m_ProcessInformation->ProgressMessage, this->m_Process.c_str(), 1023);
       m_ProcessInformation->Progress = fraction;
       // if( m_Fraction != 1.0 )
       //   {
@@ -70,31 +65,25 @@ public:
       //   }
 
       m_TimeProbe.Stop();
-      m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMean()
-                                          * m_TimeProbe.GetNumberOfStops();
+      m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMean() * m_TimeProbe.GetNumberOfStops();
       m_TimeProbe.Start();
 
-      if( m_ProcessInformation->Abort )
-        {
+      if (m_ProcessInformation->Abort)
+      {
         m_ProcessInformation->Progress = 0;
         m_ProcessInformation->StageProgress = 0;
         return false;
-        }
-
-      if( m_ProcessInformation->ProgressCallbackFunction
-          && m_ProcessInformation->ProgressCallbackClientData )
-        {
-        ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
-          m_ProcessInformation->ProgressCallbackClientData );
-        }
       }
 
-    if( !m_ProcessInformation || m_UseStdCout )
+      if (m_ProcessInformation->ProgressCallbackFunction && m_ProcessInformation->ProgressCallbackClientData)
       {
-      std::cout << "<filter-progress>"
-                << fraction
-                << "</filter-progress>"
-                << std::endl;
+        (*(m_ProcessInformation->ProgressCallbackFunction))(m_ProcessInformation->ProgressCallbackClientData);
+      }
+    }
+
+    if (!m_ProcessInformation || m_UseStdCout)
+    {
+      std::cout << "<filter-progress>" << fraction << "</filter-progress>" << std::endl;
       // if( m_Fraction != 1.0 )
       //   {
       //   std::cout << "<filter-stage-progress>"
@@ -103,109 +92,94 @@ public:
       //             << std::endl;
       //   }
       // std::cout << std::flush;
-      }
+    }
 
     return true;
-
-    }
+  }
 
   /** Callback method to show the StartEvent */
-  virtual void Start( void )
-    {
+  virtual void
+  Start(void)
+  {
     m_TimeProbe.Start();
-    if( m_ProcessInformation )
-      {
+    if (m_ProcessInformation)
+    {
       m_ProcessInformation->Progress = 0;
       m_ProcessInformation->StageProgress = 0;
-      std::strncpy( m_ProcessInformation->ProgressMessage,
-              m_Process.c_str(), 1023 );
+      std::strncpy(m_ProcessInformation->ProgressMessage, m_Process.c_str(), 1023);
 
-      if( m_ProcessInformation->ProgressCallbackFunction
-          && m_ProcessInformation->ProgressCallbackClientData )
-        {
-        ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
-          m_ProcessInformation->ProgressCallbackClientData );
-        }
-      }
-
-    if( !m_ProcessInformation || m_UseStdCout )
+      if (m_ProcessInformation->ProgressCallbackFunction && m_ProcessInformation->ProgressCallbackClientData)
       {
-      std::cout << "<filter-start>"
-                << std::endl;
-      std::cout << "<filter-name>"
-                << m_Process
-                << "</filter-name>"
-                << std::endl;
-      std::cout << "<filter-comment>"
-                << " \"" << m_Process << "\" "
-                << "</filter-comment>"
-                << std::endl;
-      std::cout << "</filter-start>"
-                << std::endl;
-      std::cout << std::flush;
+        (*(m_ProcessInformation->ProgressCallbackFunction))(m_ProcessInformation->ProgressCallbackClientData);
       }
     }
 
-  /** Callback method to show the EndEvent */
-  virtual void End( void )
+    if (!m_ProcessInformation || m_UseStdCout)
     {
+      std::cout << "<filter-start>" << std::endl;
+      std::cout << "<filter-name>" << m_Process << "</filter-name>" << std::endl;
+      std::cout << "<filter-comment>"
+                << " \"" << m_Process << "\" "
+                << "</filter-comment>" << std::endl;
+      std::cout << "</filter-start>" << std::endl;
+      std::cout << std::flush;
+    }
+  }
+
+  /** Callback method to show the EndEvent */
+  virtual void
+  End(void)
+  {
     m_TimeProbe.Stop();
-    if( m_ProcessInformation )
-      {
+    if (m_ProcessInformation)
+    {
       m_ProcessInformation->Progress = 1;
       m_ProcessInformation->StageProgress = 1;
 
-      m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMean()
-                                          * m_TimeProbe.GetNumberOfStops();
+      m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMean() * m_TimeProbe.GetNumberOfStops();
 
-      if( m_ProcessInformation->ProgressCallbackFunction
-          && m_ProcessInformation->ProgressCallbackClientData )
-        {
-        ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
-          m_ProcessInformation->ProgressCallbackClientData );
-        }
-      }
-
-    if( !m_ProcessInformation || m_UseStdCout )
+      if (m_ProcessInformation->ProgressCallbackFunction && m_ProcessInformation->ProgressCallbackClientData)
       {
-      std::cout << "<filter-end>"
-                << std::endl;
-      std::cout << "<filter-name>"
-                << m_Process
-                << "</filter-name>"
-                << std::endl;
-      std::cout << "<filter-time>"
-                << m_TimeProbe.GetMean()
-                   * m_TimeProbe.GetNumberOfStops()
-                << "</filter-time>"
+        (*(m_ProcessInformation->ProgressCallbackFunction))(m_ProcessInformation->ProgressCallbackClientData);
+      }
+    }
+
+    if (!m_ProcessInformation || m_UseStdCout)
+    {
+      std::cout << "<filter-end>" << std::endl;
+      std::cout << "<filter-name>" << m_Process << "</filter-name>" << std::endl;
+      std::cout << "<filter-time>" << m_TimeProbe.GetMean() * m_TimeProbe.GetNumberOfStops() << "</filter-time>"
                 << std::endl;
       std::cout << "</filter-end>";
       std::cout << std::flush;
-      }
     }
+  }
 
-  virtual void SetUseStdCout( bool useStdCout )
-    {
+  virtual void
+  SetUseStdCout(bool useStdCout)
+  {
     m_UseStdCout = useStdCout;
-    }
+  }
 
-  virtual bool GetUseStdCout( void )
-    {
+  virtual bool
+  GetUseStdCout(void)
+  {
     return m_UseStdCout;
-    }
+  }
 
-  virtual std::string GetProcess( void )
-    {
+  virtual std::string
+  GetProcess(void)
+  {
     return m_Process;
-    }
+  }
 
-  virtual ModuleProcessInformation * GetProcessInformation( void )
-    {
+  virtual ModuleProcessInformation *
+  GetProcessInformation(void)
+  {
     return m_ProcessInformation;
-    }
+  }
 
 protected:
-
   bool                       m_UseStdCout;
   itk::TimeProbe             m_TimeProbe;
   std::string                m_Process;
@@ -213,6 +187,6 @@ protected:
 
 }; // End class CLIProgressReporter
 
-} // End namespace itk
+} // namespace tube
 
 #endif // End !defined( __tubeCLIProgressReporter_h )

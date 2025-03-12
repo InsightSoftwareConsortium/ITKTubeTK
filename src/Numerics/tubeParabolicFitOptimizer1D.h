@@ -38,7 +38,6 @@ namespace tube
 class ParabolicFitOptimizer1D : public Optimizer1D
 {
 public:
-
   using Self = ParabolicFitOptimizer1D;
   using Superclass = Optimizer1D;
   using Pointer = Self *;
@@ -47,33 +46,34 @@ public:
   using ValueFunctionType = Superclass::ValueFunctionType;
 
   /** Return the type of this object. */
-  tubeTypeMacro( ParabolicFitOptimizer1D );
+  tubeTypeMacro(ParabolicFitOptimizer1D);
 
   /** Constructor. */
-  ParabolicFitOptimizer1D( void );
+  ParabolicFitOptimizer1D(void);
 
   /** Constructor. */
-  ParabolicFitOptimizer1D( ValueFunctionType::Pointer funcVal );
+  ParabolicFitOptimizer1D(ValueFunctionType::Pointer funcVal);
 
   /** Destructor. */
-  ~ParabolicFitOptimizer1D( void );
+  ~ParabolicFitOptimizer1D(void);
 
-  void Use( ValueFunctionType::Pointer funcVal );
+  void
+  Use(ValueFunctionType::Pointer funcVal);
 
 protected:
+  double
+  m_Center(double x1, double y1, double x2, double y2, double x3, double y3);
 
-  double m_Center( double x1, double y1, double x2, double y2,
-    double x3, double y3 );
-
-  bool m_Extreme( double * x, double * xVal ) override;
+  bool
+  m_Extreme(double * x, double * xVal) override;
 
 private:
-
   // Copy constructor not implemented.
-  ParabolicFitOptimizer1D( const Self & self );
+  ParabolicFitOptimizer1D(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
 }; // End class ParabolicFitOptimizer1D
 

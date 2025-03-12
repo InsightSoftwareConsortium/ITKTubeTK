@@ -62,79 +62,78 @@ namespace tube
  *  The resulting tube could be cropped and/or a narrow band could be
  *  defined.
  */
-template< class TTransformType, unsigned int TDimension >
-class PointBasedSpatialObjectTransformFilter :
-  public SpatialObjectFilter< TDimension >
+template <class TTransformType, unsigned int TDimension>
+class PointBasedSpatialObjectTransformFilter : public SpatialObjectFilter<TDimension>
 {
 public:
-
   using TransformType = TTransformType;
 
-  using SpatialObjectType = SpatialObject< TDimension >;
+  using SpatialObjectType = SpatialObject<TDimension>;
 
   /** Standard class type alias. */
-  using Self = PointBasedSpatialObjectTransformFilter< TTransformType, TDimension >;
+  using Self = PointBasedSpatialObjectTransformFilter<TTransformType, TDimension>;
 
-  using Superclass = SpatialObjectFilter< TDimension >;
+  using Superclass = SpatialObjectFilter<TDimension>;
 
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  using PointBasedType = PointBasedSpatialObject< TDimension >;
-  using TubeType = TubeSpatialObject< TDimension >;
-  using SurfaceType = SurfaceSpatialObject< TDimension >;
-  using LineType = LineSpatialObject< TDimension >;
-  using DTITubeType = DTITubeSpatialObject< TDimension >;
-  using ContourType = ContourSpatialObject< TDimension >;
+  using PointBasedType = PointBasedSpatialObject<TDimension>;
+  using TubeType = TubeSpatialObject<TDimension>;
+  using SurfaceType = SurfaceSpatialObject<TDimension>;
+  using LineType = LineSpatialObject<TDimension>;
+  using DTITubeType = DTITubeSpatialObject<TDimension>;
+  using ContourType = ContourSpatialObject<TDimension>;
 
-  typedef typename SpatialObject< TDimension >::TransformType
-    SpatialObjectTransformType;
+  typedef typename SpatialObject<TDimension>::TransformType SpatialObjectTransformType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( PointBasedSpatialObjectTransformFilter, SpatialObjectFilter );
+  itkTypeMacro(PointBasedSpatialObjectTransformFilter, SpatialObjectFilter);
 
   /** Set the Transformation */
-  itkSetConstObjectMacro( Transform, TransformType );
+  itkSetConstObjectMacro(Transform, TransformType);
 
   /** Set the Object to Parent transform for the output tubes */
-  itkSetConstObjectMacro( OutputObjectToParentTransform, SpatialObjectTransformType );
+  itkSetConstObjectMacro(OutputObjectToParentTransform, SpatialObjectTransformType);
 
 protected:
+  PointBasedSpatialObjectTransformFilter(void);
+  virtual ~PointBasedSpatialObjectTransformFilter(void) {}
 
-  PointBasedSpatialObjectTransformFilter( void );
-  virtual ~PointBasedSpatialObjectTransformFilter( void ) {}
-
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Apply the transformation to the tube */
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
 
 private:
+  // purposely not implemented
+  PointBasedSpatialObjectTransformFilter(const Self &);
+  void
+  operator=(const Self &);
 
-  //purposely not implemented
-  PointBasedSpatialObjectTransformFilter( const Self& );
-  void operator=( const Self& );
+  void
+  UpdateLevel(const SpatialObject<TDimension> * inputSO, SpatialObject<TDimension> * parentSO);
 
-  void UpdateLevel( const SpatialObject< TDimension > * inputSO,
-    SpatialObject< TDimension > * parentSO );
+  bool
+  Transform(const SpatialObject<TDimension> * inputSO, SpatialObject<TDimension> * outputSO);
 
-  bool Transform( const SpatialObject< TDimension > * inputSO,
-    SpatialObject< TDimension > * outputSO );
+  void
+  TransformPointBased(const PointBasedSpatialObject<TDimension> * inputSO,
+                      PointBasedSpatialObject<TDimension> *       outputSO);
 
-  void TransformPointBased( const PointBasedSpatialObject< TDimension > * inputSO,
-    PointBasedSpatialObject< TDimension > * outputSO );
+  void
+  TransformTube(const TubeSpatialObject<TDimension> * inputSO, TubeSpatialObject<TDimension> * outputSO);
 
-  void TransformTube( const TubeSpatialObject< TDimension > * inputSO,
-    TubeSpatialObject< TDimension > * outputSO );
+  void
+  TransformSurface(const SurfaceSpatialObject<TDimension> * inputSO, SurfaceSpatialObject<TDimension> * outputSO);
 
-  void TransformSurface( const SurfaceSpatialObject< TDimension > * inputSO,
-    SurfaceSpatialObject< TDimension > * outputSO );
-
-  typename TransformType::ConstPointer              m_Transform;
+  typename TransformType::ConstPointer m_Transform;
 
   typename SpatialObjectTransformType::ConstPointer m_OutputObjectToParentTransform;
 
@@ -145,7 +144,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubePointBasedSpatialObjectTransformFilter.hxx"
+#  include "itktubePointBasedSpatialObjectTransformFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubePointBasedSpatialObjectTransformFilter_h )

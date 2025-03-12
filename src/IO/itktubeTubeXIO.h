@@ -34,51 +34,54 @@ namespace itk
 namespace tube
 {
 
-template< unsigned int TDimension = 3 >
+template <unsigned int TDimension = 3>
 class TubeXIO : public Object
 {
 public:
-
   using Self = TubeXIO;
   using Superclass = Object;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  using TubeType = TubeSpatialObject< TDimension >;
-  using TubeGroupType = GroupSpatialObject< TDimension >;
+  using TubeType = TubeSpatialObject<TDimension>;
+  using TubeGroupType = GroupSpatialObject<TDimension>;
 
-  using SizeType = Size< TDimension >;
+  using SizeType = Size<TDimension>;
 
-  itkTypeMacro( TubeXIO, Object );
+  itkTypeMacro(TubeXIO, Object);
 
-  itkNewMacro( TubeXIO );
+  itkNewMacro(TubeXIO);
 
-  bool  Read( const std::string & _filename );
+  bool
+  Read(const std::string & _filename);
 
-  bool  Write( const std::string & _filename );
+  bool
+  Write(const std::string & _filename);
 
-  void  SetTubeGroup( TubeGroupType * _tubes );
+  void
+  SetTubeGroup(TubeGroupType * _tubes);
 
-  typename TubeGroupType::Pointer & GetTubeGroup( void );
+  typename TubeGroupType::Pointer &
+  GetTubeGroup(void);
 
   /** Set the TubeX file dimensions */
-  itkSetMacro( Dimensions, SizeType );
-  itkGetConstMacro( Dimensions, SizeType );
+  itkSetMacro(Dimensions, SizeType);
+  itkGetConstMacro(Dimensions, SizeType);
 
 protected:
+  TubeXIO(void);
+  virtual ~TubeXIO(void);
 
-  TubeXIO( void );
-  virtual ~TubeXIO( void );
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
+  TubeXIO(const Self &);
+  void
+  operator=(const Self &);
 
-  TubeXIO( const Self& );
-  void operator=( const Self& );
-
-  typename TubeGroupType::Pointer  m_TubeGroup;
-  SizeType                         m_Dimensions;
+  typename TubeGroupType::Pointer m_TubeGroup;
+  SizeType                        m_Dimensions;
 
 }; // TubeXIO
 
@@ -87,7 +90,7 @@ private:
 } // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeTubeXIO.hxx"
+#  include "itktubeTubeXIO.hxx"
 #endif
 
 #endif

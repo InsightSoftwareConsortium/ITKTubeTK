@@ -66,10 +66,10 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SpatialObjectMomentsCalculator, Object );
+  itkTypeMacro(SpatialObjectMomentsCalculator, Object);
 
   /** Standard scalar type within this class. */
   using ScalarType = double;
@@ -94,66 +94,74 @@ public:
   using AffineTransformPointer = typename AffineTransformType::Pointer;
 
   /** Set the spatial object. */
-  virtual void SetSpatialObject( const SpatialObject<ObjectDimension> * so )
+  virtual void
+  SetSpatialObject(const SpatialObject<ObjectDimension> * so)
+  {
+    if (m_SpatialObject != so)
     {
-    if( m_SpatialObject != so )
-      {
       m_SpatialObject = so;
       this->Modified();
       m_Valid = false;
-      }
     }
+  }
 
   /** Set the spatial object mask - which defines the ROI over which
    *   moments are computed from the input spatial object. */
-  virtual void SetSpatialObjectMask( const SpatialObject<ObjectDimension> * so )
+  virtual void
+  SetSpatialObjectMask(const SpatialObject<ObjectDimension> * so)
+  {
+    if (m_SpatialObjectMask != so)
     {
-    if( m_SpatialObjectMask != so )
-      {
       m_SpatialObjectMask = so;
       this->Modified();
       m_Valid = false;
-      }
     }
+  }
 
   /** Compute moments of a new or modified image.
    * This method computes the moments of the image given as a
    * parameter and stores them in the object.  The values of these
    * moments and related parameters can then be retrieved by using
    * other methods of this object. */
-  void Compute( void );
+  void
+  Compute(void);
 
   /** Return the total mass ( or zeroth moment ) of an image.
    * This method returns the sum of pixel intensities ( also known as
    * the zeroth moment or the total mass ) of the image whose moments
    * were last computed by this object. */
-  ScalarType GetTotalMass() const;
+  ScalarType
+  GetTotalMass() const;
 
   /** Return first moments about origin, in index coordinates.
    * This method returns the first moments around the origin of the
    * image whose moments were last computed by this object.  For
    * simplicity, these moments are computed in index coordinates
    * rather than physical coordinates. */
-  VectorType GetFirstMoments() const;
+  VectorType
+  GetFirstMoments() const;
 
   /** Return second moments about origin, in index coordinates.
    * This method returns the second moments around the origin
    * of the image whose moments were last computed by this object.
    * For simplicity, these moments are computed in index coordinates
    * rather than physical coordinates. */
-  MatrixType GetSecondMoments() const;
+  MatrixType
+  GetSecondMoments() const;
 
   /** Return center of gravity, in physical coordinates.
    * This method returns the center of gravity of the image whose
    * moments were last computed by this object.  The center of
    * gravity is computed in physical coordinates. */
-  VectorType GetCenterOfGravity() const;
+  VectorType
+  GetCenterOfGravity() const;
 
   /** Return second central moments, in physical coordinates.
    * This method returns the central second moments of the image
    * whose moments were last computed by this object.  The central
    * moments are computed in physical coordinates. */
-  MatrixType GetCentralMoments() const;
+  MatrixType
+  GetCentralMoments() const;
 
   /** Return principal moments, in physical coordinates.
    * This method returns the principal moments of the image whose
@@ -161,7 +169,8 @@ public:
    * returned as a vector, with the principal moments ordered from
    * smallest to largest.  The moments are computed in physical
    * coordinates.   */
-  VectorType GetPrincipalMoments() const;
+  VectorType
+  GetPrincipalMoments() const;
 
   /** Return principal axes, in physical coordinates.
    * This method returns the principal axes of the image whose
@@ -175,51 +184,54 @@ public:
    * have foolishly made one or more of the spacing values negative;
    * in that case, _you_ get to figure out the consequences. )  The
    * moments are computed in physical coordinates. */
-  MatrixType GetPrincipalAxes() const;
+  MatrixType
+  GetPrincipalAxes() const;
 
   /** Get the affine transform from principal axes to physical axes
    * This method returns an affine transform which transforms from
    * the principal axes coordinate system to physical coordinates. */
-  AffineTransformPointer GetPrincipalAxesToPhysicalAxesTransform(
-    void ) const;
+  AffineTransformPointer
+  GetPrincipalAxesToPhysicalAxesTransform(void) const;
 
   /** Get the affine transform from physical axes to principal axes
    * This method returns an affine transform which transforms from
    * the physical coordinate system to the principal axes coordinate
    * system. */
-  AffineTransformPointer GetPhysicalAxesToPrincipalAxesTransform(
-    void ) const;
+  AffineTransformPointer
+  GetPhysicalAxesToPrincipalAxesTransform(void) const;
 
 protected:
   SpatialObjectMomentsCalculator();
   virtual ~SpatialObjectMomentsCalculator();
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-  SpatialObjectMomentsCalculator( const Self & ); // purposely not implemented
-  void operator=( const Self & );               // purposely not implemented
+  SpatialObjectMomentsCalculator(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
-  bool       m_Valid;                // Have moments been computed yet?
-  ScalarType m_M0;                   // Zeroth moment
-  VectorType m_M1;                   // First moments about origin
-  MatrixType m_M2;                   // Second moments about origin
-  VectorType m_Cg;                   // Center of gravity ( physical units )
-  MatrixType m_Cm;                   // Second central moments ( physical )
-  VectorType m_Pm;                   // Principal moments ( physical )
-  MatrixType m_Pa;                   // Principal axes ( physical )
+  bool       m_Valid; // Have moments been computed yet?
+  ScalarType m_M0;    // Zeroth moment
+  VectorType m_M1;    // First moments about origin
+  MatrixType m_M2;    // Second moments about origin
+  VectorType m_Cg;    // Center of gravity ( physical units )
+  MatrixType m_Cm;    // Second central moments ( physical )
+  VectorType m_Pm;    // Principal moments ( physical )
+  MatrixType m_Pa;    // Principal axes ( physical )
 
   SpatialObjectConstPointer m_SpatialObject;
   SpatialObjectConstPointer m_SpatialObjectMask;
 
-};  // class SpatialObjectMomentsCalculator
+}; // class SpatialObjectMomentsCalculator
 
 } // end namespace tube
 
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeSpatialObjectMomentsCalculator.hxx"
+#  include "itktubeSpatialObjectMomentsCalculator.hxx"
 #endif
 
 #endif /* __itkSpatialObjectMomentsCalculator_h */

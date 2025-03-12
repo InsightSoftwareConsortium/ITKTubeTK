@@ -26,9 +26,8 @@ limitations under the License.
 namespace tube
 {
 
-template< class TImage, class TSeedMask >
-SegmentConnectedComponents< TImage, TSeedMask >
-::SegmentConnectedComponents( void )
+template <class TImage, class TSeedMask>
+SegmentConnectedComponents<TImage, TSeedMask>::SegmentConnectedComponents(void)
 {
   m_Filter = FilterType::New();
 
@@ -40,10 +39,9 @@ SegmentConnectedComponents< TImage, TSeedMask >
   m_KeepOnlyLargestComponent = false;
 }
 
-template< class TImage, class TSeedMask >
+template <class TImage, class TSeedMask>
 void
-SegmentConnectedComponents< TImage, TSeedMask >
-::Update( void )
+SegmentConnectedComponents<TImage, TSeedMask>::Update(void)
 {
   Superclass::Update();
 
@@ -53,129 +51,125 @@ SegmentConnectedComponents< TImage, TSeedMask >
 
   typename ImageType::Pointer curConnComp = m_Filter->GetOutput();
 
-  itk::ImageRegionIterator< ImageType > iter( curConnComp,
-    curConnComp->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator<ImageType> iter(curConnComp, curConnComp->GetLargestPossibleRegion());
 
-  unsigned int numObjects = m_Filter->GetObjectCount()+1;
-  std::vector< bool > cSize( numObjects, true );
-  if( m_MinimumVolume > 0 || m_KeepOnlyLargestComponent )
-    {
+  unsigned int      numObjects = m_Filter->GetObjectCount() + 1;
+  std::vector<bool> cSize(numObjects, true);
+  if (m_MinimumVolume > 0 || m_KeepOnlyLargestComponent)
+  {
     // compute the size ( number of pixels ) of each connected component
     iter.GoToBegin();
-    std::vector< unsigned int > cPixelCount( numObjects, 0 );
-    while( !iter.IsAtEnd() )
-      {
+    std::vector<unsigned int> cPixelCount(numObjects, 0);
+    while (!iter.IsAtEnd())
+    {
       unsigned int c = iter.Get();
-      if( c > 0 && c < numObjects )
-        {
+      if (c > 0 && c < numObjects)
+      {
         cPixelCount[c]++;
-        }
-      ++iter;
       }
+      ++iter;
+    }
 
     unsigned int largestComponentCount = cPixelCount[1];
     unsigned int largestComponent = 1;
-    for( unsigned int c = 2; c<numObjects; ++c )
+    for (unsigned int c = 2; c < numObjects; ++c)
+    {
+      if (cPixelCount[c] > largestComponentCount)
       {
-      if( cPixelCount[c] > largestComponentCount )
-        {
         largestComponent = c;
         largestComponentCount = cPixelCount[c];
-        }
-      }
-
-    // compute voxelVolume
-    double voxelVolume = 1;
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      voxelVolume *= m_Filter->GetInput()->GetSpacing()[i];
-      }
-    double minimumVoxelCount = m_MinimumVolume / voxelVolume;
-    for( unsigned int c = 1; c<numObjects; ++c )
-      {
-      if( cPixelCount[c] < minimumVoxelCount || 
-        ( m_KeepOnlyLargestComponent && c != largestComponent ) )
-        {
-        cSize[c] = false;
-        --m_NumberOfComponents;
-        }
-      }
-
-    // drop connected components of size ( physp ) below a user-specified cutoff
-    iter.GoToBegin();
-    while( !iter.IsAtEnd() )
-      {
-      unsigned int c = iter.Get();
-      if( c > 0 && c < numObjects && cSize[c] == false )
-        {
-        iter.Set( 0 );
-        }
-      ++iter;
       }
     }
 
-  //
-  if( m_SeedMask.IsNotNull() )
+    // compute voxelVolume
+    double voxelVolume = 1;
+    for (unsigned int i = 0; i < ImageDimension; i++)
     {
-    itk::ImageRegionIterator< SeedMaskType > seedIter( m_SeedMask,
-      m_SeedMask->GetLargestPossibleRegion() );
+      voxelVolume *= m_Filter->GetInput()->GetSpacing()[i];
+    }
+    double minimumVoxelCount = m_MinimumVolume / voxelVolume;
+    for (unsigned int c = 1; c < numObjects; ++c)
+    {
+      if (cPixelCount[c] < minimumVoxelCount || (m_KeepOnlyLargestComponent && c != largestComponent))
+      {
+        cSize[c] = false;
+        --m_NumberOfComponents;
+      }
+    }
+
+    // drop connected components of size ( physp ) below a user-specified cutoff
+    iter.GoToBegin();
+    while (!iter.IsAtEnd())
+    {
+      unsigned int c = iter.Get();
+      if (c > 0 && c < numObjects && cSize[c] == false)
+      {
+        iter.Set(0);
+      }
+      ++iter;
+    }
+  }
+
+  //
+  if (m_SeedMask.IsNotNull())
+  {
+    itk::ImageRegionIterator<SeedMaskType> seedIter(m_SeedMask, m_SeedMask->GetLargestPossibleRegion());
     seedIter.GoToBegin();
 
     iter.GoToBegin();
 
-    std::vector< bool > cSeeded( numObjects, false );
-    while( !iter.IsAtEnd() )
+    std::vector<bool> cSeeded(numObjects, false);
+    while (!iter.IsAtEnd())
+    {
+      if (seedIter.Get() != 0)
       {
-      if( seedIter.Get() != 0 )
-        {
         unsigned int c = iter.Get();
-        if( c > 0 && c < numObjects && !cSeeded[c] )
+        if (c > 0 && c < numObjects && !cSeeded[c])
+        {
+          if (cSize[c] == true)
           {
-          if( cSize[c] == true )
-            {
             cSeeded[c] = true;
-            }
           }
         }
+      }
       ++iter;
       ++seedIter;
-      }
+    }
     m_NumberOfComponents = 0;
-    for( unsigned int c = 0; c<numObjects; ++c )
+    for (unsigned int c = 0; c < numObjects; ++c)
+    {
+      if (cSeeded[c])
       {
-      if( cSeeded[c] )
-        {
         ++m_NumberOfComponents;
-        }
-      }
-
-    iter.GoToBegin();
-    while( !iter.IsAtEnd() )
-      {
-      unsigned int c = iter.Get();
-      if( c > 0 && c < numObjects )
-        {
-        if( !cSeeded[c] )
-          {
-          iter.Set( 0 );
-          }
-        }
-      ++iter;
       }
     }
+
+    iter.GoToBegin();
+    while (!iter.IsAtEnd())
+    {
+      unsigned int c = iter.Get();
+      if (c > 0 && c < numObjects)
+      {
+        if (!cSeeded[c])
+        {
+          iter.Set(0);
+        }
+      }
+      ++iter;
+    }
+  }
 }
 
-template< class TImage, class TSeedMask >
+template <class TImage, class TSeedMask>
 void
-SegmentConnectedComponents< TImage, TSeedMask >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+SegmentConnectedComponents<TImage, TSeedMask>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << indent << "Filter = " << m_Filter << std::endl;
   os << indent << "MinimumVolume = " << m_MinimumVolume << std::endl;
   os << indent << "SeedMask = " << m_SeedMask << std::endl;
 }
 
-}
+} // namespace tube
 
 #endif

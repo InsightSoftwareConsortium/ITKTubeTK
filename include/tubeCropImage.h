@@ -37,22 +37,21 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< typename TInputImage, typename TOutputImage=TInputImage >
-class CropImage:
-  public itk::ProcessObject
+template <typename TInputImage, typename TOutputImage = TInputImage>
+class CropImage : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = CropImage;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( CropImage, ProcessObject );
+  itkTypeMacro(CropImage, ProcessObject);
 
 
   /** Typedef to images */
@@ -61,61 +60,62 @@ public:
   using InputIndexType = typename InputImageType::IndexType;
   using InputSizeType = typename InputImageType::SizeType;
 
-  using FilterType = itk::tube::CropImageFilter< InputImageType,
-    OutputImageType >;
+  using FilterType = itk::tube::CropImageFilter<InputImageType, OutputImageType>;
 
-  tubeWrapSetMacro( Min, InputIndexType, Filter );
-  tubeWrapGetMacro( Min, InputIndexType, Filter );
+  tubeWrapSetMacro(Min, InputIndexType, Filter);
+  tubeWrapGetMacro(Min, InputIndexType, Filter);
 
-  tubeWrapSetMacro( Max, InputIndexType, Filter );
-  tubeWrapGetMacro( Max, InputIndexType, Filter );
+  tubeWrapSetMacro(Max, InputIndexType, Filter);
+  tubeWrapGetMacro(Max, InputIndexType, Filter);
 
-  tubeWrapSetMacro( Size, InputSizeType, Filter );
-  tubeWrapGetMacro( Size, InputSizeType, Filter );
+  tubeWrapSetMacro(Size, InputSizeType, Filter);
+  tubeWrapGetMacro(Size, InputSizeType, Filter);
 
-  tubeWrapSetMacro( Center, InputIndexType, Filter );
-  tubeWrapGetMacro( Center, InputIndexType, Filter );
+  tubeWrapSetMacro(Center, InputIndexType, Filter);
+  tubeWrapGetMacro(Center, InputIndexType, Filter);
 
-  tubeWrapSetMacro( Boundary, InputIndexType, Filter );
-  tubeWrapGetMacro( Boundary, InputIndexType, Filter );
+  tubeWrapSetMacro(Boundary, InputIndexType, Filter);
+  tubeWrapGetMacro(Boundary, InputIndexType, Filter);
 
-  tubeWrapForceSetConstObjectMacro( MatchVolume, InputImageType, Filter );
+  tubeWrapForceSetConstObjectMacro(MatchVolume, InputImageType, Filter);
 
-  tubeWrapForceSetConstObjectMacro( MatchMask, InputImageType, Filter );
+  tubeWrapForceSetConstObjectMacro(MatchMask, InputImageType, Filter);
 
-  void SetSplitInput( InputIndexType splitIndex, InputIndexType roiIndex );
+  void
+  SetSplitInput(InputIndexType splitIndex, InputIndexType roiIndex);
 
-  tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
-  tubeWrapGetConstObjectMacro( Input, InputImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input, InputImageType, Filter);
+  tubeWrapGetConstObjectMacro(Input, InputImageType, Filter);
 
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
-  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
+  tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
 
 protected:
-  CropImage( void );
+  CropImage(void);
   ~CropImage() {}
 
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkCropImageFilter parameters **/
-  CropImage( const Self & );
+  CropImage(const Self &);
 
-  void operator = ( const Self & );
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  typename FilterType::Pointer     m_Filter;
-
+  typename FilterType::Pointer m_Filter;
 };
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeCropImage.hxx"
+#  include "tubeCropImage.hxx"
 #endif
 
 #endif // End !defined( __tubeCropImage_h )

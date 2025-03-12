@@ -28,7 +28,7 @@ limitations under the License.
 #include <metaForm.h>
 
 #ifndef METAIO_STREAM
-#define METAIO_STREAM std
+#  define METAIO_STREAM std
 #endif
 
 #include <vnl/vnl_matrix.h>
@@ -53,105 +53,131 @@ namespace tube
 class MetaLDA : public MetaForm
 {
 public:
+  using ValueListType = std::vector<double>;
+  using LDAValuesType = vnl_vector<double>;
+  using LDAMatrixType = vnl_matrix<double>;
 
-  using ValueListType = std::vector< double >;
-  using LDAValuesType = vnl_vector< double >;
-  using LDAMatrixType = vnl_matrix< double >;
+  MetaLDA(void);
 
-  MetaLDA( void );
+  MetaLDA(const char * headerName);
 
-  MetaLDA( const char * headerName );
+  MetaLDA(const MetaLDA & metaLDA);
 
-  MetaLDA( const MetaLDA & metaLDA );
+  MetaLDA(unsigned int          _numberOfPCABasisToUseAsFeatures,
+          unsigned int          _numberOfLDABasisToUseAsFeatures,
+          const LDAValuesType & _ldaValues,
+          const LDAMatrixType & _ldaMatrix,
+          const ValueListType & _inputWhitenMeans,
+          const ValueListType & _inputWhitenStdDevs,
+          const ValueListType & _outputWhitenMeans,
+          const ValueListType & _outputWhitenStdDevs);
 
-  MetaLDA( unsigned int _numberOfPCABasisToUseAsFeatures,
-    unsigned int _numberOfLDABasisToUseAsFeatures,
-    const LDAValuesType & _ldaValues,
-    const LDAMatrixType & _ldaMatrix,
-    const ValueListType & _inputWhitenMeans,
-    const ValueListType & _inputWhitenStdDevs,
-    const ValueListType & _outputWhitenMeans,
-    const ValueListType & _outputWhitenStdDevs );
+  ~MetaLDA(void);
 
-  ~MetaLDA( void );
-
-  virtual void PrintInfo( void ) const;
+  virtual void
+  PrintInfo(void) const;
 
   using MetaForm::CopyInfo;
-  virtual void CopyInfo( const MetaLDA & lda );
+  virtual void
+  CopyInfo(const MetaLDA & lda);
 
-  virtual void Clear( void );
+  virtual void
+  Clear(void);
 
-  bool  InitializeEssential( unsigned int _numberOfPCABasisToUseAsFeatures,
-    unsigned int _numberOfLDABasisToUseAsFeatures,
-    const LDAValuesType & _ldaValues,
-    const LDAMatrixType & _ldaMatrix,
-    const ValueListType & _inputWhitenMeans,
-    const ValueListType & _inputWhitenStdDevs,
-    const ValueListType & _outputWhitenMeans,
-    const ValueListType & _outputWhitenStdDevs );
+  bool
+  InitializeEssential(unsigned int          _numberOfPCABasisToUseAsFeatures,
+                      unsigned int          _numberOfLDABasisToUseAsFeatures,
+                      const LDAValuesType & _ldaValues,
+                      const LDAMatrixType & _ldaMatrix,
+                      const ValueListType & _inputWhitenMeans,
+                      const ValueListType & _inputWhitenStdDevs,
+                      const ValueListType & _outputWhitenMeans,
+                      const ValueListType & _outputWhitenStdDevs);
 
-  void SetNumberOfPCABasisToUseAsFeatures( unsigned int
-    numberOfPCABasisToUseAsFeatures );
-  unsigned int GetNumberOfPCABasisToUseAsFeatures( void ) const;
+  void
+  SetNumberOfPCABasisToUseAsFeatures(unsigned int numberOfPCABasisToUseAsFeatures);
+  unsigned int
+  GetNumberOfPCABasisToUseAsFeatures(void) const;
 
-  void SetNumberOfLDABasisToUseAsFeatures( unsigned int
-    numberOfLDABasisToUseAsFeatures );
-  unsigned int GetNumberOfLDABasisToUseAsFeatures( void ) const;
+  void
+  SetNumberOfLDABasisToUseAsFeatures(unsigned int numberOfLDABasisToUseAsFeatures);
+  unsigned int
+  GetNumberOfLDABasisToUseAsFeatures(void) const;
 
-  void SetLDAValues( const LDAValuesType & ldaValues );
-  const LDAValuesType & GetLDAValues( void ) const;
+  void
+  SetLDAValues(const LDAValuesType & ldaValues);
+  const LDAValuesType &
+  GetLDAValues(void) const;
 
-  void SetLDAMatrix( const LDAMatrixType & ldaMatrix );
-  const LDAMatrixType & GetLDAMatrix( void ) const;
+  void
+  SetLDAMatrix(const LDAMatrixType & ldaMatrix);
+  const LDAMatrixType &
+  GetLDAMatrix(void) const;
 
-  void SetInputWhitenMeans( const ValueListType & whitenMeans );
-  const ValueListType & GetInputWhitenMeans( void ) const;
+  void
+  SetInputWhitenMeans(const ValueListType & whitenMeans);
+  const ValueListType &
+  GetInputWhitenMeans(void) const;
 
-  void SetInputWhitenStdDevs( const ValueListType & whitenStdDevs );
-  const ValueListType & GetInputWhitenStdDevs( void ) const;
+  void
+  SetInputWhitenStdDevs(const ValueListType & whitenStdDevs);
+  const ValueListType &
+  GetInputWhitenStdDevs(void) const;
 
-  void SetOutputWhitenMeans( const ValueListType & whitenMeans );
-  const ValueListType & GetOutputWhitenMeans( void ) const;
+  void
+  SetOutputWhitenMeans(const ValueListType & whitenMeans);
+  const ValueListType &
+  GetOutputWhitenMeans(void) const;
 
-  void SetOutputWhitenStdDevs( const ValueListType & whitenStdDevs );
-  const ValueListType & GetOutputWhitenStdDevs( void ) const;
+  void
+  SetOutputWhitenStdDevs(const ValueListType & whitenStdDevs);
+  const ValueListType &
+  GetOutputWhitenStdDevs(void) const;
 
-  virtual bool CanRead( const char * headerName = NULL ) const;
+  virtual bool
+  CanRead(const char * headerName = NULL) const;
 
-  virtual bool Read( const char * headerName = NULL );
+  virtual bool
+  Read(const char * headerName = NULL);
 
-  virtual bool CanReadStream( METAIO_STREAM::ifstream * stream ) const;
+  virtual bool
+  CanReadStream(METAIO_STREAM::ifstream * stream) const;
 
-  virtual bool ReadStream( METAIO_STREAM::ifstream * stream );
+  virtual bool
+  ReadStream(METAIO_STREAM::ifstream * stream);
 
-  virtual bool Write( const char * headerName = NULL );
+  virtual bool
+  Write(const char * headerName = NULL);
 
-  virtual bool WriteStream( METAIO_STREAM::ofstream * stream );
+  virtual bool
+  WriteStream(METAIO_STREAM::ofstream * stream);
 
 protected:
+  void
+  M_Destroy(void);
 
-  void M_Destroy( void );
+  void
+  M_SetupReadFields(void);
 
-  void M_SetupReadFields( void );
+  void
+  M_SetupWriteFields(void);
 
-  void M_SetupWriteFields( void );
+  bool
+  M_Read(void);
 
-  bool M_Read( void );
+  unsigned int m_NumberOfPCABasisToUseAsFeatures;
 
-  unsigned int   m_NumberOfPCABasisToUseAsFeatures;
+  unsigned int m_NumberOfLDABasisToUseAsFeatures;
 
-  unsigned int   m_NumberOfLDABasisToUseAsFeatures;
+  LDAValuesType m_LDAValues;
 
-  LDAValuesType  m_LDAValues;
+  ValueListType m_InputWhitenMeans;
+  ValueListType m_InputWhitenStdDevs;
 
-  ValueListType  m_InputWhitenMeans;
-  ValueListType  m_InputWhitenStdDevs;
+  ValueListType m_OutputWhitenMeans;
+  ValueListType m_OutputWhitenStdDevs;
 
-  ValueListType  m_OutputWhitenMeans;
-  ValueListType  m_OutputWhitenStdDevs;
-
-  LDAMatrixType  m_LDAMatrix;
+  LDAMatrixType m_LDAMatrix;
 
 }; // End class MetaLDA
 

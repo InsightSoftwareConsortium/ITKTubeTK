@@ -41,95 +41,95 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TImage >
-class ConvertTubesToImage:
-  public itk::ProcessObject
+template <class TImage>
+class ConvertTubesToImage : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ConvertTubesToImage;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   using OutputImageType = TImage;
 
-  using FilterType = itk::tube::TubeSpatialObjectToImageFilter<
-    TImage::ImageDimension, OutputImageType >;
+  using FilterType = itk::tube::TubeSpatialObjectToImageFilter<TImage::ImageDimension, OutputImageType>;
 
   using TubesType = typename FilterType::SpatialObjectType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ConvertTubesToImage, ProcessObject );
+  itkTypeMacro(ConvertTubesToImage, ProcessObject);
 
   /** Set if the tube should be full inside */
-  tubeWrapSetMacro( UseRadius, bool, Filter );
-  tubeWrapGetMacro( UseRadius, bool, Filter );
+  tubeWrapSetMacro(UseRadius, bool, Filter);
+  tubeWrapGetMacro(UseRadius, bool, Filter);
 
-  tubeWrapSetMacro( ColorByTubeId, bool, Filter );
-  tubeWrapSetMacro( ColorByPointId, bool, Filter );
-  tubeWrapSetMacro( ColorByRadius, bool, Filter );
-  tubeWrapSetMacro( ColorByRidgeness, bool, Filter );
-  tubeWrapSetMacro( ColorByMedialness, bool, Filter );
-  tubeWrapSetMacro( ColorByBranchness, bool, Filter );
-  tubeWrapSetMacro( ColorByCurvature, bool, Filter );
-  tubeWrapSetMacro( ColorByLevelness, bool, Filter );
-  tubeWrapSetMacro( ColorByRoundness, bool, Filter );
-  tubeWrapSetMacro( ColorByIntensity, bool, Filter );
+  tubeWrapSetMacro(ColorByTubeId, bool, Filter);
+  tubeWrapSetMacro(ColorByPointId, bool, Filter);
+  tubeWrapSetMacro(ColorByRadius, bool, Filter);
+  tubeWrapSetMacro(ColorByRidgeness, bool, Filter);
+  tubeWrapSetMacro(ColorByMedialness, bool, Filter);
+  tubeWrapSetMacro(ColorByBranchness, bool, Filter);
+  tubeWrapSetMacro(ColorByCurvature, bool, Filter);
+  tubeWrapSetMacro(ColorByLevelness, bool, Filter);
+  tubeWrapSetMacro(ColorByRoundness, bool, Filter);
+  tubeWrapSetMacro(ColorByIntensity, bool, Filter);
 
-  tubeWrapGetMacro( ColorByTubeId, bool, Filter );
-  tubeWrapGetMacro( ColorByPointId, bool, Filter );
-  tubeWrapGetMacro( ColorByRadius, bool, Filter );
-  tubeWrapGetMacro( ColorByRidgeness, bool, Filter );
-  tubeWrapGetMacro( ColorByMedialness, bool, Filter );
-  tubeWrapGetMacro( ColorByBranchness, bool, Filter );
-  tubeWrapGetMacro( ColorByCurvature, bool, Filter );
-  tubeWrapGetMacro( ColorByLevelness, bool, Filter );
-  tubeWrapGetMacro( ColorByRoundness, bool, Filter );
-  tubeWrapGetMacro( ColorByIntensity, bool, Filter );
+  tubeWrapGetMacro(ColorByTubeId, bool, Filter);
+  tubeWrapGetMacro(ColorByPointId, bool, Filter);
+  tubeWrapGetMacro(ColorByRadius, bool, Filter);
+  tubeWrapGetMacro(ColorByRidgeness, bool, Filter);
+  tubeWrapGetMacro(ColorByMedialness, bool, Filter);
+  tubeWrapGetMacro(ColorByBranchness, bool, Filter);
+  tubeWrapGetMacro(ColorByCurvature, bool, Filter);
+  tubeWrapGetMacro(ColorByLevelness, bool, Filter);
+  tubeWrapGetMacro(ColorByRoundness, bool, Filter);
+  tubeWrapGetMacro(ColorByIntensity, bool, Filter);
 
   /* Set template image */
-  void SetTemplateImage( const OutputImageType * pTemplateImage );
-  itkGetConstObjectMacro( TemplateImage, OutputImageType );
+  void
+  SetTemplateImage(const OutputImageType * pTemplateImage);
+  itkGetConstObjectMacro(TemplateImage, OutputImageType);
 
   /* Set input tubes */
-  tubeWrapSetConstObjectMacro( Input, TubesType, Filter );
-  tubeWrapGetConstObjectMacro( Input, TubesType, Filter );
+  tubeWrapSetConstObjectMacro(Input, TubesType, Filter);
+  tubeWrapGetConstObjectMacro(Input, TubesType, Filter);
 
   /* Runs tubes to image conversion */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
   /* Get the generated binary tubes image */
-  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
+  tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
 
 protected:
-  ConvertTubesToImage( void );
+  ConvertTubesToImage(void);
   ~ConvertTubesToImage() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkConvertTubesToImageFilter parameters **/
-  ConvertTubesToImage( const Self & );
-  void operator=( const Self & );
+  ConvertTubesToImage(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename FilterType::Pointer m_Filter;
 
   typename OutputImageType::ConstPointer m_TemplateImage;
-
 };
 
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeConvertTubesToImage.hxx"
+#  include "tubeConvertTubesToImage.hxx"
 #endif
 
 #endif // End !defined( __tubeConvertTubesToImage_h )

@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef itktubeCropImageFilter_h
 #define itktubeCropImageFilter_h
 
@@ -24,7 +24,7 @@
 // Forward declare itkTubeTK class to allow friendship
 namespace tube
 {
-template< typename tube_TInputImage, typename tube_TOutputImage >
+template <typename tube_TInputImage, typename tube_TOutputImage>
 class CropImage;
 }
 
@@ -43,22 +43,21 @@ namespace tube
  *
  */
 
-template< typename TInputImage, typename TOutputImage >
-class CropImageFilter:
-  public ExtractImageFilter< TInputImage, TOutputImage >
+template <typename TInputImage, typename TOutputImage>
+class CropImageFilter : public ExtractImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class type alias. */
   using Self = CropImageFilter;
-  using Superclass = ExtractImageFilter< TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ExtractImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( CropImageFilter, ExtractImageFilter );
+  itkTypeMacro(CropImageFilter, ExtractImageFilter);
 
   /** Typedef to describe the output and input image region types. */
   using OutputImageRegionType = typename Superclass::OutputImageRegionType;
@@ -77,101 +76,113 @@ public:
   using ImageType = TInputImage;
 
   /** ImageDimension constants */
-  itkStaticConstMacro( InputImageDimension, unsigned int,
-                      Superclass::InputImageDimension );
-  itkStaticConstMacro( OutputImageDimension, unsigned int,
-                      Superclass::OutputImageDimension );
+  itkStaticConstMacro(InputImageDimension, unsigned int, Superclass::InputImageDimension);
+  itkStaticConstMacro(OutputImageDimension, unsigned int, Superclass::OutputImageDimension);
 
   /** Set/Get the cropping sizes for the upper and lower boundaries. */
   // itkCropImageFilter parameters
-  itkSetMacro( UpperBoundaryCropSize, SizeType );
-  itkGetConstMacro( UpperBoundaryCropSize, SizeType );
+  itkSetMacro(UpperBoundaryCropSize, SizeType);
+  itkGetConstMacro(UpperBoundaryCropSize, SizeType);
 
-  itkSetMacro( LowerBoundaryCropSize, SizeType );
-  itkGetConstMacro( LowerBoundaryCropSize, SizeType );
+  itkSetMacro(LowerBoundaryCropSize, SizeType);
+  itkGetConstMacro(LowerBoundaryCropSize, SizeType);
 
   // tubeCropROI parameters
-  void SetMin( typename ImageType::IndexType roiMin );
-  typename ImageType::IndexType GetMin( void );
-  itkSetMacro( UseROIMin, bool );
+  void
+  SetMin(typename ImageType::IndexType roiMin);
+  typename ImageType::IndexType
+  GetMin(void);
+  itkSetMacro(UseROIMin, bool);
 
-  void SetMax( typename ImageType::IndexType roiMax );
-  typename ImageType::IndexType GetMax( void );
-  itkSetMacro( UseROIMax, bool );
+  void
+  SetMax(typename ImageType::IndexType roiMax);
+  typename ImageType::IndexType
+  GetMax(void);
+  itkSetMacro(UseROIMax, bool);
 
-  void SetSize( typename ImageType::SizeType roiSize );
-  typename ImageType::SizeType GetSize( void );
-  itkSetMacro( UseROISize, bool );
+  void
+  SetSize(typename ImageType::SizeType roiSize);
+  typename ImageType::SizeType
+  GetSize(void);
+  itkSetMacro(UseROISize, bool);
 
-  void SetCenter( typename ImageType::IndexType roiCenter );
-  typename ImageType::IndexType GetCenter( void );
-  itkSetMacro( UseROICenter, bool );
+  void
+  SetCenter(typename ImageType::IndexType roiCenter);
+  typename ImageType::IndexType
+  GetCenter(void);
+  itkSetMacro(UseROICenter, bool);
 
-  void SetBoundary( typename ImageType::IndexType roiBoundary );
-  typename ImageType::IndexType GetBoundary( void );
-  itkSetMacro( UseROIBoundary, bool );
+  void
+  SetBoundary(typename ImageType::IndexType roiBoundary);
+  typename ImageType::IndexType
+  GetBoundary(void);
+  itkSetMacro(UseROIBoundary, bool);
 
-  void SetMatchVolume( const ImageType * matchVolume );
+  void
+  SetMatchVolume(const ImageType * matchVolume);
 
-  void SetMatchMask( const ImageType * maskImage );
+  void
+  SetMatchMask(const ImageType * maskImage);
 
-  void SetSplitInput( typename ImageType::IndexType splitIndex,
-    typename ImageType::IndexType roiIndex );
+  void
+  SetSplitInput(typename ImageType::IndexType splitIndex, typename ImageType::IndexType roiIndex);
 
-  void SetBoundaryCropSize( const SizeType & s )
-    {
-    this->SetUpperBoundaryCropSize( s );
-    this->SetLowerBoundaryCropSize( s );
-    }
+  void
+  SetBoundaryCropSize(const SizeType & s)
+  {
+    this->SetUpperBoundaryCropSize(s);
+    this->SetLowerBoundaryCropSize(s);
+  }
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   // Begin concept checking
-  itkConceptMacro( InputConvertibleToOutputCheck,
-    ( Concept::Convertible< InputImagePixelType, OutputImagePixelType > ) );
-  itkConceptMacro( SameDimensionCheck,
-    ( Concept::SameDimension< InputImageDimension, OutputImageDimension > ) );
+  itkConceptMacro(InputConvertibleToOutputCheck, (Concept::Convertible<InputImagePixelType, OutputImagePixelType>));
+  itkConceptMacro(SameDimensionCheck, (Concept::SameDimension<InputImageDimension, OutputImageDimension>));
   // End concept checking
 #endif
 
 protected:
-  CropImageFilter( void );
+  CropImageFilter(void);
   ~CropImageFilter() {}
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void GenerateOutputInformation() override;
+  void
+  GenerateOutputInformation() override;
 
 private:
   /** itkCropImageFilter parameters */
-  CropImageFilter( const Self & );
-  void operator=( const Self & );
+  CropImageFilter(const Self &);
+  void
+  operator=(const Self &);
 
   SizeType m_UpperBoundaryCropSize;
   SizeType m_LowerBoundaryCropSize;
 
   /** tubeCropROI parameters */
-  typename ImageType::IndexType  m_ROIMin;
-  bool                           m_UseROIMin;
-  typename ImageType::IndexType  m_ROIMax;
-  bool                           m_UseROIMax;
-  typename ImageType::SizeType   m_ROISize;
-  bool                           m_UseROISize;
-  typename ImageType::IndexType  m_ROICenter;
-  bool                           m_UseROICenter;
-  typename ImageType::IndexType  m_ROIBoundary;
-  bool                           m_UseROIBoundary;
-  float                          m_ProgressStart;
-  float                          m_ProgressRange;
+  typename ImageType::IndexType m_ROIMin;
+  bool                          m_UseROIMin;
+  typename ImageType::IndexType m_ROIMax;
+  bool                          m_UseROIMax;
+  typename ImageType::SizeType  m_ROISize;
+  bool                          m_UseROISize;
+  typename ImageType::IndexType m_ROICenter;
+  bool                          m_UseROICenter;
+  typename ImageType::IndexType m_ROIBoundary;
+  bool                          m_UseROIBoundary;
+  float                         m_ProgressStart;
+  float                         m_ProgressRange;
 
   /** friendship facilitating itkTukeTK integration */
-  template< typename tube_TInputImage, typename tube_TOutputImage >
+  template <typename tube_TInputImage, typename tube_TOutputImage>
   friend class ::tube::CropImage;
 };
 } // End namespace tube
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeCropImageFilter.hxx"
+#  include "itktubeCropImageFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeCropImageFilter_h )

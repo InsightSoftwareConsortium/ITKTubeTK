@@ -74,138 +74,143 @@ namespace tube
  *
  * email: r.manniesing@erasmusmc.nl
  */
-template< class TPixel = short int, unsigned int VDimension = 2 >
+template <class TPixel = short int, unsigned int VDimension = 2>
 class TubeEnhancingDiffusion2DImageFilter
-  : public ImageToImageFilter< Image< TPixel, VDimension >,
-                               Image< TPixel, VDimension > >
+  : public ImageToImageFilter<Image<TPixel, VDimension>, Image<TPixel, VDimension>>
 {
 
 public:
-
   using Precision = float;
   using ImageType = Image<TPixel, VDimension>;
   using PrecisionImageType = Image<Precision, VDimension>;
 
   using Self = TubeEnhancingDiffusion2DImageFilter;
   using Superclass = ImageToImageFilter<ImageType, ImageType>;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkNewMacro( Self );
-  itkTypeMacro( TubeEnhancingDiffusion2DImageFilter, ImageToImageFilter );
+  itkNewMacro(Self);
+  itkTypeMacro(TubeEnhancingDiffusion2DImageFilter, ImageToImageFilter);
 
   /** Set/Get time step */
-  itkSetMacro( TimeStep, Precision );
-  itkGetMacro( TimeStep, Precision );
+  itkSetMacro(TimeStep, Precision);
+  itkGetMacro(TimeStep, Precision);
 
   /** Set/Get iterations */
-  itkSetMacro( Iterations, unsigned int );
-  itkGetMacro( Iterations, unsigned int );
+  itkSetMacro(Iterations, unsigned int);
+  itkGetMacro(Iterations, unsigned int);
 
   /** Set/Get for how many iterations do we recalculate tubeness */
-  itkSetMacro( RecalculateTubeness, unsigned int );
-  itkGetMacro( RecalculateTubeness, unsigned int );
+  itkSetMacro(RecalculateTubeness, unsigned int);
+  itkGetMacro(RecalculateTubeness, unsigned int);
 
   /** Set/Get sensitive of the filter to blobness */
-  itkSetMacro( Beta, Precision );
-  itkGetMacro( Beta, Precision );
+  itkSetMacro(Beta, Precision);
+  itkGetMacro(Beta, Precision);
 
   /** Set/Get sensitive of the filter to second order structureness */
-  itkSetMacro( Gamma, Precision );
-  itkGetMacro( Gamma, Precision );
+  itkSetMacro(Gamma, Precision);
+  itkGetMacro(Gamma, Precision);
 
   /** Set/Get epsilon */
-  itkSetMacro( Epsilon, Precision );
-  itkGetMacro( Epsilon, Precision );
+  itkSetMacro(Epsilon, Precision);
+  itkGetMacro(Epsilon, Precision);
 
   /** Set/Get Omega */
-  itkSetMacro( Omega, Precision );
-  itkGetMacro( Omega, Precision );
+  itkSetMacro(Omega, Precision);
+  itkGetMacro(Omega, Precision);
 
   /** Set/Get Sensitivity */
-  itkSetMacro( Sensitivity, Precision );
-  itkGetMacro( Sensitivity, Precision );
+  itkSetMacro(Sensitivity, Precision);
+  itkGetMacro(Sensitivity, Precision);
 
-  void SetScales( const std::vector<Precision> &scales )
-    {
+  void
+  SetScales(const std::vector<Precision> & scales)
+  {
     m_Scales = scales;
-    }
+  }
 
-  itkBooleanMacro( DarkObjectLightBackground );
-  itkSetMacro( DarkObjectLightBackground, bool );
-  itkGetMacro( DarkObjectLightBackground, bool );
+  itkBooleanMacro(DarkObjectLightBackground);
+  itkSetMacro(DarkObjectLightBackground, bool);
+  itkGetMacro(DarkObjectLightBackground, bool);
 
-  itkBooleanMacro( Verbose );
-  itkSetMacro( Verbose, bool );
-  itkGetMacro( Verbose, bool );
+  itkBooleanMacro(Verbose);
+  itkSetMacro(Verbose, bool);
+  itkGetMacro(Verbose, bool);
 
   // some defaults for lowdose example
   // used in the paper
-  void SetDefaultPars( void )
-    {
-    m_TimeStep                  = 0.05;
-    m_Iterations                = 50;
-    m_RecalculateTubeness       = 11;
-    m_Beta                      = 0.5;
-    m_Gamma                     = 5.0;
-    m_Epsilon                   = 0.01;
-    m_Omega                     = 25.0;
-    m_Sensitivity               = 20.0;
+  void
+  SetDefaultPars(void)
+  {
+    m_TimeStep = 0.05;
+    m_Iterations = 50;
+    m_RecalculateTubeness = 11;
+    m_Beta = 0.5;
+    m_Gamma = 5.0;
+    m_Epsilon = 0.01;
+    m_Omega = 25.0;
+    m_Sensitivity = 20.0;
 
-    m_Scales.resize( 2 );
+    m_Scales.resize(2);
     m_Scales[0] = 6;
     m_Scales[1] = 8;
 
     m_DarkObjectLightBackground = true;
-    m_Verbose                   = true;
-    }
+    m_Verbose = true;
+  }
 
 protected:
-  TubeEnhancingDiffusion2DImageFilter( void );
-  ~TubeEnhancingDiffusion2DImageFilter( void ) {}
+  TubeEnhancingDiffusion2DImageFilter(void);
+  ~TubeEnhancingDiffusion2DImageFilter(void) {}
 
-  void PrintSelf( std::ostream &os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
 private:
+  TubeEnhancingDiffusion2DImageFilter(const Self &);
+  void
+  operator=(const Self &);
 
-  TubeEnhancingDiffusion2DImageFilter( const Self& );
-  void operator=( const Self& );
+  Precision              m_TimeStep;
+  unsigned int           m_Iterations;
+  unsigned int           m_RecalculateTubeness;
+  Precision              m_Beta;
+  Precision              m_Gamma;
+  Precision              m_Epsilon;
+  Precision              m_Omega;
+  Precision              m_Sensitivity;
+  std::vector<Precision> m_Scales;
+  bool                   m_DarkObjectLightBackground;
+  bool                   m_Verbose;
 
-  Precision                 m_TimeStep;
-  unsigned int              m_Iterations;
-  unsigned int              m_RecalculateTubeness;
-  Precision                 m_Beta;
-  Precision                 m_Gamma;
-  Precision                 m_Epsilon;
-  Precision                 m_Omega;
-  Precision                 m_Sensitivity;
-  std::vector<Precision>    m_Scales;
-  bool                      m_DarkObjectLightBackground;
-  bool                      m_Verbose;
-
-  unsigned int              m_CurrentIteration;
+  unsigned int m_CurrentIteration;
 
   // current Hessian for which we have maximum vessel response
   typename PrecisionImageType::Pointer m_Dxx;
   typename PrecisionImageType::Pointer m_Dxy;
   typename PrecisionImageType::Pointer m_Dyy;
 
-  void VED2DSingleIteration( typename PrecisionImageType::Pointer );
+  void VED2DSingleIteration(typename PrecisionImageType::Pointer);
 
   // Calculates maximum vessel response of the range
   // of scales and stores the Hessian of each voxel
   // into the member images m_Dij.
-  void MaxTubeResponse( const typename PrecisionImageType::Pointer );
+  void
+  MaxTubeResponse(const typename PrecisionImageType::Pointer);
 
   // calculates diffusion tensor
   // based on current values of Hessian ( for which we have
   // maximum vessel response ).
-  void DiffusionTensor( void );
+  void
+  DiffusionTensor(void);
 
   // Sorted increasing magnitude: l1, l2
-  inline Precision TubenessFunction2D ( const Precision, const Precision );
+  inline Precision
+  TubenessFunction2D(const Precision, const Precision);
 
 }; // End class TubeEnhancingDiffusion2DImageFilter
 
@@ -214,7 +219,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeTubeEnhancingDiffusion2DImageFilter.hxx"
+#  include "itktubeTubeEnhancingDiffusion2DImageFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeTubeEnhancingDiffusion2DImageFilter_h )

@@ -32,15 +32,17 @@ limitations under the License.
 
 #include "SegmentConnectedComponentsCLP.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #define PARSE_ARGS_INT_ONLY
 #include "../CLI/tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
@@ -49,93 +51,89 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "ConnectedComponents",
-                                                 CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("ConnectedComponents", CLPProcessInformation);
   progressReporter.Start();
 
-  using MaskType = itk::Image< TPixel, VDimension >;
-  using MaskReaderType = itk::ImageFileReader< MaskType >;
+  using MaskType = itk::Image<TPixel, VDimension>;
+  using MaskReaderType = itk::ImageFileReader<MaskType>;
 
   //
   //
   //
-  timeCollector.Start( "Load mask" );
+  timeCollector.Start("Load mask");
   typename MaskReaderType::Pointer maskReader = MaskReaderType::New();
-  maskReader->SetFileName( inputMask.c_str() );
+  maskReader->SetFileName(inputMask.c_str());
   try
-    {
+  {
     maskReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading mask: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading mask: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Load mask" );
+  }
+  timeCollector.Stop("Load mask");
   double progress = 0.1;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   typename MaskType::Pointer curMask = maskReader->GetOutput();
 
   //
   //
   //
-  timeCollector.Start( "Connected Components" );
+  timeCollector.Start("Connected Components");
 
-  using FilterType = tube::SegmentConnectedComponents< MaskType, MaskType >;
+  using FilterType = tube::SegmentConnectedComponents<MaskType, MaskType>;
   typename FilterType::Pointer filter;
 
   filter = FilterType::New();
-  filter->SetInput( curMask );
+  filter->SetInput(curMask);
 
-  filter->SetMinimumVolume( minSize );
+  filter->SetMinimumVolume(minSize);
 
-  if( seedMask.size() > 0 )
-    {
-    timeCollector.Start( "Load seed mask" );
+  if (seedMask.size() > 0)
+  {
+    timeCollector.Start("Load seed mask");
     typename MaskReaderType::Pointer seedMaskReader = MaskReaderType::New();
-    seedMaskReader->SetFileName( seedMask.c_str() );
+    seedMaskReader->SetFileName(seedMask.c_str());
     try
-      {
+    {
       seedMaskReader->Update();
-      }
-    catch( itk::ExceptionObject & err )
-      {
-      tube::ErrorMessage( "Reading seed mask: Exception caught: "
-                          + std::string( err.GetDescription() ) );
+    }
+    catch (itk::ExceptionObject & err)
+    {
+      tube::ErrorMessage("Reading seed mask: Exception caught: " + std::string(err.GetDescription()));
       timeCollector.Report();
       return EXIT_FAILURE;
-      }
-    timeCollector.Stop( "Load seed mask" );
-
-    filter->SetSeedMask( seedMaskReader->GetOutput() );
     }
+    timeCollector.Stop("Load seed mask");
+
+    filter->SetSeedMask(seedMaskReader->GetOutput());
+  }
 
   filter->Update();
 
-  using ImageWriterType = itk::ImageFileWriter< MaskType  >;
+  using ImageWriterType = itk::ImageFileWriter<MaskType>;
 
-  timeCollector.Start( "Save data" );
+  timeCollector.Start("Save data");
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
-  writer->SetFileName( outputMask.c_str() );
-  writer->SetInput( filter->GetOutput() );
-  writer->SetUseCompression( true );
+  writer->SetFileName(outputMask.c_str());
+  writer->SetInput(filter->GetOutput());
+  writer->SetUseCompression(true);
   try
-    {
+  {
     writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Writing volume: Exception caught: "
-      + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Writing volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Save data" );
+  }
+  timeCollector.Stop("Save data");
   progress = 1.0;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
   progressReporter.End();
 
   timeCollector.Report();
@@ -143,11 +141,12 @@ int DoIt( int argc, char * argv[] )
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputVolume.
-  return tube::ParseArgsAndCallDoIt( inputMask, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputMask, argc, argv);
 }

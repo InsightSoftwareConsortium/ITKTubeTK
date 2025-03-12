@@ -30,155 +30,133 @@ namespace tube
 {
 
 /** Constructor */
-template< class TImage, class TPointsImage >
-ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
-::ConvertShrunkenSeedImageToListFilter( void )
+template <class TImage, class TPointsImage>
+ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::ConvertShrunkenSeedImageToListFilter(void)
 {
-  this->ProcessObject::SetNthOutput( 0, OutputType::New().GetPointer() );
+  this->ProcessObject::SetNthOutput(0, OutputType::New().GetPointer());
   m_Threshold = 0;
-  this->ProcessObject::SetNumberOfRequiredInputs( 3 );
+  this->ProcessObject::SetNumberOfRequiredInputs(3);
 }
 
-template< class TImage, class TPointsImage >
+template <class TImage, class TPointsImage>
 void
-ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
-::SetInput( const ImageType* image )
+ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::SetInput(const ImageType * image)
 {
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput( 0, const_cast< ImageType* >( image ) );
+  this->ProcessObject::SetNthInput(0, const_cast<ImageType *>(image));
 }
 
-template< class TImage, class TPointsImage >
+template <class TImage, class TPointsImage>
 void
-ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
-::SetScaleImage( const ImageType* image )
+ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::SetScaleImage(const ImageType * image)
 {
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput( 1, const_cast< ImageType* >( image ) );
+  this->ProcessObject::SetNthInput(1, const_cast<ImageType *>(image));
 }
 
-template< class TImage, class TPointsImage >
+template <class TImage, class TPointsImage>
 void
-ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
-::SetPointsImage( const PointsImageType* image )
+ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::SetPointsImage(const PointsImageType * image)
 {
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput( 2,
-    const_cast< PointsImageType* >( image ) );
+  this->ProcessObject::SetNthInput(2, const_cast<PointsImageType *>(image));
 }
 
-template< class TImage, class TPointsImage >
-const TImage*
-ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
-::GetInput( void ) const
+template <class TImage, class TPointsImage>
+const TImage *
+ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::GetInput(void) const
 {
-  return static_cast<const ImageType * >
-    ( this->ProcessObject::GetInput( 0 ) );
+  return static_cast<const ImageType *>(this->ProcessObject::GetInput(0));
 }
 
-template< class TImage, class TPointsImage >
-const TImage*
-ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
-::GetScaleImage( void ) const
+template <class TImage, class TPointsImage>
+const TImage *
+ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::GetScaleImage(void) const
 {
-  return static_cast<const ImageType * >
-    ( this->ProcessObject::GetInput( 1 ) );
+  return static_cast<const ImageType *>(this->ProcessObject::GetInput(1));
 }
 
-template< class TImage, class TPointsImage >
-const TPointsImage*
-ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
-::GetPointsImage( void ) const
+template <class TImage, class TPointsImage>
+const TPointsImage *
+ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::GetPointsImage(void) const
 {
-  return static_cast<const PointsImageType * >
-    ( this->ProcessObject::GetInput( 2 ) );
+  return static_cast<const PointsImageType *>(this->ProcessObject::GetInput(2));
 }
 
-template< class TImage, class TPointsImage >
-SimpleDataObjectDecorator< vnl_matrix <typename TImage::PixelType> >*
-ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
-::GetOutput()
+template <class TImage, class TPointsImage>
+SimpleDataObjectDecorator<vnl_matrix<typename TImage::PixelType>> *
+ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::GetOutput()
 {
   // we assume that the first output is of the templated type
-  return itkDynamicCastInDebugMode< OutputType * >( this->GetPrimaryOutput() );
+  return itkDynamicCastInDebugMode<OutputType *>(this->GetPrimaryOutput());
 }
 
-template< class TImage, class TPointsImage >
+template <class TImage, class TPointsImage>
 void
-ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
-::GenerateData( void )
+ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::GenerateData(void)
 {
-  const ImageType* inImage = this->GetInput();
-  const ImageType* inScale = const_cast< ImageType * >( this->GetScaleImage() );
-  const PointsImageType* inPoint =
-    const_cast< PointsImageType * >( this->GetPointsImage() );
+  const ImageType *       inImage = this->GetInput();
+  const ImageType *       inScale = const_cast<ImageType *>(this->GetScaleImage());
+  const PointsImageType * inPoint = const_cast<PointsImageType *>(this->GetPointsImage());
 
-  if( inImage->GetLargestPossibleRegion() != inScale->GetLargestPossibleRegion()
-    || inScale->GetLargestPossibleRegion() !=
-       inPoint->GetLargestPossibleRegion() )
+  if (inImage->GetLargestPossibleRegion() != inScale->GetLargestPossibleRegion() ||
+      inScale->GetLargestPossibleRegion() != inPoint->GetLargestPossibleRegion())
   {
-    itkExceptionMacro( << "Error: Input images must be of the same size" );
+    itkExceptionMacro(<< "Error: Input images must be of the same size");
   }
-  itk::ImageRegionConstIterator< ImageType > itImage( inImage,
-    inImage->GetLargestPossibleRegion() );
-  itk::ImageRegionConstIterator< ImageType > itScale( inScale,
-    inScale->GetLargestPossibleRegion() );
-  itk::ImageRegionConstIterator< PointsImageType > itPoint( inPoint,
-    inPoint->GetLargestPossibleRegion() );
+  itk::ImageRegionConstIterator<ImageType>       itImage(inImage, inImage->GetLargestPossibleRegion());
+  itk::ImageRegionConstIterator<ImageType>       itScale(inScale, inScale->GetLargestPossibleRegion());
+  itk::ImageRegionConstIterator<PointsImageType> itPoint(inPoint, inPoint->GetLargestPossibleRegion());
 
-  const SizeValueType ARows =
-    inImage->GetLargestPossibleRegion().GetNumberOfPixels();
-  if( ARows > std::numeric_limits<unsigned int>::max() )
-    {
-    itkExceptionMacro( <<
-      "Exception caught ! The image is too big for this filter." );
-    }
-  m_VnlOutput.set_size( ARows, ImageType::ImageDimension + 1 );
+  const SizeValueType ARows = inImage->GetLargestPossibleRegion().GetNumberOfPixels();
+  if (ARows > std::numeric_limits<unsigned int>::max())
+  {
+    itkExceptionMacro(<< "Exception caught ! The image is too big for this filter.");
+  }
+  m_VnlOutput.set_size(ARows, ImageType::ImageDimension + 1);
 
   unsigned int row = 0;
-  while( !itImage.IsAtEnd() )
+  while (!itImage.IsAtEnd())
+  {
+    if (itImage.Get() > m_Threshold)
     {
-    if( itImage.Get() > m_Threshold )
+      for (unsigned int i = 0; i < ImageDimension; ++i)
       {
-      for( unsigned int i = 0; i < ImageDimension; ++i )
-        {
-        m_VnlOutput( row, i ) = itPoint.Get()[ i ];
-        }
-      m_VnlOutput( row, ImageDimension ) = itScale.Get();
-      row++;
+        m_VnlOutput(row, i) = itPoint.Get()[i];
       }
+      m_VnlOutput(row, ImageDimension) = itScale.Get();
+      row++;
+    }
     ++itImage;
     ++itScale;
     ++itPoint;
-    }
+  }
   typename OutputType::Pointer outputPtr = this->GetOutput();
-  outputPtr->Set( m_VnlOutput );
+  outputPtr->Set(m_VnlOutput);
 }
 
 /** PrintSelf */
-template< class TImage, class TPointsImage >
+template <class TImage, class TPointsImage>
 void
-ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
-::PrintSelf( std::ostream & os, Indent indent ) const
+ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << indent << "VnlOutput = " << m_VnlOutput << std::endl;
   os << indent << "Threshold = " << m_Threshold << std::endl;
 }
 
-template< class TImage, class TPointsImage >
+template <class TImage, class TPointsImage>
 void
-ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
-::VerifyPreconditions()
+ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::VerifyPreconditions()
 {
   this->ProcessObject::VerifyPreconditions();
-  if( this->GetInput()->GetLargestPossibleRegion().GetSize() !=
-    this->GetScaleImage()->GetLargestPossibleRegion().GetSize()
-    || this->GetInput()->GetLargestPossibleRegion().GetSize() !=
-    this->GetPointsImage()->GetLargestPossibleRegion().GetSize() )
-    {
-    itkExceptionMacro( << "The input images don't have the same size." );
-    }
+  if (this->GetInput()->GetLargestPossibleRegion().GetSize() !=
+        this->GetScaleImage()->GetLargestPossibleRegion().GetSize() ||
+      this->GetInput()->GetLargestPossibleRegion().GetSize() !=
+        this->GetPointsImage()->GetLargestPossibleRegion().GetSize())
+  {
+    itkExceptionMacro(<< "The input images don't have the same size.");
+  }
 }
 
 } // End namespace tube

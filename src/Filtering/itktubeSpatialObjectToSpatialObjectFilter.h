@@ -35,51 +35,53 @@ namespace tube
  * \brief Base class for filters that take a SpatialObject as input
  * and produce a SpatialObject as output.
  */
-template< class TInputSpatialObject, class TOutputSpatialObject >
-class SpatialObjectToSpatialObjectFilter
-  : public SpatialObjectSource< TOutputSpatialObject >
+template <class TInputSpatialObject, class TOutputSpatialObject>
+class SpatialObjectToSpatialObjectFilter : public SpatialObjectSource<TOutputSpatialObject>
 {
 public:
   /** Standard class type alias */
   using Self = SpatialObjectToSpatialObjectFilter;
-  using Superclass = SpatialObjectSource< TOutputSpatialObject >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = SpatialObjectSource<TOutputSpatialObject>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SpatialObjectToSpatialObjectFilter, SpatialObjectSource );
+  itkTypeMacro(SpatialObjectToSpatialObjectFilter, SpatialObjectSource);
 
   using InputSpatialObjectType = TInputSpatialObject;
   using OutputSpatialObjectType = TOutputSpatialObject;
 
-  virtual void SetInput( const InputSpatialObjectType * spatialObject );
+  virtual void
+  SetInput(const InputSpatialObjectType * spatialObject);
 
-  virtual void SetInput( unsigned int, const InputSpatialObjectType *
-    spatialObject );
+  virtual void
+  SetInput(unsigned int, const InputSpatialObjectType * spatialObject);
 
   // from itkProcessObject
-  virtual void SetInput( const
-    itk::ProcessObject::DataObjectIdentifierType & index, itk::DataObject *
-    input ) override;
+  virtual void
+  SetInput(const itk::ProcessObject::DataObjectIdentifierType & index, itk::DataObject * input) override;
 
-  const InputSpatialObjectType * GetInput( void ) const;
+  const InputSpatialObjectType *
+  GetInput(void) const;
 
-  const InputSpatialObjectType * GetInput( unsigned int idx ) const;
+  const InputSpatialObjectType *
+  GetInput(unsigned int idx) const;
 
 protected:
-  SpatialObjectToSpatialObjectFilter( void );
-  virtual ~SpatialObjectToSpatialObjectFilter( void ) {}
+  SpatialObjectToSpatialObjectFilter(void);
+  virtual ~SpatialObjectToSpatialObjectFilter(void) {}
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  //void SetInput( const typename Superclass::DataObjectIdentifierType &,
-    //itk::DataObject * ) override {};
+  // void SetInput( const typename Superclass::DataObjectIdentifierType &,
+  // itk::DataObject * ) override {};
 
 private:
   // purposely not implemented
-  SpatialObjectToSpatialObjectFilter( const Self & );
+  SpatialObjectToSpatialObjectFilter(const Self &);
 
   // purposely not implemented
-  void operator=( const Self & );
+  void
+  operator=(const Self &);
 
 }; // End class SpatialObjectToSpatialObjectFilter
 
@@ -88,7 +90,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeSpatialObjectToSpatialObjectFilter.hxx"
+#  include "itktubeSpatialObjectToSpatialObjectFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeSpatialObjectToSpatialObjectFilter_h )

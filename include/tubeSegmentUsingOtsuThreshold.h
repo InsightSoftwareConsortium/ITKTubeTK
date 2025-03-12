@@ -39,16 +39,15 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TImageType, class TMaskType=TImageType >
-class SegmentUsingOtsuThreshold:
-  public itk::ProcessObject
+template <class TImageType, class TMaskType = TImageType>
+class SegmentUsingOtsuThreshold : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = SegmentUsingOtsuThreshold;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   using InputImageType = TImageType;
   using MaskImageType = TMaskType;
@@ -57,59 +56,59 @@ public:
   using InputPixelType = typename InputImageType::PixelType;
   using MaskPixelType = typename MaskImageType::PixelType;
 
-  using FilterType = itk::OtsuThresholdImageFilter< InputImageType,
-    OutputImageType >;
+  using FilterType = itk::OtsuThresholdImageFilter<InputImageType, OutputImageType>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SegmentUsingOtsuThreshold, ProcessObject );
+  itkTypeMacro(SegmentUsingOtsuThreshold, ProcessObject);
 
   /** Set/Get mask image */
-  tubeWrapSetConstObjectMacro( MaskImage, MaskImageType, Filter );
-  tubeWrapGetConstObjectMacro( MaskImage, MaskImageType, Filter );
+  tubeWrapSetConstObjectMacro(MaskImage, MaskImageType, Filter);
+  tubeWrapGetConstObjectMacro(MaskImage, MaskImageType, Filter);
 
   /** Set/Get mask value */
-  tubeWrapSetMacro( MaskValue, InputPixelType, Filter );
-  tubeWrapGetMacro( MaskValue, InputPixelType, Filter );
+  tubeWrapSetMacro(MaskValue, InputPixelType, Filter);
+  tubeWrapGetMacro(MaskValue, InputPixelType, Filter);
 
   /** Set/Get input image */
-  tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
-  tubeWrapGetConstObjectMacro( Input, InputImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input, InputImageType, Filter);
+  tubeWrapGetConstObjectMacro(Input, InputImageType, Filter);
 
   /** Runs the thresholding algorithm */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
   /** Get output segmentation mask */
-  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
+  tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
 
   /** Get output threshold */
-  tubeWrapGetMacro( Threshold, InputPixelType, Filter );
+  tubeWrapGetMacro(Threshold, InputPixelType, Filter);
 
 protected:
-  SegmentUsingOtsuThreshold( void );
+  SegmentUsingOtsuThreshold(void);
   ~SegmentUsingOtsuThreshold() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkSegmentUsingOtsuThresholdFilter parameters **/
-  SegmentUsingOtsuThreshold( const Self & );
-  void operator=( const Self & );
+  SegmentUsingOtsuThreshold(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename FilterType::Pointer m_Filter;
-
 };
 
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeSegmentUsingOtsuThreshold.hxx"
+#  include "tubeSegmentUsingOtsuThreshold.hxx"
 #endif
 
 #endif // End !defined( __tubeSegmentUsingOtsuThreshold_h )

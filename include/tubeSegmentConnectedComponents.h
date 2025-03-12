@@ -36,9 +36,8 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TImage, class TSeedMask >
-class SegmentConnectedComponents:
-  public itk::ProcessObject
+template <class TImage, class TSeedMask>
+class SegmentConnectedComponents : public itk::ProcessObject
 {
 public:
   using ImageType = TImage;
@@ -48,68 +47,69 @@ public:
   /** Standard class type alias. */
   using Self = SegmentConnectedComponents;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
 
-  using FilterType = itk::ConnectedComponentImageFilter< ImageType,
-    ImageType, ImageType >;
+  using FilterType = itk::ConnectedComponentImageFilter<ImageType, ImageType, ImageType>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SegmentConnectedComponents, ProcessObject );
+  itkTypeMacro(SegmentConnectedComponents, ProcessObject);
 
-  itkStaticConstMacro( ImageDimension, unsigned int, ImageType::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, ImageType::ImageDimension);
 
-  tubeWrapSetObjectMacro( Input, ImageType, Filter );
-  tubeWrapGetConstObjectMacro( Input, ImageType, Filter );
+  tubeWrapSetObjectMacro(Input, ImageType, Filter);
+  tubeWrapGetConstObjectMacro(Input, ImageType, Filter);
 
-  itkGetMacro( NumberOfComponents, unsigned int );
+  itkGetMacro(NumberOfComponents, unsigned int);
 
-  itkSetMacro( MinimumVolume, double );
-  itkGetMacro( MinimumVolume, double );
+  itkSetMacro(MinimumVolume, double);
+  itkGetMacro(MinimumVolume, double);
 
-  itkSetObjectMacro( SeedMask, SeedMaskType );
-  itkGetModifiableObjectMacro( SeedMask, SeedMaskType );
+  itkSetObjectMacro(SeedMask, SeedMaskType);
+  itkGetModifiableObjectMacro(SeedMask, SeedMaskType);
 
-  itkSetMacro( KeepOnlyLargestComponent, bool );
-  itkGetMacro( KeepOnlyLargestComponent, bool );
+  itkSetMacro(KeepOnlyLargestComponent, bool);
+  itkGetMacro(KeepOnlyLargestComponent, bool);
 
-  void Update( void ) override;
+  void
+  Update(void) override;
 
-  tubeWrapGetConstObjectMacro( Output, ImageType, Filter );
+  tubeWrapGetConstObjectMacro(Output, ImageType, Filter);
 
 protected:
-  SegmentConnectedComponents( void );
+  SegmentConnectedComponents(void);
   ~SegmentConnectedComponents() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkSegmentConnectedComponents parameters **/
-  SegmentConnectedComponents( const Self & );
-  void operator=( const Self & );
+  SegmentConnectedComponents(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  typename FilterType::Pointer                    m_Filter;
+  typename FilterType::Pointer m_Filter;
 
-  typename SeedMaskType::Pointer                  m_SeedMask;
-  double                                          m_MinimumVolume;
-  unsigned int                                    m_NumberOfComponents;
+  typename SeedMaskType::Pointer m_SeedMask;
+  double                         m_MinimumVolume;
+  unsigned int                   m_NumberOfComponents;
 
-  bool                                            m_KeepOnlyLargestComponent;
-
+  bool m_KeepOnlyLargestComponent;
 };
 
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeSegmentConnectedComponents.hxx"
+#  include "tubeSegmentConnectedComponents.hxx"
 #endif
 
 #endif // End !defined( __tubeSegmentConnectedComponentsUsingParzenPDFs_h )

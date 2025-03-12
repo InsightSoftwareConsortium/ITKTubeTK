@@ -37,36 +37,32 @@ namespace itk
 {
 
 template <class TImage>
-class InitialImageToImageRegistrationMethod
-  : public ImageToImageRegistrationMethod<TImage>
+class InitialImageToImageRegistrationMethod : public ImageToImageRegistrationMethod<TImage>
 {
 
 public:
-
   using Self = InitialImageToImageRegistrationMethod;
   using Superclass = ImageToImageRegistrationMethod<TImage>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( InitialImageToImageRegistrationMethod,
-                ImageToImageRegistrationMethod );
+  itkTypeMacro(InitialImageToImageRegistrationMethod, ImageToImageRegistrationMethod);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   //
   // Typedefs from Superclass
   //
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
-  using TransformType = AffineTransform<double, itkGetStaticConstMacro( ImageDimension )>;
+  using TransformType = AffineTransform<double, itkGetStaticConstMacro(ImageDimension)>;
 
   using TransformPointer = typename TransformType::Pointer;
 
   //
   // Local Typedefs
   //
-  using LandmarkPointType = Point<double, itkGetStaticConstMacro( ImageDimension )>;
+  using LandmarkPointType = Point<double, itkGetStaticConstMacro(ImageDimension)>;
   using LandmarkPointContainer = std::vector<LandmarkPointType>;
 
   //
@@ -78,49 +74,55 @@ public:
    *   once in the class hierarchy.  It is provided so that member
    *   functions that exist only in specific transforms ( e.g., SetIdentity )
    *   can be called without the caller having to do the casting. */
-  TransformType * GetTypedTransform( void );
+  TransformType *
+  GetTypedTransform(void);
 
-  const TransformType * GetTypedTransform( void ) const;
+  const TransformType *
+  GetTypedTransform(void) const;
 
   /** This method creates, initializes and returns an Affine transform.  The
    * transform is initialized with the current results available in the
    * GetTypedTransform() method. The returned transform is not a member
    * variable, and therefore, must be received into a SmartPointer to prevent
    * it from being destroyed by depletion of its reference counting. */
-  TransformPointer GetAffineTransform( void ) const;
+  TransformPointer
+  GetAffineTransform(void) const;
 
-  itkSetMacro( NumberOfMoments, unsigned int );
-  itkGetConstMacro( NumberOfMoments, unsigned int );
+  itkSetMacro(NumberOfMoments, unsigned int);
+  itkGetConstMacro(NumberOfMoments, unsigned int);
 
-  itkSetMacro( ComputeCenterOfRotationOnly, bool );
-  itkGetConstMacro( ComputeCenterOfRotationOnly, bool );
+  itkSetMacro(ComputeCenterOfRotationOnly, bool);
+  itkGetConstMacro(ComputeCenterOfRotationOnly, bool);
 
-  itkSetMacro( UseLandmarks, bool );
-  itkGetConstMacro( UseLandmarks, bool );
+  itkSetMacro(UseLandmarks, bool);
+  itkGetConstMacro(UseLandmarks, bool);
 
-  void SetFixedLandmarks( const LandmarkPointContainer& fixedLandmarks );
+  void
+  SetFixedLandmarks(const LandmarkPointContainer & fixedLandmarks);
 
-  void SetMovingLandmarks( const LandmarkPointContainer& movingLandmarks );
+  void
+  SetMovingLandmarks(const LandmarkPointContainer & movingLandmarks);
 
 protected:
+  InitialImageToImageRegistrationMethod(void);
+  virtual ~InitialImageToImageRegistrationMethod(void);
 
-  InitialImageToImageRegistrationMethod( void );
-  virtual ~InitialImageToImageRegistrationMethod( void );
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   //
   //  Methods from Superclass. Only the GenerateData() method should be
   //  overloaded. The Update() method must not be overloaded.
   //
-  void    GenerateData() override;
+  void
+  GenerateData() override;
 
 private:
-
   // Purposely not implemented
-  InitialImageToImageRegistrationMethod( const Self & );
+  InitialImageToImageRegistrationMethod(const Self &);
   // Purposely not implemented
-  void operator =( const Self & );
+  void
+  operator=(const Self &);
 
   unsigned int           m_NumberOfMoments;
   bool                   m_ComputeCenterOfRotationOnly;
@@ -132,7 +134,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkInitialImageToImageRegistrationMethod.hxx"
+#  include "itkInitialImageToImageRegistrationMethod.hxx"
 #endif
 
 #endif // __ImageToImageRegistrationMethod_h

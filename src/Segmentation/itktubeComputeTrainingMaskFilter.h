@@ -45,11 +45,8 @@ namespace tube
  * \sa ComputeTrainingMaskFilter
  */
 
-template< class TInputImage, class TLabelMap=Image<
-  typename TInputImage::PixelType, TInputImage::ImageDimension> >
-class ComputeTrainingMaskFilter:
-  public ImageToImageFilter< TInputImage,
-    TLabelMap >
+template <class TInputImage, class TLabelMap = Image<typename TInputImage::PixelType, TInputImage::ImageDimension>>
+class ComputeTrainingMaskFilter : public ImageToImageFilter<TInputImage, TLabelMap>
 {
 public:
   using Self = ComputeTrainingMaskFilter;
@@ -59,55 +56,57 @@ public:
   using ImageType = TInputImage;
   using LabelMapType = TLabelMap;
 
-  itkStaticConstMacro( InputImageDimension, unsigned int,
-                      TInputImage::ImageDimension );
+  itkStaticConstMacro(InputImageDimension, unsigned int, TInputImage::ImageDimension);
 
-  itkNewMacro( Self );
-  const LabelMapType * GetObjectMask();
-  const LabelMapType * GetNotObjectMask();
-  itkSetMacro( Gap, double );
-  itkSetMacro( ObjectWidth, double );
-  itkSetMacro( NotObjectWidth, double );
-  itkGetMacro( Gap, double );
-  itkGetMacro( ObjectWidth, double );
-  itkGetMacro( NotObjectWidth, double );
+  itkNewMacro(Self);
+  const LabelMapType *
+  GetObjectMask();
+  const LabelMapType *
+  GetNotObjectMask();
+  itkSetMacro(Gap, double);
+  itkSetMacro(ObjectWidth, double);
+  itkSetMacro(NotObjectWidth, double);
+  itkGetMacro(Gap, double);
+  itkGetMacro(ObjectWidth, double);
+  itkGetMacro(NotObjectWidth, double);
 
 protected:
   ComputeTrainingMaskFilter();
   virtual ~ComputeTrainingMaskFilter();
 
-  virtual void GenerateData() override;
+  virtual void
+  GenerateData() override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-  using BallType = itk::BinaryBallStructuringElement< short,
-    ImageType::ImageDimension >;
-  using DilateFilterType = itk::DilateObjectMorphologyImageFilter< ImageType, ImageType,
-    BallType >;
-  using BinaryThinningFilterType = itk::BinaryThinningImageFilter< ImageType, ImageType >;
-  using ThresholdFilterType = itk::BinaryThresholdImageFilter< ImageType, ImageType >;
+  using BallType = itk::BinaryBallStructuringElement<short, ImageType::ImageDimension>;
+  using DilateFilterType = itk::DilateObjectMorphologyImageFilter<ImageType, ImageType, BallType>;
+  using BinaryThinningFilterType = itk::BinaryThinningImageFilter<ImageType, ImageType>;
+  using ThresholdFilterType = itk::BinaryThresholdImageFilter<ImageType, ImageType>;
   using SubtractFilterType = itk::SubtractImageFilter<ImageType, ImageType, ImageType>;
   using MultiplyFilterType = itk::MultiplyImageFilter<ImageType, ImageType, ImageType>;
   using AddFilterType = itk::AddImageFilter<ImageType, ImageType, ImageType>;
-  using CastFilterType = itk::CastImageFilter< ImageType, LabelMapType >;
+  using CastFilterType = itk::CastImageFilter<ImageType, LabelMapType>;
 
-  ComputeTrainingMaskFilter( const Self& );
-  void operator=( const Self& );
-  void ApplyDilateMorphologyFilter( typename ImageType::Pointer &input,
-    int size=1 );
+  ComputeTrainingMaskFilter(const Self &);
+  void
+  operator=(const Self &);
+  void
+  ApplyDilateMorphologyFilter(typename ImageType::Pointer & input, int size = 1);
 
-  typename AddFilterType::Pointer             m_Add;
-  typename MultiplyFilterType::Pointer        m_Multiply;
-  typename ThresholdFilterType::Pointer       m_Threshold;
-  typename BinaryThinningFilterType::Pointer  m_BinaryThinning;
-  typename DilateFilterType::Pointer          m_Dilate;
-  typename SubtractFilterType::Pointer        m_Subtract;
-  typename MultiplyFilterType::Pointer        m_MultiplyCenterLine;
-  typename MultiplyFilterType::Pointer        m_MultiplyOutside;
-  typename CastFilterType::Pointer            m_Cast;
-  typename CastFilterType::Pointer            m_CastObject;
-  typename CastFilterType::Pointer            m_CastNotObject;
+  typename AddFilterType::Pointer            m_Add;
+  typename MultiplyFilterType::Pointer       m_Multiply;
+  typename ThresholdFilterType::Pointer      m_Threshold;
+  typename BinaryThinningFilterType::Pointer m_BinaryThinning;
+  typename DilateFilterType::Pointer         m_Dilate;
+  typename SubtractFilterType::Pointer       m_Subtract;
+  typename MultiplyFilterType::Pointer       m_MultiplyCenterLine;
+  typename MultiplyFilterType::Pointer       m_MultiplyOutside;
+  typename CastFilterType::Pointer           m_Cast;
+  typename CastFilterType::Pointer           m_CastObject;
+  typename CastFilterType::Pointer           m_CastNotObject;
 
   BallType m_Ball;
   double   m_Gap;
@@ -115,11 +114,11 @@ private:
   double   m_NotObjectWidth;
 };
 
-}//end of tube namespace
-}//end of itk namespace
+} // namespace tube
+} // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeComputeTrainingMaskFilter.hxx"
+#  include "itktubeComputeTrainingMaskFilter.hxx"
 #endif
 
 #endif

@@ -48,28 +48,26 @@ namespace tube
  * \sa RidgeExtractor
  */
 
-template< class TInputImage >
+template <class TInputImage>
 class RadiusExtractor2 : public Object
 {
 public:
-
   /**
    * Standard self type alias */
   using Self = RadiusExtractor2;
   using Superclass = Object;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( RadiusExtractor2, Object );
-  itkNewMacro( RadiusExtractor2 );
+  itkTypeMacro(RadiusExtractor2, Object);
+  itkNewMacro(RadiusExtractor2);
 
   /**
    * Standard for the number of dimension
    */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    TInputImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
 
-  using TubeType = TubeSpatialObject< TInputImage::ImageDimension >;
+  using TubeType = TubeSpatialObject<TInputImage::ImageDimension>;
 
   using TubePointType = typename TubeType::TubePointType;
 
@@ -89,168 +87,186 @@ public:
   /**
    * Defines the type of matrix used
    */
-  using MatrixType = vnl_matrix< double >;
+  using MatrixType = vnl_matrix<double>;
 
 
-  typedef enum { RADIUS_CORRECTION_NONE, RADIUS_CORRECTION_FOR_BINARY_IMAGE,
-    RADIUS_CORRECTION_FOR_CTA, RADIUS_CORRECTION_FOR_MRA }
-    RadiusCorrectionFunctionType;
+  typedef enum
+  {
+    RADIUS_CORRECTION_NONE,
+    RADIUS_CORRECTION_FOR_BINARY_IMAGE,
+    RADIUS_CORRECTION_FOR_CTA,
+    RADIUS_CORRECTION_FOR_MRA
+  } RadiusCorrectionFunctionType;
 
   /**
    * Set the input image */
-  void SetInputImage( typename InputImageType::Pointer inputImage );
+  void
+  SetInputImage(typename InputImageType::Pointer inputImage);
 
   /**
    * Get the input image */
-  itkGetConstObjectMacro( InputImage, InputImageType );
+  itkGetConstObjectMacro(InputImage, InputImageType);
 
   /** Set Data Minimum */
-  itkSetMacro( DataMin, double );
-  itkGetMacro( DataMin, double );
+  itkSetMacro(DataMin, double);
+  itkGetMacro(DataMin, double);
 
   /** Set Data Maximum */
-  itkSetMacro( DataMax, double );
-  itkGetMacro( DataMax, double );
+  itkSetMacro(DataMax, double);
+  itkGetMacro(DataMax, double);
 
   /** Set Minimum Radius */
-  itkSetMacro( RadiusMin, double );
-  itkGetMacro( RadiusMin, double );
+  itkSetMacro(RadiusMin, double);
+  itkGetMacro(RadiusMin, double);
 
   /** Set Maximum Radius */
-  itkSetMacro( RadiusMax, double );
-  itkGetMacro( RadiusMax, double );
+  itkSetMacro(RadiusMax, double);
+  itkGetMacro(RadiusMax, double);
 
   /** Set Radius0 */
-  itkSetMacro( RadiusStart, double );
-  itkGetMacro( RadiusStart, double );
+  itkSetMacro(RadiusStart, double);
+  itkGetMacro(RadiusStart, double);
 
   /** Set Radius step size when searching */
-  itkSetMacro( RadiusStep, double );
-  itkGetMacro( RadiusStep, double );
+  itkSetMacro(RadiusStep, double);
+  itkGetMacro(RadiusStep, double);
 
   /** Set Radius tolerance when searching */
-  itkSetMacro( RadiusTolerance, double );
-  itkGetMacro( RadiusTolerance, double );
+  itkSetMacro(RadiusTolerance, double);
+  itkGetMacro(RadiusTolerance, double);
 
   /** Set Radius Correction Scale - multiply optimal radius to get the
    * modality-specific radius */
-  itkSetMacro( RadiusCorrectionScale, double );
-  itkGetMacro( RadiusCorrectionScale, double );
+  itkSetMacro(RadiusCorrectionScale, double);
+  itkGetMacro(RadiusCorrectionScale, double);
 
-  itkSetMacro( RadiusCorrectionFunction, RadiusCorrectionFunctionType );
-  itkGetMacro( RadiusCorrectionFunction, RadiusCorrectionFunctionType );
+  itkSetMacro(RadiusCorrectionFunction, RadiusCorrectionFunctionType);
+  itkGetMacro(RadiusCorrectionFunction, RadiusCorrectionFunctionType);
 
   /** Set ThreshMedialness */
-  itkSetMacro( MinMedialness, double );
-  itkGetMacro( MinMedialness, double );
+  itkSetMacro(MinMedialness, double);
+  itkGetMacro(MinMedialness, double);
 
   /** Set ThreshMedialness Start */
-  itkSetMacro( MinMedialnessStart, double );
-  itkGetMacro( MinMedialnessStart, double );
+  itkSetMacro(MinMedialnessStart, double);
+  itkGetMacro(MinMedialnessStart, double);
 
-  void GetPointVectorMeasures( std::vector< TubePointType > & points,
-    double pntR,
-    double & mness,
-    double & bness,
-    bool doBNess );
+  void
+  GetPointVectorMeasures(std::vector<TubePointType> & points,
+                         double                       pntR,
+                         double &                     mness,
+                         double &                     bness,
+                         bool                         doBNess);
 
   /** Calculate the optimal scale */
-  bool GetPointVectorOptimalRadius( std::vector< TubePointType > & points,
-    double & r0,
-    double rMin,
-    double rMax,
-    double rStep,
-    double rTolerance );
+  bool
+  GetPointVectorOptimalRadius(std::vector<TubePointType> & points,
+                              double &                     r0,
+                              double                       rMin,
+                              double                       rMax,
+                              double                       rStep,
+                              double                       rTolerance);
 
-  void SetNumKernelPoints( unsigned int _numPoints );
-  itkGetMacro( NumKernelPoints, unsigned int );
+  void
+  SetNumKernelPoints(unsigned int _numPoints);
+  itkGetMacro(NumKernelPoints, unsigned int);
 
-  itkGetMacro( KernelPointStep, unsigned int );
-  itkSetMacro( KernelPointStep, unsigned int );
+  itkGetMacro(KernelPointStep, unsigned int);
+  itkSetMacro(KernelPointStep, unsigned int);
 
-  itkGetMacro( KernelStep, unsigned int );
-  itkSetMacro( KernelStep, unsigned int );
+  itkGetMacro(KernelStep, unsigned int);
+  itkSetMacro(KernelStep, unsigned int);
 
-  itkGetMacro( KernelExtent, double );
-  itkSetMacro( KernelExtent, double );
+  itkGetMacro(KernelExtent, double);
+  itkSetMacro(KernelExtent, double);
 
-  void GenerateKernel( void );
+  void
+  GenerateKernel(void);
 
-  void SetKernelTubePoints( const std::vector< TubePointType > & tubePoints );
-  std::vector< TubePointType > & GetKernelTubePoints( void )
-   { return m_KernelTube->GetPoints(); };
+  void
+  SetKernelTubePoints(const std::vector<TubePointType> & tubePoints);
+  std::vector<TubePointType> &
+  GetKernelTubePoints(void)
+  {
+    return m_KernelTube->GetPoints();
+  };
 
-  itkGetMacro( KernelValues, std::vector< double > );
-  itkGetMacro( KernelDistances, std::vector< double > );
-  itkGetMacro( KernelTangentDistances, std::vector< double > );
+  itkGetMacro(KernelValues, std::vector<double>);
+  itkGetMacro(KernelDistances, std::vector<double>);
+  itkGetMacro(KernelTangentDistances, std::vector<double>);
 
-  double GetKernelMedialness( double r );
-  double GetKernelBranchness( double r );
+  double
+  GetKernelMedialness(double r);
+  double
+  GetKernelBranchness(double r);
 
-  bool UpdateKernelOptimalRadius( void );
-  itkGetMacro( KernelOptimalRadius, double );
-  itkGetMacro( KernelOptimalRadiusMedialness, double );
-  itkGetMacro( KernelOptimalRadiusBranchness, double );
+  bool
+  UpdateKernelOptimalRadius(void);
+  itkGetMacro(KernelOptimalRadius, double);
+  itkGetMacro(KernelOptimalRadiusMedialness, double);
+  itkGetMacro(KernelOptimalRadiusBranchness, double);
 
   /** Calculate Radii */
-  bool ExtractRadii( TubeType * tube, bool verbose=false );
+  bool
+  ExtractRadii(TubeType * tube, bool verbose = false);
 
-  void SetIdleCallBack( bool ( *idleCallBack )( void ) );
-  void SetStatusCallBack( void ( *statusCallBack )( const char *,
-      const char *, int ) );
+  void
+  SetIdleCallBack(bool (*idleCallBack)(void));
+  void
+  SetStatusCallBack(void (*statusCallBack)(const char *, const char *, int));
 
 protected:
+  RadiusExtractor2(void);
+  virtual ~RadiusExtractor2(void);
 
-  RadiusExtractor2( void );
-  virtual ~RadiusExtractor2( void );
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  GenerateKernelTubePoints(unsigned int tubePointNum, TubeType * tube);
 
-  void GenerateKernelTubePoints( unsigned int tubePointNum,
-    TubeType * tube );
-
-  void RecordOptimaAtTubePoints( unsigned int tubePointNum,
-    TubeType * tube );
+  void
+  RecordOptimaAtTubePoints(unsigned int tubePointNum, TubeType * tube);
 
 private:
+  RadiusExtractor2(const Self &);
+  void
+  operator=(const Self &);
 
-  RadiusExtractor2( const Self& );
-  void operator=( const Self& );
+  typename InputImageType::Pointer m_InputImage;
+  double                           m_Spacing;
+  double                           m_DataMin;
+  double                           m_DataMax;
 
-  typename InputImageType::Pointer        m_InputImage;
-  double                                  m_Spacing;
-  double                                  m_DataMin;
-  double                                  m_DataMax;
+  double m_RadiusStart;
+  double m_RadiusMin;
+  double m_RadiusMax;
+  double m_RadiusStep;
+  double m_RadiusTolerance;
 
-  double                                  m_RadiusStart;
-  double                                  m_RadiusMin;
-  double                                  m_RadiusMax;
-  double                                  m_RadiusStep;
-  double                                  m_RadiusTolerance;
+  double                       m_RadiusCorrectionScale;
+  RadiusCorrectionFunctionType m_RadiusCorrectionFunction;
 
-  double                                  m_RadiusCorrectionScale;
-  RadiusCorrectionFunctionType            m_RadiusCorrectionFunction;
+  double m_MinMedialness;
+  double m_MinMedialnessStart;
 
-  double                                  m_MinMedialness;
-  double                                  m_MinMedialnessStart;
+  unsigned int               m_NumKernelPoints;
+  typename TubeType::Pointer m_KernelTube;
 
-  unsigned int                            m_NumKernelPoints;
-  typename TubeType::Pointer              m_KernelTube;
+  unsigned int m_KernelPointStep;
+  unsigned int m_KernelStep;
+  double       m_KernelExtent;
 
-  unsigned int                            m_KernelPointStep;
-  unsigned int                            m_KernelStep;
-  double                                  m_KernelExtent;
+  std::vector<double> m_KernelValues;
+  std::vector<double> m_KernelDistances;
+  std::vector<double> m_KernelTangentDistances;
 
-  std::vector< double >                   m_KernelValues;
-  std::vector< double >                   m_KernelDistances;
-  std::vector< double >                   m_KernelTangentDistances;
+  double m_KernelOptimalRadius;
+  double m_KernelOptimalRadiusMedialness;
+  double m_KernelOptimalRadiusBranchness;
 
-  double                                  m_KernelOptimalRadius;
-  double                                  m_KernelOptimalRadiusMedialness;
-  double                                  m_KernelOptimalRadiusBranchness;
-
-  void ( * m_StatusCallBack )( const char *, const char *, int );
-  bool ( * m_IdleCallBack )( void );
+  void (*m_StatusCallBack)(const char *, const char *, int);
+  bool (*m_IdleCallBack)(void);
 
 }; // End class RadiusExtractor2
 
@@ -259,7 +275,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeRadiusExtractor2.hxx"
+#  include "itktubeRadiusExtractor2.hxx"
 #endif
 
 #endif // End !defined( __itktubeRadiusExtractor2_h )

@@ -27,48 +27,42 @@ limitations under the License.
 namespace tube
 {
 
-template< class TPixel, unsigned int Dimension >
-ConvertTubesToTubeGraph< TPixel, Dimension >
-::ConvertTubesToTubeGraph( void )
+template <class TPixel, unsigned int Dimension>
+ConvertTubesToTubeGraph<TPixel, Dimension>::ConvertTubesToTubeGraph(void)
 {
   m_Filter = FilterType::New();
 }
 
-template< class TPixel, unsigned int Dimension >
-vnl_matrix< double >
-ConvertTubesToTubeGraph< TPixel, Dimension >
-::GetAdjacencyMatrix( void )
+template <class TPixel, unsigned int Dimension>
+vnl_matrix<double>
+ConvertTubesToTubeGraph<TPixel, Dimension>::GetAdjacencyMatrix(void)
 {
   return m_Filter->GetAdjacencyMatrix();
 }
 
-template< class TPixel, unsigned int Dimension >
-vnl_vector< int >
-ConvertTubesToTubeGraph< TPixel, Dimension >
-::GetRootNodes( void )
+template <class TPixel, unsigned int Dimension>
+vnl_vector<int>
+ConvertTubesToTubeGraph<TPixel, Dimension>::GetRootNodes(void)
 {
   return m_Filter->GetRootNodes();
 }
 
-template< class TPixel, unsigned int Dimension >
-vnl_vector< double >
-ConvertTubesToTubeGraph< TPixel, Dimension >
-::GetBranchNodes( void )
+template <class TPixel, unsigned int Dimension>
+vnl_vector<double>
+ConvertTubesToTubeGraph<TPixel, Dimension>::GetBranchNodes(void)
 {
   return m_Filter->GetBranchNodes();
 }
 
-template< class TPixel, unsigned int Dimension >
+template <class TPixel, unsigned int Dimension>
 void
-ConvertTubesToTubeGraph< TPixel, Dimension >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+ConvertTubesToTubeGraph<TPixel, Dimension>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 
-  os << indent << "Number of Centroids: "  <<
-    m_Filter->GetNumberOfCenteroids() << std::endl;
+  os << indent << "Number of Centroids: " << m_Filter->GetNumberOfCenteroids() << std::endl;
 }
 
-}
+} // namespace tube
 
 #endif

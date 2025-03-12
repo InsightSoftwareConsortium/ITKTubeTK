@@ -23,20 +23,22 @@ limitations under the License.
 
 #include "itktubeNJetFeatureVectorGenerator.h"
 
-int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
+int
+itktubeNJetFeatureVectorGeneratorTest(int argc, char * argv[])
 {
-  if( argc != 5 )
-    {
+  if (argc != 5)
+  {
     std::cout << "Missing arguments." << std::endl;
     std::cout << "Usage: " << std::endl;
-    std::cout << argv[0]
-      << " inputImage outputF0Image outputF1Image"
-      << std::endl;
+    std::cout << argv[0] << " inputImage outputF0Image outputF1Image" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // Define the dimension of the images
-  enum { Dimension = 2 };
+  enum
+  {
+    Dimension = 2
+  };
 
   // Define the pixel type
   using PixelType = float;
@@ -45,81 +47,81 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
   using ImageType = itk::Image<PixelType, Dimension>;
 
   // Declare the reader and writer
-  using ReaderType = itk::ImageFileReader< ImageType >;
-  using WriterType = itk::ImageFileWriter< ImageType >;
+  using ReaderType = itk::ImageFileReader<ImageType>;
+  using WriterType = itk::ImageFileWriter<ImageType>;
 
 
   // Declare the type for the Filter
-  using FilterType = itk::tube::NJetFeatureVectorGenerator< ImageType >;
+  using FilterType = itk::tube::NJetFeatureVectorGenerator<ImageType>;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( argv[1] );
+  reader->SetFileName(argv[1]);
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
+  }
+  catch (itk::ExceptionObject & e)
+  {
     std::cout << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
-    }
+  }
   ImageType::Pointer inputImage = reader->GetOutput();
 
   // Create the reader and writer
   ReaderType::Pointer maskReader = ReaderType::New();
-  maskReader->SetFileName( argv[2] );
+  maskReader->SetFileName(argv[2]);
   try
-    {
+  {
     maskReader->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
+  }
+  catch (itk::ExceptionObject & e)
+  {
     std::cout << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
-    }
+  }
   ImageType::Pointer maskImage = maskReader->GetOutput();
 
-  FilterType::NJetScalesType scales( 2 );
+  FilterType::NJetScalesType scales(2);
   scales[0] = 2;
   scales[1] = 4;
-  FilterType::NJetScalesType scales2( 1 );
+  FilterType::NJetScalesType scales2(1);
   scales2[0] = 2;
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInput( inputImage );
-  filter->SetZeroScales( scales );
-  filter->SetFirstScales( scales );
-  filter->SetSecondScales( scales2 );
-  filter->SetRidgeScales( scales2 );
+  filter->SetInput(inputImage);
+  filter->SetZeroScales(scales);
+  filter->SetFirstScales(scales);
+  filter->SetSecondScales(scales2);
+  filter->SetRidgeScales(scales2);
   std::cout << filter << std::endl;
 
   WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[3] );
-  writer->SetUseCompression( true );
-  writer->SetInput( filter->GetFeatureImage( 0 ) );
+  writer->SetFileName(argv[3]);
+  writer->SetUseCompression(true);
+  writer->SetInput(filter->GetFeatureImage(0));
   try
-    {
+  {
     writer->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
+  }
+  catch (itk::ExceptionObject & e)
+  {
     std::cout << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
-    }
+  }
 
   WriterType::Pointer writer2 = WriterType::New();
-  writer2->SetFileName( argv[4] );
-  writer2->SetUseCompression( true );
-  writer2->SetInput( filter->GetFeatureImage( 1 ) );
+  writer2->SetFileName(argv[4]);
+  writer2->SetUseCompression(true);
+  writer2->SetInput(filter->GetFeatureImage(1));
   try
-    {
+  {
     writer2->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
+  }
+  catch (itk::ExceptionObject & e)
+  {
     std::cout << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
-    }
+  }
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;

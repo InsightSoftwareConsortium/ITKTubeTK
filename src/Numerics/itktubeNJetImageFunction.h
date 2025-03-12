@@ -43,7 +43,7 @@ namespace tube
  *        given a scale and extent of the Gaussian.
  * This class is templated over the input image type.
  */
-template< class TInputImage >
+template <class TInputImage>
 class NJetImageFunction : public Object
 {
 public:
@@ -60,261 +60,260 @@ public:
   /**
    * Smart pointer type alias support
    */
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /**
    * Method for creation through the object factory.
    */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkTypeMacro( NJetImageFunction, Object );
-  //itkTypeMacro( NJetImageFunction, ImageFunction );
+  itkTypeMacro(NJetImageFunction, Object);
+  // itkTypeMacro( NJetImageFunction, ImageFunction );
 
   /**
    * Dimension of the underlying image.
    */
-  itkStaticConstMacro( ImageDimension,
-                      unsigned int,
-                      TInputImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
 
   using InputImageType = TInputImage;
   using InputImagePointer = typename InputImageType::Pointer;
 
-  using PointType = Point<double, ImageDimension >;
-  using VectorType = Vector< double, ImageDimension >;
-  using MatrixType = Matrix< double, ImageDimension, ImageDimension >;
+  using PointType = Point<double, ImageDimension>;
+  using VectorType = Vector<double, ImageDimension>;
+  using MatrixType = Matrix<double, ImageDimension, ImageDimension>;
 
   using IndexType = typename InputImageType::IndexType;
 
-  using ContinuousIndexType = ContinuousIndex<double, ImageDimension >;
+  using ContinuousIndexType = ContinuousIndex<double, ImageDimension>;
 
   using SpacingType = typename InputImageType::SpacingType;
 
-  using SizeType = Size< ImageDimension >;
+  using SizeType = Size<ImageDimension>;
 
-  using ArrayVectorType = Array< VectorType >;
+  using ArrayVectorType = Array<VectorType>;
 
   /**
    * Set the input image.
    */
-  void SetInputImage( const InputImageType * ptr );
-  itkGetConstObjectMacro( InputImage, InputImageType );
+  void
+  SetInputImage(const InputImageType * ptr);
+  itkGetConstObjectMacro(InputImage, InputImageType);
 
-  void SetInputImageMask( const InputImageType * ptr );
-  itkGetConstObjectMacro( InputImageMask, InputImageType );
-  itkSetMacro( UseInputImageMask, bool );
-  itkGetMacro( UseInputImageMask, bool );
+  void
+  SetInputImageMask(const InputImageType * ptr);
+  itkGetConstObjectMacro(InputImageMask, InputImageType);
+  itkSetMacro(UseInputImageMask, bool);
+  itkGetMacro(UseInputImageMask, bool);
 
-  void ComputeStatistics( void );
+  void
+  ComputeStatistics(void);
 
   /** Return the min over the ( possibly masked ) image.
    * Requires previous call to ComputeStatistics */
-  double GetMin( void ) const;
+  double
+  GetMin(void) const;
 
   /** Return the max over the ( possibly masked ) image.
    * Requires previous call to ComputeStatistics */
-  double GetMax( void ) const;
+  double
+  GetMax(void) const;
 
-  itkGetConstMacro( MostRecentIntensity, double );
-  itkGetConstMacro( MostRecentDerivative, VectorType );
-  itkGetConstMacro( MostRecentHessian, MatrixType );
-  itkGetConstMacro( MostRecentRidgeness, double );
-  itkGetConstMacro( MostRecentRidgeRoundness, double );
-  itkGetConstMacro( MostRecentRidgeLevelness, double );
-  itkGetConstMacro( MostRecentRidgeCurvature, double );
-  itkGetConstMacro( MostRecentRidgeTangent, VectorType );
+  itkGetConstMacro(MostRecentIntensity, double);
+  itkGetConstMacro(MostRecentDerivative, VectorType);
+  itkGetConstMacro(MostRecentHessian, MatrixType);
+  itkGetConstMacro(MostRecentRidgeness, double);
+  itkGetConstMacro(MostRecentRidgeRoundness, double);
+  itkGetConstMacro(MostRecentRidgeLevelness, double);
+  itkGetConstMacro(MostRecentRidgeCurvature, double);
+  itkGetConstMacro(MostRecentRidgeTangent, VectorType);
 
   /** Evalulate the function at specified point */
-  double Evaluate( const PointType & point, double scale=1 ) const;
-  double Evaluate( const PointType & point, const VectorType & v1,
-                      double scale=1 ) const;
-  double Evaluate( const PointType & point, const VectorType & v1,
-                      const VectorType & v2,
-                      double scale=1 ) const;
+  double
+  Evaluate(const PointType & point, double scale = 1) const;
+  double
+  Evaluate(const PointType & point, const VectorType & v1, double scale = 1) const;
+  double
+  Evaluate(const PointType & point, const VectorType & v1, const VectorType & v2, double scale = 1) const;
 
 
   /** Evaluate the function at specified Index position */
-  double EvaluateAtIndex( const IndexType & index, double scale=1 ) const;
-  double EvaluateAtIndex( const IndexType & index, const VectorType & v1,
-                      double scale=1 ) const;
-  double EvaluateAtIndex( const IndexType & index, const VectorType & v1,
-                      const VectorType & v2,
-                      double scale=1 ) const;
+  double
+  EvaluateAtIndex(const IndexType & index, double scale = 1) const;
+  double
+  EvaluateAtIndex(const IndexType & index, const VectorType & v1, double scale = 1) const;
+  double
+  EvaluateAtIndex(const IndexType & index, const VectorType & v1, const VectorType & v2, double scale = 1) const;
 
   /** Evaluate the function at specified ContinousIndex position */
-  double EvaluateAtContinuousIndex( const ContinuousIndexType & index,
-                      double scale=1 ) const;
-  double EvaluateAtContinuousIndex( const ContinuousIndexType & index,
-                      const VectorType & v1,
-                      double scale=1 ) const;
-  double EvaluateAtContinuousIndex( const ContinuousIndexType & index,
-                      const VectorType & v1,
-                      const VectorType & v2,
-                      double scale=1 ) const;
+  double
+  EvaluateAtContinuousIndex(const ContinuousIndexType & index, double scale = 1) const;
+  double
+  EvaluateAtContinuousIndex(const ContinuousIndexType & index, const VectorType & v1, double scale = 1) const;
+  double
+  EvaluateAtContinuousIndex(const ContinuousIndexType & index,
+                            const VectorType &          v1,
+                            const VectorType &          v2,
+                            double                      scale = 1) const;
 
 
-  double  Derivative( const PointType & point, double scale,
-                       VectorType & d ) const;
-  double  Derivative( const PointType & point,
-                       const VectorType & v1,
-                       double scale,
-                       VectorType & d ) const;
-  double  Derivative( const PointType & point,
-                       const VectorType & v1, const VectorType & v2,
-                       double scale,
-                       VectorType & d ) const;
+  double
+  Derivative(const PointType & point, double scale, VectorType & d) const;
+  double
+  Derivative(const PointType & point, const VectorType & v1, double scale, VectorType & d) const;
+  double
+  Derivative(const PointType & point, const VectorType & v1, const VectorType & v2, double scale, VectorType & d) const;
 
-  double  DerivativeAtIndex( const IndexType & index, double scale,
-                       VectorType & d ) const;
-  double  DerivativeAtIndex( const IndexType & index,
-                       const VectorType & v1,
-                       double scale,
-                       VectorType & d ) const;
-  double  DerivativeAtIndex( const IndexType & index,
-                       const VectorType & v1, const VectorType & v2,
-                       double scale,
-                       VectorType & d ) const;
+  double
+  DerivativeAtIndex(const IndexType & index, double scale, VectorType & d) const;
+  double
+  DerivativeAtIndex(const IndexType & index, const VectorType & v1, double scale, VectorType & d) const;
+  double
+  DerivativeAtIndex(const IndexType & index, const VectorType & v1, const VectorType & v2, double scale, VectorType & d)
+    const;
 
-  double  DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
-                       double scale,
-                       VectorType & d ) const;
-  double  DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
-                       const VectorType & v1,
-                       double scale,
-                       VectorType & d ) const;
-  double  DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
-                       const VectorType & v1, const VectorType & v2,
-                       double scale,
-                       VectorType & d ) const;
+  double
+  DerivativeAtContinuousIndex(const ContinuousIndexType & cIndex, double scale, VectorType & d) const;
+  double
+  DerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
+                              const VectorType &          v1,
+                              double                      scale,
+                              VectorType &                d) const;
+  double
+  DerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
+                              const VectorType &          v1,
+                              const VectorType &          v2,
+                              double                      scale,
+                              VectorType &                d) const;
 
-  double  Hessian( const PointType & point, double scale,
-                       MatrixType & m ) const;
-  double  Hessian( const PointType & point,
-                       const VectorType & v1, double scale,
-                       MatrixType & m ) const;
-  double  Hessian( const PointType & point,
-                       const VectorType & v1, const VectorType & v2,
-                       double scale,
-                       MatrixType & m ) const;
+  double
+  Hessian(const PointType & point, double scale, MatrixType & m) const;
+  double
+  Hessian(const PointType & point, const VectorType & v1, double scale, MatrixType & m) const;
+  double
+  Hessian(const PointType & point, const VectorType & v1, const VectorType & v2, double scale, MatrixType & m) const;
 
-  double  HessianAtIndex( const IndexType & index, double scale,
-                       MatrixType & m ) const;
-  double  HessianAtIndex( const IndexType & index,
-                       const VectorType & v1, double scale,
-                       MatrixType & m ) const;
-  double  HessianAtIndex( const IndexType & index,
-                       const VectorType & v1, const VectorType & v2,
-                       double scale,
-                       MatrixType & m ) const;
+  double
+  HessianAtIndex(const IndexType & index, double scale, MatrixType & m) const;
+  double
+  HessianAtIndex(const IndexType & index, const VectorType & v1, double scale, MatrixType & m) const;
+  double
+  HessianAtIndex(const IndexType & index, const VectorType & v1, const VectorType & v2, double scale, MatrixType & m)
+    const;
 
-  double  HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
-                       double scale,
-                       MatrixType & m ) const;
-  double  HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
-                       const VectorType & v1, double scale,
-                       MatrixType & m ) const;
-  double  HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
-                       const VectorType & v1, const VectorType & v2,
-                       double scale,
-                       MatrixType & m ) const;
+  double
+  HessianAtContinuousIndex(const ContinuousIndexType & cIndex, double scale, MatrixType & m) const;
+  double
+  HessianAtContinuousIndex(const ContinuousIndexType & cIndex,
+                           const VectorType &          v1,
+                           double                      scale,
+                           MatrixType &                m) const;
+  double
+  HessianAtContinuousIndex(const ContinuousIndexType & cIndex,
+                           const VectorType &          v1,
+                           const VectorType &          v2,
+                           double                      scale,
+                           MatrixType &                m) const;
 
-  double  Jet( const PointType & point, VectorType & d, MatrixType & h,
-                       double scale=1 ) const;
+  double
+  Jet(const PointType & point, VectorType & d, MatrixType & h, double scale = 1) const;
 
-  double  JetAtIndex( const IndexType & cIndex, VectorType & d,
-                       MatrixType & h,
-                       double scale=1 ) const;
+  double
+  JetAtIndex(const IndexType & cIndex, VectorType & d, MatrixType & h, double scale = 1) const;
 
-  double  JetAtContinuousIndex( const ContinuousIndexType & cIndex,
-                       VectorType & d, MatrixType & h,
-                       double scale=1 ) const;
+  double
+  JetAtContinuousIndex(const ContinuousIndexType & cIndex, VectorType & d, MatrixType & h, double scale = 1) const;
 
-  double  Ridgeness( const PointType & point, double scale=1 ) const;
-  double  Ridgeness( const PointType & point,
-                       const VectorType & v1, double scale=1 ) const;
-  double  Ridgeness( const PointType & point,
-                       const VectorType & v1, const VectorType & v2,
-                       double scale=1 ) const;
+  double
+  Ridgeness(const PointType & point, double scale = 1) const;
+  double
+  Ridgeness(const PointType & point, const VectorType & v1, double scale = 1) const;
+  double
+  Ridgeness(const PointType & point, const VectorType & v1, const VectorType & v2, double scale = 1) const;
 
-  double  RidgenessAtIndex( const IndexType & index, double scale=1 ) const;
-  double  RidgenessAtIndex( const IndexType & index,
-                       const VectorType & v1, double scale=1 ) const;
-  double  RidgenessAtIndex( const IndexType & index,
-                       const VectorType & v1, const VectorType & v2,
-                       double scale=1 ) const;
+  double
+  RidgenessAtIndex(const IndexType & index, double scale = 1) const;
+  double
+  RidgenessAtIndex(const IndexType & index, const VectorType & v1, double scale = 1) const;
+  double
+  RidgenessAtIndex(const IndexType & index, const VectorType & v1, const VectorType & v2, double scale = 1) const;
 
-  double  RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
-                       double scale=1 ) const;
-  double  RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
-                       const VectorType & v1, double scale=1 ) const;
-  double  RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
-                       const VectorType & v1, const VectorType & v2,
-                       double scale=1 ) const;
+  double
+  RidgenessAtContinuousIndex(const ContinuousIndexType & cIndex, double scale = 1) const;
+  double
+  RidgenessAtContinuousIndex(const ContinuousIndexType & cIndex, const VectorType & v1, double scale = 1) const;
+  double
+  RidgenessAtContinuousIndex(const ContinuousIndexType & cIndex,
+                             const VectorType &          v1,
+                             const VectorType &          v2,
+                             double                      scale = 1) const;
 
-  InputImagePointer ScaleSubsample( double factor );
+  InputImagePointer
+  ScaleSubsample(double factor);
 
   /**
    * Set the Extent
    */
-  itkSetMacro( Extent, double );
+  itkSetMacro(Extent, double);
 
   /**
    * Get the Extent
    */
-  itkGetMacro( Extent, double );
+  itkGetMacro(Extent, double);
 
   /**
    * Get the Spacing
    */
-  itkGetConstMacro( InputImageSpacing, SpacingType );
+  itkGetConstMacro(InputImageSpacing, SpacingType);
 
   /**
    * If set to true, then values and derivatives are computed and then
    *   projected onto the subset of directions given.   Otherwise, the
    *   computations are done explicitly within the vector/plane given.
    */
-  itkSetMacro( UseProjection, bool );
-  itkGetMacro( UseProjection, bool );
+  itkSetMacro(UseProjection, bool);
+  itkGetMacro(UseProjection, bool);
 
 protected:
-  NJetImageFunction( void );
+  NJetImageFunction(void);
 
-  ~NJetImageFunction( void );
+  ~NJetImageFunction(void);
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  typename InputImageType::ConstPointer  m_InputImage;
-  typename InputImageType::ConstPointer  m_InputImageMask;
-  bool                                   m_UseInputImageMask;
+  typename InputImageType::ConstPointer m_InputImage;
+  typename InputImageType::ConstPointer m_InputImageMask;
+  bool                                  m_UseInputImageMask;
 
-  IndexType               m_InputImageMinX;
-  IndexType               m_InputImageMaxX;
-  SizeType                m_InputImageSize;
-  SpacingType             m_InputImageSpacing;
-  SpacingType             m_InputImageSpacingSquared;
-  double                  m_Extent;
+  IndexType   m_InputImageMinX;
+  IndexType   m_InputImageMaxX;
+  SizeType    m_InputImageSize;
+  SpacingType m_InputImageSpacing;
+  SpacingType m_InputImageSpacingSquared;
+  double      m_Extent;
 
-  mutable double          m_MostRecentIntensity;
-  mutable VectorType      m_MostRecentDerivative;
-  mutable MatrixType      m_MostRecentHessian;
-  mutable double          m_MostRecentRidgeness;
-  mutable double          m_MostRecentRidgeRoundness;
-  mutable double          m_MostRecentRidgeLevelness;
-  mutable double          m_MostRecentRidgeCurvature;
-  mutable VectorType      m_MostRecentRidgeTangent;
+  mutable double     m_MostRecentIntensity;
+  mutable VectorType m_MostRecentDerivative;
+  mutable MatrixType m_MostRecentHessian;
+  mutable double     m_MostRecentRidgeness;
+  mutable double     m_MostRecentRidgeRoundness;
+  mutable double     m_MostRecentRidgeLevelness;
+  mutable double     m_MostRecentRidgeCurvature;
+  mutable VectorType m_MostRecentRidgeTangent;
 
-  double                  m_CurvatureExpectedMax;
+  double m_CurvatureExpectedMax;
 
-  bool                    m_ValidStats;
-  double                  m_StatsMin;
-  double                  m_StatsMax;
+  bool   m_ValidStats;
+  double m_StatsMin;
+  double m_StatsMax;
 
-  bool                    m_UseProjection;
+  bool m_UseProjection;
 
 private:
-  NJetImageFunction( const Self& );
-  void operator=( const Self& );
+  NJetImageFunction(const Self &);
+  void
+  operator=(const Self &);
 
 }; // End class NJetImageFunction
 
@@ -323,7 +322,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeNJetImageFunction.hxx"
+#  include "itktubeNJetImageFunction.hxx"
 #endif
 
 #endif // End !defined( __itktubeNJetImageFunction_h )

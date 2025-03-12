@@ -31,95 +31,84 @@ namespace itk
 namespace tube
 {
 
-template< class TObjectDocument, class TImageType >
-ObjectDocumentToImageFilter< TObjectDocument, TImageType >
-::ObjectDocumentToImageFilter( void )
+template <class TObjectDocument, class TImageType>
+ObjectDocumentToImageFilter<TObjectDocument, TImageType>::ObjectDocumentToImageFilter(void)
 {
-  this->ProcessObject::SetNthOutput( 0, ImageType::New() );
+  this->ProcessObject::SetNthOutput(0, ImageType::New());
 }
 
-template< class TObjectDocument, class TImageType >
-ObjectDocumentToImageFilter< TObjectDocument, TImageType >
-::~ObjectDocumentToImageFilter( void )
+template <class TObjectDocument, class TImageType>
+ObjectDocumentToImageFilter<TObjectDocument, TImageType>::~ObjectDocumentToImageFilter(void)
+{}
+
+template <class TObjectDocument, class TImageType>
+typename ObjectDocumentToImageFilter<TObjectDocument, TImageType>::ImageType *
+ObjectDocumentToImageFilter<TObjectDocument, TImageType>::GetOutput(void)
 {
+  return static_cast<ImageType *>(this->ProcessObject::GetOutput(0));
 }
 
-template< class TObjectDocument, class TImageType >
-typename ObjectDocumentToImageFilter< TObjectDocument, TImageType >::ImageType *
-ObjectDocumentToImageFilter< TObjectDocument, TImageType >
-::GetOutput( void )
-{
-  return static_cast< ImageType * >( this->ProcessObject::GetOutput( 0 ) );
-}
-
-template< class TObjectDocument, class TImageType >
+template <class TObjectDocument, class TImageType>
 void
-ObjectDocumentToImageFilter< TObjectDocument, TImageType >
-::GenerateData( void )
+ObjectDocumentToImageFilter<TObjectDocument, TImageType>::GenerateData(void)
 {
   ConstDocumentPointer document = this->GetInput();
-  ImagePointer output = this->ReadDocument( document );
+  ImagePointer         output = this->ReadDocument(document);
 
-  if( this->GetApplyTransforms() )
-    {
-    TransformPointer transform = this->ComposeTransforms( document,
-      this->GetStartTransforms(),
-      this->GetEndTransforms() );
-    output = this->ResampleImage( output, transform );
-    }
+  if (this->GetApplyTransforms())
+  {
+    TransformPointer transform =
+      this->ComposeTransforms(document, this->GetStartTransforms(), this->GetEndTransforms());
+    output = this->ResampleImage(output, transform);
+  }
 
-  this->ProcessObject::SetNthOutput( 0, output );
+  this->ProcessObject::SetNthOutput(0, output);
 }
 
-template< class TObjectDocument, class TImageType >
-typename ObjectDocumentToImageFilter< TObjectDocument, TImageType >
-::ImagePointer
-ObjectDocumentToImageFilter< TObjectDocument, TImageType >
-::ReadDocument( ConstDocumentPointer document )
+template <class TObjectDocument, class TImageType>
+typename ObjectDocumentToImageFilter<TObjectDocument, TImageType>::ImagePointer
+ObjectDocumentToImageFilter<TObjectDocument, TImageType>::ReadDocument(ConstDocumentPointer document)
 {
   typename ImageFileReaderType::Pointer reader = ImageFileReaderType::New();
 
-  reader->SetFileName( document->GetObjectName().c_str() );
+  reader->SetFileName(document->GetObjectName().c_str());
   reader->Update();
 
   return reader->GetOutput();
 }
 
-template< class TObjectDocument, class TImageType >
-typename ObjectDocumentToImageFilter< TObjectDocument, TImageType >
-::ImagePointer
-ObjectDocumentToImageFilter< TObjectDocument, TImageType >
-::ResampleImage( ImagePointer image, TransformPointer transform )
+template <class TObjectDocument, class TImageType>
+typename ObjectDocumentToImageFilter<TObjectDocument, TImageType>::ImagePointer
+ObjectDocumentToImageFilter<TObjectDocument, TImageType>::ResampleImage(ImagePointer image, TransformPointer transform)
 {
   // Resample image defaulted to linear interpolation.
-  typename ResampleImageFilterType::Pointer filter =
-    ResampleImageFilterType::New();
+  typename ResampleImageFilterType::Pointer filter = ResampleImageFilterType::New();
 
-  filter->SetInput( image );
-  filter->SetOutputSpacing( image->GetSpacing() );
+  filter->SetInput(image);
+  filter->SetOutputSpacing(image->GetSpacing());
 
   PointType outputOrigin;
 
   /* Adjust the output size and origin so that none of the image is lost
    * when transformed. */
   SizeType size;
-  this->GetTransformedBoundingBox( image, transform, size, outputOrigin );
+  this->GetTransformedBoundingBox(image, transform, size, outputOrigin);
 
-  filter->SetSize( size );
-  filter->SetOutputOrigin( outputOrigin );
+  filter->SetSize(size);
+  filter->SetOutputOrigin(outputOrigin);
 
   /* Filter expects transform from fixed image to moving image, so we must
    * use the inverse. */
   typename TransformType::Pointer inverse = TransformType::New();
 
-  transform->GetInverse( inverse );
-  filter->SetTransform( inverse );
+  transform->GetInverse(inverse);
+  filter->SetTransform(inverse);
 
   // Use B-spline interpolation for resampling.
-  if( m_Interpolator )
-    {
-    filter->SetInterpolator( m_Interpolator );
-    }
+  if (m_Interpolator)
+  {
+    filter->SetInterpolator(m_Interpolator);
+  }
 
   filter->Update();
 
@@ -128,79 +117,77 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
 
 /* Note: Set only for 3D images. Builds a bounding box around the resampled
    image. Means that none of the image is cut off in resampling. */
-template< class TObjectDocument, class TImageType >
+template <class TObjectDocument, class TImageType>
 void
-ObjectDocumentToImageFilter< TObjectDocument, TImageType >
-::GetTransformedBoundingBox( ImagePointer image,
-  TransformPointer transform,
-  SizeType & outputSize,
-  PointType & origin ) const
+ObjectDocumentToImageFilter<TObjectDocument, TImageType>::GetTransformedBoundingBox(ImagePointer     image,
+                                                                                    TransformPointer transform,
+                                                                                    SizeType &       outputSize,
+                                                                                    PointType &      origin) const
 {
-  SizeType size = image->GetLargestPossibleRegion().GetSize();
+  SizeType  size = image->GetLargestPossibleRegion().GetSize();
   PointType point;
   PointType maximum;
 
   typename ImageType::IndexType index;
   index.Fill(0);
-  image->TransformIndexToPhysicalPoint( index, point );
-  point = transform->TransformPoint( point );
+  image->TransformIndexToPhysicalPoint(index, point);
+  point = transform->TransformPoint(point);
 
   origin = point;
   maximum = point;
 
   // Transform all of the image corners and determine the minimum bounding
   // box.
-  for( unsigned int x = 0; x <= size[0]; x += size[0] )
+  for (unsigned int x = 0; x <= size[0]; x += size[0])
+  {
+    for (unsigned int y = 0; y <= size[1]; y += size[1])
     {
-    for( unsigned int y = 0; y <= size[1]; y += size[1] )
+      for (unsigned int z = 0; z <= size[2]; z += size[2])
       {
-      for( unsigned int z = 0; z <= size[2]; z += size[2] )
-        {
 
         index[0] = x;
         index[1] = y;
         index[2] = z;
 
-        image->TransformIndexToPhysicalPoint( index, point );
-        point = transform->TransformPoint( point );
+        image->TransformIndexToPhysicalPoint(index, point);
+        point = transform->TransformPoint(point);
 
-        for( unsigned int i = 0; i < Dimension; ++i )
+        for (unsigned int i = 0; i < Dimension; ++i)
+        {
+          if (point[i] < origin[i])
           {
-          if( point[i] < origin[i] )
-            {
             origin[i] = point[i];
-            }
+          }
 
-          if( point[i] > maximum[i] )
-            {
+          if (point[i] > maximum[i])
+          {
             maximum[i] = point[i];
-            }
           }
         }
       }
     }
+  }
 
   // Origin represents the minimum point on the image.
   typename ImageType::SpacingType spacing = image->GetSpacing();
 
-  for( unsigned int i = 0; i < Dimension; ++i )
-    {
-    outputSize[i] = ( long int )( ( maximum[i] - origin[i] ) / spacing[i] );
-    }
+  for (unsigned int i = 0; i < Dimension; ++i)
+  {
+    outputSize[i] = (long int)((maximum[i] - origin[i]) / spacing[i]);
+  }
 }
 
 
-template< class TObjectDocument, class TImageType >
+template <class TObjectDocument, class TImageType>
 void
-ObjectDocumentToImageFilter< TObjectDocument, TImageType >
-::PrintSelf( std::ostream & os, Indent indent ) const
+ObjectDocumentToImageFilter<TObjectDocument, TImageType>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  this->Superclass::PrintSelf( os, indent );
+  this->Superclass::PrintSelf(os, indent);
 
-  if( m_Interpolator )
-    {
+  if (m_Interpolator)
+  {
     os << indent << "Interpolator: " << m_Interpolator << std::endl;
-    }
+  }
 }
 
 } // End namespace tube

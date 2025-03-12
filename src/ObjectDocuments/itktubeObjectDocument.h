@@ -40,88 +40,85 @@ namespace tube
 class ObjectDocument : public Document
 {
 public:
-
   using Self = ObjectDocument;
   using Superclass = Document;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  using TransformNameListType = std::vector< std::string >;
+  using TransformNameListType = std::vector<std::string>;
 
-  itkNewMacro( Self );
-  itkTypeMacro( ObjectDocument, Document );
+  itkNewMacro(Self);
+  itkTypeMacro(ObjectDocument, Document);
 
   /** Return the object type. */
-  itkGetStringMacro( ObjectType );
+  itkGetStringMacro(ObjectType);
 
   /** Return the number of transform names. */
-  virtual unsigned int GetNumberOfTransformNames( void ) const
-    {
-    return static_cast< unsigned int >( m_TransformNameList.size() );
-    }
+  virtual unsigned int
+  GetNumberOfTransformNames(void) const
+  {
+    return static_cast<unsigned int>(m_TransformNameList.size());
+  }
 
   /** Return the list of transform names. */
-  virtual TransformNameListType GetTransformNames( void ) const
-    {
+  virtual TransformNameListType
+  GetTransformNames(void) const
+  {
     return m_TransformNameList;
-    }
+  }
 
   /** Add the specified transform name to the back of the list. */
-  virtual void AddTransformNameToBack( const std::string & transformName )
-    {
-    m_TransformNameList.push_back( transformName );
-    }
+  virtual void
+  AddTransformNameToBack(const std::string & transformName)
+  {
+    m_TransformNameList.push_back(transformName);
+  }
 
   /** Remove the transform name from the back of the list. */
-  virtual void RemoveTransformNameFromBack( void )
+  virtual void
+  RemoveTransformNameFromBack(void)
+  {
+    if (!m_TransformNameList.empty())
     {
-    if( !m_TransformNameList.empty() )
-      {
       m_TransformNameList.pop_back();
-      }
     }
+  }
 
 protected:
-
   /** Constructor. */
-  ObjectDocument( void )
-    {
-    this->SetObjectType( "Object" );
-    }
+  ObjectDocument(void) { this->SetObjectType("Object"); }
 
   /** Destructor. */
-  virtual ~ObjectDocument( void )
-    {
-    }
+  virtual ~ObjectDocument(void) {}
 
   /** Set the object type. */
-  itkSetMacro( ObjectType, std::string );
+  itkSetMacro(ObjectType, std::string);
 
   /** Print information about the object. */
-  virtual void PrintSelf( std::ostream& os, Indent indent ) const override
-    {
-    Superclass::PrintSelf( os, indent );
+  virtual void
+  PrintSelf(std::ostream & os, Indent indent) const override
+  {
+    Superclass::PrintSelf(os, indent);
 
     os << indent << "ObjectType:        " << m_ObjectType << std::endl;
     os << indent << "TransformNameList:" << std::endl;
 
-    for( TransformNameListType::const_iterator it = m_TransformNameList.begin();
-         it != m_TransformNameList.end(); ++it )
-      {
+    for (TransformNameListType::const_iterator it = m_TransformNameList.begin(); it != m_TransformNameList.end(); ++it)
+    {
       std::cout << indent << *it << std::endl;
-      }
     }
+  }
 
 private:
-
   // Copy constructor not implemented.
-  ObjectDocument( const Self & self );
+  ObjectDocument(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
-  std::string            m_ObjectType;
-  TransformNameListType  m_TransformNameList;
+  std::string           m_ObjectType;
+  TransformNameListType m_TransformNameList;
 
 }; // End class ObjectDocument
 

@@ -40,19 +40,17 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< unsigned int Dimension, class TInputPixel >
-class SegmentTubeUsingMinimalPath:
-  public itk::ProcessObject
+template <unsigned int Dimension, class TInputPixel>
+class SegmentTubeUsingMinimalPath : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = SegmentTubeUsingMinimalPath;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  using FilterType = itk::tube::SegmentTubeUsingMinimalPathFilter
-    < Dimension, TInputPixel >;
+  using FilterType = itk::tube::SegmentTubeUsingMinimalPathFilter<Dimension, TInputPixel>;
 
   using InputImageType = typename FilterType::InputImageType;
   using InputImagePointer = typename InputImageType::Pointer;
@@ -62,72 +60,73 @@ public:
 
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( SegmentTubeUsingMinimalPath, Object );
+  itkTypeMacro(SegmentTubeUsingMinimalPath, Object);
 
   /* Set target tubes */
-  tubeWrapSetMacro( TargetTubeGroup, TubeGroupPointer, Filter );
+  tubeWrapSetMacro(TargetTubeGroup, TubeGroupPointer, Filter);
 
   /** Set speed Image */
-  tubeWrapSetMacro( SpeedImage, InputImagePointer, Filter );
-  tubeWrapGetMacro( SpeedImage, InputImagePointer, Filter );
+  tubeWrapSetMacro(SpeedImage, InputImagePointer, Filter);
+  tubeWrapGetMacro(SpeedImage, InputImagePointer, Filter);
 
   /* Set radius image */
-  tubeWrapSetMacro( RadiusImage, InputImagePointer, Filter );
-  tubeWrapGetMacro( RadiusImage, InputImagePointer, Filter );
+  tubeWrapSetMacro(RadiusImage, InputImagePointer, Filter);
+  tubeWrapGetMacro(RadiusImage, InputImagePointer, Filter);
 
   /* Set start point for the path */
-  tubeWrapSetMacro( StartPoint, PointType, Filter );
+  tubeWrapSetMacro(StartPoint, PointType, Filter);
 
   /* Set end point for the path */
-  tubeWrapSetMacro( EndPoint, PointType, Filter );
+  tubeWrapSetMacro(EndPoint, PointType, Filter);
 
   /* Set if the extract path connects to the surface of the target tube */
-  tubeWrapSetMacro( ConnectToTargetTubeSurface, bool, Filter );
+  tubeWrapSetMacro(ConnectToTargetTubeSurface, bool, Filter);
 
   /* Set Optimization method parameters. */
-  tubeWrapSetMacro( OptimizationMethod, std::string, Filter );
-  tubeWrapSetMacro( OptimizerTerminationValue, double, Filter );
-  tubeWrapSetMacro( OptimizerNumberOfIterations, int, Filter );
-  tubeWrapSetMacro( OptimizerStepLengthFactor, double, Filter );
-  tubeWrapSetMacro( OptimizerStepLengthRelax, double, Filter );
+  tubeWrapSetMacro(OptimizationMethod, std::string, Filter);
+  tubeWrapSetMacro(OptimizerTerminationValue, double, Filter);
+  tubeWrapSetMacro(OptimizerNumberOfIterations, int, Filter);
+  tubeWrapSetMacro(OptimizerStepLengthFactor, double, Filter);
+  tubeWrapSetMacro(OptimizerStepLengthRelax, double, Filter);
 
   /*Set radius extraction parameters. */
-  tubeWrapSetMacro( StartRadius, double, Filter );
-  tubeWrapSetMacro( MaxRadius, double, Filter );
-  tubeWrapGetMacro( CostAssociatedWithExtractedTube, double, Filter );
+  tubeWrapSetMacro(StartRadius, double, Filter);
+  tubeWrapSetMacro(MaxRadius, double, Filter);
+  tubeWrapGetMacro(CostAssociatedWithExtractedTube, double, Filter);
   /* Get the extracted minimum path tube */
-  tubeWrapGetMacro( Output, TubeGroupPointer, Filter );
+  tubeWrapGetMacro(Output, TubeGroupPointer, Filter);
 
-  void SetIntermediatePoints( std::vector< PointType > );
+  void SetIntermediatePoints(std::vector<PointType>);
   /* Runs tubes to image conversion */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
 protected:
-  SegmentTubeUsingMinimalPath( void );
+  SegmentTubeUsingMinimalPath(void);
   ~SegmentTubeUsingMinimalPath() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkSegmentTubeUsingMinimalPathFilter parameters **/
-  SegmentTubeUsingMinimalPath( const Self & );
-  void operator=( const Self & );
+  SegmentTubeUsingMinimalPath(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename FilterType::Pointer m_Filter;
-
 };
 
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeSegmentTubeUsingMinimalPath.hxx"
+#  include "tubeSegmentTubeUsingMinimalPath.hxx"
 #endif
 
 #endif // End !defined( __tubeSegmentTubeUsingMinimalPath_h )

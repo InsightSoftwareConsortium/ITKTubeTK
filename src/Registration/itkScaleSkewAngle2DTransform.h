@@ -49,9 +49,8 @@ namespace itk
  *
  * \ingroup ITKTransform
  */
-template<typename TParametersValueType=double>
-class ITK_TEMPLATE_EXPORT ScaleSkewAngle2DTransform :
-  public Rigid2DTransform<TParametersValueType>
+template <typename TParametersValueType = double>
+class ITK_TEMPLATE_EXPORT ScaleSkewAngle2DTransform : public Rigid2DTransform<TParametersValueType>
 {
 public:
   /** Standard class type alias. */
@@ -106,9 +105,10 @@ public:
    * Orthogonality testing is bypassed in this case.
    *
    * \sa MatrixOffsetTransformBase::SetMatrix() */
-  virtual void SetMatrix(const MatrixType & matrix) override;
-  virtual void SetMatrix(const MatrixType & matrix, 
-    const TParametersValueType tolerance) override;
+  virtual void
+  SetMatrix(const MatrixType & matrix) override;
+  virtual void
+  SetMatrix(const MatrixType & matrix, const TParametersValueType tolerance) override;
 
   /** Set the transformation from a container of parameters
    * This is typically used by optimizers.
@@ -118,55 +118,63 @@ public:
    *   3-4   Scale
    *   5-6   Skew
    **  */
-  virtual void SetParameters(const ParametersType & parameters) override;
+  virtual void
+  SetParameters(const ParametersType & parameters) override;
 
-  virtual const ParametersType & GetParameters(void) const override;
+  virtual const ParametersType &
+  GetParameters(void) const override;
 
-  itkGetMacro( UseSingleScale, bool );
-  itkSetMacro( UseSingleScale, bool );
+  itkGetMacro(UseSingleScale, bool);
+  itkSetMacro(UseSingleScale, bool);
 
-  void SetScale(const ScaleVectorType & scale);
+  void
+  SetScale(const ScaleVectorType & scale);
 
   itkGetConstReferenceMacro(Scale, ScaleVectorType);
 
-  void SetSkew(const SkewVectorType & skew);
+  void
+  SetSkew(const SkewVectorType & skew);
 
   itkGetConstReferenceMacro(Skew, SkewVectorType);
 
-  void SetIdentity() override;
+  void
+  SetIdentity() override;
 
   /** This method computes the Jacobian matrix of the transformation.
    * given point or vector, returning the transformed point or
    * vector. The rank of the Jacobian will also indicate if the
    * transform is invertible at this point. */
-  virtual void ComputeJacobianWithRespectToParameters( const InputPointType  & p, JacobianType & jacobian) const override;
+  virtual void
+  ComputeJacobianWithRespectToParameters(const InputPointType & p, JacobianType & jacobian) const override;
 
 protected:
   ScaleSkewAngle2DTransform();
-  ScaleSkewAngle2DTransform(const MatrixType & matrix,
-    const OutputVectorType & offset);
+  ScaleSkewAngle2DTransform(const MatrixType & matrix, const OutputVectorType & offset);
   ScaleSkewAngle2DTransform(unsigned int paramDims);
 
-  ~ScaleSkewAngle2DTransform()
-  {
-  }
+  ~ScaleSkewAngle2DTransform() {}
 
-  virtual void PrintSelf(std::ostream & os, Indent indent) const override;
+  virtual void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void SetVarScale(const ScaleVectorType & scale)
+  void
+  SetVarScale(const ScaleVectorType & scale)
   {
     m_Scale = scale;
   }
 
-  void SetVarSkew(const SkewVectorType & skew)
+  void
+  SetVarSkew(const SkewVectorType & skew)
   {
     m_Skew = skew;
   }
 
   /** Compute the components of the rotation matrix in the superclass. */
-  void ComputeMatrix(void) override;
+  void
+  ComputeMatrix(void) override;
 
-  void ComputeMatrixParameters(void) override;
+  void
+  ComputeMatrixParameters(void) override;
 
 private:
   ITK_DISALLOW_COPY_AND_MOVE(ScaleSkewAngle2DTransform);
@@ -180,10 +188,10 @@ private:
   /**  Vector containing the skew */
   SkewVectorType m_Skew;
 }; // class ScaleSkewAngle2DTransform
-}  // namespace itk
+} // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkScaleSkewAngle2DTransform.hxx"
+#  include "itkScaleSkewAngle2DTransform.hxx"
 #endif
 
 #endif /* __ScaleSkewAngle2DTransform_h */

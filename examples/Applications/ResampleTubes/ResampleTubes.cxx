@@ -37,23 +37,23 @@ limitations under the License.
 
 #include "ResampleTubesCLP.h"
 
-template< unsigned int Dimension >
-void WriteOutput( const itk::SpatialObject<Dimension> * soOutputP,
- const char * fileName )
+template <unsigned int Dimension>
+void
+WriteOutput(const itk::SpatialObject<Dimension> * soOutputP, const char * fileName)
 {
-  using SpatialObjectWriterType = itk::SpatialObjectWriter< Dimension >;
+  using SpatialObjectWriterType = itk::SpatialObjectWriter<Dimension>;
 
   typename itk::SpatialObject<Dimension>::ConstPointer soOutput = soOutputP;
 
-  typename SpatialObjectWriterType::Pointer writer =
-    SpatialObjectWriterType::New();
-  writer->SetInput( soOutput );
-  writer->SetFileName( fileName );
+  typename SpatialObjectWriterType::Pointer writer = SpatialObjectWriterType::New();
+  writer->SetInput(soOutput);
+  writer->SetFileName(fileName);
   writer->Update();
 }
 
-template< unsigned int Dimension >
-int DoIt( int argc, char * argv[] )
+template <unsigned int Dimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
@@ -62,144 +62,138 @@ int DoIt( int argc, char * argv[] )
 
   typename FilterType::Pointer filter = FilterType::New();
 
-  double progress = 0.0;
+  double                       progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
 
-  tube::CLIProgressReporter progressReporter( "TubeTransform",
-                                        CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("TubeTransform", CLPProcessInformation);
   progressReporter.Start();
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // Read in the tubes
-  timeCollector.Start( "Read tubes" );
+  timeCollector.Start("Read tubes");
   typename GroupType::Pointer inputGroup = GroupType::New();
 
-  using SpatialObjectReaderType = itk::SpatialObjectReader< Dimension >;
-  typename SpatialObjectReaderType::Pointer reader =
-    SpatialObjectReaderType::New();
-  reader->SetFileName( inputTubeFile.c_str() );
+  using SpatialObjectReaderType = itk::SpatialObjectReader<Dimension>;
+  typename SpatialObjectReaderType::Pointer reader = SpatialObjectReaderType::New();
+  reader->SetFileName(inputTubeFile.c_str());
   reader->Update();
 
   inputGroup = reader->GetGroup();
   inputGroup->Update();
 
-  if( inputGroup.IsNotNull() )
-    {
-    filter->SetInput( inputGroup );
-    }
+  if (inputGroup.IsNotNull())
+  {
+    filter->SetInput(inputGroup);
+  }
   else
-    {
-    std::cerr << "Cannot read tubes from file: " << inputTubeFile
-      << std::endl;
+  {
+    std::cerr << "Cannot read tubes from file: " << inputTubeFile << std::endl;
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Read tubes" );
+  }
+  timeCollector.Stop("Read tubes");
 
   progress = 0.3;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
-  timeCollector.Start( "Read Parameters" );
+  timeCollector.Start("Read Parameters");
 
-  if( !matchImage.empty() )
-    {
-    using MatchImageType = itk::Image< char, Dimension >;
-    using MatchImageReaderType = itk::ImageFileReader< MatchImageType>;
+  if (!matchImage.empty())
+  {
+    using MatchImageType = itk::Image<char, Dimension>;
+    using MatchImageReaderType = itk::ImageFileReader<MatchImageType>;
 
-    typename MatchImageReaderType::Pointer matchReader =
-      MatchImageReaderType::New();
-    matchReader->SetFileName( matchImage.c_str() );
+    typename MatchImageReaderType::Pointer matchReader = MatchImageReaderType::New();
+    matchReader->SetFileName(matchImage.c_str());
     matchReader->Update();
-    filter->SetMatchImage( matchReader->GetOutput() );
-    }
+    filter->SetMatchImage(matchReader->GetOutput());
+  }
 
-  if( !loadDisplacementField.empty() )
-    {
+  if (!loadDisplacementField.empty())
+  {
     using DisplacementFieldType = typename FilterType::DisplacementFieldType;
-    using DisplacementFieldReaderType = typename itk::ImageFileReader< DisplacementFieldType >;
+    using DisplacementFieldReaderType = typename itk::ImageFileReader<DisplacementFieldType>;
 
     // Read the displacement field
-    typename DisplacementFieldReaderType::Pointer dfReader =
-      DisplacementFieldReaderType::New();
-    dfReader->SetFileName( loadDisplacementField.c_str() );
+    typename DisplacementFieldReaderType::Pointer dfReader = DisplacementFieldReaderType::New();
+    dfReader->SetFileName(loadDisplacementField.c_str());
     dfReader->Update();
-    filter->SetDisplacementField( dfReader->GetOutput() );
-    }
-  itk::TransformFileReader::Pointer transformReader =
-    itk::TransformFileReader::New();
+    filter->SetDisplacementField(dfReader->GetOutput());
+  }
+  itk::TransformFileReader::Pointer transformReader = itk::TransformFileReader::New();
 
-  if( !loadTransform.empty() )
-    {
-     // Read transform from file
-    transformReader->SetFileName( loadTransform.c_str() );
+  if (!loadTransform.empty())
+  {
+    // Read transform from file
+    transformReader->SetFileName(loadTransform.c_str());
     transformReader->Update();
-    filter->SetReadTransformList( transformReader->GetTransformList() );
-    filter->SetUseInverseTransform( useInverseTransform );
-    }
-  filter->SetSamplingFactor( samplingFactor );
+    filter->SetReadTransformList(transformReader->GetTransformList());
+    filter->SetUseInverseTransform(useInverseTransform);
+  }
+  filter->SetSamplingFactor(samplingFactor);
 
-  timeCollector.Stop( "Read Parameters" );
+  timeCollector.Stop("Read Parameters");
   progress = 0.4;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
-  timeCollector.Start( "Run Filter" );
+  timeCollector.Start("Run Filter");
   filter->Update();
-  timeCollector.Stop( "Run Filter" );
+  timeCollector.Stop("Run Filter");
 
   progress = 0.9;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
-  timeCollector.Start( "Write output" );
-  WriteOutput< Dimension >( filter->GetOutput(), outputTubeFile.c_str() );
-  timeCollector.Stop( "Write output" );
+  timeCollector.Start("Write output");
+  WriteOutput<Dimension>(filter->GetOutput(), outputTubeFile.c_str());
+  timeCollector.Stop("Write output");
 
   progress = 1.0;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
   progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;
 }
 
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   try
-    {
+  {
     PARSE_ARGS;
-    }
-  catch( const std::exception & err )
-    {
-    tube::ErrorMessage( err.what() );
+  }
+  catch (const std::exception & err)
+  {
+    tube::ErrorMessage(err.what());
     return EXIT_FAILURE;
-    }
+  }
   PARSE_ARGS;
 
-  MetaScene *mScene = new MetaScene;
-  mScene->Read( inputTubeFile.c_str() );
+  MetaScene * mScene = new MetaScene;
+  mScene->Read(inputTubeFile.c_str());
 
-  if( mScene->GetObjectList()->empty() )
-    {
-    tubeWarningMacro( << "Input TRE file has no spatial objects" );
+  if (mScene->GetObjectList()->empty())
+  {
+    tubeWarningMacro(<< "Input TRE file has no spatial objects");
     delete mScene;
     return EXIT_SUCCESS;
-    }
+  }
 
-  switch( mScene->GetObjectList()->front()->NDims() )
-    {
+  switch (mScene->GetObjectList()->front()->NDims())
+  {
     case 3:
-      {
-      bool result = DoIt<3>( argc, argv );
+    {
+      bool result = DoIt<3>(argc, argv);
       delete mScene;
       return result;
       break;
-      }
+    }
     default:
-      {
-      tubeErrorMacro(
-        << "Error: Only 3D data is currently supported." );
+    {
+      tubeErrorMacro(<< "Error: Only 3D data is currently supported.");
       delete mScene;
       return EXIT_FAILURE;
       break;
-      }
     }
+  }
   return EXIT_FAILURE;
 }

@@ -49,28 +49,24 @@ namespace tube
  *  NOTE: This is not done for origin or spacing, because those factors
  *  could require interpolation, which would change the maintain base results.
  */
-template< class TInputImageType, class TOutputMeanImageType,
-          class TOutputSigmaImageType >
+template <class TInputImageType, class TOutputMeanImageType, class TOutputSigmaImageType>
 class MeanAndSigmaImageBuilder : public Object
 {
 public:
-
   using Self = MeanAndSigmaImageBuilder;
   using Superclass = Object;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TInputImageType::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TInputImageType::ImageDimension);
 
-  itkNewMacro( Self );
-  itkTypeMacro( MeanAndSigmaImageBuilder, Object );
+  itkNewMacro(Self);
+  itkTypeMacro(MeanAndSigmaImageBuilder, Object);
 
   using InputImageType = TInputImageType;
   using OutputMeanImageType = TOutputMeanImageType;
   using OutputSigmaImageType = TOutputSigmaImageType;
-  using CountImageType = Image<
-    float, itkGetStaticConstMacro( ImageDimension )>;
+  using CountImageType = Image<float, itkGetStaticConstMacro(ImageDimension)>;
 
   using InputPixelType = typename InputImageType::PixelType;
   using OutputMeanPixelType = typename OutputMeanImageType::PixelType;
@@ -87,7 +83,7 @@ public:
   using SpacingType = typename InputImageType::SpacingType;
   using PointType = typename InputImageType::PointType;
 
-  using ProcessImageType = Image< float, itkGetStaticConstMacro( ImageDimension ) >;
+  using ProcessImageType = Image<float, itkGetStaticConstMacro(ImageDimension)>;
 
   /**
    * Add an image to the group being summed.
@@ -97,7 +93,7 @@ public:
    *  It is assumed that the input image has the same spacing,
    *  origin & size ( unless DynamicallyAdjustOutputSize() is set )
    */
-  virtual void AddImage( InputImagePointer );
+  virtual void AddImage(InputImagePointer);
 
   /**
    * Must call this function to finish image additions and form the
@@ -107,82 +103,84 @@ public:
    * function will eliminate the results of this output
    * and will start a new summation.
    */
-  virtual void FinalizeOutput( void );
+  virtual void
+  FinalizeOutput(void);
 
   /** Get the output mean image */
-  itkGetModifiableObjectMacro( OutputMeanImage, OutputMeanImageType );
+  itkGetModifiableObjectMacro(OutputMeanImage, OutputMeanImageType);
 
   /** Get the output variance image */
-  itkGetModifiableObjectMacro( OutputSigmaImage, OutputSigmaImageType );
+  itkGetModifiableObjectMacro(OutputSigmaImage, OutputSigmaImageType);
 
   /** Get the output valid count image */
-  itkGetModifiableObjectMacro( ValidCountImage, CountImageType );
+  itkGetModifiableObjectMacro(ValidCountImage, CountImageType);
 
   /**
    * Get the minimum number of contributing images for a given voxel
    * to count in the output images
    */
-  itkGetConstMacro( ImageCountThreshold, unsigned short );
+  itkGetConstMacro(ImageCountThreshold, unsigned short);
 
   /**
    * Set the minimum number of contributing images for a given voxel
    * to count in the output images
    */
-  itkSetMacro( ImageCountThreshold, unsigned short );
+  itkSetMacro(ImageCountThreshold, unsigned short);
 
   /**
    * Get the bool flag of whether the OutputSigmaImageType is
    * variance ( false ) or standard deviation ( true )
    */
-  itkGetConstMacro( UseStandardDeviation, bool );
+  itkGetConstMacro(UseStandardDeviation, bool);
 
   /**
    * Set the bool flag of whether the OutputSigmaImageType is
    * variance ( false ) or standard deviation ( true ).  Default is true
    */
-  itkSetMacro( UseStandardDeviation, bool );
+  itkSetMacro(UseStandardDeviation, bool);
 
   /**
    * Get the threshold lower value where all values less than or
    * equal to input are not counted as a valid voxel
    */
-  itkGetConstMacro( ThresholdInputImageBelow, InputPixelType );
+  itkGetConstMacro(ThresholdInputImageBelow, InputPixelType);
 
   /**
    * Set the threshold lower value where all values less than or
    * equal to input are not counted as a valid voxel - default is 0
    */
-  void SetThresholdInputImageBelow( InputPixelType value )
-    {
+  void
+  SetThresholdInputImageBelow(InputPixelType value)
+  {
     m_ThresholdInputImageBelow = value;
-    this->SetThresholdInputImageBelowOn( true );
-    }
+    this->SetThresholdInputImageBelowOn(true);
+  }
 
   /**
    * Turn on and off the ThresholdInputImageBelow function ( default is off ).
    * Will use last inputed value, or default otherwise
    * ( see ThresholdInputImageBelow )
    */
-  itkGetConstMacro( ThresholdInputImageBelowOn, bool );
+  itkGetConstMacro(ThresholdInputImageBelowOn, bool);
 
   /**
    * Turn on and off the ThresholdInputImageBelow function ( default is off ).
    * Will use last inputed value, or default otherwise
    * ( see ThresholdInputImageBelow )
    */
-  itkSetMacro( ThresholdInputImageBelowOn, bool );
+  itkSetMacro(ThresholdInputImageBelowOn, bool);
 
   /**
    * Get the bool flag of whether the output images should adjust their
    * size dynamically based on the inputed image sizes.  Default is false
    */
-  itkGetConstMacro( DynamicallyAdjustOutputSize, bool );
+  itkGetConstMacro(DynamicallyAdjustOutputSize, bool);
 
   /**
    * Set the bool flag of whether the output images should adjust their
    * size dynamically based on the inputed image sizes.  Default is false
    */
-  itkSetMacro( DynamicallyAdjustOutputSize, bool );
+  itkSetMacro(DynamicallyAdjustOutputSize, bool);
 
   /**
    * Update the output images to the inputed size.
@@ -193,100 +191,99 @@ public:
    * NOTE: this does NOT test or warn if the current output image
    * size is decreased in any axis
    */
-  virtual void UpdateOutputImageSize( SizeType );
+  virtual void UpdateOutputImageSize(SizeType);
 
   /** Get the current size of the output images */
-  itkGetConstReferenceMacro( OutputSize, SizeType );
+  itkGetConstReferenceMacro(OutputSize, SizeType);
 
   /** Set the current size of the output images */
-  itkSetMacro( OutputSize, SizeType );
+  itkSetMacro(OutputSize, SizeType);
 
   /** Get the current size of the output images */
-  itkGetConstReferenceMacro( OutputSpacing, SpacingType );
+  itkGetConstReferenceMacro(OutputSpacing, SpacingType);
 
   /** Set the current size of the output images */
-  itkSetMacro( OutputSpacing, SpacingType );
+  itkSetMacro(OutputSpacing, SpacingType);
 
   /** Get the current size of the output images */
-  itkGetConstReferenceMacro( OutputOrigin, PointType );
+  itkGetConstReferenceMacro(OutputOrigin, PointType);
 
   /** Set the current size of the output images */
-  itkSetMacro( OutputOrigin, PointType );
+  itkSetMacro(OutputOrigin, PointType);
 
-  itkGetModifiableObjectMacro( SumImage, ProcessImageType );
+  itkGetModifiableObjectMacro(SumImage, ProcessImageType);
 
 protected:
-
-  MeanAndSigmaImageBuilder( void );
-  ~MeanAndSigmaImageBuilder( void ) {}
+  MeanAndSigmaImageBuilder(void);
+  ~MeanAndSigmaImageBuilder(void) {}
 
   /** Processing image types */
   using ProcessPixelType = typename ProcessImageType::PixelType;
   using ProcessImagePointer = typename ProcessImageType::Pointer;
 
-  using InputConstIteratorType = ImageRegionConstIterator< InputImageType >;
-  using ProcessConstIteratorType = ImageRegionConstIterator< ProcessImageType >;
-  using ProcessIteratorType = ImageRegionIterator< ProcessImageType >;
-  using CountConstIteratorType = ImageRegionConstIterator< CountImageType >;
-  using CountIteratorType = ImageRegionIterator< CountImageType >;
-  using OutputMeanIteratorType = ImageRegionIterator< OutputMeanImageType >;
-  using OutputSigmaIteratorType = ImageRegionIterator< OutputSigmaImageType >;
+  using InputConstIteratorType = ImageRegionConstIterator<InputImageType>;
+  using ProcessConstIteratorType = ImageRegionConstIterator<ProcessImageType>;
+  using ProcessIteratorType = ImageRegionIterator<ProcessImageType>;
+  using CountConstIteratorType = ImageRegionConstIterator<CountImageType>;
+  using CountIteratorType = ImageRegionIterator<CountImageType>;
+  using OutputMeanIteratorType = ImageRegionIterator<OutputMeanImageType>;
+  using OutputSigmaIteratorType = ImageRegionIterator<OutputSigmaImageType>;
 
-  itkSetObjectMacro( SumImage, ProcessImageType );
+  itkSetObjectMacro(SumImage, ProcessImageType);
 
-  itkGetModifiableObjectMacro( SumSquareImage, ProcessImageType );
-  itkSetObjectMacro( SumSquareImage, ProcessImageType );
+  itkGetModifiableObjectMacro(SumSquareImage, ProcessImageType);
+  itkSetObjectMacro(SumSquareImage, ProcessImageType);
 
-  itkSetObjectMacro( ValidCountImage, CountImageType );
+  itkSetObjectMacro(ValidCountImage, CountImageType);
 
   /** Set the output mean image */
-  itkSetObjectMacro( OutputMeanImage, OutputMeanImageType );
+  itkSetObjectMacro(OutputMeanImage, OutputMeanImageType);
 
   /** Set the output variance image */
-  itkSetObjectMacro( OutputSigmaImage, OutputSigmaImageType );
+  itkSetObjectMacro(OutputSigmaImage, OutputSigmaImageType);
 
   /**
    * Get processing variable flag.  Flag states whether the Processing
    * Images have been defined
    */
-  itkGetConstMacro( IsProcessing, bool );
+  itkGetConstMacro(IsProcessing, bool);
 
   /**
    * Set processing variable flag.  Flag states whether the Processing
    * Images have been defined
    */
-  itkSetMacro( IsProcessing, bool );
+  itkSetMacro(IsProcessing, bool);
 
   /**
    * Build new processing images, i.e.,
    * sumImage, sumSquareImage, validCountImage
    */
-  virtual void BuildProcessingImages( InputImagePointer i );
+  virtual void
+  BuildProcessingImages(InputImagePointer i);
 
 private:
+  ProcessImagePointer m_SumImage;
+  ProcessImagePointer m_SumSquareImage;
+  CountImagePointer   m_ValidCountImage;
 
-  ProcessImagePointer                     m_SumImage;
-  ProcessImagePointer                     m_SumSquareImage;
-  CountImagePointer                       m_ValidCountImage;
+  OutputMeanImagePointer  m_OutputMeanImage;
+  OutputSigmaImagePointer m_OutputSigmaImage;
 
-  OutputMeanImagePointer                  m_OutputMeanImage;
-  OutputSigmaImagePointer                 m_OutputSigmaImage;
+  unsigned short m_ImageCountThreshold;
+  bool           m_ThresholdInputImageBelowOn;
+  InputPixelType m_ThresholdInputImageBelow;
+  bool           m_IsProcessing;
+  bool           m_UseStandardDeviation;
+  bool           m_DynamicallyAdjustOutputSize;
 
-  unsigned short                          m_ImageCountThreshold;
-  bool                                    m_ThresholdInputImageBelowOn;
-  InputPixelType                          m_ThresholdInputImageBelow;
-  bool                                    m_IsProcessing;
-  bool                                    m_UseStandardDeviation;
-  bool                                    m_DynamicallyAdjustOutputSize;
-
-  SizeType                                m_OutputSize;
-  SpacingType                             m_OutputSpacing;
-  PointType                               m_OutputOrigin;
+  SizeType    m_OutputSize;
+  SpacingType m_OutputSpacing;
+  PointType   m_OutputOrigin;
 
 }; // End class MeanAndSigmaImageBuilder
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeMeanAndSigmaImageBuilder.hxx"
+#  include "itktubeMeanAndSigmaImageBuilder.hxx"
 #endif
 
 } // End namespace tube

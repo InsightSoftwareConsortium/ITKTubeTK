@@ -42,143 +42,147 @@ namespace tube
  * \note  Does not hold a buffer of objects read.
  * \ingroup  ObjectDocuments
  */
-template< class TObjectDocument, unsigned int VDimension = 3 >
+template <class TObjectDocument, unsigned int VDimension = 3>
 class ObjectDocumentToObjectSource : public ProcessObject
 {
 public:
-
   using Self = ObjectDocumentToObjectSource;
   using Superclass = ProcessObject;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using DataObjectPointer = typename DataObject::Pointer;
 
   using DocumentType = TObjectDocument;
   using ConstDocumentPointer = typename DocumentType::ConstPointer;
 
-  typedef typename SpatialObject< VDimension >::TransformType
-                                               TransformType;
+  typedef typename SpatialObject<VDimension>::TransformType TransformType;
   using TransformPointer = typename TransformType::Pointer;
 
-  itkNewMacro( Self );
-  itkTypeMacro( ObjectDocumentToObjectSource, ProcessObject );
+  itkNewMacro(Self);
+  itkTypeMacro(ObjectDocumentToObjectSource, ProcessObject);
 
   /** Return whether the transforms should be applied. */
-  itkGetMacro( ApplyTransforms, bool );
+  itkGetMacro(ApplyTransforms, bool);
 
   /** Return the composed transform. */
-  virtual TransformPointer GetComposedTransform( void );
+  virtual TransformPointer
+  GetComposedTransform(void);
 
   /** Return whether the composed transform is the identity transform. */
-  itkGetMacro( ComposedTransformIsIdentity, bool );
+  itkGetMacro(ComposedTransformIsIdentity, bool);
 
   /** Return the input. */
-  virtual const DocumentType * GetInput( void );
+  virtual const DocumentType *
+  GetInput(void);
 
   /** Return the output. */
-  virtual DataObject * GetOutput( void );
+  virtual DataObject *
+  GetOutput(void);
 
   /** Set whether the transforms should be applied. */
-  virtual void SetApplyTransforms( bool applyTransforms );
-  itkBooleanMacro( ApplyTransforms );
+  virtual void
+  SetApplyTransforms(bool applyTransforms);
+  itkBooleanMacro(ApplyTransforms);
 
   /** Set whether the transforms should be applied. */
-  virtual void SetApplyTransforms( int start, int end );
+  virtual void
+  SetApplyTransforms(int start, int end);
 
   /** Set the input. */
-  virtual void SetInput( const DocumentType * input );
+  virtual void
+  SetInput(const DocumentType * input);
 
   /* Graft the specified data object onto the specified indexed output, but note
      that this function should be implemented by derived classes. */
-  virtual void GraftNthOutput( unsigned int itkNotUsed( index ),
-                               DataObject * itkNotUsed( data ) )
-    {
-    }
+  virtual void
+  GraftNthOutput(unsigned int itkNotUsed(index), DataObject * itkNotUsed(data))
+  {}
 
   /* Graft the specified data object onto the output, but note that this
      function should be implemented by derived classes. */
-  virtual void GraftOutput( DataObject * itkNotUsed( data ) )
-    {
-    }
+  virtual void
+  GraftOutput(DataObject * itkNotUsed(data))
+  {}
 
   /* Make an object to be used as the specified indexed output. */
   using Superclass::MakeOutput;
-  virtual DataObjectPointer MakeOutput( DataObjectPointerArraySizeType index )
-    override;
+  virtual DataObjectPointer
+  MakeOutput(DataObjectPointerArraySizeType index) override;
 
 protected:
-
   using OutputType = SpatialObject<>;
-  using TransformReaderType = SpatialObjectReader< VDimension >;
+  using TransformReaderType = SpatialObjectReader<VDimension>;
 
   /** Constructor. */
-  ObjectDocumentToObjectSource( void );
+  ObjectDocumentToObjectSource(void);
 
   /** Destructor. */
-  virtual ~ObjectDocumentToObjectSource( void );
+  virtual ~ObjectDocumentToObjectSource(void);
 
   /** Return the end index for the list of transforms. */
-  itkGetMacro( EndTransforms, int );
+  itkGetMacro(EndTransforms, int);
 
   /** Return the specified indexed output. */
-  virtual DataObject * GetOutput( unsigned int index );
+  virtual DataObject *
+  GetOutput(unsigned int index);
 
   /** Return the end index for the list of transforms. */
-  itkGetMacro( StartTransforms, int );
+  itkGetMacro(StartTransforms, int);
 
   /** Set whether the composed transform is the identity transform. */
-  itkSetMacro( ComposedTransformIsIdentity, bool );
-  itkBooleanMacro( ComposedTransformIsIdentity );
+  itkSetMacro(ComposedTransformIsIdentity, bool);
+  itkBooleanMacro(ComposedTransformIsIdentity);
 
   /** Set the end index for the list of transforms. */
-  itkSetMacro( EndTransforms, int );
+  itkSetMacro(EndTransforms, int);
 
   /** Set the start index for the list of transforms. */
-  itkSetMacro( StartTransforms, int );
+  itkSetMacro(StartTransforms, int);
 
   /** Generate the output data, but note that this function should be
       implemented by derived classes. */
-  virtual void GenerateData( void ) override
-    {
-    }
+  virtual void
+  GenerateData(void) override
+  {}
 
   /** Generate the information describing the output data, but note that this
       function should be implemented by derived classes. */
-  virtual void GenerateOutputInformation( void ) override
-    {
-    }
+  virtual void
+  GenerateOutputInformation(void) override
+  {}
 
   /** Compose the transforms of the object ranging from start to end and return
       the final transform. Note that 0 is the first transform and -1 is the last
       transform. */
-  virtual TransformPointer ComposeTransforms( ConstDocumentPointer document,
-                                              int startIndex = 0,
-                                              int endIndex = -1 ) const;
+  virtual TransformPointer
+  ComposeTransforms(ConstDocumentPointer document, int startIndex = 0, int endIndex = -1) const;
 
   /** Read the transform from the specified file. */
-  virtual TransformPointer ReadTransform( const std::string & file ) const;
+  virtual TransformPointer
+  ReadTransform(const std::string & file) const;
 
   /** Print information about the object. */
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
+  virtual void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Copy constructor not implemented.
-  ObjectDocumentToObjectSource( const Self & self );
+  ObjectDocumentToObjectSource(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * )
-    override {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  ConstDocumentPointer  m_Input;
-  int                   m_StartTransforms;
-  int                   m_EndTransforms;
-  mutable bool          m_ComposedTransformIsIdentity;
-  bool                  m_ApplyTransforms;
+  ConstDocumentPointer m_Input;
+  int                  m_StartTransforms;
+  int                  m_EndTransforms;
+  mutable bool         m_ComposedTransformIsIdentity;
+  bool                 m_ApplyTransforms;
 
 }; // End class ObjectDocumentToObjectSource
 
@@ -187,7 +191,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeObjectDocumentToObjectSource.hxx"
+#  include "itktubeObjectDocumentToObjectSource.hxx"
 #endif
 
 #endif // End !defined( __itktubeObjectDocumentToObjectSource_h )

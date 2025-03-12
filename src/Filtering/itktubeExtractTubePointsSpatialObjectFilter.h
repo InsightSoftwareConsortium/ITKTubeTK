@@ -52,63 +52,70 @@ namespace tube
  * \sa VesselTubeSpatialObject
  * \sa VesselTubeSpatialObjectPoint
  */
-template< class TTubeSpatialObject >
+template <class TTubeSpatialObject>
 class ExtractTubePointsSpatialObjectFilter : public ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ExtractTubePointsSpatialObjectFilter;
   using Superclass = ProcessObject;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using TubeSpatialObjectType = TTubeSpatialObject;
 
   using TubePointType = typename TTubeSpatialObject::TubePointType;
 
-  using PointsContainerType = VectorContainer< IdentifierType, TubePointType >;
+  using PointsContainerType = VectorContainer<IdentifierType, TubePointType>;
 
-  using PointsContainerDecoratorType = DataObjectDecorator< PointsContainerType >;
+  using PointsContainerDecoratorType = DataObjectDecorator<PointsContainerType>;
 
-  using GroupSpatialObjectType = GroupSpatialObject< TubeSpatialObjectType::ObjectDimension >;
+  using GroupSpatialObjectType = GroupSpatialObject<TubeSpatialObjectType::ObjectDimension>;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ExtractTubePointsSpatialObjectFilter, ProcessObject );
+  itkTypeMacro(ExtractTubePointsSpatialObjectFilter, ProcessObject);
 
   /** Standard New method. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Set/Get the input GroupSpatialObject. */
-  virtual void SetInput( const GroupSpatialObjectType * group );
-  const GroupSpatialObjectType * GetInput( void ) const;
+  virtual void
+  SetInput(const GroupSpatialObjectType * group);
+  const GroupSpatialObjectType *
+  GetInput(void) const;
 
   /** Get the output PointsContainerType decorated as an itk::DataObject. */
-  PointsContainerDecoratorType *       GetPointsContainerOutput( void );
-  const PointsContainerDecoratorType * GetPointsContainerOutput( void ) const;
+  PointsContainerDecoratorType *
+  GetPointsContainerOutput(void);
+  const PointsContainerDecoratorType *
+  GetPointsContainerOutput(void) const;
 
   /** Get the output PointsContainerType. */
-  const PointsContainerType * GetPointsContainer( void ) const;
+  const PointsContainerType *
+  GetPointsContainer(void) const;
 
   using Superclass::MakeOutput;
   virtual ProcessObject::DataObjectPointer
-    MakeOutput( ProcessObject::DataObjectPointerArraySizeType idx ) override;
+  MakeOutput(ProcessObject::DataObjectPointerArraySizeType idx) override;
 
 protected:
-  ExtractTubePointsSpatialObjectFilter( void );
-  virtual ~ExtractTubePointsSpatialObjectFilter( void );
+  ExtractTubePointsSpatialObjectFilter(void);
+  virtual ~ExtractTubePointsSpatialObjectFilter(void);
 
-  virtual void GenerateData() override;
+  virtual void
+  GenerateData() override;
 
 private:
   // purposely not implemented
-  ExtractTubePointsSpatialObjectFilter( const Self & );
+  ExtractTubePointsSpatialObjectFilter(const Self &);
 
   // purposely not implemented
-  void operator=( const Self & );
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const typename Superclass::DataObjectIdentifierType &,
-    itk::DataObject * ) override {};
+  void
+  SetInput(const typename Superclass::DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename PointsContainerDecoratorType::Pointer m_PointsContainerDecorator;
   typename PointsContainerType::Pointer          m_PointsContainer;
@@ -120,7 +127,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeExtractTubePointsSpatialObjectFilter.hxx"
+#  include "itktubeExtractTubePointsSpatialObjectFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeExtractTubePointsSpatialObjectFilter_h )

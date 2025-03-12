@@ -39,78 +39,79 @@ namespace itk
 namespace tube
 {
 
-template< typename TInputImage, typename TOutputImage =
-  Image< float, TInputImage::ImageDimension >  >
-class FFTGaussianDerivativeIFFTFilter :
-    public GaussianDerivativeFilter< TInputImage, TOutputImage >
+template <typename TInputImage, typename TOutputImage = Image<float, TInputImage::ImageDimension>>
+class FFTGaussianDerivativeIFFTFilter : public GaussianDerivativeFilter<TInputImage, TOutputImage>
 {
 public:
-
   using Self = FFTGaussianDerivativeIFFTFilter;
-  using Superclass = GaussianDerivativeFilter< TInputImage,
-    TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = GaussianDerivativeFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkTypeMacro( FFTGaussianDerivativeIFFTFilter, GaussianDerivativeFilter );
+  itkTypeMacro(FFTGaussianDerivativeIFFTFilter, GaussianDerivativeFilter);
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    TInputImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
 
   using InputImageType = TInputImage;
   using OutputImageType = TOutputImage;
-  using RealImageType = Image< double, ImageDimension >;
+  using RealImageType = Image<double, ImageDimension>;
   using RealImagePointerType = typename RealImageType::Pointer;
-  typedef typename Superclass::GaussianDerivativeImageSourceType
-                                              GaussianDerivativeImageSourceType;
+  typedef typename Superclass::GaussianDerivativeImageSourceType GaussianDerivativeImageSourceType;
   using OrdersType = typename Superclass::OrdersType;
   using SigmasType = typename Superclass::SigmasType;
 
-  void GenerateNJet( typename OutputImageType::Pointer & D,
-    std::vector< typename TOutputImage::Pointer > & Dx,
-    std::vector< typename TOutputImage::Pointer > & Dxx ) override;
+  void
+  GenerateNJet(typename OutputImageType::Pointer &           D,
+               std::vector<typename TOutputImage::Pointer> & Dx,
+               std::vector<typename TOutputImage::Pointer> & Dxx) override;
 
-  void GenerateData() override;
+  void
+  GenerateData() override;
 
 protected:
-  using FFTFilterType = ForwardFFTImageFilter< RealImageType >;
+  using FFTFilterType = ForwardFFTImageFilter<RealImageType>;
 
   using ComplexImageType = typename FFTFilterType::OutputImageType;
 
-  using FFTShiftFilterType = FFTShiftImageFilter< RealImageType, RealImageType >;
+  using FFTShiftFilterType = FFTShiftImageFilter<RealImageType, RealImageType>;
 
-  using InverseFFTFilterType = InverseFFTImageFilter< ComplexImageType, RealImageType >;
+  using InverseFFTFilterType = InverseFFTImageFilter<ComplexImageType, RealImageType>;
 
-  using MultiplyFilterType = MultiplyImageFilter< ComplexImageType, ComplexImageType,
-    ComplexImageType >;
+  using MultiplyFilterType = MultiplyImageFilter<ComplexImageType, ComplexImageType, ComplexImageType>;
 
-  FFTGaussianDerivativeIFFTFilter( void );
-  virtual ~FFTGaussianDerivativeIFFTFilter( void ) {}
+  FFTGaussianDerivativeIFFTFilter(void);
+  virtual ~FFTGaussianDerivativeIFFTFilter(void) {}
 
-  void ComputeInputImageFFT();
-  void ComputeKernelImageFFT();
-  void ComputeConvolvedImageFFT();
-  void ComputeConvolvedImage();
+  void
+  ComputeInputImageFFT();
+  void
+  ComputeKernelImageFFT();
+  void
+  ComputeConvolvedImageFFT();
+  void
+  ComputeConvolvedImage();
 
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
   // Purposely not implemented
-  FFTGaussianDerivativeIFFTFilter( const Self & );
-  void operator = ( const Self & );
+  FFTGaussianDerivativeIFFTFilter(const Self &);
+  void
+  operator=(const Self &);
 
-  typename ComplexImageType::Pointer                  m_InputImageFFT;
+  typename ComplexImageType::Pointer m_InputImageFFT;
 
-  typename ComplexImageType::Pointer                  m_KernelImageFFT;
+  typename ComplexImageType::Pointer m_KernelImageFFT;
 
-  typename ComplexImageType::Pointer                  m_ConvolvedImageFFT;
+  typename ComplexImageType::Pointer m_ConvolvedImageFFT;
 
-  typename TOutputImage::Pointer                      m_ConvolvedImage;
+  typename TOutputImage::Pointer m_ConvolvedImage;
 
-  const InputImageType *                              m_LastInputImage;
+  const InputImageType * m_LastInputImage;
 };
 
 
@@ -121,7 +122,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeFFTGaussianDerivativeIFFTFilter.hxx"
+#  include "itktubeFFTGaussianDerivativeIFFTFilter.hxx"
 #endif
 
 #endif

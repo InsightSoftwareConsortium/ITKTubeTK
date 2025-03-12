@@ -31,21 +31,18 @@ namespace itk
 {
 
 template <class TImage>
-class OptimizedImageToImageRegistrationMethod
-  : public ImageToImageRegistrationMethod<TImage>
+class OptimizedImageToImageRegistrationMethod : public ImageToImageRegistrationMethod<TImage>
 {
 
 public:
-
   using Self = OptimizedImageToImageRegistrationMethod;
   using Superclass = ImageToImageRegistrationMethod<TImage>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( OptimizedImageToImageRegistrationMethod,
-                ImageToImageRegistrationMethod );
+  itkTypeMacro(OptimizedImageToImageRegistrationMethod, ImageToImageRegistrationMethod);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   //
   // Typedefs from Superclass
@@ -60,103 +57,115 @@ public:
 
   using TransformParametersScalesType = typename TransformType::ParametersType;
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
   //
   // Custom Typedefs
   //
-  enum TransformMethodEnumType { RIGID_TRANSFORM,
-                                 AFFINE_TRANSFORM,
-                                 BSPLINE_TRANSFORM };
+  enum TransformMethodEnumType
+  {
+    RIGID_TRANSFORM,
+    AFFINE_TRANSFORM,
+    BSPLINE_TRANSFORM
+  };
 
-  enum MetricMethodEnumType { MATTES_MI_METRIC,
-                              NORMALIZED_CORRELATION_METRIC,
-                              MEAN_SQUARED_ERROR_METRIC };
+  enum MetricMethodEnumType
+  {
+    MATTES_MI_METRIC,
+    NORMALIZED_CORRELATION_METRIC,
+    MEAN_SQUARED_ERROR_METRIC
+  };
 
-  enum InterpolationMethodEnumType { NEAREST_NEIGHBOR_INTERPOLATION,
-                                     LINEAR_INTERPOLATION,
-                                     BSPLINE_INTERPOLATION,
-                                     SINC_INTERPOLATION };
+  enum InterpolationMethodEnumType
+  {
+    NEAREST_NEIGHBOR_INTERPOLATION,
+    LINEAR_INTERPOLATION,
+    BSPLINE_INTERPOLATION,
+    SINC_INTERPOLATION
+  };
 
   //
   // Methods from Superclass
   //
-  virtual void GenerateData( void ) override;
+  virtual void
+  GenerateData(void) override;
 
   //
   // Custom Methods
   //
-  itkSetMacro( InitialTransformParameters, TransformParametersType );
-  itkGetConstMacro( InitialTransformParameters, TransformParametersType );
+  itkSetMacro(InitialTransformParameters, TransformParametersType);
+  itkGetConstMacro(InitialTransformParameters, TransformParametersType);
 
-  itkSetMacro( InitialTransformFixedParameters, TransformParametersType );
-  itkGetConstMacro( InitialTransformFixedParameters, TransformParametersType );
+  itkSetMacro(InitialTransformFixedParameters, TransformParametersType);
+  itkGetConstMacro(InitialTransformFixedParameters, TransformParametersType);
 
-  itkSetMacro( LastTransformParameters, TransformParametersType );
-  itkGetConstMacro( LastTransformParameters, TransformParametersType );
+  itkSetMacro(LastTransformParameters, TransformParametersType);
+  itkGetConstMacro(LastTransformParameters, TransformParametersType);
 
-  itkSetMacro( TransformParametersScales, TransformParametersScalesType );
-  itkGetConstMacro( TransformParametersScales, TransformParametersScalesType );
+  itkSetMacro(TransformParametersScales, TransformParametersScalesType);
+  itkGetConstMacro(TransformParametersScales, TransformParametersScalesType);
 
-  itkSetMacro( SampleFromOverlap, bool );
-  itkGetConstMacro( SampleFromOverlap, bool );
+  itkSetMacro(SampleFromOverlap, bool);
+  itkGetConstMacro(SampleFromOverlap, bool);
 
-  itkSetMacro( MinimizeMemory, bool );
-  itkGetConstMacro( MinimizeMemory, bool );
+  itkSetMacro(MinimizeMemory, bool);
+  itkGetConstMacro(MinimizeMemory, bool);
 
-  itkSetMacro( MaxIterations, unsigned int );
-  itkGetConstMacro( MaxIterations, unsigned int );
+  itkSetMacro(MaxIterations, unsigned int);
+  itkGetConstMacro(MaxIterations, unsigned int);
 
-  itkSetMacro( UseEvolutionaryOptimization, bool );
-  itkGetConstMacro( UseEvolutionaryOptimization, bool );
+  itkSetMacro(UseEvolutionaryOptimization, bool);
+  itkGetConstMacro(UseEvolutionaryOptimization, bool);
 
-  itkSetMacro( NumberOfSamples, unsigned int );
-  itkGetConstMacro( NumberOfSamples, unsigned int );
+  itkSetMacro(NumberOfSamples, unsigned int);
+  itkGetConstMacro(NumberOfSamples, unsigned int);
 
-  itkSetMacro( UseFixedImageSamplesIntensityThreshold, bool );
-  itkGetConstMacro( UseFixedImageSamplesIntensityThreshold, bool );
-  void SetFixedImageSamplesIntensityThreshold( PixelType val );
+  itkSetMacro(UseFixedImageSamplesIntensityThreshold, bool);
+  itkGetConstMacro(UseFixedImageSamplesIntensityThreshold, bool);
+  void
+  SetFixedImageSamplesIntensityThreshold(PixelType val);
 
-  itkGetConstMacro( FixedImageSamplesIntensityThreshold, PixelType );
+  itkGetConstMacro(FixedImageSamplesIntensityThreshold, PixelType);
 
-  itkSetMacro( TargetError, double );
-  itkGetConstMacro( TargetError, double );
+  itkSetMacro(TargetError, double);
+  itkGetConstMacro(TargetError, double);
 
-  itkSetMacro( RandomNumberSeed, int );
-  itkGetConstMacro( RandomNumberSeed, int );
+  itkSetMacro(RandomNumberSeed, int);
+  itkGetConstMacro(RandomNumberSeed, int);
 
-  itkGetConstMacro( TransformMethodEnum, TransformMethodEnumType );
+  itkGetConstMacro(TransformMethodEnum, TransformMethodEnumType);
 
-  itkSetMacro( MetricMethodEnum, MetricMethodEnumType );
-  itkGetConstMacro( MetricMethodEnum, MetricMethodEnumType );
+  itkSetMacro(MetricMethodEnum, MetricMethodEnumType);
+  itkGetConstMacro(MetricMethodEnum, MetricMethodEnumType);
 
-  itkSetMacro( InterpolationMethodEnum, InterpolationMethodEnumType );
-  itkGetConstMacro( InterpolationMethodEnum, InterpolationMethodEnumType );
+  itkSetMacro(InterpolationMethodEnum, InterpolationMethodEnumType);
+  itkGetConstMacro(InterpolationMethodEnum, InterpolationMethodEnumType);
 
-  itkGetMacro( FinalMetricValue, double );
+  itkGetMacro(FinalMetricValue, double);
+
 protected:
+  OptimizedImageToImageRegistrationMethod(void);
+  virtual ~OptimizedImageToImageRegistrationMethod(void);
 
-  OptimizedImageToImageRegistrationMethod( void );
-  virtual ~OptimizedImageToImageRegistrationMethod( void );
+  itkSetMacro(FinalMetricValue, double);
 
-  itkSetMacro( FinalMetricValue, double );
-
-  itkSetMacro( TransformMethodEnum, TransformMethodEnumType );
+  itkSetMacro(TransformMethodEnum, TransformMethodEnumType);
 
   using InterpolatorType = InterpolateImageFunction<TImage, double>;
   using MetricType = ImageToImageMetric<TImage, TImage>;
 
-  virtual void Optimize( MetricType * metric, InterpolatorType * interpolator );
+  virtual void
+  Optimize(MetricType * metric, InterpolatorType * interpolator);
 
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
+  virtual void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Purposely not implemented
-  OptimizedImageToImageRegistrationMethod( const Self & );
+  OptimizedImageToImageRegistrationMethod(const Self &);
   // Purposely not implemented
-  void operator =( const Self & );
+  void
+  operator=(const Self &);
 
   TransformParametersType m_InitialTransformParameters;
   TransformParametersType m_InitialTransformFixedParameters;
@@ -191,10 +200,10 @@ private:
   double m_FinalMetricValue;
 };
 
-}
+} // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkOptimizedImageToImageRegistrationMethod.hxx"
+#  include "itkOptimizedImageToImageRegistrationMethod.hxx"
 #endif
 
 #endif

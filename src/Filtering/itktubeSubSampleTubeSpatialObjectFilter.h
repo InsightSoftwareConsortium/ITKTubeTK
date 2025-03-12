@@ -41,43 +41,42 @@ namespace tube
  *
  * \sa SubSampleTubeTreeSpatialObjectFilter
  */
-template< unsigned int ObjectDimension >
-class SubSampleTubeSpatialObjectFilter
-  : public SpatialObjectFilter< ObjectDimension >
+template <unsigned int ObjectDimension>
+class SubSampleTubeSpatialObjectFilter : public SpatialObjectFilter<ObjectDimension>
 {
 public:
   /** Standard class type alias. */
   using Self = SubSampleTubeSpatialObjectFilter;
-  using Superclass = SpatialObjectFilter< ObjectDimension >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = SpatialObjectFilter<ObjectDimension>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using TubeSpatialObjectType = TubeSpatialObject<ObjectDimension>;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro( SubSampleTubeSpatialObjectFilter,
-    SpatialObjectFilter );
+  itkTypeMacro(SubSampleTubeSpatialObjectFilter, SpatialObjectFilter);
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Set the sampling factor.  The output points taken every sampling
    * factor from the input points. */
-  itkSetClampMacro( Sampling, SizeValueType, 1,
-    NumericTraits< SizeValueType >::max() );
-  itkGetConstMacro( Sampling, SizeValueType );
+  itkSetClampMacro(Sampling, SizeValueType, 1, NumericTraits<SizeValueType>::max());
+  itkGetConstMacro(Sampling, SizeValueType);
 
 protected:
-  SubSampleTubeSpatialObjectFilter( void );
-  virtual ~SubSampleTubeSpatialObjectFilter( void );
+  SubSampleTubeSpatialObjectFilter(void);
+  virtual ~SubSampleTubeSpatialObjectFilter(void);
 
-  virtual void GenerateData( void ) override;
+  virtual void
+  GenerateData(void) override;
 
 private:
   // purposely not implemented
-  SubSampleTubeSpatialObjectFilter( const Self & );
+  SubSampleTubeSpatialObjectFilter(const Self &);
   // purposely not implemented
-  void operator=( const Self & );
+  void
+  operator=(const Self &);
 
   SizeValueType m_Sampling;
 
@@ -88,7 +87,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeSubSampleTubeSpatialObjectFilter.hxx"
+#  include "itktubeSubSampleTubeSpatialObjectFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeSubSampleTubeSpatialObjectFilter_h )

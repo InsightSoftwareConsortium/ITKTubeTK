@@ -25,88 +25,84 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectWriter.h>
 
-int itktubeSubSampleTubeSpatialObjectFilterTest( int argc, char * argv[] )
+int
+itktubeSubSampleTubeSpatialObjectFilterTest(int argc, char * argv[])
 {
-  if( argc < 3 )
-    {
+  if (argc < 3)
+  {
     std::cerr << "Usage: "
-      << "inputTubeNetwork "
-      << "outputTubeNetwork "
-      << std::endl;
+              << "inputTubeNetwork "
+              << "outputTubeNetwork " << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   const char * inputTubeNetwork = argv[1];
   const char * outputTubeNetwork = argv[2];
 
-  enum { ObjectDimension = 3 };
-  using TubeSpatialObjectType = itk::TubeSpatialObject< ObjectDimension >;
-  using GroupSpatialObjectType = itk::GroupSpatialObject< ObjectDimension >;
+  enum
+  {
+    ObjectDimension = 3
+  };
+  using TubeSpatialObjectType = itk::TubeSpatialObject<ObjectDimension>;
+  using GroupSpatialObjectType = itk::GroupSpatialObject<ObjectDimension>;
 
-  using ReaderType = itk::SpatialObjectReader< ObjectDimension >;
+  using ReaderType = itk::SpatialObjectReader<ObjectDimension>;
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( inputTubeNetwork );
+  reader->SetFileName(inputTubeNetwork);
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject & error )
-    {
+  }
+  catch (itk::ExceptionObject & error)
+  {
     std::cerr << "Error: " << error << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   GroupSpatialObjectType::Pointer groupSpatialObject = reader->GetGroup();
-  std::cout << "Number of children = "
-    << groupSpatialObject->GetNumberOfChildren()
-    << std::endl;
+  std::cout << "Number of children = " << groupSpatialObject->GetNumberOfChildren() << std::endl;
 
-  GroupSpatialObjectType::Pointer output = GroupSpatialObjectType::New();
-  char childName[] = "Tube";
-  GroupSpatialObjectType::ChildrenListType * children =
-    groupSpatialObject->GetChildren( 1000, childName );
-  typedef GroupSpatialObjectType::ChildrenListType::iterator
-    GroupChildrenIteratorType;
-  for( GroupChildrenIteratorType it = children->begin();
-       it != children->end();
-       ++it )
+  GroupSpatialObjectType::Pointer            output = GroupSpatialObjectType::New();
+  char                                       childName[] = "Tube";
+  GroupSpatialObjectType::ChildrenListType * children = groupSpatialObject->GetChildren(1000, childName);
+  typedef GroupSpatialObjectType::ChildrenListType::iterator GroupChildrenIteratorType;
+  for (GroupChildrenIteratorType it = children->begin(); it != children->end(); ++it)
+  {
+    TubeSpatialObjectType * pointBasedSpatialObject = dynamic_cast<TubeSpatialObjectType *>((*it).GetPointer());
+    if (pointBasedSpatialObject)
     {
-    TubeSpatialObjectType * pointBasedSpatialObject =
-      dynamic_cast< TubeSpatialObjectType * >( ( *it ).GetPointer() );
-    if( pointBasedSpatialObject )
-      {
-      using SubSampleFilterType = itk::tube::SubSampleTubeSpatialObjectFilter< ObjectDimension >;
+      using SubSampleFilterType = itk::tube::SubSampleTubeSpatialObjectFilter<ObjectDimension>;
       SubSampleFilterType::Pointer subSampleFilter = SubSampleFilterType::New();
-      const unsigned int samplingFactor = 5;
-      subSampleFilter->SetSampling( samplingFactor );
-      subSampleFilter->SetInput( pointBasedSpatialObject );
+      const unsigned int           samplingFactor = 5;
+      subSampleFilter->SetSampling(samplingFactor);
+      subSampleFilter->SetInput(pointBasedSpatialObject);
       try
-        {
+      {
         subSampleFilter->Update();
-        }
-      catch( itk::ExceptionObject & error )
-        {
+      }
+      catch (itk::ExceptionObject & error)
+      {
         std::cerr << "Error: " << error << std::endl;
         delete children;
         return EXIT_FAILURE;
-        }
-      output->AddChild( subSampleFilter->GetOutput() );
       }
+      output->AddChild(subSampleFilter->GetOutput());
     }
+  }
 
 
-  using WriterType = itk::SpatialObjectWriter< ObjectDimension >;
+  using WriterType = itk::SpatialObjectWriter<ObjectDimension>;
   WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( outputTubeNetwork );
-  writer->SetInput( output );
+  writer->SetFileName(outputTubeNetwork);
+  writer->SetInput(output);
   try
-    {
+  {
     writer->Update();
-    }
-  catch( itk::ExceptionObject & error )
-    {
+  }
+  catch (itk::ExceptionObject & error)
+  {
     std::cerr << "Error: " << error << std::endl;
     delete children;
     return EXIT_FAILURE;
-    }
+  }
 
   delete children;
   return EXIT_SUCCESS;

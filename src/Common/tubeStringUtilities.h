@@ -31,70 +31,68 @@ limitations under the License.
 namespace tube
 {
 
-template< class T >
-void StringToVector( const std::string & s, std::vector< T > & vec,
-  std::string sep = "," )
+template <class T>
+void
+StringToVector(const std::string & s, std::vector<T> & vec, std::string sep = ",")
 {
   vec.clear();
 
   std::string::size_type prevPos = 0;
-  std::string::size_type pos = s.find( sep, prevPos );
-  T tVal;
-  while( pos != std::string::npos )
-    {
+  std::string::size_type pos = s.find(sep, prevPos);
+  T                      tVal;
+  while (pos != std::string::npos)
+  {
     // stringstream use whitespace as a delimiter, we don't want that
     // behavior.
-    std::string substr = s.substr( prevPos, pos-prevPos );
-    while( isspace( substr[ 0 ] ) )
+    std::string substr = s.substr(prevPos, pos - prevPos);
+    while (isspace(substr[0]))
+    {
+      substr = substr.substr(1, substr.size() - 1);
+    }
+    while (isspace(substr[substr.size() - 1]))
+    {
+      substr = substr.substr(0, substr.size() - 1);
+    }
+    for (std::string::size_type checkspace = 0; checkspace < substr.size(); ++checkspace)
+    {
+      if (isspace(substr[checkspace]))
       {
-      substr = substr.substr( 1, substr.size()-1 );
+        substr[checkspace] = '_';
       }
-    while( isspace( substr[ substr.size()-1 ] ) )
-      {
-      substr = substr.substr( 0, substr.size()-1 );
-      }
-    for( std::string::size_type checkspace = 0; checkspace < substr.size();
-      ++checkspace )
-      {
-      if( isspace( substr[ checkspace ] ) )
-        {
-        substr[ checkspace ] = '_';
-        }
-      }
+    }
     std::stringstream ss;
     ss << substr;
     ss >> tVal;
-    vec.push_back( tVal );
+    vec.push_back(tVal);
 
-    prevPos = pos+1;
-    while( isspace( s[ prevPos ] ) && prevPos < s.size() )
-      {
+    prevPos = pos + 1;
+    while (isspace(s[prevPos]) && prevPos < s.size())
+    {
       ++prevPos;
-      }
-    pos = s.find( sep, prevPos );
     }
+    pos = s.find(sep, prevPos);
+  }
 
-  std::string substr = s.substr( prevPos, s.size()-prevPos );
-  while( isspace( substr[ 0 ] ) )
+  std::string substr = s.substr(prevPos, s.size() - prevPos);
+  while (isspace(substr[0]))
+  {
+    substr = substr.substr(1, substr.size() - 1);
+  }
+  while (isspace(substr[substr.size() - 1]))
+  {
+    substr = substr.substr(0, substr.size() - 1);
+  }
+  for (std::string::size_type checkspace = 0; checkspace < substr.size(); ++checkspace)
+  {
+    if (isspace(substr[checkspace]))
     {
-    substr = substr.substr( 1, substr.size()-1 );
+      substr[checkspace] = '_';
     }
-  while( isspace( substr[ substr.size()-1 ] ) )
-    {
-    substr = substr.substr( 0, substr.size()-1 );
-    }
-  for( std::string::size_type checkspace = 0; checkspace < substr.size();
-    ++checkspace )
-    {
-    if( isspace( substr[ checkspace ] ) )
-      {
-      substr[ checkspace ] = '_';
-      }
-    }
+  }
   std::stringstream ss;
   ss << substr;
   ss >> tVal;
-  vec.push_back( tVal );
+  vec.push_back(tVal);
 }
 
 } // End namespace tube

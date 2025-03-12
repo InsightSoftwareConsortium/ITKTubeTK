@@ -43,136 +43,134 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TImage >
-class MergeAdjacentImages:
-  public itk::ProcessObject
+template <class TImage>
+class MergeAdjacentImages : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = MergeAdjacentImages;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   using ImageType = TImage;
   using PixelType = typename TImage::PixelType;
 
-  using FilterType = itk::tube::MergeAdjacentImagesFilter< ImageType >;
+  using FilterType = itk::tube::MergeAdjacentImagesFilter<ImageType>;
   using PaddingType = typename FilterType::PaddingType;
   using TransformType = typename FilterType::TransformType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( MergeAdjacentImages, ProcessObject );
+  itkTypeMacro(MergeAdjacentImages, ProcessObject);
 
   /** Set input image 1 */
-  tubeWrapSetConstObjectMacro( Input1, ImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input1, ImageType, Filter);
 
   /** Get input image 1 */
-  tubeWrapGetConstObjectMacro( Input1, ImageType, Filter );
+  tubeWrapGetConstObjectMacro(Input1, ImageType, Filter);
 
   /** Set input image 2 */
-  tubeWrapSetConstObjectMacro( Input2, ImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input2, ImageType, Filter);
 
   /** Get input image 2 */
-  tubeWrapGetConstObjectMacro( Input2, ImageType, Filter );
+  tubeWrapGetConstObjectMacro(Input2, ImageType, Filter);
 
   /** Set value used for output pixels that dont intersect with input image */
-  tubeWrapSetMacro( Background, PixelType, Filter );
+  tubeWrapSetMacro(Background, PixelType, Filter);
 
   /** Get value used for output pixels that dont intersect with input image */
-  tubeWrapGetMacro( Background, PixelType, Filter );
+  tubeWrapGetMacro(Background, PixelType, Filter);
 
   /** Set if zero-valued input pixels should be ignored */
-  tubeWrapSetMacro( MaskZero, bool, Filter );
+  tubeWrapSetMacro(MaskZero, bool, Filter);
 
   /** Get if zero-valued input pixels should be ignored */
-  tubeWrapGetMacro( MaskZero, bool, Filter );
+  tubeWrapGetMacro(MaskZero, bool, Filter);
 
   /** Set number of registration iterations */
-  tubeWrapSetMacro( MaxIterations, unsigned int, Filter );
+  tubeWrapSetMacro(MaxIterations, unsigned int, Filter);
 
   /** Get number of registration iterations */
-  tubeWrapGetMacro( MaxIterations, unsigned int, Filter );
+  tubeWrapGetMacro(MaxIterations, unsigned int, Filter);
 
   /** Set padding for second image */
-  tubeWrapSetConstReferenceMacro( Padding, PaddingType, Filter );
+  tubeWrapSetConstReferenceMacro(Padding, PaddingType, Filter);
 
   /** Get padding for second image */
-  tubeWrapGetConstReferenceMacro( Padding, PaddingType, Filter );
+  tubeWrapGetConstReferenceMacro(Padding, PaddingType, Filter);
 
   /** Set expected initial misalignment offset */
-  tubeWrapSetMacro( ExpectedOffset, double, Filter );
+  tubeWrapSetMacro(ExpectedOffset, double, Filter);
 
   /** Get expected initial misalignment offset */
-  tubeWrapGetMacro( ExpectedOffset, double, Filter );
+  tubeWrapGetMacro(ExpectedOffset, double, Filter);
 
   /** Set expected initial misalignment rotation */
-  tubeWrapSetMacro( ExpectedRotation, double, Filter );
+  tubeWrapSetMacro(ExpectedRotation, double, Filter);
 
   /** Get expected initial misalignment rotation */
-  tubeWrapGetMacro( ExpectedRotation, double, Filter );
+  tubeWrapGetMacro(ExpectedRotation, double, Filter);
 
   /** Set portion of pixels to use to compute similarity in registration */
-  tubeWrapSetMacro( SamplingRatio, double, Filter );
+  tubeWrapSetMacro(SamplingRatio, double, Filter);
 
   /** Get portion of pixels to use to compute similarity in registration */
-  tubeWrapGetMacro( SamplingRatio, double, Filter );
+  tubeWrapGetMacro(SamplingRatio, double, Filter);
 
   /** Set if overlapping pixels should be averaged insted of blending */
-  tubeWrapSetMacro( BlendUsingAverage, bool, Filter );
+  tubeWrapSetMacro(BlendUsingAverage, bool, Filter);
 
   /** Get if overlapping pixels should be averaged instead of blending */
-  tubeWrapGetMacro( BlendUsingAverage, bool, Filter );
+  tubeWrapGetMacro(BlendUsingAverage, bool, Filter);
 
   /** Set use of experimental method for fast blending */
-  tubeWrapSetMacro( UseFastBlending, bool, Filter );
+  tubeWrapSetMacro(UseFastBlending, bool, Filter);
 
   /** Get use of experimental method for fast blending */
-  tubeWrapGetMacro( UseFastBlending, bool, Filter );
+  tubeWrapGetMacro(UseFastBlending, bool, Filter);
 
   /** Set initial transform */
-  tubeWrapSetConstObjectMacro( InitialTransform, TransformType, Filter );
-  tubeWrapGetConstObjectMacro( InitialTransform, TransformType, Filter );
-  tubeWrapCallWithConstReferenceArgMacro( LoadInitialTransform, std::string,
-    Filter );
+  tubeWrapSetConstObjectMacro(InitialTransform, TransformType, Filter);
+  tubeWrapGetConstObjectMacro(InitialTransform, TransformType, Filter);
+  tubeWrapCallWithConstReferenceArgMacro(LoadInitialTransform, std::string, Filter);
 
   /** Get output transform */
-  tubeWrapGetConstObjectMacro( OutputTransform, TransformType, Filter );
-  tubeWrapCallWithConstReferenceArgMacro( SaveOutputTransform, std::string,
-    Filter );
+  tubeWrapGetConstObjectMacro(OutputTransform, TransformType, Filter);
+  tubeWrapCallWithConstReferenceArgMacro(SaveOutputTransform, std::string, Filter);
 
   /** Run algorithm */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
   /** Get output image */
-  tubeWrapGetObjectMacro( Output, ImageType, Filter );
+  tubeWrapGetObjectMacro(Output, ImageType, Filter);
 
 protected:
-  MergeAdjacentImages( void );
+  MergeAdjacentImages(void);
   ~MergeAdjacentImages() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkMergeAdjacentImagesFilter parameters **/
-  MergeAdjacentImages( const Self & );
-  void operator=( const Self & );
+  MergeAdjacentImages(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename FilterType::Pointer m_Filter;
-
 };
 
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeMergeAdjacentImages.hxx"
+#  include "tubeMergeAdjacentImages.hxx"
 #endif
 
 #endif // End !defined( __tubeMergeAdjacentImages_h )

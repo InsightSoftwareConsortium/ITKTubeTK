@@ -43,37 +43,30 @@ namespace tube
 class BlobSpatialObjectDocument : public SpatialObjectDocument
 {
 public:
-
   using Self = BlobSpatialObjectDocument;
   using Superclass = SpatialObjectDocument;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using TransformNameListType = Superclass::TransformNameListType;
 
-  itkNewMacro( Self );
-  itkTypeMacro( BlobSpatialObjectDocument, SpatialObjectDocument );
+  itkNewMacro(Self);
+  itkTypeMacro(BlobSpatialObjectDocument, SpatialObjectDocument);
 
 protected:
-
   /** Constructor. */
-  BlobSpatialObjectDocument( void )
-    {
-    this->SetObjectType( "Blob" );
-    }
+  BlobSpatialObjectDocument(void) { this->SetObjectType("Blob"); }
 
   /** Destructor. */
-  virtual ~BlobSpatialObjectDocument( void )
-    {
-    }
+  virtual ~BlobSpatialObjectDocument(void) {}
 
 private:
-
   // Copy constructor not implemented.
-  BlobSpatialObjectDocument( const Self & self );
+  BlobSpatialObjectDocument(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
 }; // End class BlobSpatialObjectDocument
 

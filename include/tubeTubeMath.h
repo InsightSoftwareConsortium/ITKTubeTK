@@ -39,18 +39,17 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< unsigned int DimensionT, class ImagePixelT=float >
-class TubeMath:
-  public itk::ProcessObject
+template <unsigned int DimensionT, class ImagePixelT = float>
+class TubeMath : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = TubeMath;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  using FilterType = tube::TubeMathFilters< DimensionT, ImagePixelT >;
+  using FilterType = tube::TubeMathFilters<DimensionT, ImagePixelT>;
 
   using TubeGroupType = typename FilterType::TubeGroupType;
   using TubeType = typename FilterType::TubeType;
@@ -58,103 +57,182 @@ public:
   using FloatImageType = typename FilterType::FloatImageType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( TubeMath, ProcessObject );
+  itkTypeMacro(TubeMath, ProcessObject);
 
-  void SetInputTubeGroup( TubeGroupType * tubeGroup )
-  { m_Filter.SetInputTubeGroup( tubeGroup ); this->Modified(); };
+  void
+  SetInputTubeGroup(TubeGroupType * tubeGroup)
+  {
+    m_Filter.SetInputTubeGroup(tubeGroup);
+    this->Modified();
+  };
 
-  void SetInputTube( TubeType * tube )
-  { m_Filter.SetInputTube(tube); this->Modified(); };
+  void
+  SetInputTube(TubeType * tube)
+  {
+    m_Filter.SetInputTube(tube);
+    this->Modified();
+  };
 
-  TubeGroupType * GetOutputTubeGroup( void )
-  { return m_Filter.GetOutputTubeGroup(); };
+  TubeGroupType *
+  GetOutputTubeGroup(void)
+  {
+    return m_Filter.GetOutputTubeGroup();
+  };
 
-  TubeType * GetOutputTube()
-  { return m_Filter.GetOutputTube(); };
+  TubeType *
+  GetOutputTube()
+  {
+    return m_Filter.GetOutputTube();
+  };
 
-  void SetCurrentTubeId( int tubeId )
-  { m_Filter.SetCurrentTubeId(tubeId); this->Modified(); };
+  void
+  SetCurrentTubeId(int tubeId)
+  {
+    m_Filter.SetCurrentTubeId(tubeId);
+    this->Modified();
+  };
 
-  void SetUseAllTubes( void )
-  { m_Filter.SetUseAllTubes(); this->Modified(); };
+  void
+  SetUseAllTubes(void)
+  {
+    m_Filter.SetUseAllTubes();
+    this->Modified();
+  };
 
-  void SetPointValues( std::string propertyId, double val, double blend=1 )
-  { m_Filter.SetPointValues(propertyId, val, blend); this->Modified(); };
+  void
+  SetPointValues(std::string propertyId, double val, double blend = 1)
+  {
+    m_Filter.SetPointValues(propertyId, val, blend);
+    this->Modified();
+  };
 
-  void SetPointValuesFromImage( const ImageType * inputImage,
-    std::string propertyId )
-  { m_Filter.SetPointValuesFromImage(inputImage, propertyId);
-    this->Modified(); };
+  void
+  SetPointValuesFromImage(const ImageType * inputImage, std::string propertyId)
+  {
+    m_Filter.SetPointValuesFromImage(inputImage, propertyId);
+    this->Modified();
+  };
 
-  void SetPointValuesFromImageMean( const ImageType * inputImage,
-    std::string propertyId )
-  { m_Filter.SetPointValuesFromImageMean(inputImage, propertyId);
-    this->Modified(); };
+  void
+  SetPointValuesFromImageMean(const ImageType * inputImage, std::string propertyId)
+  {
+    m_Filter.SetPointValuesFromImageMean(inputImage, propertyId);
+    this->Modified();
+  };
 
-  void ComputeTubeRegions( const ImageType * referenceImage )
-  { m_Filter.ComputeTubeRegions(referenceImage); this->Modified(); };
+  void
+  ComputeTubeRegions(const ImageType * referenceImage)
+  {
+    m_Filter.ComputeTubeRegions(referenceImage);
+    this->Modified();
+  };
 
-  FloatImageType * GetTubeRadiusImage()
-  { return m_Filter.GetTubeRadiusImage(); }
-  FloatImageType * GetTubePointIdImage()
-  { return m_Filter.GetTubePointIdImage(); }
-  FloatImageType * GetTubeDistanceImage()
-  { return m_Filter.GetTubeDistanceImage(); }
+  FloatImageType *
+  GetTubeRadiusImage()
+  {
+    return m_Filter.GetTubeRadiusImage();
+  }
+  FloatImageType *
+  GetTubePointIdImage()
+  {
+    return m_Filter.GetTubePointIdImage();
+  }
+  FloatImageType *
+  GetTubeDistanceImage()
+  {
+    return m_Filter.GetTubeDistanceImage();
+  }
 
-  void SetPointValuesFromTubeRegions( const ImageType * inputImage,
-    const std::string & propertyId, double minRFactor=1, double maxRFactor=3 )
-  { m_Filter.SetPointValuesFromTubeRegions(inputImage, propertyId,
-    minRFactor, maxRFactor); this->Modified(); };
+  void
+  SetPointValuesFromTubeRegions(const ImageType *   inputImage,
+                                const std::string & propertyId,
+                                double              minRFactor = 1,
+                                double              maxRFactor = 3)
+  {
+    m_Filter.SetPointValuesFromTubeRegions(inputImage, propertyId, minRFactor, maxRFactor);
+    this->Modified();
+  };
 
-  void SetPointValuesFromTubeRadius( const ImageType * inputImage,
-    const std::string & propertyId, double minRFactor=1, double maxRFactor=3 )
-  { m_Filter.SetPointValuesFromTubeRadius(inputImage, propertyId,
-    minRFactor, maxRFactor); this->Modified(); };
+  void
+  SetPointValuesFromTubeRadius(const ImageType *   inputImage,
+                               const std::string & propertyId,
+                               double              minRFactor = 1,
+                               double              maxRFactor = 3)
+  {
+    m_Filter.SetPointValuesFromTubeRadius(inputImage, propertyId, minRFactor, maxRFactor);
+    this->Modified();
+  };
 
-  void SmoothTube( double h=2, const std::string & smoothTubeFunction =
-    "SMOOTH_TUBE_USING_INDEX_AVERAGE" )
-  { if( smoothTubeFunction == "SMOOTH_TUBE_USING_INDEX_AVERAGE" )
-      { m_Filter.SmoothTube(h, FilterType::SMOOTH_TUBE_USING_INDEX_AVERAGE ); }
+  void
+  SmoothTube(double h = 2, const std::string & smoothTubeFunction = "SMOOTH_TUBE_USING_INDEX_AVERAGE")
+  {
+    if (smoothTubeFunction == "SMOOTH_TUBE_USING_INDEX_AVERAGE")
+    {
+      m_Filter.SmoothTube(h, FilterType::SMOOTH_TUBE_USING_INDEX_AVERAGE);
+    }
     else
-      { m_Filter.SmoothTube(h, FilterType::SMOOTH_TUBE_USING_INDEX_GAUSSIAN ); }
-    this->Modified(); };
+    {
+      m_Filter.SmoothTube(h, FilterType::SMOOTH_TUBE_USING_INDEX_GAUSSIAN);
+    }
+    this->Modified();
+  };
 
-  void SmoothTubeProperty( const std::string & propertyId, 
-    double h=2, const std::string & smoothTubeFunction =
-    "SMOOTH_TUBE_USING_INDEX_AVERAGE" )
-  { if( smoothTubeFunction == "SMOOTH_TUBE_USING_INDEX_AVERAGE" )
-      { m_Filter.SmoothTubeProperty(propertyId, h,
-        FilterType::SMOOTH_TUBE_USING_INDEX_AVERAGE ); }
+  void
+  SmoothTubeProperty(const std::string & propertyId,
+                     double              h = 2,
+                     const std::string & smoothTubeFunction = "SMOOTH_TUBE_USING_INDEX_AVERAGE")
+  {
+    if (smoothTubeFunction == "SMOOTH_TUBE_USING_INDEX_AVERAGE")
+    {
+      m_Filter.SmoothTubeProperty(propertyId, h, FilterType::SMOOTH_TUBE_USING_INDEX_AVERAGE);
+    }
     else
-      { m_Filter.SmoothTubeProperty(propertyId, h,
-        FilterType::SMOOTH_TUBE_USING_INDEX_GAUSSIAN ); }
-    this->Modified(); };
+    {
+      m_Filter.SmoothTubeProperty(propertyId, h, FilterType::SMOOTH_TUBE_USING_INDEX_GAUSSIAN);
+    }
+    this->Modified();
+  };
 
-  void RenumberPoints( void )
-  { m_Filter.RenumberPoints(); this->Modified(); };
+  void
+  RenumberPoints(void)
+  {
+    m_Filter.RenumberPoints();
+    this->Modified();
+  };
 
-  void SubsampleTube( int N=2 )
-  { m_Filter.SubsampleTube(N); this->Modified(); };
+  void
+  SubsampleTube(int N = 2)
+  {
+    m_Filter.SubsampleTube(N);
+    this->Modified();
+  };
 
-  double ComputeTubeLength( void )
-  { return m_Filter.ComputeTubeLength(); this->Modified(); };
+  double
+  ComputeTubeLength(void)
+  {
+    return m_Filter.ComputeTubeLength();
+    this->Modified();
+  };
 
 protected:
-  TubeMath( void );
+  TubeMath(void);
   ~TubeMath() {}
 
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const;
 
 private:
   /** TubeMath parameters **/
-  TubeMath( const Self & );
-  void operator=( const Self & );
+  TubeMath(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) {};
 
   FilterType m_Filter;
 };
@@ -163,7 +241,7 @@ private:
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeTubeMath.hxx"
+#  include "tubeTubeMath.hxx"
 #endif
 
 #endif // End !defined( __tubeTubeMath_h )

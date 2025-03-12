@@ -14,16 +14,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef itktubePadImageFilter_h
 #define itktubePadImageFilter_h
 
 #include "itkImageToImageFilter.h"
 #include "itkConceptChecking.h"
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 /** \class PadImageFilter
  * \brief Pad two images with zeros to make them suitable for a convolution
@@ -48,9 +50,8 @@ namespace tube {
  * \sa FFTShiftImageFilter NormalizeToConstantImageFilter
  *   FFTRealToComplexConjugateImageFilter
  */
-template<class TInputImage, class TOutputImage=TInputImage>
-class ITK_EXPORT PadImageFilter :
-    public ImageToImageFilter<TInputImage, TOutputImage>
+template <class TInputImage, class TOutputImage = TInputImage>
+class ITK_EXPORT PadImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class type alias. */
@@ -75,18 +76,15 @@ public:
   using SizeType = typename InputImageType::SizeType;
 
   /** ImageDimension constants */
-  itkStaticConstMacro( InputImageDimension, unsigned int,
-                      TInputImage::ImageDimension );
-  itkStaticConstMacro( OutputImageDimension, unsigned int,
-                      TOutputImage::ImageDimension );
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                      TOutputImage::ImageDimension );
+  itkStaticConstMacro(InputImageDimension, unsigned int, TInputImage::ImageDimension);
+  itkStaticConstMacro(OutputImageDimension, unsigned int, TOutputImage::ImageDimension);
+  itkStaticConstMacro(ImageDimension, unsigned int, TOutputImage::ImageDimension);
 
   /** Standard New method. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro( PadImageFilter, ImageToImageFilter );
+  itkTypeMacro(PadImageFilter, ImageToImageFilter);
 
   /**
    * Set/Get whether the images must be padded to a size equal to a
@@ -94,22 +92,24 @@ public:
    * This is required for vnl implementation of FFT, but not for FFTW.
    * The default is false.
    */
-  void SetPadToPowerOfTwo( bool v )
+  void
+  SetPadToPowerOfTwo(bool v)
+  {
+    if (v)
     {
-    if( v )
-      {
-      this->SetGreatestPrimeFactor( 2 );
-      }
+      this->SetGreatestPrimeFactor(2);
+    }
     else
-      {
-      this->SetGreatestPrimeFactor( 13 );
-      }
-    }
-  bool GetPadToPowerOfTwo() const
     {
-    return m_GreatestPrimeFactor == 2;
+      this->SetGreatestPrimeFactor(13);
     }
-  itkBooleanMacro( PadToPowerOfTwo );
+  }
+  bool
+  GetPadToPowerOfTwo() const
+  {
+    return m_GreatestPrimeFactor == 2;
+  }
+  itkBooleanMacro(PadToPowerOfTwo);
 
   /**
    * Set/Get the greatest prime factor allowed on the size of the padded
@@ -122,23 +122,27 @@ public:
    * A greatest prime factor of 1 or less - typically 0 - disable the
    * extra padding.
    */
-  itkGetConstMacro( GreatestPrimeFactor, int );
-  itkSetMacro( GreatestPrimeFactor, int );
+  itkGetConstMacro(GreatestPrimeFactor, int);
+  itkSetMacro(GreatestPrimeFactor, int);
 
   /**
    * Set/Get the padding method.
    */
-  typedef enum { NO_PADDING=0, ZERO_FLUX_NEUMANN=1, ZERO=2, MIRROR=3,
-    WRAP=4 } PadMethod;
-  itkGetConstMacro( PadMethod, int );
-  itkSetMacro( PadMethod, int );
+  typedef enum
+  {
+    NO_PADDING = 0,
+    ZERO_FLUX_NEUMANN = 1,
+    ZERO = 2,
+    MIRROR = 3,
+    WRAP = 4
+  } PadMethod;
+  itkGetConstMacro(PadMethod, int);
+  itkSetMacro(PadMethod, int);
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro( InputHasPixelTraitsCheck,
-    ( Concept::HasPixelTraits<InputImagePixelType> ) );
-  itkConceptMacro( InputHasNumericTraitsCheck,
-    ( Concept::HasNumericTraits<InputImagePixelType> ) );
+  itkConceptMacro(InputHasPixelTraitsCheck, (Concept::HasPixelTraits<InputImagePixelType>));
+  itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<InputImagePixelType>));
   /** End concept checking */
 #endif
 
@@ -147,52 +151,59 @@ protected:
   PadImageFilter();
   ~PadImageFilter() {};
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void GenerateInputRequestedRegion() override;
-  void GenerateOutputInformation() override;
+  void
+  GenerateInputRequestedRegion() override;
+  void
+  GenerateOutputInformation() override;
 
   /** Single-threaded version of GenerateData.  This filter delegates
    * to other filters. */
-  void GenerateData() override;
+  void
+  GenerateData() override;
 
 
 private:
-  PadImageFilter( const Self& ); //purposely not implemented
-  void operator=( const Self& ); //purposely not implemented
+  PadImageFilter(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
   int m_GreatestPrimeFactor;
   int m_PadMethod;
 
-  bool isPrime( int n )
+  bool
+  isPrime(int n)
+  {
+    int last = (int)std::sqrt(static_cast<float>(n));
+    for (int x = 2; x <= last; x++)
     {
-    int last = ( int )std::sqrt( static_cast<float>( n ) );
-    for( int x=2; x<=last; x++ )
+      if (n % x == 0)
       {
-      if( n%x == 0 )
-        {
         return false;
-        }
       }
+    }
     return true;
-    }
+  }
 
-  int greatestPrimeFactor( int n )
-    {
+  int
+  greatestPrimeFactor(int n)
+  {
     int v = 2;
-    while( v <= n )
+    while (v <= n)
+    {
+      if (n % v == 0 && isPrime(v))
       {
-      if( n%v == 0 && isPrime( v ) )
-        {
         n /= v;
-        }
-      else
-        {
-        v += 1;
-        }
       }
-    return v;
+      else
+      {
+        v += 1;
+      }
     }
+    return v;
+  }
 
 }; // end of class
 
@@ -201,7 +212,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubePadImageFilter.hxx"
+#  include "itktubePadImageFilter.hxx"
 #endif
 
 #endif

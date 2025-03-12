@@ -38,21 +38,20 @@ namespace tube
  *        given a scale and extent of the Gaussian.
  * This class is templated over the input image type.
  */
-template< class TInputImage >
-class BlurImageFunction
-  : public ImageFunction< TInputImage, double, double >
+template <class TInputImage>
+class BlurImageFunction : public ImageFunction<TInputImage, double, double>
 {
 public:
   /**
    * Standard "Self" type alias */
   using Self = BlurImageFunction;
   using Superclass = ImageFunction<TInputImage, double, double>;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( BlurImageFunction, ImageFunction );
+  itkTypeMacro(BlurImageFunction, ImageFunction);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /**
    * InputImageType type alias support. */
@@ -67,8 +66,7 @@ public:
 
   /**
    * Dimension of the underlying image. */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    InputImageType::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, InputImageType::ImageDimension);
 
   /**
    * Point type alias support. */
@@ -76,79 +74,86 @@ public:
 
   /**
    * Set the input image. */
-  virtual void SetInputImage( const InputImageType * ptr ) override;
+  virtual void
+  SetInputImage(const InputImageType * ptr) override;
 
   /**
    * Evalulate the function at specified point */
-  virtual double Evaluate( const PointType& point ) const override;
+  virtual double
+  Evaluate(const PointType & point) const override;
 
   /** Evaluate the function at specified Index position. */
-  virtual double EvaluateAtIndex( const IndexType & index ) const override;
+  virtual double
+  EvaluateAtIndex(const IndexType & index) const override;
 
   /** Evaluate the function at specified ContinousIndex position. */
-  virtual double EvaluateAtContinuousIndex( const ContinuousIndexType &
-    index ) const override;
+  virtual double
+  EvaluateAtContinuousIndex(const ContinuousIndexType & index) const override;
 
   /**
    * Set the Scale */
-  void SetScale( double scale );
+  void
+  SetScale(double scale);
 
   /**
    * Get the Scale */
-  itkGetMacro( Scale, double );
+  itkGetMacro(Scale, double);
 
   /**
    * Set the Extent */
-  void SetExtent( double extent );
+  void
+  SetExtent(double extent);
 
   /**
    * Get the Extent */
-  itkGetMacro( Extent, double );
+  itkGetMacro(Extent, double);
 
   /**
    * Get the Spacing */
-  itkGetMacro( Spacing, SpacingType );
+  itkGetMacro(Spacing, SpacingType);
 
   /**
    * Interpret the sigma value to be in terms of x-spacing */
-  void SetUseRelativeSpacing( bool useRelativeSpacing );
+  void
+  SetUseRelativeSpacing(bool useRelativeSpacing);
 
   /**
    * Get the Spacing */
-  itkGetMacro( UseRelativeSpacing, bool );
+  itkGetMacro(UseRelativeSpacing, bool);
 
 protected:
+  BlurImageFunction(void);
+  virtual ~BlurImageFunction(void) {}
 
-  BlurImageFunction( void );
-  virtual ~BlurImageFunction( void ) {}
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
-
-  void RecomputeKernel( void );
+  void
+  RecomputeKernel(void);
 
 private:
+  BlurImageFunction(const Self &);
+  void
+  operator=(const Self &);
 
-  BlurImageFunction( const Self& );
-  void operator=( const Self& );
+  using KernelWeightsListType = std::list<double>;
 
-  using KernelWeightsListType = std::list< double >;
+  using KernelXListType = std::list<typename InputImageType::IndexType>;
 
-  using KernelXListType = std::list< typename InputImageType::IndexType >;
+  bool                  m_UseRelativeSpacing;
+  SpacingType           m_Spacing;
+  SpacingType           m_OriginalSpacing;
+  double                m_Scale;
+  double                m_Extent;
+  KernelWeightsListType m_KernelWeights;
+  KernelXListType       m_KernelX;
+  IndexType             m_KernelMin;
+  IndexType             m_KernelMax;
+  SizeType              m_KernelSize;
+  double                m_KernelTotal;
 
-  bool                    m_UseRelativeSpacing;
-  SpacingType             m_Spacing;
-  SpacingType             m_OriginalSpacing;
-  double                  m_Scale;
-  double                  m_Extent;
-  KernelWeightsListType   m_KernelWeights;
-  KernelXListType         m_KernelX;
-  IndexType               m_KernelMin;
-  IndexType               m_KernelMax;
-  SizeType                m_KernelSize;
-  double                  m_KernelTotal;
-
-  IndexType               m_ImageIndexMin;
-  IndexType               m_ImageIndexMax;
+  IndexType m_ImageIndexMin;
+  IndexType m_ImageIndexMax;
 
 }; // End class BlurImageFunction
 
@@ -157,7 +162,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeBlurImageFunction.hxx"
+#  include "itktubeBlurImageFunction.hxx"
 #endif
 
 #endif // End !defined( __itktubeBlurImageFunction_h )

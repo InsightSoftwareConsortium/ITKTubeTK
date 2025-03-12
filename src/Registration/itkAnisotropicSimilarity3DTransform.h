@@ -54,8 +54,7 @@ namespace itk
  */
 template <class TScalarType = double>
 // Data type for scalars ( float or double )
-class AnisotropicSimilarity3DTransform :
-  public VersorRigid3DTransform<TScalarType>
+class AnisotropicSimilarity3DTransform : public VersorRigid3DTransform<TScalarType>
 {
 public:
   /** Standard class type alias. */
@@ -65,16 +64,16 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   /** New macro for creation of through a Smart Pointer. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( AnisotropicSimilarity3DTransform, VersorRigid3DTransform );
+  itkTypeMacro(AnisotropicSimilarity3DTransform, VersorRigid3DTransform);
 
   /** Dimension of parameters. */
-  itkStaticConstMacro( SpaceDimension, unsigned int, 3 );
-  itkStaticConstMacro( InputSpaceDimension, unsigned int, 3 );
-  itkStaticConstMacro( OutputSpaceDimension, unsigned int, 3 );
-  itkStaticConstMacro( ParametersDimension, unsigned int, 9 );
+  itkStaticConstMacro(SpaceDimension, unsigned int, 3);
+  itkStaticConstMacro(InputSpaceDimension, unsigned int, 3);
+  itkStaticConstMacro(OutputSpaceDimension, unsigned int, 3);
+  itkStaticConstMacro(ParametersDimension, unsigned int, 9);
 
   /** Parameters Type   */
   using ParametersType = typename Superclass::ParametersType;
@@ -87,10 +86,8 @@ public:
   using InputVnlVectorType = typename Superclass::InputVnlVectorType;
   using OutputVnlVectorType = typename Superclass::OutputVnlVectorType;
 
-  typedef typename Superclass::InputCovariantVectorType
-                                                 InputCovariantVectorType;
-  typedef typename Superclass::OutputCovariantVectorType
-                                                 OutputCovariantVectorType;
+  typedef typename Superclass::InputCovariantVectorType  InputCovariantVectorType;
+  typedef typename Superclass::OutputCovariantVectorType OutputCovariantVectorType;
   using MatrixType = typename Superclass::MatrixType;
   using InverseMatrixType = typename Superclass::InverseMatrixType;
   using CenterType = typename Superclass::CenterType;
@@ -109,68 +106,74 @@ public:
    * to within a specified tolerance, else an exception is thrown.
    *
    * \sa MatrixOffsetTransformBase::SetMatrix() */
-  virtual void SetMatrix( const MatrixType & matrix ) override;
-  virtual void SetMatrix( const MatrixType & matrix, const double tolerance )
-    override;
+  virtual void
+  SetMatrix(const MatrixType & matrix) override;
+  virtual void
+  SetMatrix(const MatrixType & matrix, const double tolerance) override;
 
   /** Set the transformation from a container of parameters This is
    * typically used by optimizers.  There are 7 parameters. The first
    * three represent the versor, the next three represent the translation
    * and the last one represents the scaling factor. */
-  void SetParameters( const ParametersType & parameters ) override;
+  void
+  SetParameters(const ParametersType & parameters) override;
 
-  virtual const ParametersType & GetParameters( void ) const override;
+  virtual const ParametersType &
+  GetParameters(void) const override;
 
   /** Set/Get the value of the isotropic scaling factor */
-  void SetScale( ScaleType scale );
+  void
+  SetScale(ScaleType scale);
 
-  void SetScale( VectorType scale );
+  void
+  SetScale(VectorType scale);
 
-  itkGetConstReferenceMacro( Scale, VectorType );
+  itkGetConstReferenceMacro(Scale, VectorType);
 
   /** This method computes the Jacobian matrix of the transformation.
    * given point or vector, returning the transformed point or
    * vector. The rank of the Jacobian will also indicate if the
    * transform is invertible at this point. */
-  virtual const JacobianType & GetJacobian( const InputPointType  & point )
-    const;
+  virtual const JacobianType &
+  GetJacobian(const InputPointType & point) const;
 
-  virtual void ComputeJacobianWithRespectToParameters(
-    const InputPointType & p, JacobianType & jacobian ) const override;
+  virtual void
+  ComputeJacobianWithRespectToParameters(const InputPointType & p, JacobianType & jacobian) const override;
 
 protected:
-  AnisotropicSimilarity3DTransform( const MatrixType & matrix,
-    const OutputVectorType & offset );
-  AnisotropicSimilarity3DTransform( unsigned int paramDim );
+  AnisotropicSimilarity3DTransform(const MatrixType & matrix, const OutputVectorType & offset);
+  AnisotropicSimilarity3DTransform(unsigned int paramDim);
   AnisotropicSimilarity3DTransform();
-  ~AnisotropicSimilarity3DTransform()
-    {
-    };
+  ~AnisotropicSimilarity3DTransform() {};
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Recomputes the matrix by calling the Superclass::ComputeMatrix() and
    * then applying the scale factor. */
-  void ComputeMatrix() override;
+  void
+  ComputeMatrix() override;
 
   /** Computes the parameters from an input matrix. */
-  void ComputeMatrixParameters() override;
+  void
+  ComputeMatrixParameters() override;
 
 private:
   // purposely not implemented
-  AnisotropicSimilarity3DTransform( const Self & );
+  AnisotropicSimilarity3DTransform(const Self &);
   // purposely not implemented
-  void operator=( const Self & );
+  void
+  operator=(const Self &);
 
   VectorType           m_Scale;
   mutable JacobianType m_NonThreadsafeSharedJacobian;
 
 }; // class AnisotropicSimilarity3DTransform
 
-}  // namespace itk
+} // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkAnisotropicSimilarity3DTransform.hxx"
+#  include "itkAnisotropicSimilarity3DTransform.hxx"
 #endif
 
 #endif /* __itkAnisotropicSimilarity3DTransform_h */

@@ -31,75 +31,62 @@ limitations under the License.
 #include "tubeMetaObjectDocument.h"
 #include "tubeOptionList.h"
 
-int tubeObjectDocumentsPrintTest( int tubeNotUsed( argc ),
-                                      char * tubeNotUsed( argv )[] )
+int
+tubeObjectDocumentsPrintTest(int tubeNotUsed(argc), char * tubeNotUsed(argv)[])
 {
   using BlobSpatialObjectDocumentType = itk::tube::BlobSpatialObjectDocument;
 
-  BlobSpatialObjectDocumentType::Pointer blobSpatialObjectDocument
-    = BlobSpatialObjectDocumentType::New();
-  tubeStandardOutputMacro( << "-------------itk::tube::BlobSpatialObjectDocument"
-                           << blobSpatialObjectDocument );
+  BlobSpatialObjectDocumentType::Pointer blobSpatialObjectDocument = BlobSpatialObjectDocumentType::New();
+  tubeStandardOutputMacro(<< "-------------itk::tube::BlobSpatialObjectDocument" << blobSpatialObjectDocument);
 
   using DocumentType = itk::tube::Document;
 
   DocumentType::Pointer document = DocumentType::New();
-  tubeStandardOutputMacro( << "-------------itk::tube::Document" << document );
+  tubeStandardOutputMacro(<< "-------------itk::tube::Document" << document);
 
   using ImageDocumentType = itk::tube::ImageDocument;
 
   ImageDocumentType::Pointer imageDocument = ImageDocumentType::New();
-  tubeStandardOutputMacro( << "-------------itk::tube::ImageDocument"
-                           << imageDocument );
+  tubeStandardOutputMacro(<< "-------------itk::tube::ImageDocument" << imageDocument);
 
   using MetaDocumentType = tube::MetaDocument;
 
   MetaDocumentType::Pointer metaDocument = new MetaDocumentType();
-  tubeStandardOutputMacro( << "-------------tube::MetaDocument"
-                           << metaDocument );
+  tubeStandardOutputMacro(<< "-------------tube::MetaDocument" << metaDocument);
   delete metaDocument;
 
   using MetaObjectDocumentType = tube::MetaObjectDocument;
 
-  MetaObjectDocumentType::Pointer metaObjectDocument
-    = new MetaObjectDocumentType();
-  tubeStandardOutputMacro( << "-------------tube::MetaObjectDocument"
-                           << metaObjectDocument );
+  MetaObjectDocumentType::Pointer metaObjectDocument = new MetaObjectDocumentType();
+  tubeStandardOutputMacro(<< "-------------tube::MetaObjectDocument" << metaObjectDocument);
   delete metaObjectDocument;
 
   using ObjectDocumentType = itk::tube::ObjectDocument;
 
   ObjectDocumentType::Pointer objectDocument = ObjectDocumentType::New();
-  tubeStandardOutputMacro( << "-------------itk::tube::ObjectDocument"
-                           << objectDocument );
+  tubeStandardOutputMacro(<< "-------------itk::tube::ObjectDocument" << objectDocument);
 
-  using ImageType = itk::Image< float, 3 >;
-  using ObjectDocumentToImageFilterType = itk::tube::ObjectDocumentToImageFilter< ObjectDocumentType, ImageType >;
+  using ImageType = itk::Image<float, 3>;
+  using ObjectDocumentToImageFilterType = itk::tube::ObjectDocumentToImageFilter<ObjectDocumentType, ImageType>;
 
-  ObjectDocumentToImageFilterType::Pointer objectDocumentToImageFilter
-    = ObjectDocumentToImageFilterType::New();
-  tubeStandardOutputMacro( << "-------------itk::tube::ObjectDocumentToImageFilter"
-                           << objectDocumentToImageFilter );
+  ObjectDocumentToImageFilterType::Pointer objectDocumentToImageFilter = ObjectDocumentToImageFilterType::New();
+  tubeStandardOutputMacro(<< "-------------itk::tube::ObjectDocumentToImageFilter" << objectDocumentToImageFilter);
 
-  using ObjectDocumentToObjectSourceType = itk::tube::ObjectDocumentToObjectSource< ObjectDocumentType, 3 >;
+  using ObjectDocumentToObjectSourceType = itk::tube::ObjectDocumentToObjectSource<ObjectDocumentType, 3>;
 
-  ObjectDocumentToObjectSourceType::Pointer objectDocumentToObjectSource
-    = ObjectDocumentToObjectSourceType::New();
-  tubeStandardOutputMacro( << "-------------itk::tube::ObjectDocumentToObjectSource"
-                           << objectDocumentToObjectSource );
+  ObjectDocumentToObjectSourceType::Pointer objectDocumentToObjectSource = ObjectDocumentToObjectSourceType::New();
+  tubeStandardOutputMacro(<< "-------------itk::tube::ObjectDocumentToObjectSource" << objectDocumentToObjectSource);
 
   using OptionListType = tube::OptionList;
 
   OptionListType::Pointer optionList = new OptionListType();
-  tubeStandardOutputMacro( << "-------------tube::OptionList" << optionList );
+  tubeStandardOutputMacro(<< "-------------tube::OptionList" << optionList);
   delete optionList;
 
   using SpatialObjectDocumentType = itk::tube::SpatialObjectDocument;
 
-  SpatialObjectDocumentType::Pointer spatialObjectDocument
-    = SpatialObjectDocumentType::New();
-  tubeStandardOutputMacro( << "-------------itk::tube::SpatialObjectDocument"
-                           << spatialObjectDocument );
+  SpatialObjectDocumentType::Pointer spatialObjectDocument = SpatialObjectDocumentType::New();
+  tubeStandardOutputMacro(<< "-------------itk::tube::SpatialObjectDocument" << spatialObjectDocument);
 
   return EXIT_SUCCESS;
 }

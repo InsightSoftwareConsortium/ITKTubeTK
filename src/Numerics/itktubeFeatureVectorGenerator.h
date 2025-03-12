@@ -37,100 +37,115 @@ namespace itk
 namespace tube
 {
 
-template< class TImage >
+template <class TImage>
 class FeatureVectorGenerator : public LightProcessObject
 {
 public:
-
   using Self = FeatureVectorGenerator;
   using Superclass = LightProcessObject;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( FeatureVectorGenerator, LightProcessObject );
+  itkTypeMacro(FeatureVectorGenerator, LightProcessObject);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   using ImageType = TImage;
-  using ImageListType = std::vector< typename ImageType::ConstPointer >;
+  using ImageListType = std::vector<typename ImageType::ConstPointer>;
 
   using IndexType = typename TImage::IndexType;
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
   using FeatureValueType = float;
-  using FeatureVectorType = vnl_vector< FeatureValueType >;
+  using FeatureVectorType = vnl_vector<FeatureValueType>;
 
-  using FeatureImageType = Image< FeatureValueType, TImage::ImageDimension >;
+  using FeatureImageType = Image<FeatureValueType, TImage::ImageDimension>;
 
   using ValueType = double;
-  using ValueListType = std::vector< ValueType >;
+  using ValueListType = std::vector<ValueType>;
 
-  virtual void SetInput( const ImageType * img );
-  virtual void SetInput( unsigned int id, const ImageType * img );
-  void AddInput( const ImageType * img );
+  virtual void
+  SetInput(const ImageType * img);
+  virtual void
+  SetInput(unsigned int id, const ImageType * img);
+  void
+  AddInput(const ImageType * img);
 
-  typename ImageType::ConstPointer GetInput( unsigned int imageNum );
+  typename ImageType::ConstPointer
+  GetInput(unsigned int imageNum);
 
-  unsigned int GetNumberOfInputImages() const;
+  unsigned int
+  GetNumberOfInputImages() const;
 
-  void SetUpdateWhitenStatisticsOnUpdate( bool
-    updateWhitenStatisticsOnUpdate );
-  bool GetUpdateWhitenStatisticsOnUpdate( void );
+  void
+  SetUpdateWhitenStatisticsOnUpdate(bool updateWhitenStatisticsOnUpdate);
+  bool
+  GetUpdateWhitenStatisticsOnUpdate(void);
 
-  void   SetWhitenMeans( const ValueListType & means );
-  const  ValueListType & GetWhitenMeans( void ) const;
+  void
+  SetWhitenMeans(const ValueListType & means);
+  const ValueListType &
+  GetWhitenMeans(void) const;
 
-  void   SetWhitenStdDevs( const ValueListType & stdDevs );
-  const  ValueListType & GetWhitenStdDevs( void ) const;
+  void
+  SetWhitenStdDevs(const ValueListType & stdDevs);
+  const ValueListType &
+  GetWhitenStdDevs(void) const;
 
-  void   SetWhitenMean( unsigned int num, double mean );
-  double GetWhitenMean( unsigned int num ) const;
+  void
+  SetWhitenMean(unsigned int num, double mean);
+  double
+  GetWhitenMean(unsigned int num) const;
 
-  void   SetWhitenStdDev( unsigned int num, double stdDev );
-  double GetWhitenStdDev( unsigned int num ) const;
+  void
+  SetWhitenStdDev(unsigned int num, double stdDev);
+  double
+  GetWhitenStdDev(unsigned int num) const;
 
-  itkSetMacro( UseFeatureMath, bool );
-  itkGetMacro( UseFeatureMath, bool );
+  itkSetMacro(UseFeatureMath, bool);
+  itkGetMacro(UseFeatureMath, bool);
 
-  virtual unsigned int GetNumberOfFeatures( void ) const;
+  virtual unsigned int
+  GetNumberOfFeatures(void) const;
 
-  virtual FeatureVectorType GetFeatureVector(
-    const IndexType & indx ) const;
+  virtual FeatureVectorType
+  GetFeatureVector(const IndexType & indx) const;
 
-  virtual FeatureValueType GetFeatureVectorValue(
-    const IndexType & indx, unsigned int fNum ) const;
+  virtual FeatureValueType
+  GetFeatureVectorValue(const IndexType & indx, unsigned int fNum) const;
 
-  virtual typename FeatureImageType::Pointer GetFeatureImage(
-    unsigned int num ) const;
+  virtual typename FeatureImageType::Pointer
+  GetFeatureImage(unsigned int num) const;
 
-  virtual void Update( void );
+  virtual void
+  Update(void);
 
 protected:
+  FeatureVectorGenerator(void);
+  virtual ~FeatureVectorGenerator(void);
 
-  FeatureVectorGenerator( void );
-  virtual ~FeatureVectorGenerator( void );
+  ImageListType m_InputImageList;
 
-  ImageListType                   m_InputImageList;
+  bool m_UseFeatureMath;
 
-  bool                            m_UseFeatureMath;
+  ValueListType m_WhitenMean;
+  ValueListType m_WhitenStdDev;
 
-  ValueListType                   m_WhitenMean;
-  ValueListType                   m_WhitenStdDev;
+  virtual void
+  UpdateWhitenStatistics(void);
 
-  virtual void UpdateWhitenStatistics( void );
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Purposely not implemented
-  FeatureVectorGenerator( const Self & );
-  void operator = ( const Self & );      // Purposely not implemented
+  FeatureVectorGenerator(const Self &);
+  void
+  operator=(const Self &); // Purposely not implemented
 
   //  Data
-  bool                            m_UpdateWhitenStatisticsOnUpdate;
+  bool m_UpdateWhitenStatisticsOnUpdate;
 
 }; // End class FeatureVectorGenerator
 
@@ -139,7 +154,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeFeatureVectorGenerator.hxx"
+#  include "itktubeFeatureVectorGenerator.hxx"
 #endif
 
 #endif // End !defined( __itktubeFeatureVectorGenerator_h )

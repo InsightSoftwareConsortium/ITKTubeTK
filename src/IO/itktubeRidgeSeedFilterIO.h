@@ -34,55 +34,59 @@ namespace tube
 {
 
 /**
-*
-* Reads and Writes RidgeSeedFilterIO Files, typically designated .mnda files
-*
-* \author Stephen R. Aylward
-*
-* \date August 29, 2013
-*
-*/
-template< class TImage, class TLabelMap >
+ *
+ * Reads and Writes RidgeSeedFilterIO Files, typically designated .mnda files
+ *
+ * \author Stephen R. Aylward
+ *
+ * \date August 29, 2013
+ *
+ */
+template <class TImage, class TLabelMap>
 class RidgeSeedFilterIO
 {
 public:
+  using RidgeSeedFilterIOType = RidgeSeedFilterIO<TImage, TLabelMap>;
 
-  using RidgeSeedFilterIOType = RidgeSeedFilterIO< TImage, TLabelMap >;
+  using RidgeSeedFilterType = RidgeSeedFilter<TImage, TLabelMap>;
 
-  using RidgeSeedFilterType = RidgeSeedFilter< TImage, TLabelMap >;
+  RidgeSeedFilterIO(void);
 
-  RidgeSeedFilterIO( void );
+  RidgeSeedFilterIO(const char * _headerName);
 
-  RidgeSeedFilterIO( const char * _headerName );
+  RidgeSeedFilterIO(const typename RidgeSeedFilterType::Pointer & _filter);
 
-  RidgeSeedFilterIO( const typename
-    RidgeSeedFilterType::Pointer & _filter );
+  ~RidgeSeedFilterIO(void);
 
-  ~RidgeSeedFilterIO( void );
+  virtual void
+  PrintInfo(void) const;
 
-  virtual void PrintInfo( void ) const;
+  virtual void
+  CopyInfo(const RidgeSeedFilterIOType & _filterIO);
 
-  virtual void CopyInfo( const RidgeSeedFilterIOType & _filterIO );
+  virtual void
+  Clear(void);
 
-  virtual void Clear( void );
+  virtual bool
+  InitializeEssential(const typename RidgeSeedFilterType::Pointer & _filter);
 
-  virtual bool InitializeEssential( const typename
-    RidgeSeedFilterType::Pointer & _filter );
+  void
+  SetRidgeSeedFilter(const typename RidgeSeedFilterType::Pointer & _filter);
 
-  void SetRidgeSeedFilter( const typename
-    RidgeSeedFilterType::Pointer & _filter );
+  const typename RidgeSeedFilterType::Pointer
+  GetRidgeSeedFilter(void) const;
 
-  const typename RidgeSeedFilterType::Pointer GetRidgeSeedFilter( void ) const;
+  virtual bool
+  CanRead(const char * _headerName = NULL) const;
 
-  virtual bool CanRead( const char * _headerName = NULL ) const;
+  virtual bool
+  Read(const char * _headerName = NULL);
 
-  virtual bool Read( const char * _headerName = NULL );
-
-  virtual bool Write( const char * _headerName = NULL );
+  virtual bool
+  Write(const char * _headerName = NULL);
 
 protected:
-
-  typename RidgeSeedFilterType::Pointer  m_RidgeSeedFilter;
+  typename RidgeSeedFilterType::Pointer m_RidgeSeedFilter;
 
 }; // End class RidgeSeedFilterIO
 
@@ -91,7 +95,7 @@ protected:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeRidgeSeedFilterIO.hxx"
+#  include "itktubeRidgeSeedFilterIO.hxx"
 #endif
 
 #endif // End !defined( __itktubeRidgeSeedFilterIO_h )

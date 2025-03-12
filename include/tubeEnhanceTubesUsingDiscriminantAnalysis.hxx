@@ -14,27 +14,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef tubeEnhanceTubesUsingDiscriminantAnalysis_hxx
 #define tubeEnhanceTubesUsingDiscriminantAnalysis_hxx
 
 
-
 namespace tube
 {
-template< class TImage, class TLabelMap >
-EnhanceTubesUsingDiscriminantAnalysis< TImage, TLabelMap >
-::EnhanceTubesUsingDiscriminantAnalysis( void )
+template <class TImage, class TLabelMap>
+EnhanceTubesUsingDiscriminantAnalysis<TImage, TLabelMap>::EnhanceTubesUsingDiscriminantAnalysis(void)
 {
   m_Filter = FilterType::New();
 }
 
-template< class TImage, class TLabelMap >
+template <class TImage, class TLabelMap>
 void
-EnhanceTubesUsingDiscriminantAnalysis< TImage, TLabelMap >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+EnhanceTubesUsingDiscriminantAnalysis<TImage, TLabelMap>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 
   os << indent << m_Filter << std::endl;
 }

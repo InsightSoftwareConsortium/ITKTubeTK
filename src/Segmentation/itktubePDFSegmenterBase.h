@@ -36,19 +36,18 @@ namespace itk
 namespace tube
 {
 
-template< class TImage, class TLabelMap >
+template <class TImage, class TLabelMap>
 class PDFSegmenterBase : public ProcessObject
 {
 public:
-
   using Self = PDFSegmenterBase;
   using Superclass = ProcessObject;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( PDFSegmenterBase, ProcessObject );
+  itkTypeMacro(PDFSegmenterBase, ProcessObject);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   //
   // Template Args Typedefs
@@ -57,176 +56,192 @@ public:
 
   using LabelMapType = TLabelMap;
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
   //
   // Base Typedefs
   //
-  using FeatureVectorGeneratorType = FeatureVectorGenerator< InputImageType >;
-  typedef typename FeatureVectorGeneratorType::FeatureValueType
-                                               FeatureValueType;
-  typedef typename FeatureVectorGeneratorType::FeatureVectorType
-                                               FeatureVectorType;
-  typedef typename FeatureVectorGeneratorType::FeatureImageType
-                                               FeatureImageType;
+  using FeatureVectorGeneratorType = FeatureVectorGenerator<InputImageType>;
+  typedef typename FeatureVectorGeneratorType::FeatureValueType  FeatureValueType;
+  typedef typename FeatureVectorGeneratorType::FeatureVectorType FeatureVectorType;
+  typedef typename FeatureVectorGeneratorType::FeatureImageType  FeatureImageType;
 
   using LabelMapPixelType = typename LabelMapType::PixelType;
 
   using ObjectIdType = LabelMapPixelType;
-  using ObjectIdListType = std::vector< ObjectIdType >;
+  using ObjectIdListType = std::vector<ObjectIdType>;
 
   using ProbabilityPixelType = float;
-  using ProbabilityVectorType = std::vector< ProbabilityPixelType >;
-  using ProbabilityImageType = Image< ProbabilityPixelType, TImage::ImageDimension >;
+  using ProbabilityVectorType = std::vector<ProbabilityPixelType>;
+  using ProbabilityImageType = Image<ProbabilityPixelType, TImage::ImageDimension>;
 
-  using VectorDoubleType = std::vector< double >;
-  using VectorIntType = std::vector< int >;
-  using VectorUIntType = std::vector< unsigned int >;
+  using VectorDoubleType = std::vector<double>;
+  using VectorIntType = std::vector<int>;
+  using VectorUIntType = std::vector<unsigned int>;
 
   //
   // Methods
   //
-  void SetFeatureVectorGenerator( typename
-    FeatureVectorGeneratorType::Pointer fvg );
+  void
+  SetFeatureVectorGenerator(typename FeatureVectorGeneratorType::Pointer fvg);
 
-  void ClearObjectIds( void );
-  void SetObjectId( ObjectIdType objectId );
-  void AddObjectId( ObjectIdType objectId );
-  void SetObjectId( ObjectIdListType _objectId );
-  const ObjectIdListType & GetObjectId( void ) const;
-  ObjectIdType * GetObjectId( int i );
+  void
+  ClearObjectIds(void);
+  void
+  SetObjectId(ObjectIdType objectId);
+  void
+  AddObjectId(ObjectIdType objectId);
+  void
+  SetObjectId(ObjectIdListType _objectId);
+  const ObjectIdListType &
+  GetObjectId(void) const;
+  ObjectIdType *
+  GetObjectId(int i);
 
-  unsigned int GetNumberOfClasses( void ) const;
-  unsigned int GetNumberOfObjectIds( void ) const;
+  unsigned int
+  GetNumberOfClasses(void) const;
+  unsigned int
+  GetNumberOfObjectIds(void) const;
 
-  unsigned int GetNumberOfFeatures( void ) const;
+  unsigned int
+  GetNumberOfFeatures(void) const;
 
-  unsigned int GetObjectNumberFromId( ObjectIdType id ) const;
+  unsigned int
+  GetObjectNumberFromId(ObjectIdType id) const;
 
-  void   SetObjectPDFWeight( unsigned int num, double weight );
-  void   SetObjectPDFWeight( const VectorDoubleType & weight );
-  double * GetObjectPDFWeight( int i );
-  const VectorDoubleType & GetObjectPDFWeight( void ) const;
+  void
+  SetObjectPDFWeight(unsigned int num, double weight);
+  void
+  SetObjectPDFWeight(const VectorDoubleType & weight);
+  double *
+  GetObjectPDFWeight(int i);
+  const VectorDoubleType &
+  GetObjectPDFWeight(void) const;
 
-  itkSetMacro( VoidId, ObjectIdType );
-  itkGetMacro( VoidId, ObjectIdType );
+  itkSetMacro(VoidId, ObjectIdType);
+  itkGetMacro(VoidId, ObjectIdType);
 
-  itkSetMacro( IgnoreId, ObjectIdType );
-  itkGetMacro( IgnoreId, ObjectIdType );
+  itkSetMacro(IgnoreId, ObjectIdType);
+  itkGetMacro(IgnoreId, ObjectIdType);
 
-  itkSetObjectMacro( InputLabelMap, LabelMapType );
-  itkGetModifiableObjectMacro( InputLabelMap, LabelMapType );
+  itkSetObjectMacro(InputLabelMap, LabelMapType);
+  itkGetModifiableObjectMacro(InputLabelMap, LabelMapType);
 
-  itkSetMacro( ErodeDilateRadius, unsigned int );
-  itkGetMacro( ErodeDilateRadius, unsigned int );
-  itkSetMacro( DilateFirst, bool );
-  itkGetMacro( DilateFirst, bool );
-  itkSetMacro( HoleFillIterations, unsigned int );
-  itkGetMacro( HoleFillIterations, unsigned int );
-  itkSetMacro( ProbabilityImageSmoothingStandardDeviation, double );
-  itkGetMacro( ProbabilityImageSmoothingStandardDeviation, double );
+  itkSetMacro(ErodeDilateRadius, unsigned int);
+  itkGetMacro(ErodeDilateRadius, unsigned int);
+  itkSetMacro(DilateFirst, bool);
+  itkGetMacro(DilateFirst, bool);
+  itkSetMacro(HoleFillIterations, unsigned int);
+  itkGetMacro(HoleFillIterations, unsigned int);
+  itkSetMacro(ProbabilityImageSmoothingStandardDeviation, double);
+  itkGetMacro(ProbabilityImageSmoothingStandardDeviation, double);
 
   /** Copy the input object mask to the output mask, overwritting the
    *   classification assigned to those voxels. Default is false. */
-  itkSetMacro( ReclassifyObjectLabels, bool );
-  itkGetMacro( ReclassifyObjectLabels, bool );
+  itkSetMacro(ReclassifyObjectLabels, bool);
+  itkGetMacro(ReclassifyObjectLabels, bool);
 
   /** Copy the input not-object mask to the output mask, overwritting the
    *   classification assigned to those voxels. Default is false. */
-  itkSetMacro( ReclassifyNotObjectLabels, bool );
-  itkGetMacro( ReclassifyNotObjectLabels, bool );
+  itkSetMacro(ReclassifyNotObjectLabels, bool);
+  itkGetMacro(ReclassifyNotObjectLabels, bool);
 
   /** All object, void, and notObject pixels are force to being classified
    * as object or notObject. Default is false. */
-  itkSetMacro( ForceClassification, bool );
-  itkGetMacro( ForceClassification, bool );
+  itkSetMacro(ForceClassification, bool);
+  itkGetMacro(ForceClassification, bool);
 
   /** Reduce sample size per class to match that of the class with the
    * sample size. Default is true. */
-  itkSetMacro( BalanceClassSampleSize, bool );
-  itkGetMacro( BalanceClassSampleSize, bool );
+  itkSetMacro(BalanceClassSampleSize, bool);
+  itkGetMacro(BalanceClassSampleSize, bool);
 
-  void SetProgressProcessInformation( void * processInfo, double fraction,
-    double start );
+  void
+  SetProgressProcessInformation(void * processInfo, double fraction, double start);
 
-  virtual void Update( void ) override;
+  virtual void
+  Update(void) override;
 
-  itkGetModifiableObjectMacro( OutputLabelMap, LabelMapType );
+  itkGetModifiableObjectMacro(OutputLabelMap, LabelMapType);
 
-  virtual void ClassifyImages( void );
+  virtual void
+  ClassifyImages(void);
 
   // Overwrite for speedup
-  virtual typename ProbabilityImageType::Pointer GetClassProbabilityImage(
-    unsigned int classNum ) const;
+  virtual typename ProbabilityImageType::Pointer
+  GetClassProbabilityImage(unsigned int classNum) const;
 
   //
   // Must overwrite
   //
-  virtual ProbabilityVectorType GetProbabilityVector( const
-    FeatureVectorType & fv ) const;
+  virtual ProbabilityVectorType
+  GetProbabilityVector(const FeatureVectorType & fv) const;
 
 protected:
+  PDFSegmenterBase(void);
+  virtual ~PDFSegmenterBase(void);
 
-  PDFSegmenterBase( void );
-  virtual ~PDFSegmenterBase( void );
+  void
+  BalanceClassSampleSize(void);
 
-  void BalanceClassSampleSize( void );
-
-  virtual void GenerateSample( void );
+  virtual void
+  GenerateSample(void);
 
   //
   // Must overwrite
   //
-  virtual void GeneratePDFs( void );
+  virtual void
+  GeneratePDFs(void);
 
-  virtual void ApplyPDFs( void );
+  virtual void
+  ApplyPDFs(void);
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  using ProbabilityImageVectorType = std::vector< typename ProbabilityImageType::Pointer >;
-  using ListVectorType = std::vector< ProbabilityPixelType >;
-  using ListSampleType = std::vector< ListVectorType >;
-  using ClassListSampleType = std::vector< ListSampleType >;
+  using ProbabilityImageVectorType = std::vector<typename ProbabilityImageType::Pointer>;
+  using ListVectorType = std::vector<ProbabilityPixelType>;
+  using ListSampleType = std::vector<ListVectorType>;
+  using ClassListSampleType = std::vector<ListSampleType>;
 
-  ClassListSampleType                           m_InClassList;
-  ListSampleType                                m_OutClassList;
+  ClassListSampleType m_InClassList;
+  ListSampleType      m_OutClassList;
 
-  typename FeatureVectorGeneratorType::Pointer  m_FeatureVectorGenerator;
+  typename FeatureVectorGeneratorType::Pointer m_FeatureVectorGenerator;
 
-  typename LabelMapType::Pointer                m_InputLabelMap;
-  typename LabelMapType::Pointer                m_OutputLabelMap;
+  typename LabelMapType::Pointer m_InputLabelMap;
+  typename LabelMapType::Pointer m_OutputLabelMap;
 
-  ProbabilityImageVectorType                    m_ProbabilityImageVector;
+  ProbabilityImageVectorType m_ProbabilityImageVector;
 
-  bool                m_SampleUpToDate;
-  bool                m_PDFsUpToDate;
-  bool                m_ClassProbabilityImagesUpToDate;
+  bool m_SampleUpToDate;
+  bool m_PDFsUpToDate;
+  bool m_ClassProbabilityImagesUpToDate;
 
-  ObjectIdListType    m_ObjectIdList;
-  ObjectIdType        m_VoidId;
-  ObjectIdType        m_IgnoreId;
+  ObjectIdListType m_ObjectIdList;
+  ObjectIdType     m_VoidId;
+  ObjectIdType     m_IgnoreId;
 
-  void              * m_ProgressProcessInfo;
-  double              m_ProgressFraction;
-  double              m_ProgressStart;
+  void * m_ProgressProcessInfo;
+  double m_ProgressFraction;
+  double m_ProgressStart;
 
 private:
+  PDFSegmenterBase(const Self &); // Purposely not implemented
+  void
+  operator=(const Self &); // Purposely not implemented
 
-  PDFSegmenterBase( const Self & );      // Purposely not implemented
-  void operator = ( const Self & );      // Purposely not implemented
+  VectorDoubleType m_PDFWeightList;
 
-  VectorDoubleType    m_PDFWeightList;
+  unsigned int m_ErodeDilateRadius;
+  bool         m_DilateFirst;
+  unsigned int m_HoleFillIterations;
+  double       m_ProbabilityImageSmoothingStandardDeviation;
+  bool         m_ReclassifyObjectLabels;
+  bool         m_ReclassifyNotObjectLabels;
+  bool         m_ForceClassification;
 
-  unsigned int        m_ErodeDilateRadius;
-  bool                m_DilateFirst;
-  unsigned int        m_HoleFillIterations;
-  double              m_ProbabilityImageSmoothingStandardDeviation;
-  bool                m_ReclassifyObjectLabels;
-  bool                m_ReclassifyNotObjectLabels;
-  bool                m_ForceClassification;
-
-  bool                m_BalanceClassSampleSize;
+  bool m_BalanceClassSampleSize;
 
 }; // End class PDFSegmenterBase
 
@@ -235,7 +250,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubePDFSegmenterBase.hxx"
+#  include "itktubePDFSegmenterBase.hxx"
 #endif
 
 #endif // End !defined( __itktubePDFSegmenterBase_h )

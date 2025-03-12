@@ -35,25 +35,22 @@ namespace itk
 namespace tube
 {
 
-template< class TInputImage, class TOutputImage >
-class ConvertSpatialGraphToImageFilter
-  : public ImageToImageFilter< TInputImage, TOutputImage >
+template <class TInputImage, class TOutputImage>
+class ConvertSpatialGraphToImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
-
   /** Standard class type alias. */
   using Self = ConvertSpatialGraphToImageFilter;
-  using Superclass = ImageToImageFilter< TInputImage, TOutputImage>;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkTypeMacro( ConvertSpatialGraphToImageFilter, ImageToImageFilter );
+  itkTypeMacro(ConvertSpatialGraphToImageFilter, ImageToImageFilter);
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TInputImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
 
   using InputImageType = TInputImage;
   using InputPixelType = typename InputImageType::PixelType;
@@ -61,38 +58,41 @@ public:
   using InputImagePointer = typename InputImageType::Pointer;
   using OutputImagePointer = typename OutputImageType::Pointer;
 
-  itkGetMacro( AdjacencyMatrixImage, OutputImagePointer );
-  itkGetMacro( BranchnessImage, OutputImagePointer );
-  itkGetMacro( RadiusImage, OutputImagePointer );
-  itkGetMacro( CentralityImage, OutputImagePointer );
+  itkGetMacro(AdjacencyMatrixImage, OutputImagePointer);
+  itkGetMacro(BranchnessImage, OutputImagePointer);
+  itkGetMacro(RadiusImage, OutputImagePointer);
+  itkGetMacro(CentralityImage, OutputImagePointer);
 
-  void SetAdjacencyMatrix( vnl_matrix< double > );
-  void SetBranchnessVector( vnl_vector< double > );
-  void SetRadiusVector( vnl_vector< double > );
-  void SetCentralityVector( vnl_vector< double > );
+  void SetAdjacencyMatrix(vnl_matrix<double>);
+  void SetBranchnessVector(vnl_vector<double>);
+  void SetRadiusVector(vnl_vector<double>);
+  void SetCentralityVector(vnl_vector<double>);
 
 protected:
-  ConvertSpatialGraphToImageFilter( void );
-  ~ConvertSpatialGraphToImageFilter( void ) {}
+  ConvertSpatialGraphToImageFilter(void);
+  ~ConvertSpatialGraphToImageFilter(void) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  virtual void GenerateData( void ) override;
+  virtual void
+  GenerateData(void) override;
 
 private:
-  ConvertSpatialGraphToImageFilter( const Self& );
-  void operator=( const Self& );
+  ConvertSpatialGraphToImageFilter(const Self &);
+  void
+  operator=(const Self &);
 
-  typename OutputImageType::Pointer            m_AdjacencyMatrixImage;
-  typename OutputImageType::Pointer            m_BranchnessImage;
-  typename OutputImageType::Pointer            m_RadiusImage;
-  typename OutputImageType::Pointer            m_CentralityImage;
-  typename InputImageType::ConstPointer        m_InputImage;
+  typename OutputImageType::Pointer     m_AdjacencyMatrixImage;
+  typename OutputImageType::Pointer     m_BranchnessImage;
+  typename OutputImageType::Pointer     m_RadiusImage;
+  typename OutputImageType::Pointer     m_CentralityImage;
+  typename InputImageType::ConstPointer m_InputImage;
 
-  vnl_matrix< double > m_AdjacencyMatrix;
-  vnl_vector< double > m_BranchnessVector;
-  vnl_vector< double > m_RadiusVector;
-  vnl_vector< double > m_CentralityVector;
+  vnl_matrix<double> m_AdjacencyMatrix;
+  vnl_vector<double> m_BranchnessVector;
+  vnl_vector<double> m_RadiusVector;
+  vnl_vector<double> m_CentralityVector;
 
 }; // End class CVTImageFilter
 
@@ -101,7 +101,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeConvertSpatialGraphToImageFilter.hxx"
+#  include "itktubeConvertSpatialGraphToImageFilter.hxx"
 #endif
 
 #endif // End !defined( _itktubeConvertSpatialGraphToImageFilter_h )

@@ -35,56 +35,60 @@ namespace tube
 {
 
 /**
-*
-* Reads and Writes PDFSegmenterParzenIO Files, typically designated .mnda
-* files
-*
-* \author Stephen R. Aylward
-*
-* \date August 29, 2013
-*
-*/
-template< class TImage, class TLabelMap >
+ *
+ * Reads and Writes PDFSegmenterParzenIO Files, typically designated .mnda
+ * files
+ *
+ * \author Stephen R. Aylward
+ *
+ * \date August 29, 2013
+ *
+ */
+template <class TImage, class TLabelMap>
 class PDFSegmenterParzenIO
 {
 public:
+  using PDFSegmenterIOType = PDFSegmenterParzenIO<TImage, TLabelMap>;
 
-  using PDFSegmenterIOType = PDFSegmenterParzenIO< TImage, TLabelMap >;
+  using PDFSegmenterType = PDFSegmenterParzen<TImage, TLabelMap>;
 
-  using PDFSegmenterType = PDFSegmenterParzen< TImage, TLabelMap >;
+  PDFSegmenterParzenIO(void);
 
-  PDFSegmenterParzenIO( void );
+  PDFSegmenterParzenIO(const char * _headerName);
 
-  PDFSegmenterParzenIO( const char * _headerName );
+  PDFSegmenterParzenIO(const typename PDFSegmenterType::Pointer & _filter);
 
-  PDFSegmenterParzenIO( const typename
-    PDFSegmenterType::Pointer & _filter );
+  ~PDFSegmenterParzenIO(void);
 
-  ~PDFSegmenterParzenIO( void );
+  virtual void
+  PrintInfo(void) const;
 
-  virtual void PrintInfo( void ) const;
+  virtual void
+  CopyInfo(const PDFSegmenterIOType & _filterIO);
 
-  virtual void CopyInfo( const PDFSegmenterIOType & _filterIO );
+  virtual void
+  Clear(void);
 
-  virtual void Clear( void );
+  virtual bool
+  InitializeEssential(const typename PDFSegmenterType::Pointer & _filter);
 
-  virtual bool InitializeEssential( const typename
-    PDFSegmenterType::Pointer & _filter );
+  void
+  SetPDFSegmenter(const typename PDFSegmenterType::Pointer & _filter);
 
-  void SetPDFSegmenter( const typename
-    PDFSegmenterType::Pointer & _filter );
+  const typename PDFSegmenterType::Pointer
+  GetPDFSegmenter(void) const;
 
-  const typename PDFSegmenterType::Pointer GetPDFSegmenter( void ) const;
+  virtual bool
+  CanRead(const char * _headerName = NULL) const;
 
-  virtual bool CanRead( const char * _headerName = NULL ) const;
+  virtual bool
+  Read(const char * _headerName = NULL);
 
-  virtual bool Read( const char * _headerName = NULL );
-
-  virtual bool Write( const char * _headerName = NULL );
+  virtual bool
+  Write(const char * _headerName = NULL);
 
 protected:
-
-  typename PDFSegmenterType::Pointer  m_PDFSegmenter;
+  typename PDFSegmenterType::Pointer m_PDFSegmenter;
 
 }; // End class PDFSegmenterParzenIO
 
@@ -93,7 +97,7 @@ protected:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubePDFSegmenterParzenIO.hxx"
+#  include "itktubePDFSegmenterParzenIO.hxx"
 #endif
 
 #endif // End !defined( __itktubePDFSegmenterParzenIO_h )

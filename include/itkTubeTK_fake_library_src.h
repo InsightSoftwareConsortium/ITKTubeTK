@@ -48,17 +48,19 @@ This typically indicates a problem with your CMakeLists.txt file
 #ifndef itkTubeTK_fake_library_src_h
 #define itkTubeTK_fake_library_src_h
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 class EmptyClass
-  {
+{
   int foo;
-  };
+};
 
-}
+} // namespace tube
 
-}
+} // namespace itk
 
 #endif

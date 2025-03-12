@@ -45,29 +45,25 @@ namespace tube
  *
  */
 template <unsigned int ObjectDimension, class TImage>
-class SpatialObjectToImageRegistrationMethod
-  : public ProcessObject
+class SpatialObjectToImageRegistrationMethod : public ProcessObject
 {
 
 public:
-
   using Self = SpatialObjectToImageRegistrationMethod;
   using Superclass = ProcessObject;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( SpatialObjectToImageRegistrationMethod, ProcessObject );
+  itkTypeMacro(SpatialObjectToImageRegistrationMethod, ProcessObject);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   //
   // Custom Typedefs
   //
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
-  using TransformType = Transform<double, ObjectDimension,
-          itkGetStaticConstMacro( ImageDimension )>;
+  using TransformType = Transform<double, ObjectDimension, itkGetStaticConstMacro(ImageDimension)>;
 
   using TransformOutputType = DataObjectDecorator<TransformType>;
 
@@ -80,104 +76,107 @@ public:
   using SpatialObjectPointType = typename SpatialObjectType::PointType;
   using PointType = typename ImageType::PointType;
 
-  using ImageMaskObjectType = SpatialObject<itkGetStaticConstMacro( ImageDimension )>;
+  using ImageMaskObjectType = SpatialObject<itkGetStaticConstMacro(ImageDimension)>;
 
-  using SpatialObjectMaskObjectType = SpatialObject< ObjectDimension >;
+  using SpatialObjectMaskObjectType = SpatialObject<ObjectDimension>;
 
   //
   // Custom Methods
   //
-  itkSetMacro( RegistrationNumberOfWorkUnits, unsigned int );
-  itkGetMacro( RegistrationNumberOfWorkUnits, unsigned int );
+  itkSetMacro(RegistrationNumberOfWorkUnits, unsigned int);
+  itkGetMacro(RegistrationNumberOfWorkUnits, unsigned int);
 
-  itkSetObjectMacro( Observer, Command );
-  itkGetModifiableObjectMacro( Observer, Command );
+  itkSetObjectMacro(Observer, Command);
+  itkGetModifiableObjectMacro(Observer, Command);
 
-  void SetFixedImage( const ImageType * fixedImage );
-  itkGetConstObjectMacro( FixedImage, ImageType );
+  void
+  SetFixedImage(const ImageType * fixedImage);
+  itkGetConstObjectMacro(FixedImage, ImageType);
 
-  void SetMovingSpatialObject( const SpatialObjectType * movingSpatialObject );
-  itkGetConstObjectMacro( MovingSpatialObject, SpatialObjectType );
+  void
+  SetMovingSpatialObject(const SpatialObjectType * movingSpatialObject);
+  itkGetConstObjectMacro(MovingSpatialObject, SpatialObjectType);
 
-  void SetFixedImageMaskObject( const ImageMaskObjectType * maskObject );
-  itkGetConstObjectMacro( FixedImageMaskObject, ImageMaskObjectType );
-  itkSetMacro( UseFixedImageMaskObject, bool );
-  itkGetMacro( UseFixedImageMaskObject, bool );
+  void
+  SetFixedImageMaskObject(const ImageMaskObjectType * maskObject);
+  itkGetConstObjectMacro(FixedImageMaskObject, ImageMaskObjectType);
+  itkSetMacro(UseFixedImageMaskObject, bool);
+  itkGetMacro(UseFixedImageMaskObject, bool);
 
-  void SetMovingSpatialObjectMaskObject(
-    const SpatialObjectMaskObjectType * maskObject );
-  itkGetConstObjectMacro( MovingSpatialObjectMaskObject,
-    SpatialObjectMaskObjectType );
-  itkSetMacro( UseMovingSpatialObjectMaskObject, bool );
-  itkGetMacro( UseMovingSpatialObjectMaskObject, bool );
+  void
+  SetMovingSpatialObjectMaskObject(const SpatialObjectMaskObjectType * maskObject);
+  itkGetConstObjectMacro(MovingSpatialObjectMaskObject, SpatialObjectMaskObjectType);
+  itkSetMacro(UseMovingSpatialObjectMaskObject, bool);
+  itkGetMacro(UseMovingSpatialObjectMaskObject, bool);
 
-  itkSetMacro( ReportProgress, bool );
-  itkGetMacro( ReportProgress, bool );
-  itkBooleanMacro( ReportProgress );
+  itkSetMacro(ReportProgress, bool);
+  itkGetMacro(ReportProgress, bool);
+  itkBooleanMacro(ReportProgress);
 
   /** Return the output of the registration process, which is a Transform */
-  const TransformOutputType * GetOutput( void ) const;
+  const TransformOutputType *
+  GetOutput(void) const;
 
 protected:
+  SpatialObjectToImageRegistrationMethod(void);
+  virtual ~SpatialObjectToImageRegistrationMethod(void);
 
-  SpatialObjectToImageRegistrationMethod( void );
-  virtual ~SpatialObjectToImageRegistrationMethod( void );
-
-  virtual void    Initialize( void );
+  virtual void
+  Initialize(void);
 
   /** Method that actually computes the registration. This method is
    * intended to be overloaded by derived classes. Those overload,
    * however, must invoke this method in the base class. */
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
   /** Provide derived classes with access to the Transform member
    * variable. */
-  itkSetObjectMacro( Transform, TransformType );
-  itkGetModifiableObjectMacro( Transform, TransformType );
+  itkSetObjectMacro(Transform, TransformType);
+  itkGetModifiableObjectMacro(Transform, TransformType);
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   using Superclass::MakeOutput;
-  virtual DataObjectPointer  MakeOutput( DataObjectPointerArraySizeType
-    idx ) override;
+  virtual DataObjectPointer
+  MakeOutput(DataObjectPointerArraySizeType idx) override;
 
-  ModifiedTimeType GetMTime( void ) const override;
+  ModifiedTimeType
+  GetMTime(void) const override;
 
 protected:
-
   typename TransformType::Pointer m_Transform;
 
 private:
-
   // Purposely not implemented
-  SpatialObjectToImageRegistrationMethod( const Self & );
+  SpatialObjectToImageRegistrationMethod(const Self &);
   // Purposely not implemented
-  void operator =( const Self & );
+  void
+  operator=(const Self &);
 
   unsigned int m_RegistrationNumberOfWorkUnits;
 
   Command::Pointer m_Observer;
 
-  typename ImageType::ConstPointer              m_FixedImage;
-  typename SpatialObjectType::ConstPointer      m_MovingSpatialObject;
+  typename ImageType::ConstPointer         m_FixedImage;
+  typename SpatialObjectType::ConstPointer m_MovingSpatialObject;
 
-  bool                                          m_UseFixedImageMaskObject;
-  typename ImageMaskObjectType::ConstPointer    m_FixedImageMaskObject;
+  bool                                       m_UseFixedImageMaskObject;
+  typename ImageMaskObjectType::ConstPointer m_FixedImageMaskObject;
 
-  bool m_UseMovingSpatialObjectMaskObject;
-  typename SpatialObjectMaskObjectType::ConstPointer
-       m_MovingSpatialObjectMaskObject;
+  bool                                               m_UseMovingSpatialObjectMaskObject;
+  typename SpatialObjectMaskObjectType::ConstPointer m_MovingSpatialObjectMaskObject;
 
   bool m_ReportProgress;
-
 };
 
-} // tube
+} // namespace tube
 
-} // itk
+} // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeSpatialObjectToImageRegistrationMethod.hxx"
+#  include "itktubeSpatialObjectToImageRegistrationMethod.hxx"
 #endif
 
 #endif

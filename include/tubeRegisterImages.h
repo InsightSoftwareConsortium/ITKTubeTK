@@ -37,20 +37,19 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TImage >
-class RegisterImages:
-  public itk::ProcessObject
+template <class TImage>
+class RegisterImages : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = RegisterImages;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   using ImageType = TImage;
 
-  using FilterType = itk::ImageToImageRegistrationHelper< ImageType >;
+  using FilterType = itk::ImageToImageRegistrationHelper<ImageType>;
 
   using MaskObjectType = typename FilterType::MaskObjectType;
   using PointType = typename FilterType::PointType;
@@ -65,283 +64,289 @@ public:
   using BSplineTransformType = typename FilterType::BSplineTransformType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( RegisterImages, ProcessObject );
+  itkTypeMacro(RegisterImages, ProcessObject);
 
   /* Set input image */
-  tubeWrapCallWithConstReferenceArgMacro( LoadFixedImage, std::string, Filter );
-  tubeWrapSetConstObjectMacro( FixedImage, ImageType, Filter );
+  tubeWrapCallWithConstReferenceArgMacro(LoadFixedImage, std::string, Filter);
+  tubeWrapSetConstObjectMacro(FixedImage, ImageType, Filter);
 
-  tubeWrapCallWithConstReferenceArgMacro( LoadMovingImage, std::string, Filter );
-  tubeWrapSetConstObjectMacro( MovingImage, ImageType, Filter );
+  tubeWrapCallWithConstReferenceArgMacro(LoadMovingImage, std::string, Filter);
+  tubeWrapSetConstObjectMacro(MovingImage, ImageType, Filter);
 
-  tubeWrapSetMacro( RandomNumberSeed, unsigned int, Filter );
-  tubeWrapGetMacro( RandomNumberSeed, unsigned int, Filter );
+  tubeWrapSetMacro(RandomNumberSeed, unsigned int, Filter);
+  tubeWrapGetMacro(RandomNumberSeed, unsigned int, Filter);
 
-  tubeWrapSetMacro( UseFixedImageMaskObject, bool, Filter );
-  tubeWrapGetMacro( UseFixedImageMaskObject, bool, Filter );
-  tubeWrapSetConstObjectMacro( FixedImageMaskObject, MaskObjectType, Filter );
-  tubeWrapGetConstObjectMacro( FixedImageMaskObject, MaskObjectType, Filter );
+  tubeWrapSetMacro(UseFixedImageMaskObject, bool, Filter);
+  tubeWrapGetMacro(UseFixedImageMaskObject, bool, Filter);
+  tubeWrapSetConstObjectMacro(FixedImageMaskObject, MaskObjectType, Filter);
+  tubeWrapGetConstObjectMacro(FixedImageMaskObject, MaskObjectType, Filter);
 
-  tubeWrapSetMacro( UseMovingImageMaskObject, bool, Filter );
-  tubeWrapGetMacro( UseMovingImageMaskObject, bool, Filter );
-  tubeWrapSetConstObjectMacro( MovingImageMaskObject, MaskObjectType, Filter );
-  tubeWrapGetConstObjectMacro( MovingImageMaskObject, MaskObjectType, Filter );
+  tubeWrapSetMacro(UseMovingImageMaskObject, bool, Filter);
+  tubeWrapGetMacro(UseMovingImageMaskObject, bool, Filter);
+  tubeWrapSetConstObjectMacro(MovingImageMaskObject, MaskObjectType, Filter);
+  tubeWrapGetConstObjectMacro(MovingImageMaskObject, MaskObjectType, Filter);
 
-  tubeWrapSetMacro( UseRegionOfInterest, bool, Filter );
-  tubeWrapGetMacro( UseRegionOfInterest, bool, Filter );
-  tubeWrapSetMacro( RegionOfInterestPoint1, PointType, Filter );
-  tubeWrapGetMacro( RegionOfInterestPoint1, PointType, Filter );
-  tubeWrapSetMacro( RegionOfInterestPoint2, PointType, Filter );
-  tubeWrapGetMacro( RegionOfInterestPoint2, PointType, Filter );
+  tubeWrapSetMacro(UseRegionOfInterest, bool, Filter);
+  tubeWrapGetMacro(UseRegionOfInterest, bool, Filter);
+  tubeWrapSetMacro(RegionOfInterestPoint1, PointType, Filter);
+  tubeWrapGetMacro(RegionOfInterestPoint1, PointType, Filter);
+  tubeWrapSetMacro(RegionOfInterestPoint2, PointType, Filter);
+  tubeWrapGetMacro(RegionOfInterestPoint2, PointType, Filter);
 
-  tubeWrapSetMacro( SampleFromOverlap, bool, Filter );
-  tubeWrapGetMacro( SampleFromOverlap, bool, Filter );
+  tubeWrapSetMacro(SampleFromOverlap, bool, Filter);
+  tubeWrapGetMacro(SampleFromOverlap, bool, Filter);
 
-  tubeWrapSetMacro( SampleIntensityPortion, double, Filter );
-  tubeWrapGetMacro( SampleIntensityPortion, double, Filter );
+  tubeWrapSetMacro(SampleIntensityPortion, double, Filter);
+  tubeWrapGetMacro(SampleIntensityPortion, double, Filter);
 
   //
   // Update
   //
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
-  tubeWrapCallMacro( Initialize, Filter );
+  tubeWrapCallMacro(Initialize, Filter);
 
   //
   // Resample
   //
-  const ImageType * ResampleImage(
-    std::string interp="LINEAR",
-    const ImageType * movingImage = nullptr,
-    const MatrixTransformType * matrixTransform = nullptr,
-    //const BSplineTransformType * bsplineTransform = nullptr,
-    PixelType defaultPixelValue = 0,
-    double portionOfTransformToApply = 1.0 );
+  const ImageType *
+  ResampleImage(std::string                 interp = "LINEAR",
+                const ImageType *           movingImage = nullptr,
+                const MatrixTransformType * matrixTransform = nullptr,
+                // const BSplineTransformType * bsplineTransform = nullptr,
+                PixelType defaultPixelValue = 0,
+                double    portionOfTransformToApply = 1.0);
 
-  const ImageType * GetFinalMovingImage(
-    std::string interp="LINEAR_INTERPOLATION",
-    PixelType defaultPixelValue = 0 );
+  const ImageType *
+  GetFinalMovingImage(std::string interp = "LINEAR_INTERPOLATION", PixelType defaultPixelValue = 0);
 
   //
   // Compare results with a baseline
   //
-  tubeWrapCallWithConstReferenceArgMacro( LoadBaselineImage,
-    std::string, Filter );
-  tubeWrapSetConstObjectMacro( BaselineImage, ImageType, Filter );
+  tubeWrapCallWithConstReferenceArgMacro(LoadBaselineImage, std::string, Filter);
+  tubeWrapSetConstObjectMacro(BaselineImage, ImageType, Filter);
 
-  tubeWrapSetMacro( BaselineNumberOfFailedPixelsTolerance, unsigned int,
-    Filter );
-  tubeWrapSetMacro( BaselineIntensityTolerance, PixelType, Filter );
-  tubeWrapSetMacro( BaselineRadiusTolerance, unsigned int, Filter );
+  tubeWrapSetMacro(BaselineNumberOfFailedPixelsTolerance, unsigned int, Filter);
+  tubeWrapSetMacro(BaselineIntensityTolerance, PixelType, Filter);
+  tubeWrapSetMacro(BaselineRadiusTolerance, unsigned int, Filter);
 
-  tubeWrapCallMacro( ComputeBaselineDifference, Filter );
+  tubeWrapCallMacro(ComputeBaselineDifference, Filter);
 
-  tubeWrapGetConstObjectMacro( BaselineDifferenceImage, ImageType, Filter );
-  tubeWrapGetConstObjectMacro( BaselineResampledMovingImage, ImageType,
-    Filter );
-  tubeWrapGetMacro( BaselineNumberOfFailedPixels, unsigned int, Filter );
-  tubeWrapGetMacro( BaselineTestPassed, bool, Filter );
+  tubeWrapGetConstObjectMacro(BaselineDifferenceImage, ImageType, Filter);
+  tubeWrapGetConstObjectMacro(BaselineResampledMovingImage, ImageType, Filter);
+  tubeWrapGetMacro(BaselineNumberOfFailedPixels, unsigned int, Filter);
+  tubeWrapGetMacro(BaselineTestPassed, bool, Filter);
 
   //
   // Process Control
   //
-  tubeWrapSetMacro( EnableLoadedRegistration, bool, Filter );
-  tubeWrapGetMacro( EnableLoadedRegistration, bool, Filter );
-  tubeWrapBooleanMacro( EnableLoadedRegistration, Filter );
+  tubeWrapSetMacro(EnableLoadedRegistration, bool, Filter);
+  tubeWrapGetMacro(EnableLoadedRegistration, bool, Filter);
+  tubeWrapBooleanMacro(EnableLoadedRegistration, Filter);
 
-  tubeWrapSetMacro( EnableInitialRegistration, bool, Filter );
-  tubeWrapGetMacro( EnableInitialRegistration, bool, Filter );
-  tubeWrapBooleanMacro( EnableInitialRegistration, Filter );
+  tubeWrapSetMacro(EnableInitialRegistration, bool, Filter);
+  tubeWrapGetMacro(EnableInitialRegistration, bool, Filter);
+  tubeWrapBooleanMacro(EnableInitialRegistration, Filter);
 
-  tubeWrapSetMacro( EnableRigidRegistration, bool, Filter );
-  tubeWrapGetMacro( EnableRigidRegistration, bool, Filter );
-  tubeWrapBooleanMacro( EnableRigidRegistration, Filter );
+  tubeWrapSetMacro(EnableRigidRegistration, bool, Filter);
+  tubeWrapGetMacro(EnableRigidRegistration, bool, Filter);
+  tubeWrapBooleanMacro(EnableRigidRegistration, Filter);
 
-  tubeWrapSetMacro( EnableAffineRegistration, bool, Filter );
-  tubeWrapGetMacro( EnableAffineRegistration, bool, Filter );
-  tubeWrapBooleanMacro( EnableAffineRegistration, Filter );
+  tubeWrapSetMacro(EnableAffineRegistration, bool, Filter);
+  tubeWrapGetMacro(EnableAffineRegistration, bool, Filter);
+  tubeWrapBooleanMacro(EnableAffineRegistration, Filter);
 
-  tubeWrapSetMacro( EnableBSplineRegistration, bool, Filter );
-  tubeWrapGetMacro( EnableBSplineRegistration, bool, Filter );
-  tubeWrapBooleanMacro( EnableBSplineRegistration, Filter );
+  tubeWrapSetMacro(EnableBSplineRegistration, bool, Filter);
+  tubeWrapGetMacro(EnableBSplineRegistration, bool, Filter);
+  tubeWrapBooleanMacro(EnableBSplineRegistration, Filter);
 
-  void SetRegistration( const std::string & reg );
-  void SetInterpolation( const std::string & interp );
-  void SetMetric( const std::string & metric );
+  void
+  SetRegistration(const std::string & reg);
+  void
+  SetInterpolation(const std::string & interp);
+  void
+  SetMetric(const std::string & metric);
 
   //
   // Specify the Optimizer
   //
-  tubeWrapSetMacro( UseEvolutionaryOptimization, bool, Filter );
-  tubeWrapGetMacro( UseEvolutionaryOptimization, bool, Filter );
+  tubeWrapSetMacro(UseEvolutionaryOptimization, bool, Filter);
+  tubeWrapGetMacro(UseEvolutionaryOptimization, bool, Filter);
 
-  tubeWrapSetMacro( ExpectedOffsetMagnitude, double, Filter );
-  tubeWrapGetMacro( ExpectedOffsetMagnitude, double, Filter );
+  tubeWrapSetMacro(ExpectedOffsetMagnitude, double, Filter);
+  tubeWrapGetMacro(ExpectedOffsetMagnitude, double, Filter);
 
-  tubeWrapSetMacro( ExpectedRotationMagnitude, double, Filter );
-  tubeWrapGetMacro( ExpectedRotationMagnitude, double, Filter );
+  tubeWrapSetMacro(ExpectedRotationMagnitude, double, Filter);
+  tubeWrapGetMacro(ExpectedRotationMagnitude, double, Filter);
 
-  tubeWrapSetMacro( ExpectedScaleMagnitude, double, Filter );
-  tubeWrapGetMacro( ExpectedScaleMagnitude, double, Filter );
+  tubeWrapSetMacro(ExpectedScaleMagnitude, double, Filter);
+  tubeWrapGetMacro(ExpectedScaleMagnitude, double, Filter);
 
-  tubeWrapSetMacro( ExpectedSkewMagnitude, double, Filter );
-  tubeWrapGetMacro( ExpectedSkewMagnitude, double, Filter );
+  tubeWrapSetMacro(ExpectedSkewMagnitude, double, Filter);
+  tubeWrapGetMacro(ExpectedSkewMagnitude, double, Filter);
 
-  tubeWrapSetMacro( ExpectedDeformationMagnitude, double, Filter );
-  tubeWrapGetMacro( ExpectedDeformationMagnitude, double, Filter );
+  tubeWrapSetMacro(ExpectedDeformationMagnitude, double, Filter);
+  tubeWrapGetMacro(ExpectedDeformationMagnitude, double, Filter);
 
   //
   // Current product of the registration pipeline
   //
-  tubeWrapGetConstObjectMacro( CurrentMatrixTransform, MatrixTransformType,
-    Filter );
-  tubeWrapGetConstObjectMacro( CurrentBSplineTransform, BSplineTransformType,
-    Filter );
-  tubeWrapGetConstObjectMacro( CurrentMovingImage, ImageType, Filter );
-  tubeWrapGetConstObjectMacro( LoadedTransformResampledImage, ImageType,
-    Filter );
-  tubeWrapGetConstObjectMacro( MatrixTransformResampledImage, ImageType,
-    Filter );
-  tubeWrapGetConstObjectMacro( BSplineTransformResampledImage, ImageType,
-    Filter );
+  tubeWrapGetConstObjectMacro(CurrentMatrixTransform, MatrixTransformType, Filter);
+  tubeWrapGetConstObjectMacro(CurrentBSplineTransform, BSplineTransformType, Filter);
+  tubeWrapGetConstObjectMacro(CurrentMovingImage, ImageType, Filter);
+  tubeWrapGetConstObjectMacro(LoadedTransformResampledImage, ImageType, Filter);
+  tubeWrapGetConstObjectMacro(MatrixTransformResampledImage, ImageType, Filter);
+  tubeWrapGetConstObjectMacro(BSplineTransformResampledImage, ImageType, Filter);
 
   //
   // Metric value
   //
-  tubeWrapGetMacro( FinalMetricValue, double, Filter );
+  tubeWrapGetMacro(FinalMetricValue, double, Filter);
 
   //
   // Report progress and minimize memory
   //
-  tubeWrapSetMacro( ReportProgress, bool, Filter );
-  tubeWrapGetMacro( ReportProgress, bool, Filter );
-  tubeWrapBooleanMacro( ReportProgress, Filter );
+  tubeWrapSetMacro(ReportProgress, bool, Filter);
+  tubeWrapGetMacro(ReportProgress, bool, Filter);
+  tubeWrapBooleanMacro(ReportProgress, Filter);
 
-  tubeWrapSetMacro( MinimizeMemory, bool, Filter );
-  tubeWrapGetMacro( MinimizeMemory, bool, Filter );
-  tubeWrapBooleanMacro( MinimizeMemory, Filter );
+  tubeWrapSetMacro(MinimizeMemory, bool, Filter);
+  tubeWrapGetMacro(MinimizeMemory, bool, Filter);
+  tubeWrapBooleanMacro(MinimizeMemory, Filter);
 
-  // 
+  //
   // Loaded transform parameters
   //
-  void LoadTransform( const std::string & transform,
-    bool invertLoadedTransform=false );
-  tubeWrapCallWithConstReferenceArgMacro( SaveTransform, std::string, Filter );
+  void
+  LoadTransform(const std::string & transform, bool invertLoadedTransform = false);
+  tubeWrapCallWithConstReferenceArgMacro(SaveTransform, std::string, Filter);
 
-  tubeWrapCallWithConstReferenceArgMacro( SaveDisplacementField, std::string,
-    Filter );
+  tubeWrapCallWithConstReferenceArgMacro(SaveDisplacementField, std::string, Filter);
 
-  void SetLoadedMatrixTransform( const MatrixTransformType & tfm, bool
-    invert=false);
-  tubeWrapGetConstObjectMacro( LoadedMatrixTransform, MatrixTransformType,
-    Filter );
+  void
+  SetLoadedMatrixTransform(const MatrixTransformType & tfm, bool invert = false);
+  tubeWrapGetConstObjectMacro(LoadedMatrixTransform, MatrixTransformType, Filter);
 
-  tubeWrapForceSetConstReferenceMacro( LoadedBSplineTransform,
-    BSplineTransformType, Filter );
-  tubeWrapGetConstObjectMacro( LoadedBSplineTransform, BSplineTransformType,
-    Filter );
+  tubeWrapForceSetConstReferenceMacro(LoadedBSplineTransform, BSplineTransformType, Filter);
+  tubeWrapGetConstObjectMacro(LoadedBSplineTransform, BSplineTransformType, Filter);
 
   //
   // Initial Parameters
   //
-  void SetInitialMethodEnum( const std::string & initialMethod );
-  const std::string GetInitialMethodEnum( void );
+  void
+  SetInitialMethodEnum(const std::string & initialMethod);
+  const std::string
+  GetInitialMethodEnum(void);
 
-  tubeWrapForceSetMacro( FixedLandmarks, LandmarkVectorType, Filter );
-  tubeWrapForceSetMacro( MovingLandmarks, LandmarkVectorType, Filter );
+  tubeWrapForceSetMacro(FixedLandmarks, LandmarkVectorType, Filter);
+  tubeWrapForceSetMacro(MovingLandmarks, LandmarkVectorType, Filter);
 
   //
   // Rigid Parameters
   //
-  tubeWrapSetMacro( RigidSamplingRatio, double, Filter );
-  tubeWrapGetMacro( RigidSamplingRatio, double, Filter );
+  tubeWrapSetMacro(RigidSamplingRatio, double, Filter);
+  tubeWrapGetMacro(RigidSamplingRatio, double, Filter);
 
-  tubeWrapSetMacro( RigidTargetError, double, Filter );
-  tubeWrapGetMacro( RigidTargetError, double, Filter );
+  tubeWrapSetMacro(RigidTargetError, double, Filter);
+  tubeWrapGetMacro(RigidTargetError, double, Filter);
 
-  tubeWrapSetMacro( RigidMaxIterations, unsigned int, Filter );
-  tubeWrapGetMacro( RigidMaxIterations, unsigned int, Filter );
+  tubeWrapSetMacro(RigidMaxIterations, unsigned int, Filter);
+  tubeWrapGetMacro(RigidMaxIterations, unsigned int, Filter);
 
-  void SetRigidMetricMethodEnum( const std::string & rigidMetricMethod );
-  const std::string GetRigidMetricMethodEnum( void );
+  void
+  SetRigidMetricMethodEnum(const std::string & rigidMetricMethod);
+  const std::string
+  GetRigidMetricMethodEnum(void);
 
-  void SetRigidInterpolationMethodEnum( const std::string & rigidInterpolationMethod );
-  const std::string GetRigidInterpolationMethodEnum( void );
+  void
+  SetRigidInterpolationMethodEnum(const std::string & rigidInterpolationMethod);
+  const std::string
+  GetRigidInterpolationMethodEnum(void);
 
-  tubeWrapGetConstObjectMacro( RigidTransform, RigidTransformType, Filter );
+  tubeWrapGetConstObjectMacro(RigidTransform, RigidTransformType, Filter);
 
-  tubeWrapGetMacro( RigidMetricValue, double, Filter );
+  tubeWrapGetMacro(RigidMetricValue, double, Filter);
 
   //
   // AffineParameters
   //
-  tubeWrapSetMacro( AffineSamplingRatio, double, Filter );
-  tubeWrapGetMacro( AffineSamplingRatio, double, Filter );
+  tubeWrapSetMacro(AffineSamplingRatio, double, Filter);
+  tubeWrapGetMacro(AffineSamplingRatio, double, Filter);
 
-  tubeWrapSetMacro( AffineTargetError, double, Filter );
-  tubeWrapGetMacro( AffineTargetError, double, Filter );
+  tubeWrapSetMacro(AffineTargetError, double, Filter);
+  tubeWrapGetMacro(AffineTargetError, double, Filter);
 
-  tubeWrapSetMacro( AffineMaxIterations, unsigned int, Filter );
-  tubeWrapGetMacro( AffineMaxIterations, unsigned int, Filter );
+  tubeWrapSetMacro(AffineMaxIterations, unsigned int, Filter);
+  tubeWrapGetMacro(AffineMaxIterations, unsigned int, Filter);
 
-  void SetAffineMetricMethodEnum( const std::string & rigidMetricMethod );
-  const std::string GetAffineMetricMethodEnum( void );
+  void
+  SetAffineMetricMethodEnum(const std::string & rigidMetricMethod);
+  const std::string
+  GetAffineMetricMethodEnum(void);
 
-  void SetAffineInterpolationMethodEnum( const std::string & rigidInterpolationMethod );
-  const std::string GetAffineInterpolationMethodEnum( void );
+  void
+  SetAffineInterpolationMethodEnum(const std::string & rigidInterpolationMethod);
+  const std::string
+  GetAffineInterpolationMethodEnum(void);
 
-  tubeWrapGetConstObjectMacro( AffineTransform, AffineTransformType, Filter );
+  tubeWrapGetConstObjectMacro(AffineTransform, AffineTransformType, Filter);
 
-  tubeWrapGetMacro( AffineMetricValue, double, Filter );
+  tubeWrapGetMacro(AffineMetricValue, double, Filter);
 
   //
   // BSpline Parameters
   //
-  tubeWrapSetMacro( BSplineSamplingRatio, double, Filter );
-  tubeWrapGetMacro( BSplineSamplingRatio, double, Filter );
+  tubeWrapSetMacro(BSplineSamplingRatio, double, Filter);
+  tubeWrapGetMacro(BSplineSamplingRatio, double, Filter);
 
-  tubeWrapSetMacro( BSplineTargetError, double, Filter );
-  tubeWrapGetMacro( BSplineTargetError, double, Filter );
+  tubeWrapSetMacro(BSplineTargetError, double, Filter);
+  tubeWrapGetMacro(BSplineTargetError, double, Filter);
 
-  tubeWrapSetMacro( BSplineMaxIterations, unsigned int, Filter );
-  tubeWrapGetMacro( BSplineMaxIterations, unsigned int, Filter );
+  tubeWrapSetMacro(BSplineMaxIterations, unsigned int, Filter);
+  tubeWrapGetMacro(BSplineMaxIterations, unsigned int, Filter);
 
-  tubeWrapSetMacro( BSplineControlPointPixelSpacing, double, Filter );
-  tubeWrapGetMacro( BSplineControlPointPixelSpacing, double, Filter );
+  tubeWrapSetMacro(BSplineControlPointPixelSpacing, double, Filter);
+  tubeWrapGetMacro(BSplineControlPointPixelSpacing, double, Filter);
 
-  void SetBSplineMetricMethodEnum( const std::string & bSplineMetricMethod);
-  const std::string GetBSplineMetricMethodEnum(void);
+  void
+  SetBSplineMetricMethodEnum(const std::string & bSplineMetricMethod);
+  const std::string
+  GetBSplineMetricMethodEnum(void);
 
-  void SetBSplineInterpolationMethodEnum( const std::string & bSplineMetricMethod);
-  const std::string GetBSplineInterpolationMethodEnum(void);
+  void
+  SetBSplineInterpolationMethodEnum(const std::string & bSplineMetricMethod);
+  const std::string
+  GetBSplineInterpolationMethodEnum(void);
 
-  tubeWrapGetConstObjectMacro( BSplineTransform, BSplineTransformType, Filter );
-  tubeWrapGetMacro( BSplineMetricValue, double, Filter );
+  tubeWrapGetConstObjectMacro(BSplineTransform, BSplineTransformType, Filter);
+  tubeWrapGetMacro(BSplineMetricValue, double, Filter);
 
 protected:
-  RegisterImages( void );
+  RegisterImages(void);
   ~RegisterImages() {}
 
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itktubeRegisterImagesFilter parameters **/
-  RegisterImages( const Self & );
-  void operator=( const Self & );
+  RegisterImages(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  typename FilterType::Pointer  m_Filter;
+  typename FilterType::Pointer m_Filter;
 };
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeRegisterImages.hxx"
+#  include "tubeRegisterImages.hxx"
 #endif
 
 #endif // End !defined( __tubeRegisterImages_h )

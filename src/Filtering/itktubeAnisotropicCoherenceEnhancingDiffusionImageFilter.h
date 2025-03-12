@@ -21,16 +21,16 @@ limitations under the License.
 =========================================================================*/
 
 #ifndef itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter_h
-#define itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter_h
+#  define itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter_h
 
-#include "itktubeAnisotropicDiffusionTensorFunction.h"
-#include "itktubeAnisotropicDiffusionTensorImageFilter.h"
-#include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
-#include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
+#  include "itktubeAnisotropicDiffusionTensorFunction.h"
+#  include "itktubeAnisotropicDiffusionTensorImageFilter.h"
+#  include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
+#  include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
 
-#include <itkDiffusionTensor3D.h>
-#include <itkHessianRecursiveGaussianImageFilter.h>
-#include <itkSymmetricEigenAnalysisImageFilter.h>
+#  include <itkDiffusionTensor3D.h>
+#  include <itkHessianRecursiveGaussianImageFilter.h>
+#  include <itkSymmetricEigenAnalysisImageFilter.h>
 
 namespace itk
 {
@@ -55,9 +55,9 @@ namespace tube
  */
 
 
-template< class TInputImage, class TOutputImage >
+template <class TInputImage, class TOutputImage>
 class AnisotropicCoherenceEnhancingDiffusionImageFilter
-  : public AnisotropicDiffusionTensorImageFilter< TInputImage, TOutputImage >
+  : public AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class type alias */
@@ -65,90 +65,88 @@ public:
 
   using Superclass = AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>;
 
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
 
   /** Method for creation through the object factory */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ) */
-  itkTypeMacro( AnisotropicCoherenceEnhancingDiffusionImageFilter,
-                ImageToImageFilter );
+  itkTypeMacro(AnisotropicCoherenceEnhancingDiffusionImageFilter, ImageToImageFilter);
 
   /** Convenient type alias */
   using InputImageType = typename Superclass::InputImageType;
   using OutputImageType = typename Superclass::OutputImageType;
   using PixelType = typename Superclass::PixelType;
 
-  typedef typename Superclass::DiffusionTensorImageType
-                                                DiffusionTensorImageType;
+  typedef typename Superclass::DiffusionTensorImageType DiffusionTensorImageType;
 
   // Structure tensor type
-  using StructureTensorFilterType = StructureTensorRecursiveGaussianImageFilter < InputImageType >;
+  using StructureTensorFilterType = StructureTensorRecursiveGaussianImageFilter<InputImageType>;
 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       Superclass::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   using MatrixType = itk::Matrix<double, ImageDimension, ImageDimension>;
 
   // Define image of matrix pixel type
-  using OutputMatrixImageType = itk::Image< MatrixType, ImageDimension>;
+  using OutputMatrixImageType = itk::Image<MatrixType, ImageDimension>;
 
   // Define the symmetric tensor pixel type
-  using TensorPixelType = itk::SymmetricSecondRankTensor< double, ImageDimension>;
-  using TensorImageType = itk::Image< TensorPixelType, ImageDimension>;
+  using TensorPixelType = itk::SymmetricSecondRankTensor<double, ImageDimension>;
+  using TensorImageType = itk::Image<TensorPixelType, ImageDimension>;
 
-   // Define the type for storing the eigenvalue
-  using EigenValueArrayType = itk::FixedArray< double, ImageDimension >;
+  // Define the type for storing the eigenvalue
+  using EigenValueArrayType = itk::FixedArray<double, ImageDimension>;
 
   // Declare the types of the output images
-  using EigenAnalysisOutputImageType = itk::Image< EigenValueArrayType, ImageDimension >;
+  using EigenAnalysisOutputImageType = itk::Image<EigenValueArrayType, ImageDimension>;
 
   /** The container type for the update buffer. */
   using UpdateBufferType = OutputImageType;
 
   /** Define diffusion image nbd type */
-  typedef typename Superclass::DiffusionTensorNeighborhoodType
-                                               DiffusionTensorNeighborhoodType;
+  typedef typename Superclass::DiffusionTensorNeighborhoodType DiffusionTensorNeighborhoodType;
 
   /** Set the contrast parameter */
-  itkSetMacro( ContrastParameterLambdaC, double );
+  itkSetMacro(ContrastParameterLambdaC, double);
 
   /** Set Alpha */
-  itkSetMacro( Alpha, double );
+  itkSetMacro(Alpha, double);
 
   /**  Sigma value for the Gaussian derivative filters */
-  itkSetMacro( Sigma, double );
+  itkSetMacro(Sigma, double);
 
   /** Sigma value for the outer Gaussian smoothing filter */
-  itkSetMacro( SigmaOuter, double );
+  itkSetMacro(SigmaOuter, double);
 
-  itkGetMacro( Sigma, double );
-  itkGetMacro( SigmaOuter, double );
-  itkGetMacro( ContrastParameterLambdaC, double );
-  itkGetMacro( Alpha, double );
+  itkGetMacro(Sigma, double);
+  itkGetMacro(SigmaOuter, double);
+  itkGetMacro(ContrastParameterLambdaC, double);
+  itkGetMacro(Alpha, double);
 
 
 protected:
-  AnisotropicCoherenceEnhancingDiffusionImageFilter( void );
- ~AnisotropicCoherenceEnhancingDiffusionImageFilter( void ) {}
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  AnisotropicCoherenceEnhancingDiffusionImageFilter(void);
+  ~AnisotropicCoherenceEnhancingDiffusionImageFilter(void) {}
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Update diffusion tensor image */
-  void virtual UpdateDiffusionTensorImage( void ) override;
+  void virtual UpdateDiffusionTensorImage(void) override;
 
 private:
-  //purposely not implemented
-  AnisotropicCoherenceEnhancingDiffusionImageFilter( const Self& );
-  void operator=( const Self& ); //purposely not implemented
+  // purposely not implemented
+  AnisotropicCoherenceEnhancingDiffusionImageFilter(const Self &);
+  void
+  operator=(const Self &); // purposely not implemented
 
-  double     m_ContrastParameterLambdaC;
-  double     m_Alpha;
-  double     m_Sigma;
-  double     m_SigmaOuter;
+  double m_ContrastParameterLambdaC;
+  double m_Alpha;
+  double m_Sigma;
+  double m_SigmaOuter;
 
 }; // End class AnisotropicCoherenceEnhancingDiffusionImageFilter
 
@@ -156,9 +154,9 @@ private:
 
 } // End namespace itk
 
-#ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.hxx"
-#endif
+#  ifndef ITK_MANUAL_INSTANTIATION
+#    include "itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.hxx"
+#  endif
 
 #endif
 // End !defined(

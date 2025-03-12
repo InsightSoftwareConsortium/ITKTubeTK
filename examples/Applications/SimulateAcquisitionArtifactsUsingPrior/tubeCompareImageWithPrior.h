@@ -33,99 +33,121 @@ limitations under the License.
 namespace tube
 {
 
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 class CompareImageWithPrior
 {
 public:
-
   using PixelType = float;
-  using ImageType = itk::Image< PixelType, VDimension >;
+  using ImageType = itk::Image<PixelType, VDimension>;
 
-  using RegistrationMethodType = itk::RigidImageToImageRegistrationMethod< ImageType >;
+  using RegistrationMethodType = itk::RigidImageToImageRegistrationMethod<ImageType>;
 
-  CompareImageWithPrior( void );
-  ~CompareImageWithPrior( void );
+  CompareImageWithPrior(void);
+  ~CompareImageWithPrior(void);
 
-  void SetInput( typename ImageType::Pointer volImage );
-  typename ImageType::Pointer GetInput( void );
+  void
+  SetInput(typename ImageType::Pointer volImage);
+  typename ImageType::Pointer
+  GetInput(void);
 
-  void SetMaskImage( typename ImageType::Pointer maskImage );
-  typename ImageType::Pointer GetMaskImage( void );
+  void
+  SetMaskImage(typename ImageType::Pointer maskImage);
+  typename ImageType::Pointer
+  GetMaskImage(void);
 
-  typename ImageType::Pointer GetOutput( void );
-  typename ImageType::Pointer GetOutputMaskImage( void );
+  typename ImageType::Pointer
+  GetOutput(void);
+  typename ImageType::Pointer
+  GetOutputMaskImage(void);
 
-  void SetMetricMask( typename ImageType::Pointer metricMask );
-  typename ImageType::Pointer GetMetricMask( void );
+  void
+  SetMetricMask(typename ImageType::Pointer metricMask);
+  typename ImageType::Pointer
+  GetMetricMask(void);
 
-  void SetForeground( float foreground );
+  void
+  SetForeground(float foreground);
 
-  void SetBackground( float background );
+  void
+  SetBackground(float background);
 
-  void SetErode( int erode );
+  void
+  SetErode(int erode);
 
-  void SetDilate( int dilate );
+  void
+  SetDilate(int dilate);
 
-  void SetGaussianBlur( float gaussianBlur );
+  void
+  SetGaussianBlur(float gaussianBlur);
 
-  void SetNormalize( bool normalize );
+  void
+  SetNormalize(bool normalize);
 
-  void SetSamplingRate( float samplingRate );
+  void
+  SetSamplingRate(float samplingRate);
 
-  void SetSeed( unsigned int seed );
+  void
+  SetSeed(unsigned int seed);
 
-  void SetUseRegistration( bool reg );
-  bool GetUseRegistration( void );
-  void SetUseRegistrationTransform( bool reg );
-  bool GetUseRegistrationTransform( void );
-  void SetUseRegistrationOptimization( bool reg );
-  bool GetUseRegistrationOptimization( void );
-  void SetRegistrationTransform(
-    typename RegistrationMethodType::TransformType::Pointer tfm );
+  void
+  SetUseRegistration(bool reg);
+  bool
+  GetUseRegistration(void);
+  void
+  SetUseRegistrationTransform(bool reg);
+  bool
+  GetUseRegistrationTransform(void);
+  void
+  SetUseRegistrationOptimization(bool reg);
+  bool
+  GetUseRegistrationOptimization(void);
+  void
+  SetRegistrationTransform(typename RegistrationMethodType::TransformType::Pointer tfm);
   typename RegistrationMethodType::TransformType::Pointer
-    GetRegistrationTransform( void );
+  GetRegistrationTransform(void);
 
-  void SetBoundarySize( std::vector< int > & boundarySize );
+  void
+  SetBoundarySize(std::vector<int> & boundarySize);
 
-  void SetTimeCollector( itk::TimeProbesCollectorBase * timeCollector );
+  void
+  SetTimeCollector(itk::TimeProbesCollectorBase * timeCollector);
 
-  void SetProgressReporter( CLIProgressReporter * progessReporter,
-                            float progressStart,
-                            float progressRange );
+  void
+  SetProgressReporter(CLIProgressReporter * progessReporter, float progressStart, float progressRange);
 
-  void Update( void );
+  void
+  Update(void);
 
-  float GetGoodnessOfFit( void );
+  float
+  GetGoodnessOfFit(void);
 
 private:
-
   typename ImageType::Pointer m_VolImage;
   typename ImageType::Pointer m_MaskImage;
   typename ImageType::Pointer m_OutputVolImage;
   typename ImageType::Pointer m_OutputMaskImage;
 
-  typename ImageType::Pointer m_MetricMask;
-  float                       m_Foreground;
-  float                       m_Background;
-  int                         m_Erode;
-  int                         m_Dilate;
-  float                       m_GaussianBlur;
-  bool                        m_UseRegistration;
-  bool                        m_UseRegistrationOptimization;
-  bool                        m_UseRegistrationTransform;
-  typename RegistrationMethodType::TransformType::Pointer
-                              m_RegistrationTransform;
-  bool                        m_Normalize;
-  std::vector< int >          m_BoundarySize;
-  float                       m_SamplingRate;
-  unsigned int                m_Seed;
+  typename ImageType::Pointer                             m_MetricMask;
+  float                                                   m_Foreground;
+  float                                                   m_Background;
+  int                                                     m_Erode;
+  int                                                     m_Dilate;
+  float                                                   m_GaussianBlur;
+  bool                                                    m_UseRegistration;
+  bool                                                    m_UseRegistrationOptimization;
+  bool                                                    m_UseRegistrationTransform;
+  typename RegistrationMethodType::TransformType::Pointer m_RegistrationTransform;
+  bool                                                    m_Normalize;
+  std::vector<int>                                        m_BoundarySize;
+  float                                                   m_SamplingRate;
+  unsigned int                                            m_Seed;
 
   itk::TimeProbesCollectorBase * m_TimeCollector;
-  CLIProgressReporter          * m_ProgressReporter;
+  CLIProgressReporter *          m_ProgressReporter;
   float                          m_ProgressStart;
   float                          m_ProgressRange;
 
-  float                          m_GoF;
+  float m_GoF;
 
 }; // End class CompareImageWithPrior
 

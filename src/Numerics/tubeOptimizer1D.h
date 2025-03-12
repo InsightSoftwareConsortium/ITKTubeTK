@@ -47,94 +47,93 @@ namespace tube
 class Optimizer1D : public Object
 {
 public:
-
   using Self = Optimizer1D;
   using Superclass = Object;
   using Pointer = Self *;
   using ConstPointer = const Self *;
 
-  using ValueFunctionType = UserFunction< double, double >;
-  using DerivativeFunctionType = UserFunction< double, double >;
+  using ValueFunctionType = UserFunction<double, double>;
+  using DerivativeFunctionType = UserFunction<double, double>;
 
   /** Return the type of this object. */
-  tubeTypeMacro( Optimizer1D );
+  tubeTypeMacro(Optimizer1D);
 
   /** Constructor. */
-  Optimizer1D( void );
+  Optimizer1D(void);
 
   /** Constructor.
    * \param funcVal User derivation of UserFunction to define
    * function to be optimized
    * \param funcDeriv User derivation of UserFunction to define
    * derivative of function to be optimized */
-  Optimizer1D( ValueFunctionType::Pointer funcVal,
-    DerivativeFunctionType::Pointer funcDeriv );
+  Optimizer1D(ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv);
 
   /** Destructor. */
-  virtual ~Optimizer1D( void );
+  virtual ~Optimizer1D(void);
 
-  tubeGetMacro( MaxIterations, unsigned int );
+  tubeGetMacro(MaxIterations, unsigned int);
 
-  tubeSetMacro( MaxIterations, unsigned int );
+  tubeSetMacro(MaxIterations, unsigned int);
 
-  tubeGetMacro( SearchForMin, bool );
+  tubeGetMacro(SearchForMin, bool);
 
-  tubeSetMacro( SearchForMin, bool );
+  tubeSetMacro(SearchForMin, bool);
 
-  tubeBooleanMacro( SearchForMin );
+  tubeBooleanMacro(SearchForMin);
 
-  tubeGetMacro( Tolerance, double );
+  tubeGetMacro(Tolerance, double);
 
-  tubeSetMacro( Tolerance, double );
+  tubeSetMacro(Tolerance, double);
 
-  tubeGetMacro( XMax, double );
+  tubeGetMacro(XMax, double);
 
-  tubeSetMacro( XMax, double );
+  tubeSetMacro(XMax, double);
 
-  tubeGetMacro( XMin, double );
+  tubeGetMacro(XMin, double);
 
-  tubeSetMacro( XMin, double );
+  tubeSetMacro(XMin, double);
 
-  tubeGetMacro( XStep, double );
+  tubeGetMacro(XStep, double);
 
-  tubeSetMacro( XStep, double );
+  tubeSetMacro(XStep, double);
 
-  bool Extreme( double * x, double * xVal );
+  bool
+  Extreme(double * x, double * xVal);
 
   /** Specify new functions to be optimized
-  * \param funcVal User derivation of UserFunction to define
-  * function to be optimized
-  * \param funcDeriv User derivation of UserFunction to define
-  * derivative of function to be optimized */
-  void Use( ValueFunctionType::Pointer funcVal,
-    DerivativeFunctionType::Pointer funcDeriv );
+   * \param funcVal User derivation of UserFunction to define
+   * function to be optimized
+   * \param funcDeriv User derivation of UserFunction to define
+   * derivative of function to be optimized */
+  void
+  Use(ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv);
 
 protected:
+  virtual bool
+  m_Extreme(double * x, double * xVal);
 
-  virtual bool m_Extreme( double * x, double * xVal );
-
-  bool                             m_Defined;
-  double                           m_XMin;
-  double                           m_XMax;
-  double                           m_XStep;
-  bool                             m_SearchForMin;
-  double                           m_Tolerance;
-  unsigned int                     m_MaxIterations;
-  ValueFunctionType::Pointer       m_FuncVal;
-  DerivativeFunctionType::Pointer  m_FuncDeriv;
+  bool                            m_Defined;
+  double                          m_XMin;
+  double                          m_XMax;
+  double                          m_XStep;
+  bool                            m_SearchForMin;
+  double                          m_Tolerance;
+  unsigned int                    m_MaxIterations;
+  ValueFunctionType::Pointer      m_FuncVal;
+  DerivativeFunctionType::Pointer m_FuncDeriv;
 
 protected:
-
   /** Print out information about this object. */
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Copy constructor not implemented.
-  Optimizer1D( const Self & self );
+  Optimizer1D(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
 }; // End class Optimizer1D
 

@@ -47,39 +47,43 @@ namespace Functor
 using OrderTypeOfEigenValue = itk::EigenValueOrderEnum;
 #endif
 
-template< class TInput, class TOutput, class TMatrix >
+template <class TInput, class TOutput, class TMatrix>
 class SymmetricEigenVectorAnalysisFunction
 {
 public:
-  SymmetricEigenVectorAnalysisFunction( void ) {}
-  ~SymmetricEigenVectorAnalysisFunction( void ) {}
-  using CalculatorType = SymmetricEigenAnalysis< TInput, TOutput, TMatrix >;
-  bool operator!=( const SymmetricEigenVectorAnalysisFunction & ) const
-    {
+  SymmetricEigenVectorAnalysisFunction(void) {}
+  ~SymmetricEigenVectorAnalysisFunction(void) {}
+  using CalculatorType = SymmetricEigenAnalysis<TInput, TOutput, TMatrix>;
+  bool
+  operator!=(const SymmetricEigenVectorAnalysisFunction &) const
+  {
     return false;
-    }
-  bool operator==( const SymmetricEigenVectorAnalysisFunction & other ) const
-    {
-    return !( *this != other );
-    }
+  }
+  bool
+  operator==(const SymmetricEigenVectorAnalysisFunction & other) const
+  {
+    return !(*this != other);
+  }
 
-  inline TMatrix operator()( const TInput & x )
-    {
-    TOutput      eigenValues;
+  inline TMatrix
+  operator()(const TInput & x)
+  {
+    TOutput eigenValues;
     eigenValues.Fill(0);
     TMatrix eigenVectorMatrix;
-    m_Calculator.ComputeEigenValuesAndVectors( x, eigenValues,
-      eigenVectorMatrix );
+    m_Calculator.ComputeEigenValuesAndVectors(x, eigenValues, eigenVectorMatrix);
     return eigenVectorMatrix;
-    }
+  }
 
   /** Method to explicitly set the dimension of the matrix */
-  void SetDimension( unsigned int n )
-    {
-    m_Calculator.SetDimension( n );
-    }
+  void
+  SetDimension(unsigned int n)
+  {
+    m_Calculator.SetDimension(n);
+  }
 
-  unsigned int GetDimension() const
+  unsigned int
+  GetDimension() const
   {
     return m_Calculator.GetDimension();
   }
@@ -98,46 +102,50 @@ public:
 
   /** Order eigenvalues. Default is to OrderByValue:  lambda_1 < lambda_2
    * < .... */
-  void OrderEigenValuesBy( EigenValueOrderEnum order )
+  void
+  OrderEigenValuesBy(EigenValueOrderEnum order)
+  {
+    if (order == EigenValueOrderEnum::OrderByMagnitude)
     {
-    if( order == EigenValueOrderEnum::OrderByMagnitude )
-      {
-      m_Calculator.SetOrderEigenMagnitudes( true );
-      }
-    else if( order == EigenValueOrderEnum::DoNotOrder )
-      {
-      m_Calculator.SetOrderEigenValues( false );
-      }
+      m_Calculator.SetOrderEigenMagnitudes(true);
     }
+    else if (order == EigenValueOrderEnum::DoNotOrder)
+    {
+      m_Calculator.SetOrderEigenValues(false);
+    }
+  }
 
 private:
   CalculatorType m_Calculator;
 
 }; // End class SymmetricEigenVectorAnalysisFunction
 
-} // End namespace functor
+} // namespace Functor
 
 
 /** \class SymmetricEigenVectorAnalysisImageFilter
  * \ingroup IntensityImageFilters  Multithreaded  TensorObjects
  */
-template< class TInputImage, class TOutputImage, class TOutputMatrix >
+template <class TInputImage, class TOutputImage, class TOutputMatrix>
 class SymmetricEigenVectorAnalysisImageFilter
-  : public UnaryFunctorImageFilter< TInputImage, TOutputMatrix,
-    Functor::SymmetricEigenVectorAnalysisFunction<
-      typename TInputImage::PixelType, typename TOutputImage::PixelType,
-      typename TOutputMatrix::PixelType > >
+  : public UnaryFunctorImageFilter<TInputImage,
+                                   TOutputMatrix,
+                                   Functor::SymmetricEigenVectorAnalysisFunction<typename TInputImage::PixelType,
+                                                                                 typename TOutputImage::PixelType,
+                                                                                 typename TOutputMatrix::PixelType>>
 {
 public:
   /** Standard class type alias. */
   using Self = SymmetricEigenVectorAnalysisImageFilter;
-  using Superclass = UnaryFunctorImageFilter<TInputImage, TOutputMatrix,
-    Functor::SymmetricEigenVectorAnalysisFunction<
-      typename TInputImage::PixelType, typename TOutputImage::PixelType,
-      typename TOutputMatrix::PixelType > >;
+  using Superclass =
+    UnaryFunctorImageFilter<TInputImage,
+                            TOutputMatrix,
+                            Functor::SymmetricEigenVectorAnalysisFunction<typename TInputImage::PixelType,
+                                                                          typename TOutputImage::PixelType,
+                                                                          typename TOutputMatrix::PixelType>>;
 
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using OutputImageType = typename Superclass::OutputImageType;
   using OutputPixelType = typename TOutputImage::PixelType;
@@ -150,38 +158,44 @@ public:
    * DoNotOrder:        Default order of eigenvalues obtained after QL
    *                    method
    */
-  //using EigenValueOrderEnum = typename FunctorType::EigenValueOrderEnum;
+  // using EigenValueOrderEnum = typename FunctorType::EigenValueOrderEnum;
 
   /** Order eigenvalues. Default is to OrderByValue:
    * lambda_1 < lambda_2 < .... */
-  void OrderEigenValuesBy( EigenValueOrderEnum order )
-    {
-    this->GetFunctor().OrderEigenValuesBy( order );
-    }
+  void
+  OrderEigenValuesBy(EigenValueOrderEnum order)
+  {
+    this->GetFunctor().OrderEigenValuesBy(order);
+  }
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Print internal ivars */
-  void PrintSelf( std::ostream& os, Indent indent ) const override
-    { this->Superclass::PrintSelf( os, indent ); }
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override
+  {
+    this->Superclass::PrintSelf(os, indent);
+  }
 
   /** Set the dimension of the tensor. ( For example the
    * SymmetricSecondRankTensor is a pxp matrix ) */
-  void SetDimension( unsigned int p )
-    {
-    this->GetFunctor().SetDimension( p );
-    }
+  void
+  SetDimension(unsigned int p)
+  {
+    this->GetFunctor().SetDimension(p);
+  }
 
 protected:
-  SymmetricEigenVectorAnalysisImageFilter( void ) {}
-  virtual ~SymmetricEigenVectorAnalysisImageFilter( void ) {}
+  SymmetricEigenVectorAnalysisImageFilter(void) {}
+  virtual ~SymmetricEigenVectorAnalysisImageFilter(void) {}
 
 private:
-  //purposely not implemented
-  SymmetricEigenVectorAnalysisImageFilter( const Self& );
-  //purposely not implemented
-  void operator=( const Self& );
+  // purposely not implemented
+  SymmetricEigenVectorAnalysisImageFilter(const Self &);
+  // purposely not implemented
+  void
+  operator=(const Self &);
 
 }; // End class SymmetricEigenVectorAnalysisImageFilter
 

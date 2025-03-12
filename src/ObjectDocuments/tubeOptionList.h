@@ -59,124 +59,123 @@ namespace tube
 class OptionList : public Object
 {
 public:
-
   using Self = OptionList;
   using Superclass = Object;
   using Pointer = Self *;
   using ConstPointer = const Self *;
 
-  using OptionMapType = std::multimap< std::string, std::string >;
+  using OptionMapType = std::multimap<std::string, std::string>;
 
   /** Encodes a required option that is missing.  */
   class RequiredOptionMissing
-    {
+  {
   public:
-
     /** Constructor. */
-    RequiredOptionMissing( const std::string & tag ) : m_Tag( tag )
-      {
-      }
+    RequiredOptionMissing(const std::string & tag)
+      : m_Tag(tag)
+    {}
 
     /** Return the name of this class. */
-    tubeTypeMacroNoOverride( RequiredOptionMissing );
+    tubeTypeMacroNoOverride(RequiredOptionMissing);
 
     /** Return the tag of the missing option. */
-    tubeGetStringMacro( Tag );
+    tubeGetStringMacro(Tag);
 
   private:
-
     std::string m_Tag;
 
-    }; // End class RequiredOptionMissing
+  }; // End class RequiredOptionMissing
 
   /** Constructor. */
-  OptionList( void );
+  OptionList(void);
 
   /** Destructor. */
-  virtual ~OptionList( void );
+  virtual ~OptionList(void);
 
   /** Return the name of this class. */
-  tubeTypeMacro( OptionList );
+  tubeTypeMacro(OptionList);
 
   /** Create the option map from the specified arguments. */
-  virtual void CreateOptionMap( int argc, char * argv[] );
+  virtual void
+  CreateOptionMap(int argc, char * argv[]);
 
   /** Return the values of the specified tag. */
-  virtual int GetOptions( const std::string & tag,
-    std::vector< std::string > & values ) const;
+  virtual int
+  GetOptions(const std::string & tag, std::vector<std::string> & values) const;
 
   /** Dump the values of the specified tag to the standard output. */
-  virtual int DumpOptions( const std::string & tag, bool withTag = true,
-    bool withNewLine = false ) const;
+  virtual int
+  DumpOptions(const std::string & tag, bool withTag = true, bool withNewLine = false) const;
 
   /** Return the value of the specified tag as a boolean. */
-  virtual bool GetBooleanOption( const std::string & tag, bool defaultValue,
-    bool required ) const;
+  virtual bool
+  GetBooleanOption(const std::string & tag, bool defaultValue, bool required) const;
 
   /** Return the value of the specified tag as a double-precision float. */
-  virtual double GetDoubleOption( const std::string & tag,
-    double defaultValue, bool required ) const;
+  virtual double
+  GetDoubleOption(const std::string & tag, double defaultValue, bool required) const;
 
   /** Return the value of the specified tag as a signed integer. */
-  virtual int GetIntegerOption( const std::string & tag, int defaultValue,
-    bool required ) const;
+  virtual int
+  GetIntegerOption(const std::string & tag, int defaultValue, bool required) const;
 
   /** Return the values of the specified tag as a list of unsigned
    * characters. */
-  virtual int GetMultipleCharactersOption( const std::string & tag,
-    std::vector< unsigned char > & values, bool required ) const;
+  virtual int
+  GetMultipleCharactersOption(const std::string & tag, std::vector<unsigned char> & values, bool required) const;
 
   /** Return the values of the specified tag as an ITK array of
    * double-precision floats. */
-  virtual int GetMultipleDoublesOption( const std::string & tag,
-    itk::Array< double > & values, bool required ) const;
+  virtual int
+  GetMultipleDoublesOption(const std::string & tag, itk::Array<double> & values, bool required) const;
 
   /** Return the values of the specified tag as a list of double-precision
    * floats. */
-  virtual int GetMultipleDoublesOption( const std::string & tag,
-    std::vector< double > & values, bool required ) const;
+  virtual int
+  GetMultipleDoublesOption(const std::string & tag, std::vector<double> & values, bool required) const;
 
   /** Return the values of the specified tag as a list of signed
    * integers. */
-  virtual int GetMultipleIntegersOption( const std::string & tag,
-    std::vector< int > & values, bool required ) const;
+  virtual int
+  GetMultipleIntegersOption(const std::string & tag, std::vector<int> & values, bool required) const;
 
   /** Return the values of the specified tag as a list of strings. */
-  virtual int GetMultipleStringsOption( const std::string & tag,
-    std::vector< std::string > & values, bool required ) const;
+  virtual int
+  GetMultipleStringsOption(const std::string & tag, std::vector<std::string> & values, bool required) const;
 
   /** Return the values of the specified tag as a list of unsigned
    * integers. */
-  virtual int GetMultipleUnsignedIntegersOption( const std::string & tag,
-    std::vector< unsigned int > & values, bool required ) const;
+  virtual int
+  GetMultipleUnsignedIntegersOption(const std::string & tag, std::vector<unsigned int> & values, bool required) const;
 
   /** Return the value of the specified tag as a string. */
-  virtual int GetStringOption( const std::string & tag, std::string & value,
-    bool required ) const;
+  virtual int
+  GetStringOption(const std::string & tag, std::string & value, bool required) const;
 
   /** Return the value of the specified tag as a unsigned character. */
-  virtual unsigned char GetCharacterOption( const std::string & tag,
-    unsigned char defaultValue, bool required ) const;
+  virtual unsigned char
+  GetCharacterOption(const std::string & tag, unsigned char defaultValue, bool required) const;
 
   /** Return the value of the specified tag as a unsigned integer. */
-  virtual unsigned int GetUnsignedIntegerOption( const std::string & tag,
-    unsigned int defaultValue, bool required ) const;
+  virtual unsigned int
+  GetUnsignedIntegerOption(const std::string & tag, unsigned int defaultValue, bool required) const;
 
 protected:
-
   /** Return a reference to the option map. */
-  virtual OptionMapType & GetOptionMap( void );
+  virtual OptionMapType &
+  GetOptionMap(void);
 
   /** Print information about this object. */
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
+  virtual void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Copy constructor not implemented.
-  OptionList( const Self & self );
+  OptionList(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
   OptionMapType m_OptionMap;
 

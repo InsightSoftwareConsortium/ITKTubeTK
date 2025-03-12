@@ -37,22 +37,21 @@ namespace tube
  *
  *  \ingroup TubeTK
  */
-template< class TInputImage, class TInputMask >
-class ConvertImagesToCSV:
-  public itk::ProcessObject
+template <class TInputImage, class TInputMask>
+class ConvertImagesToCSV : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ConvertImagesToCSV;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ConvertImagesToCSV, ProcessObject );
+  itkTypeMacro(ConvertImagesToCSV, ProcessObject);
 
   using InputMaskType = TInputMask;
   using MaskPixelType = typename InputMaskType::PixelType;
@@ -60,46 +59,48 @@ public:
   using InputImageType = TInputImage;
   using InputPixelType = typename InputImageType::PixelType;
 
-  using ConvertImagesToCSVFilterType = itk::tube::ConvertImagesToCSVFilter< InputImageType, InputMaskType >;
+  using ConvertImagesToCSVFilterType = itk::tube::ConvertImagesToCSVFilter<InputImageType, InputMaskType>;
 
-  tubeWrapSetObjectMacro( InputMask, InputMaskType, ConvertImagesToCSVFilter );
-  tubeWrapGetObjectMacro( InputMask, InputMaskType, ConvertImagesToCSVFilter );
-  typename ConvertImagesToCSVFilterType::VnlMatrixType GetOutput();
-  tubeWrapGetMacro( Stride, unsigned int, ConvertImagesToCSVFilter );
-  tubeWrapSetMacro( Stride, unsigned int, ConvertImagesToCSVFilter );
-  tubeWrapSetMacro( NumImages, unsigned int, ConvertImagesToCSVFilter );
-  tubeWrapGetMacro( NumImages, unsigned int, ConvertImagesToCSVFilter );
-  tubeWrapSetMacro( NumberRows, unsigned int, ConvertImagesToCSVFilter );
-  tubeWrapGetMacro( NumberRows, unsigned int, ConvertImagesToCSVFilter );
+  tubeWrapSetObjectMacro(InputMask, InputMaskType, ConvertImagesToCSVFilter);
+  tubeWrapGetObjectMacro(InputMask, InputMaskType, ConvertImagesToCSVFilter);
+  typename ConvertImagesToCSVFilterType::VnlMatrixType
+  GetOutput();
+  tubeWrapGetMacro(Stride, unsigned int, ConvertImagesToCSVFilter);
+  tubeWrapSetMacro(Stride, unsigned int, ConvertImagesToCSVFilter);
+  tubeWrapSetMacro(NumImages, unsigned int, ConvertImagesToCSVFilter);
+  tubeWrapGetMacro(NumImages, unsigned int, ConvertImagesToCSVFilter);
+  tubeWrapSetMacro(NumberRows, unsigned int, ConvertImagesToCSVFilter);
+  tubeWrapGetMacro(NumberRows, unsigned int, ConvertImagesToCSVFilter);
   /** Set the input image and reinitialize the list of images */
-  tubeWrapSetObjectMacro( Input, InputImageType, ConvertImagesToCSVFilter );
-  tubeWrapGetConstObjectMacro( Input, InputImageType,
-    ConvertImagesToCSVFilter );
-  void AddImage( InputImageType* );
+  tubeWrapSetObjectMacro(Input, InputImageType, ConvertImagesToCSVFilter);
+  tubeWrapGetConstObjectMacro(Input, InputImageType, ConvertImagesToCSVFilter);
+  void
+  AddImage(InputImageType *);
 
-  tubeWrapUpdateMacro( ConvertImagesToCSVFilter );
+  tubeWrapUpdateMacro(ConvertImagesToCSVFilter);
 
 protected:
-  ConvertImagesToCSV( void );
+  ConvertImagesToCSV(void);
   ~ConvertImagesToCSV() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkConvertImagesToCSVFilter parameters **/
-  ConvertImagesToCSV( const Self & );
-  void operator=( const Self & );
+  ConvertImagesToCSV(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename ConvertImagesToCSVFilterType::Pointer m_ConvertImagesToCSVFilter;
-
 };
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeConvertImagesToCSV.hxx"
+#  include "tubeConvertImagesToCSV.hxx"
 #endif
 
 #endif // End !defined( __tubeCropImage_h )

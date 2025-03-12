@@ -45,123 +45,133 @@ namespace tube
  * \brief Computes connectivity between tubes in a TRE file
  *
  */
-template< unsigned int ObjectDimension >
+template <unsigned int ObjectDimension>
 class MinimumSpanningTreeVesselConnectivityFilter
-  : public SpatialObjectToSpatialObjectFilter<
-    GroupSpatialObject< ObjectDimension >, GroupSpatialObject< ObjectDimension > >
+  : public SpatialObjectToSpatialObjectFilter<GroupSpatialObject<ObjectDimension>, GroupSpatialObject<ObjectDimension>>
 {
 public:
   /** Standard class type alias. */
-  using TubeGroupType = GroupSpatialObject< ObjectDimension >;
+  using TubeGroupType = GroupSpatialObject<ObjectDimension>;
 
-  typedef MinimumSpanningTreeVesselConnectivityFilter
-                                                Self;
-  using Superclass = SpatialObjectToSpatialObjectFilter< TubeGroupType, TubeGroupType >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  typedef MinimumSpanningTreeVesselConnectivityFilter Self;
+  using Superclass = SpatialObjectToSpatialObjectFilter<TubeGroupType, TubeGroupType>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  using TubeType = TubeSpatialObject< ObjectDimension >;
+  using TubeType = TubeSpatialObject<ObjectDimension>;
   using TubePointerType = typename TubeType::Pointer;
   using TubeConstPointerType = typename TubeType::ConstPointer;
   using TubeIdType = itk::IndexValueType;
-  using TubeIdListType = std::vector< TubeIdType >;
+  using TubeIdListType = std::vector<TubeIdType>;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro( MinimumSpanningTreeVesselConnectivityFilter,
-                SpatialObjectToSpatialObjectFilter );
+  itkTypeMacro(MinimumSpanningTreeVesselConnectivityFilter, SpatialObjectToSpatialObjectFilter);
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Set/Get a list of root tube ids */
-  void SetRootTubeIdList( const TubeIdListType & rootTubeIdList );
-  const TubeIdListType & GetRootTubeIdList( void ) const;
+  void
+  SetRootTubeIdList(const TubeIdListType & rootTubeIdList);
+  const TubeIdListType &
+  GetRootTubeIdList(void) const;
 
   /** Set/Get max tube distance */
-  itkSetMacro( MaxTubeDistanceToRadiusRatio, double );
-  itkGetConstMacro( MaxTubeDistanceToRadiusRatio, double );
+  itkSetMacro(MaxTubeDistanceToRadiusRatio, double);
+  itkGetConstMacro(MaxTubeDistanceToRadiusRatio, double);
 
   /** Set/Get bifurcation angle continuity */
-  itkSetMacro( MaxContinuityAngleError, double );
-  itkGetConstMacro( MaxContinuityAngleError, double );
+  itkSetMacro(MaxContinuityAngleError, double);
+  itkGetConstMacro(MaxContinuityAngleError, double);
 
   /** Set/Get whether or not to remove orphan tubes */
-  itkSetMacro( RemoveOrphanTubes, bool );
-  itkGetMacro( RemoveOrphanTubes, bool );
-  itkBooleanMacro( RemoveOrphanTubes );
+  itkSetMacro(RemoveOrphanTubes, bool);
+  itkGetMacro(RemoveOrphanTubes, bool);
+  itkBooleanMacro(RemoveOrphanTubes);
 
 protected:
-  MinimumSpanningTreeVesselConnectivityFilter( void );
-  virtual ~MinimumSpanningTreeVesselConnectivityFilter( void );
+  MinimumSpanningTreeVesselConnectivityFilter(void);
+  virtual ~MinimumSpanningTreeVesselConnectivityFilter(void);
 
-  virtual void GenerateData( void ) override;
+  virtual void
+  GenerateData(void) override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
   // purposely not implemented
-  MinimumSpanningTreeVesselConnectivityFilter( const Self & );
+  MinimumSpanningTreeVesselConnectivityFilter(const Self &);
   // purposely not implemented
-  void operator=( const Self & );
+  void
+  operator=(const Self &);
 
-  double ComputeTubeLength();
-  void BuildTubeGraph( void );
-  void ComputeTubeConnectivity( void );
-  void VisitTube( TubePointerType pTube );
-  void RunMinimumSpanningTree( TubeIdType rootTubeId );
-  void AddRemainingTubes();
+  double
+  ComputeTubeLength();
+  void
+  BuildTubeGraph(void);
+  void
+  ComputeTubeConnectivity(void);
+  void
+  VisitTube(TubePointerType pTube);
+  void
+  RunMinimumSpanningTree(TubeIdType rootTubeId);
+  void
+  AddRemainingTubes();
 
   struct GraphEdgeType
-    {
+  {
     double weight;
     double distToRadRatio;
     double continuityAngleError;
 
     TubePointerType sourceTube;
-    TubeIdType sourceTubeId;
-    int sourceTubePointId;
+    TubeIdType      sourceTubeId;
+    int             sourceTubePointId;
 
     TubePointerType targetTube;
-    TubeIdType targetTubeId;
-    int targetTubePointId;
+    TubeIdType      targetTubeId;
+    int             targetTubePointId;
 
-    bool operator>( const GraphEdgeType & rhs ) const;
-    };
+    bool
+    operator>(const GraphEdgeType & rhs) const;
+  };
 
   struct ConnectionPointType
-    {
-    int pointId;
+  {
+    int    pointId;
     double dist;
     double angle;
 
-    bool operator>( const ConnectionPointType & rhs ) const;
-    };
+    bool
+    operator>(const ConnectionPointType & rhs) const;
+  };
 
-  using GraphEdgeListType = std::unordered_map< TubeIdType, GraphEdgeType >;
-  using TubeAdjacencyListGraphType = std::unordered_map< TubeIdType, GraphEdgeListType >;
-  using TubeIdToPointerMapType = std::unordered_map< TubeIdType, TubePointerType >;
+  using GraphEdgeListType = std::unordered_map<TubeIdType, GraphEdgeType>;
+  using TubeAdjacencyListGraphType = std::unordered_map<TubeIdType, GraphEdgeListType>;
+  using TubeIdToPointerMapType = std::unordered_map<TubeIdType, TubePointerType>;
 
   struct TubePQElementType
-    {
-    TubeIdType tubeId;
+  {
+    TubeIdType                            tubeId;
     typename GraphEdgeListType::size_type outDegree;
-    double tubeLength;
+    double                                tubeLength;
 
-    bool operator<( const TubePQElementType & rhs ) const;
-    };
+    bool
+    operator<(const TubePQElementType & rhs) const;
+  };
 
-  double                                  m_MaxTubeDistanceToRadiusRatio;
-  double                                  m_MaxContinuityAngleError;
-  TubeIdListType                          m_RootTubeIdList;
-  bool                                    m_RemoveOrphanTubes;
+  double         m_MaxTubeDistanceToRadiusRatio;
+  double         m_MaxContinuityAngleError;
+  TubeIdListType m_RootTubeIdList;
+  bool           m_RemoveOrphanTubes;
 
-  TubeAdjacencyListGraphType              m_TubeGraph;
-  TubeIdToPointerMapType                  m_TubeIdToObjectMap;
-  std::set< TubeIdType >                  m_SetTubesVisited;
-  std::set< TubeIdType >                  m_SetTubesReversed;
-  std::priority_queue< GraphEdgeType, std::vector< GraphEdgeType >,
-    std::greater< GraphEdgeType > >       m_minpqGraphEdge;
-  int                                     m_numOutputConnectedComponents;
+  TubeAdjacencyListGraphType                                                                  m_TubeGraph;
+  TubeIdToPointerMapType                                                                      m_TubeIdToObjectMap;
+  std::set<TubeIdType>                                                                        m_SetTubesVisited;
+  std::set<TubeIdType>                                                                        m_SetTubesReversed;
+  std::priority_queue<GraphEdgeType, std::vector<GraphEdgeType>, std::greater<GraphEdgeType>> m_minpqGraphEdge;
+  int m_numOutputConnectedComponents;
 
 }; // End class MinimumSpanningTreeVesselConnectivityFilter
 
@@ -169,7 +179,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeMinimumSpanningTreeVesselConnectivityFilter.hxx"
+#  include "itktubeMinimumSpanningTreeVesselConnectivityFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeMinimumSpanningTreeVesselConnectivityFilter_h )

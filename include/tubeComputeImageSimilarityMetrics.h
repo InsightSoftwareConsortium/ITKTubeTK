@@ -40,73 +40,72 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TInputImage >
-class ComputeImageSimilarityMetrics:
-  public itk::ProcessObject
+template <class TInputImage>
+class ComputeImageSimilarityMetrics : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ComputeImageSimilarityMetrics;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  using FilterType = itk::tube::ComputeImageSimilarityMetrics<
-    TInputImage >;
+  using FilterType = itk::tube::ComputeImageSimilarityMetrics<TInputImage>;
 
   using ImageType = typename FilterType::ImageType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeImageSimilarityMetrics, Object );
+  itkTypeMacro(ComputeImageSimilarityMetrics, Object);
 
   /** Set/Get use of correlation or mutual information to compute similarity */
-  tubeWrapSetMacro( UseCorrelation, bool, Filter );
-  tubeWrapGetMacro( UseCorrelation, bool, Filter );
+  tubeWrapSetMacro(UseCorrelation, bool, Filter);
+  tubeWrapGetMacro(UseCorrelation, bool, Filter);
 
   /** Set/Get portion of voxels used to compute image similarity */
-  tubeWrapSetMacro( SamplingRate, double, Filter );
-  tubeWrapGetMacro( SamplingRate, double, Filter );
+  tubeWrapSetMacro(SamplingRate, double, Filter);
+  tubeWrapGetMacro(SamplingRate, double, Filter);
 
   /** Set/Get input image 1 */
-  tubeWrapSetConstObjectMacro( Input1, ImageType, Filter );
-  tubeWrapGetConstObjectMacro( Input1, ImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input1, ImageType, Filter);
+  tubeWrapGetConstObjectMacro(Input1, ImageType, Filter);
 
   /** Set/Get input image 2 */
-  tubeWrapSetConstObjectMacro( Input2, ImageType, Filter );
-  tubeWrapGetConstObjectMacro( Input2, ImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input2, ImageType, Filter);
+  tubeWrapGetConstObjectMacro(Input2, ImageType, Filter);
 
   /** Compute image similarity */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
   /** Get image similarity */
-  tubeWrapGetMacro( Output, double, Filter );
+  tubeWrapGetMacro(Output, double, Filter);
 
 protected:
-  ComputeImageSimilarityMetrics( void );
+  ComputeImageSimilarityMetrics(void);
   ~ComputeImageSimilarityMetrics() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkComputeImageSimilarityMetricsFilter parameters **/
-  ComputeImageSimilarityMetrics( const Self & );
-  void operator=( const Self & );
+  ComputeImageSimilarityMetrics(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename FilterType::Pointer m_Filter;
-
 };
 
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeComputeImageSimilarityMetrics.hxx"
+#  include "tubeComputeImageSimilarityMetrics.hxx"
 #endif
 
 #endif // End !defined( __tubeComputeImageSimilarityMetrics_h )

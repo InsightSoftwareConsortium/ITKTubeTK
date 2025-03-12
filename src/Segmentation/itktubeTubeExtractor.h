@@ -48,23 +48,22 @@ namespace tube
  * \sa TubeExtractor
  */
 
-template< class TInputImage >
+template <class TInputImage>
 class TubeExtractor : public Object
 {
 public:
-
   /**
    * Standard self type alias */
   using Self = TubeExtractor;
   using Superclass = Object;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /**
    * Run-time type information ( and related methods ). */
-  itkTypeMacro( TubeExtractor, Object );
+  itkTypeMacro(TubeExtractor, Object);
 
-  itkNewMacro( TubeExtractor );
+  itkNewMacro(TubeExtractor);
 
   /**
    * Type definition for the input image. */
@@ -73,39 +72,37 @@ public:
   using RidgeExtractorType = RidgeExtractor<ImageType>;
   using RadiusExtractorType = RadiusExtractor3<ImageType>;
 
-  typedef typename RidgeExtractorType::TubeMaskImageType
-                                                    TubeMaskImageType;
+  typedef typename RidgeExtractorType::TubeMaskImageType TubeMaskImageType;
 
   /**
    * Standard for the number of dimension
    */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    TInputImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
 
   /**
    * Type definition for the input image pixel type. */
   using PixelType = typename ImageType::PixelType;
 
   /**  Type definition for VesselTubeSpatialObject */
-  using TubeType = TubeSpatialObject< ImageDimension >;
+  using TubeType = TubeSpatialObject<ImageDimension>;
   using TubePointType = typename TubeType::TubePointType;
 
-  using TubeGroupType = itk::GroupSpatialObject< ImageDimension >;
+  using TubeGroupType = itk::GroupSpatialObject<ImageDimension>;
 
   /**
    * Type definition for the input image pixel type. */
-  using ContinuousIndexType = ContinuousIndex<double, ImageDimension >;
-  using ContinuousIndexListType = std::vector< ContinuousIndexType >;
-  using PointType = Point<double, ImageDimension >;
-  using PointListType = std::vector< PointType >;
+  using ContinuousIndexType = ContinuousIndex<double, ImageDimension>;
+  using ContinuousIndexListType = std::vector<ContinuousIndexType>;
+  using PointType = Point<double, ImageDimension>;
+  using PointListType = std::vector<PointType>;
   using RadiusType = double;
-  using RadiusListType = std::vector< RadiusType >;
+  using RadiusListType = std::vector<RadiusType>;
 
   using IndexType = typename ImageType::IndexType;
 
   /**
    * Defines the type of vectors used */
-  using VectorType = itk::Vector< double, ImageDimension >;
+  using VectorType = itk::Vector<double, ImageDimension>;
 
 
   /***********/
@@ -115,18 +112,24 @@ public:
 
   /**
    * Set the input image */
-  void SetInputImage( ImageType * inputImage );
-  const ImageType * GetInputImage( void ) const;
+  void
+  SetInputImage(ImageType * inputImage);
+  const ImageType *
+  GetInputImage(void) const;
 
   /**
    * Optionally set a different input image to use for radius estimation */
-  void SetRadiusInputImage( ImageType * radiusInputImage );
-  const ImageType * GetRadiusInputImage( void ) const;
+  void
+  SetRadiusInputImage(ImageType * radiusInputImage);
+  const ImageType *
+  GetRadiusInputImage(void) const;
 
   /**
    * Set the tube mask image */
-  void SetTubeMaskImage( TubeMaskImageType * mask );
-  TubeMaskImageType * GetTubeMaskImage( void );
+  void
+  SetTubeMaskImage(TubeMaskImageType * mask);
+  TubeMaskImageType *
+  GetTubeMaskImage(void);
 
 
   /***********/
@@ -135,50 +138,62 @@ public:
 
   /**
    * Set Data Minimum */
-  void SetDataMin( double dataMin );
+  void
+  SetDataMin(double dataMin);
 
   /**
    * Get Data Minimum */
-  double GetDataMin( void );
+  double
+  GetDataMin(void);
 
   /**
    * Set Data Maximum */
-  void SetDataMax( double dataMax );
+  void
+  SetDataMax(double dataMax);
 
   /**
    * Get Data Maximum */
-  double GetDataMax( void );
+  double
+  GetDataMax(void);
 
   /**
    * Set Data Limits - values outside of these limits are ignored */
-  void SetDataMinMaxLimits( double limitMin, double limitMax );
+  void
+  SetDataMinMaxLimits(double limitMin, double limitMax);
 
   /**
    * Set the border within the image edges that vessels cannot enter */
-  void SetBorderInIndexSpace( int border );
+  void
+  SetBorderInIndexSpace(int border);
   /**
    * Set ExtractBound Minimum */
-  void SetExtractBoundMinInIndexSpace( const IndexType & dataMin );
+  void
+  SetExtractBoundMinInIndexSpace(const IndexType & dataMin);
 
   /**
    * Get ExtractBound Minimum */
-  IndexType GetExtractBoundMinInIndexSpace( void ) const;
+  IndexType
+  GetExtractBoundMinInIndexSpace(void) const;
 
   /**
    * Set ExtractBound Maximum */
-  void SetExtractBoundMaxInIndexSpace( const IndexType & dataMax );
+  void
+  SetExtractBoundMaxInIndexSpace(const IndexType & dataMax);
 
   /**
    * Get ExtractBound Maximum */
-  IndexType GetExtractBoundMaxInIndexSpace( void ) const;
+  IndexType
+  GetExtractBoundMaxInIndexSpace(void) const;
 
   /**
    * Set the radius */
-  void SetRadiusInObjectSpace( double radius );
+  void
+  SetRadiusInObjectSpace(double radius);
 
   /**
    * Get the radius */
-  double GetRadiusInObjectSpace( void );
+  double
+  GetRadiusInObjectSpace(void);
 
 
   /***********/
@@ -187,16 +202,18 @@ public:
 
   /**
    * Get the ridge extractor */
-  RidgeExtractorType * GetRidgeExtractor( void );
+  RidgeExtractorType *
+  GetRidgeExtractor(void);
 
   /**
    * Get the radius extractor */
-  RadiusExtractorType * GetRadiusExtractor( void );
+  RadiusExtractorType *
+  GetRadiusExtractor(void);
 
   /** Set final ridge scale and radius values to the values specified rather
    *   than optimize. */
-  itkSetMacro( OptimizeRadius, bool );
-  itkGetMacro( OptimizeRadius, bool );
+  itkSetMacro(OptimizeRadius, bool);
+  itkGetMacro(OptimizeRadius, bool);
 
 
   /***********/
@@ -205,13 +222,14 @@ public:
 
   /**
    * Return true if a tube is found from the given seed point */
-  bool FindLocalTubeInObjectSpace( PointType & x );
+  bool
+  FindLocalTubeInObjectSpace(PointType & x);
 
   /**
    * Extract the ND tube given the position of the first point
    * and the tube ID */
-  TubeType * ExtractTubeInObjectSpace( const PointType & x,
-    unsigned int tubeID, bool verbose = false );
+  TubeType *
+  ExtractTubeInObjectSpace(const PointType & x, unsigned int tubeID, bool verbose = false);
 
 
   /***********/
@@ -219,40 +237,44 @@ public:
   /***********/
 
   /** Set Seed Mask Image */
-  itkSetConstObjectMacro( SeedMask, TubeMaskImageType );
-  itkGetConstObjectMacro( SeedMask, TubeMaskImageType );
+  itkSetConstObjectMacro(SeedMask, TubeMaskImageType);
+  itkGetConstObjectMacro(SeedMask, TubeMaskImageType);
 
   /** Set initial ridge scale and initial radius estimate based on these
    *    the values in this image */
-  itkSetConstObjectMacro( SeedRadiusMask, ImageType );
-  itkGetConstObjectMacro( SeedRadiusMask, ImageType );
+  itkSetConstObjectMacro(SeedRadiusMask, ImageType);
+  itkGetConstObjectMacro(SeedRadiusMask, ImageType);
 
-  /** SeedMask is interpreted as ordered values for initiating 
+  /** SeedMask is interpreted as ordered values for initiating
    *    seed extractions */
-  itkSetMacro( UseSeedMaskAsProbabilities, bool );
-  itkGetMacro( UseSeedMaskAsProbabilities, bool );
+  itkSetMacro(UseSeedMaskAsProbabilities, bool);
+  itkGetMacro(UseSeedMaskAsProbabilities, bool);
 
-  itkSetMacro( SeedExtractionMinimumSuccessRatio, double );
-  itkGetMacro( SeedExtractionMinimumSuccessRatio, double );
+  itkSetMacro(SeedExtractionMinimumSuccessRatio, double);
+  itkGetMacro(SeedExtractionMinimumSuccessRatio, double);
 
-  itkSetMacro( SeedExtractionMinimumProbability, double );
-  itkGetMacro( SeedExtractionMinimumProbability, double );
-
-  /** Set Seed Mask Stride */
-  itkSetMacro( SeedMaskMaximumNumberOfPoints, unsigned int );
-  itkGetMacro( SeedMaskMaximumNumberOfPoints, unsigned int );
+  itkSetMacro(SeedExtractionMinimumProbability, double);
+  itkGetMacro(SeedExtractionMinimumProbability, double);
 
   /** Set Seed Mask Stride */
-  itkSetMacro( SeedMaskStride, int );
-  itkGetMacro( SeedMaskStride, int );
+  itkSetMacro(SeedMaskMaximumNumberOfPoints, unsigned int);
+  itkGetMacro(SeedMaskMaximumNumberOfPoints, unsigned int);
+
+  /** Set Seed Mask Stride */
+  itkSetMacro(SeedMaskStride, int);
+  itkGetMacro(SeedMaskStride, int);
 
   /** Set Seed Index List */
-  void SetSeedsInIndexSpaceList( const ContinuousIndexListType & iList );
-  void SetSeedsInObjectSpaceList( const PointListType & oList );
-  void SetSeedRadiiInObjectSpaceList( const RadiusListType & rList );
+  void
+  SetSeedsInIndexSpaceList(const ContinuousIndexListType & iList);
+  void
+  SetSeedsInObjectSpaceList(const PointListType & oList);
+  void
+  SetSeedRadiiInObjectSpaceList(const RadiusListType & rList);
 
   /** Process seed list or seed mask */
-  void ProcessSeeds( bool verbose = false );
+  void
+  ProcessSeeds(bool verbose = false);
 
 
   /***********/
@@ -260,7 +282,8 @@ public:
   /***********/
 
   /** Get parameter file */
-  void LoadParameterFile( const std::string & filename );
+  void
+  LoadParameterFile(const std::string & filename);
 
 
   /***********/
@@ -269,31 +292,38 @@ public:
 
   /**
    * Get the list of tubes that have been extracted */
-  TubeGroupType * GetTubeGroup( void );
+  TubeGroupType *
+  GetTubeGroup(void);
 
   /**
    * Set the list of tubes that have been extracted */
-  void SetTubeGroup( TubeGroupType * tubes );
+  void
+  SetTubeGroup(TubeGroupType * tubes);
 
   /**
    * Smooth a tube */
-  void SmoothTube( TubeType * tube, int h=5 );
+  void
+  SmoothTube(TubeType * tube, int h = 5);
 
   /**
    * Add a tube */
-  bool AddTube( TubeType * tube );
+  bool
+  AddTube(TubeType * tube);
 
   /**
    * Delete a tube */
-  bool DeleteTube( TubeType * tube );
+  bool
+  DeleteTube(TubeType * tube);
 
   /**
    * Set the tube color */
-  void SetTubeColor( const vnl_vector< double > & color );
+  void
+  SetTubeColor(const vnl_vector<double> & color);
 
   /**
    * Get the tube color */
-  vnl_vector<double> & GetTubeColor( void );
+  vnl_vector<double> &
+  GetTubeColor(void);
 
 
   /***********/
@@ -303,47 +333,50 @@ public:
 
   /**
    * Set the idle callback */
-  void   IdleCallBack( bool ( *idleCallBack )( void ) );
+  void
+  IdleCallBack(bool (*idleCallBack)(void));
 
   /**
    * Set the status callback */
-  void   StatusCallBack( void ( *statusCallBack )( const char *,
-      const char *, int ) );
+  void
+  StatusCallBack(void (*statusCallBack)(const char *, const char *, int));
 
   /**
    * Set the tube callback */
-  void   NewTubeCallBack( void ( *newTubeCallBack )( TubeType * ) );
+  void
+  NewTubeCallBack(void (*newTubeCallBack)(TubeType *));
 
   /**
    * Set the status callback */
-  void   AbortProcess( bool ( *abortProcess )( void ) );
+  void
+  AbortProcess(bool (*abortProcess)(void));
 
 protected:
+  TubeExtractor(void);
+  virtual ~TubeExtractor(void);
 
-  TubeExtractor( void );
-  virtual ~TubeExtractor( void );
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  typename RidgeExtractorType::Pointer  m_RidgeExtractor;
+  typename RadiusExtractorType::Pointer m_RadiusExtractor;
 
-  typename RidgeExtractorType::Pointer   m_RidgeExtractor;
-  typename RadiusExtractorType::Pointer  m_RadiusExtractor;
-
-  bool ( *m_IdleCallBack )( void );
-  void ( *m_StatusCallBack )( const char *, const char *, int );
-  void ( *m_NewTubeCallBack )( TubeType * );
-  bool ( *m_AbortProcess )( void );
+  bool (*m_IdleCallBack)(void);
+  void (*m_StatusCallBack)(const char *, const char *, int);
+  void (*m_NewTubeCallBack)(TubeType *);
+  bool (*m_AbortProcess)(void);
 
 private:
+  TubeExtractor(const Self &);
+  void
+  operator=(const Self &);
 
-  TubeExtractor( const Self& );
-  void operator=( const Self& );
+  typename TubeGroupType::Pointer m_TubeGroup;
 
-  typename TubeGroupType::Pointer     m_TubeGroup;
+  vnl_vector<double> m_TubeColor;
 
-  vnl_vector<double>                  m_TubeColor;
-
-  PointListType                       m_SeedsInObjectSpaceList;
-  RadiusListType                      m_SeedRadiiInObjectSpaceList;
+  PointListType  m_SeedsInObjectSpaceList;
+  RadiusListType m_SeedRadiiInObjectSpaceList;
 
   typename TubeMaskImageType::ConstPointer m_SeedMask;
   bool                                     m_UseSeedMaskAsProbabilities;
@@ -353,8 +386,7 @@ private:
   typename ImageType::ConstPointer         m_SeedRadiusMask;
   int                                      m_SeedMaskStride;
 
-  bool                                     m_OptimizeRadius;
-
+  bool m_OptimizeRadius;
 
 
 }; // End class TubeExtractor
@@ -364,7 +396,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeTubeExtractor.hxx"
+#  include "itktubeTubeExtractor.hxx"
 #endif
 
 #endif // End !defined( __itktubeTubeExtractor_h )

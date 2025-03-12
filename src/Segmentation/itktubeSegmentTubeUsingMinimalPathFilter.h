@@ -14,13 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef itktubeSegmentTubeUsingMinimalPathFilter_h
 #define itktubeSegmentTubeUsingMinimalPathFilter_h
 
 #include "itkImage.h"
 
-//ITK imports
+// ITK imports
 #include "itkGroupSpatialObject.h"
 #include "itkTubeSpatialObjectPoint.h"
 #include "itkTubeSpatialObject.h"
@@ -30,7 +30,7 @@
 #include "itkGradientDescentOptimizer.h"
 #include "itkNumericTraits.h"
 #include "itkObject.h"
-//TubeTK imports
+// TubeTK imports
 #include "itktubeRadiusExtractor3.h"
 
 namespace itk
@@ -45,103 +45,105 @@ namespace tube
  *
  */
 
-template< unsigned int Dimension, class TInputPixel >
-class SegmentTubeUsingMinimalPathFilter: public Object
+template <unsigned int Dimension, class TInputPixel>
+class SegmentTubeUsingMinimalPathFilter : public Object
 {
 public:
   /** Standard class type alias. */
   using Self = SegmentTubeUsingMinimalPathFilter;
   using Superclass = Object;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  using InputImageType = itk::Image< TInputPixel, Dimension >;
-  using InputSpatialObjectType = itk::GroupSpatialObject< Dimension >;
+  using InputImageType = itk::Image<TInputPixel, Dimension>;
+  using InputSpatialObjectType = itk::GroupSpatialObject<Dimension>;
 
   using TubeGroupPointer = typename InputSpatialObjectType::Pointer;
 
-  using PointType = itk::Point< double, Dimension >;
-  using TubePointType = itk::TubeSpatialObjectPoint< Dimension >;
-  using TubeType = itk::TubeSpatialObject< Dimension >;
+  using PointType = itk::Point<double, Dimension>;
+  using TubePointType = itk::TubeSpatialObjectPoint<Dimension>;
+  using TubeType = itk::TubeSpatialObject<Dimension>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro
-    ( SegmentTubeUsingMinimalPathFilter, Object );
+  itkTypeMacro(SegmentTubeUsingMinimalPathFilter, Object);
 
-  itkSetMacro( SpeedImage, typename InputImageType::Pointer );
-  itkGetMacro( SpeedImage, typename InputImageType::Pointer );
-  itkSetMacro( RadiusImage, typename InputImageType::Pointer );
-  itkGetMacro( RadiusImage, typename InputImageType::Pointer );
-  itkSetMacro( StartPoint, PointType );
-  itkGetMacro( StartPoint, PointType );
-  itkSetMacro( EndPoint, PointType );
-  itkGetMacro( EndPoint, PointType );
-  itkSetMacro( ConnectToTargetTubeSurface, bool );
-  itkGetMacro( ConnectToTargetTubeSurface, bool );
-  itkSetMacro( OptimizationMethod, std::string );
-  itkGetMacro( OptimizationMethod, std::string );
-  itkSetMacro( OptimizerTerminationValue, double );
-  itkGetMacro( OptimizerTerminationValue, double );
-  itkSetMacro( OptimizerNumberOfIterations, int );
-  itkGetMacro( OptimizerNumberOfIterations, int );
-  itkSetMacro( OptimizerStepLengthFactor, double );
-  itkGetMacro( OptimizerStepLengthFactor, double );
-  itkSetMacro( OptimizerStepLengthRelax, double );
-  itkGetMacro( OptimizerStepLengthRelax, double );
-  itkSetMacro( StartRadius, double );
-  itkGetMacro( StartRadius, double );
-  itkSetMacro( MaxRadius, double );
-  itkGetMacro( MaxRadius, double );
-  itkGetMacro( CostAssociatedWithExtractedTube, double );
-  itkSetMacro( CostAssociatedWithExtractedTube, double );
+  itkSetMacro(SpeedImage, typename InputImageType::Pointer);
+  itkGetMacro(SpeedImage, typename InputImageType::Pointer);
+  itkSetMacro(RadiusImage, typename InputImageType::Pointer);
+  itkGetMacro(RadiusImage, typename InputImageType::Pointer);
+  itkSetMacro(StartPoint, PointType);
+  itkGetMacro(StartPoint, PointType);
+  itkSetMacro(EndPoint, PointType);
+  itkGetMacro(EndPoint, PointType);
+  itkSetMacro(ConnectToTargetTubeSurface, bool);
+  itkGetMacro(ConnectToTargetTubeSurface, bool);
+  itkSetMacro(OptimizationMethod, std::string);
+  itkGetMacro(OptimizationMethod, std::string);
+  itkSetMacro(OptimizerTerminationValue, double);
+  itkGetMacro(OptimizerTerminationValue, double);
+  itkSetMacro(OptimizerNumberOfIterations, int);
+  itkGetMacro(OptimizerNumberOfIterations, int);
+  itkSetMacro(OptimizerStepLengthFactor, double);
+  itkGetMacro(OptimizerStepLengthFactor, double);
+  itkSetMacro(OptimizerStepLengthRelax, double);
+  itkGetMacro(OptimizerStepLengthRelax, double);
+  itkSetMacro(StartRadius, double);
+  itkGetMacro(StartRadius, double);
+  itkSetMacro(MaxRadius, double);
+  itkGetMacro(MaxRadius, double);
+  itkGetMacro(CostAssociatedWithExtractedTube, double);
+  itkSetMacro(CostAssociatedWithExtractedTube, double);
   /** Sets the input tubes */
-  itkSetMacro( TargetTubeGroup, TubeGroupPointer );
-  itkGetMacro( TargetTubeGroup, TubeGroupPointer );
-  itkGetMacro( Output, TubeGroupPointer );
+  itkSetMacro(TargetTubeGroup, TubeGroupPointer);
+  itkGetMacro(TargetTubeGroup, TubeGroupPointer);
+  itkGetMacro(Output, TubeGroupPointer);
 
-  void SetIntermediatePoints( std::vector< PointType > );
+  void SetIntermediatePoints(std::vector<PointType>);
 
-  void Update( void );
+  void
+  Update(void);
 
 protected:
-  SegmentTubeUsingMinimalPathFilter( void );
+  SegmentTubeUsingMinimalPathFilter(void);
   ~SegmentTubeUsingMinimalPathFilter() {}
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  bool IsPointTooNear( const InputSpatialObjectType * sourceTubeGroup,
-    PointType outsidePoint, PointType &nearestPoint );
+  bool
+  IsPointTooNear(const InputSpatialObjectType * sourceTubeGroup, PointType outsidePoint, PointType & nearestPoint);
 
 private:
-  SegmentTubeUsingMinimalPathFilter( const Self & );
-  void operator=( const Self & );
+  SegmentTubeUsingMinimalPathFilter(const Self &);
+  void
+  operator=(const Self &);
 
-  typename InputImageType::Pointer  m_SpeedImage;
-  typename InputImageType::Pointer  m_RadiusImage;
-  PointType                         m_StartPoint;
-  PointType                         m_EndPoint;
-  std::vector< PointType >          m_IntermediatePoints;
-  TubeGroupPointer                  m_TargetTubeGroup;
-  bool                              m_ConnectToTargetTubeSurface;
-  std::string                       m_OptimizationMethod;
-  double                            m_OptimizerTerminationValue;
-  int                               m_OptimizerNumberOfIterations;
-  double                            m_OptimizerStepLengthFactor;
-  double                            m_OptimizerStepLengthRelax;
-  double                            m_StartRadius;
-  double                            m_MaxRadius;
-  double                            m_CostAssociatedWithExtractedTube;
-  TubeGroupPointer                  m_Output;
+  typename InputImageType::Pointer m_SpeedImage;
+  typename InputImageType::Pointer m_RadiusImage;
+  PointType                        m_StartPoint;
+  PointType                        m_EndPoint;
+  std::vector<PointType>           m_IntermediatePoints;
+  TubeGroupPointer                 m_TargetTubeGroup;
+  bool                             m_ConnectToTargetTubeSurface;
+  std::string                      m_OptimizationMethod;
+  double                           m_OptimizerTerminationValue;
+  int                              m_OptimizerNumberOfIterations;
+  double                           m_OptimizerStepLengthFactor;
+  double                           m_OptimizerStepLengthRelax;
+  double                           m_StartRadius;
+  double                           m_MaxRadius;
+  double                           m_CostAssociatedWithExtractedTube;
+  TubeGroupPointer                 m_Output;
 
-}; //End class SegmentTubeUsingMinimalPathFilter
+}; // End class SegmentTubeUsingMinimalPathFilter
 } // End namespace tube
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeSegmentTubeUsingMinimalPathFilter.hxx"
+#  include "itktubeSegmentTubeUsingMinimalPathFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeSegmentTubeUsingMinimalPathFilter_h )

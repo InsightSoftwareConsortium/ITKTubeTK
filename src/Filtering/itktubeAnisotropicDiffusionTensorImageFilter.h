@@ -47,22 +47,20 @@ namespace tube
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
  */
-template< class TInputImage, class TOutputImage >
-class AnisotropicDiffusionTensorImageFilter
-  : public FiniteDifferenceImageFilter< TInputImage, TOutputImage >
+template <class TInputImage, class TOutputImage>
+class AnisotropicDiffusionTensorImageFilter : public FiniteDifferenceImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class type alias */
   using Self = AnisotropicDiffusionTensorImageFilter;
   using Superclass = FiniteDifferenceImageFilter<TInputImage, TOutputImage>;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   // itkNewMacro( Self );  // Not included since pure virtual
 
   /** Run-time type information ( and related methods ) */
-  itkTypeMacro( AnisotropicDiffusionTensorImageFilter,
-    FiniteDifferenceImageFiler );
+  itkTypeMacro(AnisotropicDiffusionTensorImageFilter, FiniteDifferenceImageFiler);
 
   /** Convenient type alias */
   using InputImageType = typename Superclass::InputImageType;
@@ -71,21 +69,18 @@ public:
 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    Superclass::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Type of associated function, with associated type alias */
-  using FiniteDifferenceFunctionType = AnisotropicDiffusionTensorFunction< InputImageType >;
-  typedef typename FiniteDifferenceFunctionType::DiffusionTensorType
-      TensorPixelType;
-  typedef typename FiniteDifferenceFunctionType::DiffusionTensorImageType
-      DiffusionTensorImageType;
+  using FiniteDifferenceFunctionType = AnisotropicDiffusionTensorFunction<InputImageType>;
+  typedef typename FiniteDifferenceFunctionType::DiffusionTensorType      TensorPixelType;
+  typedef typename FiniteDifferenceFunctionType::DiffusionTensorImageType DiffusionTensorImageType;
 
   // Define the type for storing the eigenvalues
-  using EigenValueArrayType = FixedArray< double, ImageDimension >;
+  using EigenValueArrayType = FixedArray<double, ImageDimension>;
 
   // Declare the types of the output images
-  using EigenAnalysisOutputImageType = Image< EigenValueArrayType, ImageDimension >;
+  using EigenAnalysisOutputImageType = Image<EigenValueArrayType, ImageDimension>;
 
   /** The value type of a time step.  Inherited from the superclass. */
   using TimeStepType = typename Superclass::TimeStepType;
@@ -94,127 +89,136 @@ public:
   using UpdateBufferType = OutputImageType;
 
   /** Define diffusion image neighborhood type */
-  typedef typename
-    FiniteDifferenceFunctionType::DiffusionTensorNeighborhoodType
-      DiffusionTensorNeighborhoodType;
+  typedef typename FiniteDifferenceFunctionType::DiffusionTensorNeighborhoodType DiffusionTensorNeighborhoodType;
 
   /** Set/Get Macro for diffusion tensor image filter parameters */
-  itkSetMacro( TimeStep, double );
-  itkGetMacro( TimeStep, double );
+  itkSetMacro(TimeStep, double);
+  itkGetMacro(TimeStep, double);
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro( OutputTimesDoubleCheck,
-    ( Concept::MultiplyOperator< PixelType, double > ) );
-  itkConceptMacro( OutputAdditiveOperatorsCheck,
-    ( Concept::AdditiveOperators< PixelType > ) );
-  itkConceptMacro( InputConvertibleToOutputCheck,
-    ( Concept::Convertible< typename TInputImage::PixelType, PixelType > ) );
+  itkConceptMacro(OutputTimesDoubleCheck, (Concept::MultiplyOperator<PixelType, double>));
+  itkConceptMacro(OutputAdditiveOperatorsCheck, (Concept::AdditiveOperators<PixelType>));
+  itkConceptMacro(InputConvertibleToOutputCheck, (Concept::Convertible<typename TInputImage::PixelType, PixelType>));
   /** End concept checking */
 #endif
 
 protected:
-  AnisotropicDiffusionTensorImageFilter( void );
- ~AnisotropicDiffusionTensorImageFilter( void ) {}
+  AnisotropicDiffusionTensorImageFilter(void);
+  ~AnisotropicDiffusionTensorImageFilter(void) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /* overloaded GenerateData method */
-  virtual void GenerateData( void ) override;
+  virtual void
+  GenerateData(void) override;
 
   /** A simple method to copy the data from the input to the output. ( Supports
    * "read-only" image adaptors in the case where the input image type converts
    * to a different output image type. )  */
-  virtual void CopyInputToOutput( void ) override;
+  virtual void
+  CopyInputToOutput(void) override;
 
   /** This method applies changes from the m_UpdateBuffer to the output using
    * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
    * the time step to use for the update of each pixel. */
-  virtual void ApplyUpdate( const TimeStepType& dt ) override;
+  virtual void
+  ApplyUpdate(const TimeStepType & dt) override;
 
   /** Method to allow subclasses to get direct access to the update
    * buffer */
-  virtual UpdateBufferType* GetUpdateBuffer( void )
-    { return m_UpdateBuffer; }
+  virtual UpdateBufferType *
+  GetUpdateBuffer(void)
+  {
+    return m_UpdateBuffer;
+  }
 
   /** This method populates an update buffer with changes for each pixel in the
    * output using the ThreadedCalculateChange() method and a multithreading
    * mechanism. Returns value is a time step to be used for the update. */
-  virtual TimeStepType CalculateChange( void ) override;
+  virtual TimeStepType
+  CalculateChange(void) override;
 
   /** This method allocates storage in m_UpdateBuffer.  It is called from
    * Superclass::GenerateData(). */
-  virtual void AllocateUpdateBuffer( void ) override;
+  virtual void
+  AllocateUpdateBuffer(void) override;
 
   /** This method allocates storage for the diffusion tensor image */
-  void AllocateDiffusionTensorImage( void );
+  void
+  AllocateDiffusionTensorImage(void);
 
   /** Update diffusion tensor image */
-  void virtual UpdateDiffusionTensorImage( void ) = 0;
+  void virtual UpdateDiffusionTensorImage(void) = 0;
 
   /** The type of region used for multithreading */
   using ThreadRegionType = typename UpdateBufferType::RegionType;
 
   /** The type of region used for multithreading */
-  typedef typename DiffusionTensorImageType::RegionType
-      ThreadDiffusionTensorImageRegionType;
+  typedef typename DiffusionTensorImageType::RegionType ThreadDiffusionTensorImageRegionType;
 
-  typedef typename DiffusionTensorImageType::Pointer
-      DiffusionTensorImagePointerType;
+  typedef typename DiffusionTensorImageType::Pointer DiffusionTensorImagePointerType;
 
   /**  Does the actual work of updating the output from the UpdateContainer
    *   over an output region supplied by the multithreading mechanism.
    *  \sa ApplyUpdate
    *  \sa ApplyUpdateThreaderCallback */
-  virtual void ThreadedApplyUpdate( TimeStepType dt,
-    const ThreadRegionType &regionToProcess,
-    const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
-    ThreadIdType threadId );
+  virtual void
+  ThreadedApplyUpdate(TimeStepType                                 dt,
+                      const ThreadRegionType &                     regionToProcess,
+                      const ThreadDiffusionTensorImageRegionType & diffusionRegionToProcess,
+                      ThreadIdType                                 threadId);
 
   /** Does the actual work of calculating change over a region supplied by
    * the multithreading mechanism.
    * \sa CalculateChange
    * \sa CalculateChangeThreaderCallback */
-  virtual TimeStepType ThreadedCalculateChange(
-    const ThreadRegionType &regionToProcess,
-    const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
-    ThreadIdType threadId );
+  virtual TimeStepType
+  ThreadedCalculateChange(const ThreadRegionType &                     regionToProcess,
+                          const ThreadDiffusionTensorImageRegionType & diffusionRegionToProcess,
+                          ThreadIdType                                 threadId);
 
   /** Prepare for the iteration process. */
-  virtual void InitializeIteration( void ) override;
+  virtual void
+  InitializeIteration(void) override;
 
-  DiffusionTensorImagePointerType GetDiffusionTensorImage( void );
+  DiffusionTensorImagePointerType
+  GetDiffusionTensorImage(void);
 
 private:
-  //purposely not implemented
-  AnisotropicDiffusionTensorImageFilter( const Self& );
-  void operator=( const Self& ); //purposely not implemented
+  // purposely not implemented
+  AnisotropicDiffusionTensorImageFilter(const Self &);
+  void
+  operator=(const Self &); // purposely not implemented
 
   /** Structure for passing information into static callback methods.  Used in
    * the subclasses' threading mechanisms. */
   struct DenseFDThreadStruct
-    {
-    AnisotropicDiffusionTensorImageFilter *Filter;
-    TimeStepType TimeStep;
-    std::vector< TimeStepType > TimeStepList;
-    itk::BooleanStdVectorType ValidTimeStepList;
+  {
+    AnisotropicDiffusionTensorImageFilter * Filter;
+    TimeStepType                            TimeStep;
+    std::vector<TimeStepType>               TimeStepList;
+    itk::BooleanStdVectorType               ValidTimeStepList;
 
-    }; // End struct DenseFDThreadStruct
+  }; // End struct DenseFDThreadStruct
 
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to ThreadedApplyUpdate for processing. */
-  static ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION ApplyUpdateThreaderCallback( void *arg );
+  static ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
+  ApplyUpdateThreaderCallback(void * arg);
 
   /** This callback method uses SplitUpdateContainer to acquire a region
    * which it then passes to ThreadedCalculateChange for processing. */
-  static ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION CalculateChangeThreaderCallback( void *arg );
+  static ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
+  CalculateChangeThreaderCallback(void * arg);
 
-  typename DiffusionTensorImageType::Pointer            m_DiffusionTensorImage;
+  typename DiffusionTensorImageType::Pointer m_DiffusionTensorImage;
 
   /** The buffer that holds the updates for an iteration of the algorithm. */
-  typename UpdateBufferType::Pointer                    m_UpdateBuffer;
+  typename UpdateBufferType::Pointer m_UpdateBuffer;
 
-  TimeStepType                                          m_TimeStep;
+  TimeStepType m_TimeStep;
 
 }; // End class AnisotropicDiffusionTensorImageFilter
 
@@ -223,7 +227,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeAnisotropicDiffusionTensorImageFilter.hxx"
+#  include "itktubeAnisotropicDiffusionTensorImageFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeAnisotropicDiffusionTensorImageFilter_h )

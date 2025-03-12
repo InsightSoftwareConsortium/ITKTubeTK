@@ -48,27 +48,24 @@ namespace tube
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
  */
-template< class TImageType >
-class AnisotropicDiffusionTensorFunction
-  : public FiniteDifferenceFunction< TImageType >
+template <class TImageType>
+class AnisotropicDiffusionTensorFunction : public FiniteDifferenceFunction<TImageType>
 {
 public:
   /** Standard class type alias. */
   using Self = AnisotropicDiffusionTensorFunction;
   using Superclass = FiniteDifferenceFunction<TImageType>;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ) */
-  itkTypeMacro( AnisotropicDiffusionTensorFunction,
-    FiniteDifferenceFunction );
+  itkTypeMacro(AnisotropicDiffusionTensorFunction, FiniteDifferenceFunction);
 
   /** Extract some parameters from the superclass. */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    Superclass::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Convenient type alias. */
   using TimeStepType = typename Superclass::TimeStepType;
@@ -79,28 +76,26 @@ public:
   using SpacingType = typename Superclass::ImageType::SpacingType;
 
   /** Diffusion tensor type alias. */
-  using DiffusionTensorType = DiffusionTensor3D< double >;
-  using DiffusionTensorImageType = itk::Image< DiffusionTensorType, 3 >;
+  using DiffusionTensorType = DiffusionTensor3D<double>;
+  using DiffusionTensorImageType = itk::Image<DiffusionTensorType, 3>;
 
   /** The default boundary condition for finite difference
    * functions that is used unless overridden in the Evaluate() method. */
-  using DefaultBoundaryConditionType = ZeroFluxNeumannBoundaryCondition< DiffusionTensorImageType >;
-  using DiffusionTensorNeighborhoodType = ConstNeighborhoodIterator< DiffusionTensorImageType,
-    DefaultBoundaryConditionType>;
+  using DefaultBoundaryConditionType = ZeroFluxNeumannBoundaryCondition<DiffusionTensorImageType>;
+  using DiffusionTensorNeighborhoodType =
+    ConstNeighborhoodIterator<DiffusionTensorImageType, DefaultBoundaryConditionType>;
 
   /** Scalar derivative type alias. */
-  using ScalarDerivativeType = itk::Vector< ScalarValueType,
-    itkGetStaticConstMacro( ImageDimension )>;
-  using ScalarDerivativeImageType = itk::Image< ScalarDerivativeType, 3 >;
+  using ScalarDerivativeType = itk::Vector<ScalarValueType, itkGetStaticConstMacro(ImageDimension)>;
+  using ScalarDerivativeImageType = itk::Image<ScalarDerivativeType, 3>;
 
-  using ScalarDerivativeImageRegionType = ImageRegionIterator< ScalarDerivativeImageType >;
+  using ScalarDerivativeImageRegionType = ImageRegionIterator<ScalarDerivativeImageType>;
 
   /** Tensor derivative type alias. */
-  using TensorDerivativeType = itk::Matrix< ScalarValueType,
-    itkGetStaticConstMacro( ImageDimension ),
-    itkGetStaticConstMacro( ImageDimension ) >;
-  using TensorDerivativeImageType = itk::Image< TensorDerivativeType, 3 >;
-  using TensorDerivativeImageRegionType = ImageRegionIterator< TensorDerivativeImageType >;
+  using TensorDerivativeType =
+    itk::Matrix<ScalarValueType, itkGetStaticConstMacro(ImageDimension), itkGetStaticConstMacro(ImageDimension)>;
+  using TensorDerivativeImageType = itk::Image<TensorDerivativeType, 3>;
+  using TensorDerivativeImageRegionType = ImageRegionIterator<TensorDerivativeImageType>;
 
   /** A global data type for this class of equations.  Used to store
    * values that are needed in calculating the time step and other
@@ -108,155 +103,174 @@ public:
    * virtual functions called from ComputeUpdate.  Caching these values
    * here allows the ComputeUpdate function to be const and thread safe. */
   struct GlobalDataStruct
-    {
+  {
     /** Hessian matrix
      * ( Second order partial derivatives of the intensity image ) */
-    TensorDerivativeType  m_dxy;
+    TensorDerivativeType m_dxy;
 
     /** First order partial derivatives of the tensors */
-    TensorDerivativeType  m_DT_dxy;
+    TensorDerivativeType m_DT_dxy;
 
     /** First order partial derivatives of the intensity image */
-    ScalarDerivativeType  m_dx;
+    ScalarDerivativeType m_dx;
 
-    ScalarValueType       m_GradMagSqr;
+    ScalarValueType m_GradMagSqr;
 
-    }; // End struct GlobalDataStruct
+  }; // End struct GlobalDataStruct
 
   /** Compute the equation value.  Inherited from the superclass: call
    *  one of the other two ComputeUpdate() functions instead. */
-  virtual PixelType ComputeUpdate( const NeighborhoodType & neighborhood,
-    void *globalData, const FloatOffsetType& = FloatOffsetType( 0.0 ) )
-    override;
+  virtual PixelType
+  ComputeUpdate(const NeighborhoodType & neighborhood,
+                void *                   globalData,
+                const FloatOffsetType & = FloatOffsetType(0.0)) override;
 
   /** Compute the equation value. The spacing of the images associated
    * with the given neighborhoods and regions should be the same as that
    * given. */
-  virtual PixelType ComputeUpdate( const NeighborhoodType & neighborhood,
-    const DiffusionTensorNeighborhoodType & tensorNeighborhood,
-    const SpacingType & spacing, void * globalData,
-    const FloatOffsetType & = FloatOffsetType( 0.0 ) );
+  virtual PixelType
+  ComputeUpdate(const NeighborhoodType &                neighborhood,
+                const DiffusionTensorNeighborhoodType & tensorNeighborhood,
+                const SpacingType &                     spacing,
+                void *                                  globalData,
+                const FloatOffsetType & = FloatOffsetType(0.0));
 
   /** Compute the equation value using pre-computed derivatives. The
    * spacing of the images associated with the given neighborhoods and
    * regions should be the same as that given. */
-  virtual PixelType ComputeUpdate(
-    const DiffusionTensorNeighborhoodType & tensorNeighborhood,
-    const ScalarDerivativeImageRegionType & intensityFirstDerivatives,
-    const TensorDerivativeImageRegionType & intensitySecondDerivatives,
-    const TensorDerivativeImageRegionType & tensorFirstDerivatives,
-    void * globalData, const FloatOffsetType & = FloatOffsetType( 0.0 ) );
+  virtual PixelType
+  ComputeUpdate(const DiffusionTensorNeighborhoodType & tensorNeighborhood,
+                const ScalarDerivativeImageRegionType & intensityFirstDerivatives,
+                const TensorDerivativeImageRegionType & intensitySecondDerivatives,
+                const TensorDerivativeImageRegionType & tensorFirstDerivatives,
+                void *                                  globalData,
+                const FloatOffsetType & = FloatOffsetType(0.0));
 
   /** Computes the time step for an update given a global data structure.
    *  Returns the time step supplied by the user. We don't need
    *  to use the global data supplied since we are returning a fixed value.
    *  */
-  virtual TimeStepType ComputeGlobalTimeStep( void * itkNotUsed( globalData ) )
-    const override
-    { return this->GetTimeStep(); }
+  virtual TimeStepType
+  ComputeGlobalTimeStep(void * itkNotUsed(globalData)) const override
+  {
+    return this->GetTimeStep();
+  }
 
   /** Set/Get the time step. For this class of anisotropic diffusion
    * filters, the time-step is supplied by the user and remains fixed
    * for all updates. */
-  void SetTimeStep( const TimeStepType & t )
-    { m_TimeStep = t; }
-  const TimeStepType & GetTimeStep( void ) const
-    { return m_TimeStep; }
+  void
+  SetTimeStep(const TimeStepType & t)
+  {
+    m_TimeStep = t;
+  }
+  const TimeStepType &
+  GetTimeStep(void) const
+  {
+    return m_TimeStep;
+  }
 
   /** Utility function to check whether the time step is stable, optionally
    * based on the spacing of the given image */
-  template< class TPixel, unsigned int VImageDimension >
-  void CheckTimeStepStability( const itk::Image< TPixel,
-    VImageDimension > * input, bool useImageSpacing );
+  template <class TPixel, unsigned int VImageDimension>
+  void
+  CheckTimeStepStability(const itk::Image<TPixel, VImageDimension> * input, bool useImageSpacing);
 
   /** Computes the first and second order partial derivatives of an
    * intensity image. */
-  void ComputeIntensityFirstAndSecondOrderPartialDerivatives(
-    const NeighborhoodType & neighborhood,
-    ScalarDerivativeImageRegionType & firstOrderResult,
-    TensorDerivativeImageRegionType & secondOrderResult,
-    const SpacingType & spacing ) const;
+  void
+  ComputeIntensityFirstAndSecondOrderPartialDerivatives(const NeighborhoodType &          neighborhood,
+                                                        ScalarDerivativeImageRegionType & firstOrderResult,
+                                                        TensorDerivativeImageRegionType & secondOrderResult,
+                                                        const SpacingType &               spacing) const;
 
   /** Computes the first order partial derivative of a diffusion tensor
    *  image. */
-  void ComputeDiffusionTensorFirstOrderPartialDerivatives(
-    const DiffusionTensorNeighborhoodType & tensorNeighborhood,
-    TensorDerivativeImageRegionType & firstOrderResult,
-    const SpacingType & spacing ) const;
+  void
+  ComputeDiffusionTensorFirstOrderPartialDerivatives(const DiffusionTensorNeighborhoodType & tensorNeighborhood,
+                                                     TensorDerivativeImageRegionType &       firstOrderResult,
+                                                     const SpacingType &                     spacing) const;
 
   /** Determines whether to use the image spacing information in
    * calculations. Set the flag to ON if you want derivatives in physical
    * space, or OFF if you want derivatives in isotropic pixel space.
    * Default is ON. */
-  void SetUseImageSpacing( bool newUseImageSpacing )
-    { m_UseImageSpacing = newUseImageSpacing; }
-  bool GetUseImageSpacing( void ) const
-    { return m_UseImageSpacing; }
+  void
+  SetUseImageSpacing(bool newUseImageSpacing)
+  {
+    m_UseImageSpacing = newUseImageSpacing;
+  }
+  bool
+  GetUseImageSpacing(void) const
+  {
+    return m_UseImageSpacing;
+  }
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation. */
-  virtual void * GetGlobalDataPointer( void ) const override
-    {
-    GlobalDataStruct *ans = new GlobalDataStruct();
+  virtual void *
+  GetGlobalDataPointer(void) const override
+  {
+    GlobalDataStruct * ans = new GlobalDataStruct();
     return ans;
-    }
+  }
 
-  virtual void ReleaseGlobalDataPointer( void * GlobalData ) const override
-    { delete static_cast<GlobalDataStruct *>( GlobalData ); }
+  virtual void
+  ReleaseGlobalDataPointer(void * GlobalData) const override
+  {
+    delete static_cast<GlobalDataStruct *>(GlobalData);
+  }
 
 protected:
-  AnisotropicDiffusionTensorFunction( void );
-  virtual ~AnisotropicDiffusionTensorFunction( void ) {}
+  AnisotropicDiffusionTensorFunction(void);
+  virtual ~AnisotropicDiffusionTensorFunction(void) {}
 
-  void PrintSelf( std::ostream &s, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & s, Indent indent) const override;
 
   /** The offset of the center pixel in the neighborhood. */
   unsigned int m_Center;
 
   /** Stride length along the y-dimension. */
-  unsigned int m_xStride[itkGetStaticConstMacro( ImageDimension )];
+  unsigned int m_xStride[itkGetStaticConstMacro(ImageDimension)];
 
   /** Defines various positions surrounding the center pixel in an image
     iterator. */
-  unsigned int m_positionA[itkGetStaticConstMacro( ImageDimension )];
-  unsigned int m_positionB[itkGetStaticConstMacro( ImageDimension )];
-  unsigned int m_positionAa[itkGetStaticConstMacro( ImageDimension )]
-      [itkGetStaticConstMacro( ImageDimension )];
-  unsigned int m_positionBa[itkGetStaticConstMacro( ImageDimension )]
-      [itkGetStaticConstMacro( ImageDimension )];
-  unsigned int m_positionCa[itkGetStaticConstMacro( ImageDimension )]
-      [itkGetStaticConstMacro( ImageDimension )];
-  unsigned int m_positionDa[itkGetStaticConstMacro( ImageDimension )]
-      [itkGetStaticConstMacro( ImageDimension )];
+  unsigned int m_positionA[itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionB[itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionAa[itkGetStaticConstMacro(ImageDimension)][itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionBa[itkGetStaticConstMacro(ImageDimension)][itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionCa[itkGetStaticConstMacro(ImageDimension)][itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionDa[itkGetStaticConstMacro(ImageDimension)][itkGetStaticConstMacro(ImageDimension)];
 
   /** Computes the first and second derivatives of an intensity image. */
-  void ComputeIntensityFirstAndSecondOrderPartialDerivatives(
-      const NeighborhoodType &neighborhood,
-      ScalarDerivativeType &firstOrderResult,
-      TensorDerivativeType &secondOrderResult,
-      const SpacingType &spacing ) const;
+  void
+  ComputeIntensityFirstAndSecondOrderPartialDerivatives(const NeighborhoodType & neighborhood,
+                                                        ScalarDerivativeType &   firstOrderResult,
+                                                        TensorDerivativeType &   secondOrderResult,
+                                                        const SpacingType &      spacing) const;
 
   /** Computes the first order partial derivative of a diffusion tensor
    *  image. */
-  void ComputeDiffusionTensorFirstOrderPartialDerivatives(
-      const DiffusionTensorNeighborhoodType &tensorNeighborhood,
-      TensorDerivativeType &firstOrderResult,
-      const SpacingType &spacing ) const;
+  void
+  ComputeDiffusionTensorFirstOrderPartialDerivatives(const DiffusionTensorNeighborhoodType & tensorNeighborhood,
+                                                     TensorDerivativeType &                  firstOrderResult,
+                                                     const SpacingType &                     spacing) const;
 
   /** Computes the final update term based on the results of the first and
-    * second derivative computations */
-  PixelType ComputeFinalUpdateTerm(
-      const DiffusionTensorNeighborhoodType &tensorNeighborhood,
-      const GlobalDataStruct* gd ) const;
+   * second derivative computations */
+  PixelType
+  ComputeFinalUpdateTerm(const DiffusionTensorNeighborhoodType & tensorNeighborhood, const GlobalDataStruct * gd) const;
 
 private:
-  //purposely not implemented
-  AnisotropicDiffusionTensorFunction( const Self& );
-  void operator=( const Self& );   //purposely not implemented
+  // purposely not implemented
+  AnisotropicDiffusionTensorFunction(const Self &);
+  void
+  operator=(const Self &); // purposely not implemented
 
-  TimeStepType    m_TimeStep;
-  bool            m_UseImageSpacing;
-  SpacingType     m_Spacing{1};
+  TimeStepType m_TimeStep;
+  bool         m_UseImageSpacing;
+  SpacingType  m_Spacing{ 1 };
 
 }; // End class AnisotropicDiffusionTensorFunction
 
@@ -265,7 +279,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeAnisotropicDiffusionTensorFunction.hxx"
+#  include "itktubeAnisotropicDiffusionTensorFunction.hxx"
 #endif
 
 #endif // End !defined( __itktubeAnisotropicDiffusionTensorFunction_h )

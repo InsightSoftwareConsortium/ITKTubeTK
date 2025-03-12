@@ -44,22 +44,22 @@ namespace tube
  * \ingroup GradientFilters
  * \ingroup Singlethreaded
  */
-template< class TInputImage,
-          class TOutputImage = Image< SymmetricSecondRankTensor<
-            typename NumericTraits< typename TInputImage::PixelType >::RealType,
-            TInputImage::ImageDimension >, TInputImage::ImageDimension > >
-class StructureTensorRecursiveGaussianImageFilter
-  : public ImageToImageFilter< TInputImage, TOutputImage >
+template <class TInputImage,
+          class TOutputImage =
+            Image<SymmetricSecondRankTensor<typename NumericTraits<typename TInputImage::PixelType>::RealType,
+                                            TInputImage::ImageDimension>,
+                  TInputImage::ImageDimension>>
+class StructureTensorRecursiveGaussianImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class type alias. */
   using Self = StructureTensorRecursiveGaussianImageFilter;
-  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Pixel Type of the input image */
   using InputImageType = TInputImage;
@@ -67,61 +67,59 @@ public:
   using RealType = typename NumericTraits<PixelType>::RealType;
 
   /** Image dimension. */
-  itkStaticConstMacro( ImageDimension,
-                      unsigned int,
-                      TInputImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
 
   /** Define the image type for internal computations
       RealType is usually 'double' in NumericTraits.
       Here we prefer float in order to save memory. */
   using InternalRealType = float;
-  using RealImageType = Image< InternalRealType, itkGetStaticConstMacro( ImageDimension ) >;
+  using RealImageType = Image<InternalRealType, itkGetStaticConstMacro(ImageDimension)>;
 
   /**  Output Image Nth Element Adaptor
    *  This adaptor allows to use conventional scalar
    *  smoothing filters to compute each one of the
    *  components of the gradient image pixels. */
-  using OutputImageAdaptorType = NthElementImageAdaptor< TOutputImage, InternalRealType >;
-  typedef typename OutputImageAdaptorType::Pointer
-      OutputImageAdaptorPointer;
+  using OutputImageAdaptorType = NthElementImageAdaptor<TOutputImage, InternalRealType>;
+  typedef typename OutputImageAdaptorType::Pointer OutputImageAdaptorPointer;
 
   /**  Smoothing filter type */
-  using GaussianFilterType = RecursiveGaussianImageFilter< RealImageType, RealImageType >;
-  typedef typename GaussianFilterType::Pointer
-      GaussianFilterPointer;
+  using GaussianFilterType = RecursiveGaussianImageFilter<RealImageType, RealImageType>;
+  typedef typename GaussianFilterType::Pointer GaussianFilterPointer;
 
   /**  Derivative filter type, it will be the first in the pipeline  */
-  using DerivativeFilterType = RecursiveGaussianImageFilter< InputImageType, RealImageType >;
-  typedef typename DerivativeFilterType::Pointer
-      DerivativeFilterPointer;
+  using DerivativeFilterType = RecursiveGaussianImageFilter<InputImageType, RealImageType>;
+  typedef typename DerivativeFilterType::Pointer DerivativeFilterPointer;
 
   /** Type of the output image */
   using OutputImageType = TOutputImage;
   using OutputImagePointer = typename OutputImageType::Pointer;
   using OutputPixelType = typename OutputImageType::PixelType;
-  typedef typename PixelTraits< OutputPixelType >::ValueType
-      OutputComponentType;
+  typedef typename PixelTraits<OutputPixelType>::ValueType OutputComponentType;
 
   /** Set Sigma value. Sigma is measured in the units of image spacing.  */
-  void SetSigma( RealType sigma );
-  void SetSigmaOuter( RealType rho );
+  void
+  SetSigma(RealType sigma);
+  void
+  SetSigmaOuter(RealType rho);
 
   /** Define which normalization factor will be used for the Gaussian */
-  void SetNormalizeAcrossScale( bool normalizeInScaleSpace );
-  itkGetMacro( NormalizeAcrossScale, bool );
+  void
+  SetNormalizeAcrossScale(bool normalizeInScaleSpace);
+  itkGetMacro(NormalizeAcrossScale, bool);
 
-  //Sigma value for the Gaussian derivative filters
-  itkGetMacro( Sigma, RealType );
+  // Sigma value for the Gaussian derivative filters
+  itkGetMacro(Sigma, RealType);
 
-  //Sigma value for the outer Gaussian smoothing filter
-  itkGetMacro( SigmaOuter, RealType );
+  // Sigma value for the outer Gaussian smoothing filter
+  itkGetMacro(SigmaOuter, RealType);
 
 
 protected:
-  StructureTensorRecursiveGaussianImageFilter( void );
-  virtual ~StructureTensorRecursiveGaussianImageFilter( void ) {}
+  StructureTensorRecursiveGaussianImageFilter(void);
+  virtual ~StructureTensorRecursiveGaussianImageFilter(void) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** StructureTensorRecursiveGaussianImageFilter needs all of the input
    * to produce an output. Therefore,
@@ -129,31 +127,35 @@ protected:
    * an implementation for GenerateInputRequestedRegion in order to inform
    * the pipeline execution model.
    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
-  virtual void GenerateInputRequestedRegion( void ) override;
+  virtual void
+  GenerateInputRequestedRegion(void) override;
 
   /** Generate Data */
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
   // Override since the filter produces the entire data set
-  void EnlargeOutputRequestedRegion( DataObject *output ) override;
+  void
+  EnlargeOutputRequestedRegion(DataObject * output) override;
 
 private:
-  //purposely not implemented
-  StructureTensorRecursiveGaussianImageFilter( const Self& );
-  //purposely not implemented
-  void operator=( const Self& );
+  // purposely not implemented
+  StructureTensorRecursiveGaussianImageFilter(const Self &);
+  // purposely not implemented
+  void
+  operator=(const Self &);
 
-  std::vector<GaussianFilterPointer>    m_SmoothingFilters;
-  DerivativeFilterPointer               m_DerivativeFilter;
-  GaussianFilterPointer                 m_TensorComponentSmoothingFilter;
-  OutputImageAdaptorPointer             m_ImageAdaptor;
+  std::vector<GaussianFilterPointer> m_SmoothingFilters;
+  DerivativeFilterPointer            m_DerivativeFilter;
+  GaussianFilterPointer              m_TensorComponentSmoothingFilter;
+  OutputImageAdaptorPointer          m_ImageAdaptor;
 
   /** Normalize the image across scale space */
   bool m_NormalizeAcrossScale;
 
 
-  RealType      m_Sigma;
-  RealType      m_SigmaOuter;
+  RealType m_Sigma;
+  RealType m_SigmaOuter;
 
 }; // End class StructureTensorRecursiveGaussianImageFilter
 
@@ -162,7 +164,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeStructureTensorRecursiveGaussianImageFilter.hxx"
+#  include "itktubeStructureTensorRecursiveGaussianImageFilter.hxx"
 #endif
 
 // End !defined( __itktubeStructureTensorRecursiveGaussianImageFilter_h )

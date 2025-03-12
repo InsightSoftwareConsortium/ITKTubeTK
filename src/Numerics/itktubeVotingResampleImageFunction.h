@@ -49,22 +49,21 @@ namespace tube
  *
  * \ingroup ImageFunctions ImageInterpolators
  */
-template< class TInputImage, class TCoordRep = float >
-class VotingResampleImageFunction
-  : public InterpolateImageFunction< TInputImage, TCoordRep >
+template <class TInputImage, class TCoordRep = float>
+class VotingResampleImageFunction : public InterpolateImageFunction<TInputImage, TCoordRep>
 {
 public:
   /** Standard class type alias. */
   using Self = VotingResampleImageFunction;
   using Superclass = InterpolateImageFunction<TInputImage, TCoordRep>;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( VotingResampleImageFunction, InterpolateImageFunction );
+  itkTypeMacro(VotingResampleImageFunction, InterpolateImageFunction);
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** OutputType type alias support. */
   using OutputType = typename Superclass::OutputType;
@@ -79,8 +78,7 @@ public:
   using RealType = typename Superclass::RealType;
 
   /** Dimension underlying input image. */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    Superclass::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Index type alias support. */
   using IndexType = typename Superclass::IndexType;
@@ -96,21 +94,26 @@ public:
    *
    * ImageFunction::IsInsideBuffer() can be used to check bounds before
    * calling the method. */
-  virtual OutputType EvaluateAtContinuousIndex(
-    const ContinuousIndexType & index ) const override;
+  virtual OutputType
+  EvaluateAtContinuousIndex(const ContinuousIndexType & index) const override;
 
-  SizeType GetRadius() const override
-    { return m_Radius; }
+  SizeType
+  GetRadius() const override
+  {
+    return m_Radius;
+  }
 
 protected:
-  VotingResampleImageFunction( void );
-  ~VotingResampleImageFunction( void ) {}
+  VotingResampleImageFunction(void);
+  ~VotingResampleImageFunction(void) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-  VotingResampleImageFunction( const Self& ); //purposely not implemented
-  void operator=( const Self& ); //purposely not implemented
+  VotingResampleImageFunction(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
   /** Number of neighbors used in the interpolation */
   static const unsigned long m_Neighbors;
@@ -123,7 +126,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeVotingResampleImageFunction.hxx"
+#  include "itktubeVotingResampleImageFunction.hxx"
 #endif
 
 #endif // End !defined( __itktubeVotingResampleImageFunction_h )

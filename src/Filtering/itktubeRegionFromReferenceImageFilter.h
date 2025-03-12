@@ -14,15 +14,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef itktubeRegionFromReferenceImageFilter_h
 #define itktubeRegionFromReferenceImageFilter_h
 
 #include "itkExtractImageFilter.h"
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 /** \class RegionFromReferenceImageFilter
  * \brief Decrease the image size by cropping the image by an itk::Size at
@@ -36,9 +38,8 @@ namespace tube {
  *
  * \ingroup GeometricTransforms
  */
-template <class TInputImage, class TOutputImage=TInputImage>
-class ITK_EXPORT RegionFromReferenceImageFilter
-  : public ExtractImageFilter<TInputImage, TOutputImage>
+template <class TInputImage, class TOutputImage = TInputImage>
+class ITK_EXPORT RegionFromReferenceImageFilter : public ExtractImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class type alias. */
@@ -48,10 +49,10 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( RegionFromReferenceImageFilter, ExtractImageFilter );
+  itkTypeMacro(RegionFromReferenceImageFilter, ExtractImageFilter);
 
   /** Typedef to describe the output and input image region types. */
   using OutputImageRegionType = typename Superclass::OutputImageRegionType;
@@ -69,54 +70,52 @@ public:
   using SizeType = InputImageSizeType;
 
   /** ImageDimension constants */
-  itkStaticConstMacro( InputImageDimension, unsigned int,
-    Superclass::InputImageDimension );
-  itkStaticConstMacro( OutputImageDimension, unsigned int,
-    Superclass::OutputImageDimension );
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    Superclass::OutputImageDimension );
+  itkStaticConstMacro(InputImageDimension, unsigned int, Superclass::InputImageDimension);
+  itkStaticConstMacro(OutputImageDimension, unsigned int, Superclass::OutputImageDimension);
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::OutputImageDimension);
 
-  using ReferenceImageType = ImageBase< itkGetStaticConstMacro( ImageDimension ) >;
+  using ReferenceImageType = ImageBase<itkGetStaticConstMacro(ImageDimension)>;
 
   /** Copy the output information from another Image. */
-  void SetReferenceImage ( const ReferenceImageType *image );
+  void
+  SetReferenceImage(const ReferenceImageType * image);
 
-  const ReferenceImageType * GetReferenceImage() const;
+  const ReferenceImageType *
+  GetReferenceImage() const;
 
   /** Set the input image */
-  void SetInput1( const TInputImage *input )
-    {
-    this->SetInput( input );
-    }
+  void
+  SetInput1(const TInputImage * input)
+  {
+    this->SetInput(input);
+  }
 
   /** Set the reference image */
-  void SetInput2( const ReferenceImageType *input )
-    {
-    this->SetReferenceImage( input );
-    }
+  void
+  SetInput2(const ReferenceImageType * input)
+  {
+    this->SetReferenceImage(input);
+  }
 
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro( InputConvertibleToOutputCheck,
-    ( Concept::Convertible<InputImagePixelType, OutputImagePixelType> ) );
-  itkConceptMacro( SameDimensionCheck,
-    ( Concept::SameDimension<InputImageDimension, OutputImageDimension> ) );
+  itkConceptMacro(InputConvertibleToOutputCheck, (Concept::Convertible<InputImagePixelType, OutputImagePixelType>));
+  itkConceptMacro(SameDimensionCheck, (Concept::SameDimension<InputImageDimension, OutputImageDimension>));
   /** End concept checking */
 #endif
 
 protected:
-  RegionFromReferenceImageFilter()
-    {
-    this->SetNumberOfRequiredInputs( 2 );
-    }
+  RegionFromReferenceImageFilter() { this->SetNumberOfRequiredInputs(2); }
   ~RegionFromReferenceImageFilter() {}
 
-  void GenerateOutputInformation() override;
+  void
+  GenerateOutputInformation() override;
 
 private:
-  RegionFromReferenceImageFilter( const Self& ); //purposely not implemented
-  void operator=( const Self& ); //purposely not implemented
+  RegionFromReferenceImageFilter(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 };
 
 
@@ -125,7 +124,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeRegionFromReferenceImageFilter.hxx"
+#  include "itktubeRegionFromReferenceImageFilter.hxx"
 #endif
 
 #endif

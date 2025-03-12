@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef itktubeRidgeFFTFilter_h
 #define itktubeRidgeFFTFilter_h
 
@@ -27,66 +27,65 @@ namespace itk
 namespace tube
 {
 
-template< typename TInputImage >
-class RidgeFFTFilter :
-  public ImageToImageFilter< TInputImage, Image< float,
-    TInputImage::ImageDimension > >
+template <typename TInputImage>
+class RidgeFFTFilter : public ImageToImageFilter<TInputImage, Image<float, TInputImage::ImageDimension>>
 {
 public:
-
   using InputImageType = TInputImage;
 
-  using OutputImageType = Image< float, TInputImage::ImageDimension >;
+  using OutputImageType = Image<float, TInputImage::ImageDimension>;
 
   using Self = RidgeFFTFilter;
-  using Superclass = ImageToImageFilter< TInputImage, OutputImageType >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, OutputImageType>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkTypeMacro( RidgeFFTFilter, ImageToImageFilter );
+  itkTypeMacro(RidgeFFTFilter, ImageToImageFilter);
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    TInputImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
 
-  itkSetMacro( Scale, double );
-  itkGetMacro( Scale, double );
+  itkSetMacro(Scale, double);
+  itkGetMacro(Scale, double);
 
-  itkSetMacro( UseIntensityOnly, bool );
-  itkGetMacro( UseIntensityOnly, bool );
+  itkSetMacro(UseIntensityOnly, bool);
+  itkGetMacro(UseIntensityOnly, bool);
 
-  itkGetConstReferenceMacro( Intensity, typename OutputImageType::Pointer );
-  itkGetConstReferenceMacro( Ridgeness, typename OutputImageType::Pointer );
-  itkGetConstReferenceMacro( Curvature, typename OutputImageType::Pointer );
-  itkGetConstReferenceMacro( Levelness, typename OutputImageType::Pointer );
-  itkGetConstReferenceMacro( Roundness, typename OutputImageType::Pointer );
+  itkGetConstReferenceMacro(Intensity, typename OutputImageType::Pointer);
+  itkGetConstReferenceMacro(Ridgeness, typename OutputImageType::Pointer);
+  itkGetConstReferenceMacro(Curvature, typename OutputImageType::Pointer);
+  itkGetConstReferenceMacro(Levelness, typename OutputImageType::Pointer);
+  itkGetConstReferenceMacro(Roundness, typename OutputImageType::Pointer);
 
 protected:
-  RidgeFFTFilter( void );
-  virtual ~RidgeFFTFilter( void ) {}
+  RidgeFFTFilter(void);
+  virtual ~RidgeFFTFilter(void) {}
 
-  void GenerateData() override;
+  void
+  GenerateData() override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
   // Purposely not implemented
-  RidgeFFTFilter( const Self & );
-  void operator = ( const Self & );
+  RidgeFFTFilter(const Self &);
+  void
+  operator=(const Self &);
 
-  using DerivativeFilterType = GaussianDerivativeFilter< InputImageType, OutputImageType >;
+  using DerivativeFilterType = GaussianDerivativeFilter<InputImageType, OutputImageType>;
 
-  typename DerivativeFilterType::Pointer                m_DerivativeFilter;
+  typename DerivativeFilterType::Pointer m_DerivativeFilter;
 
-  typename OutputImageType::Pointer                     m_Intensity;
-  typename OutputImageType::Pointer                     m_Ridgeness;
-  typename OutputImageType::Pointer                     m_Curvature;
-  typename OutputImageType::Pointer                     m_Levelness;
-  typename OutputImageType::Pointer                     m_Roundness;
+  typename OutputImageType::Pointer m_Intensity;
+  typename OutputImageType::Pointer m_Ridgeness;
+  typename OutputImageType::Pointer m_Curvature;
+  typename OutputImageType::Pointer m_Levelness;
+  typename OutputImageType::Pointer m_Roundness;
 
-  double                                                m_Scale;
-  bool                                                  m_UseIntensityOnly;
+  double m_Scale;
+  bool   m_UseIntensityOnly;
 };
 
 
@@ -97,7 +96,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeRidgeFFTFilter.hxx"
+#  include "itktubeRidgeFFTFilter.hxx"
 #endif
 
 #endif

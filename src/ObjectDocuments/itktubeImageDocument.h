@@ -42,37 +42,30 @@ namespace tube
 class ImageDocument : public ObjectDocument
 {
 public:
-
   using Self = ImageDocument;
   using Superclass = ObjectDocument;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using TransformNameListType = Superclass::TransformNameListType;
 
-  itkNewMacro( Self );
-  itkTypeMacro( ImageDocument, ObjectDocument );
+  itkNewMacro(Self);
+  itkTypeMacro(ImageDocument, ObjectDocument);
 
 protected:
-
   /** Constructor. */
-  ImageDocument( void )
-    {
-    this->SetObjectType( "Image" );
-    }
+  ImageDocument(void) { this->SetObjectType("Image"); }
 
   /** Destructor. */
-  virtual ~ImageDocument( void )
-    {
-    }
+  virtual ~ImageDocument(void) {}
 
 private:
-
   // Copy constructor not implemented.
-  ImageDocument( const Self & self );
+  ImageDocument(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
 }; // End class ImageDocument
 

@@ -38,67 +38,68 @@ namespace tube
  * \brief Crop tubes spatial object based on a volume map or a bounding box.
  *
  */
-template< unsigned int VDimension >
+template <unsigned int VDimension>
 class CropTubesFilter
-  : public SpatialObjectToSpatialObjectFilter<
-    GroupSpatialObject< VDimension >, GroupSpatialObject< VDimension > >
+  : public SpatialObjectToSpatialObjectFilter<GroupSpatialObject<VDimension>, GroupSpatialObject<VDimension>>
 {
 public:
   /** Standard class type alias. */
-  using TubeGroupType = GroupSpatialObject< VDimension >;
+  using TubeGroupType = GroupSpatialObject<VDimension>;
 
   using Self = CropTubesFilter;
-  using Superclass = SpatialObjectToSpatialObjectFilter< TubeGroupType, TubeGroupType >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
-  using TubeType = TubeSpatialObject< VDimension >;
-  using TubePointType = TubeSpatialObjectPoint< VDimension >;
+  using Superclass = SpatialObjectToSpatialObjectFilter<TubeGroupType, TubeGroupType>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
+  using TubeType = TubeSpatialObject<VDimension>;
+  using TubePointType = TubeSpatialObjectPoint<VDimension>;
 
   using PixelType = double;
-  using ImageType = itk::Image< PixelType, VDimension >;
-  using VectorType = itk::Vector< PixelType, VDimension >;
-  using PointType = itk::Point< double, VDimension >;
+  using ImageType = itk::Image<PixelType, VDimension>;
+  using VectorType = itk::Vector<PixelType, VDimension>;
+  using PointType = itk::Point<double, VDimension>;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro( CropTubesFilter,
-                SpatialObjectToSpatialObjectFilter );
+  itkTypeMacro(CropTubesFilter, SpatialObjectToSpatialObjectFilter);
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Set/Get bounding box corner */
-  itkSetMacro( BoxPositionInWorldSpace, PointType );
-  itkGetMacro( BoxPositionInWorldSpace, PointType );
+  itkSetMacro(BoxPositionInWorldSpace, PointType);
+  itkGetMacro(BoxPositionInWorldSpace, PointType);
 
   /** Set/Get bounding box size */
-  itkSetMacro( BoxSizeInWorldSpace, VectorType );
-  itkGetMacro( BoxSizeInWorldSpace, VectorType );
+  itkSetMacro(BoxSizeInWorldSpace, VectorType);
+  itkGetMacro(BoxSizeInWorldSpace, VectorType);
 
   /** Set/Get mask image */
-  itkSetObjectMacro( MaskImage, ImageType );
-  itkGetModifiableObjectMacro( MaskImage, ImageType );
+  itkSetObjectMacro(MaskImage, ImageType);
+  itkGetModifiableObjectMacro(MaskImage, ImageType);
 
   /** Set/Get Use mask image to crop tubes */
-  itkSetMacro( UseMaskImage, bool );
-  itkGetMacro( UseMaskImage, bool );
+  itkSetMacro(UseMaskImage, bool);
+  itkGetMacro(UseMaskImage, bool);
 
   /** Set/Get bool to crop tubes or not */
-  itkSetMacro( CropTubes, bool );
-  itkGetMacro( CropTubes, bool );
+  itkSetMacro(CropTubes, bool);
+  itkGetMacro(CropTubes, bool);
 
 protected:
-  CropTubesFilter( void );
-  virtual ~CropTubesFilter( void );
+  CropTubesFilter(void);
+  virtual ~CropTubesFilter(void);
 
-  virtual void GenerateData( void ) override;
+  virtual void
+  GenerateData(void) override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
   // purposely not implemented
-  CropTubesFilter( const Self & );
+  CropTubesFilter(const Self &);
   // purposely not implemented
-  void operator=( const Self & );
+  void
+  operator=(const Self &);
 
   PointType                   m_BoxPositionInWorldSpace;
   VectorType                  m_BoxSizeInWorldSpace;
@@ -106,13 +107,12 @@ private:
   bool                        m_CropTubes;
   bool                        m_UseMaskImage;
 
-  bool IsInsideInWorldSpace( itk::Point< double, VDimension > pointPos,
-    double tubeRadius,
-    itk::Point< double, VDimension > boxPos,
-    itk::Vector< double, VDimension > boxSize,
-    std::vector<  typename
-    itk::TubeSpatialObjectPoint< VDimension >::
-    CovariantVectorType > normalList );
+  bool
+  IsInsideInWorldSpace(itk::Point<double, VDimension>                                                     pointPos,
+                       double                                                                             tubeRadius,
+                       itk::Point<double, VDimension>                                                     boxPos,
+                       itk::Vector<double, VDimension>                                                    boxSize,
+                       std::vector<typename itk::TubeSpatialObjectPoint<VDimension>::CovariantVectorType> normalList);
 
 }; // End class CropTubesFilter
 
@@ -120,7 +120,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeCropTubesFilter.hxx"
+#  include "itktubeCropTubesFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeCropTubesFilter_h )

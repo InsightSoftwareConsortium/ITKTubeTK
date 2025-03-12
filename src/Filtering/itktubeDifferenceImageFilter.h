@@ -44,22 +44,21 @@ namespace tube
  *
  * \ingroup IntensityImageFilters   Multithreaded
  */
-template< class TInputImage, class TOutputImage >
-class DifferenceImageFilter
-  : public ImageToImageFilter< TInputImage, TOutputImage >
+template <class TInputImage, class TOutputImage>
+class DifferenceImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class type alias. */
   using Self = DifferenceImageFilter;
-  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( DifferenceImageFilter, ImageToImageFilter );
+  itkTypeMacro(DifferenceImageFilter, ImageToImageFilter);
 
   /** Some convenient type alias. */
   using InputImageType = TInputImage;
@@ -71,37 +70,40 @@ public:
   using AccumulateType = typename NumericTraits<RealType>::AccumulateType;
 
   /** Set the valid image input.  This will be input 0.  */
-  virtual void SetValidInput( const InputImageType* validImage );
+  virtual void
+  SetValidInput(const InputImageType * validImage);
 
   /** Set the test image input.  This will be input 1.  */
-  virtual void SetTestInput( const InputImageType* testImage );
+  virtual void
+  SetTestInput(const InputImageType * testImage);
 
   /** Set/Get the maximum distance away to look for a matching pixel.
       Default is 0. */
-  itkSetMacro( ToleranceRadius, int );
-  itkGetConstMacro( ToleranceRadius, int );
+  itkSetMacro(ToleranceRadius, int);
+  itkGetConstMacro(ToleranceRadius, int);
 
   /** Set/Get the minimum threshold for pixels to be different.
       Default is 0. */
-  itkSetMacro( DifferenceThreshold, OutputPixelType );
-  itkGetConstMacro( DifferenceThreshold, OutputPixelType );
+  itkSetMacro(DifferenceThreshold, OutputPixelType);
+  itkGetConstMacro(DifferenceThreshold, OutputPixelType);
 
   /** Set/Get ignore boundary pixels.  Useful when resampling may have
    *    introduced difference pixel values along the image edge
    *    Default = false */
-  itkSetMacro( IgnoreBoundaryPixels, bool );
-  itkGetConstMacro( IgnoreBoundaryPixels, bool );
+  itkSetMacro(IgnoreBoundaryPixels, bool);
+  itkGetConstMacro(IgnoreBoundaryPixels, bool);
 
   /** Get parameters of the difference image after execution.  */
-  itkGetConstMacro( MeanDifference, RealType );
-  itkGetConstMacro( TotalDifference, AccumulateType );
-  itkGetConstMacro( NumberOfPixelsWithDifferences, unsigned long );
+  itkGetConstMacro(MeanDifference, RealType);
+  itkGetConstMacro(TotalDifference, AccumulateType);
+  itkGetConstMacro(NumberOfPixelsWithDifferences, unsigned long);
 
 protected:
-  DifferenceImageFilter( void );
-  virtual ~DifferenceImageFilter( void ) {}
+  DifferenceImageFilter(void);
+  virtual ~DifferenceImageFilter(void) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** DifferenceImageFilter can be implemented as a multithreaded
    * filter.  Therefore, this implementation provides a
@@ -114,24 +116,27 @@ protected:
    *
    * \sa ImageToImageFilter::ThreadedGenerateData(),
    *     ImageToImageFilter::GenerateData()  */
-  void ThreadedGenerateData( const OutputImageRegionType& threadRegion,
-                              ThreadIdType threadId ) override;
+  void
+  ThreadedGenerateData(const OutputImageRegionType & threadRegion, ThreadIdType threadId) override;
 
-  void BeforeThreadedGenerateData( void ) override;
-  void AfterThreadedGenerateData( void ) override;
+  void
+  BeforeThreadedGenerateData(void) override;
+  void
+  AfterThreadedGenerateData(void) override;
 
-  OutputPixelType          m_DifferenceThreshold;
-  RealType                 m_MeanDifference;
-  AccumulateType           m_TotalDifference;
-  unsigned long            m_NumberOfPixelsWithDifferences;
-  int                      m_ToleranceRadius;
+  OutputPixelType m_DifferenceThreshold;
+  RealType        m_MeanDifference;
+  AccumulateType  m_TotalDifference;
+  unsigned long   m_NumberOfPixelsWithDifferences;
+  int             m_ToleranceRadius;
 
-  Array<AccumulateType>    m_ThreadDifferenceSum;
-  Array<unsigned long>     m_ThreadNumberOfPixelsWithDifferences;
+  Array<AccumulateType> m_ThreadDifferenceSum;
+  Array<unsigned long>  m_ThreadNumberOfPixelsWithDifferences;
 
 private:
-  DifferenceImageFilter( const Self& ); //purposely not implemented
-  void operator=( const Self& ); //purposely not implemented
+  DifferenceImageFilter(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
   bool m_IgnoreBoundaryPixels;
 
@@ -142,7 +147,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeDifferenceImageFilter.hxx"
+#  include "itktubeDifferenceImageFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeDifferenceImageFilter_h )

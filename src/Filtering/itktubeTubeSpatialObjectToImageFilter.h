@@ -40,22 +40,18 @@ namespace tube
  * Also, forms the same image, but with the radius value in place of the 1.
  */
 
-template< unsigned int ObjectDimension, class TOutputImage,
-  class TRadiusImage = Image< float, TOutputImage::ImageDimension >,
-  class TTangentImage = Image< Vector< float, TOutputImage::ImageDimension >,
-                                       TOutputImage::ImageDimension > >
-class TubeSpatialObjectToImageFilter
-  : public SpatialObjectToImageFilter< SpatialObject< ObjectDimension >,
-                                       TOutputImage >
+template <unsigned int ObjectDimension,
+          class TOutputImage,
+          class TRadiusImage = Image<float, TOutputImage::ImageDimension>,
+          class TTangentImage = Image<Vector<float, TOutputImage::ImageDimension>, TOutputImage::ImageDimension>>
+class TubeSpatialObjectToImageFilter : public SpatialObjectToImageFilter<SpatialObject<ObjectDimension>, TOutputImage>
 {
 public:
-
   /** Standard class type alias. */
   using Self = TubeSpatialObjectToImageFilter;
-  using SuperClass = SpatialObjectToImageFilter< SpatialObject< ObjectDimension >,
-                                      TOutputImage>;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using SuperClass = SpatialObjectToImageFilter<SpatialObject<ObjectDimension>, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Tube class type alias */
   using OutputImageType = TOutputImage;
@@ -73,68 +69,70 @@ public:
   using TangentPixelType = typename TTangentImage::PixelType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( TubeSpatialObjectToImageFilter,
-                SpatialObjectToImageFilter );
+  itkTypeMacro(TubeSpatialObjectToImageFilter, SpatialObjectToImageFilter);
 
   /** Set if the tube should be full inside */
-  itkSetMacro( UseRadius, bool );
-  itkGetMacro( UseRadius, bool );
+  itkSetMacro(UseRadius, bool);
+  itkGetMacro(UseRadius, bool);
 
   /** Set if the filter should build a radius image in parallel */
-  itkSetMacro( BuildRadiusImage, bool );
-  itkGetMacro( BuildRadiusImage, bool );
+  itkSetMacro(BuildRadiusImage, bool);
+  itkGetMacro(BuildRadiusImage, bool);
 
   /** Set if the filter should build a tangent image in parallel */
-  itkSetMacro( BuildTangentImage, bool );
-  itkGetMacro( BuildTangentImage, bool );
+  itkSetMacro(BuildTangentImage, bool);
+  itkGetMacro(BuildTangentImage, bool);
 
   /**Image Pointer Definition and GetRadius return method */
-  RadiusImagePointer GetRadiusImage( void );
+  RadiusImagePointer
+  GetRadiusImage(void);
 
   /**Image Pointer Definition and GetRadius return method */
-  TangentImagePointer GetTangentImage( void );
+  TangentImagePointer
+  GetTangentImage(void);
 
   /** Set if the value of tubes that are crossing should accumulate
    *  their values to produce the image */
-  itkSetMacro( Cumulative, bool );
-  itkGetMacro( Cumulative, bool );
+  itkSetMacro(Cumulative, bool);
+  itkGetMacro(Cumulative, bool);
 
-  itkSetMacro( ColorByTubeId, bool );
-  itkSetMacro( ColorByPointId, bool );
-  itkSetMacro( ColorByRadius, bool );
-  itkSetMacro( ColorByRidgeness, bool );
-  itkSetMacro( ColorByMedialness, bool );
-  itkSetMacro( ColorByBranchness, bool );
-  itkSetMacro( ColorByCurvature, bool );
-  itkSetMacro( ColorByLevelness, bool );
-  itkSetMacro( ColorByRoundness, bool );
-  itkSetMacro( ColorByIntensity, bool );
+  itkSetMacro(ColorByTubeId, bool);
+  itkSetMacro(ColorByPointId, bool);
+  itkSetMacro(ColorByRadius, bool);
+  itkSetMacro(ColorByRidgeness, bool);
+  itkSetMacro(ColorByMedialness, bool);
+  itkSetMacro(ColorByBranchness, bool);
+  itkSetMacro(ColorByCurvature, bool);
+  itkSetMacro(ColorByLevelness, bool);
+  itkSetMacro(ColorByRoundness, bool);
+  itkSetMacro(ColorByIntensity, bool);
 
-  itkGetMacro( ColorByTubeId, bool );
-  itkGetMacro( ColorByPointId, bool );
-  itkGetMacro( ColorByRadius, bool );
-  itkGetMacro( ColorByRidgeness, bool );
-  itkGetMacro( ColorByMedialness, bool );
-  itkGetMacro( ColorByBranchness, bool );
-  itkGetMacro( ColorByCurvature, bool );
-  itkGetMacro( ColorByLevelness, bool );
-  itkGetMacro( ColorByRoundness, bool );
-  itkGetMacro( ColorByIntensity, bool );
+  itkGetMacro(ColorByTubeId, bool);
+  itkGetMacro(ColorByPointId, bool);
+  itkGetMacro(ColorByRadius, bool);
+  itkGetMacro(ColorByRidgeness, bool);
+  itkGetMacro(ColorByMedialness, bool);
+  itkGetMacro(ColorByBranchness, bool);
+  itkGetMacro(ColorByCurvature, bool);
+  itkGetMacro(ColorByLevelness, bool);
+  itkGetMacro(ColorByRoundness, bool);
+  itkGetMacro(ColorByIntensity, bool);
 
 protected:
-
-  TubeSpatialObjectToImageFilter( void );
-  ~TubeSpatialObjectToImageFilter( void );
+  TubeSpatialObjectToImageFilter(void);
+  ~TubeSpatialObjectToImageFilter(void);
 
   /** Create the output images and fill it */
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override
-    {
-    SuperClass::PrintSelf( os, indent );
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override
+  {
+    SuperClass::PrintSelf(os, indent);
     os << indent << "m_BuildRadiusImage: " << m_UseRadius << std::endl;
     os << indent << "m_BuildTangentImage: " << m_UseRadius << std::endl;
     os << indent << "m_UseRadius: " << m_UseRadius << std::endl;
@@ -149,33 +147,32 @@ protected:
     os << indent << "m_ColorByLevelness: " << m_ColorByLevelness << std::endl;
     os << indent << "m_ColorByRoundness: " << m_ColorByRoundness << std::endl;
     os << indent << "m_ColorByIntensity: " << m_ColorByIntensity << std::endl;
-    }
+  }
 
 private:
+  bool m_BuildRadiusImage;
+  bool m_BuildTangentImage;
+  bool m_UseRadius;
+  bool m_Cumulative;
 
-  bool        m_BuildRadiusImage;
-  bool        m_BuildTangentImage;
-  bool        m_UseRadius;
-  bool        m_Cumulative;
+  bool m_ColorByTubeId;
+  bool m_ColorByPointId;
+  bool m_ColorByRadius;
+  bool m_ColorByRidgeness;
+  bool m_ColorByMedialness;
+  bool m_ColorByBranchness;
+  bool m_ColorByCurvature;
+  bool m_ColorByLevelness;
+  bool m_ColorByRoundness;
+  bool m_ColorByIntensity;
 
-  bool        m_ColorByTubeId;
-  bool        m_ColorByPointId;
-  bool        m_ColorByRadius;
-  bool        m_ColorByRidgeness;
-  bool        m_ColorByMedialness;
-  bool        m_ColorByBranchness;
-  bool        m_ColorByCurvature;
-  bool        m_ColorByLevelness;
-  bool        m_ColorByRoundness;
-  bool        m_ColorByIntensity;
-
-  typename RadiusImage::Pointer     m_RadiusImage;
-  typename TangentImage::Pointer    m_TangentImage;
+  typename RadiusImage::Pointer  m_RadiusImage;
+  typename TangentImage::Pointer m_TangentImage;
 
 }; // End class TubeSpatialObjectToImageFilter
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeTubeSpatialObjectToImageFilter.hxx"
+#  include "itktubeTubeSpatialObjectToImageFilter.hxx"
 #endif
 
 } // End namespace tube

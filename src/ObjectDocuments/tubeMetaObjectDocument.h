@@ -37,7 +37,6 @@ namespace tube
 class MetaObjectDocument : public MetaDocument
 {
 public:
-
   using Self = MetaObjectDocument;
   using Superclass = MetaDocument;
   using Pointer = Self *;
@@ -50,77 +49,85 @@ public:
   using ImageDocumentType = itk::tube::ImageDocument;
   using ObjectDocumentType = itk::tube::ObjectDocument;
   using SpatialObjectDocumentType = itk::tube::SpatialObjectDocument;
-  using ObjectDocumentListType = std::vector< ObjectDocumentType::Pointer >;
+  using ObjectDocumentListType = std::vector<ObjectDocumentType::Pointer>;
 
   /** Constructor. */
-  MetaObjectDocument( void );
+  MetaObjectDocument(void);
 
   /** Destructor. */
-  virtual ~MetaObjectDocument( void );
+  virtual ~MetaObjectDocument(void);
 
   /** Return the name of this class. */
-  tubeTypeMacro( MetaObjectDocument );
+  tubeTypeMacro(MetaObjectDocument);
 
   /** Return the maximum number of transforms. **/
-  tubeGetMacro( MaximumNumberOfTransforms, unsigned int );
+  tubeGetMacro(MaximumNumberOfTransforms, unsigned int);
 
   /** Return the number of object documents. **/
-  tubeGetMacro( NumberOfObjectDocuments, int );
+  tubeGetMacro(NumberOfObjectDocuments, int);
 
   /** Return a reference to the list of object documents. **/
-  virtual ObjectDocumentListType & GetObjectDocumentList( void );
+  virtual ObjectDocumentListType &
+  GetObjectDocumentList(void);
 
   /** Set the list of object documents. **/
-  virtual void SetObjectDocumentList( ObjectDocumentListType &
-    objectDocumentList );
+  virtual void
+  SetObjectDocumentList(ObjectDocumentListType & objectDocumentList);
 
   /** Add the specified object document to the back of the list. */
-  virtual void AddObjectDocument( ObjectDocumentType::Pointer
-    objectDocument );
+  virtual void
+  AddObjectDocument(ObjectDocumentType::Pointer objectDocument);
 
   /** Clear all the information. */
-  virtual void Clear( void ) override;
+  virtual void
+  Clear(void) override;
 
 protected:
-
   /** Set the maximum number of transforms. **/
-  tubeSetMacro( MaximumNumberOfTransforms, unsigned int );
+  tubeSetMacro(MaximumNumberOfTransforms, unsigned int);
 
   /** Set the number of object documents. **/
-  tubeSetMacro( NumberOfObjectDocuments, int );
+  tubeSetMacro(NumberOfObjectDocuments, int);
 
   /** Read the fields. */
-  virtual bool ReadFields( void ) override;
+  virtual bool
+  ReadFields(void) override;
 
   /** Initialize the read fields for objects. */
-  virtual void SetupObjectReadFields( void );
+  virtual void
+  SetupObjectReadFields(void);
 
   /** Initialize the write fields for objects. */
-  virtual void SetupObjectWriteFields( unsigned int index );
+  virtual void
+  SetupObjectWriteFields(unsigned int index);
 
   /** Initialize the read fields. */
-  virtual void SetupReadFields( void ) override;
+  virtual void
+  SetupReadFields(void) override;
 
   /** Initialize the write fields. */
-  virtual void SetupWriteFields( void ) override;
+  virtual void
+  SetupWriteFields(void) override;
 
   /** Write the fields. */
-  virtual bool WriteFields( void ) override;
+  virtual bool
+  WriteFields(void) override;
 
   /** Print information about this object. */
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
+  virtual void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Copy constructor not implemented.
-  MetaObjectDocument( const Self & self );
+  MetaObjectDocument(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
-  unsigned int            m_MaximumNumberOfTransforms;
-  int                     m_NumberOfObjectDocuments;
-  ObjectDocumentListType  m_ObjectDocumentList;
+  unsigned int           m_MaximumNumberOfTransforms;
+  int                    m_NumberOfObjectDocuments;
+  ObjectDocumentListType m_ObjectDocumentList;
 
 }; // End class MetaObjectDocument
 

@@ -33,45 +33,39 @@ namespace itk
 
 template <class TImage>
 class ScaleSkewAngle2DImageToImageRegistrationMethod
-  : public OptimizedImageToImageRegistrationMethod<
-    Image< typename TImage::PixelType, 2 > >
+  : public OptimizedImageToImageRegistrationMethod<Image<typename TImage::PixelType, 2>>
 {
 
 public:
-
   using Self = ScaleSkewAngle2DImageToImageRegistrationMethod;
-  using Superclass = OptimizedImageToImageRegistrationMethod< 
-    Image< typename TImage::PixelType, 2 > >;
+  using Superclass = OptimizedImageToImageRegistrationMethod<Image<typename TImage::PixelType, 2>>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( ScaleSkewAngle2DImageToImageRegistrationMethod,
-                OptimizedImageToImageRegistrationMethod );
+  itkTypeMacro(ScaleSkewAngle2DImageToImageRegistrationMethod, OptimizedImageToImageRegistrationMethod);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkStaticConstMacro( ImageDimension, unsigned int, 2 );
+  itkStaticConstMacro(ImageDimension, unsigned int, 2);
 
   //
   // Typedefs from Superclass
   //
 
   // Overrides the superclass' TransformType typedef
-  using ScaleSkewAngle2DTransformType = ::itk::ScaleSkewAngle2DTransform< double >;
-  typedef typename ScaleSkewAngle2DTransformType::Pointer
-            ScaleSkewAngle2DTransformPointer;
-  typedef ScaleSkewAngle2DTransformType
-            TransformType;
+  using ScaleSkewAngle2DTransformType = ::itk::ScaleSkewAngle2DTransform<double>;
+  typedef typename ScaleSkewAngle2DTransformType::Pointer ScaleSkewAngle2DTransformPointer;
+  typedef ScaleSkewAngle2DTransformType                   TransformType;
 
   using AffineTransformType = AffineTransform<double, 2>;
-  typedef typename AffineTransformType::Pointer
-            AffineTransformPointer;
+  typedef typename AffineTransformType::Pointer AffineTransformPointer;
 
   //
   // Superclass Methods
   //
 
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
   //
   // Custom Methods
@@ -84,9 +78,11 @@ public:
    *   ( e.g., SetIdentity )
    *   can be called without the caller having to do the casting.
    */
-  TransformType * GetTypedTransform( void );
+  TransformType *
+  GetTypedTransform(void);
 
-  const TransformType * GetTypedTransform( void ) const;
+  const TransformType *
+  GetTypedTransform(void) const;
 
   /**
    * This function creates a new affine transforms that implements the
@@ -97,7 +93,8 @@ public:
    * SmartPointer to prevent it from being destroyed by depletion of its
    * reference counting.
    */
-  AffineTransformPointer GetAffineTransform( void ) const;
+  AffineTransformPointer
+  GetAffineTransform(void) const;
 
   /** Initialize the transform parameters from an AffineTransform.
    * This method is intended as an alternative to calling
@@ -107,29 +104,28 @@ public:
    * InitialImageToImageRegistrationMethod
    * to directly initialize this registration method.
    */
-  void SetInitialTransformParametersFromAffineTransform(
-    const AffineTransformType * transform );
+  void
+  SetInitialTransformParametersFromAffineTransform(const AffineTransformType * transform);
 
 protected:
+  ScaleSkewAngle2DImageToImageRegistrationMethod(void);
+  virtual ~ScaleSkewAngle2DImageToImageRegistrationMethod(void);
 
-  ScaleSkewAngle2DImageToImageRegistrationMethod( void );
-  virtual ~ScaleSkewAngle2DImageToImageRegistrationMethod( void );
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Purposely not implemented
-  ScaleSkewAngle2DImageToImageRegistrationMethod( const Self & );
+  ScaleSkewAngle2DImageToImageRegistrationMethod(const Self &);
   // Purposely not implemented
-  void operator =( const Self & );
-
+  void
+  operator=(const Self &);
 };
 
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkScaleSkewAngle2DImageToImageRegistrationMethod.hxx"
+#  include "itkScaleSkewAngle2DImageToImageRegistrationMethod.hxx"
 #endif
 
 #endif // __ImageToImageRegistrationMethod_h

@@ -42,103 +42,113 @@ namespace itk
 namespace tube
 {
 
-template< class TPixel, unsigned int VDimension >
-class ReResampleImageFilter
-  : public itk::ProcessObject
+template <class TPixel, unsigned int VDimension>
+class ReResampleImageFilter : public itk::ProcessObject
 {
 public:
-
   /** Standard class type alias. */
-  using ImageType = Image< TPixel, VDimension >;
+  using ImageType = Image<TPixel, VDimension>;
   using Self = ReResampleImageFilter;
   using Superclass = itk::ProcessObject;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkTypeMacro( ReResampleImageFilter, ProcessObject );
+  itkTypeMacro(ReResampleImageFilter, ProcessObject);
 
   using ImagePointer = typename ImageType::Pointer;
-  using TransformType = itk::Transform< double, VDimension, VDimension>;
+  using TransformType = itk::Transform<double, VDimension, VDimension>;
 
 
   /** Set/Get input Match Image */
-  itkSetObjectMacro( MatchImage, ImageType );
-  itkGetModifiableObjectMacro( MatchImage, ImageType );
+  itkSetObjectMacro(MatchImage, ImageType);
+  itkGetModifiableObjectMacro(MatchImage, ImageType);
 
   /** Set/Get whether Output is isotropic or not */
-  itkSetMacro( MakeIsotropic, bool );
-  itkGetMacro( MakeIsotropic, bool );
+  itkSetMacro(MakeIsotropic, bool);
+  itkGetMacro(MakeIsotropic, bool);
 
   /** Set/Get whether Output is high resolution isotropic or not */
-  itkSetMacro( MakeHighResIso, bool );
-  itkGetMacro( MakeHighResIso, bool );
+  itkSetMacro(MakeHighResIso, bool);
+  itkGetMacro(MakeHighResIso, bool);
 
   /** Set/Get interpolator */
-  itkSetMacro( Interpolator, std::string );
-  itkGetMacro( Interpolator, std::string );
+  itkSetMacro(Interpolator, std::string);
+  itkGetMacro(Interpolator, std::string);
 
   /** Set/Get whether to load transform or not */
-  itkSetMacro( LoadTransform, bool );
-  itkGetMacro( LoadTransform, bool );
+  itkSetMacro(LoadTransform, bool);
+  itkGetMacro(LoadTransform, bool);
 
   /** Set Output Transform */
-  void SetTransform( TransformType* t );
+  void
+  SetTransform(TransformType * t);
 
   /** Set Output Spacing */
-  void SetSpacing( std::vector<double> s );
+  void
+  SetSpacing(std::vector<double> s);
 
   /** Set Output Origin */
-  void SetOrigin( std::vector<double> o );
+  void
+  SetOrigin(std::vector<double> o);
 
   /** Set Output Index */
-  void SetIndex( std::vector<int> i );
+  void
+  SetIndex(std::vector<int> i);
 
   /** Set Output Size */
-  void SetSize( std::vector<int> i );
+  void
+  SetSize(std::vector<int> i);
 
   /** Set Output Resample Factor */
-  void SetResampleFactor( std::vector<double> rf );
+  void
+  SetResampleFactor(std::vector<double> rf);
 
-  itkGetModifiableObjectMacro( Output, ImageType );
+  itkGetModifiableObjectMacro(Output, ImageType);
 
-  itkSetObjectMacro( Input, ImageType );
-  itkGetModifiableObjectMacro( Input, ImageType );
+  itkSetObjectMacro(Input, ImageType);
+  itkGetModifiableObjectMacro(Input, ImageType);
 
-  virtual void Update( void ) override;
+  virtual void
+  Update(void) override;
 
 protected:
-  ReResampleImageFilter( void );
-  ~ReResampleImageFilter( void ) {}
+  ReResampleImageFilter(void);
+  ~ReResampleImageFilter(void) {}
 
-  void SetInput( const DataObjectIdentifierType & key, DataObject * input) override
-    { Superclass::SetInput( key, input ); };
+  void
+  SetInput(const DataObjectIdentifierType & key, DataObject * input) override
+  {
+    Superclass::SetInput(key, input);
+  };
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-  ReResampleImageFilter( const Self& );
-  void operator=( const Self& );
+  ReResampleImageFilter(const Self &);
+  void
+  operator=(const Self &);
 
-  using ResampleFilterType = typename itk::ResampleImageFilter< ImageType, ImageType >;
-  typename ResampleFilterType::Pointer   m_Filter;
+  using ResampleFilterType = typename itk::ResampleImageFilter<ImageType, ImageType>;
+  typename ResampleFilterType::Pointer m_Filter;
 
-  typename ImageType::Pointer            m_MatchImage;
-  std::vector<double>                    m_Spacing;
-  std::vector<double>                    m_Origin;
-  std::vector<int>                       m_Index;
-  std::vector<int>                       m_Size;
-  std::vector<double>                    m_ResampleFactor;
-  bool                                   m_MakeIsotropic;
-  bool                                   m_MakeHighResIso;
-  std::string                            m_Interpolator;
-  bool                                   m_LoadTransform;
-  typename TransformType::Pointer        m_Transform;
+  typename ImageType::Pointer     m_MatchImage;
+  std::vector<double>             m_Spacing;
+  std::vector<double>             m_Origin;
+  std::vector<int>                m_Index;
+  std::vector<int>                m_Size;
+  std::vector<double>             m_ResampleFactor;
+  bool                            m_MakeIsotropic;
+  bool                            m_MakeHighResIso;
+  std::string                     m_Interpolator;
+  bool                            m_LoadTransform;
+  typename TransformType::Pointer m_Transform;
 
-  typename ImageType::Pointer            m_Input;
-  typename ImageType::Pointer            m_Output;
+  typename ImageType::Pointer m_Input;
+  typename ImageType::Pointer m_Output;
 }; // End class ReResampleImageFilter
 
 } // End namespace tube
@@ -146,7 +156,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeReResampleImageFilter.hxx"
+#  include "itktubeReResampleImageFilter.hxx"
 #endif
 
 #endif // End !defined( _itktubeReResampleImageFilter_h )

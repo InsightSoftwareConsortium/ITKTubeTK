@@ -25,7 +25,8 @@ limitations under the License.
 #include <cstdlib>
 #include <iostream>
 
-int tubeCommonPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+int
+tubeCommonPrintTest(int itkNotUsed(argc), char * itkNotUsed(argv)[])
 {
   return EXIT_SUCCESS;
 }

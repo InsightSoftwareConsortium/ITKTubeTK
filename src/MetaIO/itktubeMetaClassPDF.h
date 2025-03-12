@@ -29,7 +29,7 @@ limitations under the License.
 #include <metaTypes.h>
 
 #ifndef METAIO_STREAM
-#define METAIO_STREAM std
+#  define METAIO_STREAM std
 #endif
 
 namespace itk
@@ -39,147 +39,189 @@ namespace tube
 {
 
 /**
-*
-* Reads and Writes MetaClassPDF Files, typically designated .mnda files
-*
-* \author Stephen R. Aylward
-*
-* \date August 29, 2013
-*
-*/
+ *
+ * Reads and Writes MetaClassPDF Files, typically designated .mnda files
+ *
+ * \author Stephen R. Aylward
+ *
+ * \date August 29, 2013
+ *
+ */
 class MetaClassPDF : private MetaImage
 {
 public:
+  using VectorIntType = std::vector<int>;
+  using VectorUIntType = std::vector<unsigned int>;
+  using VectorDoubleType = std::vector<double>;
 
-  using VectorIntType = std::vector< int >;
-  using VectorUIntType = std::vector< unsigned int >;
-  using VectorDoubleType = std::vector< double >;
+  MetaClassPDF(void);
 
-  MetaClassPDF( void );
+  MetaClassPDF(const char * _headerName);
 
-  MetaClassPDF( const char * _headerName );
+  MetaClassPDF(const MetaClassPDF & _metaPDF);
 
-  MetaClassPDF( const MetaClassPDF & _metaPDF );
+  MetaClassPDF(unsigned int             _nFeatures,
+               const VectorUIntType &   _nBinsPerFeature,
+               const VectorDoubleType & _binMin,
+               const VectorDoubleType & _binSize,
+               float *                  _elementData = NULL);
 
-  MetaClassPDF( unsigned int _nFeatures,
-    const VectorUIntType & _nBinsPerFeature,
-    const VectorDoubleType & _binMin,
-    const VectorDoubleType & _binSize,
-    float * _elementData = NULL );
+  MetaClassPDF(unsigned int _x,
+               unsigned int _y,
+               double       _binMinX,
+               double       _binMinY,
+               double       _binSizeX,
+               double       _binSizeY,
+               float *      _elementData = NULL);
 
-  MetaClassPDF( unsigned int _x,
-    unsigned int _y,
-    double _binMinX,
-    double _binMinY,
-    double _binSizeX,
-    double _binSizeY,
-    float * _elementData = NULL );
+  MetaClassPDF(unsigned int _x,
+               unsigned int _y,
+               unsigned int _z,
+               double       _binMinX,
+               double       _binMinY,
+               double       _binMinZ,
+               double       _binSizeX,
+               double       _binSizeY,
+               double       _binSizeZ,
+               float *      _elementData = NULL);
 
-  MetaClassPDF( unsigned int _x,
-    unsigned int _y,
-    unsigned int _z,
-    double _binMinX,
-    double _binMinY,
-    double _binMinZ,
-    double _binSizeX,
-    double _binSizeY,
-    double _binSizeZ,
-    float * _elementData = NULL );
+  ~MetaClassPDF(void);
 
-  ~MetaClassPDF( void );
+  virtual void
+  PrintInfo(void) const;
 
-  virtual void PrintInfo( void ) const;
+  virtual void
+  CopyInfo(const MetaObject * _pdf);
 
-  virtual void CopyInfo( const MetaObject * _pdf );
+  virtual void
+  Clear(void);
 
-  virtual void Clear( void );
+  virtual bool
+  InitializeEssential(unsigned int             _nFeatures,
+                      const VectorUIntType &   _nBinsPerFeature,
+                      const VectorDoubleType & _binMin,
+                      const VectorDoubleType & _binSize,
+                      float *                  _elementData = NULL);
 
-  virtual bool InitializeEssential( unsigned int _nFeatures,
-    const VectorUIntType & _nBinsPerFeature,
-    const VectorDoubleType & _binMin,
-    const VectorDoubleType & _binSize,
-    float * _elementData = NULL );
+  void
+  SetNumberOfFeatures(unsigned int _nFeatures);
+  unsigned int
+  GetNumberOfFeatures(void) const;
 
-  void         SetNumberOfFeatures( unsigned int _nFeatures );
-  unsigned int GetNumberOfFeatures( void ) const;
+  void
+  SetNumberOfBinsPerFeature(const VectorUIntType & _nBins);
+  const VectorUIntType
+  GetNumberOfBinsPerFeature(void) const;
 
-  void         SetNumberOfBinsPerFeature( const VectorUIntType & _nBins );
-  const VectorUIntType GetNumberOfBinsPerFeature( void ) const;
+  void
+  SetBinMin(const VectorDoubleType & _binMin);
+  const VectorDoubleType
+  GetBinMin(void) const;
 
-  void          SetBinMin( const VectorDoubleType & _binMin );
-  const VectorDoubleType GetBinMin( void ) const;
+  void
+  SetBinSize(const VectorDoubleType & _binSize);
+  const VectorDoubleType
+  GetBinSize(void) const;
 
-  void          SetBinSize( const VectorDoubleType & _binSize );
-  const VectorDoubleType GetBinSize( void ) const;
+  void
+  SetPDF(float * _pdfData);
+  float *
+  GetPDF(void); // Data is freed when reader is destroyed
+  float *
+  ExportPDF(void); // Data persists when reader destroyed
 
-  void          SetPDF( float * _pdfData );
-  float *       GetPDF( void );  // Data is freed when reader is destroyed
-  float *       ExportPDF( void );  // Data persists when reader destroyed
+  void
+  SetObjectId(const VectorIntType & _objectIds);
+  const VectorIntType
+  GetObjectId(void) const;
 
-  void          SetObjectId( const VectorIntType & _objectIds );
-  const VectorIntType GetObjectId( void ) const;
+  void
+  SetObjectPDFWeight(const VectorDoubleType & _objectWeights);
+  const VectorDoubleType
+  GetObjectPDFWeight(void) const;
 
-  void          SetObjectPDFWeight( const VectorDoubleType &
-                  _objectWeights );
-  const VectorDoubleType GetObjectPDFWeight( void ) const;
+  void
+  SetVoidId(int _voidId);
+  int
+  GetVoidId(void) const;
 
-  void          SetVoidId( int _voidId );
-  int           GetVoidId( void ) const;
+  void
+  SetErodeDilateRadius(unsigned int _ErodeDilateRadius);
+  unsigned int
+  GetErodeDilateRadius(void) const;
+  void
+  SetHoleFillIterations(unsigned int _HoleFillIterations);
+  unsigned int
+  GetHoleFillIterations(void) const;
+  void
+  SetProbabilityImageSmoothingStandardDeviation(double _ProbabilityImageSmoothingStandardDeviation);
+  double
+  GetProbabilityImageSmoothingStandardDeviation(void) const;
+  void
+  SetHistogramSmoothingStandardDeviation(double _HistogramSmoothingStandardDeviation);
+  double
+  GetHistogramSmoothingStandardDeviation(void) const;
+  void
+  SetOutlierRejectPortion(double _OutlierRejectPortion);
+  double
+  GetOutlierRejectPortion(void) const;
+  void
+  SetDraft(bool _Draft);
+  bool
+  GetDraft(void) const;
+  void
+  SetReclassifyObjectLabels(bool _ReclassifyObjectLabels);
+  bool
+  GetReclassifyObjectLabels(void) const;
+  void
+  SetReclassifyNotObjectLabels(bool _ReclassifyNotObjectLabels);
+  bool
+  GetReclassifyNotObjectLabels(void) const;
+  void
+  SetForceClassification(bool _ForceClassification);
+  bool
+  GetForceClassification(void) const;
 
-  void          SetErodeDilateRadius( unsigned int _ErodeDilateRadius );
-  unsigned int  GetErodeDilateRadius( void ) const;
-  void          SetHoleFillIterations( unsigned int _HoleFillIterations );
-  unsigned int  GetHoleFillIterations( void ) const;
-  void          SetProbabilityImageSmoothingStandardDeviation(
-                  double _ProbabilityImageSmoothingStandardDeviation );
-  double         GetProbabilityImageSmoothingStandardDeviation( void ) const;
-  void          SetHistogramSmoothingStandardDeviation(
-                  double _HistogramSmoothingStandardDeviation );
-  double         GetHistogramSmoothingStandardDeviation( void ) const;
-  void          SetOutlierRejectPortion( double _OutlierRejectPortion );
-  double         GetOutlierRejectPortion( void ) const;
-  void          SetDraft( bool _Draft );
-  bool          GetDraft( void ) const;
-  void          SetReclassifyObjectLabels( bool _ReclassifyObjectLabels );
-  bool          GetReclassifyObjectLabels( void ) const;
-  void          SetReclassifyNotObjectLabels(
-                  bool _ReclassifyNotObjectLabels );
-  bool          GetReclassifyNotObjectLabels( void ) const;
-  void          SetForceClassification( bool _ForceClassification );
-  bool          GetForceClassification( void ) const;
+  virtual bool
+  CanRead(const char * _headerName = NULL) const;
 
-  virtual bool CanRead( const char * _headerName = NULL ) const;
+  virtual bool
+  Read(const char * _headerName = NULL);
 
-  virtual bool Read( const char * _headerName = NULL );
+  virtual bool
+  CanReadStream(METAIO_STREAM::ifstream * _stream) const;
 
-  virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
+  virtual bool
+  ReadStream(METAIO_STREAM::ifstream * _stream);
 
-  virtual bool ReadStream( METAIO_STREAM::ifstream * _stream );
+  virtual bool
+  Write(const char * _headerName = NULL);
 
-  virtual bool Write( const char * _headerName = NULL );
-
-  virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
+  virtual bool
+  WriteStream(METAIO_STREAM::ofstream * _stream);
 
 protected:
+  virtual void
+  M_SetupReadFields(void);
 
-  virtual void M_SetupReadFields( void );
+  virtual void
+  M_SetupWriteFields(void);
 
-  virtual void M_SetupWriteFields( void );
+  virtual bool
+  M_Read(void);
 
-  virtual bool M_Read( void );
-
-  VectorIntType        m_ObjectId;
-  VectorDoubleType     m_ObjectPDFWeight;
-  int                  m_VoidId;
-  unsigned int         m_ErodeDilateRadius;
-  unsigned int         m_HoleFillIterations;
-  double               m_ProbabilityImageSmoothingStandardDeviation;
-  double               m_HistogramSmoothingStandardDeviation;
-  double               m_OutlierRejectPortion;
-  bool                 m_Draft;
-  bool                 m_ReclassifyObjectLabels;
-  bool                 m_ReclassifyNotObjectLabels;
-  bool                 m_ForceClassification;
+  VectorIntType    m_ObjectId;
+  VectorDoubleType m_ObjectPDFWeight;
+  int              m_VoidId;
+  unsigned int     m_ErodeDilateRadius;
+  unsigned int     m_HoleFillIterations;
+  double           m_ProbabilityImageSmoothingStandardDeviation;
+  double           m_HistogramSmoothingStandardDeviation;
+  double           m_OutlierRejectPortion;
+  bool             m_Draft;
+  bool             m_ReclassifyObjectLabels;
+  bool             m_ReclassifyNotObjectLabels;
+  bool             m_ForceClassification;
 
 }; // End class MetaRidgeSeed
 

@@ -38,84 +38,83 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TInputImage, class TOutputImage >
-class EnhanceEdgesUsingDiffusion:
-  public itk::ProcessObject
+template <class TInputImage, class TOutputImage>
+class EnhanceEdgesUsingDiffusion : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = EnhanceEdgesUsingDiffusion;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   using InputImageType = TInputImage;
   using OutputImageType = TOutputImage;
 
-  using FilterType = itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter<
-    InputImageType, OutputImageType>;
+  using FilterType = itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter<InputImageType, OutputImageType>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( EnhanceEdgesUsingDiffusion, ProcessObject );
+  itkTypeMacro(EnhanceEdgesUsingDiffusion, ProcessObject);
 
   /** Set/Get input image */
-  tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
-  tubeWrapGetConstObjectMacro( Input, InputImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input, InputImageType, Filter);
+  tubeWrapGetConstObjectMacro(Input, InputImageType, Filter);
 
   /** Set/Get sigma value */
-  tubeWrapSetMacro( Sigma, double, Filter );
-  tubeWrapGetMacro( Sigma, double, Filter );
+  tubeWrapSetMacro(Sigma, double, Filter);
+  tubeWrapGetMacro(Sigma, double, Filter);
 
   /** Set/Get ContrastParameterLambdaE value */
-  tubeWrapSetMacro( ContrastParameterLambdaE, double, Filter );
-  tubeWrapGetMacro( ContrastParameterLambdaE, double, Filter );
+  tubeWrapSetMacro(ContrastParameterLambdaE, double, Filter);
+  tubeWrapGetMacro(ContrastParameterLambdaE, double, Filter);
 
   /** Set/Get TimeStep value */
-  tubeWrapSetMacro( TimeStep, double, Filter );
-  tubeWrapGetMacro( TimeStep, double, Filter );
+  tubeWrapSetMacro(TimeStep, double, Filter);
+  tubeWrapGetMacro(TimeStep, double, Filter);
 
   /** Set/Get NumberOfIterations value */
-  tubeWrapSetMacro( NumberOfIterations, unsigned long, Filter );
-  tubeWrapGetMacro( NumberOfIterations, unsigned long, Filter );
+  tubeWrapSetMacro(NumberOfIterations, unsigned long, Filter);
+  tubeWrapGetMacro(NumberOfIterations, unsigned long, Filter);
 
   /** Get SigmaOuter value */
-  tubeWrapGetMacro( SigmaOuter, double, Filter );
+  tubeWrapGetMacro(SigmaOuter, double, Filter);
 
   /** Get ThresholdParameterC value */
-  tubeWrapGetMacro( ThresholdParameterC, double, Filter );
+  tubeWrapGetMacro(ThresholdParameterC, double, Filter);
 
   /** Runs the enhancement algorithm */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
   /** Get output segmentation mask */
-  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
+  tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
 
 protected:
-  EnhanceEdgesUsingDiffusion( void );
+  EnhanceEdgesUsingDiffusion(void);
   ~EnhanceEdgesUsingDiffusion() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itktubeAnisotropicEdgeEnhancementDiffusionImageFilter parameters **/
-  EnhanceEdgesUsingDiffusion( const Self & );
-  void operator=( const Self & );
+  EnhanceEdgesUsingDiffusion(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename FilterType::Pointer m_Filter;
-
 };
 
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeEnhanceEdgesUsingDiffusion.hxx"
+#  include "tubeEnhanceEdgesUsingDiffusion.hxx"
 #endif
 
 #endif // End !defined( __tubeEnhanceEdgesUsingDiffusion_h )

@@ -38,25 +38,22 @@ namespace itk
 namespace tube
 {
 
-template< class TImage >
+template <class TImage>
 class RidgeFFTFeatureVectorGenerator
-  : public FeatureVectorGenerator< Image< typename TImage::PixelType,
-                                          TImage::ImageDimension > >
+  : public FeatureVectorGenerator<Image<typename TImage::PixelType, TImage::ImageDimension>>
 {
 public:
-
   using Self = RidgeFFTFeatureVectorGenerator;
-  using Superclass = FeatureVectorGenerator< TImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = FeatureVectorGenerator<TImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( RidgeFFTFeatureVectorGenerator, FeatureVectorGenerator );
+  itkTypeMacro(RidgeFFTFeatureVectorGenerator, FeatureVectorGenerator);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   //
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
   using FeatureValueType = typename Superclass::FeatureValueType;
 
@@ -70,53 +67,61 @@ public:
 
   using IndexType = typename Superclass::IndexType;
 
-  using RidgeScalesType = std::vector< double >;
+  using RidgeScalesType = std::vector<double>;
 
-  using FeatureImageListType = std::vector< typename FeatureImageType::Pointer >;
+  using FeatureImageListType = std::vector<typename FeatureImageType::Pointer>;
 
   //
-  virtual unsigned int GetNumberOfImageFeaturesPerScale( void ) const;
-  virtual unsigned int GetNumberOfImageFeatures( void ) const;
-  virtual unsigned int GetNumberOfMathFeatures( void ) const;
-  virtual unsigned int GetNumberOfFeatures( void ) const override;
+  virtual unsigned int
+  GetNumberOfImageFeaturesPerScale(void) const;
+  virtual unsigned int
+  GetNumberOfImageFeatures(void) const;
+  virtual unsigned int
+  GetNumberOfMathFeatures(void) const;
+  virtual unsigned int
+  GetNumberOfFeatures(void) const override;
 
-  void SetScales( const RidgeScalesType & scales );
-  const RidgeScalesType & GetScales( void ) const;
+  void
+  SetScales(const RidgeScalesType & scales);
+  const RidgeScalesType &
+  GetScales(void) const;
 
-  virtual FeatureVectorType GetFeatureVector( const IndexType & indx ) const
-    override;
+  virtual FeatureVectorType
+  GetFeatureVector(const IndexType & indx) const override;
 
-  virtual FeatureValueType GetFeatureVectorValue( const IndexType & indx,
-    unsigned int fNum ) const override;
+  virtual FeatureValueType
+  GetFeatureVectorValue(const IndexType & indx, unsigned int fNum) const override;
 
-  virtual typename FeatureImageType::Pointer GetFeatureImage(
-    unsigned int fNum ) const override;
+  virtual typename FeatureImageType::Pointer
+  GetFeatureImage(unsigned int fNum) const override;
 
-  virtual void Update( void ) override;
+  virtual void
+  Update(void) override;
 
-  itkSetMacro( UseIntensityOnly, bool );
-  itkGetMacro( UseIntensityOnly, bool );
+  itkSetMacro(UseIntensityOnly, bool);
+  itkGetMacro(UseIntensityOnly, bool);
 
 protected:
+  RidgeFFTFeatureVectorGenerator(void);
+  virtual ~RidgeFFTFeatureVectorGenerator(void);
 
-  RidgeFFTFeatureVectorGenerator( void );
-  virtual ~RidgeFFTFeatureVectorGenerator( void );
+  virtual void
+  UpdateWhitenStatistics(void) override;
 
-  virtual void UpdateWhitenStatistics( void ) override;
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Purposely not implemented
-  RidgeFFTFeatureVectorGenerator( const Self & );
-  void operator = ( const Self & );      // Purposely not implemented
+  RidgeFFTFeatureVectorGenerator(const Self &);
+  void
+  operator=(const Self &); // Purposely not implemented
 
-  RidgeScalesType                    m_Scales;
+  RidgeScalesType m_Scales;
 
-  FeatureImageListType               m_FeatureImageList;
+  FeatureImageListType m_FeatureImageList;
 
-  bool                               m_UseIntensityOnly;
+  bool m_UseIntensityOnly;
 
 }; // End class RidgeFFTFeatureVectorGenerator
 
@@ -125,7 +130,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeRidgeFFTFeatureVectorGenerator.hxx"
+#  include "itktubeRidgeFFTFeatureVectorGenerator.hxx"
 #endif
 
 #endif // End !defined( __itktubeRidgeFFTFeatureVectorGenerator_h )

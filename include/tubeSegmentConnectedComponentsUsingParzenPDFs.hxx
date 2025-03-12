@@ -27,50 +27,45 @@ limitations under the License.
 namespace tube
 {
 
-template< class TImage, class TLabelMap >
-SegmentConnectedComponentsUsingParzenPDFs< TImage, TLabelMap >
-::SegmentConnectedComponentsUsingParzenPDFs( void )
+template <class TImage, class TLabelMap>
+SegmentConnectedComponentsUsingParzenPDFs<TImage, TLabelMap>::SegmentConnectedComponentsUsingParzenPDFs(void)
 {
   m_Filter = FilterType::New();
 
   m_FVGenerator = FeatureVectorGeneratorType::New();
 }
 
-template< class TImage, class TLabelMap >
+template <class TImage, class TLabelMap>
 void
-SegmentConnectedComponentsUsingParzenPDFs< TImage, TLabelMap >
-::SetFeatureImage( InputImageType * img )
+SegmentConnectedComponentsUsingParzenPDFs<TImage, TLabelMap>::SetFeatureImage(InputImageType * img)
 {
-  m_FVGenerator->SetInput( img );
+  m_FVGenerator->SetInput(img);
 }
 
-template< class TImage, class TLabelMap >
+template <class TImage, class TLabelMap>
 void
-SegmentConnectedComponentsUsingParzenPDFs< TImage, TLabelMap >
-::AddFeatureImage( InputImageType * img )
+SegmentConnectedComponentsUsingParzenPDFs<TImage, TLabelMap>::AddFeatureImage(InputImageType * img)
 {
-  m_FVGenerator->AddInput( img );
+  m_FVGenerator->AddInput(img);
 }
 
-template< class TImage, class TLabelMap >
+template <class TImage, class TLabelMap>
 void
-SegmentConnectedComponentsUsingParzenPDFs< TImage, TLabelMap >
-::Update( void )
+SegmentConnectedComponentsUsingParzenPDFs<TImage, TLabelMap>::Update(void)
 {
-  m_Filter->SetFeatureVectorGenerator( m_FVGenerator );
+  m_Filter->SetFeatureVectorGenerator(m_FVGenerator);
 
   m_Filter->Update();
 }
 
-template< class TImage, class TLabelMap >
+template <class TImage, class TLabelMap>
 void
-SegmentConnectedComponentsUsingParzenPDFs< TImage, TLabelMap >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+SegmentConnectedComponentsUsingParzenPDFs<TImage, TLabelMap>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
   os << indent << m_Filter << std::endl;
 }
 
-}
+} // namespace tube
 
 #endif

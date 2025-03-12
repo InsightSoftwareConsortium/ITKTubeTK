@@ -40,96 +40,104 @@ namespace tube
 class MetaDocument : public Object
 {
 public:
-
   using Self = MetaDocument;
   using Superclass = Object;
   using Pointer = Self *;
   using ConstPointer = const Self *;
 
   using FieldType = MET_FieldRecordType;
-  using FieldListType = std::vector< FieldType * >;
+  using FieldListType = std::vector<FieldType *>;
 
   /** Constructor. */
-  MetaDocument( void );
+  MetaDocument(void);
 
   /**  Destructor. */
-  virtual ~MetaDocument( void );
+  virtual ~MetaDocument(void);
 
   /** Return the name of this class. */
-  tubeTypeMacro( MetaDocument );
+  tubeTypeMacro(MetaDocument);
 
   /** Return the comment. */
-  tubeGetStringMacro( Comment );
+  tubeGetStringMacro(Comment);
 
   /** Return the date modified. */
-  tubeGetStringMacro( DateModified );
+  tubeGetStringMacro(DateModified);
 
   /** Return the file name. */
-  tubeGetStringMacro( FileName );
+  tubeGetStringMacro(FileName);
 
   /** Return the name. */
-  tubeGetStringMacro( Name );
+  tubeGetStringMacro(Name);
 
   /** Set the comment. */
-  tubeSetStringMacro( Comment );
+  tubeSetStringMacro(Comment);
 
   /** Set the date modified. */
-  tubeSetStringMacro( DateModified );
+  tubeSetStringMacro(DateModified);
 
   /** Set the file name. */
-  tubeSetStringMacro( FileName );
+  tubeSetStringMacro(FileName);
 
   /** Set the name. */
-  tubeSetStringMacro( Name );
+  tubeSetStringMacro(Name);
 
   /** Clear all the information. */
-  virtual void Clear( void );
+  virtual void
+  Clear(void);
 
   /** Copy information from the specified meta document. */
-  virtual void CopyInformation( const Self * self );
+  virtual void
+  CopyInformation(const Self * self);
 
   /** Read the information from the specified file. */
-  virtual bool Read( const std::string & fileName = "" );
+  virtual bool
+  Read(const std::string & fileName = "");
 
   /** Write the information to the specified file. */
-  virtual bool Write( const std::string & fileName = "" );
+  virtual bool
+  Write(const std::string & fileName = "");
 
 protected:
-
   /** Clear all the fields. */
-  void ClearFields( void );
+  void
+  ClearFields(void);
 
   /** Read the fields. */
-  virtual bool ReadFields( void );
+  virtual bool
+  ReadFields(void);
 
   /** Initialize the read fields. */
-  virtual void SetupReadFields( void );
+  virtual void
+  SetupReadFields(void);
 
   /** Initialize the write fields. */
-  virtual void SetupWriteFields( void );
+  virtual void
+  SetupWriteFields(void);
 
   /** Write the fields. */
-  virtual bool WriteFields( void );
+  virtual bool
+  WriteFields(void);
 
   /** Print information about this object. */
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
+  virtual void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  std::ifstream  m_ReadStream;
-  std::ofstream  m_WriteStream;
-  FieldListType  m_FieldList;
+  std::ifstream m_ReadStream;
+  std::ofstream m_WriteStream;
+  FieldListType m_FieldList;
 
 private:
-
   // Copy constructor not implemented.
-  MetaDocument( const Self & self );
+  MetaDocument(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
-  std::string  m_Comment;
-  std::string  m_DateModified;
-  std::string  m_FileName;
-  std::string  m_Name;
+  std::string m_Comment;
+  std::string m_DateModified;
+  std::string m_FileName;
+  std::string m_Name;
 
 }; // End class MetaDocument
 

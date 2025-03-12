@@ -37,30 +37,28 @@ namespace tube
 class Indent
 {
 public:
-
   using Self = Indent;
   using Pointer = Self *;
   using ConstPointer = const Self *;
 
   /** Constructor with initial level of indentation. */
-  Indent( unsigned int indent = 0 )
-    {
-    m_Indent = indent;
-    }
+  Indent(unsigned int indent = 0) { m_Indent = indent; }
 
   /** Determine and return the next indentation. */
-  Indent GetNextIndent( void );
+  Indent
+  GetNextIndent(void);
 
-  friend std::ostream & operator<<( std::ostream & os, const Indent & indent );
+  friend std::ostream &
+  operator<<(std::ostream & os, const Indent & indent);
 
 private:
-
-  unsigned int m_Indent;  // Current indentation level.
+  unsigned int m_Indent; // Current indentation level.
 
 }; // End class Indent
 
 /** Print out the specified indentation. */
-std::ostream & operator<<( std::ostream & os, const Indent & indent );
+std::ostream &
+operator<<(std::ostream & os, const Indent & indent);
 
 } // End namespace tube
 

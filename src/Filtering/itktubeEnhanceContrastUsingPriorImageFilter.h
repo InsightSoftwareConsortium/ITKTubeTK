@@ -41,79 +41,81 @@ namespace tube
 /** \class EnhanceContrastUsingPriorImageFilter
  */
 
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 class EnhanceContrastUsingPriorImageFilter
-  : public ImageToImageFilter< Image< TPixel, VDimension >,
-  Image< TPixel, VDimension > >
+  : public ImageToImageFilter<Image<TPixel, VDimension>, Image<TPixel, VDimension>>
 {
 public:
   /** Standard class type alias. */
-  using ImageType = Image< TPixel, VDimension >;
+  using ImageType = Image<TPixel, VDimension>;
   using Self = EnhanceContrastUsingPriorImageFilter;
-  using Superclass = ImageToImageFilter< ImageType, ImageType >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<ImageType, ImageType>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( EnhanceContrastUsingPriorImageFilter, ImageToImageFilter );
+  itkTypeMacro(EnhanceContrastUsingPriorImageFilter, ImageToImageFilter);
 
   /** Some convenient type alias. */
-  using ContrastCostFunctionType = itk::tube::ContrastCostFunction< TPixel, VDimension >;
+  using ContrastCostFunctionType = itk::tube::ContrastCostFunction<TPixel, VDimension>;
   using InitialOptimizerType = itk::OnePlusOneEvolutionaryOptimizer;
   using OptimizerType = itk::FRPROptimizer;
-  using ImageIteratorType = itk::ImageRegionIterator< ImageType >;
+  using ImageIteratorType = itk::ImageRegionIterator<ImageType>;
 
   /** Set/Get input Mask Image */
-  itkSetObjectMacro( InputMaskImage, ImageType );
-  itkGetModifiableObjectMacro( InputMaskImage, ImageType );
+  itkSetObjectMacro(InputMaskImage, ImageType);
+  itkGetModifiableObjectMacro(InputMaskImage, ImageType);
 
   /** Set/Get Object Scale */
-  itkSetMacro( ObjectScale, float );
-  itkGetMacro( ObjectScale, float );
+  itkSetMacro(ObjectScale, float);
+  itkGetMacro(ObjectScale, float);
 
   /** Set/Get Background Scale */
-  itkSetMacro( BackgroundScale, float );
-  itkGetMacro( BackgroundScale, float );
+  itkSetMacro(BackgroundScale, float);
+  itkGetMacro(BackgroundScale, float);
 
   /** Set/Get Mask Object Value */
-  itkSetMacro( MaskObjectValue, int );
-  itkGetMacro( MaskObjectValue, int );
+  itkSetMacro(MaskObjectValue, int);
+  itkGetMacro(MaskObjectValue, int);
 
   /** Set/Get Mask Background Value */
-  itkSetMacro( MaskBackgroundValue, int );
-  itkGetMacro( MaskBackgroundValue, int );
+  itkSetMacro(MaskBackgroundValue, int);
+  itkGetMacro(MaskBackgroundValue, int);
 
   /** Set/Get Optimization Iterations */
-  itkSetMacro( OptimizationIterations, int );
-  itkGetMacro( OptimizationIterations, int );
+  itkSetMacro(OptimizationIterations, int);
+  itkGetMacro(OptimizationIterations, int);
 
   /** Set/Get Optimization Seed */
-  itkSetMacro( OptimizationSeed, int );
-  itkGetMacro( OptimizationSeed, int );
+  itkSetMacro(OptimizationSeed, int);
+  itkGetMacro(OptimizationSeed, int);
 
 protected:
-  EnhanceContrastUsingPriorImageFilter( void );
-  virtual ~EnhanceContrastUsingPriorImageFilter( void ) {}
+  EnhanceContrastUsingPriorImageFilter(void);
+  virtual ~EnhanceContrastUsingPriorImageFilter(void) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
-  virtual void GenerateData( void ) override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
+  virtual void
+  GenerateData(void) override;
 
 private:
-  //purposely not implemented
-  EnhanceContrastUsingPriorImageFilter( const Self& );
-  //purposely not implemented
-  void operator=( const Self& );
+  // purposely not implemented
+  EnhanceContrastUsingPriorImageFilter(const Self &);
+  // purposely not implemented
+  void
+  operator=(const Self &);
 
-  typename ImageType::Pointer            m_InputMaskImage;
-  float                                  m_ObjectScale;
-  float                                  m_BackgroundScale;
-  int                                    m_MaskObjectValue;
-  int                                    m_MaskBackgroundValue;
-  int                                    m_OptimizationIterations;
-  int                                    m_OptimizationSeed;
+  typename ImageType::Pointer m_InputMaskImage;
+  float                       m_ObjectScale;
+  float                       m_BackgroundScale;
+  int                         m_MaskObjectValue;
+  int                         m_MaskBackgroundValue;
+  int                         m_OptimizationIterations;
+  int                         m_OptimizationSeed;
 
 }; // End class EnhanceContrastUsingPriorImageFilter
 
@@ -122,7 +124,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeEnhanceContrastUsingPriorImageFilter.hxx"
+#  include "itktubeEnhanceContrastUsingPriorImageFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeEnhanceContrastUsingPriorImageFilter_h )

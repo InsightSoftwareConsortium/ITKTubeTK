@@ -38,19 +38,17 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< typename TInputImage, typename TOutputImage >
-class ConvertSpatialGraphToImage:
-  public itk::ProcessObject
+template <typename TInputImage, typename TOutputImage>
+class ConvertSpatialGraphToImage : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ConvertSpatialGraphToImage;
   using Superclass = ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  using FilterType = itk::tube::ConvertSpatialGraphToImageFilter
-    < TInputImage, TOutputImage >;
+  using FilterType = itk::tube::ConvertSpatialGraphToImageFilter<TInputImage, TOutputImage>;
 
   using InputImageType = typename FilterType::InputImageType;
   using InputImagePointer = typename FilterType::InputImagePointer;
@@ -58,54 +56,56 @@ public:
   using OutputImagePointer = typename FilterType::OutputImagePointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ConvertSpatialGraphToImage, ProcessObject );
+  itkTypeMacro(ConvertSpatialGraphToImage, ProcessObject);
 
   /** Get Adjacency Matrix Image */
-  tubeWrapGetMacro( AdjacencyMatrixImage, OutputImagePointer, Filter );
-  tubeWrapGetMacro( BranchnessImage, OutputImagePointer, Filter );
-  tubeWrapGetMacro( RadiusImage, OutputImagePointer, Filter );
-  tubeWrapGetMacro( CentralityImage, OutputImagePointer, Filter );
+  tubeWrapGetMacro(AdjacencyMatrixImage, OutputImagePointer, Filter);
+  tubeWrapGetMacro(BranchnessImage, OutputImagePointer, Filter);
+  tubeWrapGetMacro(RadiusImage, OutputImagePointer, Filter);
+  tubeWrapGetMacro(CentralityImage, OutputImagePointer, Filter);
 
   /* Set input tubes */
-  tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input, InputImageType, Filter);
 
   /* Runs tubes to image conversion */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
   /* Get the generated binary tubes image */
-  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
+  tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
 
-  void SetAdjacencyMatrix( vnl_matrix< double > );
+  void SetAdjacencyMatrix(vnl_matrix<double>);
 
-  void SetBranchnessVector( vnl_vector< double > );
+  void SetBranchnessVector(vnl_vector<double>);
 
-  void SetRadiusVector( vnl_vector< double > );
+  void SetRadiusVector(vnl_vector<double>);
 
-  void SetCentralityVector( vnl_vector< double > );
+  void SetCentralityVector(vnl_vector<double>);
 
 protected:
-  ConvertSpatialGraphToImage( void );
+  ConvertSpatialGraphToImage(void);
   ~ConvertSpatialGraphToImage() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkConvertSpatialGraphToImageFilter parameters **/
-  ConvertSpatialGraphToImage( const Self & );
-  void operator=( const Self & );
+  ConvertSpatialGraphToImage(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  typename FilterType::Pointer  m_Filter;
+  typename FilterType::Pointer m_Filter;
 };
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeConvertSpatialGraphToImage.hxx"
+#  include "tubeConvertSpatialGraphToImage.hxx"
 #endif
 
 #endif // End !defined( __tubeConvertSpatialGraphToImage_h )

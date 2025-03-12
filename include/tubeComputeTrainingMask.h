@@ -38,72 +38,71 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TImage, class TLabelMap=itk::Image< typename TImage::PixelType,
-  TImage::ImageDimension> >
+template <class TImage, class TLabelMap = itk::Image<typename TImage::PixelType, TImage::ImageDimension>>
 class ComputeTrainingMask : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ComputeTrainingMask;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeTrainingMask, ProcessObject );
+  itkTypeMacro(ComputeTrainingMask, ProcessObject);
 
 
   /** Typedef to images */
   using ImageType = TImage;
   using LabelMapType = TLabelMap;
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    ImageType::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, ImageType::ImageDimension);
 
-  using FilterType = typename itk::tube::ComputeTrainingMaskFilter< ImageType, LabelMapType >;
+  using FilterType = typename itk::tube::ComputeTrainingMaskFilter<ImageType, LabelMapType>;
 
-  tubeWrapSetMacro( Gap, double, Filter );
-  tubeWrapGetMacro( Gap, double, Filter );
-  tubeWrapSetMacro( ObjectWidth, double, Filter );
-  tubeWrapGetMacro( ObjectWidth, double, Filter );
-  tubeWrapSetMacro( NotObjectWidth, double, Filter );
-  tubeWrapGetMacro( NotObjectWidth, double, Filter );
-  tubeWrapGetConstObjectMacro( ObjectMask, LabelMapType, Filter );
-  tubeWrapGetConstObjectMacro( NotObjectMask, LabelMapType, Filter );
+  tubeWrapSetMacro(Gap, double, Filter);
+  tubeWrapGetMacro(Gap, double, Filter);
+  tubeWrapSetMacro(ObjectWidth, double, Filter);
+  tubeWrapGetMacro(ObjectWidth, double, Filter);
+  tubeWrapSetMacro(NotObjectWidth, double, Filter);
+  tubeWrapGetMacro(NotObjectWidth, double, Filter);
+  tubeWrapGetConstObjectMacro(ObjectMask, LabelMapType, Filter);
+  tubeWrapGetConstObjectMacro(NotObjectMask, LabelMapType, Filter);
 
-  tubeWrapSetObjectMacro( Input, ImageType, Filter );
+  tubeWrapSetObjectMacro(Input, ImageType, Filter);
 
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
-  tubeWrapGetObjectMacro( Output, LabelMapType, Filter );
+  tubeWrapGetObjectMacro(Output, LabelMapType, Filter);
 
 protected:
-  ComputeTrainingMask( void );
+  ComputeTrainingMask(void);
   ~ComputeTrainingMask() {}
 
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkComputeTrainingMask parameters **/
-  ComputeTrainingMask( const Self & );
+  ComputeTrainingMask(const Self &);
 
-  void operator=( const Self & );
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename FilterType::Pointer m_Filter;
-
 };
 
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeComputeTrainingMask.hxx"
+#  include "tubeComputeTrainingMask.hxx"
 #endif
 
 #endif // End !defined( __tubeComputeTrainingMask_h )

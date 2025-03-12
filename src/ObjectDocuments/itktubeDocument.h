@@ -41,94 +41,91 @@ namespace tube
 class Document : public DataObject
 {
 public:
-
   using Self = Document;
   using Superclass = DataObject;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkNewMacro( Self );
-  itkTypeMacro( Document, DataObject );
+  itkNewMacro(Self);
+  itkTypeMacro(Document, DataObject);
 
   /** Return the date modified. */
-  itkGetStringMacro( DateModified );
+  itkGetStringMacro(DateModified);
 
   /** Set the date modified. */
-  itkSetStringMacro( DateModified );
+  itkSetStringMacro(DateModified);
 
   /** Return the comment. */
-  itkGetStringMacro( Comment );
+  itkGetStringMacro(Comment);
 
   /** Set the comment. */
-  itkSetStringMacro( Comment );
+  itkSetStringMacro(Comment);
 
   /** Copy the information from the specified data object. */
-  virtual void CopyInformation( const DataObject * itkNotUsed( data ) ) override
-    {
-    }
+  virtual void
+  CopyInformation(const DataObject * itkNotUsed(data)) override
+  {}
 
   /** Update the output information. */
-  virtual void UpdateOutputInformation( void ) override
-    {
-    }
+  virtual void
+  UpdateOutputInformation(void) override
+  {}
 
   /** Verify that the requested region is within the largest possible region,
       but note that this object does not use region information. */
-  virtual bool VerifyRequestedRegion( void ) override
-    {
+  virtual bool
+  VerifyRequestedRegion(void) override
+  {
     return true;
-    }
+  }
 
   /** Determine whether the requested region is outside of the buffered region,
       but note that this object does not use region information. */
-  virtual bool RequestedRegionIsOutsideOfTheBufferedRegion( void ) override
-    {
+  virtual bool
+  RequestedRegionIsOutsideOfTheBufferedRegion(void) override
+  {
     return false;
-    }
+  }
 
   /** Set the requested region to match the requested region of the specified
       data object, but note that this object does not use region information. */
-  virtual void SetRequestedRegion( const DataObject * itkNotUsed( data ) ) override
-    {
-    }
+  virtual void
+  SetRequestedRegion(const DataObject * itkNotUsed(data)) override
+  {}
 
   /** Set the requested region to the largest possible region, but note that
       this object does not use region information. */
-  virtual void SetRequestedRegionToLargestPossibleRegion( void ) override
-    {
-    }
+  virtual void
+  SetRequestedRegionToLargestPossibleRegion(void) override
+  {}
 
 protected:
-
   /** Constructor. */
-  Document( void )
-    {
-    }
+  Document(void) {}
 
   /** Destructor. */
-  virtual ~Document( void )
-    {
-    }
+  virtual ~Document(void) {}
 
   /** Print information about the object. */
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const override
-    {
-    this->Superclass::PrintSelf( os, indent );
+  virtual void
+  PrintSelf(std::ostream & os, Indent indent) const override
+  {
+    this->Superclass::PrintSelf(os, indent);
 
     os << indent << "Comment:      " << m_Comment << std::endl;
     os << indent << "DateModified: " << m_DateModified << std::endl;
-    }
+  }
 
 private:
-
   // Copy constructor not implemented.
-  Document( const Self & self );
+  Document(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
-  std::string  m_Comment;
-  std::string  m_DateModified;
+  std::string m_Comment;
+  std::string m_DateModified;
 
 }; // End class Document
 

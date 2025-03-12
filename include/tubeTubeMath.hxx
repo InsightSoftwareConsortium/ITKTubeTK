@@ -28,20 +28,17 @@ limitations under the License.
 namespace tube
 {
 
-template< unsigned int DimensionT, class ImagePixelT >
-TubeMath< DimensionT, ImagePixelT >
-::TubeMath( void )
-{
-}
+template <unsigned int DimensionT, class ImagePixelT>
+TubeMath<DimensionT, ImagePixelT>::TubeMath(void)
+{}
 
-template< unsigned int DimensionT, class ImagePixelT >
+template <unsigned int DimensionT, class ImagePixelT>
 void
-TubeMath< DimensionT, ImagePixelT >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+TubeMath<DimensionT, ImagePixelT>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 }
 
-}
+} // namespace tube
 
 #endif

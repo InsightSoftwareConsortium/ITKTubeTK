@@ -54,20 +54,17 @@ namespace tube
  * \ingroup ITKImageFeature
  */
 
-template< class TPixel >
-class SheetnessMeasureImageFilter : public
-  ImageToImageFilter< Image< SymmetricSecondRankTensor< double, 3 >, 3 >,
-                      Image< TPixel, 3 > >
+template <class TPixel>
+class SheetnessMeasureImageFilter
+  : public ImageToImageFilter<Image<SymmetricSecondRankTensor<double, 3>, 3>, Image<TPixel, 3>>
 {
 public:
   /** Standard class type alias. */
   using Self = SheetnessMeasureImageFilter;
-  using Superclass = ImageToImageFilter<
-    Image< SymmetricSecondRankTensor< double, 3 >, 3 >,
-    Image< TPixel, 3 > >;
+  using Superclass = ImageToImageFilter<Image<SymmetricSecondRankTensor<double, 3>, 3>, Image<TPixel, 3>>;
 
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using InputImageType = typename Superclass::InputImageType;
   using OutputImageType = typename Superclass::OutputImageType;
@@ -75,59 +72,56 @@ public:
   using OutputPixelType = TPixel;
 
   /** Image dimension = 3. */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    InputImageType::ImageDimension );
-  itkStaticConstMacro( InputPixelDimension, unsigned int,
-    InputPixelType::Dimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, InputImageType::ImageDimension);
+  itkStaticConstMacro(InputPixelDimension, unsigned int, InputPixelType::Dimension);
 
-  using EigenValueArrayType = FixedArray< double,
-    itkGetStaticConstMacro( InputPixelDimension ) >;
-  using EigenValueImageType = Image< EigenValueArrayType,
-    itkGetStaticConstMacro( ImageDimension ) >;
-  using EigenAnalysisFilterType = SymmetricEigenAnalysisImageFilter<
-    InputImageType, EigenValueImageType >;
+  using EigenValueArrayType = FixedArray<double, itkGetStaticConstMacro(InputPixelDimension)>;
+  using EigenValueImageType = Image<EigenValueArrayType, itkGetStaticConstMacro(ImageDimension)>;
+  using EigenAnalysisFilterType = SymmetricEigenAnalysisImageFilter<InputImageType, EigenValueImageType>;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro( SheetnessMeasureImageFilter, ImageToImageFilter );
+  itkTypeMacro(SheetnessMeasureImageFilter, ImageToImageFilter);
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Set/Get macros for alpha */
-  itkSetMacro( Alpha, double );
-  itkGetConstMacro( Alpha, double );
+  itkSetMacro(Alpha, double);
+  itkGetConstMacro(Alpha, double);
 
   /** Set/Get macros for Beta. */
-  itkSetMacro( Beta, double );
-  itkGetConstMacro( Beta, double );
+  itkSetMacro(Beta, double);
+  itkGetConstMacro(Beta, double);
 
   /** Set/Get macros for Cfactor. */
-  itkSetMacro( Cfactor, double );
-  itkGetConstMacro( Cfactor, double );
+  itkSetMacro(Cfactor, double);
+  itkGetConstMacro(Cfactor, double);
 
   /** Set/Get DetectBrightSheets */
-  itkBooleanMacro( DetectBrightSheets );
-  itkSetMacro( DetectBrightSheets, bool );
+  itkBooleanMacro(DetectBrightSheets);
+  itkSetMacro(DetectBrightSheets, bool);
 
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro( DoubleConvertibleToOutputCheck,
-                   ( Concept::Convertible< double, OutputPixelType > ) );
+  itkConceptMacro(DoubleConvertibleToOutputCheck, (Concept::Convertible<double, OutputPixelType>));
   /** End concept checking */
 #endif
 protected:
-  SheetnessMeasureImageFilter( void );
-  ~SheetnessMeasureImageFilter( void ) {}
+  SheetnessMeasureImageFilter(void);
+  ~SheetnessMeasureImageFilter(void) {}
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Generate Data */
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
 private:
-  SheetnessMeasureImageFilter( const Self & ); //purposely not implemented
-  void operator=( const Self & ); //purposely not implemented
+  SheetnessMeasureImageFilter(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
   typename EigenAnalysisFilterType::Pointer m_SymmetricEigenValueFilter;
 
@@ -143,7 +137,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeSheetnessMeasureImageFilter.hxx"
+#  include "itktubeSheetnessMeasureImageFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeSheetnessMeasureImageFilter_h )

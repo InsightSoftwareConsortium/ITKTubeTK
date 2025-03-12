@@ -40,87 +40,88 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TOutputPixel, unsigned int Dimension >
-class ConvertTubesToDensityImage:
-  public itk::ProcessObject
+template <class TOutputPixel, unsigned int Dimension>
+class ConvertTubesToDensityImage : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ConvertTubesToDensityImage;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Typdefs */
-  using DensityImageType = itk::Image< TOutputPixel, Dimension >;
+  using DensityImageType = itk::Image<TOutputPixel, Dimension>;
   using DensityPixelType = typename DensityImageType::PixelType;
   using DensityImagePointer = typename DensityImageType::Pointer;
   using SizeType = typename DensityImageType::SizeType;
   using SpacingType = typename DensityImageType::SpacingType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ConvertTubesToDensityImage, Object );
+  itkTypeMacro(ConvertTubesToDensityImage, Object);
 
-  using RadiusImageType = itk::Image< TOutputPixel, Dimension >;
+  using RadiusImageType = itk::Image<TOutputPixel, Dimension>;
   using RadiusImagePointer = typename RadiusImageType::Pointer;
-  using TangentPixelType = itk::Vector< TOutputPixel, Dimension >;
-  using TangentImageType = itk::Image< TangentPixelType, Dimension >;
+  using TangentPixelType = itk::Vector<TOutputPixel, Dimension>;
+  using TangentImageType = itk::Image<TangentPixelType, Dimension>;
   using TangentImagePointer = typename TangentImageType::Pointer;
 
-  using TubeGroupType = itk::GroupSpatialObject< Dimension >;
+  using TubeGroupType = itk::GroupSpatialObject<Dimension>;
   using TubeGroupPointer = typename TubeGroupType::Pointer;
 
-  using FilterType = itk::tube::TubeSpatialObjectToDensityImageFilter<
-  DensityImageType, RadiusImageType, TangentImageType >;
+  using FilterType =
+    itk::tube::TubeSpatialObjectToDensityImageFilter<DensityImageType, RadiusImageType, TangentImageType>;
 
   /** Set maximum density intensity value. Its a constant */
-  tubeWrapSetMacro( MaxDensityIntensity, DensityPixelType, Filter );
-  tubeWrapGetMacro( MaxDensityIntensity, DensityPixelType, Filter );
+  tubeWrapSetMacro(MaxDensityIntensity, DensityPixelType, Filter);
+  tubeWrapGetMacro(MaxDensityIntensity, DensityPixelType, Filter);
 
   /** Set the size of the output image volumes  */
-  tubeWrapSetMacro( Size, SizeType, Filter );
-  tubeWrapGetMacro( Size, SizeType, Filter );
+  tubeWrapSetMacro(Size, SizeType, Filter);
+  tubeWrapGetMacro(Size, SizeType, Filter);
 
   /** Set whether to use squared or actual distances in calculations. */
-  tubeWrapSetMacro( UseSquaredDistance, bool, Filter );
-  tubeWrapGetMacro( UseSquaredDistance, bool, Filter );
+  tubeWrapSetMacro(UseSquaredDistance, bool, Filter);
+  tubeWrapGetMacro(UseSquaredDistance, bool, Filter);
 
   /** Set the input tubes */
-  tubeWrapSetMacro( InputTubeGroup, TubeGroupPointer, Filter );
-  tubeWrapGetMacro( InputTubeGroup, TubeGroupPointer, Filter );
+  tubeWrapSetMacro(InputTubeGroup, TubeGroupPointer, Filter);
+  tubeWrapGetMacro(InputTubeGroup, TubeGroupPointer, Filter);
 
   /* Runs tubes to density image conversion */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
   /* Get the generated density image */
-  tubeWrapGetMacro( DensityMapImage, DensityImagePointer, Filter );
+  tubeWrapGetMacro(DensityMapImage, DensityImagePointer, Filter);
 
   /* Get the generated radius image */
-  tubeWrapGetMacro( RadiusMapImage, RadiusImagePointer, Filter );
+  tubeWrapGetMacro(RadiusMapImage, RadiusImagePointer, Filter);
 
   /* Get the generated tangent map image */
-  tubeWrapGetMacro( TangentMapImage, TangentImagePointer, Filter );
+  tubeWrapGetMacro(TangentMapImage, TangentImagePointer, Filter);
 
   /** Sets the element spacing */
-  tubeWrapSetMacro( Spacing, SpacingType, Filter );
-  tubeWrapGetMacro( Spacing, SpacingType, Filter );
+  tubeWrapSetMacro(Spacing, SpacingType, Filter);
+  tubeWrapGetMacro(Spacing, SpacingType, Filter);
 
 protected:
-  ConvertTubesToDensityImage( void );
+  ConvertTubesToDensityImage(void);
   ~ConvertTubesToDensityImage() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkConvertTubesToImageFilter parameters **/
-  ConvertTubesToDensityImage( const Self & );
-  void operator=( const Self & );
+  ConvertTubesToDensityImage(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename FilterType::Pointer m_Filter;
 };
@@ -129,7 +130,7 @@ private:
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeConvertTubesToDensityImage.hxx"
+#  include "tubeConvertTubesToDensityImage.hxx"
 #endif
 
 #endif // End !defined( __tubeConvertTubesToDensityImage_h )

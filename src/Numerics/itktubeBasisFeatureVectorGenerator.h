@@ -39,27 +39,25 @@ namespace itk
 namespace tube
 {
 
-template< class TImage, class TLabelMap >
-class BasisFeatureVectorGenerator : public FeatureVectorGenerator< TImage >
+template <class TImage, class TLabelMap>
+class BasisFeatureVectorGenerator : public FeatureVectorGenerator<TImage>
 {
 public:
-
   using Self = BasisFeatureVectorGenerator;
-  using Superclass = FeatureVectorGenerator< TImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = FeatureVectorGenerator<TImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( BasisFeatureVectorGenerator, FeatureVectorGenerator );
+  itkTypeMacro(BasisFeatureVectorGenerator, FeatureVectorGenerator);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   //
   using ImageType = typename Superclass::ImageType;
 
   using LabelMapType = TLabelMap;
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
   using IndexType = typename Superclass::IndexType;
 
@@ -67,116 +65,148 @@ public:
   using FeatureVectorType = typename Superclass::FeatureVectorType;
   using FeatureImageType = typename Superclass::FeatureImageType;
 
-  using FeatureVectorGeneratorType = FeatureVectorGenerator< TImage >;
+  using FeatureVectorGeneratorType = FeatureVectorGenerator<TImage>;
 
   using ObjectIdType = typename TLabelMap::PixelType;
-  using ObjectIdListType = std::vector< ObjectIdType >;
+  using ObjectIdListType = std::vector<ObjectIdType>;
 
   using ValueType = typename Superclass::ValueType;
   using ValueListType = typename Superclass::ValueListType;
 
-  using VectorType = vnl_vector< ValueType >;
-  using VectorListType = std::vector< VectorType >;
+  using VectorType = vnl_vector<ValueType>;
+  using VectorListType = std::vector<VectorType>;
 
-  using MatrixType = vnl_matrix< ValueType >;
-  using MatrixListType = std::vector< MatrixType >;
+  using MatrixType = vnl_matrix<ValueType>;
+  using MatrixListType = std::vector<MatrixType>;
 
-  void         SetInputFeatureVectorGenerator( FeatureVectorGeneratorType
-                 * fGen );
-  typename FeatureVectorGenerator< TImage >::Pointer
-                 GetInputFeatureVectorGenerator( void );
+  void
+  SetInputFeatureVectorGenerator(FeatureVectorGeneratorType * fGen);
+  typename FeatureVectorGenerator<TImage>::Pointer
+  GetInputFeatureVectorGenerator(void);
 
-  itkSetObjectMacro( LabelMap, LabelMapType );
-  itkGetModifiableObjectMacro( LabelMap, LabelMapType );
+  itkSetObjectMacro(LabelMap, LabelMapType);
+  itkGetModifiableObjectMacro(LabelMap, LabelMapType);
 
-  void         SetObjectId( ObjectIdType objectId );
-  void         AddObjectId( ObjectIdType objectId );
-  ObjectIdType GetObjectId( unsigned int num = 0 ) const;
-  unsigned int GetNumberOfObjectIds( void ) const;
+  void
+  SetObjectId(ObjectIdType objectId);
+  void
+  AddObjectId(ObjectIdType objectId);
+  ObjectIdType
+  GetObjectId(unsigned int num = 0) const;
+  unsigned int
+  GetNumberOfObjectIds(void) const;
 
-  ValueType    GetObjectMean( ObjectIdType objectId ) const;
-  void         SetObjectMean( ObjectIdType objectId, ValueType val );
-  MatrixType   GetObjectCovariance( ObjectIdType objectId ) const;
-  void         SetObjectCovariance( ObjectIdType objectId, MatrixType val );
+  ValueType
+  GetObjectMean(ObjectIdType objectId) const;
+  void
+  SetObjectMean(ObjectIdType objectId, ValueType val);
+  MatrixType
+  GetObjectCovariance(ObjectIdType objectId) const;
+  void
+  SetObjectCovariance(ObjectIdType objectId, MatrixType val);
 
-  ValueType    GetGlobalMean( void ) const;
-  void         SetGlobalMean( ValueType val );
-  MatrixType   GetGlobalCovariance( void ) const;
-  void         SetGlobalCovariance( MatrixType val );
+  ValueType
+  GetGlobalMean(void) const;
+  void
+  SetGlobalMean(ValueType val);
+  MatrixType
+  GetGlobalCovariance(void) const;
+  void
+  SetGlobalCovariance(MatrixType val);
 
-  void         SetNumberOfPCABasisToUseAsFeatures(
-                 unsigned int numBasisUsed );
-  unsigned int GetNumberOfPCABasisToUseAsFeatures( void ) const;
-  void         SetNumberOfLDABasisToUseAsFeatures(
-                 unsigned int numBasisUsed );
-  unsigned int GetNumberOfLDABasisToUseAsFeatures( void ) const;
+  void
+  SetNumberOfPCABasisToUseAsFeatures(unsigned int numBasisUsed);
+  unsigned int
+  GetNumberOfPCABasisToUseAsFeatures(void) const;
+  void
+  SetNumberOfLDABasisToUseAsFeatures(unsigned int numBasisUsed);
+  unsigned int
+  GetNumberOfLDABasisToUseAsFeatures(void) const;
 
-  double       GetBasisValue( unsigned int basisNum ) const;
-  VectorType   GetBasisVector( unsigned int basisNum ) const;
-  MatrixType   GetBasisMatrix( void ) const;
-  VectorType   GetBasisValues( void ) const;
+  double
+  GetBasisValue(unsigned int basisNum) const;
+  VectorType
+  GetBasisVector(unsigned int basisNum) const;
+  MatrixType
+  GetBasisMatrix(void) const;
+  VectorType
+  GetBasisValues(void) const;
 
-  void         SetBasisValue( unsigned int basisNum, double value );
-  void         SetBasisVector( unsigned int basisNum,
-                 const VectorType & vec );
-  void         SetBasisMatrix( const MatrixType & mat );
-  void         SetBasisValues( const VectorType & values );
+  void
+  SetBasisValue(unsigned int basisNum, double value);
+  void
+  SetBasisVector(unsigned int basisNum, const VectorType & vec);
+  void
+  SetBasisMatrix(const MatrixType & mat);
+  void
+  SetBasisValues(const VectorType & values);
 
-  virtual typename FeatureImageType::Pointer GetFeatureImage(
-    unsigned int fNum ) const override;
+  virtual typename FeatureImageType::Pointer
+  GetFeatureImage(unsigned int fNum) const override;
 
-  void   SetInputWhitenMeans( const ValueListType & means );
-  const  ValueListType & GetInputWhitenMeans( void ) const;
-  void   SetInputWhitenStdDevs( const ValueListType & stdDevs );
-  const  ValueListType & GetInputWhitenStdDevs( void ) const;
+  void
+  SetInputWhitenMeans(const ValueListType & means);
+  const ValueListType &
+  GetInputWhitenMeans(void) const;
+  void
+  SetInputWhitenStdDevs(const ValueListType & stdDevs);
+  const ValueListType &
+  GetInputWhitenStdDevs(void) const;
 
-  void   SetOutputWhitenMeans( const ValueListType & means );
-  const  ValueListType & GetOutputWhitenMeans( void ) const;
-  void   SetOutputWhitenStdDevs( const ValueListType & stdDevs );
-  const  ValueListType & GetOutputWhitenStdDevs( void ) const;
+  void
+  SetOutputWhitenMeans(const ValueListType & means);
+  const ValueListType &
+  GetOutputWhitenMeans(void) const;
+  void
+  SetOutputWhitenStdDevs(const ValueListType & stdDevs);
+  const ValueListType &
+  GetOutputWhitenStdDevs(void) const;
 
-  virtual void Update( void ) override;
+  virtual void
+  Update(void) override;
 
-  virtual unsigned int      GetNumberOfFeatures( void ) const override;
+  virtual unsigned int
+  GetNumberOfFeatures(void) const override;
 
-  virtual FeatureVectorType GetFeatureVector( const IndexType & indx ) const
-    override;
+  virtual FeatureVectorType
+  GetFeatureVector(const IndexType & indx) const override;
 
-  virtual FeatureValueType  GetFeatureVectorValue( const IndexType & indx,
-    unsigned int fNum ) const override;
+  virtual FeatureValueType
+  GetFeatureVectorValue(const IndexType & indx, unsigned int fNum) const override;
 
 protected:
+  BasisFeatureVectorGenerator(void);
+  virtual ~BasisFeatureVectorGenerator(void);
 
-  BasisFeatureVectorGenerator( void );
-  virtual ~BasisFeatureVectorGenerator( void );
+  virtual void
+  UpdateWhitenStatistics(void) override;
 
-  virtual void UpdateWhitenStatistics( void ) override;
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Purposely not implemented
-  BasisFeatureVectorGenerator( const Self & );
-  void operator = ( const Self & );      // Purposely not implemented
+  BasisFeatureVectorGenerator(const Self &);
+  void
+  operator=(const Self &); // Purposely not implemented
 
   //  Data
   typename FeatureVectorGeneratorType::Pointer m_InputFeatureVectorGenerator;
 
-  typename LabelMapType::Pointer  m_LabelMap;
+  typename LabelMapType::Pointer m_LabelMap;
 
-  ObjectIdListType                m_ObjectIdList;
-  VectorListType                  m_ObjectMeanList;
-  MatrixListType                  m_ObjectCovarianceList;
+  ObjectIdListType m_ObjectIdList;
+  VectorListType   m_ObjectMeanList;
+  MatrixListType   m_ObjectCovarianceList;
 
-  VectorType                      m_GlobalMean;
-  MatrixType                      m_GlobalCovariance;
+  VectorType m_GlobalMean;
+  MatrixType m_GlobalCovariance;
 
-  unsigned int                    m_NumberOfPCABasisToUseAsFeatures;
-  unsigned int                    m_NumberOfLDABasisToUseAsFeatures;
+  unsigned int m_NumberOfPCABasisToUseAsFeatures;
+  unsigned int m_NumberOfLDABasisToUseAsFeatures;
 
-  MatrixType                      m_BasisMatrix;
-  VectorType                      m_BasisValues;
+  MatrixType m_BasisMatrix;
+  VectorType m_BasisValues;
 }; // End class BasisFeatureVectorGenerator
 
 } // End namespace tube
@@ -184,7 +214,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeBasisFeatureVectorGenerator.hxx"
+#  include "itktubeBasisFeatureVectorGenerator.hxx"
 #endif
 
 #endif // End !defined( __itktubeBasisFeatureVectorGenerator_h )

@@ -32,30 +32,27 @@ namespace itk
 {
 
 template <class TImage>
-class BSplineImageToImageRegistrationMethod
-  : public OptimizedImageToImageRegistrationMethod<TImage>
+class BSplineImageToImageRegistrationMethod : public OptimizedImageToImageRegistrationMethod<TImage>
 {
 
 public:
-
   using Self = BSplineImageToImageRegistrationMethod;
   using Superclass = OptimizedImageToImageRegistrationMethod<TImage>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( BSplineImageToImageRegistrationMethod,
-                OptimizedImageToImageRegistrationMethod );
+  itkTypeMacro(BSplineImageToImageRegistrationMethod, OptimizedImageToImageRegistrationMethod);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   //
   // Typedefs from Superclass
   //
   using ImageType = TImage;
-  itkStaticConstMacro( ImageDimension, unsigned int, TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
   // Overrides the superclass' TransformType typedef
-  using BSplineTransformType = BSplineTransform<double, itkGetStaticConstMacro( ImageDimension ), 3>;
+  using BSplineTransformType = BSplineTransform<double, itkGetStaticConstMacro(ImageDimension), 3>;
 
   using BSplineTransformPointer = typename BSplineTransformType::Pointer;
 
@@ -67,7 +64,8 @@ public:
   // Methods from Superclass
   //
 
-  virtual void GenerateData( void ) override;
+  virtual void
+  GenerateData(void) override;
 
   //
   // Custom Methods
@@ -78,58 +76,62 @@ public:
    * once in the class hierarchy.  It is provided so that member
    * functions that exist only in specific transforms ( e.g., SetIdentity )
    * can be called without the caller having to do the casting. */
-  virtual TransformType * GetTypedTransform( void );
+  virtual TransformType *
+  GetTypedTransform(void);
 
-  virtual const TransformType * GetTypedTransform( void ) const;
+  virtual const TransformType *
+  GetTypedTransform(void) const;
 
-  itkSetMacro( ExpectedDeformationMagnitude, double );
-  itkGetConstMacro( ExpectedDeformationMagnitude, double );
+  itkSetMacro(ExpectedDeformationMagnitude, double);
+  itkGetConstMacro(ExpectedDeformationMagnitude, double);
 
-  itkSetClampMacro( NumberOfControlPoints, unsigned int, 3, 2000 );
-  itkGetConstMacro( NumberOfControlPoints, unsigned int );
+  itkSetClampMacro(NumberOfControlPoints, unsigned int, 3, 2000);
+  itkGetConstMacro(NumberOfControlPoints, unsigned int);
 
-  itkSetClampMacro( NumberOfLevels, unsigned int, 1, 5 );
-  itkGetConstMacro( NumberOfLevels, unsigned int );
+  itkSetClampMacro(NumberOfLevels, unsigned int, 1, 5);
+  itkGetConstMacro(NumberOfLevels, unsigned int);
 
-  BSplineTransformPointer GetBSplineTransform( void ) const;
+  BSplineTransformPointer
+  GetBSplineTransform(void) const;
 
-  void ComputeGridRegion( int numberOfControlPoints,
-    typename TransformType::MeshSizeType & regionSize,
-    typename TransformType::PhysicalDimensionsType & regionPhysicalDimensions,
-    typename TransformType::OriginType & regionOrigin,
-    typename TransformType::DirectionType & regionDirection );
+  void
+  ComputeGridRegion(int                                              numberOfControlPoints,
+                    typename TransformType::MeshSizeType &           regionSize,
+                    typename TransformType::PhysicalDimensionsType & regionPhysicalDimensions,
+                    typename TransformType::OriginType &             regionOrigin,
+                    typename TransformType::DirectionType &          regionDirection);
 
-  void ResampleControlGrid( int newNumberOfControlPoints,
-    ParametersType & newParameters );
+  void
+  ResampleControlGrid(int newNumberOfControlPoints, ParametersType & newParameters);
 
-  itkSetMacro( GradientOptimizeOnly, bool );
-  itkGetMacro( GradientOptimizeOnly, bool );
+  itkSetMacro(GradientOptimizeOnly, bool);
+  itkGetMacro(GradientOptimizeOnly, bool);
 
 protected:
-
-  BSplineImageToImageRegistrationMethod( void );
-  virtual ~BSplineImageToImageRegistrationMethod( void );
+  BSplineImageToImageRegistrationMethod(void);
+  virtual ~BSplineImageToImageRegistrationMethod(void);
 
   using InterpolatorType = InterpolateImageFunction<TImage, double>;
   using MetricType = ImageToImageMetric<TImage, TImage>;
 
-  virtual void Optimize( MetricType * metric, InterpolatorType * interpolator )
-    override;
+  virtual void
+  Optimize(MetricType * metric, InterpolatorType * interpolator) override;
 
-  virtual void GradientOptimize( MetricType * metric,
-                                 InterpolatorType * interpolator );
+  virtual void
+  GradientOptimize(MetricType * metric, InterpolatorType * interpolator);
 
-  virtual void MultiResolutionOptimize( MetricType * metric,
-                                        InterpolatorType * interpolator );
+  virtual void
+  MultiResolutionOptimize(MetricType * metric, InterpolatorType * interpolator);
 
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
+  virtual void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Purposely not implemented
-  BSplineImageToImageRegistrationMethod( const Self & );
+  BSplineImageToImageRegistrationMethod(const Self &);
   // Purposely not implemented
-  void operator =( const Self & );
+  void
+  operator=(const Self &);
 
   double m_ExpectedDeformationMagnitude;
 
@@ -138,13 +140,12 @@ private:
   unsigned int m_NumberOfLevels;
 
   bool m_GradientOptimizeOnly;
-
 };
 
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkBSplineImageToImageRegistrationMethod.hxx"
+#  include "itkBSplineImageToImageRegistrationMethod.hxx"
 #endif
 
 #endif // __ImageToImageRegistrationMethod_h

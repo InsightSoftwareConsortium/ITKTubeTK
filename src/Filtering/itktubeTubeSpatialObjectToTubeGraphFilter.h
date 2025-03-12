@@ -40,77 +40,77 @@ namespace tube
 /** \class TubeSpatialObjectToTubeGraphFilter
  */
 
-template< class TPixel, unsigned int Dimension >
-class TubeSpatialObjectToTubeGraphFilter
-  : public Object
+template <class TPixel, unsigned int Dimension>
+class TubeSpatialObjectToTubeGraphFilter : public Object
 {
 public:
-
   /** Standard class type alias. */
   using Self = TubeSpatialObjectToTubeGraphFilter;
   using SuperClass = Object;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Tube class type alias */
-  using InputImageType = Image< TPixel, Dimension >;
+  using InputImageType = Image<TPixel, Dimension>;
   using InputImagePointer = typename InputImageType::Pointer;
-  using TubeGroupType = GroupSpatialObject< Dimension >;
+  using TubeGroupType = GroupSpatialObject<Dimension>;
   using TubeGroupPointer = typename TubeGroupType::Pointer;
-  using TubeSpatialObjectType = TubeSpatialObject< Dimension >;
+  using TubeSpatialObjectType = TubeSpatialObject<Dimension>;
   using TubePointType = typename TubeSpatialObjectType::TubePointType;
   using TubeTransformType = typename TubeSpatialObjectType::TransformType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( TubeSpatialObjectToTubeGraphFilter,
-                Object );
+  itkTypeMacro(TubeSpatialObjectToTubeGraphFilter, Object);
 
   /** Set Number of Centroids */
-  itkSetMacro( NumberOfCenteroids, int );
-  itkGetMacro( NumberOfCenteroids, int );
+  itkSetMacro(NumberOfCenteroids, int);
+  itkGetMacro(NumberOfCenteroids, int);
 
   /** Set Central Voronoi Tesselation Image*/
-  itkSetObjectMacro( CVTImage, InputImageType );
-  itkGetModifiableObjectMacro( CVTImage, InputImageType );
+  itkSetObjectMacro(CVTImage, InputImageType);
+  itkGetModifiableObjectMacro(CVTImage, InputImageType);
 
   /** Sets the input tubes */
-  itkSetMacro( InputTubeGroup, TubeGroupPointer );
-  itkGetMacro( InputTubeGroup, TubeGroupPointer );
+  itkSetMacro(InputTubeGroup, TubeGroupPointer);
+  itkGetMacro(InputTubeGroup, TubeGroupPointer);
 
   /** Get Adjacency Matrix */
-  vnl_matrix< double > GetAdjacencyMatrix( void );
+  vnl_matrix<double>
+  GetAdjacencyMatrix(void);
 
   /** Get Root Nodes Vector */
-  vnl_vector< int > GetRootNodes( void );
+  vnl_vector<int>
+  GetRootNodes(void);
 
   /** Get Branch Nodes Vector */
-  vnl_vector< double > GetBranchNodes( void );
+  vnl_vector<double>
+  GetBranchNodes(void);
 
-  void Update( void );
+  void
+  Update(void);
 
 protected:
+  TubeSpatialObjectToTubeGraphFilter(void);
+  ~TubeSpatialObjectToTubeGraphFilter(void);
 
-  TubeSpatialObjectToTubeGraphFilter( void );
-  ~TubeSpatialObjectToTubeGraphFilter( void );
-
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
-  int                    m_NumberOfCenteroids;
-  InputImagePointer      m_CVTImage;
-  TubeGroupPointer       m_InputTubeGroup;
-  vnl_matrix< double >   m_AdjacencyMatrix;
-  vnl_vector< int >      m_RootNodes;
-  vnl_vector< double >   m_BranchNodes;
+  int                m_NumberOfCenteroids;
+  InputImagePointer  m_CVTImage;
+  TubeGroupPointer   m_InputTubeGroup;
+  vnl_matrix<double> m_AdjacencyMatrix;
+  vnl_vector<int>    m_RootNodes;
+  vnl_vector<double> m_BranchNodes;
 
 }; // End class TubeSpatialObjectToTubeGraphFilter
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeTubeSpatialObjectToTubeGraphFilter.hxx"
+#  include "itktubeTubeSpatialObjectToTubeGraphFilter.hxx"
 #endif
 
 } // End namespace tube

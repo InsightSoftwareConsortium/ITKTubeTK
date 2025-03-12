@@ -42,71 +42,74 @@ namespace tube
  * \ingroup TubeTK
  */
 
-template< class TPixel, unsigned int VDimension >
-class ComputeImageStatistics
-  : public itk::ProcessObject
+template <class TPixel, unsigned int VDimension>
+class ComputeImageStatistics : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ComputeImageStatistics;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  using FilterType = itk::tube::ComputeImageStatistics< TPixel, VDimension >;
+  using FilterType = itk::tube::ComputeImageStatistics<TPixel, VDimension>;
   using MaskType = typename FilterType::MaskType;
   using VolumeType = typename FilterType::VolumeType;
 
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeImageStatistics, ProcessObject );
+  itkTypeMacro(ComputeImageStatistics, ProcessObject);
 
   /** Get statistics components */
-  tubeWrapGetMacro( CompMean, std::vector< double >, Filter );
-  tubeWrapGetMacro( CompMin, std::vector< double >, Filter );
-  tubeWrapGetMacro( CompMax, std::vector< double >, Filter );
-  tubeWrapGetMacro( CompStdDev, std::vector< double >, Filter );
-  tubeWrapGetMacro( CompCount, std::vector< double >, Filter );
-  tubeWrapGetMacro( CompValue, std::vector< TPixel >, Filter );
-  tubeWrapGetMacro( NumberOfComponents, unsigned int, Filter );
+  tubeWrapGetMacro(CompMean, std::vector<double>, Filter);
+  tubeWrapGetMacro(CompMin, std::vector<double>, Filter);
+  tubeWrapGetMacro(CompMax, std::vector<double>, Filter);
+  tubeWrapGetMacro(CompStdDev, std::vector<double>, Filter);
+  tubeWrapGetMacro(CompCount, std::vector<double>, Filter);
+  tubeWrapGetMacro(CompValue, std::vector<TPixel>, Filter);
+  tubeWrapGetMacro(NumberOfComponents, unsigned int, Filter);
 
   /** Set/Get quantiles */
-  tubeWrapSetMacro( Quantiles, std::vector<float>, Filter );
-  tubeWrapGetMacro( Quantiles, std::vector<float>, Filter );
+  tubeWrapSetMacro(Quantiles, std::vector<float>, Filter);
+  tubeWrapGetMacro(Quantiles, std::vector<float>, Filter);
 
   /** Set/Get input mask */
-  tubeWrapSetObjectMacro( InputMask, MaskType, Filter );
-  tubeWrapGetObjectMacro( InputMask, MaskType, Filter );
+  tubeWrapSetObjectMacro(InputMask, MaskType, Filter);
+  tubeWrapGetObjectMacro(InputMask, MaskType, Filter);
 
   /** Compute image statistics */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
   /** Write statistics to a CSV formatted file */
-  void WriteCSVStatistics( std::string csvStatisticsFile ) const;
+  void
+  WriteCSVStatistics(std::string csvStatisticsFile) const;
 
   /** Set/Get input image */
-  tubeWrapSetConstObjectMacro( Input, VolumeType, Filter );
-  tubeWrapGetConstObjectMacro( Input, VolumeType, Filter );
+  tubeWrapSetConstObjectMacro(Input, VolumeType, Filter);
+  tubeWrapGetConstObjectMacro(Input, VolumeType, Filter);
 
   /** Get output image */
-  tubeWrapGetObjectMacro( Output, VolumeType, Filter );
+  tubeWrapGetObjectMacro(Output, VolumeType, Filter);
 
 protected:
-  ComputeImageStatistics( void );
+  ComputeImageStatistics(void);
   ~ComputeImageStatistics() {}
 
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const;
 
 private:
-  ComputeImageStatistics( const Self & );
+  ComputeImageStatistics(const Self &);
 
-  void operator=( const Self & );
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) {};
 
   typename FilterType::Pointer m_Filter;
 
@@ -116,7 +119,7 @@ private:
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeComputeImageStatistics.hxx"
+#  include "tubeComputeImageStatistics.hxx"
 #endif
 
 #endif // End !defined( __tubeComputeImageStatistics_h )

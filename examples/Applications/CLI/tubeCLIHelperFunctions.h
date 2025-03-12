@@ -35,124 +35,122 @@ namespace tube
 {
 
 // Get the component type and dimension of the image.
-void GetImageInformation( const std::string & fileName,
-                          itk::ImageIOBase::IOComponentEnum & componentType,
-                          unsigned int & dimension )
+void
+GetImageInformation(const std::string &                 fileName,
+                    itk::ImageIOBase::IOComponentEnum & componentType,
+                    unsigned int &                      dimension)
 {
   using ImageIOType = itk::ImageIOBase;
   using ImageIOFactoryType = itk::ImageIOFactory;
 
-  ImageIOType::Pointer imageIO =
-    ImageIOFactoryType::CreateImageIO( fileName.c_str(),
-      itk::IOFileModeEnum::ReadMode );
+  ImageIOType::Pointer imageIO = ImageIOFactoryType::CreateImageIO(fileName.c_str(), itk::IOFileModeEnum::ReadMode);
 
-  if( imageIO )
-    {
+  if (imageIO)
+  {
     // Read the metadata from the image file.
-    imageIO->SetFileName( fileName.c_str() );
+    imageIO->SetFileName(fileName.c_str());
     imageIO->ReadImageInformation();
 
     componentType = imageIO->GetComponentType();
     dimension = imageIO->GetNumberOfDimensions();
-    }
+  }
   else
-    {
-    tubeErrorMacro( << "No ImageIO was found." );
-    }
+  {
+    tubeErrorMacro(<< "No ImageIO was found.");
+  }
 }
 
-int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
-                          char * argv[] )
+int
+ParseArgsAndCallDoIt(const std::string & inputImage, int argc, char * argv[])
 {
-  itk::ImageIOBase::IOComponentEnum componentType =
-    itk::ImageIOBase::IOComponentEnum::UNKNOWNCOMPONENTTYPE;
-  unsigned int dimension = 0;
+  itk::ImageIOBase::IOComponentEnum componentType = itk::ImageIOBase::IOComponentEnum::UNKNOWNCOMPONENTTYPE;
+  unsigned int                      dimension = 0;
   try
-    {
-    GetImageInformation( inputImage, componentType, dimension );
+  {
+    GetImageInformation(inputImage, componentType, dimension);
 
 #ifndef PARSE_ARGS_FLOAT_ONLY
 
-#ifndef PARSE_ARGS_3D_ONLY
-    if( dimension == 2 )
+#  ifndef PARSE_ARGS_3D_ONLY
+    if (dimension == 2)
+    {
+      switch (componentType)
       {
-      switch( componentType )
-        {
         case itk::ImageIOBase::IOComponentEnum::UCHAR:
-          return DoIt< unsigned char, 2 >( argc, argv );
+          return DoIt<unsigned char, 2>(argc, argv);
         case itk::ImageIOBase::IOComponentEnum::USHORT:
-          return DoIt< unsigned short, 2 >( argc, argv );
+          return DoIt<unsigned short, 2>(argc, argv);
         case itk::ImageIOBase::IOComponentEnum::SHORT:
-          return DoIt< short, 2 >( argc, argv );
-#ifndef PARSE_ARGS_INT_ONLY
+          return DoIt<short, 2>(argc, argv);
+#    ifndef PARSE_ARGS_INT_ONLY
         case itk::ImageIOBase::IOComponentEnum::FLOAT:
-          return DoIt< float, 2 >( argc, argv );
-#endif
+          return DoIt<float, 2>(argc, argv);
+#    endif
         case itk::ImageIOBase::IOComponentEnum::INT:
-          return DoIt< int, 2 >( argc, argv );
+          return DoIt<int, 2>(argc, argv);
         case itk::ImageIOBase::IOComponentEnum::UNKNOWNCOMPONENTTYPE:
         default:
-          tubeErrorMacro( << "Unknown component type." );
+          tubeErrorMacro(<< "Unknown component type.");
           return EXIT_FAILURE;
-        }
       }
-#endif
+    }
+#  endif
 
-    if( dimension == 3 )
+    if (dimension == 3)
+    {
+      switch (componentType)
       {
-      switch( componentType )
-        {
         case itk::ImageIOBase::IOComponentEnum::UCHAR:
-          return DoIt < unsigned char, 3 >( argc, argv );
+          return DoIt<unsigned char, 3>(argc, argv);
         case itk::ImageIOBase::IOComponentEnum::USHORT:
-          return DoIt < unsigned short, 3 >( argc, argv );
+          return DoIt<unsigned short, 3>(argc, argv);
         case itk::ImageIOBase::IOComponentEnum::SHORT:
-          return DoIt< short, 3 >( argc, argv );
-#ifndef PARSE_ARGS_INT_ONLY
+          return DoIt<short, 3>(argc, argv);
+#  ifndef PARSE_ARGS_INT_ONLY
         case itk::ImageIOBase::IOComponentEnum::FLOAT:
-          return DoIt < float, 3 >( argc, argv );
-#endif
+          return DoIt<float, 3>(argc, argv);
+#  endif
         case itk::ImageIOBase::IOComponentEnum::INT:
-          return DoIt< int, 3 >( argc, argv );
+          return DoIt<int, 3>(argc, argv);
         case itk::ImageIOBase::IOComponentEnum::UNKNOWNCOMPONENTTYPE:
         default:
-          tubeErrorMacro( << "Unknown component type." );
+          tubeErrorMacro(<< "Unknown component type.");
           return EXIT_FAILURE;
-        }
       }
+    }
 
 #else
-#ifndef PARSE_ARGS_3D_ONLY
-    if( dimension == 2 )
-      {
-      return DoIt< float, 2 >( argc, argv );
-      }
-#endif
-    if( dimension == 3 )
-      {
-      return DoIt< float, 3 >( argc, argv );
-      }
+#  ifndef PARSE_ARGS_3D_ONLY
+    if (dimension == 2)
+    {
+      return DoIt<float, 2>(argc, argv);
+    }
+#  endif
+    if (dimension == 3)
+    {
+      return DoIt<float, 3>(argc, argv);
+    }
 
 #endif // End !defined( PARSE_ARGS_FLOAT_ONLY )
 
-    tubeErrorMacro( << "Dimension size of " << dimension << " not supported" );
+    tubeErrorMacro(<< "Dimension size of " << dimension << " not supported");
     return EXIT_FAILURE;
-    }
-  catch( itk::ExceptionObject & ex )
-    {
-    tubeErrorMacro( << "ITK exception caught. " << ex );
+  }
+  catch (itk::ExceptionObject & ex)
+  {
+    tubeErrorMacro(<< "ITK exception caught. " << ex);
     return EXIT_FAILURE;
-    }
-  catch( std::exception & e )
-    {
-    tubeErrorMacro( << "Exception caught." << e.what() );
+  }
+  catch (std::exception & e)
+  {
+    tubeErrorMacro(<< "Exception caught." << e.what());
     return EXIT_FAILURE;
-    }
-  catch( ... )
-    {
-    tubeErrorMacro( << "Unhandled exception caught." );
+  }
+  catch (...)
+  {
+    tubeErrorMacro(<< "Unhandled exception caught.");
     return EXIT_FAILURE;
-    }
+  }
   return EXIT_SUCCESS;
 }
 

@@ -38,75 +38,75 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TPixel, unsigned int Dimension >
-class ComputeTubeMeasures:
-  public itk::ProcessObject
+template <class TPixel, unsigned int Dimension>
+class ComputeTubeMeasures : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ComputeTubeMeasures;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  using FilterType = itk::tube::ComputeTubeMeasuresFilter< TPixel, Dimension >;
+  using FilterType = itk::tube::ComputeTubeMeasuresFilter<TPixel, Dimension>;
 
   using InputImageType = typename FilterType::InputImageType;
   using OutputImageType = typename FilterType::OutputImageType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeTubeMeasures, ProcessObject );
+  itkTypeMacro(ComputeTubeMeasures, ProcessObject);
 
   /** Set/Get scale */
-  tubeWrapSetMacro( Scale, int, Filter );
-  tubeWrapGetMacro( Scale, int, Filter );
+  tubeWrapSetMacro(Scale, int, Filter);
+  tubeWrapGetMacro(Scale, int, Filter);
 
   /* Set/Get input image */
-  tubeWrapSetConstObjectMacro( InputImage, InputImageType, Filter );
-  tubeWrapGetConstObjectMacro( InputImage, InputImageType, Filter );
+  tubeWrapSetConstObjectMacro(InputImage, InputImageType, Filter);
+  tubeWrapGetConstObjectMacro(InputImage, InputImageType, Filter);
 
   /* Runs the application */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
   /** Get output Ridge Image */
-  tubeWrapGetObjectMacro( Ridgeness, OutputImageType, Filter );
+  tubeWrapGetObjectMacro(Ridgeness, OutputImageType, Filter);
 
   /** Get output Round Image */
-  tubeWrapGetObjectMacro( Roundness, OutputImageType, Filter );
+  tubeWrapGetObjectMacro(Roundness, OutputImageType, Filter);
 
   /** Get output Curvature Image */
-  tubeWrapGetObjectMacro( Curvature, OutputImageType, Filter );
+  tubeWrapGetObjectMacro(Curvature, OutputImageType, Filter);
 
   /** Get output Levelness Image */
-  tubeWrapGetObjectMacro( Levelness, OutputImageType, Filter );
+  tubeWrapGetObjectMacro(Levelness, OutputImageType, Filter);
 
 protected:
-  ComputeTubeMeasures( void );
+  ComputeTubeMeasures(void);
   ~ComputeTubeMeasures() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itktubeComputeTubeMeasuresFilter parameters **/
-  ComputeTubeMeasures( const Self & );
+  ComputeTubeMeasures(const Self &);
 
-  void operator=( const Self & );
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename FilterType::Pointer m_Filter;
-
 };
 
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeComputeTubeMeasures.hxx"
+#  include "tubeComputeTubeMeasures.hxx"
 #endif
 
 #endif // End !defined( __tubeComputeTubeMeasures_h )

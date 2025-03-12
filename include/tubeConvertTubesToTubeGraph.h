@@ -40,66 +40,69 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TPixel, unsigned int Dimension >
-class ConvertTubesToTubeGraph:
-  public itk::ProcessObject
+template <class TPixel, unsigned int Dimension>
+class ConvertTubesToTubeGraph : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ConvertTubesToTubeGraph;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  using FilterType = itk::tube::TubeSpatialObjectToTubeGraphFilter
-    < TPixel, Dimension >;
+  using FilterType = itk::tube::TubeSpatialObjectToTubeGraphFilter<TPixel, Dimension>;
 
   using InputImageType = typename FilterType::InputImageType;
   using TubeGroupType = typename FilterType::TubeGroupType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ConvertTubesToTubeGraph, ProcessObject );
+  itkTypeMacro(ConvertTubesToTubeGraph, ProcessObject);
 
   /** Set Number of Centroids */
-  tubeWrapSetMacro( NumberOfCenteroids, int, Filter );
-  tubeWrapGetMacro( NumberOfCenteroids, int, Filter );
+  tubeWrapSetMacro(NumberOfCenteroids, int, Filter);
+  tubeWrapGetMacro(NumberOfCenteroids, int, Filter);
 
   /* Set Central Voronoi Tesselation image */
-  tubeWrapSetObjectMacro( CVTImage, InputImageType, Filter );
-  tubeWrapGetObjectMacro( CVTImage, InputImageType, Filter );
+  tubeWrapSetObjectMacro(CVTImage, InputImageType, Filter);
+  tubeWrapGetObjectMacro(CVTImage, InputImageType, Filter);
 
   /* Set input tubes */
-  tubeWrapSetObjectMacro( InputTubeGroup, TubeGroupType, Filter );
-  tubeWrapGetObjectMacro( InputTubeGroup, TubeGroupType, Filter );
+  tubeWrapSetObjectMacro(InputTubeGroup, TubeGroupType, Filter);
+  tubeWrapGetObjectMacro(InputTubeGroup, TubeGroupType, Filter);
 
   /* Runs tubes to image conversion */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
   /** Get Adjacency Matrix */
-  vnl_matrix< double > GetAdjacencyMatrix( void );
+  vnl_matrix<double>
+  GetAdjacencyMatrix(void);
 
   /** Get Root Nodes Vector */
-  vnl_vector< int > GetRootNodes( void );
+  vnl_vector<int>
+  GetRootNodes(void);
 
   /** Get Branch Nodes Vector */
-  vnl_vector< double > GetBranchNodes( void );
+  vnl_vector<double>
+  GetBranchNodes(void);
 
 protected:
-  ConvertTubesToTubeGraph( void );
+  ConvertTubesToTubeGraph(void);
   ~ConvertTubesToTubeGraph() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itktubeTubeSpatialObjectToTubeGraphFilter parameters **/
-  ConvertTubesToTubeGraph( const Self & );
-  void operator=( const Self & );
+  ConvertTubesToTubeGraph(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename FilterType::Pointer m_Filter;
 };
@@ -107,7 +110,7 @@ private:
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeConvertTubesToTubeGraph.hxx"
+#  include "tubeConvertTubesToTubeGraph.hxx"
 #endif
 
 #endif // End !defined( __tubeConvertTubesToTubeGraph_h )

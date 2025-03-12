@@ -28,17 +28,16 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkResampleImageFilter.h>
 
-int itktubeVotingResampleImageFunctionTest( int argc, char * argv[] )
+int
+itktubeVotingResampleImageFunctionTest(int argc, char * argv[])
 {
-  if( argc != 4 )
-    {
+  if (argc != 4)
+  {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0]
-      << " testNumber inputImage outputImage"
-      << std::endl;
+    std::cerr << argv[0] << " testNumber inputImage outputImage" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   const unsigned int Dimension = 2;
   using PixelType = unsigned char;
@@ -47,74 +46,74 @@ int itktubeVotingResampleImageFunctionTest( int argc, char * argv[] )
   using ImageIndexType = ImageType::IndexType;
   using ImageSizeType = ImageType::SizeType;
   using CoordRepType = double;
-  using AffineTransformType = itk::AffineTransform<CoordRepType,Dimension>;
-  using InterpolatorType = itk::tube::VotingResampleImageFunction<ImageType,CoordRepType>;
+  using AffineTransformType = itk::AffineTransform<CoordRepType, Dimension>;
+  using InterpolatorType = itk::tube::VotingResampleImageFunction<ImageType, CoordRepType>;
 
-  using ImageReaderType = itk::ImageFileReader< ImageType >;
-  using ImageWriterType = itk::ImageFileWriter< ImageType >;
+  using ImageReaderType = itk::ImageFileReader<ImageType>;
+  using ImageWriterType = itk::ImageFileWriter<ImageType>;
 
 
   // Create and configure an image
   ImageReaderType::Pointer imReader = ImageReaderType::New();
-  imReader->SetFileName( argv[2] );
+  imReader->SetFileName(argv[2]);
   imReader->Update();
 
-  int testNumber = std::atoi( argv[1] );
+  int testNumber = std::atoi(argv[1]);
 
-  double scale = 1;
+  double        scale = 1;
   ImageSizeType size = imReader->GetOutput()->GetLargestPossibleRegion().GetSize();
-  if( testNumber == 0 )
-    {
+  if (testNumber == 0)
+  {
     scale = 2;
     size[0] *= 2;
     size[1] *= 2;
-    }
-  else if( testNumber == 1 )
-    {
+  }
+  else if (testNumber == 1)
+  {
     scale = 1.5;
     size[0] *= 1.5;
     size[1] *= 1.5;
-    }
-  else if( testNumber == 2 )
-    {
+  }
+  else if (testNumber == 2)
+  {
     scale = 0.5;
     size[0] *= 0.5;
     size[1] *= 0.5;
-    }
+  }
   // Create an affine transformation
   AffineTransformType::Pointer aff = AffineTransformType::New();
-  aff->Scale( 1.0/scale );
+  aff->Scale(1.0 / scale);
 
   // Create a linear interpolation image function
   InterpolatorType::Pointer interp = InterpolatorType::New();
-  interp->SetInputImage( imReader->GetOutput() );
+  interp->SetInputImage(imReader->GetOutput());
 
   // Create and configure a resampling filter
-  itk::ResampleImageFilter< ImageType, ImageType >::Pointer resample;
-  resample = itk::ResampleImageFilter< ImageType, ImageType >::New();
-  resample->SetInput( imReader->GetOutput() );
-  resample->SetSize( size );
-  resample->SetTransform( aff );
-  resample->SetInterpolator( interp );
+  itk::ResampleImageFilter<ImageType, ImageType>::Pointer resample;
+  resample = itk::ResampleImageFilter<ImageType, ImageType>::New();
+  resample->SetInput(imReader->GetOutput());
+  resample->SetSize(size);
+  resample->SetTransform(aff);
+  resample->SetInterpolator(interp);
 
   ImageIndexType index;
-  index.Fill( 0 );
-  resample->SetOutputStartIndex( index );
+  index.Fill(0);
+  resample->SetOutputStartIndex(index);
 
   ImageType::PointType origin;
-  origin.Fill( 0.0 );
-  resample->SetOutputOrigin( origin );
+  origin.Fill(0.0);
+  resample->SetOutputOrigin(origin);
 
   ImageType::SpacingType spacing;
-  spacing.Fill( 1.0 );
-  resample->SetOutputSpacing( spacing );
+  spacing.Fill(1.0);
+  resample->SetOutputSpacing(spacing);
 
   // Run the resampling filter
   resample->Update();
 
   ImageWriterType::Pointer imWriter = ImageWriterType::New();
-  imWriter->SetFileName( argv[3] );
-  imWriter->SetInput( resample->GetOutput() );
+  imWriter->SetFileName(argv[3]);
+  imWriter->SetInput(resample->GetOutput());
   imWriter->Update();
 
   return EXIT_SUCCESS;

@@ -27,7 +27,7 @@ limitations under the License.
 #include <itkImageToImageFilter.h>
 
 #ifndef Tdimension
-#define Tdimension 3
+#  define Tdimension 3
 #endif
 
 namespace itk
@@ -36,18 +36,16 @@ namespace itk
 namespace tube
 {
 
-template< class TInputImage >
-class InverseIntensityImageFilter
-  : public ImageToImageFilter< TInputImage, TInputImage >
+template <class TInputImage>
+class InverseIntensityImageFilter : public ImageToImageFilter<TInputImage, TInputImage>
 {
 public:
-
   /** Standard class type alias. */
   using Self = InverseIntensityImageFilter;
-  using SuperClass = ImageToImageFilter< TInputImage, TInputImage>;
+  using SuperClass = ImageToImageFilter<TInputImage, TInputImage>;
 
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using InputImageType = TInputImage;
   using InputPixelType = typename InputImageType::PixelType;
@@ -61,28 +59,30 @@ public:
   using RegionType = typename InputImageType::RegionType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkSetMacro( InverseMaximumIntensity, InputPixelType );
-  itkGetMacro( InverseMaximumIntensity, InputPixelType );
+  itkSetMacro(InverseMaximumIntensity, InputPixelType);
+  itkGetMacro(InverseMaximumIntensity, InputPixelType);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( InverseIntensityImageFilter, ImageToImageFilter );
+  itkTypeMacro(InverseIntensityImageFilter, ImageToImageFilter);
 
 protected:
-
-  InverseIntensityImageFilter( void );
-  ~InverseIntensityImageFilter( void ) {}
+  InverseIntensityImageFilter(void);
+  ~InverseIntensityImageFilter(void) {}
 
   /** GenerateData produce the main work */
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
 private:
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override
+  {
+    SuperClass::PrintSelf(os, indent);
+  }
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override
-    { SuperClass::PrintSelf( os, indent );   }
-
-  InputPixelType                 m_InverseMaximumIntensity;
+  InputPixelType m_InverseMaximumIntensity;
 
 }; // End class InverseIntensityImageFilter
 
@@ -91,7 +91,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeInverseIntensityImageFilter.hxx"
+#  include "itktubeInverseIntensityImageFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeInverseIntensityImageFilter_h )

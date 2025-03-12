@@ -29,21 +29,21 @@ limitations under the License.
 
 namespace tube
 {
-template< unsigned int DimensionT, class ImagePixelT=float >
+template <unsigned int DimensionT, class ImagePixelT = float>
 class TubeMathFilters
 {
 public:
-  //type alias
-  using TubeGroupType = itk::GroupSpatialObject< DimensionT >;
+  // type alias
+  using TubeGroupType = itk::GroupSpatialObject<DimensionT>;
   using TubeListPointerType = typename TubeGroupType::ChildrenListPointer;
 
-  using TubeType = itk::TubeSpatialObject< DimensionT >;
+  using TubeType = itk::TubeSpatialObject<DimensionT>;
   using TubePointType = typename TubeType::TubePointType;
 
-  using ImageType = itk::Image< ImagePixelT, DimensionT >;
-  using FloatImageType = itk::Image< float, DimensionT >;
+  using ImageType = itk::Image<ImagePixelT, DimensionT>;
+  using FloatImageType = itk::Image<float, DimensionT>;
   using VectorPixelType = typename FloatImageType::OffsetType;
-  using VectorImageType = itk::Image< VectorPixelType, DimensionT >;
+  using VectorImageType = itk::Image<VectorPixelType, DimensionT>;
 
   using PositionType = typename TubeType::PointType;
   using TubeIdType = itk::IndexValueType;
@@ -52,43 +52,54 @@ public:
   TubeMathFilters();
   ~TubeMathFilters();
 
-  void SetInputTubeGroup( TubeGroupType * inputTubeGroup );
-  void SetInputTube( TubeType * inputTube );
-  
-  typename TubeGroupType::Pointer & GetOutputTubeGroup( void );
-  typename TubeType::Pointer &      GetOutputTube( void );
+  void
+  SetInputTubeGroup(TubeGroupType * inputTubeGroup);
+  void
+  SetInputTube(TubeType * inputTube);
+
+  typename TubeGroupType::Pointer &
+  GetOutputTubeGroup(void);
+  typename TubeType::Pointer &
+  GetOutputTube(void);
 
   /** SetCurrentTubeId
    *  Specifies which tube to process.  Use -1 to specify all tubes. */
-  void SetCurrentTubeId( int currentTubeId );
-  void SetUseAllTubes( void );
+  void
+  SetCurrentTubeId(int currentTubeId);
+  void
+  SetUseAllTubes(void);
 
-  void SetPointValues( std::string propertyId, double val, double blend=1 );
+  void
+  SetPointValues(std::string propertyId, double val, double blend = 1);
 
-  void SetPointValuesFromImage( const ImageType * inputImage,
-    std::string propertyId, double blend=1 );
+  void
+  SetPointValuesFromImage(const ImageType * inputImage, std::string propertyId, double blend = 1);
 
-  void SetPointValuesFromImageMean( const ImageType * inputImage,
-    std::string propertyId );
+  void
+  SetPointValuesFromImageMean(const ImageType * inputImage, std::string propertyId);
 
-  void ComputeTubeRegions( const ImageType * referenceImage );
+  void
+  ComputeTubeRegions(const ImageType * referenceImage);
 
-  itkGetObjectMacro( TubeRadiusImage, FloatImageType );
-  itkGetObjectMacro( TubePointIdImage, FloatImageType );
-  itkGetObjectMacro( TubeDistanceImage, FloatImageType );
+  itkGetObjectMacro(TubeRadiusImage, FloatImageType);
+  itkGetObjectMacro(TubePointIdImage, FloatImageType);
+  itkGetObjectMacro(TubeDistanceImage, FloatImageType);
 
-  void SetPointValuesFromTubeRegions(
-    const ImageType * inputImage,
-    const std::string & propertyId,
-    double minRFactor=1, double maxRFactor=3 );
+  void
+  SetPointValuesFromTubeRegions(const ImageType *   inputImage,
+                                const std::string & propertyId,
+                                double              minRFactor = 1,
+                                double              maxRFactor = 3);
 
-  void SetPointValuesFromTubeRadius(
-    const ImageType * inputImage,
-    const std::string & propertyId,
-    double minRFactor=1, double maxRFactor=3 );
+  void
+  SetPointValuesFromTubeRadius(const ImageType *   inputImage,
+                               const std::string & propertyId,
+                               double              minRFactor = 1,
+                               double              maxRFactor = 3);
 
   /** Run Fill Gap on the tube-tree. */
-  void FillGapToParent( double stepSize = 0.1 );
+  void
+  FillGapToParent(double stepSize = 0.1);
 
   /** Smooth a tube
    * The parameter h has different meanings when using different smoothing
@@ -99,27 +110,35 @@ public:
    * smoothFunction = SMOOTH_TUBE_USING_INDEX_GAUSSIAN:
    *    h is the gaussian's standard deviation
    */
-  enum SmoothTubeFunctionEnum { SMOOTH_TUBE_USING_INDEX_AVERAGE,
-    SMOOTH_TUBE_USING_INDEX_GAUSSIAN };
-  void SmoothTube( double h = 2,
-    SmoothTubeFunctionEnum smoothFunction = SMOOTH_TUBE_USING_INDEX_AVERAGE );
-  void SmoothTubeProperty( const std::string & propertyId, double h = 2,
-    SmoothTubeFunctionEnum smoothFunction = SMOOTH_TUBE_USING_INDEX_AVERAGE );
+  enum SmoothTubeFunctionEnum
+  {
+    SMOOTH_TUBE_USING_INDEX_AVERAGE,
+    SMOOTH_TUBE_USING_INDEX_GAUSSIAN
+  };
+  void
+  SmoothTube(double h = 2, SmoothTubeFunctionEnum smoothFunction = SMOOTH_TUBE_USING_INDEX_AVERAGE);
+  void
+  SmoothTubeProperty(const std::string &    propertyId,
+                     double                 h = 2,
+                     SmoothTubeFunctionEnum smoothFunction = SMOOTH_TUBE_USING_INDEX_AVERAGE);
 
-  void RenumberTubes( void );
-  void RenumberPoints( void );
+  void
+  RenumberTubes(void);
+  void
+  RenumberPoints(void);
 
-  void SubsampleTube( int N = 2 );
-  
-  double ComputeTubeLength( void );
+  void
+  SubsampleTube(int N = 2);
+
+  double
+  ComputeTubeLength(void);
 
 protected:
-
-  static void InterpolatePath(
-    typename TubeType::TubePointType * parentNearestPoint,
-    typename TubeType::TubePointType * childEndPoint,
-    float stepSize,
-    typename TubeType::TubePointListType & newTubePoints );
+  static void
+  InterpolatePath(typename TubeType::TubePointType *     parentNearestPoint,
+                  typename TubeType::TubePointType *     childEndPoint,
+                  float                                  stepSize,
+                  typename TubeType::TubePointListType & newTubePoints);
 
 private:
   typename TubeType::Pointer      m_InputTube;
@@ -127,10 +146,10 @@ private:
 
   int m_CurrentTubeId;
 
-  typename FloatImageType::Pointer         m_TubePointIdImage;
-  typename FloatImageType::Pointer         m_TubeRadiusImage;
-  typename FloatImageType::Pointer         m_TubeDistanceImage;
-  typename VectorImageType::Pointer        m_TubeDirectionImage;
+  typename FloatImageType::Pointer  m_TubePointIdImage;
+  typename FloatImageType::Pointer  m_TubeRadiusImage;
+  typename FloatImageType::Pointer  m_TubeDistanceImage;
+  typename VectorImageType::Pointer m_TubeDirectionImage;
 
 
 }; // End class ImageFilters
@@ -138,7 +157,7 @@ private:
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeTubeMathFilters.hxx"
+#  include "tubeTubeMathFilters.hxx"
 #endif
 
 #endif // End !defined( __tubeTubeMathFilters_h )

@@ -37,19 +37,17 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TImage >
-class ResampleImage:
-  public itk::ProcessObject
+template <class TImage>
+class ResampleImage : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ResampleImage;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  using FilterType = itk::tube::ReResampleImageFilter< typename TImage::PixelType,
-          TImage::ImageDimension >;
+  using FilterType = itk::tube::ReResampleImageFilter<typename TImage::PixelType, TImage::ImageDimension>;
 
   using ImageType = typename FilterType::ImageType;
   using ConstImagePointer = typename ImageType::ConstPointer;
@@ -57,78 +55,81 @@ public:
   using TransformType = typename FilterType::TransformType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ResampleImage, ProcessObject );
+  itkTypeMacro(ResampleImage, ProcessObject);
 
   /* Set input image */
-  tubeWrapSetObjectMacro( Input, ImageType, Filter );
-  tubeWrapGetObjectMacro( Input, ImageType, Filter );
+  tubeWrapSetObjectMacro(Input, ImageType, Filter);
+  tubeWrapGetObjectMacro(Input, ImageType, Filter);
 
   /** Set/Get input Match Image */
-  tubeWrapSetObjectMacro( MatchImage, ImageType, Filter );
-  tubeWrapGetObjectMacro( MatchImage, ImageType, Filter );
+  tubeWrapSetObjectMacro(MatchImage, ImageType, Filter);
+  tubeWrapGetObjectMacro(MatchImage, ImageType, Filter);
 
   /** Set/Get whether Output is isotropic or not */
-  tubeWrapSetMacro( MakeIsotropic, bool, Filter );
-  tubeWrapGetMacro( MakeIsotropic, bool, Filter );
+  tubeWrapSetMacro(MakeIsotropic, bool, Filter);
+  tubeWrapGetMacro(MakeIsotropic, bool, Filter);
 
   /** Set/Get whether Output is high resolution isotropic or not */
-  tubeWrapSetMacro( MakeHighResIso, bool, Filter );
-  tubeWrapGetMacro( MakeHighResIso, bool, Filter );
+  tubeWrapSetMacro(MakeHighResIso, bool, Filter);
+  tubeWrapGetMacro(MakeHighResIso, bool, Filter);
 
   /** Set/Get interpolator */
-  tubeWrapSetMacro( Interpolator, std::string, Filter );
-  tubeWrapGetMacro( Interpolator, std::string, Filter );
+  tubeWrapSetMacro(Interpolator, std::string, Filter);
+  tubeWrapGetMacro(Interpolator, std::string, Filter);
 
   /** Set/Get whether to load transform or not */
-  tubeWrapSetMacro( LoadTransform, bool, Filter );
-  tubeWrapGetMacro( LoadTransform, bool, Filter );
+  tubeWrapSetMacro(LoadTransform, bool, Filter);
+  tubeWrapGetMacro(LoadTransform, bool, Filter);
 
-  tubeWrapGetObjectMacro( Output, ImageType, Filter );
+  tubeWrapGetObjectMacro(Output, ImageType, Filter);
 
   /** Set Output Transform */
-  tubeWrapForceSetObjectMacro( Transform, TransformType, Filter );
+  tubeWrapForceSetObjectMacro(Transform, TransformType, Filter);
 
   /** Set Output Spacing */
-  tubeWrapForceSetMacro( Spacing, std::vector<double>, Filter );
+  tubeWrapForceSetMacro(Spacing, std::vector<double>, Filter);
 
   /** Set Output Origin */
-  tubeWrapForceSetMacro( Origin, std::vector<double>, Filter );
+  tubeWrapForceSetMacro(Origin, std::vector<double>, Filter);
 
   /** Set Output Index */
-  tubeWrapForceSetMacro( Index, std::vector<int>, Filter );
+  tubeWrapForceSetMacro(Index, std::vector<int>, Filter);
 
   /** Set Output Index */
-  tubeWrapForceSetMacro( Size, std::vector<int>, Filter );
+  tubeWrapForceSetMacro(Size, std::vector<int>, Filter);
 
   /** Set Output Resample Factor */
-  tubeWrapForceSetMacro( ResampleFactor, std::vector<double>, Filter );
+  tubeWrapForceSetMacro(ResampleFactor, std::vector<double>, Filter);
 
   /* Runs tubes to image conversion */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
 protected:
-  ResampleImage( void );
+  ResampleImage(void);
   ~ResampleImage() {}
 
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itktubeResampleImageFilter parameters **/
-  ResampleImage( const Self & );
-  void operator=( const Self & );
+  ResampleImage(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  typename FilterType::Pointer  m_Filter;
+  typename FilterType::Pointer m_Filter;
 };
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeResampleImage.hxx"
+#  include "tubeResampleImage.hxx"
 #endif
 
 #endif // End !defined( __tubeResampleImage_h )

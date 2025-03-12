@@ -36,22 +36,21 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< typename TInputImage, typename TOutputImage >
-class ShrinkImageWithBlending:
-  public itk::ProcessObject
+template <typename TInputImage, typename TOutputImage>
+class ShrinkImageWithBlending : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ShrinkImageWithBlending;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ShrinkImageWithBlending, ProcessObject );
+  itkTypeMacro(ShrinkImageWithBlending, ProcessObject);
 
 
   /** Typedef to images */
@@ -60,8 +59,7 @@ public:
   using InputIndexType = typename TInputImage::IndexType;
   using InputSizeType = typename TInputImage::SizeType;
 
-  using FilterType = itk::tube::ShrinkWithBlendingImageFilter< InputImageType,
-    OutputImageType >;
+  using FilterType = itk::tube::ShrinkWithBlendingImageFilter<InputImageType, OutputImageType>;
 
   using PointImagePixelType = typename FilterType::PointImagePixelType;
   using PointImageType = typename FilterType::PointImageType;
@@ -69,70 +67,71 @@ public:
 
   /** Set the shrink factors. Values are clamped to
    * a minimum value of 1. Default is 1 for all dimensions. */
-  tubeWrapSetMacro( ShrinkFactors, ShrinkFactorsType, Filter )
-  void SetShrinkFactor( unsigned int i, unsigned int factor );
-  unsigned int GetShrinkFactor( unsigned int i );
+  tubeWrapSetMacro(ShrinkFactors, ShrinkFactorsType, Filter) void SetShrinkFactor(unsigned int i, unsigned int factor);
+  unsigned int
+  GetShrinkFactor(unsigned int i);
 
-  tubeWrapSetMacro( NewSize, InputSizeType, Filter );
-  tubeWrapGetMacro( NewSize, InputSizeType, Filter );
+  tubeWrapSetMacro(NewSize, InputSizeType, Filter);
+  tubeWrapGetMacro(NewSize, InputSizeType, Filter);
 
   /** Get/Set the shrink factors. */
-  tubeWrapGetMacro( ShrinkFactors, ShrinkFactorsType, Filter );
+  tubeWrapGetMacro(ShrinkFactors, ShrinkFactorsType, Filter);
 
-  tubeWrapSetMacro( Overlap, InputIndexType, Filter );
-  tubeWrapGetMacro( Overlap, InputIndexType, Filter );
+  tubeWrapSetMacro(Overlap, InputIndexType, Filter);
+  tubeWrapGetMacro(Overlap, InputIndexType, Filter);
 
-  tubeWrapSetMacro( BlendWithMean, bool, Filter );
-  tubeWrapGetMacro( BlendWithMean, bool, Filter );
+  tubeWrapSetMacro(BlendWithMean, bool, Filter);
+  tubeWrapGetMacro(BlendWithMean, bool, Filter);
 
-  tubeWrapSetMacro( BlendWithMax, bool, Filter );
-  tubeWrapGetMacro( BlendWithMax, bool, Filter );
+  tubeWrapSetMacro(BlendWithMax, bool, Filter);
+  tubeWrapGetMacro(BlendWithMax, bool, Filter);
 
-  tubeWrapSetMacro( BlendWithGaussianWeighting, bool, Filter );
-  tubeWrapGetMacro( BlendWithGaussianWeighting, bool, Filter );
+  tubeWrapSetMacro(BlendWithGaussianWeighting, bool, Filter);
+  tubeWrapGetMacro(BlendWithGaussianWeighting, bool, Filter);
 
-  tubeWrapSetMacro( UseLog, bool, Filter );
-  tubeWrapGetMacro( UseLog, bool, Filter );
+  tubeWrapSetMacro(UseLog, bool, Filter);
+  tubeWrapGetMacro(UseLog, bool, Filter);
 
-  tubeWrapCallOverrideMacro( GenerateOutputInformation, Filter );
-  tubeWrapCallOverrideMacro( GenerateInputRequestedRegion, Filter );
+  tubeWrapCallOverrideMacro(GenerateOutputInformation, Filter);
+  tubeWrapCallOverrideMacro(GenerateInputRequestedRegion, Filter);
 
-  tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
-  tubeWrapGetConstObjectMacro( Input, InputImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input, InputImageType, Filter);
+  tubeWrapGetConstObjectMacro(Input, InputImageType, Filter);
 
-  tubeWrapSetConstObjectMacro( InputMipPointImage, PointImageType, Filter );
-  tubeWrapGetConstObjectMacro( InputMipPointImage, PointImageType, Filter );
+  tubeWrapSetConstObjectMacro(InputMipPointImage, PointImageType, Filter);
+  tubeWrapGetConstObjectMacro(InputMipPointImage, PointImageType, Filter);
 
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
-  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
+  tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
 
-  tubeWrapGetObjectMacro( OutputMipPointImage, PointImageType, Filter );
+  tubeWrapGetObjectMacro(OutputMipPointImage, PointImageType, Filter);
 
 protected:
-  ShrinkImageWithBlending( void );
+  ShrinkImageWithBlending(void);
   ~ShrinkImageWithBlending() {}
 
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkShrinkImageWithBlendingFilter parameters **/
-  ShrinkImageWithBlending( const Self & );
+  ShrinkImageWithBlending(const Self &);
 
-  void operator=( const Self & );
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
   typename FilterType::Pointer m_Filter;
-
 };
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeShrinkImageWithBlending.hxx"
+#  include "tubeShrinkImageWithBlending.hxx"
 #endif
 
 #endif // End !defined( __tubeShrinkImageWithBlending_h )

@@ -38,7 +38,6 @@ namespace tube
 class GoldenMeanOptimizer1D : public Optimizer1D
 {
 public:
-
   using Self = GoldenMeanOptimizer1D;
   using Superclass = Optimizer1D;
   using Pointer = Self *;
@@ -47,30 +46,31 @@ public:
   using ValueFunctionType = Superclass::ValueFunctionType;
 
   /** Return the type of this object. */
-  tubeTypeMacro( GoldenMeanOptimizer1D );
+  tubeTypeMacro(GoldenMeanOptimizer1D);
 
   /** Constructor. */
-  GoldenMeanOptimizer1D( void );
+  GoldenMeanOptimizer1D(void);
 
   /** Constructor. */
-  GoldenMeanOptimizer1D( ValueFunctionType::Pointer funcVal );
+  GoldenMeanOptimizer1D(ValueFunctionType::Pointer funcVal);
 
   /** Destructor. */
-  ~GoldenMeanOptimizer1D( void );
+  ~GoldenMeanOptimizer1D(void);
 
-  void Use( ValueFunctionType::Pointer funcVal );
+  void
+  Use(ValueFunctionType::Pointer funcVal);
 
 protected:
-
-  bool m_Extreme( double * x, double * xVal ) override;
+  bool
+  m_Extreme(double * x, double * xVal) override;
 
 private:
-
   // Copy constructor not implemented.
-  GoldenMeanOptimizer1D( const Self & self );
+  GoldenMeanOptimizer1D(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
 }; // End class GoldenMeanOptimizer1D
 

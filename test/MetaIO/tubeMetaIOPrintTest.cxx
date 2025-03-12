@@ -29,8 +29,8 @@ limitations under the License.
 #include "itktubeMetaRidgeSeed.h"
 #include "itktubeMetaTubeExtractor.h"
 
-int tubeMetaIOPrintTest( int tubeNotUsed( argc ),
-  char * tubeNotUsed( argv )[] )
+int
+tubeMetaIOPrintTest(int tubeNotUsed(argc), char * tubeNotUsed(argv)[])
 {
   itk::tube::MetaLDA metaLDA;
   std::cout << "-------------metaLDA" << std::endl;

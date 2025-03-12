@@ -26,9 +26,11 @@ limitations under the License.
 
 #include "itkShrinkImageFilter.h"
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 /** \class ShrinkWithBlendingImageFilter
  * \brief Reduce the size of an image by an integer factor in each
@@ -58,22 +60,21 @@ namespace tube {
  * \ingroup ITKImageGrid
  *
  */
-template< class TInputImage, class TOutputImage >
-class ITK_EXPORT ShrinkWithBlendingImageFilter :
-  public ImageToImageFilter< TInputImage, TOutputImage >
+template <class TInputImage, class TOutputImage>
+class ITK_EXPORT ShrinkWithBlendingImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class type alias. */
   using Self = ShrinkWithBlendingImageFilter;
-  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ShrinkWithBlendingImageFilter, ShrinkImageFilter );
+  itkTypeMacro(ShrinkWithBlendingImageFilter, ShrinkImageFilter);
 
   /** Typedef to images */
   using OutputImageType = TOutputImage;
@@ -89,77 +90,84 @@ public:
   using OutputImageRegionType = typename TOutputImage::RegionType;
   using InputSizeType = typename TInputImage::SizeType;
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TInputImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
 
-  itkStaticConstMacro( OutputImageDimension, unsigned int,
-                       TOutputImage::ImageDimension );
+  itkStaticConstMacro(OutputImageDimension, unsigned int, TOutputImage::ImageDimension);
 
-  using PointImagePixelType = Vector< float, ImageDimension >;
-  using PointImageType = Image< PointImagePixelType, OutputImageDimension >;
+  using PointImagePixelType = Vector<float, ImageDimension>;
+  using PointImageType = Image<PointImagePixelType, OutputImageDimension>;
 
-  using ShrinkFactorsType = FixedArray< unsigned int, ImageDimension >;
+  using ShrinkFactorsType = FixedArray<unsigned int, ImageDimension>;
 
   /** Set the shrink factors. Values are clamped to
    * a minimum value of 1. Default is 1 for all dimensions. */
-  itkSetMacro( ShrinkFactors, ShrinkFactorsType );
-  void SetShrinkFactor( unsigned int i, unsigned int factor );
-  unsigned int GetShrinkFactor( unsigned int i );
-  itkGetMacro( NewSize, InputSizeType );
-  itkSetMacro( NewSize, InputSizeType );
+  itkSetMacro(ShrinkFactors, ShrinkFactorsType);
+  void
+  SetShrinkFactor(unsigned int i, unsigned int factor);
+  unsigned int
+  GetShrinkFactor(unsigned int i);
+  itkGetMacro(NewSize, InputSizeType);
+  itkSetMacro(NewSize, InputSizeType);
 
   /** Get the shrink factors. */
-  itkGetConstReferenceMacro( ShrinkFactors, ShrinkFactorsType );
+  itkGetConstReferenceMacro(ShrinkFactors, ShrinkFactorsType);
 
-  itkSetMacro( Overlap, InputIndexType );
-  itkGetMacro( Overlap, InputIndexType );
+  itkSetMacro(Overlap, InputIndexType);
+  itkGetMacro(Overlap, InputIndexType);
 
-  itkSetMacro( BlendWithMean, bool );
-  itkGetMacro( BlendWithMean, bool );
+  itkSetMacro(BlendWithMean, bool);
+  itkGetMacro(BlendWithMean, bool);
 
-  itkSetMacro( BlendWithMax, bool );
-  itkGetMacro( BlendWithMax, bool );
+  itkSetMacro(BlendWithMax, bool);
+  itkGetMacro(BlendWithMax, bool);
 
-  itkSetMacro( BlendWithGaussianWeighting, bool );
-  itkGetMacro( BlendWithGaussianWeighting, bool );
+  itkSetMacro(BlendWithGaussianWeighting, bool);
+  itkGetMacro(BlendWithGaussianWeighting, bool);
 
-  itkSetMacro( UseLog, bool );
-  itkGetMacro( UseLog, bool );
+  itkSetMacro(UseLog, bool);
+  itkGetMacro(UseLog, bool);
 
-  itkSetConstObjectMacro( InputMipPointImage, PointImageType );
-  itkGetConstObjectMacro( InputMipPointImage, PointImageType );
+  itkSetConstObjectMacro(InputMipPointImage, PointImageType);
+  itkGetConstObjectMacro(InputMipPointImage, PointImageType);
 
-  itkGetModifiableObjectMacro( OutputMipPointImage, PointImageType );
+  itkGetModifiableObjectMacro(OutputMipPointImage, PointImageType);
 
-  void GenerateOutputInformation( void ) override;
+  void
+  GenerateOutputInformation(void) override;
 
-  void GenerateInputRequestedRegion( void ) override;
+  void
+  GenerateInputRequestedRegion(void) override;
 
 protected:
-  ShrinkWithBlendingImageFilter( void );
-  ~ShrinkWithBlendingImageFilter( void ) {}
+  ShrinkWithBlendingImageFilter(void);
+  ~ShrinkWithBlendingImageFilter(void) {}
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void ThreadedGenerateData( const OutputImageRegionType &
-    outputRegionForThread, ThreadIdType threadId ) override;
+  void
+  ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId) override;
 
-  void UpdateInternalShrinkFactors();
+  void
+  UpdateInternalShrinkFactors();
 
-  void VerifyInputInformation() const override;
+  void
+  VerifyInputInformation() const override;
 
-  template<class ArrayType>
-  bool NotValue( ArrayType array, double val, double tolerance=0.00001 ) const;
+  template <class ArrayType>
+  bool
+  NotValue(ArrayType array, double val, double tolerance = 0.00001) const;
 
 private:
-  ShrinkWithBlendingImageFilter( const Self & ); //purposely not implemented
-  void operator=( const Self & );            //purposely not implemented
+  ShrinkWithBlendingImageFilter(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
-  typename PointImageType::Pointer       m_OutputMipPointImage;
+  typename PointImageType::Pointer m_OutputMipPointImage;
 
-  typename PointImageType::ConstPointer  m_InputMipPointImage;
+  typename PointImageType::ConstPointer m_InputMipPointImage;
 
-  typename TInputImage::IndexType   m_Overlap;
+  typename TInputImage::IndexType m_Overlap;
 
   bool m_UseLog;
 
@@ -167,12 +175,11 @@ private:
   bool m_BlendWithMax;
   bool m_BlendWithGaussianWeighting;
 
-  ShrinkFactorsType                  m_ShrinkFactors;
-  ShrinkFactorsType                  m_InternalShrinkFactors;
-  double                             m_DefaultShrinkFactor;
-  double                             m_DefaultNewSize;
-  InputSizeType                      m_NewSize;
-
+  ShrinkFactorsType m_ShrinkFactors;
+  ShrinkFactorsType m_InternalShrinkFactors;
+  double            m_DefaultShrinkFactor;
+  double            m_DefaultNewSize;
+  InputSizeType     m_NewSize;
 };
 
 } // end namespace tube
@@ -180,7 +187,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeShrinkWithBlendingImageFilter.hxx"
+#  include "itktubeShrinkWithBlendingImageFilter.hxx"
 #endif
 
 #endif

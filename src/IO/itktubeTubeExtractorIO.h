@@ -35,52 +35,57 @@ namespace tube
 {
 
 /**
-*
-* Reads and Writes TubeExtractorIO Files, typically designated .mnda files
-*
-* \author Stephen R. Aylward
-*
-* \date August 29, 2013
-*
-*/
-template< class TImage >
+ *
+ * Reads and Writes TubeExtractorIO Files, typically designated .mnda files
+ *
+ * \author Stephen R. Aylward
+ *
+ * \date August 29, 2013
+ *
+ */
+template <class TImage>
 class TubeExtractorIO
 {
 public:
+  using TubeExtractorType = TubeExtractor<TImage>;
 
-  using TubeExtractorType = TubeExtractor< TImage >;
+  TubeExtractorIO(void);
 
-  TubeExtractorIO( void );
+  TubeExtractorIO(const char * _headerName);
 
-  TubeExtractorIO( const char * _headerName );
+  TubeExtractorIO(const typename TubeExtractorType::Pointer & _filter);
 
-  TubeExtractorIO( const typename
-    TubeExtractorType::Pointer & _filter );
+  ~TubeExtractorIO(void);
 
-  ~TubeExtractorIO( void );
+  virtual void
+  PrintInfo(void) const;
 
-  virtual void PrintInfo( void ) const;
+  virtual void
+  CopyInfo(const TubeExtractorIO<TImage> & _filterIO);
 
-  virtual void CopyInfo( const TubeExtractorIO< TImage > & _filterIO );
+  virtual void
+  Clear(void);
 
-  virtual void Clear( void );
+  virtual bool
+  InitializeEssential(const typename TubeExtractorType::Pointer & _filter);
 
-  virtual bool InitializeEssential( const typename
-    TubeExtractorType::Pointer & _filter );
+  void
+  SetTubeExtractor(TubeExtractorType * _filter);
 
-  void SetTubeExtractor( TubeExtractorType * _filter );
+  const typename TubeExtractorType::Pointer
+  GetTubeExtractor(void) const;
 
-  const typename TubeExtractorType::Pointer GetTubeExtractor( void ) const;
+  virtual bool
+  CanRead(const char * _headerName = NULL) const;
 
-  virtual bool CanRead( const char * _headerName = NULL ) const;
+  virtual bool
+  Read(const char * _headerName = NULL);
 
-  virtual bool Read( const char * _headerName = NULL );
-
-  virtual bool Write( const char * _headerName = NULL );
+  virtual bool
+  Write(const char * _headerName = NULL);
 
 protected:
-
-  typename TubeExtractorType::Pointer  m_TubeExtractor;
+  typename TubeExtractorType::Pointer m_TubeExtractor;
 
 }; // End class TubeExtractorIO
 
@@ -89,7 +94,7 @@ protected:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeTubeExtractorIO.hxx"
+#  include "itktubeTubeExtractorIO.hxx"
 #endif
 
 #endif // End !defined( __itktubeTubeExtractorIO_h )

@@ -25,22 +25,24 @@ limitations under the License.
 
 #include "itktubeFeatureVectorGenerator.h"
 
-int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
+int
+itktubePDFSegmenterParzenTest(int argc, char * argv[])
 {
-  if( argc != 12 )
-    {
+  if (argc != 12)
+  {
     std::cout << "Missing arguments." << std::endl;
     std::cout << "Usage: " << std::endl;
-    std::cout << argv[0]
-      << " inputImage1 inputImage2 inputLabelMap force blur outputProbImg0"
-      << " outputPDF0 outputProbImg1 outputPDF1 outputLabelMap"
-      << " labeledFeatureSpace"
-      << std::endl;
+    std::cout << argv[0] << " inputImage1 inputImage2 inputLabelMap force blur outputProbImg0"
+              << " outputPDF0 outputProbImg1 outputPDF1 outputLabelMap"
+              << " labeledFeatureSpace" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // Define the dimension of the images
-  enum { Dimension = 2 };
+  enum
+  {
+    Dimension = 2
+  };
 
   // Define the pixel type
   using PixelType = float;
@@ -49,192 +51,181 @@ int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
   using ImageType = itk::Image<PixelType, Dimension>;
 
   // Declare the reader and writer
-  using ReaderType = itk::ImageFileReader< ImageType >;
-  using WriterType = itk::ImageFileWriter< ImageType >;
+  using ReaderType = itk::ImageFileReader<ImageType>;
+  using WriterType = itk::ImageFileWriter<ImageType>;
 
   using HistoPixelType = float;
-  using HistoImageType = itk::Image<HistoPixelType, 4 >;
-  using HistoWriterType = itk::ImageFileWriter< HistoImageType >;
+  using HistoImageType = itk::Image<HistoPixelType, 4>;
+  using HistoWriterType = itk::ImageFileWriter<HistoImageType>;
 
 
   // Declare the type for the Filter
-  using FilterType = itk::tube::PDFSegmenterParzen< ImageType, ImageType >;
+  using FilterType = itk::tube::PDFSegmenterParzen<ImageType, ImageType>;
 
-  using FeatureVectorGeneratorType = itk::tube::FeatureVectorGenerator< ImageType >;
+  using FeatureVectorGeneratorType = itk::tube::FeatureVectorGenerator<ImageType>;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( argv[1] );
+  reader->SetFileName(argv[1]);
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during input read:" << std::endl << e
-      << std::endl;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cout << "Exception caught during input read:" << std::endl << e << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   ImageType::Pointer inputImage = reader->GetOutput();
   std::cout << "Read: " << argv[1] << std::endl;
 
   ReaderType::Pointer reader2 = ReaderType::New();
-  reader2->SetFileName( argv[2] );
+  reader2->SetFileName(argv[2]);
   try
-    {
+  {
     reader2->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during input image2 read:" << std::endl
-      << e << std::endl;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cout << "Exception caught during input image2 read:" << std::endl << e << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   ImageType::Pointer inputImage2 = reader2->GetOutput();
   std::cout << "Read: " << argv[2] << std::endl;
 
   // Create the reader and writer
   ReaderType::Pointer labelmapReader = ReaderType::New();
-  labelmapReader->SetFileName( argv[5] );
+  labelmapReader->SetFileName(argv[5]);
   try
-    {
+  {
     labelmapReader->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during input read:" << std::endl << e
-      << std::endl;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cout << "Exception caught during input read:" << std::endl << e << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   ImageType::Pointer labelmapImage = labelmapReader->GetOutput();
   std::cout << "Read: " << argv[5] << std::endl;
 
-  FeatureVectorGeneratorType::Pointer fvGen =
-    FeatureVectorGeneratorType::New();
-  fvGen->SetInput( inputImage );
-  fvGen->AddInput( inputImage2 );
+  FeatureVectorGeneratorType::Pointer fvGen = FeatureVectorGeneratorType::New();
+  fvGen->SetInput(inputImage);
+  fvGen->AddInput(inputImage2);
 
   FilterType::Pointer filter = FilterType::New();
-  filter->SetFeatureVectorGenerator( fvGen );
-  filter->SetInputLabelMap( labelmapImage );
-  filter->SetObjectId( 255 );
-  filter->AddObjectId( 127 );
-  filter->SetVoidId( 0 );
-  filter->SetErodeDilateRadius( 0 );
-  filter->SetHoleFillIterations( 5 );
-  filter->SetHistogramSmoothingStandardDeviation( 2 );
-  if( argv[3][0] == 't' || argv[3][0] == 'T' || argv[3][0] == '1' )
-    {
-    filter->SetReclassifyObjectLabels( true );
-    filter->SetReclassifyNotObjectLabels( true );
-    filter->SetForceClassification( true );
-    }
+  filter->SetFeatureVectorGenerator(fvGen);
+  filter->SetInputLabelMap(labelmapImage);
+  filter->SetObjectId(255);
+  filter->AddObjectId(127);
+  filter->SetVoidId(0);
+  filter->SetErodeDilateRadius(0);
+  filter->SetHoleFillIterations(5);
+  filter->SetHistogramSmoothingStandardDeviation(2);
+  if (argv[3][0] == 't' || argv[3][0] == 'T' || argv[3][0] == '1')
+  {
+    filter->SetReclassifyObjectLabels(true);
+    filter->SetReclassifyNotObjectLabels(true);
+    filter->SetForceClassification(true);
+  }
   else
-    {
-    filter->SetReclassifyObjectLabels( false );
-    filter->SetReclassifyNotObjectLabels( false );
-    filter->SetForceClassification( false );
-    }
+  {
+    filter->SetReclassifyObjectLabels(false);
+    filter->SetReclassifyNotObjectLabels(false);
+    filter->SetForceClassification(false);
+  }
   std::cout << "Update" << std::endl;
   filter->Update();
-  float blur = atof( argv[4] );
-  filter->SetProbabilityImageSmoothingStandardDeviation( blur );
+  float blur = atof(argv[4]);
+  filter->SetProbabilityImageSmoothingStandardDeviation(blur);
   std::cout << "Classify" << std::endl;
   filter->ClassifyImages();
 
   std::cout << "Write" << std::endl;
   WriterType::Pointer probWriter0 = WriterType::New();
-  probWriter0->SetFileName( argv[6] );
-  probWriter0->SetUseCompression( true );
-  probWriter0->SetInput( filter->GetClassProbabilityImage( 0 ) );
+  probWriter0->SetFileName(argv[6]);
+  probWriter0->SetUseCompression(true);
+  probWriter0->SetInput(filter->GetClassProbabilityImage(0));
   try
-    {
+  {
     probWriter0->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during write:" << std::endl << e
-      << std::endl;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cout << "Exception caught during write:" << std::endl << e << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   HistoWriterType::Pointer pdfWriter0 = HistoWriterType::New();
-  pdfWriter0->SetFileName( argv[7] );
-  pdfWriter0->SetUseCompression( true );
-  pdfWriter0->SetInput( filter->GetClassPDFImage( 0 ) );
+  pdfWriter0->SetFileName(argv[7]);
+  pdfWriter0->SetUseCompression(true);
+  pdfWriter0->SetInput(filter->GetClassPDFImage(0));
   try
-    {
+  {
     pdfWriter0->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during write:" << std::endl << e
-      << std::endl;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cout << "Exception caught during write:" << std::endl << e << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   WriterType::Pointer probWriter1 = WriterType::New();
-  probWriter1->SetFileName( argv[8] );
-  probWriter1->SetUseCompression( true );
-  probWriter1->SetInput( filter->GetClassProbabilityImage( 1 ) );
+  probWriter1->SetFileName(argv[8]);
+  probWriter1->SetUseCompression(true);
+  probWriter1->SetInput(filter->GetClassProbabilityImage(1));
   try
-    {
+  {
     probWriter1->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during write:" << std::endl << e
-      << std::endl;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cout << "Exception caught during write:" << std::endl << e << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   HistoWriterType::Pointer pdfWriter1 = HistoWriterType::New();
-  pdfWriter1->SetFileName( argv[9] );
-  pdfWriter1->SetUseCompression( true );
-  pdfWriter1->SetInput( filter->GetClassPDFImage( 1 ) );
+  pdfWriter1->SetFileName(argv[9]);
+  pdfWriter1->SetUseCompression(true);
+  pdfWriter1->SetInput(filter->GetClassPDFImage(1));
   try
-    {
+  {
     pdfWriter1->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during write:" << std::endl << e
-      << std::endl;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cout << "Exception caught during write:" << std::endl << e << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   WriterType::Pointer labelmapWriter = WriterType::New();
-  labelmapWriter->SetFileName( argv[10] );
-  labelmapWriter->SetUseCompression( true );
-  labelmapWriter->SetInput( filter->GetOutputLabelMap() );
+  labelmapWriter->SetFileName(argv[10]);
+  labelmapWriter->SetUseCompression(true);
+  labelmapWriter->SetInput(filter->GetOutputLabelMap());
   try
-    {
+  {
     labelmapWriter->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during write:" << std::endl << e
-      << std::endl;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cout << "Exception caught during write:" << std::endl << e << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   filter->GenerateLabeledFeatureSpace();
 
-  HistoWriterType::Pointer labeledFeatureSpaceWriter =
-    HistoWriterType::New();
-  labeledFeatureSpaceWriter->SetFileName( argv[11] );
-  labeledFeatureSpaceWriter->SetUseCompression( true );
-  labeledFeatureSpaceWriter->SetInput( filter->GetLabeledFeatureSpace() );
+  HistoWriterType::Pointer labeledFeatureSpaceWriter = HistoWriterType::New();
+  labeledFeatureSpaceWriter->SetFileName(argv[11]);
+  labeledFeatureSpaceWriter->SetUseCompression(true);
+  labeledFeatureSpaceWriter->SetInput(filter->GetLabeledFeatureSpace());
   try
-    {
+  {
     labeledFeatureSpaceWriter->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during write:" << std::endl << e
-      << std::endl;
+  }
+  catch (itk::ExceptionObject & e)
+  {
+    std::cout << "Exception caught during write:" << std::endl << e << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;

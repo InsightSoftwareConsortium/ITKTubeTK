@@ -42,20 +42,19 @@ namespace tube
  *
  * \ingroup  ObjectDocuments
  */
-template< class TObjectDocument, class TImageType >
-class ObjectDocumentToImageFilter
-: public ObjectDocumentToObjectSource< TObjectDocument,
-  TImageType::ImageDimension >
+template <class TObjectDocument, class TImageType>
+class ObjectDocumentToImageFilter : public ObjectDocumentToObjectSource<TObjectDocument, TImageType::ImageDimension>
 {
 public:
-
-  enum { Dimension = 3 };
+  enum
+  {
+    Dimension = 3
+  };
 
   using Self = ObjectDocumentToImageFilter;
-  using Superclass = ObjectDocumentToObjectSource< TObjectDocument,
-    TImageType::ImageDimension >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ObjectDocumentToObjectSource<TObjectDocument, TImageType::ImageDimension>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using DocumentType = TObjectDocument;
   using ConstDocumentPointer = typename DocumentType::ConstPointer;
@@ -66,62 +65,64 @@ public:
   using TransformType = typename Superclass::TransformType;
   using TransformPointer = typename TransformType::Pointer;
 
-  using InterpolateImageFunctionType = InterpolateImageFunction< ImageType, double >;
-  typedef typename InterpolateImageFunctionType::Pointer
-    InterpolateImageFunctionPointer;
+  using InterpolateImageFunctionType = InterpolateImageFunction<ImageType, double>;
+  typedef typename InterpolateImageFunctionType::Pointer InterpolateImageFunctionPointer;
 
-  itkNewMacro( Self );
-  itkTypeMacro( ObjectDocumentToImageFilter, ObjectDocumentToObjectSource );
+  itkNewMacro(Self);
+  itkTypeMacro(ObjectDocumentToImageFilter, ObjectDocumentToObjectSource);
 
   /** Return the interpolator. */
-  itkGetModifiableObjectMacro( Interpolator, InterpolateImageFunctionType );
+  itkGetModifiableObjectMacro(Interpolator, InterpolateImageFunctionType);
 
   /** Set the interpolator. */
-  itkSetObjectMacro( Interpolator, InterpolateImageFunctionType );
+  itkSetObjectMacro(Interpolator, InterpolateImageFunctionType);
 
   /** Return the output. */
   using Superclass::GetOutput;
-  ImageType * GetOutput( void ) override;
+  ImageType *
+  GetOutput(void) override;
 
 protected:
-
-  using ImageFileReaderType = ImageFileReader< ImageType >;
-  using ResampleImageFilterType = ResampleImageFilter< ImageType, ImageType >;
+  using ImageFileReaderType = ImageFileReader<ImageType>;
+  using ResampleImageFilterType = ResampleImageFilter<ImageType, ImageType>;
   using SizeType = typename ImageType::SizeType;
   using PointType = typename ImageType::PointType;
 
   /** Constructor. */
-  ObjectDocumentToImageFilter( void );
+  ObjectDocumentToImageFilter(void);
 
   /** Destructor. */
-  virtual ~ObjectDocumentToImageFilter( void );
+  virtual ~ObjectDocumentToImageFilter(void);
 
   /** Generate the output data. */
-  virtual void GenerateData( void ) override;
+  virtual void
+  GenerateData(void) override;
 
   /** Read the specified object document. */
-  virtual ImagePointer ReadDocument( ConstDocumentPointer image );
+  virtual ImagePointer
+  ReadDocument(ConstDocumentPointer image);
 
   /** Resample the specified image. */
-  virtual ImagePointer ResampleImage( ImagePointer image,
-                                      TransformPointer transform );
+  virtual ImagePointer
+  ResampleImage(ImagePointer image, TransformPointer transform);
 
   /** Print information about the object. */
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
+  virtual void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Copy constructor not implemented.
-  ObjectDocumentToImageFilter( const Self & self );
+  ObjectDocumentToImageFilter(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
   /** Return the transformed bounding box. */
-  void GetTransformedBoundingBox( ImagePointer image,
-    TransformPointer transform, SizeType & size, PointType & origin ) const;
+  void
+  GetTransformedBoundingBox(ImagePointer image, TransformPointer transform, SizeType & size, PointType & origin) const;
 
-  InterpolateImageFunctionPointer  m_Interpolator;
+  InterpolateImageFunctionPointer m_Interpolator;
 
 }; // End class ObjectDocumentToImageFilter
 
@@ -130,7 +131,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeObjectDocumentToImageFilter.hxx"
+#  include "itktubeObjectDocumentToImageFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeObjectDocumentToImageFilter_h )

@@ -38,45 +38,48 @@ namespace tube
 class Object
 {
 public:
-
   using Self = Object;
   using Pointer = Self *;
   using ConstPointer = const Self *;
 
-  tubeTypeMacroNoOverride( Object );
+  tubeTypeMacroNoOverride(Object);
 
   /** Constructor. */
-  Object( void );
+  Object(void);
 
   /** Destructor. */
-  virtual ~Object( void );
+  virtual ~Object(void);
 
   /** Print out information about this object. */
-  void Print( std::ostream & os, Indent indent = 0 ) const;
+  void
+  Print(std::ostream & os, Indent indent = 0) const;
 
 protected:
-
   /** Header for when printing out information about this object. */
-  virtual void PrintHeader( std::ostream & os, Indent indent ) const;
+  virtual void
+  PrintHeader(std::ostream & os, Indent indent) const;
 
   /** Print out information about the member variables of this object. */
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
+  virtual void
+  PrintSelf(std::ostream & os, Indent indent) const;
 
   /** Footer for when printing out information about this object. */
-  virtual void PrintFooter( std::ostream & os, Indent indent ) const;
+  virtual void
+  PrintFooter(std::ostream & os, Indent indent) const;
 
 private:
-
   // Copy constructor not implemented.
-  Object( const Self & self );
+  Object(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
 }; // End class Object
 
 /** Print out information about the specified object. */
-std::ostream & operator<<( std::ostream & os, const Object & object );
+std::ostream &
+operator<<(std::ostream & os, const Object & object);
 
 } // End namespace tube
 

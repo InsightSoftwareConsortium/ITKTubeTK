@@ -41,31 +41,28 @@ namespace itk
 namespace tube
 {
 
-template< class TInputImage, class TOutputImage = TInputImage >
-class CVTImageFilter
-  : public ImageToImageFilter< TInputImage, TOutputImage >
+template <class TInputImage, class TOutputImage = TInputImage>
+class CVTImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
-
   /** Standard class type alias. */
   using Self = CVTImageFilter;
-  using Superclass = ImageToImageFilter< TInputImage, TOutputImage>;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkTypeMacro( CVTImageFilter, ImageToImageFilter );
+  itkTypeMacro(CVTImageFilter, ImageToImageFilter);
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TInputImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
 
   using InputImageType = TInputImage;
   using InputPixelType = typename InputImageType::PixelType;
 
   using IndexType = typename InputImageType::IndexType;
-  using ContinuousIndexType = ContinuousIndex<double, itkGetStaticConstMacro( ImageDimension )>;
+  using ContinuousIndexType = ContinuousIndex<double, itkGetStaticConstMacro(ImageDimension)>;
 
   using OutputImageType = TOutputImage;
   using OutputPixelType = typename OutputImageType::PixelType;
@@ -75,93 +72,99 @@ public:
 
   using PointArrayType = std::vector<ContinuousIndexType>;
 
-  using SamplingMethodEnum = enum {CVT_GRID, CVT_RANDOM, CVT_USER};
+  using SamplingMethodEnum = enum { CVT_GRID, CVT_RANDOM, CVT_USER };
 
   /** */
-  itkGetMacro( NumberOfCentroids, unsigned int );
-  itkSetMacro( NumberOfCentroids, unsigned int );
+  itkGetMacro(NumberOfCentroids, unsigned int);
+  itkSetMacro(NumberOfCentroids, unsigned int);
 
   /** */
-  itkGetMacro( InitialSamplingMethod, SamplingMethodEnum );
-  itkSetMacro( InitialSamplingMethod, SamplingMethodEnum );
+  itkGetMacro(InitialSamplingMethod, SamplingMethodEnum);
+  itkSetMacro(InitialSamplingMethod, SamplingMethodEnum);
 
   /** */
-  itkGetMacro( NumberOfSamples, unsigned int );
-  itkSetMacro( NumberOfSamples, unsigned int );
+  itkGetMacro(NumberOfSamples, unsigned int);
+  itkSetMacro(NumberOfSamples, unsigned int);
 
   /** */
-  itkGetMacro( NumberOfIterations, unsigned int );
-  itkSetMacro( NumberOfIterations, unsigned int );
+  itkGetMacro(NumberOfIterations, unsigned int);
+  itkSetMacro(NumberOfIterations, unsigned int);
 
   /** */
-  itkGetMacro( NumberOfIterationsPerBatch, unsigned int );
-  itkSetMacro( NumberOfIterationsPerBatch, unsigned int );
+  itkGetMacro(NumberOfIterationsPerBatch, unsigned int);
+  itkSetMacro(NumberOfIterationsPerBatch, unsigned int);
 
   /** */
-  itkGetMacro( NumberOfSamplesPerBatch, unsigned int );
-  itkSetMacro( NumberOfSamplesPerBatch, unsigned int );
+  itkGetMacro(NumberOfSamplesPerBatch, unsigned int);
+  itkSetMacro(NumberOfSamplesPerBatch, unsigned int);
 
   /** */
-  itkGetMacro( BatchSamplingMethod, SamplingMethodEnum );
-  itkSetMacro( BatchSamplingMethod, SamplingMethodEnum );
+  itkGetMacro(BatchSamplingMethod, SamplingMethodEnum);
+  itkSetMacro(BatchSamplingMethod, SamplingMethodEnum);
 
   /** */
-  itkGetMacro( Centroids, PointArrayType );
-  void SetCentroids( const PointArrayType & centroids );
+  itkGetMacro(Centroids, PointArrayType);
+  void
+  SetCentroids(const PointArrayType & centroids);
 
   /** */
-  itkGetMacro( Seed, long int );
-  itkSetMacro( Seed, long int );
+  itkGetMacro(Seed, long int);
+  itkSetMacro(Seed, long int);
 
-  itkGetMacro( AdjacencyMatrix, VariableSizeMatrix< double > );
+  itkGetMacro(AdjacencyMatrix, VariableSizeMatrix<double>);
 
 protected:
-  CVTImageFilter( void );
-  ~CVTImageFilter( void ) {}
+  CVTImageFilter(void);
+  ~CVTImageFilter(void) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void GenerateInputRequestedRegion( void ) override;
-  void EnlargeOutputRequestedRegion( DataObject * output ) override;
-  void GenerateData( void ) override;
+  void
+  GenerateInputRequestedRegion(void) override;
+  void
+  EnlargeOutputRequestedRegion(DataObject * output) override;
+  void
+  GenerateData(void) override;
 
-  double ComputeIteration( double & energyDiff );
-  void ComputeSample( PointArrayType * sample, unsigned int sampleSize,
-                     SamplingMethodEnum samplingMethod );
-  void ComputeClosest( const PointArrayType & sample,
-                      const PointArrayType & centroids,
-                      unsigned int * nearest );
+  double
+  ComputeIteration(double & energyDiff);
+  void
+  ComputeSample(PointArrayType * sample, unsigned int sampleSize, SamplingMethodEnum samplingMethod);
+  void
+  ComputeClosest(const PointArrayType & sample, const PointArrayType & centroids, unsigned int * nearest);
 
-  void ComputeAdjacencyMatrix( void );
+  void
+  ComputeAdjacencyMatrix(void);
 
 private:
-  CVTImageFilter( const Self& );
-  void operator=( const Self& );
+  CVTImageFilter(const Self &);
+  void
+  operator=(const Self &);
 
-  typename OutputImageType::Pointer            m_OutputImage;
+  typename OutputImageType::Pointer m_OutputImage;
 
-  typename InputImageType::ConstPointer        m_InputImage;
+  typename InputImageType::ConstPointer m_InputImage;
 
-  unsigned int          m_NumberOfCentroids;
-  PointArrayType        m_Centroids;
+  unsigned int   m_NumberOfCentroids;
+  PointArrayType m_Centroids;
 
-  double                m_InputImageMax;
-  SizeType              m_InputImageSize;
+  double   m_InputImageMax;
+  SizeType m_InputImageSize;
 
-  long int              m_Seed;
-  itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer
-                        m_RandomGenerator;
+  long int                                                        m_Seed;
+  itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer m_RandomGenerator;
 
-  SamplingMethodEnum    m_InitialSamplingMethod;
+  SamplingMethodEnum m_InitialSamplingMethod;
 
-  unsigned int          m_NumberOfSamples;
-  unsigned int          m_NumberOfIterations;
+  unsigned int m_NumberOfSamples;
+  unsigned int m_NumberOfIterations;
 
-  SamplingMethodEnum    m_BatchSamplingMethod;
-  unsigned int          m_NumberOfIterationsPerBatch;
-  unsigned int          m_NumberOfSamplesPerBatch;
+  SamplingMethodEnum m_BatchSamplingMethod;
+  unsigned int       m_NumberOfIterationsPerBatch;
+  unsigned int       m_NumberOfSamplesPerBatch;
 
-  VariableSizeMatrix< double >  m_AdjacencyMatrix;
+  VariableSizeMatrix<double> m_AdjacencyMatrix;
 
 }; // End class CVTImageFilter
 
@@ -170,7 +173,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeCVTImageFilter.hxx"
+#  include "itktubeCVTImageFilter.hxx"
 #endif
 
 #endif // End !defined( _itkCVTImageFilter_h )

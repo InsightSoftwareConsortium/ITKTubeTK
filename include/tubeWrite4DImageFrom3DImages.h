@@ -38,70 +38,75 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class InputImageT >
-class Write4DImageFrom3DImages:
-  public itk::ProcessObject
+template <class InputImageT>
+class Write4DImageFrom3DImages : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = Write4DImageFrom3DImages;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   using InputImageType = InputImageT;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( Write4DImageFrom3DImages, ProcessObject );
+  itkTypeMacro(Write4DImageFrom3DImages, ProcessObject);
 
   /***/
   /***/
   /***/
 
   /** Set the source image. */
-  void SetNumberOfInputImages( unsigned int numInputs );
+  void
+  SetNumberOfInputImages(unsigned int numInputs);
 
   /** Set the index'th output image slice */
-  void SetNthInputImage( unsigned int outputIndex,
-    const InputImageType * img);
+  void
+  SetNthInputImage(unsigned int outputIndex, const InputImageType * img);
 
-  itkSetMacro( FileName, std::string );
+  itkSetMacro(FileName, std::string);
 
-  void Write( void )
-  { this->Update(); };
+  void
+  Write(void)
+  {
+    this->Update();
+  };
 
 protected:
-  Write4DImageFrom3DImages( void );
+  Write4DImageFrom3DImages(void);
   ~Write4DImageFrom3DImages() {};
 
-  void Update() override;
+  void
+  Update() override;
 
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itktubeTubeExtractor parameters **/
-  Write4DImageFrom3DImages( const Self & );
-  void operator=( const Self & );
+  Write4DImageFrom3DImages(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) 
-    override {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  using OutputImageType = itk::Image< typename InputImageType::PixelType, 4 >;
+  using OutputImageType = itk::Image<typename InputImageType::PixelType, 4>;
 
-  unsigned int                       m_NumberOfInputImages;
-  typename OutputImageType::Pointer  m_OutputImage;
-  std::string                        m_FileName;
-
+  unsigned int                      m_NumberOfInputImages;
+  typename OutputImageType::Pointer m_OutputImage;
+  std::string                       m_FileName;
 };
 
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeWrite4DImageFrom3DImages.hxx"
+#  include "tubeWrite4DImageFrom3DImages.hxx"
 #endif
 
 #endif // End !defined( __tubeWrite4DImageFrom3DImages_h )

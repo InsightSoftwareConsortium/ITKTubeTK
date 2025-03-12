@@ -59,11 +59,8 @@ namespace itk
  *
  * \ingroup Transforms
  */
-template <class TTransform,
-          class TFixedImage,
-          class TMovingImage>
-class AnisotropicSimilarityLandmarkBasedTransformInitializer :
-  public Object
+template <class TTransform, class TFixedImage, class TMovingImage>
+class AnisotropicSimilarityLandmarkBasedTransformInitializer : public Object
 {
 public:
   /** Standard class type alias. */
@@ -73,24 +70,21 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   /** New macro for creation of through a Smart Pointer. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( AnisotropicSimilarityLandmarkBasedTransformInitializer,
-    Object );
+  itkTypeMacro(AnisotropicSimilarityLandmarkBasedTransformInitializer, Object);
 
   /** Type of the transform to initialize */
   using TransformType = TTransform;
   using TransformPointer = typename TransformType::Pointer;
 
   /** Dimension of parameters. */
-  itkStaticConstMacro( InputSpaceDimension, unsigned int,
-                      TransformType::InputSpaceDimension );
-  itkStaticConstMacro( OutputSpaceDimension, unsigned int,
-                      TransformType::OutputSpaceDimension );
+  itkStaticConstMacro(InputSpaceDimension, unsigned int, TransformType::InputSpaceDimension);
+  itkStaticConstMacro(OutputSpaceDimension, unsigned int, TransformType::OutputSpaceDimension);
 
   /** Set the transform to be initialized */
-  itkSetObjectMacro( Transform, TransformType );
+  itkSetObjectMacro(Transform, TransformType);
 
   /** Image Types to use in the initialization of the transform */
   using FixedImageType = TFixedImage;
@@ -105,11 +99,12 @@ public:
    * the optimal transform, for the templated TransformType between the fixed
    * and moving image grid, given a set of landmarks. Nothing is done with the
    * images themselves. The method will therefore be deprecated and removed */
-  void SetFixedImage( const FixedImageType * image )
-    {
+  void
+  SetFixedImage(const FixedImageType * image)
+  {
     this->m_FixedImage = image;
-    itkLegacyBodyMacro( SetFixedImage, 2.2 );
-    }
+    itkLegacyBodyMacro(SetFixedImage, 2.2);
+  }
 
   /** \deprecated
    * Set the moving image.
@@ -117,41 +112,38 @@ public:
    * the optimal transform, for the templated TransformType between the fixed
    * and moving image grid, given a set of landmarks. Nothing is done with the
    * images themselves. The method will therefore be deprecated and removed. */
-  void SetMovingImage( const MovingImageType * image )
-    {
+  void
+  SetMovingImage(const MovingImageType * image)
+  {
     this->m_MovingImage = image;
-    itkLegacyBodyMacro( SetMovingImage, 2.2 );
-    }
+    itkLegacyBodyMacro(SetMovingImage, 2.2);
+  }
 
   /** Determine the image dimension. */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    FixedImageType::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, FixedImageType::ImageDimension);
 
   /** Convenience type alias */
-  typedef typename TransformType::InputPointType
-    InputPointType;
-  typedef typename TransformType::OutputVectorType
-    OutputVectorType;
-  using LandmarkPointType = Point<double, itkGetStaticConstMacro( ImageDimension )>;
+  typedef typename TransformType::InputPointType   InputPointType;
+  typedef typename TransformType::OutputVectorType OutputVectorType;
+  using LandmarkPointType = Point<double, itkGetStaticConstMacro(ImageDimension)>;
   using LandmarkPointContainer = std::vector<LandmarkPointType>;
-  typedef typename  LandmarkPointContainer::const_iterator
-    PointsContainerConstIterator;
-  typedef typename TransformType::ParametersType
-    ParametersType;
-  typedef typename ParametersType::ValueType
-    ParameterValueType;
+  typedef typename LandmarkPointContainer::const_iterator PointsContainerConstIterator;
+  typedef typename TransformType::ParametersType          ParametersType;
+  typedef typename ParametersType::ValueType              ParameterValueType;
 
   /** Set the Fixed landmark point containers */
-  void SetFixedLandmarks( const LandmarkPointContainer & fixedLandmarks )
-    {
+  void
+  SetFixedLandmarks(const LandmarkPointContainer & fixedLandmarks)
+  {
     this->m_FixedLandmarks = fixedLandmarks;
-    }
+  }
 
   /** Set the Moving landmark point containers */
-  void SetMovingLandmarks( const LandmarkPointContainer & movingLandmarks )
-    {
+  void
+  SetMovingLandmarks(const LandmarkPointContainer & movingLandmarks)
+  {
     this->m_MovingLandmarks = movingLandmarks;
-    }
+  }
 
   /**  Supported Transform type alias */
   using AnisotropicSimilarity3DTransformType = AnisotropicSimilarity3DTransform<ParameterValueType>;
@@ -159,30 +151,32 @@ public:
   using Rigid2DTransformType = Rigid2DTransform<ParameterValueType>;
 
   /** Initialize the transform from the landmarks */
-  virtual void InitializeTransform();
+  virtual void
+  InitializeTransform();
 
 protected:
   AnisotropicSimilarityLandmarkBasedTransformInitializer();
-  ~AnisotropicSimilarityLandmarkBasedTransformInitializer()
-    {
-    }
+  ~AnisotropicSimilarityLandmarkBasedTransformInitializer() {}
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   // Supported Transform types
   typedef enum
-    {
+  {
     AnisotropicSimilarity3Dtransform = 1,
     VersorRigid3Dtransform,
     Rigid2Dtransform,
     Else
-    } InputTransformType;
+  } InputTransformType;
+
 private:
   // purposely not implemented
-  AnisotropicSimilarityLandmarkBasedTransformInitializer( const Self & );
+  AnisotropicSimilarityLandmarkBasedTransformInitializer(const Self &);
 
   // purposely not implemented
-  void operator=( const Self & );
+  void
+  operator=(const Self &);
 
   FixedImagePointer  m_FixedImage;
   MovingImagePointer m_MovingImage;
@@ -194,10 +188,10 @@ private:
 
 }; // class LandmarkBasedTransformInitializer
 
-}  // namespace itk
+} // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkAnisotropicSimilarityLandmarkBasedTransformInitializer.hxx"
+#  include "itkAnisotropicSimilarityLandmarkBasedTransformInitializer.hxx"
 #endif
 
 #endif /* __itkAnisotropicSimilarityLandmarkBasedTransformInitializer_h */

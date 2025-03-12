@@ -39,86 +39,86 @@ namespace tube
  *  \ingroup TubeTK
  */
 
-template< class TPixel, unsigned int VDimension >
-class EnhanceContrastUsingPrior:
-  public itk::ProcessObject
+template <class TPixel, unsigned int VDimension>
+class EnhanceContrastUsingPrior : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = EnhanceContrastUsingPrior;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  using FilterType = itk::tube::EnhanceContrastUsingPriorImageFilter
-    < TPixel, VDimension >;
+  using FilterType = itk::tube::EnhanceContrastUsingPriorImageFilter<TPixel, VDimension>;
 
   using ImageType = typename FilterType::ImageType;
   using ConstImagePointer = typename ImageType::ConstPointer;
   using ImagePointer = typename ImageType::Pointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( EnhanceContrastUsingPrior, ProcessObject );
+  itkTypeMacro(EnhanceContrastUsingPrior, ProcessObject);
 
   /* Set input image */
-  tubeWrapSetConstObjectMacro( Input, ImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input, ImageType, Filter);
 
   /** Set/Get input Mask Image */
-  tubeWrapSetObjectMacro( InputMaskImage, ImageType, Filter );
-  tubeWrapGetObjectMacro( InputMaskImage, ImageType, Filter );
+  tubeWrapSetObjectMacro(InputMaskImage, ImageType, Filter);
+  tubeWrapGetObjectMacro(InputMaskImage, ImageType, Filter);
 
   /** Set/Get Object Scale */
-  tubeWrapSetMacro( ObjectScale, float, Filter );
-  tubeWrapGetMacro( ObjectScale, float, Filter );
+  tubeWrapSetMacro(ObjectScale, float, Filter);
+  tubeWrapGetMacro(ObjectScale, float, Filter);
 
   /** Set/Get Background Scale */
-  tubeWrapSetMacro( BackgroundScale, float, Filter );
-  tubeWrapGetMacro( BackgroundScale, float, Filter );
+  tubeWrapSetMacro(BackgroundScale, float, Filter);
+  tubeWrapGetMacro(BackgroundScale, float, Filter);
 
   /** Set/Get Mask Object Value */
-  tubeWrapSetMacro( MaskObjectValue, int, Filter );
-  tubeWrapGetMacro( MaskObjectValue, int, Filter );
+  tubeWrapSetMacro(MaskObjectValue, int, Filter);
+  tubeWrapGetMacro(MaskObjectValue, int, Filter);
 
   /** Set/Get Mask Background Value */
-  tubeWrapSetMacro( MaskBackgroundValue, int, Filter );
-  tubeWrapGetMacro( MaskBackgroundValue, int, Filter );
+  tubeWrapSetMacro(MaskBackgroundValue, int, Filter);
+  tubeWrapGetMacro(MaskBackgroundValue, int, Filter);
 
   /** Set/Get Optimization Iterations */
-  tubeWrapSetMacro( OptimizationIterations, int, Filter );
-  tubeWrapGetMacro( OptimizationIterations, int, Filter );
+  tubeWrapSetMacro(OptimizationIterations, int, Filter);
+  tubeWrapGetMacro(OptimizationIterations, int, Filter);
 
   /** Set/Get Optimization Seed */
-  tubeWrapSetMacro( OptimizationSeed, int, Filter );
-  tubeWrapGetMacro( OptimizationSeed, int, Filter );
+  tubeWrapSetMacro(OptimizationSeed, int, Filter);
+  tubeWrapGetMacro(OptimizationSeed, int, Filter);
 
-  tubeWrapGetObjectMacro( Output, ImageType, Filter );
+  tubeWrapGetObjectMacro(Output, ImageType, Filter);
 
   /* Runs tubes to image conversion */
-  tubeWrapUpdateMacro( Filter );
+  tubeWrapUpdateMacro(Filter);
 
 protected:
-  EnhanceContrastUsingPrior( void );
+  EnhanceContrastUsingPrior(void);
   ~EnhanceContrastUsingPrior() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkConvertSpatialGraphToImageFilter parameters **/
-  EnhanceContrastUsingPrior( const Self & );
-  void operator=( const Self & );
+  EnhanceContrastUsingPrior(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  typename FilterType::Pointer  m_Filter;
+  typename FilterType::Pointer m_Filter;
 };
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeEnhanceContrastUsingPrior.hxx"
+#  include "tubeEnhanceContrastUsingPrior.hxx"
 #endif
 
 #endif // End !defined( __tubeEnhanceContrastUsingPrior_h )

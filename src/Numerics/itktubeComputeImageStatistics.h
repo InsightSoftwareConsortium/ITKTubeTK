@@ -38,78 +38,77 @@ namespace tube
  * \brief Computes image statistics
  */
 
-template< class TPixel, unsigned int VDimension >
+template <class TPixel, unsigned int VDimension>
 class ComputeImageStatistics
-  : public itk::ImageToImageFilter< itk::Image< float, VDimension >,
-      itk::Image< float, VDimension > >
+  : public itk::ImageToImageFilter<itk::Image<float, VDimension>, itk::Image<float, VDimension>>
 {
 public:
-
   /** Standard class type alias. */
   using Self = ComputeImageStatistics;
-  using Superclass = itk::ImageToImageFilter< itk::Image< float, VDimension >,
-      itk::Image< float, VDimension > >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = itk::ImageToImageFilter<itk::Image<float, VDimension>, itk::Image<float, VDimension>>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Custom type alias */
-  using MaskType = itk::Image< TPixel, VDimension >;
-  using ConnCompType = itk::Image< unsigned int, VDimension >;
-  using VolumeType = itk::Image< float, VDimension >;
+  using MaskType = itk::Image<TPixel, VDimension>;
+  using ConnCompType = itk::Image<unsigned int, VDimension>;
+  using VolumeType = itk::Image<float, VDimension>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeImageStatistics, ImageToImageFilter );
+  itkTypeMacro(ComputeImageStatistics, ImageToImageFilter);
 
   /** Set/Get input mask */
-  itkSetObjectMacro( InputMask, MaskType );
-  itkGetModifiableObjectMacro( InputMask, MaskType );
+  itkSetObjectMacro(InputMask, MaskType);
+  itkGetModifiableObjectMacro(InputMask, MaskType);
 
-    /** Set/Get input mask */
-  virtual void SetQuantiles( std::vector<float> _arg );
-  itkGetMacro( Quantiles, std::vector<float> );
+  /** Set/Get input mask */
+  virtual void
+  SetQuantiles(std::vector<float> _arg);
+  itkGetMacro(Quantiles, std::vector<float>);
 
   /** Get Components */
-  itkGetMacro( CompMean, std::vector< double > );
-  itkGetMacro( CompMin, std::vector< double > );
-  itkGetMacro( CompMax, std::vector< double > );
-  itkGetMacro( CompStdDev, std::vector< double > );
-  itkGetMacro( CompCount, std::vector< double > );
-  itkGetMacro( CompValue, std::vector< TPixel > );
-  itkGetMacro( NumberOfComponents, unsigned int );
+  itkGetMacro(CompMean, std::vector<double>);
+  itkGetMacro(CompMin, std::vector<double>);
+  itkGetMacro(CompMax, std::vector<double>);
+  itkGetMacro(CompStdDev, std::vector<double>);
+  itkGetMacro(CompCount, std::vector<double>);
+  itkGetMacro(CompValue, std::vector<TPixel>);
+  itkGetMacro(NumberOfComponents, unsigned int);
 
   /** Write statistics to a CSV formatted file */
-  void WriteCSVStatistics( std::string csvStatisticsFile ) const;
+  void
+  WriteCSVStatistics(std::string csvStatisticsFile) const;
 
 
 protected:
+  ComputeImageStatistics(void);
+  ~ComputeImageStatistics(void) {};
 
-  ComputeImageStatistics( void );
-  ~ComputeImageStatistics( void ) {};
-
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Computes image statistics */
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
 private:
+  typename MaskType::Pointer m_InputMask;
 
-  typename MaskType::Pointer   m_InputMask;
+  std::vector<float> m_Quantiles;
 
-  std::vector<float>           m_Quantiles;
+  std::vector<double> m_CompMean;
+  std::vector<double> m_CompMin;
+  std::vector<double> m_CompMax;
+  std::vector<double> m_CompStdDev;
+  std::vector<double> m_CompCount;
+  std::vector<TPixel> m_CompValue;
 
-  std::vector< double >         m_CompMean;
-  std::vector< double >         m_CompMin;
-  std::vector< double >         m_CompMax;
-  std::vector< double >         m_CompStdDev;
-  std::vector< double >         m_CompCount;
-  std::vector< TPixel >         m_CompValue;
+  unsigned int m_NumberOfComponents;
 
-  unsigned int                 m_NumberOfComponents;
-
-  vnl_matrix< double >         m_QuantileValue;
+  vnl_matrix<double> m_QuantileValue;
 
 }; // End class ComputeImageStatistics
 
@@ -118,7 +117,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeComputeImageStatistics.hxx"
+#  include "itktubeComputeImageStatistics.hxx"
 #endif
 
 #endif // End !defined( __itktubeComputeImageStatistics_h )

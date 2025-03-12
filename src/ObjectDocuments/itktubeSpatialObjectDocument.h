@@ -43,37 +43,30 @@ namespace tube
 class SpatialObjectDocument : public ObjectDocument
 {
 public:
-
   using Self = SpatialObjectDocument;
   using Superclass = ObjectDocument;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using TransformNameListType = Superclass::TransformNameListType;
 
-  itkNewMacro( Self );
-  itkTypeMacro( SpatialObjectDocument, ObjectDocument );
+  itkNewMacro(Self);
+  itkTypeMacro(SpatialObjectDocument, ObjectDocument);
 
 protected:
-
   /** Constructor. */
-  SpatialObjectDocument( void )
-    {
-    this->SetObjectType( "SpatialObject" );
-    }
+  SpatialObjectDocument(void) { this->SetObjectType("SpatialObject"); }
 
   /** Destructor. */
-  virtual ~SpatialObjectDocument( void )
-    {
-    }
+  virtual ~SpatialObjectDocument(void) {}
 
 private:
-
   // Copy constructor not implemented.
-  SpatialObjectDocument( const Self & self );
+  SpatialObjectDocument(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
 }; // End class SpatialObjectDocument
 

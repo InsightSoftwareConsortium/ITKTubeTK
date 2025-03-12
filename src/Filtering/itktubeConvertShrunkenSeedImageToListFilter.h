@@ -35,83 +35,91 @@ namespace tube
 /** \class ConvertShrunkenSeedImageToList
  */
 
-template< class TImage, class TPointsImage >
-class ConvertShrunkenSeedImageToListFilter
-  : public ProcessObject
+template <class TImage, class TPointsImage>
+class ConvertShrunkenSeedImageToListFilter : public ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = ConvertShrunkenSeedImageToListFilter;
   using Superclass = ProcessObject;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using ImageType = TImage;
   using ImagePointer = typename ImageType::Pointer;
   using PixelType = typename ImageType::PixelType;
   using IndexType = typename ImageType::IndexType;
-  using ReaderType = ImageFileReader< ImageType >;
-  using IteratorType = ImageRegionIterator< ImageType >;
+  using ReaderType = ImageFileReader<ImageType>;
+  using IteratorType = ImageRegionIterator<ImageType>;
 
   using PointsImageType = TPointsImage;
   using PointsImagePointer = typename PointsImageType::Pointer;
   using PointsPixelType = typename PointsImageType::PixelType;
   using PointsIndexType = typename PointsImageType::IndexType;
-  using PointsReaderType = ImageFileReader< PointsImageType >;
-  using PointsIteratorType = ImageRegionIterator< PointsImageType >;
+  using PointsReaderType = ImageFileReader<PointsImageType>;
+  using PointsIteratorType = ImageRegionIterator<PointsImageType>;
 
-  using VnlMatrixType = vnl_matrix< PixelType >;
-  using OutputType = SimpleDataObjectDecorator< VnlMatrixType >;
+  using VnlMatrixType = vnl_matrix<PixelType>;
+  using OutputType = SimpleDataObjectDecorator<VnlMatrixType>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( ConvertShrunkenSeedImageToListFilter, ProcessObject );
+  itkTypeMacro(ConvertShrunkenSeedImageToListFilter, ProcessObject);
 
   /** ImageDimension constants */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
   /** Method to set/get the image */
-  void SetInput( const ImageType* image );
-  const ImageType* GetInput( void ) const;
+  void
+  SetInput(const ImageType * image);
+  const ImageType *
+  GetInput(void) const;
 
   /** Method to set/get the scale image */
-  void SetScaleImage( const ImageType* image );
-  const ImageType* GetScaleImage( void ) const;
+  void
+  SetScaleImage(const ImageType * image);
+  const ImageType *
+  GetScaleImage(void) const;
 
   /** Method to set/get the points image */
-  void SetPointsImage( const PointsImageType* image );
-  const PointsImageType* GetPointsImage( void ) const;
+  void
+  SetPointsImage(const PointsImageType * image);
+  const PointsImageType *
+  GetPointsImage(void) const;
 
-  SimpleDataObjectDecorator< vnl_matrix <typename TImage::PixelType> >*
-    GetOutput();
+  SimpleDataObjectDecorator<vnl_matrix<typename TImage::PixelType>> *
+  GetOutput();
 
-  itkGetMacro( Threshold, double );
-  itkSetMacro( Threshold, double );
+  itkGetMacro(Threshold, double);
+  itkSetMacro(Threshold, double);
 
 protected:
-  ConvertShrunkenSeedImageToListFilter( void );
-  ~ConvertShrunkenSeedImageToListFilter( void ) {};
+  ConvertShrunkenSeedImageToListFilter(void);
+  ~ConvertShrunkenSeedImageToListFilter(void) {};
 
-  virtual void GenerateData() override;
+  virtual void
+  GenerateData() override;
 
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
-  void VerifyPreconditions();
+  void
+  VerifyPreconditions();
 
 private:
   /** itkConvertShrunkenSeedImageToListFilter parameters **/
-  ConvertShrunkenSeedImageToListFilter( const Self & );
-  void operator=( const Self & );
+  ConvertShrunkenSeedImageToListFilter(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const typename Superclass::DataObjectIdentifierType &,
-    itk::DataObject * ) override {};
+  void
+  SetInput(const typename Superclass::DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  VnlMatrixType                        m_VnlOutput;
-  double                               m_Threshold;
+  VnlMatrixType m_VnlOutput;
+  double        m_Threshold;
 
 }; // End class ConvertShrunkenSeedImageToListFilter
 
@@ -120,7 +128,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeConvertShrunkenSeedImageToListFilter.hxx"
+#  include "itktubeConvertShrunkenSeedImageToListFilter.hxx"
 #endif
 
 #endif // End !defined(_itktubeConvertShrunkenSeedImageToListFilter_h)

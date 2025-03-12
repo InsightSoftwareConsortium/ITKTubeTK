@@ -38,9 +38,9 @@ limitations under the License.
 #include "itkScaleSkewAngle2DTransform.h"
 #include "itkScaleSkewVersor3DImageToImageRegistrationMethod.h"
 #include "itkSimilarity2DTransform.h"
-//#include "itktubeAnisotropicDiffusiveRegistrationFilter.h"
+// #include "itktubeAnisotropicDiffusiveRegistrationFilter.h"
 #include "itktubeAnisotropicDiffusiveRegistrationFunction.h"
-//#include "itktubeAnisotropicDiffusiveSparseRegistrationFilter.h"
+// #include "itktubeAnisotropicDiffusiveSparseRegistrationFilter.h"
 #include "itktubeDiffusiveRegistrationFilter.h"
 #include "itktubeDiffusiveRegistrationFilterUtils.h"
 #include "itktubeInitialSpatialObjectToImageRegistrationMethod.h"
@@ -56,8 +56,8 @@ limitations under the License.
 #include "itktubeSpatialObjectToImageRegistrationHelper.h"
 #include "itktubeSpatialObjectToImageRegistrationMethod.h"
 
-int tubeRegistrationHeaderTest( int itkNotUsed( argc ), char * itkNotUsed(
-  argv )[] )
+int
+tubeRegistrationHeaderTest(int itkNotUsed(argc), char * itkNotUsed(argv)[])
 {
   return EXIT_SUCCESS;
 }

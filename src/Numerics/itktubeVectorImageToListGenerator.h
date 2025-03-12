@@ -63,21 +63,21 @@ namespace Statistics
  *
  * \sa VectorImageToListAdaptor
  */
-template< class TImage, class TMaskImage >
+template <class TImage, class TMaskImage>
 class VectorImageToListGenerator : public ProcessObject
 {
 public:
   /** Standard class type alias */
   using Self = VectorImageToListGenerator;
   using Superclass = ProcessObject;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( VectorImageToListGenerator, ProcessObject );
+  itkTypeMacro(VectorImageToListGenerator, ProcessObject);
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Image type alias */
   using ImageType = TImage;
@@ -92,98 +92,107 @@ public:
   using MaskImageConstPointer = typename MaskImageType::ConstPointer;
   using MaskPixelType = typename MaskImageType::PixelType;
 
-   /** Type of the output list sample */
-  using ListSampleType = itk::Statistics::ListSample< MeasurementVectorType >;
+  /** Type of the output list sample */
+  using ListSampleType = itk::Statistics::ListSample<MeasurementVectorType>;
 
   /** Superclass type alias for Measurement vector, measurement,
    * Instance Identifier, frequency, size, size element value */
-  using PixelTraitsType = PixelTraits< typename ImageType::PixelType >;
-  typedef typename ListSampleType::MeasurementVectorSizeType
-                                     MeasurementVectorSizeType;
+  using PixelTraitsType = PixelTraits<typename ImageType::PixelType>;
+  typedef typename ListSampleType::MeasurementVectorSizeType MeasurementVectorSizeType;
 
   using DataObjectPointer = DataObject::Pointer;
 
   /** ListSample is not a DataObject, we need to decorate it to push it down
    * a ProcessObject's pipeline */
-  using ListSampleOutputType = DataObjectDecorator< ListSampleType >;
+  using ListSampleOutputType = DataObjectDecorator<ListSampleType>;
 
   /** the number of components in a measurement vector */
-  itkStaticConstMacro( MeasurementVectorSize, unsigned int,
-                      PixelTraitsType::Dimension );
+  itkStaticConstMacro(MeasurementVectorSize, unsigned int, PixelTraitsType::Dimension);
 
   /** Standard itk::ProcessObject subclass method. */
   using Superclass::MakeOutput;
-  virtual DataObjectPointer MakeOutput( DataObjectPointerArraySizeType idx )
-    override;
+  virtual DataObjectPointer
+  MakeOutput(DataObjectPointerArraySizeType idx) override;
 
-  virtual void SetMeasurementVectorSize( const MeasurementVectorSizeType s )
-    {
+  virtual void
+  SetMeasurementVectorSize(const MeasurementVectorSizeType s)
+  {
     // Measurement vector size for this class is fixed as the pixel's
     // dimension. This method should throw an exception if the user tries to
     // set the dimension to a different value.
-    if( s != MeasurementVectorSize )
-      {
-      itkExceptionMacro(
-        << "Measurement vector size for the image adaptor obtained"
-        << " from the pixel dimension is: "
-        << MeasurementVectorSize << " but you "
-        << "are setting it to " << s );
-      }
-    }
-
-  unsigned int GetMeasurementVectorSize( void ) const
+    if (s != MeasurementVectorSize)
     {
-    return MeasurementVectorSize;
+      itkExceptionMacro(<< "Measurement vector size for the image adaptor obtained"
+                        << " from the pixel dimension is: " << MeasurementVectorSize << " but you "
+                        << "are setting it to " << s);
     }
+  }
+
+  unsigned int
+  GetMeasurementVectorSize(void) const
+  {
+    return MeasurementVectorSize;
+  }
 
   /** Method to set/get the image */
-  void SetInput( const ImageType* image );
-  const ImageType* GetInput( void ) const;
+  void
+  SetInput(const ImageType * image);
+  const ImageType *
+  GetInput(void) const;
 
   /** Method to set/get the mask */
-  void SetMaskImage( const MaskImageType* image );
-  const MaskImageType* GetMaskImage( void ) const;
+  void
+  SetMaskImage(const MaskImageType * image);
+  const MaskImageType *
+  GetMaskImage(void) const;
 
   /** Method to get the list sample, the generated output. Note that this does
    * not invoke Update(). You should have called update on this class to get
    * any meaningful output. */
-  const ListSampleType * GetListSample( void ) const;
+  const ListSampleType *
+  GetListSample(void) const;
 
   /** Set the pixel value treated as on in the mask. If a mask has been
    * specified, only pixels with this value will be added to the list sample, if
    * no mask has been specified all pixels will be added as measurement vectors
    * to the list sample. */
-  void SetMaskValue( const MaskPixelType maskValue );
-  itkGetMacro( MaskValue, MaskPixelType );
+  void
+  SetMaskValue(const MaskPixelType maskValue);
+  itkGetMacro(MaskValue, MaskPixelType);
 
-  itkSetMacro( UseSingleMaskValue, bool );
-  itkGetMacro( UseSingleMaskValue, bool );
+  itkSetMacro(UseSingleMaskValue, bool);
+  itkGetMacro(UseSingleMaskValue, bool);
 
   /** This method causes the filter to generate its output. */
-  virtual void GenerateData( void ) override;
+  virtual void
+  GenerateData(void) override;
 
   /** This method ensures that a mask image if specified has requested regions
    * that at least contain the input image's buffered region. */
-  virtual void GenerateInputRequestedRegion( void ) override;
+  virtual void
+  GenerateInputRequestedRegion(void) override;
 
-  virtual void GenerateOutputInformation( void ) override;
+  virtual void
+  GenerateOutputInformation(void) override;
 
 protected:
-  VectorImageToListGenerator( void );
-  virtual ~VectorImageToListGenerator( void ) {}
+  VectorImageToListGenerator(void);
+  virtual ~VectorImageToListGenerator(void) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-  VectorImageToListGenerator( const Self& ); //purposely not implemented
-  void operator=( const Self& ); //purposely not implemented
+  VectorImageToListGenerator(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * )
-    override {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  MaskPixelType       m_MaskValue;
-  bool                m_UseSingleMaskValue;
+  MaskPixelType m_MaskValue;
+  bool          m_UseSingleMaskValue;
 
 }; // End class VectorImageToListGenerator
 
@@ -194,7 +203,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeVectorImageToListGenerator.hxx"
+#  include "itktubeVectorImageToListGenerator.hxx"
 #endif
 
 #endif // End !defined( VectorImageToListGenerator )

@@ -35,15 +35,15 @@ template <unsigned int ObjectDimension, typename TFixedImage>
 SpatialObjectToImageMetric<ObjectDimension, TFixedImage>::SpatialObjectToImageMetric()
 
 {
-  m_FixedImage = nullptr;          // has to be provided by the user.
+  m_FixedImage = nullptr; // has to be provided by the user.
 
   m_MovingSpatialObject = nullptr; // has to be provided by the user.
 
-  m_Transform = nullptr;           // has to be provided by the user.
+  m_Transform = nullptr; // has to be provided by the user.
 
   m_UseFixedImageMaskObject = false;
   m_FixedImageMaskObject = nullptr;
-  
+
   m_UseMovingSpatialObjectMaskObject = false;
   m_MovingSpatialObjectMaskObject = nullptr;
 
@@ -52,75 +52,72 @@ SpatialObjectToImageMetric<ObjectDimension, TFixedImage>::SpatialObjectToImageMe
 
 template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageMetric<ObjectDimension, TImage>
-::SetFixedImage( const FixedImageType * fixedImage )
+SpatialObjectToImageMetric<ObjectDimension, TImage>::SetFixedImage(const FixedImageType * fixedImage)
 {
-  if( this->m_FixedImage.GetPointer() != fixedImage )
-    {
+  if (this->m_FixedImage.GetPointer() != fixedImage)
+  {
     this->m_FixedImage = fixedImage;
 
-    //this->ProcessObject::SetNthInput(0, const_cast<ImageType *>( fixedImage ) );
+    // this->ProcessObject::SetNthInput(0, const_cast<ImageType *>( fixedImage ) );
 
     this->Modified();
-    }
+  }
 }
 
 template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageMetric<ObjectDimension, TImage>
-::SetMovingSpatialObject( const MovingSpatialObjectType * movingSpatialObject )
+SpatialObjectToImageMetric<ObjectDimension, TImage>::SetMovingSpatialObject(
+  const MovingSpatialObjectType * movingSpatialObject)
 {
   this->m_MovingSpatialObject = movingSpatialObject;
 
-  //this->ProcessObject::SetNthInput(1, const_cast<SpatialObjectType *>(
-      //m_MovingSpatialObject ) );
+  // this->ProcessObject::SetNthInput(1, const_cast<SpatialObjectType *>(
+  // m_MovingSpatialObject ) );
 
   this->Modified();
 }
 
 template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageMetric<ObjectDimension, TImage>
-::SetFixedImageMaskObject( const ImageMaskObjectType * maskObject )
+SpatialObjectToImageMetric<ObjectDimension, TImage>::SetFixedImageMaskObject(const ImageMaskObjectType * maskObject)
 {
-  if( this->m_FixedImageMaskObject.GetPointer() != maskObject )
-    {
+  if (this->m_FixedImageMaskObject.GetPointer() != maskObject)
+  {
     this->m_FixedImageMaskObject = maskObject;
 
     this->Modified();
 
-    if( maskObject )
-      {
+    if (maskObject)
+    {
       m_UseFixedImageMaskObject = true;
-      }
-    else
-      {
-      m_UseFixedImageMaskObject = false;
-      }
     }
+    else
+    {
+      m_UseFixedImageMaskObject = false;
+    }
+  }
 }
 
 template <unsigned int ObjectDimension, class TImage>
 void
-SpatialObjectToImageMetric<ObjectDimension, TImage>
-::SetMovingSpatialObjectMaskObject(
-  const SpatialObjectMaskObjectType * maskObject )
+SpatialObjectToImageMetric<ObjectDimension, TImage>::SetMovingSpatialObjectMaskObject(
+  const SpatialObjectMaskObjectType * maskObject)
 {
-  if( this->m_MovingSpatialObjectMaskObject.GetPointer() != maskObject )
-    {
+  if (this->m_MovingSpatialObjectMaskObject.GetPointer() != maskObject)
+  {
     this->m_MovingSpatialObjectMaskObject = maskObject;
 
     this->Modified();
 
-    if( maskObject )
-      {
+    if (maskObject)
+    {
       m_UseMovingSpatialObjectMaskObject = true;
-      }
-    else
-      {
-      m_UseMovingSpatialObjectMaskObject = false;
-      }
     }
+    else
+    {
+      m_UseMovingSpatialObjectMaskObject = false;
+    }
+  }
 }
 
 /** Return the number of parameters required by the Transform */
@@ -175,32 +172,28 @@ void
 SpatialObjectToImageMetric<ObjectDimension, TFixedImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
-  os << indent << "Moving Spatial Object: "
-    << m_MovingSpatialObject.GetPointer() << std::endl;
+  os << indent << "Moving Spatial Object: " << m_MovingSpatialObject.GetPointer() << std::endl;
   os << indent << "Fixed  Image: " << m_FixedImage.GetPointer() << std::endl;
   os << indent << "Transform:    " << m_Transform.GetPointer() << std::endl;
-  os << indent << "Last Transform parameters = " << m_LastTransformParameters
-    << std::endl;
-  if(m_UseMovingSpatialObjectMaskObject)
-    {
+  os << indent << "Last Transform parameters = " << m_LastTransformParameters << std::endl;
+  if (m_UseMovingSpatialObjectMaskObject)
+  {
     os << indent << "Use Moving Spatial Object Mask Object: True" << std::endl;
-    }
+  }
   else
-    {
+  {
     os << indent << "Use Moving Spatial Object Mask Object: False" << std::endl;
-    }
-  os << indent << "Moving Spatial Object Mask Object: "
-    << m_MovingSpatialObjectMaskObject.GetPointer() << std::endl;
-  if(m_UseFixedImageMaskObject)
-    {
+  }
+  os << indent << "Moving Spatial Object Mask Object: " << m_MovingSpatialObjectMaskObject.GetPointer() << std::endl;
+  if (m_UseFixedImageMaskObject)
+  {
     os << indent << "Use Fixed Image Mask Object: True" << std::endl;
-    }
+  }
   else
-    {
+  {
     os << indent << "Use Fixed Image Mask Object: False" << std::endl;
-    }
-  os << indent << "Fixed Image Mask Object: "
-    << m_FixedImageMaskObject.GetPointer() << std::endl;
+  }
+  os << indent << "Fixed Image Mask Object: " << m_FixedImageMaskObject.GetPointer() << std::endl;
 }
 
 } // end namespace tube

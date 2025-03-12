@@ -34,107 +34,100 @@ limitations under the License.
  *  the reference for the metric.
  */
 
-int itktubeSpatialObjectToImageMetricTest( int argc, char * argv[] )
+int
+itktubeSpatialObjectToImageMetricTest(int argc, char * argv[])
 {
-  if( argc < 4 )
-    {
-    std::cerr << "Missing Parameters: "
-              << argv[0]
-              << " Input_FixedImage "
+  if (argc < 4)
+  {
+    std::cerr << "Missing Parameters: " << argv[0] << " Input_FixedImage "
               << "Input_SpatialObject "
-              << "Input_ExpectedValue."
-              << std::endl;
+              << "Input_ExpectedValue." << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   using FloatType = double;
   static const unsigned int ImageDimension = 3;
   static const unsigned int ObjectDimension = 3;
 
-  using ImageType = itk::Image< FloatType, ImageDimension >;
+  using ImageType = itk::Image<FloatType, ImageDimension>;
 
-  using ImageReaderType = itk::ImageFileReader< ImageType >;
-  using GroupReaderType = itk::SpatialObjectReader< ObjectDimension >;
+  using ImageReaderType = itk::ImageFileReader<ImageType>;
+  using GroupReaderType = itk::SpatialObjectReader<ObjectDimension>;
 
-  using MetricType = itk::tube::PointBasedSpatialObjectToImageMetric< 3, ImageType >;
-  using TransformType = itk::ComposeScaleSkewVersor3DTransform< double >;
+  using MetricType = itk::tube::PointBasedSpatialObjectToImageMetric<3, ImageType>;
+  using TransformType = itk::ComposeScaleSkewVersor3DTransform<double>;
 
   // read image ( fixedImage )
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
-  imageReader->SetFileName( argv[1] );
+  imageReader->SetFileName(argv[1]);
   try
-    {
+  {
     imageReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
+  }
+  catch (itk::ExceptionObject & err)
+  {
     std::cerr << "Exception caught: " << err << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // read group ( spatialObject )
   GroupReaderType::Pointer groupReader = GroupReaderType::New();
-  groupReader->SetFileName( argv[2] );
+  groupReader->SetFileName(argv[2]);
   try
-    {
+  {
     groupReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
+  }
+  catch (itk::ExceptionObject & err)
+  {
     std::cerr << "Exception caught: " << err << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // subsample points in vessel
-  using SubSampleFilterType =
-      itk::tube::SubSampleSpatialObjectFilter<>;
-  SubSampleFilterType::Pointer subSampleFilter =
-    SubSampleFilterType::New();
-  subSampleFilter->SetInput( groupReader->GetGroup() );
-  subSampleFilter->SetSampling( 30 );
+  using SubSampleFilterType = itk::tube::SubSampleSpatialObjectFilter<>;
+  SubSampleFilterType::Pointer subSampleFilter = SubSampleFilterType::New();
+  subSampleFilter->SetInput(groupReader->GetGroup());
+  subSampleFilter->SetSampling(30);
   try
-    {
+  {
     subSampleFilter->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
+  }
+  catch (itk::ExceptionObject & err)
+  {
     std::cerr << "Exception caught: " << err << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   //------------------------------------------------------------------
   // Compute the metric for a 3D image susampled at 1/30
   //------------------------------------------------------------------
   MetricType::Pointer metric = MetricType::New();
-  metric->SetExtent( 3 );
+  metric->SetExtent(3);
 
-  TransformType::Pointer transform = TransformType::New();
+  TransformType::Pointer        transform = TransformType::New();
   TransformType::ParametersType parameters = transform->GetParameters();
 
-  metric->SetFixedImage( imageReader->GetOutput() );
-  metric->SetMovingSpatialObject ( subSampleFilter->GetOutput() );
-  metric->SetTransform( transform );
+  metric->SetFixedImage(imageReader->GetOutput());
+  metric->SetMovingSpatialObject(subSampleFilter->GetOutput());
+  metric->SetTransform(transform);
   try
-    {
+  {
     metric->Initialize();
-    }
-  catch( itk::ExceptionObject &excp )
-    {
+  }
+  catch (itk::ExceptionObject & excp)
+  {
     std::cerr << "Exception caught while initializing metric." << std::endl;
     std::cerr << excp << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
-  const double epsilonReg = 0.05; // Delta threshold on the measure checking.
-  MetricType::MeasureType value = metric->GetValue( parameters );
-  if( value < ( std::atof( argv[3] ) - epsilonReg ) ||
-      value > ( std::atof( argv[3] ) + epsilonReg ) )
-    {
-    std::cerr << "Distance value different than expected: "
-              << value
-              << std::endl;
+  const double            epsilonReg = 0.05; // Delta threshold on the measure checking.
+  MetricType::MeasureType value = metric->GetValue(parameters);
+  if (value < (std::atof(argv[3]) - epsilonReg) || value > (std::atof(argv[3]) + epsilonReg))
+  {
+    std::cerr << "Distance value different than expected: " << value << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   return EXIT_SUCCESS;
 }

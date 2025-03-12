@@ -48,23 +48,19 @@ namespace tube
  *
  * This class derives from \sa MeanAndSigmaImageBuilder
  */
-template< class TInputImageType, class TOutputMeanImageType,
-  class TOutputSigmaImageType >
+template <class TInputImageType, class TOutputMeanImageType, class TOutputSigmaImageType>
 class RobustMeanAndSigmaImageBuilder
-: public MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
-  TOutputSigmaImageType >
+  : public MeanAndSigmaImageBuilder<TInputImageType, TOutputMeanImageType, TOutputSigmaImageType>
 {
 public:
-
   using Self = RobustMeanAndSigmaImageBuilder;
-  using Superclass = MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
-    TOutputSigmaImageType>;
+  using Superclass = MeanAndSigmaImageBuilder<TInputImageType, TOutputMeanImageType, TOutputSigmaImageType>;
 
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkNewMacro( Self );
-  itkTypeMacro( RobustMeanAndSigmaImageBuilder, MeanAndSigmaImageBuilder );
+  itkNewMacro(Self);
+  itkTypeMacro(RobustMeanAndSigmaImageBuilder, MeanAndSigmaImageBuilder);
 
   using InputImageType = TInputImageType;
   using OutputMeanImageType = TOutputMeanImageType;
@@ -90,7 +86,7 @@ public:
    * It is assumed that the input image has the same spacing, origin & size
    * ( unless DynamicallyAdjustOutputSize() is set )
    */
-  void AddImage( InputImagePointer );
+  void AddImage(InputImagePointer);
 
   /**
    * Must call this function to finish image additions and form the mean
@@ -98,29 +94,33 @@ public:
    * function will eliminate the results of this output and will start a new
    * summation.
    */
-  void FinalizeOutput( void );
+  void
+  FinalizeOutput(void);
 
   /**
    * Get the number of outliers on either side of the mean to remove prior
    * to statistical calculations
    */
-  itkGetConstMacro( NumberOfOutlierImagesToRemove, unsigned int );
+  itkGetConstMacro(NumberOfOutlierImagesToRemove, unsigned int);
 
   /**
    * Set the number of outliers on either side of the mean to remove prior
    * to statistical calculations
    */
-  itkSetMacro( NumberOfOutlierImagesToRemove, unsigned int );
+  itkSetMacro(NumberOfOutlierImagesToRemove, unsigned int);
 
   /**
    * Function to define class to find the median image. Requires that the
    * total number of images to be added to the form mean. Median will be
    * returned using the GetOutputMeanImage() function.
    */
-  void UseMedianImage( unsigned int totalNumberOfImages )
-    { m_TotalNumberOfImages = totalNumberOfImages; }
+  void
+  UseMedianImage(unsigned int totalNumberOfImages)
+  {
+    m_TotalNumberOfImages = totalNumberOfImages;
+  }
 
-  itkGetConstMacro( TotalNumberOfImages, unsigned int );
+  itkGetConstMacro(TotalNumberOfImages, unsigned int);
 
   /**
    * Update the output images to the inputed size. Can be called at any
@@ -129,13 +129,12 @@ public:
    * This does NOT test or warn if the current output image size is
    * decreased in any axis
    */
-  void UpdateOutputImageSize( SizeType );
+  void UpdateOutputImageSize(SizeType);
 
 
 protected:
-
-   RobustMeanAndSigmaImageBuilder( void );
-  ~RobustMeanAndSigmaImageBuilder( void ) {}
+  RobustMeanAndSigmaImageBuilder(void);
+  ~RobustMeanAndSigmaImageBuilder(void) {}
 
   /** Processing image types */
   using ProcessImageType = typename Superclass::ProcessImageType;
@@ -149,20 +148,13 @@ protected:
 
   using InputIteratorType = ImageRegionIterator<InputImageType>;
 
-  typedef typename Superclass::InputConstIteratorType
-    InputConstIteratorType;
-  typedef typename Superclass::ProcessConstIteratorType
-    ProcessConstIteratorType;
-  typedef typename Superclass::ProcessIteratorType
-    ProcessIteratorType;
-  typedef typename Superclass::CountConstIteratorType
-    CountConstIteratorType;
-  typedef typename Superclass::CountIteratorType
-    CountIteratorType;
-  typedef typename Superclass::OutputMeanIteratorType
-    OutputMeanIteratorType;
-  typedef typename Superclass::OutputSigmaIteratorType
-    OutputSigmaIteratorType;
+  typedef typename Superclass::InputConstIteratorType   InputConstIteratorType;
+  typedef typename Superclass::ProcessConstIteratorType ProcessConstIteratorType;
+  typedef typename Superclass::ProcessIteratorType      ProcessIteratorType;
+  typedef typename Superclass::CountConstIteratorType   CountConstIteratorType;
+  typedef typename Superclass::CountIteratorType        CountIteratorType;
+  typedef typename Superclass::OutputMeanIteratorType   OutputMeanIteratorType;
+  typedef typename Superclass::OutputSigmaIteratorType  OutputSigmaIteratorType;
 
   using InputImageListType = typename std::vector<InputImagePointer>;
 
@@ -170,21 +162,28 @@ protected:
    * Build new processing images ( i.e., sumImage, sumSquareImage,
    * validCountImage )
    */
-  void BuildProcessingImages( InputImagePointer i );
+  void
+  BuildProcessingImages(InputImagePointer i);
 
   /**
    * Get the ordered image list representing the lower half of voxel values.
    * Used to determine median.  Order is ascending pixel value
    */
-  InputImageListType& GetLowerOutlierImages( void )
-    { return m_LowerOutlierImages; }
+  InputImageListType &
+  GetLowerOutlierImages(void)
+  {
+    return m_LowerOutlierImages;
+  }
 
   /**
    * Set the ordered image list representing the lower half of voxel values.
    * Used to determine median.
    */
-  void  SetLowerOutlierImages( InputImageListType& list )
-    { m_LowerOutlierImages = list; }
+  void
+  SetLowerOutlierImages(InputImageListType & list)
+  {
+    m_LowerOutlierImages = list;
+  }
 
   /**
    * Get the ordered image list representing the upper outlier values.
@@ -192,8 +191,11 @@ protected:
    * standard deviation calculation.  Used to determine sigma calculations.
    * Order is descending starting from highest intensity
    */
-  InputImageListType& GetUpperOutlierImages( void )
-    { return m_UpperOutlierImages; }
+  InputImageListType &
+  GetUpperOutlierImages(void)
+  {
+    return m_UpperOutlierImages;
+  }
 
   /**
    * Set the ordered image list representing the upper outlier values.
@@ -201,38 +203,47 @@ protected:
    * standard deviation calculation. Used to determine sigma calculations.
    * Order is descending starting from highest intensity
    */
-  void SetUpperOutlierImages( InputImageListType& list )
-    { m_UpperOutlierImages = list; }
+  void
+  SetUpperOutlierImages(InputImageListType & list)
+  {
+    m_UpperOutlierImages = list;
+  }
 
-  void SetUpperImages( InputImagePointer i );
-  void SetLowerImages( InputImagePointer i );
-  void SetMedianImages( InputImagePointer i );
+  void
+  SetUpperImages(InputImagePointer i);
+  void
+  SetLowerImages(InputImagePointer i);
+  void
+  SetMedianImages(InputImagePointer i);
 
-  InputImagePointer GetImageCopy( InputImagePointer );
-  InputImageListType& AddToUpdateImageList( InputImagePointer input,
-    InputImageListType& list, bool ListIsAscending );
+  InputImagePointer GetImageCopy(InputImagePointer);
+  InputImageListType &
+  AddToUpdateImageList(InputImagePointer input, InputImageListType & list, bool ListIsAscending);
 
-  bool UseMedian( void )
-    { return ( m_TotalNumberOfImages > 0 ); }
+  bool
+  UseMedian(void)
+  {
+    return (m_TotalNumberOfImages > 0);
+  }
 
   /**
    * Builds median image from the LowerOutlierImages. Can only
    * be ( reasonably ) called after at least 1 image has been added
    */
-  OutputMeanImagePointer  GetMedianImage();
+  OutputMeanImagePointer
+  GetMedianImage();
 
 private:
+  InputImageListType m_LowerOutlierImages;
+  InputImageListType m_UpperOutlierImages;
 
-  InputImageListType                      m_LowerOutlierImages;
-  InputImageListType                      m_UpperOutlierImages;
-
-  unsigned int                            m_NumberOfOutlierImagesToRemove;
-  unsigned int                            m_TotalNumberOfImages;
+  unsigned int m_NumberOfOutlierImagesToRemove;
+  unsigned int m_TotalNumberOfImages;
 
 }; // End class RobustMeanAndSigmaImageBuilder
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeRobustMeanAndSigmaImageBuilder.hxx"
+#  include "itktubeRobustMeanAndSigmaImageBuilder.hxx"
 #endif
 
 } // End namespace tube

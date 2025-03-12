@@ -43,15 +43,14 @@ class ImageToImageRegistrationHelper : public Object
 {
 
 public:
-
   using Self = ImageToImageRegistrationHelper;
   using Superclass = Object;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( ImageToImageRegistrationHelper, Object );
+  itkTypeMacro(ImageToImageRegistrationHelper, Object);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   //
   // Custom Typedefs
@@ -60,8 +59,7 @@ public:
 
   using PixelType = typename TImage::PixelType;
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
   //
   // Available Registration Methods
@@ -85,62 +83,62 @@ public:
   //
   // Typedefs for the parameters of the registration methods
   //
-  typedef typename RegistrationMethodType::MaskObjectType
-  MaskObjectType;
+  typedef typename RegistrationMethodType::MaskObjectType MaskObjectType;
 
-  typedef typename OptimizedRegistrationMethodType::MetricMethodEnumType
-  MetricMethodEnumType;
+  typedef typename OptimizedRegistrationMethodType::MetricMethodEnumType MetricMethodEnumType;
 
-  typedef typename OptimizedRegistrationMethodType::InterpolationMethodEnumType
-  InterpolationMethodEnumType;
+  typedef typename OptimizedRegistrationMethodType::InterpolationMethodEnumType InterpolationMethodEnumType;
 
-  enum InitialMethodEnumType { INIT_WITH_NONE,
-                               INIT_WITH_CURRENT_RESULTS,
-                               INIT_WITH_IMAGE_CENTERS,
-                               INIT_WITH_CENTERS_OF_MASS,
-                               INIT_WITH_SECOND_MOMENTS,
-                               INIT_WITH_LANDMARKS,
-                               INIT_WITH_LOADED_TRANSFORM };
+  enum InitialMethodEnumType
+  {
+    INIT_WITH_NONE,
+    INIT_WITH_CURRENT_RESULTS,
+    INIT_WITH_IMAGE_CENTERS,
+    INIT_WITH_CENTERS_OF_MASS,
+    INIT_WITH_SECOND_MOMENTS,
+    INIT_WITH_LANDMARKS,
+    INIT_WITH_LOADED_TRANSFORM
+  };
 
-  enum RegistrationStageEnumType { PRE_STAGE,
-                                   LOAD_STAGE,
-                                   INIT_STAGE,
-                                   RIGID_STAGE,
-                                   AFFINE_STAGE,
-                                   BSPLINE_STAGE };
+  enum RegistrationStageEnumType
+  {
+    PRE_STAGE,
+    LOAD_STAGE,
+    INIT_STAGE,
+    RIGID_STAGE,
+    AFFINE_STAGE,
+    BSPLINE_STAGE
+  };
 
-  enum RegistrationMethodEnumType { NONE,
-                                    INITIAL,
-                                    RIGID,
-                                    AFFINE,
-                                    BSPLINE,
-                                    PIPELINE_RIGID,
-                                    PIPELINE_AFFINE,
-                                    PIPELINE_BSPLINE };
+  enum RegistrationMethodEnumType
+  {
+    NONE,
+    INITIAL,
+    RIGID,
+    AFFINE,
+    BSPLINE,
+    PIPELINE_RIGID,
+    PIPELINE_AFFINE,
+    PIPELINE_BSPLINE
+  };
 
-  typedef typename InitialRegistrationMethodType::TransformType
-  InitialTransformType;
+  typedef typename InitialRegistrationMethodType::TransformType InitialTransformType;
 
-  using LandmarkVectorType = std::vector<std::vector<float>  >;
+  using LandmarkVectorType = std::vector<std::vector<float>>;
 
   using PointType = typename TImage::PointType;
 
-  typedef typename RigidRegistrationMethodType::TransformType
-  RigidTransformType;
+  typedef typename RigidRegistrationMethodType::TransformType RigidTransformType;
 
-  typedef typename AffineRegistrationMethodType::TransformType
-  AffineTransformType;
+  typedef typename AffineRegistrationMethodType::TransformType AffineTransformType;
 
-  typedef typename Affine2DRegistrationMethodType::TransformType
-  Affine2DTransformType;
+  typedef typename Affine2DRegistrationMethodType::TransformType Affine2DTransformType;
 
-  typedef typename Affine3DRegistrationMethodType::TransformType
-  Affine3DTransformType;
+  typedef typename Affine3DRegistrationMethodType::TransformType Affine3DTransformType;
 
   using MatrixTransformType = AffineTransformType;
 
-  typedef typename BSplineRegistrationMethodType::TransformType
-  BSplineTransformType;
+  typedef typename BSplineRegistrationMethodType::TransformType BSplineTransformType;
 
   //
   // Custom Methods
@@ -151,23 +149,26 @@ public:
   //  Specify the fixed and moving images
   // **************
   // **************
-  void LoadFixedImage( const std::string & filename );
+  void
+  LoadFixedImage(const std::string & filename);
 
-  itkSetConstObjectMacro( FixedImage, TImage );
-  itkGetConstObjectMacro( FixedImage, TImage );
+  itkSetConstObjectMacro(FixedImage, TImage);
+  itkGetConstObjectMacro(FixedImage, TImage);
 
-  void LoadMovingImage( const std::string & filename );
+  void
+  LoadMovingImage(const std::string & filename);
 
-  itkSetConstObjectMacro( MovingImage, TImage );
-  itkGetConstObjectMacro( MovingImage, TImage );
+  itkSetConstObjectMacro(MovingImage, TImage);
+  itkGetConstObjectMacro(MovingImage, TImage);
 
   // **************
   //  Generic file-save function
   // **************
-  void SaveImage( const std::string & filename, const TImage * image );
+  void
+  SaveImage(const std::string & filename, const TImage * image);
 
-  itkSetMacro( RandomNumberSeed, unsigned int );
-  itkGetMacro( RandomNumberSeed, unsigned int );
+  itkSetMacro(RandomNumberSeed, unsigned int);
+  itkGetMacro(RandomNumberSeed, unsigned int);
 
   // **************
   // **************
@@ -175,72 +176,77 @@ public:
   //  metric and what ROI of the moving image is valid
   // **************
   // **************
-  itkSetMacro( UseFixedImageMaskObject, bool );
-  itkGetConstMacro( UseFixedImageMaskObject, bool );
-  itkBooleanMacro( UseFixedImageMaskObject );
+  itkSetMacro(UseFixedImageMaskObject, bool);
+  itkGetConstMacro(UseFixedImageMaskObject, bool);
+  itkBooleanMacro(UseFixedImageMaskObject);
 
-  void SetFixedImageMaskObject( const MaskObjectType * mask );
+  void
+  SetFixedImageMaskObject(const MaskObjectType * mask);
 
-  itkGetConstObjectMacro( FixedImageMaskObject, MaskObjectType );
+  itkGetConstObjectMacro(FixedImageMaskObject, MaskObjectType);
 
-  itkSetMacro( UseMovingImageMaskObject, bool );
-  itkGetConstMacro( UseMovingImageMaskObject, bool );
-  itkBooleanMacro( UseMovingImageMaskObject );
+  itkSetMacro(UseMovingImageMaskObject, bool);
+  itkGetConstMacro(UseMovingImageMaskObject, bool);
+  itkBooleanMacro(UseMovingImageMaskObject);
 
-  void SetMovingImageMaskObject( const MaskObjectType * mask );
+  void
+  SetMovingImageMaskObject(const MaskObjectType * mask);
 
-  itkGetConstObjectMacro( MovingImageMaskObject, MaskObjectType );
+  itkGetConstObjectMacro(MovingImageMaskObject, MaskObjectType);
 
-  itkSetMacro( UseRegionOfInterest, bool );
-  itkGetMacro( UseRegionOfInterest, bool );
-  itkSetMacro( RegionOfInterestPoint1, PointType );
-  itkGetMacro( RegionOfInterestPoint1, PointType );
-  itkSetMacro( RegionOfInterestPoint2, PointType );
-  itkGetMacro( RegionOfInterestPoint2, PointType );
-  void SetRegionOfInterest( const PointType & point1,
-    const PointType & point2 );
+  itkSetMacro(UseRegionOfInterest, bool);
+  itkGetMacro(UseRegionOfInterest, bool);
+  itkSetMacro(RegionOfInterestPoint1, PointType);
+  itkGetMacro(RegionOfInterestPoint1, PointType);
+  itkSetMacro(RegionOfInterestPoint2, PointType);
+  itkGetMacro(RegionOfInterestPoint2, PointType);
+  void
+  SetRegionOfInterest(const PointType & point1, const PointType & point2);
 
-  void SetRegionOfInterest( const std::vector<float> & points );
+  void
+  SetRegionOfInterest(const std::vector<float> & points);
 
   // **************
   //  Initialize the moving image mask as the region of initial overlap
   //  between the fixed and moving images
   // **************
-  itkSetMacro( SampleFromOverlap, bool );
-  itkGetMacro( SampleFromOverlap, bool );
-  itkBooleanMacro( SampleFromOverlap );
+  itkSetMacro(SampleFromOverlap, bool);
+  itkGetMacro(SampleFromOverlap, bool);
+  itkBooleanMacro(SampleFromOverlap);
 
-  itkSetMacro( SampleIntensityPortion, double );
-  itkGetConstMacro( SampleIntensityPortion, double );
+  itkSetMacro(SampleIntensityPortion, double);
+  itkGetConstMacro(SampleIntensityPortion, double);
 
   // **************
   // **************
   //  Update
   // **************
   // **************
-  void Initialize( void );
+  void
+  Initialize(void);
 
   /** This class provides an Update() method to fit the appearance of a
    * ProcessObject API, but it is not a ProcessObject.  */
-  void Update( void );
+  void
+  Update(void);
 
   // **************
   // **************
   //  Resample
   // **************
   // **************
-  const TImage * ResampleImage(
-    InterpolationMethodEnumType interp
-      = OptimizedRegistrationMethodType
-        ::LINEAR_INTERPOLATION, const TImage * movingImage = NULL,
-    const MatrixTransformType * matrixTransform = NULL,
-    const BSplineTransformType * bsplineTransform = NULL,
-    PixelType defaultPixelValue = 0, double portion = 1.0 );
+  const TImage *
+  ResampleImage(InterpolationMethodEnumType  interp = OptimizedRegistrationMethodType ::LINEAR_INTERPOLATION,
+                const TImage *               movingImage = NULL,
+                const MatrixTransformType *  matrixTransform = NULL,
+                const BSplineTransformType * bsplineTransform = NULL,
+                PixelType                    defaultPixelValue = 0,
+                double                       portion = 1.0);
 
   // Returns the moving image resampled into the space of the fixed image
-  typename TImage::ConstPointer  GetFinalMovingImage(
-    InterpolationMethodEnumType interp = OptimizedRegistrationMethodType
-    ::LINEAR_INTERPOLATION, PixelType defaultPixelValue = 0 );
+  typename TImage::ConstPointer
+  GetFinalMovingImage(InterpolationMethodEnumType interp = OptimizedRegistrationMethodType ::LINEAR_INTERPOLATION,
+                      PixelType                   defaultPixelValue = 0);
 
   // **************
   // **************
@@ -250,28 +256,30 @@ public:
   // **************
 
   // Specify the baseline image.
-  void LoadBaselineImage( const std::string & filename );
+  void
+  LoadBaselineImage(const std::string & filename);
 
-  itkSetConstObjectMacro( BaselineImage, TImage );
-  itkGetConstObjectMacro( BaselineImage, TImage );
+  itkSetConstObjectMacro(BaselineImage, TImage);
+  itkGetConstObjectMacro(BaselineImage, TImage);
 
   // Bound the required accuracy for the registration test to "pass"
-  itkSetMacro( BaselineNumberOfFailedPixelsTolerance, unsigned int );
-  itkGetMacro( BaselineNumberOfFailedPixelsTolerance, unsigned int );
-  itkSetMacro( BaselineIntensityTolerance, PixelType );
-  itkGetMacro( BaselineIntensityTolerance, PixelType );
-  itkSetMacro( BaselineRadiusTolerance, unsigned int );
-  itkGetMacro( BaselineRadiusTolerance, unsigned int );
+  itkSetMacro(BaselineNumberOfFailedPixelsTolerance, unsigned int);
+  itkGetMacro(BaselineNumberOfFailedPixelsTolerance, unsigned int);
+  itkSetMacro(BaselineIntensityTolerance, PixelType);
+  itkGetMacro(BaselineIntensityTolerance, PixelType);
+  itkSetMacro(BaselineRadiusTolerance, unsigned int);
+  itkGetMacro(BaselineRadiusTolerance, unsigned int);
 
   // Must be called after setting the BaselineImage in order to resample
   //   the moving image into the BaselineImage space, compute differences,
   //   and determine if it passed the test within the specified tolerances
-  void ComputeBaselineDifference( void );
+  void
+  ComputeBaselineDifference(void);
 
-  itkGetConstObjectMacro( BaselineDifferenceImage, TImage );
-  itkGetConstObjectMacro( BaselineResampledMovingImage, TImage );
-  itkGetMacro( BaselineNumberOfFailedPixels, unsigned int );
-  itkGetMacro( BaselineTestPassed, bool );
+  itkGetConstObjectMacro(BaselineDifferenceImage, TImage);
+  itkGetConstObjectMacro(BaselineResampledMovingImage, TImage);
+  itkGetMacro(BaselineNumberOfFailedPixels, unsigned int);
+  itkGetMacro(BaselineTestPassed, bool);
 
   // **************
   // **************
@@ -282,59 +290,62 @@ public:
   // **************
   // Control which steps of the registration pipeline are applied
   // **************
-  itkSetMacro( EnableLoadedRegistration, bool );
-  itkGetConstMacro( EnableLoadedRegistration, bool );
-  itkBooleanMacro( EnableLoadedRegistration );
+  itkSetMacro(EnableLoadedRegistration, bool);
+  itkGetConstMacro(EnableLoadedRegistration, bool);
+  itkBooleanMacro(EnableLoadedRegistration);
 
-  itkSetMacro( EnableInitialRegistration, bool );
-  itkGetConstMacro( EnableInitialRegistration, bool );
-  itkBooleanMacro( EnableInitialRegistration );
+  itkSetMacro(EnableInitialRegistration, bool);
+  itkGetConstMacro(EnableInitialRegistration, bool);
+  itkBooleanMacro(EnableInitialRegistration);
 
-  itkSetMacro( EnableRigidRegistration, bool );
-  itkGetConstMacro( EnableRigidRegistration, bool );
-  itkBooleanMacro( EnableRigidRegistration );
+  itkSetMacro(EnableRigidRegistration, bool);
+  itkGetConstMacro(EnableRigidRegistration, bool);
+  itkBooleanMacro(EnableRigidRegistration);
 
-  itkSetMacro( EnableAffineRegistration, bool );
-  itkGetConstMacro( EnableAffineRegistration, bool );
-  itkBooleanMacro( EnableAffineRegistration );
+  itkSetMacro(EnableAffineRegistration, bool);
+  itkGetConstMacro(EnableAffineRegistration, bool);
+  itkBooleanMacro(EnableAffineRegistration);
 
-  itkSetMacro( EnableBSplineRegistration, bool );
-  itkGetConstMacro( EnableBSplineRegistration, bool );
-  itkBooleanMacro( EnableBSplineRegistration );
+  itkSetMacro(EnableBSplineRegistration, bool);
+  itkGetConstMacro(EnableBSplineRegistration, bool);
+  itkBooleanMacro(EnableBSplineRegistration);
 
-  void SetRegistration( RegistrationMethodEnumType reg );
-  void SetInterpolation( InterpolationMethodEnumType interp );
-  void SetMetric( MetricMethodEnumType metric );
+  void
+  SetRegistration(RegistrationMethodEnumType reg);
+  void
+  SetInterpolation(InterpolationMethodEnumType interp);
+  void
+  SetMetric(MetricMethodEnumType metric);
 
   // **************
   // Specify the optimizer
   // **************
-  itkSetMacro( UseEvolutionaryOptimization, bool );
-  itkGetMacro( UseEvolutionaryOptimization, bool );
+  itkSetMacro(UseEvolutionaryOptimization, bool);
+  itkGetMacro(UseEvolutionaryOptimization, bool);
   // **************
   // Specify the expected magnitudes within the transform.  Used to
   //   guide the operating space of the optimizers
   // **************
-  itkSetMacro( ExpectedOffsetMagnitude, double );
-  itkGetConstMacro( ExpectedOffsetMagnitude, double );
+  itkSetMacro(ExpectedOffsetMagnitude, double);
+  itkGetConstMacro(ExpectedOffsetMagnitude, double);
 
-  itkSetMacro( ExpectedRotationMagnitude, double );
-  itkGetConstMacro( ExpectedRotationMagnitude, double );
+  itkSetMacro(ExpectedRotationMagnitude, double);
+  itkGetConstMacro(ExpectedRotationMagnitude, double);
 
-  itkSetMacro( ExpectedScaleMagnitude, double );
-  itkGetConstMacro( ExpectedScaleMagnitude, double );
+  itkSetMacro(ExpectedScaleMagnitude, double);
+  itkGetConstMacro(ExpectedScaleMagnitude, double);
 
-  itkSetMacro( ExpectedSkewMagnitude, double );
-  itkGetConstMacro( ExpectedSkewMagnitude, double );
+  itkSetMacro(ExpectedSkewMagnitude, double);
+  itkGetConstMacro(ExpectedSkewMagnitude, double);
 
-  itkSetMacro( ExpectedDeformationMagnitude, double );
-  itkGetConstMacro( ExpectedDeformationMagnitude, double );
+  itkSetMacro(ExpectedDeformationMagnitude, double);
+  itkGetConstMacro(ExpectedDeformationMagnitude, double);
 
   // **************
   //  Return the current product of the registration pipeline
   // **************
-  itkGetConstObjectMacro( CurrentMatrixTransform, MatrixTransformType );
-  itkGetConstObjectMacro( CurrentBSplineTransform, BSplineTransformType );
+  itkGetConstObjectMacro(CurrentMatrixTransform, MatrixTransformType);
+  itkGetConstObjectMacro(CurrentBSplineTransform, BSplineTransformType);
 
   // The image used for registration is updated at certain points in the
   //   registration pipeline for speed and transform composition.
@@ -342,164 +353,176 @@ public:
   //   to running the initial registration method and the image is resampled
   //   after the affine registration / prior to running bspline registration
   // The result of these resamplings is available as the CurrentMovingImage.
-  itkGetConstObjectMacro( CurrentMovingImage, TImage );
-  itkGetConstObjectMacro( LoadedTransformResampledImage, TImage );
-  itkGetConstObjectMacro( MatrixTransformResampledImage, TImage );
-  itkGetConstObjectMacro( BSplineTransformResampledImage, TImage );
+  itkGetConstObjectMacro(CurrentMovingImage, TImage);
+  itkGetConstObjectMacro(LoadedTransformResampledImage, TImage);
+  itkGetConstObjectMacro(MatrixTransformResampledImage, TImage);
+  itkGetConstObjectMacro(BSplineTransformResampledImage, TImage);
 
   // **************
   //  Not implemented at this time :(
   // **************
-  void LoadParameters( const std::string & filename );
+  void
+  LoadParameters(const std::string & filename);
 
-  void SaveParameters( const std::string & filename );
+  void
+  SaveParameters(const std::string & filename);
 
   // **************
   //  Final metric value after the pipeline has completed
   // **************
-  itkGetMacro( FinalMetricValue, double );
+  itkGetMacro(FinalMetricValue, double);
 
   // **************
   //  Determine if progress messages should be sent to cout
   // **************
-  itkSetMacro( ReportProgress, bool );
-  itkGetMacro( ReportProgress, bool );
-  itkBooleanMacro( ReportProgress );
+  itkSetMacro(ReportProgress, bool);
+  itkGetMacro(ReportProgress, bool);
+  itkBooleanMacro(ReportProgress);
 
-  itkSetMacro( MinimizeMemory, bool );
-  itkGetMacro( MinimizeMemory, bool );
-  itkBooleanMacro( MinimizeMemory );
+  itkSetMacro(MinimizeMemory, bool);
+  itkGetMacro(MinimizeMemory, bool);
+  itkBooleanMacro(MinimizeMemory);
 
   //
   // Loaded transforms parameters
   //
-  void LoadTransform( const std::string & filename, bool invert=false );
+  void
+  LoadTransform(const std::string & filename, bool invert = false);
 
-  void SaveTransform( const std::string & filename );
+  void
+  SaveTransform(const std::string & filename);
 
-  void SaveDisplacementField( const std::string &filename );
+  void
+  SaveDisplacementField(const std::string & filename);
 
-  void SetLoadedMatrixTransform( const MatrixTransformType & tfm,
-    bool invert=false );
+  void
+  SetLoadedMatrixTransform(const MatrixTransformType & tfm, bool invert = false);
 
-  itkGetConstObjectMacro( LoadedMatrixTransform, MatrixTransformType );
+  itkGetConstObjectMacro(LoadedMatrixTransform, MatrixTransformType);
 
-  void SetLoadedBSplineTransform( const BSplineTransformType & tfm );
+  void
+  SetLoadedBSplineTransform(const BSplineTransformType & tfm);
 
-  itkGetConstObjectMacro( LoadedBSplineTransform, BSplineTransformType );
+  itkGetConstObjectMacro(LoadedBSplineTransform, BSplineTransformType);
 
   //
   // Initial Parameters
   //
-  itkSetMacro( InitialMethodEnum, InitialMethodEnumType );
-  itkGetConstMacro( InitialMethodEnum, InitialMethodEnumType );
+  itkSetMacro(InitialMethodEnum, InitialMethodEnumType);
+  itkGetConstMacro(InitialMethodEnum, InitialMethodEnumType);
 
-  void SetFixedLandmarks( const LandmarkVectorType & fixedLandmarks );
-  void SetMovingLandmarks( const LandmarkVectorType & movingLandmarks );
+  void
+  SetFixedLandmarks(const LandmarkVectorType & fixedLandmarks);
+  void
+  SetMovingLandmarks(const LandmarkVectorType & movingLandmarks);
 
   //
   // Rigid Parameters
   //
-  itkSetMacro( RigidSamplingRatio, double );
-  itkGetConstMacro( RigidSamplingRatio, double );
+  itkSetMacro(RigidSamplingRatio, double);
+  itkGetConstMacro(RigidSamplingRatio, double);
 
-  itkSetMacro( RigidTargetError, double );
-  itkGetConstMacro( RigidTargetError, double );
+  itkSetMacro(RigidTargetError, double);
+  itkGetConstMacro(RigidTargetError, double);
 
-  itkSetMacro( RigidMaxIterations, unsigned int );
-  itkGetConstMacro( RigidMaxIterations, unsigned int );
+  itkSetMacro(RigidMaxIterations, unsigned int);
+  itkGetConstMacro(RigidMaxIterations, unsigned int);
 
-  itkSetMacro( RigidMetricMethodEnum, MetricMethodEnumType );
-  itkGetConstMacro( RigidMetricMethodEnum, MetricMethodEnumType );
+  itkSetMacro(RigidMetricMethodEnum, MetricMethodEnumType);
+  itkGetConstMacro(RigidMetricMethodEnum, MetricMethodEnumType);
 
-  itkSetMacro( RigidInterpolationMethodEnum, InterpolationMethodEnumType );
-  itkGetConstMacro( RigidInterpolationMethodEnum,
-    InterpolationMethodEnumType );
+  itkSetMacro(RigidInterpolationMethodEnum, InterpolationMethodEnumType);
+  itkGetConstMacro(RigidInterpolationMethodEnum, InterpolationMethodEnumType);
 
-  itkGetConstObjectMacro( RigidTransform, RigidTransformType );
-  itkGetMacro( RigidMetricValue, double );
+  itkGetConstObjectMacro(RigidTransform, RigidTransformType);
+  itkGetMacro(RigidMetricValue, double);
 
   //
   // Affine Parameters
   //
-  itkSetMacro( AffineSamplingRatio, double );
-  itkGetConstMacro( AffineSamplingRatio, double );
+  itkSetMacro(AffineSamplingRatio, double);
+  itkGetConstMacro(AffineSamplingRatio, double);
 
-  itkSetMacro( AffineTargetError, double );
-  itkGetConstMacro( AffineTargetError, double );
+  itkSetMacro(AffineTargetError, double);
+  itkGetConstMacro(AffineTargetError, double);
 
-  itkSetMacro( AffineMaxIterations, unsigned int );
-  itkGetConstMacro( AffineMaxIterations, unsigned int );
+  itkSetMacro(AffineMaxIterations, unsigned int);
+  itkGetConstMacro(AffineMaxIterations, unsigned int);
 
-  itkSetMacro( AffineMetricMethodEnum, MetricMethodEnumType );
-  itkGetConstMacro( AffineMetricMethodEnum, MetricMethodEnumType );
+  itkSetMacro(AffineMetricMethodEnum, MetricMethodEnumType);
+  itkGetConstMacro(AffineMetricMethodEnum, MetricMethodEnumType);
 
-  itkSetMacro( AffineInterpolationMethodEnum, InterpolationMethodEnumType );
-  itkGetConstMacro( AffineInterpolationMethodEnum,
-    InterpolationMethodEnumType );
+  itkSetMacro(AffineInterpolationMethodEnum, InterpolationMethodEnumType);
+  itkGetConstMacro(AffineInterpolationMethodEnum, InterpolationMethodEnumType);
 
-  itkGetConstObjectMacro( AffineTransform, AffineTransformType );
-  itkGetMacro( AffineMetricValue, double );
+  itkGetConstObjectMacro(AffineTransform, AffineTransformType);
+  itkGetMacro(AffineMetricValue, double);
 
   //
   // BSpline Parameters
   //
-  itkSetMacro( BSplineSamplingRatio, double );
-  itkGetConstMacro( BSplineSamplingRatio, double );
+  itkSetMacro(BSplineSamplingRatio, double);
+  itkGetConstMacro(BSplineSamplingRatio, double);
 
-  itkSetMacro( BSplineTargetError, double );
-  itkGetConstMacro( BSplineTargetError, double );
+  itkSetMacro(BSplineTargetError, double);
+  itkGetConstMacro(BSplineTargetError, double);
 
-  itkSetMacro( BSplineMaxIterations, unsigned int );
-  itkGetConstMacro( BSplineMaxIterations, unsigned int );
+  itkSetMacro(BSplineMaxIterations, unsigned int);
+  itkGetConstMacro(BSplineMaxIterations, unsigned int);
 
-  itkSetMacro( BSplineControlPointPixelSpacing, double );
-  itkGetConstMacro( BSplineControlPointPixelSpacing, double );
+  itkSetMacro(BSplineControlPointPixelSpacing, double);
+  itkGetConstMacro(BSplineControlPointPixelSpacing, double);
 
-  itkSetMacro( BSplineMetricMethodEnum, MetricMethodEnumType );
-  itkGetConstMacro( BSplineMetricMethodEnum, MetricMethodEnumType );
+  itkSetMacro(BSplineMetricMethodEnum, MetricMethodEnumType);
+  itkGetConstMacro(BSplineMetricMethodEnum, MetricMethodEnumType);
 
-  itkSetMacro( BSplineInterpolationMethodEnum,
-    InterpolationMethodEnumType );
-  itkGetConstMacro( BSplineInterpolationMethodEnum,
-    InterpolationMethodEnumType );
+  itkSetMacro(BSplineInterpolationMethodEnum, InterpolationMethodEnumType);
+  itkGetConstMacro(BSplineInterpolationMethodEnum, InterpolationMethodEnumType);
 
-  itkGetConstObjectMacro( BSplineTransform, BSplineTransformType );
-  itkGetMacro( BSplineMetricValue, double );
+  itkGetConstObjectMacro(BSplineTransform, BSplineTransformType);
+  itkGetMacro(BSplineMetricValue, double);
+
 protected:
+  ImageToImageRegistrationHelper(void);
+  virtual ~ImageToImageRegistrationHelper(void);
 
-  ImageToImageRegistrationHelper( void );
-  virtual ~ImageToImageRegistrationHelper( void );
+  void
+  PrintSelfHelper(std::ostream &              os,
+                  Indent                      indent,
+                  const std::string &         basename,
+                  MetricMethodEnumType        metric,
+                  InterpolationMethodEnumType interpolation) const;
 
-  void PrintSelfHelper( std::ostream & os, Indent indent,
-    const std::string & basename, MetricMethodEnumType metric,
-    InterpolationMethodEnumType interpolation ) const;
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
+  template <int tmpImageDimension>
+  void
+  AffineRegND()
+  {
+    typename Image<double, tmpImageDimension>::Pointer t;
+    AffineRegND(t);
+  }
 
-  template< int tmpImageDimension >
-  void AffineRegND() 
-   { typename Image< double, tmpImageDimension >::Pointer t; AffineRegND( t ); }
+  void
+  AffineRegND(Image<double, 2> * t);
 
-  void AffineRegND( Image< double, 2 > * t );
+  void
+  AffineRegND(Image<double, 3> * t);
 
-  void AffineRegND( Image< double, 3 > * t );
-
-  typedef typename InitialRegistrationMethodType::LandmarkPointType
-  LandmarkPointType;
-  typedef typename InitialRegistrationMethodType::LandmarkPointContainer
-  LandmarkPointContainer;
+  typedef typename InitialRegistrationMethodType::LandmarkPointType      LandmarkPointType;
+  typedef typename InitialRegistrationMethodType::LandmarkPointContainer LandmarkPointContainer;
 
   // Purposely not implemented
-  ImageToImageRegistrationHelper( const Self & );
+  ImageToImageRegistrationHelper(const Self &);
   // Purposely not implemented
-  void operator =( const Self & );
+  void
+  operator=(const Self &);
 
   //  Data
-  typename TImage::ConstPointer         m_FixedImage;
-  typename TImage::ConstPointer         m_MovingImage;
+  typename TImage::ConstPointer m_FixedImage;
+  typename TImage::ConstPointer m_MovingImage;
 
   bool   m_SampleFromOverlap;
   double m_SampleIntensityPortion;
@@ -533,24 +556,24 @@ private:
   RegistrationStageEnumType m_CompletedStage;
   bool                      m_CompletedResampling;
 
-  typename TImage::ConstPointer           m_CurrentMovingImage;
-  typename MatrixTransformType::Pointer   m_CurrentMatrixTransform;
-  typename BSplineTransformType::Pointer  m_CurrentBSplineTransform;
+  typename TImage::ConstPointer          m_CurrentMovingImage;
+  typename MatrixTransformType::Pointer  m_CurrentMatrixTransform;
+  typename BSplineTransformType::Pointer m_CurrentBSplineTransform;
 
-  typename TImage::ConstPointer         m_LoadedTransformResampledImage;
-  typename TImage::ConstPointer         m_MatrixTransformResampledImage;
-  typename TImage::ConstPointer         m_BSplineTransformResampledImage;
+  typename TImage::ConstPointer m_LoadedTransformResampledImage;
+  typename TImage::ConstPointer m_MatrixTransformResampledImage;
+  typename TImage::ConstPointer m_BSplineTransformResampledImage;
 
   double m_FinalMetricValue;
 
-  typename TImage::ConstPointer         m_BaselineImage;
+  typename TImage::ConstPointer m_BaselineImage;
 
   unsigned int m_BaselineNumberOfFailedPixelsTolerance;
   PixelType    m_BaselineIntensityTolerance;
   unsigned int m_BaselineRadiusTolerance;
 
-  typename TImage::ConstPointer         m_BaselineResampledMovingImage;
-  typename TImage::ConstPointer         m_BaselineDifferenceImage;
+  typename TImage::ConstPointer m_BaselineResampledMovingImage;
+  typename TImage::ConstPointer m_BaselineDifferenceImage;
 
   unsigned int m_BaselineNumberOfFailedPixels;
   bool         m_BaselineTestPassed;
@@ -563,12 +586,12 @@ private:
   bool m_UseEvolutionaryOptimization;
 
   //  Loaded Tansform
-  typename MatrixTransformType::Pointer   m_LoadedMatrixTransform;
-  typename BSplineTransformType::Pointer  m_LoadedBSplineTransform;
+  typename MatrixTransformType::Pointer  m_LoadedMatrixTransform;
+  typename BSplineTransformType::Pointer m_LoadedBSplineTransform;
 
   //  Initial Parameters
-  InitialMethodEnumType                   m_InitialMethodEnum;
-  typename InitialTransformType::Pointer  m_InitialTransform;
+  InitialMethodEnumType                  m_InitialMethodEnum;
+  typename InitialTransformType::Pointer m_InitialTransform;
 
   LandmarkPointContainer m_FixedLandmarks;
   LandmarkPointContainer m_MovingLandmarks;
@@ -578,9 +601,9 @@ private:
   double       m_RigidTargetError;
   unsigned int m_RigidMaxIterations;
 
-  typename RigidTransformType::Pointer    m_RigidTransform;
-  MetricMethodEnumType                    m_RigidMetricMethodEnum;
-  InterpolationMethodEnumType             m_RigidInterpolationMethodEnum;
+  typename RigidTransformType::Pointer m_RigidTransform;
+  MetricMethodEnumType                 m_RigidMetricMethodEnum;
+  InterpolationMethodEnumType          m_RigidInterpolationMethodEnum;
 
   double m_RigidMetricValue;
 
@@ -589,9 +612,9 @@ private:
   double       m_AffineTargetError;
   unsigned int m_AffineMaxIterations;
 
-  typename AffineTransformType::Pointer   m_AffineTransform;
-  MetricMethodEnumType                    m_AffineMetricMethodEnum;
-  InterpolationMethodEnumType             m_AffineInterpolationMethodEnum;
+  typename AffineTransformType::Pointer m_AffineTransform;
+  MetricMethodEnumType                  m_AffineMetricMethodEnum;
+  InterpolationMethodEnumType           m_AffineInterpolationMethodEnum;
 
   double m_AffineMetricValue;
 
@@ -601,18 +624,17 @@ private:
   unsigned int m_BSplineMaxIterations;
   double       m_BSplineControlPointPixelSpacing;
 
-  typename BSplineTransformType::Pointer  m_BSplineTransform;
-  MetricMethodEnumType                    m_BSplineMetricMethodEnum;
-  InterpolationMethodEnumType             m_BSplineInterpolationMethodEnum;
+  typename BSplineTransformType::Pointer m_BSplineTransform;
+  MetricMethodEnumType                   m_BSplineMetricMethodEnum;
+  InterpolationMethodEnumType            m_BSplineInterpolationMethodEnum;
 
   double m_BSplineMetricValue;
-
 };
 
-}
+} // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkImageToImageRegistrationHelper.hxx"
+#  include "itkImageToImageRegistrationHelper.hxx"
 #endif
 
 #endif

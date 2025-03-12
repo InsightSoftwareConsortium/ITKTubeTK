@@ -40,109 +40,109 @@ namespace tube
  *  Compute vesselness score of an image using Frangi's method.
  */
 
-template< class TPixel, unsigned int Dimension >
-class EnhanceTubesUsingDiffusion:
-  public itk::ProcessObject
+template <class TPixel, unsigned int Dimension>
+class EnhanceTubesUsingDiffusion : public itk::ProcessObject
 {
 public:
   /** Standard class type alias. */
   using Self = EnhanceTubesUsingDiffusion;
   using Superclass = itk::ProcessObject;
-  using Pointer = itk::SmartPointer< Self >;
-  using ConstPointer = itk::SmartPointer< const Self >;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  using ImageType = itk::Image< TPixel, Dimension >;
+  using ImageType = itk::Image<TPixel, Dimension>;
 
-  using FilterType = itk::tube::TubeEnhancingDiffusion2DImageFilter< TPixel,
-    Dimension >;
+  using FilterType = itk::tube::TubeEnhancingDiffusion2DImageFilter<TPixel, Dimension>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( EnhanceTubesUsingDiffusion, ProcessObject );
+  itkTypeMacro(EnhanceTubesUsingDiffusion, ProcessObject);
 
   /** Set/Get minimum sigma/scale */
-  itkSetMacro( MinSigma, double );
-  itkGetConstMacro( MinSigma, double );
+  itkSetMacro(MinSigma, double);
+  itkGetConstMacro(MinSigma, double);
 
   /** Set/Get maximum sigma/scale */
-  itkSetMacro( MaxSigma, double );
-  itkGetConstMacro( MaxSigma, double );
+  itkSetMacro(MaxSigma, double);
+  itkGetConstMacro(MaxSigma, double);
 
   /** Set/Get number of sigma/scale steps */
-  itkSetMacro( NumSigmaSteps, unsigned int );
-  itkGetConstMacro( NumSigmaSteps, unsigned int );
+  itkSetMacro(NumSigmaSteps, unsigned int);
+  itkGetConstMacro(NumSigmaSteps, unsigned int);
 
   /** Set/Get for how many iterations do we recalculate tubeness */
-  tubeWrapSetMacro( RecalculateTubeness, unsigned int, Filter );
-  tubeWrapGetMacro( RecalculateTubeness, unsigned int, Filter );
+  tubeWrapSetMacro(RecalculateTubeness, unsigned int, Filter);
+  tubeWrapGetMacro(RecalculateTubeness, unsigned int, Filter);
 
   /** Set/Get sensitive of the filter to blobness. default = 0.5 */
-  tubeWrapSetMacro( Beta, double, Filter );
-  tubeWrapGetMacro( Beta, double, Filter );
+  tubeWrapSetMacro(Beta, double, Filter);
+  tubeWrapGetMacro(Beta, double, Filter);
 
   /** Set/Get sensitive of the filter to second order structureness.
    *  default = 5.0 */
-  tubeWrapSetMacro( Gamma, double, Filter );
-  tubeWrapGetMacro( Gamma, double, Filter );
+  tubeWrapSetMacro(Gamma, double, Filter);
+  tubeWrapGetMacro(Gamma, double, Filter);
 
   /** Set/Get epsilon. default = 0.01 */
-  tubeWrapSetMacro( Epsilon, double, Filter );
-  tubeWrapGetMacro( Epsilon, double, Filter );
+  tubeWrapSetMacro(Epsilon, double, Filter);
+  tubeWrapGetMacro(Epsilon, double, Filter);
 
   /** Set/Get Omega. default = 25.0 */
-  tubeWrapSetMacro( Omega, double, Filter );
-  tubeWrapGetMacro( Omega, double, Filter );
+  tubeWrapSetMacro(Omega, double, Filter);
+  tubeWrapGetMacro(Omega, double, Filter);
 
   /** Set/Get Sensitivity. default = 20.0 */
-  tubeWrapSetMacro( Sensitivity, double, Filter );
-  tubeWrapGetMacro( Sensitivity, double, Filter );
+  tubeWrapSetMacro(Sensitivity, double, Filter);
+  tubeWrapGetMacro(Sensitivity, double, Filter);
 
   /** Set/Get time step */
-  tubeWrapSetMacro( TimeStep, double, Filter );
-  tubeWrapGetMacro( TimeStep, double, Filter );
+  tubeWrapSetMacro(TimeStep, double, Filter);
+  tubeWrapGetMacro(TimeStep, double, Filter);
 
   /** Set/Get iterations */
-  tubeWrapSetMacro( Iterations, unsigned int, Filter );
-  tubeWrapGetMacro( Iterations, unsigned int, Filter );
+  tubeWrapSetMacro(Iterations, unsigned int, Filter);
+  tubeWrapGetMacro(Iterations, unsigned int, Filter);
 
   /** Set/Get input image */
-  tubeWrapSetConstObjectMacro( Input, ImageType, Filter );
-  tubeWrapGetConstObjectMacro( Input, ImageType, Filter );
+  tubeWrapSetConstObjectMacro(Input, ImageType, Filter);
+  tubeWrapGetConstObjectMacro(Input, ImageType, Filter);
 
   /** Compute vesselness image */
-  void Update( void ) override;
+  void
+  Update(void) override;
 
   /** Get output vesselness image */
-  tubeWrapGetObjectMacro( Output, ImageType, Filter );
+  tubeWrapGetObjectMacro(Output, ImageType, Filter);
 
 protected:
-  EnhanceTubesUsingDiffusion( void );
+  EnhanceTubesUsingDiffusion(void);
   ~EnhanceTubesUsingDiffusion() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
 private:
   /** itkEnhanceTubesUsingDiffusionFilter parameters **/
-  EnhanceTubesUsingDiffusion( const Self & );
-  void operator=( const Self & );
+  EnhanceTubesUsingDiffusion(const Self &);
+  void
+  operator=(const Self &);
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
-    {};
+  void
+  SetInput(const DataObjectIdentifierType &, itk::DataObject *) override {};
 
-  double                          m_MinSigma;
-  double                          m_MaxSigma;
-  unsigned int                    m_NumSigmaSteps;
-  typename FilterType::Pointer    m_Filter;
-
+  double                       m_MinSigma;
+  double                       m_MaxSigma;
+  unsigned int                 m_NumSigmaSteps;
+  typename FilterType::Pointer m_Filter;
 };
 
 } // End namespace tube
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "tubeEnhanceTubesUsingDiffusion.hxx"
+#  include "tubeEnhanceTubesUsingDiffusion.hxx"
 #endif
 
 #endif // End !defined( __tubeEnhanceTubesUsingDiffusion_h )

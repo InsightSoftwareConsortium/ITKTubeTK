@@ -30,11 +30,10 @@ namespace tube
 {
 
 /** Derive this class to pass functions to optimizer and spline and classes. */
-template< class TInput, class TOutput >
+template <class TInput, class TOutput>
 class UserFunction
 {
 public:
-
   using Self = UserFunction;
   using Pointer = Self *;
   using ConstPointer = const Self *;
@@ -43,28 +42,25 @@ public:
   using OutputType = TOutput;
 
   /** Return the type of this object. */
-  tubeTypeMacroNoOverride( UserFunction );
+  tubeTypeMacroNoOverride(UserFunction);
 
   /** Constructor. */
-  UserFunction( void )
-    {
-    }
+  UserFunction(void) {}
 
   /** Destructor. */
-  virtual ~UserFunction( void )
-    {
-    }
+  virtual ~UserFunction(void) {}
 
   /** Derive this function. */
-  virtual const OutputType & Value( const InputType & input ) = 0;
+  virtual const OutputType &
+  Value(const InputType & input) = 0;
 
 private:
-
   // Copy constructor not implemented.
-  UserFunction( const Self & self );
+  UserFunction(const Self & self);
 
   // Copy assignment operator not implemented.
-  void operator=( const Self & self );
+  void
+  operator=(const Self & self);
 
 }; // End class UserFunction
 

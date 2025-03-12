@@ -39,24 +39,21 @@ namespace itk
 namespace tube
 {
 
-template< class TImage >
+template <class TImage>
 class NJetFeatureVectorGenerator
-  : public FeatureVectorGenerator< Image< typename TImage::PixelType,
-                                          TImage::ImageDimension > >
+  : public FeatureVectorGenerator<Image<typename TImage::PixelType, TImage::ImageDimension>>
 {
 public:
-
   using Self = NJetFeatureVectorGenerator;
-  using Superclass = FeatureVectorGenerator< TImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = FeatureVectorGenerator<TImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( NJetFeatureVectorGenerator, FeatureVectorGenerator );
+  itkTypeMacro(NJetFeatureVectorGenerator, FeatureVectorGenerator);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
   using FeatureValueType = typename Superclass::FeatureValueType;
 
@@ -66,38 +63,47 @@ public:
 
   using IndexType = typename Superclass::IndexType;
 
-  using NJetScalesType = std::vector< double >;
+  using NJetScalesType = std::vector<double>;
 
-  virtual unsigned int GetNumberOfFeatures( void ) const override;
+  virtual unsigned int
+  GetNumberOfFeatures(void) const override;
 
-  void SetZeroScales( const NJetScalesType & scales );
-  void SetFirstScales( const NJetScalesType & scales );
-  void SetSecondScales( const NJetScalesType & scales );
-  void SetRidgeScales( const NJetScalesType & scales );
+  void
+  SetZeroScales(const NJetScalesType & scales);
+  void
+  SetFirstScales(const NJetScalesType & scales);
+  void
+  SetSecondScales(const NJetScalesType & scales);
+  void
+  SetRidgeScales(const NJetScalesType & scales);
 
-  const NJetScalesType & GetZeroScales( void ) const;
-  const NJetScalesType & GetFirstScales( void ) const;
-  const NJetScalesType & GetSecondScales( void ) const;
-  const NJetScalesType & GetRidgeScales( void ) const;
+  const NJetScalesType &
+  GetZeroScales(void) const;
+  const NJetScalesType &
+  GetFirstScales(void) const;
+  const NJetScalesType &
+  GetSecondScales(void) const;
+  const NJetScalesType &
+  GetRidgeScales(void) const;
 
-  virtual FeatureVectorType GetFeatureVector(
-    const IndexType & indx ) const override;
+  virtual FeatureVectorType
+  GetFeatureVector(const IndexType & indx) const override;
 
-  virtual FeatureValueType  GetFeatureVectorValue( const IndexType & indx,
-    unsigned int fNum ) const override;
+  virtual FeatureValueType
+  GetFeatureVectorValue(const IndexType & indx, unsigned int fNum) const override;
 
 protected:
+  NJetFeatureVectorGenerator(void);
+  virtual ~NJetFeatureVectorGenerator(void);
 
-  NJetFeatureVectorGenerator( void );
-  virtual ~NJetFeatureVectorGenerator( void );
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Purposely not implemented
-  NJetFeatureVectorGenerator( const Self & );
-  void operator = ( const Self & );
+  NJetFeatureVectorGenerator(const Self &);
+  void
+  operator=(const Self &);
 
   NJetScalesType m_ZeroScales;
   NJetScalesType m_FirstScales;
@@ -106,12 +112,12 @@ private:
 
 }; // End class NJetFeatureVectorGenerator
 
-}  // End namespace tube
+} // End namespace tube
 
-}  // End namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeNJetFeatureVectorGenerator.hxx"
+#  include "itktubeNJetFeatureVectorGenerator.hxx"
 #endif
 
 #endif // End !defined( __itktubeNJetFeatureVectorGenerator_h )

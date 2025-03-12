@@ -31,65 +31,62 @@ namespace itk
 {
 
 /** 3D cost function that fades as it travels away from its origin. */
-class ArthurDentCostFunction:
-  public SingleValuedCostFunction
+class ArthurDentCostFunction : public SingleValuedCostFunction
 {
 public:
   /** Standard class type alias. */
   using Self = ArthurDentCostFunction;
   using Superclass = SingleValuedCostFunction;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ArthurDentCostFunction, SingleValuedCostFunction );
+  itkTypeMacro(ArthurDentCostFunction, SingleValuedCostFunction);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   using MeasureType = Superclass::MeasureType;
   using ParametersType = Superclass::ParametersType;
   using ParametersValueType = Superclass::ParametersValueType;
 
-  virtual MeasureType GetValue( const ParametersType & parameters ) const
-    override
-    {
-    return 2 * parameters[0] * parameters[0] + \
-           3 * parameters[1] * parameters[1] + \
-           4 * parameters[2] * parameters[2];
-    }
+  virtual MeasureType
+  GetValue(const ParametersType & parameters) const override
+  {
+    return 2 * parameters[0] * parameters[0] + 3 * parameters[1] * parameters[1] + 4 * parameters[2] * parameters[2];
+  }
 
-  virtual void GetDerivative( const ParametersType &,
-                             DerivativeType & ) const override
-    {
+  virtual void
+  GetDerivative(const ParametersType &, DerivativeType &) const override
+  {
     // irrevelant for this test
-    }
+  }
 
-  virtual unsigned int GetNumberOfParameters( void ) const override
-    {
+  virtual unsigned int
+  GetNumberOfParameters(void) const override
+  {
     return 3;
-    }
+  }
 
 protected:
   ArthurDentCostFunction() {}
   virtual ~ArthurDentCostFunction() {}
 
 private:
-  ArthurDentCostFunction( const Self & ); //purposely not implemented
-  void operator=( const Self & );         //purposely not implemented
+  ArthurDentCostFunction(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 };
 
 } // end namespace itk
 
-int itktubeSingleValuedCostFunctionImageSourceTest( int argc, char * argv[] )
+int
+itktubeSingleValuedCostFunctionImageSourceTest(int argc, char * argv[])
 {
-  if( argc < 2 )
-    {
-    std::cerr << "Missing arguments: "
-              << argv[0]
-              << " outputCostFunctionImage"
-              << std::endl;
+  if (argc < 2)
+  {
+    std::cerr << "Missing arguments: " << argv[0] << " outputCostFunctionImage" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   const char * outputCostFunctionImage = argv[1];
 
   using FloatType = float;
@@ -98,52 +95,50 @@ int itktubeSingleValuedCostFunctionImageSourceTest( int argc, char * argv[] )
   using CostFunctionType = itk::ArthurDentCostFunction;
   CostFunctionType::Pointer costFunction = CostFunctionType::New();
 
-  using CostFunctionImageSourceType = itk::tube::SingleValuedCostFunctionImageSource< CostFunctionType, Dimension >;
-  CostFunctionImageSourceType::Pointer costFunctionImageSource =
-    CostFunctionImageSourceType::New();
-  costFunctionImageSource->SetCostFunction( costFunction );
+  using CostFunctionImageSourceType = itk::tube::SingleValuedCostFunctionImageSource<CostFunctionType, Dimension>;
+  CostFunctionImageSourceType::Pointer costFunctionImageSource = CostFunctionImageSourceType::New();
+  costFunctionImageSource->SetCostFunction(costFunction);
 
   using ParametersType = CostFunctionImageSourceType::ParametersType;
 
-  ParametersType parametersLowerBound( Dimension );
+  ParametersType parametersLowerBound(Dimension);
   parametersLowerBound[0] = -5.0;
   parametersLowerBound[1] = -5.0;
   parametersLowerBound[2] = -5.0;
-  costFunctionImageSource->SetParametersLowerBound( parametersLowerBound );
+  costFunctionImageSource->SetParametersLowerBound(parametersLowerBound);
 
-  ParametersType parametersUpperBound( Dimension );
+  ParametersType parametersUpperBound(Dimension);
   parametersUpperBound[0] = 5.0;
   parametersUpperBound[1] = 5.0;
   parametersUpperBound[2] = 5.0;
-  costFunctionImageSource->SetParametersUpperBound( parametersUpperBound );
+  costFunctionImageSource->SetParametersUpperBound(parametersUpperBound);
 
-  ParametersType parametersStep( Dimension );
+  ParametersType parametersStep(Dimension);
   parametersStep[0] = 0.5;
   parametersStep[1] = 0.5;
   parametersStep[2] = 0.5;
-  costFunctionImageSource->SetParametersStep( parametersStep );
+  costFunctionImageSource->SetParametersStep(parametersStep);
 
-  using OutputImageType = itk::Image< FloatType, Dimension >;
+  using OutputImageType = itk::Image<FloatType, Dimension>;
 
-  using CastImageFilterType = itk::CastImageFilter< CostFunctionImageSourceType::OutputImageType,
-    OutputImageType >;
+  using CastImageFilterType = itk::CastImageFilter<CostFunctionImageSourceType::OutputImageType, OutputImageType>;
   CastImageFilterType::Pointer castImageFilter = CastImageFilterType::New();
-  castImageFilter->SetInput( costFunctionImageSource->GetOutput() );
+  castImageFilter->SetInput(costFunctionImageSource->GetOutput());
 
-  using WriterType = itk::ImageFileWriter< OutputImageType >;
+  using WriterType = itk::ImageFileWriter<OutputImageType>;
   WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( outputCostFunctionImage );
-  writer->SetInput( castImageFilter->GetOutput() );
+  writer->SetFileName(outputCostFunctionImage);
+  writer->SetInput(castImageFilter->GetOutput());
   try
-    {
+  {
     writer->Update();
-    }
-  catch ( itk::ExceptionObject & err )
-    {
+  }
+  catch (itk::ExceptionObject & err)
+  {
     std::cerr << "Exception caught while initializing metric." << std::endl;
     std::cerr << err << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   return EXIT_SUCCESS;
 }

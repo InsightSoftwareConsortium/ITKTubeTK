@@ -41,84 +41,88 @@ namespace tube
  */
 
 /** simple function that return the orthogonal vector to one */
-template< class T >
+template <class T>
 vnl_vector<T>
-ComputeOrthogonalVector( vnl_vector<T> x );
+ComputeOrthogonalVector(vnl_vector<T> x);
 
 /** simple function that return the cross vector from two vectors */
-template< class T >
+template <class T>
 vnl_vector<T>
-ComputeCrossVector( vnl_vector<T> v1, vnl_vector<T> v2 );
+ComputeCrossVector(vnl_vector<T> v1, vnl_vector<T> v2);
 
-template< class ScalarT=double >
+template <class ScalarT = double>
 void
-ComputeNormalsFromTangents(
-  const itk::Vector<ScalarT, 2> & prevT,
-  const itk::CovariantVector<ScalarT, 2> & prevN1,
-  const itk::Vector<ScalarT, 2> & t,
-  itk::CovariantVector<ScalarT, 2> & n1 );
+ComputeNormalsFromTangents(const itk::Vector<ScalarT, 2> &          prevT,
+                           const itk::CovariantVector<ScalarT, 2> & prevN1,
+                           const itk::Vector<ScalarT, 2> &          t,
+                           itk::CovariantVector<ScalarT, 2> &       n1);
 
-template< class ScalarT=double >
+template <class ScalarT = double>
 void
-ComputeNormalsFromTangents(
-  const itk::Vector<ScalarT, 3> & prevT,
-  const itk::CovariantVector<ScalarT, 3> & prevN1,
-  const itk::CovariantVector<ScalarT, 3> & prevN2,
-  const itk::Vector<ScalarT, 3> & t,
-  itk::CovariantVector<ScalarT, 3> & n1,
-  itk::CovariantVector<ScalarT, 3> & n2 );
+ComputeNormalsFromTangents(const itk::Vector<ScalarT, 3> &          prevT,
+                           const itk::CovariantVector<ScalarT, 3> & prevN1,
+                           const itk::CovariantVector<ScalarT, 3> & prevN2,
+                           const itk::Vector<ScalarT, 3> &          t,
+                           itk::CovariantVector<ScalarT, 3> &       n1,
+                           itk::CovariantVector<ScalarT, 3> &       n2);
 
 /** return the new position following the vector direction */
-template< class T >
+template <class T>
 vnl_vector<T>
-ComputeLineStep( vnl_vector<T> x, double a, vnl_vector<T> dir );
+ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir);
 
 /** Compute the Euclidean distance */
-template< class T >
+template <class T>
 double
-ComputeEuclideanDistanceVector( vnl_vector<T> x, const vnl_vector<T> y );
+ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y);
 
 /** Compute the Euclidean distance for two points */
-template< class TPoint >
+template <class TPoint>
 double
-ComputeEuclideanDistance( TPoint x, TPoint y );
+ComputeEuclideanDistance(TPoint x, TPoint y);
 
 /** Compute Ridgeness measures */
-template< class T >
+template <class T>
 void
-ComputeRidgeness( const vnl_matrix<T> & H,
-  const vnl_vector<T> & D,
-  const vnl_vector<T> & prevTangent,
-  double & ridgeness,
-  double & roundness,
-  double & curvature,
-  double & linearity,
-  vnl_matrix<T> & HEVect, vnl_vector<T> & HEVal );
+ComputeRidgeness(const vnl_matrix<T> & H,
+                 const vnl_vector<T> & D,
+                 const vnl_vector<T> & prevTangent,
+                 double &              ridgeness,
+                 double &              roundness,
+                 double &              curvature,
+                 double &              linearity,
+                 vnl_matrix<T> &       HEVect,
+                 vnl_vector<T> &       HEVal);
 
 /** Compute eigenvalues and vectors  */
-template< class T >
+template <class T>
 void
-FixMatrixSymmetry( vnl_matrix<T> & mat );
+FixMatrixSymmetry(vnl_matrix<T> & mat);
 
 /** Compute eigenvalues and vectors  */
-template< class T >
+template <class T>
 void
-ComputeEigenOfMatrixInvertedTimesMatrix(
-  vnl_matrix<T> const & matToInvert, vnl_matrix<T> const & mat,
-  vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
-  bool orderByAbs, bool minToMax = true );
+ComputeEigenOfMatrixInvertedTimesMatrix(const vnl_matrix<T> & matToInvert,
+                                        const vnl_matrix<T> & mat,
+                                        vnl_matrix<T> &       eVects,
+                                        vnl_vector<T> &       eVals,
+                                        bool                  orderByAbs,
+                                        bool                  minToMax = true);
 
 /** Compute eigenvalues and vectors  */
-template< class T >
+template <class T>
 void
-ComputeEigen( vnl_matrix<T> const & mat, vnl_matrix<T> &eVects,
-  vnl_vector<T> &eVals, bool orderByAbs = false, bool minToMax = true );
+ComputeEigen(const vnl_matrix<T> & mat,
+             vnl_matrix<T> &       eVects,
+             vnl_vector<T> &       eVals,
+             bool                  orderByAbs = false,
+             bool                  minToMax = true);
 
 } // End namespace tube
 
 
 #ifndef TUBE_MANUAL_INSTANTIATION
-#include "tubeMatrixMath.hxx"
+#  include "tubeMatrixMath.hxx"
 #endif
 
 #endif // End !defined( __tubeMatrixMath_h )

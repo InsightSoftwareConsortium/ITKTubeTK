@@ -57,25 +57,24 @@ namespace tube
 class WLSubtreeKernel : public GraphKernel
 {
 public:
-
   using LabelMapType = std::map<std::string, int>;
   using LabelMapVectorType = std::vector<LabelMapType>;
 
   /** CTOR - Variant with no vertex label information */
-  WLSubtreeKernel( const GraphType &G0,
-                   const GraphType &G1,
-                   const LabelMapVectorType & labelMap,
-                   const int & labelCount,
-                   int subtreeHeight )
-                     : GraphKernel( G0, G1 ),
-                       m_SubtreeHeight( subtreeHeight ),
-                       m_LabelMap( labelMap ),
-                       m_LabelCount( labelCount )
-    {
-    }
+  WLSubtreeKernel(const GraphType &          G0,
+                  const GraphType &          G1,
+                  const LabelMapVectorType & labelMap,
+                  const int &                labelCount,
+                  int                        subtreeHeight)
+    : GraphKernel(G0, G1)
+    , m_SubtreeHeight(subtreeHeight)
+    , m_LabelMap(labelMap)
+    , m_LabelCount(labelCount)
+  {}
 
   /** Compute the WLSubtree kernel */
-  double Compute( void );
+  double
+  Compute(void);
 
   /**
    * Take graph information and update
@@ -83,10 +82,8 @@ public:
    *  1 ) 'labelMap' for each subtree height with compressed label mapping
    *  2 ) the number of compressed labels per subtree level ( in 'cLabCounter' )
    */
-  static void UpdateLabelCompression( GraphType &G,
-                             std::vector<LabelMapType> & labelMap,
-                             int & cLabCounter,
-                             int subtreeHeight );
+  static void
+  UpdateLabelCompression(GraphType & G, std::vector<LabelMapType> & labelMap, int & cLabCounter, int subtreeHeight);
 
 private:
   /**
@@ -94,13 +91,14 @@ private:
    * compressed labels per subtree level to compute a feature mapping phi
    * for the graph, see [1]
    */
-  std::vector<int> BuildPhi( GraphType &G );
+  std::vector<int>
+  BuildPhi(GraphType & G);
 
   /** Our initial set of vertex labels */
-  std::set<int>              m_InitialLabelSet;
+  std::set<int> m_InitialLabelSet;
 
   /** Subtree height */
-  int                        m_SubtreeHeight;
+  int m_SubtreeHeight;
 
   /** Label map + Count */
   const LabelMapVectorType & m_LabelMap;

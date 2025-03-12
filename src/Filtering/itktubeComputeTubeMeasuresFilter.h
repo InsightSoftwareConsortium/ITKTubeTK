@@ -36,72 +36,66 @@ namespace tube
 /** \class ComputeTubeMeasuresFilter
  */
 
-template< class TPixel, unsigned int Dimension >
-class ComputeTubeMeasuresFilter
-  : public ImageToImageFilter< Image< TPixel, Dimension >,
-  Image< float, Dimension > >
+template <class TPixel, unsigned int Dimension>
+class ComputeTubeMeasuresFilter : public ImageToImageFilter<Image<TPixel, Dimension>, Image<float, Dimension>>
 {
 public:
-
   /** Tube class type alias */
-  using InputImageType = Image< TPixel, Dimension >;
-  using OutputImageType = Image< float, Dimension >;
+  using InputImageType = Image<TPixel, Dimension>;
+  using OutputImageType = Image<float, Dimension>;
 
   /** Standard class type alias. */
   using Self = ComputeTubeMeasuresFilter;
-  using SuperClass = ImageToImageFilter
-    < InputImageType, OutputImageType >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using SuperClass = ImageToImageFilter<InputImageType, OutputImageType>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
-  using RescaleFilterType = itk::RescaleIntensityImageFilter
-    < InputImageType, OutputImageType >;
-  using RidgeFilterType = itk::tube::RidgeFFTFilter< OutputImageType >;
+  using RescaleFilterType = itk::RescaleIntensityImageFilter<InputImageType, OutputImageType>;
+  using RidgeFilterType = itk::tube::RidgeFFTFilter<OutputImageType>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeTubeMeasuresFilter,
-                ImageToImageFilter );
+  itkTypeMacro(ComputeTubeMeasuresFilter, ImageToImageFilter);
 
   /** Set/Get scale */
-  itkSetMacro( Scale, int );
-  itkGetMacro( Scale, int );
+  itkSetMacro(Scale, int);
+  itkGetMacro(Scale, int);
 
   /** Set/Get input Image */
-  itkSetConstObjectMacro( InputImage, InputImageType );
-  itkGetConstObjectMacro( InputImage, InputImageType );
+  itkSetConstObjectMacro(InputImage, InputImageType);
+  itkGetConstObjectMacro(InputImage, InputImageType);
 
   /** Get output Ridge Image */
-  itkGetModifiableObjectMacro( Ridgeness, OutputImageType );
+  itkGetModifiableObjectMacro(Ridgeness, OutputImageType);
 
   /** Get output Round Image */
-  itkGetModifiableObjectMacro( Roundness, OutputImageType );
+  itkGetModifiableObjectMacro(Roundness, OutputImageType);
 
   /** Get output Curve Image */
-  itkGetModifiableObjectMacro( Curvature, OutputImageType );
+  itkGetModifiableObjectMacro(Curvature, OutputImageType);
 
   /** Get output Level Image */
-  itkGetModifiableObjectMacro( Levelness, OutputImageType );
+  itkGetModifiableObjectMacro(Levelness, OutputImageType);
 
 protected:
+  ComputeTubeMeasuresFilter(void);
+  ~ComputeTubeMeasuresFilter(void) {};
 
-  ComputeTubeMeasuresFilter( void );
-  ~ComputeTubeMeasuresFilter( void ) {};
+  void
+  GenerateData(void) override;
 
-  void GenerateData( void ) override;
-
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
-  int                                         m_Scale;
-  typename InputImageType::ConstPointer       m_InputImage;
-  typename OutputImageType::Pointer           m_Ridgeness;
-  typename OutputImageType::Pointer           m_Roundness;
-  typename OutputImageType::Pointer           m_Curvature;
-  typename OutputImageType::Pointer           m_Levelness;
+  int                                   m_Scale;
+  typename InputImageType::ConstPointer m_InputImage;
+  typename OutputImageType::Pointer     m_Ridgeness;
+  typename OutputImageType::Pointer     m_Roundness;
+  typename OutputImageType::Pointer     m_Curvature;
+  typename OutputImageType::Pointer     m_Levelness;
 }; // End class ComputeTubeMeasuresFilter
 
 } // End namespace tube
@@ -109,7 +103,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeComputeTubeMeasuresFilter.hxx"
+#  include "itktubeComputeTubeMeasuresFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeComputeTubeMeasuresFilter_h )

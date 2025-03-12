@@ -36,46 +36,40 @@ namespace tube
 
 template <class TImage>
 class ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod
-  : public OptimizedSpatialObjectToImageRegistrationMethod<
-    2, Image< typename TImage::PixelType, 2 > >
+  : public OptimizedSpatialObjectToImageRegistrationMethod<2, Image<typename TImage::PixelType, 2>>
 {
 
 public:
-
   using Self = ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod;
-  using Superclass = OptimizedSpatialObjectToImageRegistrationMethod< 
-    2, Image< typename TImage::PixelType, 2 > >;
+  using Superclass = OptimizedSpatialObjectToImageRegistrationMethod<2, Image<typename TImage::PixelType, 2>>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod,
-                OptimizedSpatialObjectToImageRegistrationMethod );
+  itkTypeMacro(ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod, OptimizedSpatialObjectToImageRegistrationMethod);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkStaticConstMacro( ImageDimension, unsigned int, 2 );
-  itkStaticConstMacro( ObjectDimension, unsigned int, 2 );
+  itkStaticConstMacro(ImageDimension, unsigned int, 2);
+  itkStaticConstMacro(ObjectDimension, unsigned int, 2);
 
   //
   // Typedefs from Superclass
   //
 
   // Overrides the superclass' TransformType typedef
-  using ScaleSkewAngle2DTransformType = ::itk::ScaleSkewAngle2DTransform< double >;
-  typedef typename ScaleSkewAngle2DTransformType::Pointer
-            ScaleSkewAngle2DTransformPointer;
-  typedef ScaleSkewAngle2DTransformType
-            TransformType;
+  using ScaleSkewAngle2DTransformType = ::itk::ScaleSkewAngle2DTransform<double>;
+  typedef typename ScaleSkewAngle2DTransformType::Pointer ScaleSkewAngle2DTransformPointer;
+  typedef ScaleSkewAngle2DTransformType                   TransformType;
 
   using AffineTransformType = AffineTransform<double, 2>;
-  typedef typename AffineTransformType::Pointer
-            AffineTransformPointer;
+  typedef typename AffineTransformType::Pointer AffineTransformPointer;
 
   //
   // Superclass Methods
   //
 
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
   //
   // Custom Methods
@@ -88,9 +82,11 @@ public:
    *   ( e.g., SetIdentity )
    *   can be called without the caller having to do the casting.
    */
-  TransformType * GetTypedTransform( void );
+  TransformType *
+  GetTypedTransform(void);
 
-  const TransformType * GetTypedTransform( void ) const;
+  const TransformType *
+  GetTypedTransform(void) const;
 
   /**
    * This function creates a new affine transforms that implements the
@@ -101,7 +97,8 @@ public:
    * SmartPointer to prevent it from being destroyed by depletion of its
    * reference counting.
    */
-  AffineTransformPointer GetAffineTransform( void ) const;
+  AffineTransformPointer
+  GetAffineTransform(void) const;
 
   /** Initialize the transform parameters from an AffineTransform.
    * This method is intended as an alternative to calling
@@ -111,23 +108,22 @@ public:
    * InitialSpatialObjectToImageRegistrationMethod
    * to directly initialize this registration method.
    */
-  void SetInitialTransformParametersFromAffineTransform(
-    const AffineTransformType * transform );
+  void
+  SetInitialTransformParametersFromAffineTransform(const AffineTransformType * transform);
 
 protected:
+  ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod(void);
+  virtual ~ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod(void);
 
-  ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod( void );
-  virtual ~ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod( void );
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Purposely not implemented
-  ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod( const Self & );
+  ScaleSkewAngle2DSpatialObjectToImageRegistrationMethod(const Self &);
   // Purposely not implemented
-  void operator =( const Self & );
-
+  void
+  operator=(const Self &);
 };
 
 } // end namespace tube
@@ -135,7 +131,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.hxx"
+#  include "itktubeScaleSkewAngle2DSpatialObjectToImageRegistrationMethod.hxx"
 #endif
 
 #endif // __SpatialObjectToImageRegistrationMethod_h

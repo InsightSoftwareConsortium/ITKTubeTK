@@ -25,89 +25,84 @@ limitations under the License.
 
 #include <itkSpatialObjectReader.h>
 
-int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
+int
+itktubeExtractTubePointsSpatialObjectFilterTest(int argc, char * argv[])
 {
-  if( argc < 2 )
-    {
+  if (argc < 2)
+  {
     std::cerr << "Usage: "
-      << "inputTubeTree "
-      << std::endl;
+              << "inputTubeTree " << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   const char * inputTubeTree = argv[1];
 
   static const unsigned int Dimension = 3;
-  using TubeSpatialObjectType = itk::TubeSpatialObject< Dimension >;
-  using GroupSpatialObjectType = itk::GroupSpatialObject< Dimension >;
+  using TubeSpatialObjectType = itk::TubeSpatialObject<Dimension>;
+  using GroupSpatialObjectType = itk::GroupSpatialObject<Dimension>;
 
   // Read input tube tree.
-  using ReaderType = itk::SpatialObjectReader< Dimension >;
+  using ReaderType = itk::SpatialObjectReader<Dimension>;
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( inputTubeTree );
+  reader->SetFileName(inputTubeTree);
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject & error )
-    {
+  }
+  catch (itk::ExceptionObject & error)
+  {
     std::cerr << "Read Error: " << error << std::endl;
     return EXIT_FAILURE;
-    }
-  catch( ... )
-    {
+  }
+  catch (...)
+  {
     std::cerr << "Read failed." << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   GroupSpatialObjectType::Pointer groupSpatialObject = reader->GetGroup();
-  std::cout << "Number of children = "
-    << groupSpatialObject->GetNumberOfChildren() << std::endl;
+  std::cout << "Number of children = " << groupSpatialObject->GetNumberOfChildren() << std::endl;
 
-  using ExtractTubePointsSpatialObjectFilterType = itk::tube::ExtractTubePointsSpatialObjectFilter<
-    TubeSpatialObjectType >;
+  using ExtractTubePointsSpatialObjectFilterType =
+    itk::tube::ExtractTubePointsSpatialObjectFilter<TubeSpatialObjectType>;
   ExtractTubePointsSpatialObjectFilterType::Pointer extractTubePointsFilter =
     ExtractTubePointsSpatialObjectFilterType::New();
-  extractTubePointsFilter->SetInput( reader->GetGroup() );
+  extractTubePointsFilter->SetInput(reader->GetGroup());
   try
-    {
+  {
     extractTubePointsFilter->Update();
-    }
-  catch( itk::ExceptionObject & error )
-    {
+  }
+  catch (itk::ExceptionObject & error)
+  {
     std::cerr << "Update Error: " << error << std::endl;
     return EXIT_FAILURE;
-    }
-  catch( ... )
-    {
+  }
+  catch (...)
+  {
     std::cerr << "Update failed." << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "extractTubePointsFilter->Update() SUCCESS" << std::endl;
 
-  typedef ExtractTubePointsSpatialObjectFilterType::PointsContainerType
-    PointsContainerType;
+  typedef ExtractTubePointsSpatialObjectFilterType::PointsContainerType PointsContainerType;
 
-  const PointsContainerType * pointsContainer =
-    extractTubePointsFilter->GetPointsContainer();
-  if( pointsContainer == NULL )
-    {
+  const PointsContainerType * pointsContainer = extractTubePointsFilter->GetPointsContainer();
+  if (pointsContainer == NULL)
+  {
     std::cerr << "Point container is null" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   const itk::SizeValueType numberOfPoints = pointsContainer->Size();
-  std::cout << "Output points container size: " << numberOfPoints
-    << std::endl;
+  std::cout << "Output points container size: " << numberOfPoints << std::endl;
   const itk::SizeValueType expectedNumberOfPoints = 110658;
-  if( numberOfPoints != expectedNumberOfPoints )
-    {
+  if (numberOfPoints != expectedNumberOfPoints)
+  {
     std::cerr << "Did not get expected size." << std::endl;
     return EXIT_FAILURE;
-    }
-  for( unsigned int ii = 0; ii < 3; ++ii )
-    {
-    const ExtractTubePointsSpatialObjectFilterType::TubePointType &
-      tubePoint = pointsContainer->ElementAt( ii );
+  }
+  for (unsigned int ii = 0; ii < 3; ++ii)
+  {
+    const ExtractTubePointsSpatialObjectFilterType::TubePointType & tubePoint = pointsContainer->ElementAt(ii);
     std::cout << "Point index: " << ii << '\n'
               << "  Point Id:       " << tubePoint.GetId() << '\n'
               << "  Point Position: " << tubePoint.GetPositionInObjectSpace() << '\n'
@@ -116,9 +111,9 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
               << "  Point Normal2:  " << tubePoint.GetNormal2InObjectSpace() << '\n'
               << "  Point Tangent:  " << tubePoint.GetTangentInObjectSpace() << '\n'
               << std::endl;
-    }
+  }
 
-  //delete pointsContainer;
+  // delete pointsContainer;
 
   return EXIT_SUCCESS;
 }

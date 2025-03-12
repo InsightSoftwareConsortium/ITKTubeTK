@@ -32,31 +32,27 @@ namespace itk
 {
 
 template <class TImage>
-class AffineImageToImageRegistrationMethod
-  : public OptimizedImageToImageRegistrationMethod<TImage>
+class AffineImageToImageRegistrationMethod : public OptimizedImageToImageRegistrationMethod<TImage>
 {
 
 public:
-
   using Self = AffineImageToImageRegistrationMethod;
   using Superclass = OptimizedImageToImageRegistrationMethod<TImage>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( AffineImageToImageRegistrationMethod,
-                OptimizedImageToImageRegistrationMethod );
+  itkTypeMacro(AffineImageToImageRegistrationMethod, OptimizedImageToImageRegistrationMethod);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
   //
   // Typedefs from Superclass
   //
 
   // Overrides the superclass' TransformType typedef
-  using AffineTransformType = AffineTransform<double, itkGetStaticConstMacro( ImageDimension )>;
+  using AffineTransformType = AffineTransform<double, itkGetStaticConstMacro(ImageDimension)>;
   using AffineTransformPointer = typename AffineTransformType::Pointer;
   using TransformType = AffineTransformType;
 
@@ -64,7 +60,8 @@ public:
   // Superclass Methods
   //
 
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
   //
   // Custom Methods
@@ -77,9 +74,11 @@ public:
    *   ( e.g., SetIdentity )
    *   can be called without the caller having to do the casting.
    */
-  TransformType * GetTypedTransform( void );
+  TransformType *
+  GetTypedTransform(void);
 
-  const TransformType * GetTypedTransform( void ) const;
+  const TransformType *
+  GetTypedTransform(void) const;
 
   /**
    * This function creates a new affine transforms that implements the
@@ -90,7 +89,8 @@ public:
    * SmartPointer to prevent it from being destroyed by depletion of its
    * reference counting.
    */
-  AffineTransformPointer GetAffineTransform( void ) const;
+  AffineTransformPointer
+  GetAffineTransform(void) const;
 
   /** Initialize the transform parameters from an AffineTransform.
    * This method is intended as an alternative to calling
@@ -100,29 +100,28 @@ public:
    * InitialImageToImageRegistrationMethod
    * to directly initialize this rigid registration method.
    */
-  void SetInitialTransformParametersFromAffineTransform(
-    const AffineTransformType * affine );
+  void
+  SetInitialTransformParametersFromAffineTransform(const AffineTransformType * affine);
 
 protected:
+  AffineImageToImageRegistrationMethod(void);
+  virtual ~AffineImageToImageRegistrationMethod(void);
 
-  AffineImageToImageRegistrationMethod( void );
-  virtual ~AffineImageToImageRegistrationMethod( void );
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Purposely not implemented
-  AffineImageToImageRegistrationMethod( const Self & );
+  AffineImageToImageRegistrationMethod(const Self &);
   // Purposely not implemented
-  void operator =( const Self & );
-
+  void
+  operator=(const Self &);
 };
 
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkAffineImageToImageRegistrationMethod.hxx"
+#  include "itkAffineImageToImageRegistrationMethod.hxx"
 #endif
 
 #endif // __ImageToImageRegistrationMethod_h

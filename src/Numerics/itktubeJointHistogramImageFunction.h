@@ -42,17 +42,15 @@ namespace tube
  *  the Z-Score at a point when Evaluate is called. The neighborhood used in
  *  the computation of the joint histogram is determined by the feature width.
  */
-template< class TInputImage, class TCoordRep = float >
-class JointHistogramImageFunction
-  : public ImageFunction< TInputImage, double, TCoordRep >
+template <class TInputImage, class TCoordRep = float>
+class JointHistogramImageFunction : public ImageFunction<TInputImage, double, TCoordRep>
 {
 public:
-
   /** Class type alias */
   using Self = JointHistogramImageFunction;
   using Superclass = ImageFunction<TInputImage, double, TCoordRep>;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
   using InputImageType = typename Superclass::InputImageType;
   using PixelType = typename TInputImage::PixelType;
   using PointType = typename Superclass::PointType;
@@ -61,100 +59,106 @@ public:
   using HistogramType = itk::Image<float, 2>;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( JointHistogramImageFunction, ImageFunction );
+  itkTypeMacro(JointHistogramImageFunction, ImageFunction);
 
   /** Standard New Macro. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Constant for fetching the dimensions of the image. */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       Superclass::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Get/Set the width of a significant feature. */
-  itkGetMacro( FeatureWidth, double );
-  itkSetMacro( FeatureWidth, double );
+  itkGetMacro(FeatureWidth, double);
+  itkSetMacro(FeatureWidth, double);
 
   /**
    * Get/Set the factor used to compensate for standard deviations of 0 in
    * the Z-Score calculation. */
-  itkGetMacro( StdevBase, double );
-  itkSetMacro( StdevBase, double );
+  itkGetMacro(StdevBase, double);
+  itkSetMacro(StdevBase, double);
 
   /** Override the Set for the InputImage */
-  virtual void SetInputImage( const InputImageType * ptr ) override;
+  virtual void
+  SetInputImage(const InputImageType * ptr) override;
 
   /** Set the mask or second image used in the comparison. */
-  virtual void SetInputMask( const typename InputImageType::Pointer mask );
+  virtual void
+  SetInputMask(const typename InputImageType::Pointer mask);
 
   /** Get the mask or second image used in the comparison. */
-  virtual typename InputImageType::Pointer GetInputMask( void ) const
-    {
+  virtual typename InputImageType::Pointer
+  GetInputMask(void) const
+  {
     return m_InputMask;
-    }
+  }
 
   /** Get the size of the histogram ( It will be a size x size image ). */
-  itkGetMacro( HistogramSize, unsigned int );
+  itkGetMacro(HistogramSize, unsigned int);
 
   /**
    * Set the size of the histogram. This will reset the bins in the
    * mean and standard deviation to zero.
    */
-  virtual void SetHistogramSize( const unsigned int & size );
+  virtual void
+  SetHistogramSize(const unsigned int & size);
 
   /** Get the Z-score at a given point. */
-  virtual double Evaluate( const PointType & point ) const override
-    {
+  virtual double
+  Evaluate(const PointType & point) const override
+  {
     IndexType index;
-    this->ConvertPointToNearestIndex( point, index );
-    return ( this->EvaluateAtIndex( index ) );
-    }
+    this->ConvertPointToNearestIndex(point, index);
+    return (this->EvaluateAtIndex(index));
+  }
 
   /** Get the Z-score at a given continuous index. */
-  virtual double EvaluateAtContinuousIndex(
-    const ContinuousIndexType & index ) const override
-    {
+  virtual double
+  EvaluateAtContinuousIndex(const ContinuousIndexType & index) const override
+  {
     IndexType nindex;
 
-    this->ConvertContinuousIndexToNearestIndex( index, nindex );
-    return this->EvaluateAtIndex( nindex );
-    }
+    this->ConvertContinuousIndexToNearestIndex(index, nindex);
+    return this->EvaluateAtIndex(nindex);
+  }
 
   /** Get the Z-score at a given index. */
-  virtual double EvaluateAtIndex( const IndexType & index ) const override;
+  virtual double
+  EvaluateAtIndex(const IndexType & index) const override;
 
   /**
    * Add histograms ( based on a given point ) to the internals used to
    * calculate the mean and standard deviation histograms when needed.
    */
-  virtual void Precompute( const PointType & point )
-    {
+  virtual void
+  Precompute(const PointType & point)
+  {
     IndexType index;
-    this->ConvertPointToNearestIndex( point, index );
-    this->PrecomputeAtIndex( index );
-    }
+    this->ConvertPointToNearestIndex(point, index);
+    this->PrecomputeAtIndex(index);
+  }
 
   /**
    * Add histograms ( based on a given continuous index ) to the internals
    * used to calculate the mean and standard deviation histograms when
    * needed.
    */
-  virtual void PrecomputeAtContinuousIndex(
-    const ContinuousIndexType & index )
-    {
+  virtual void
+  PrecomputeAtContinuousIndex(const ContinuousIndexType & index)
+  {
     IndexType nindex;
 
-    this->ConvertContinuousIndexToNearestIndex( index, nindex );
-    this->PrecomputeAtIndex( nindex );
-    }
+    this->ConvertContinuousIndexToNearestIndex(index, nindex);
+    this->PrecomputeAtIndex(nindex);
+  }
 
-  itkGetModifiableObjectMacro( MeanHistogram, HistogramType );
-  itkGetModifiableObjectMacro( StandardDeviationHistogram, HistogramType );
+  itkGetModifiableObjectMacro(MeanHistogram, HistogramType);
+  itkGetModifiableObjectMacro(StandardDeviationHistogram, HistogramType);
 
-  itkSetObjectMacro( MeanHistogram, HistogramType );
-  itkSetObjectMacro( StandardDeviationHistogram, HistogramType );
+  itkSetObjectMacro(MeanHistogram, HistogramType);
+  itkSetObjectMacro(StandardDeviationHistogram, HistogramType);
 
-  itkSetMacro( ForceDiagonalHistogram, bool );
-  itkGetMacro( ForceDiagonalHistogram, bool );
+  itkSetMacro(ForceDiagonalHistogram, bool);
+  itkGetMacro(ForceDiagonalHistogram, bool);
 
   // setmeanhistogram
   // setstandardeviationhistogram
@@ -163,55 +167,59 @@ public:
    * Add histograms ( based on a given index ) to the internals used to
    * calculate the mean and standard deviation histograms when needed.
    */
-  virtual void PrecomputeAtIndex( const IndexType & index );
+  virtual void
+  PrecomputeAtIndex(const IndexType & index);
 
   /**
    * Compute the mean and standard deviation histograms for use in Z-score
    * calculation.
    */
-  void ComputeMeanAndStandardDeviation( void ) const;
+  void
+  ComputeMeanAndStandardDeviation(void) const;
 
 protected:
-
   /** Default constructor */
-  JointHistogramImageFunction( void );
+  JointHistogramImageFunction(void);
 
   /** Default destructor */
-  ~JointHistogramImageFunction( void ) {}
+  ~JointHistogramImageFunction(void) {}
 
   /** PrintSelf function for introspection. */
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  typename HistogramType::Pointer & ComputeHistogramAtIndex(
-    const IndexType & index, bool blur=true ) const;
+  typename HistogramType::Pointer &
+  ComputeHistogramAtIndex(const IndexType & index, bool blur = true) const;
 
   /** Get the Z-score at a given index. */
-  double ComputeZScoreAtIndex( const IndexType & index ) const;
+  double
+  ComputeZScoreAtIndex(const IndexType & index) const;
 
   /** Data members **/
-  typename InputImageType::Pointer         m_InputMask;
-  mutable typename HistogramType::Pointer  m_Histogram;
-  mutable typename HistogramType::Pointer  m_SumHistogram;
-  mutable typename HistogramType::Pointer  m_SumOfSquaresHistogram;
-  mutable typename HistogramType::Pointer  m_MeanHistogram;
-  mutable typename HistogramType::Pointer  m_StandardDeviationHistogram;
-  double                                   m_FeatureWidth;
-  double                                   m_StdevBase;
-  unsigned int                             m_HistogramSize;
-  mutable unsigned int                     m_NumberOfSamples;
-  mutable unsigned int                     m_NumberOfComputedSamples;
-  double                                   m_ImageMin;
-  double                                   m_ImageMax;
-  double                                   m_ImageStep;
-  double                                   m_MaskMin;
-  double                                   m_MaskMax;
-  double                                   m_MaskStep;
+  typename InputImageType::Pointer        m_InputMask;
+  mutable typename HistogramType::Pointer m_Histogram;
+  mutable typename HistogramType::Pointer m_SumHistogram;
+  mutable typename HistogramType::Pointer m_SumOfSquaresHistogram;
+  mutable typename HistogramType::Pointer m_MeanHistogram;
+  mutable typename HistogramType::Pointer m_StandardDeviationHistogram;
+  double                                  m_FeatureWidth;
+  double                                  m_StdevBase;
+  unsigned int                            m_HistogramSize;
+  mutable unsigned int                    m_NumberOfSamples;
+  mutable unsigned int                    m_NumberOfComputedSamples;
+  double                                  m_ImageMin;
+  double                                  m_ImageMax;
+  double                                  m_ImageStep;
+  double                                  m_MaskMin;
+  double                                  m_MaskMax;
+  double                                  m_MaskStep;
 
-  bool                                     m_ForceDiagonalHistogram;
+  bool m_ForceDiagonalHistogram;
 
 private:
-  JointHistogramImageFunction( const Self & ); // Purposely not implemented
-  void operator=( const Self & ); // Purposely not implemented
+  JointHistogramImageFunction(const Self &); // Purposely not implemented
+  void
+  operator=(const Self &); // Purposely not implemented
 
 }; // End class JointHistogramImageFunction
 
@@ -220,7 +228,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeJointHistogramImageFunction.hxx"
+#  include "itktubeJointHistogramImageFunction.hxx"
 #endif
 
 #endif // End !defined( __itktubeJointHistogramImageFunction_h )

@@ -42,30 +42,26 @@ class RigidSpatialObjectToImageRegistrationMethod
 {
 
 public:
-
   using Self = RigidSpatialObjectToImageRegistrationMethod;
   using Superclass = OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro( RigidSpatialObjectToImageRegistrationMethod,
-                OptimizedSpatialObjectToImageRegistrationMethod );
+  itkTypeMacro(RigidSpatialObjectToImageRegistrationMethod, OptimizedSpatialObjectToImageRegistrationMethod);
 
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   //
   // Typedefs from Superclass
   //
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TImage::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
 
   // Overrides the superclass' TransformType typedef
   // We must use MatrixOffsetTransformBase since no itk rigid transform is
   //   templated over ImageDimension.
-  using RigidTransformType = MatrixOffsetTransformBase<double,
-                                    itkGetStaticConstMacro( ImageDimension ),
-                                    itkGetStaticConstMacro( ImageDimension )>;
+  using RigidTransformType =
+    MatrixOffsetTransformBase<double, itkGetStaticConstMacro(ImageDimension), itkGetStaticConstMacro(ImageDimension)>;
   using TransformType = RigidTransformType;
 
   //
@@ -74,15 +70,15 @@ public:
   using Rigid2DTransformType = Rigid2DTransform<double>;
   using Rigid3DTransformType = VersorRigid3DTransform<double>;
 
-  using AffineTransformType = AffineTransform<double,
-                          itkGetStaticConstMacro( ImageDimension )>;
+  using AffineTransformType = AffineTransform<double, itkGetStaticConstMacro(ImageDimension)>;
 
   using AffineTransformPointer = typename AffineTransformType::Pointer;
 
   //
   //  Superclass Methods
   //
-  void GenerateData( void ) override;
+  void
+  GenerateData(void) override;
 
   //
   // Custom Methods
@@ -93,9 +89,11 @@ public:
    *   once in the class hierarchy.  It is provided so that member
    *   functions that exist only in specific transforms ( e.g., SetIdentity )
    *   can be called without the caller having to do the casting. */
-  TransformType * GetTypedTransform( void );
+  TransformType *
+  GetTypedTransform(void);
 
-  const TransformType * GetTypedTransform( void ) const;
+  const TransformType *
+  GetTypedTransform(void) const;
 
   /**
    * This function creates a new affine transforms that implements the
@@ -105,7 +103,8 @@ public:
    * not a member variable, and therefore, must be received into a
    * SmartPointer to prevent it from being destroyed by depletion of its
    * reference counting. */
-  AffineTransformPointer GetAffineTransform( void ) const;
+  AffineTransformPointer
+  GetAffineTransform(void) const;
 
   /** Initialize the transform parameters from an AffineTransform This method
    * is intended as an alternative to calling SetInitialTransformParameters()
@@ -116,23 +115,22 @@ public:
    * InitialSpatialObjectToImageRegistrationMethod to directly initialize this rigid
    * registration method. The received Affine transform will be approximated
    * to its closest rigid transform by using Polar decomposition. */
-  void SetInitialTransformParametersFromAffineTransform(
-    const AffineTransformType * affine );
+  void
+  SetInitialTransformParametersFromAffineTransform(const AffineTransformType * affine);
 
 protected:
+  RigidSpatialObjectToImageRegistrationMethod(void);
+  virtual ~RigidSpatialObjectToImageRegistrationMethod(void);
 
-  RigidSpatialObjectToImageRegistrationMethod( void );
-  virtual ~RigidSpatialObjectToImageRegistrationMethod( void );
-
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:
-
   // Purposely not implemented
-  RigidSpatialObjectToImageRegistrationMethod( const Self & );
+  RigidSpatialObjectToImageRegistrationMethod(const Self &);
   // Purposely not implemented
-  void operator =( const Self & );
-
+  void
+  operator=(const Self &);
 };
 
 } // end namespace tube
@@ -140,7 +138,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeRigidSpatialObjectToImageRegistrationMethod.hxx"
+#  include "itktubeRigidSpatialObjectToImageRegistrationMethod.hxx"
 #endif
 
 #endif // __SpatialObjectToImageRegistrationMethod_h

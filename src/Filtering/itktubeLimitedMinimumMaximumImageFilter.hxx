@@ -21,7 +21,7 @@
 
 #include "itkImageScanlineIterator.h"
 #ifndef wasi__
-#include <mutex>
+#  include <mutex>
 #endif
 
 #include <vector>

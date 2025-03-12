@@ -59,25 +59,22 @@ namespace tube
  * \sa MeanSquareRegistrationFilter
  * \ingroup FiniteDifferenceFunctions
  */
-template< class TFixedImage, class TMovingImage, class TDeformationField >
+template <class TFixedImage, class TMovingImage, class TDeformationField>
 class MeanSquareRegistrationFunction
-  : public PDEDeformableRegistrationFunction< TFixedImage, TMovingImage,
-                                              TDeformationField >
+  : public PDEDeformableRegistrationFunction<TFixedImage, TMovingImage, TDeformationField>
 {
 public:
   /** Standard class type alias. */
   using Self = MeanSquareRegistrationFunction;
-  using Superclass = PDEDeformableRegistrationFunction< TFixedImage,
-    TMovingImage, TDeformationField >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = PDEDeformableRegistrationFunction<TFixedImage, TMovingImage, TDeformationField>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( MeanSquareRegistrationFunction,
-    PDEDeformableRegistrationFunction );
+  itkTypeMacro(MeanSquareRegistrationFunction, PDEDeformableRegistrationFunction);
 
   /** MovingImage image type. */
   using MovingImageType = typename Superclass::MovingImageType;
@@ -92,16 +89,12 @@ public:
   using SpacingType = typename FixedImageType::SpacingType;
 
   /** Deformation field type. */
-  typedef typename Superclass::DisplacementFieldType
-    DeformationFieldType;
-  typedef typename DeformationFieldType::Pointer
-    DeformationFieldPointer;
-  typedef typename DeformationFieldType::PixelType
-    DeformationFieldPixelType;
+  typedef typename Superclass::DisplacementFieldType DeformationFieldType;
+  typedef typename DeformationFieldType::Pointer     DeformationFieldPointer;
+  typedef typename DeformationFieldType::PixelType   DeformationFieldPixelType;
 
   /** Inherit some enums from the superclass. */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-    Superclass::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Inherit some enums from the superclass. */
   using PixelType = typename Superclass::PixelType;
@@ -118,77 +111,104 @@ public:
   using DefaultInterpolatorType = LinearInterpolateImageFunction<MovingImageType, CoordRepType>;
 
   /** Covariant vector type. */
-  using CovariantVectorType = CovariantVector< double, itkGetStaticConstMacro( ImageDimension ) >;
+  using CovariantVectorType = CovariantVector<double, itkGetStaticConstMacro(ImageDimension)>;
 
   /** Gradient calculator type. */
   using GradientCalculatorType = CentralDifferenceImageFunction<FixedImageType>;
-  typedef typename GradientCalculatorType::Pointer
-    GradientCalculatorPointer;
+  typedef typename GradientCalculatorType::Pointer GradientCalculatorPointer;
 
   /** Set the moving image interpolator. */
-  void SetMovingImageInterpolator( InterpolatorType * ptr )
-    { m_MovingImageInterpolator = ptr; }
+  void
+  SetMovingImageInterpolator(InterpolatorType * ptr)
+  {
+    m_MovingImageInterpolator = ptr;
+  }
 
   /** Get the moving image interpolator. */
-  InterpolatorType * GetMovingImageInterpolator( void )
-    { return m_MovingImageInterpolator; }
+  InterpolatorType *
+  GetMovingImageInterpolator(void)
+  {
+    return m_MovingImageInterpolator;
+  }
 
   /** This class uses a constant time step of 1. */
-  virtual TimeStepType ComputeGlobalTimeStep( void * itkNotUsed(
-    globalData ) ) const override
-    { return m_TimeStep; }
+  virtual TimeStepType
+  ComputeGlobalTimeStep(void * itkNotUsed(globalData)) const override
+  {
+    return m_TimeStep;
+  }
 
   /** Return a pointer to a global data structure that is passed to
    * this object from the solver at each calculation.  */
-  virtual void *GetGlobalDataPointer( void ) const override
-    {
-    GlobalDataStruct *global = new GlobalDataStruct();
+  virtual void *
+  GetGlobalDataPointer(void) const override
+  {
+    GlobalDataStruct * global = new GlobalDataStruct();
     return global;
-    }
+  }
 
   /** Release memory for global data structure. */
-  virtual void ReleaseGlobalDataPointer( void *GlobalData ) const override
-    { delete ( GlobalDataStruct * ) GlobalData;  }
+  virtual void
+  ReleaseGlobalDataPointer(void * GlobalData) const override
+  {
+    delete (GlobalDataStruct *)GlobalData;
+  }
 
   /** Set the object's state before each iteration. */
-  virtual void InitializeIteration( void ) override;
+  virtual void
+  InitializeIteration(void) override;
 
   /** This method is called by a finite difference solver image filter at
    * each pixel that does not lie on a data set boundary */
-  virtual PixelType  ComputeUpdate( const NeighborhoodType &neighborhood,
-    void *globalData,
-    const FloatOffsetType &offset = FloatOffsetType( 0.0 ) ) override;
+  virtual PixelType
+  ComputeUpdate(const NeighborhoodType & neighborhood,
+                void *                   globalData,
+                const FloatOffsetType &  offset = FloatOffsetType(0.0)) override;
 
   /** Computes the intensity difference between the fixed and moving image
    *  at the given index, under the given deformation vector. */
-  virtual double ComputeIntensityDifference( const IndexType & index,
-    const DeformationFieldPixelType & itvec );
+  virtual double
+  ComputeIntensityDifference(const IndexType & index, const DeformationFieldPixelType & itvec);
 
   /** Get the energy mutex lock  */
-  void SetEnergy( double energy )
-    {
+  void
+  SetEnergy(double energy)
+  {
 #ifndef wasi__
     std::lock_guard<std::mutex> mutexHolder(m_EnergyCalculationLock);
 #endif
     this->m_Energy = energy;
-    }
+  }
 
-  void SetBackgroundIntensity( MovingImagePixelType intensity )
-    { m_BackgroundIntensity = intensity; }
-  MovingImagePixelType GetBackgroundIntensity( void ) const
-    { return m_BackgroundIntensity; }
+  void
+  SetBackgroundIntensity(MovingImagePixelType intensity)
+  {
+    m_BackgroundIntensity = intensity;
+  }
+  MovingImagePixelType
+  GetBackgroundIntensity(void) const
+  {
+    return m_BackgroundIntensity;
+  }
 
-  void SetIntensityDifferenceThreshold( double threshold )
-    { m_IntensityDifferenceThreshold = threshold; }
-  double GetIntensityDifferenceThreshold( void ) const
-    { return m_IntensityDifferenceThreshold; }
+  void
+  SetIntensityDifferenceThreshold(double threshold)
+  {
+    m_IntensityDifferenceThreshold = threshold;
+  }
+  double
+  GetIntensityDifferenceThreshold(void) const
+  {
+    return m_IntensityDifferenceThreshold;
+  }
 
 
 protected:
-  MeanSquareRegistrationFunction( void );
-  ~MeanSquareRegistrationFunction( void ) {}
+  MeanSquareRegistrationFunction(void);
+  ~MeanSquareRegistrationFunction(void) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** FixedImage image neighborhood iterator type. */
   using FixedImageNeighborhoodIteratorType = ConstNeighborhoodIterator<FixedImageType>;
@@ -196,37 +216,38 @@ protected:
   /** A global data type for this class of equation. Used to store
    * iterators for the fixed image. */
   struct GlobalDataStruct
-    {
-    FixedImageNeighborhoodIteratorType   m_FixedImageIterator;
-    }; // End struct GlobalDataStruct
+  {
+    FixedImageNeighborhoodIteratorType m_FixedImageIterator;
+  }; // End struct GlobalDataStruct
 
 private:
-  MeanSquareRegistrationFunction( const Self& ); //purposely not implemented
-  void operator=( const Self& ); //purposely not implemented
+  MeanSquareRegistrationFunction(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
   /** Cache fixed image information. */
-  SpacingType                     m_FixedImageSpacing;
+  SpacingType m_FixedImageSpacing;
 
   /** Function to compute derivatives of the fixed image. */
-  GradientCalculatorPointer       m_FixedImageGradientCalculator;
+  GradientCalculatorPointer m_FixedImageGradientCalculator;
 
   /** Function to interpolate the moving image. */
-  InterpolatorPointer             m_MovingImageInterpolator;
+  InterpolatorPointer m_MovingImageInterpolator;
 
   /** The global time step. */
-  TimeStepType                    m_TimeStep;
+  TimeStepType m_TimeStep;
 
   /** Threshold below which the denominator term is considered zero. */
-  double                          m_DenominatorThreshold;
+  double m_DenominatorThreshold;
 
   /** Threshold below which two intensity value are assumed to match. */
-  double                          m_IntensityDifferenceThreshold;
+  double m_IntensityDifferenceThreshold;
 
 #ifndef wasi__
-  mutable std::mutex              m_EnergyCalculationLock;
+  mutable std::mutex m_EnergyCalculationLock;
 #endif
 
-  MovingImagePixelType            m_BackgroundIntensity;
+  MovingImagePixelType m_BackgroundIntensity;
 
 }; // End class MeanSquareRegistrationFunction
 
@@ -235,7 +256,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeMeanSquareRegistrationFunction.hxx"
+#  include "itktubeMeanSquareRegistrationFunction.hxx"
 #endif
 
 #endif // End !defined( __itktubeMeanSquareRegistrationFunction_h )

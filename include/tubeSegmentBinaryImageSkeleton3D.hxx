@@ -27,22 +27,20 @@ limitations under the License.
 namespace tube
 {
 
-template< class TImageType >
-SegmentBinaryImageSkeleton3D< TImageType >
-::SegmentBinaryImageSkeleton3D( void )
+template <class TImageType>
+SegmentBinaryImageSkeleton3D<TImageType>::SegmentBinaryImageSkeleton3D(void)
 {
   m_Filter = FilterType::New();
 }
 
 
-template< class TImageType >
+template <class TImageType>
 void
-SegmentBinaryImageSkeleton3D< TImageType >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+SegmentBinaryImageSkeleton3D<TImageType>::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  Superclass::PrintSelf( os, indent );
+  Superclass::PrintSelf(os, indent);
 }
 
-} // End namespace tubetk
+} // namespace tube
 
 #endif

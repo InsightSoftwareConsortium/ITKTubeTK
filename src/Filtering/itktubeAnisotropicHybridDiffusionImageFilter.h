@@ -54,9 +54,8 @@ namespace tube
  */
 
 
-template< class TInputImage, class TOutputImage >
-class AnisotropicHybridDiffusionImageFilter
-  : public AnisotropicDiffusionTensorImageFilter< TInputImage, TOutputImage >
+template <class TInputImage, class TOutputImage>
+class AnisotropicHybridDiffusionImageFilter : public AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class type alias */
@@ -64,101 +63,100 @@ public:
 
   using Superclass = AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>;
 
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
 
   /** Method for creation through the object factory */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ) */
-  itkTypeMacro( AnisotropicHybridDiffusionImageFilter, ImageToImageFilter );
+  itkTypeMacro(AnisotropicHybridDiffusionImageFilter, ImageToImageFilter);
 
   /** Convenient type alias */
   using InputImageType = typename Superclass::InputImageType;
   using OutputImageType = typename Superclass::OutputImageType;
   using PixelType = typename Superclass::PixelType;
 
-  typedef typename Superclass::DiffusionTensorImageType
-                                                DiffusionTensorImageType;
+  typedef typename Superclass::DiffusionTensorImageType DiffusionTensorImageType;
 
   // Structure tensor type
-  using StructureTensorFilterType = StructureTensorRecursiveGaussianImageFilter < InputImageType >;
+  using StructureTensorFilterType = StructureTensorRecursiveGaussianImageFilter<InputImageType>;
 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       Superclass::ImageDimension );
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   using MatrixType = Matrix<double, ImageDimension, ImageDimension>;
 
   // Define image of matrix pixel type
-  using OutputMatrixImageType = Image< MatrixType, ImageDimension>;
+  using OutputMatrixImageType = Image<MatrixType, ImageDimension>;
 
   // Define the symmetric tensor pixel type
-  using TensorPixelType = SymmetricSecondRankTensor< double, ImageDimension>;
-  using TensorImageType = Image< TensorPixelType, ImageDimension>;
+  using TensorPixelType = SymmetricSecondRankTensor<double, ImageDimension>;
+  using TensorImageType = Image<TensorPixelType, ImageDimension>;
 
-   // Define the type for storing the eigenvalue
-  using EigenValueArrayType = FixedArray< double, ImageDimension >;
+  // Define the type for storing the eigenvalue
+  using EigenValueArrayType = FixedArray<double, ImageDimension>;
 
   // Declare the types of the output images
-  using EigenAnalysisOutputImageType = Image< EigenValueArrayType, ImageDimension >;
+  using EigenAnalysisOutputImageType = Image<EigenValueArrayType, ImageDimension>;
 
   /** The container type for the update buffer. */
   using UpdateBufferType = OutputImageType;
 
   /** Define diffusion image nbd type */
-  typedef typename Superclass::DiffusionTensorNeighborhoodType
-                                               DiffusionTensorNeighborhoodType;
+  typedef typename Superclass::DiffusionTensorNeighborhoodType DiffusionTensorNeighborhoodType;
   /** Set the contrast parameter for EED */
-  itkSetMacro( ContrastParameterLambdaEED, double );
+  itkSetMacro(ContrastParameterLambdaEED, double);
 
   /** Set the contrast parameter for CED */
-  itkSetMacro( ContrastParameterLambdaCED, double );
+  itkSetMacro(ContrastParameterLambdaCED, double);
 
   /** Set the contrast parameter for Hybrid */
-  itkSetMacro( ContrastParameterLambdaHybrid, double );
+  itkSetMacro(ContrastParameterLambdaHybrid, double);
 
   /** Set threshold parameter C */
-  itkSetMacro( ThresholdParameterC, double );
+  itkSetMacro(ThresholdParameterC, double);
 
   /** Set the sigma value for structure tensor computation */
-  itkSetMacro( Sigma, double );
-  itkSetMacro( SigmaOuter, double );
+  itkSetMacro(Sigma, double);
+  itkSetMacro(SigmaOuter, double);
 
   /** Set the alpha value for structure tensor computation */
-  itkSetMacro( Alpha, double );
+  itkSetMacro(Alpha, double);
 
   /** Get methods */
-  itkGetMacro( ContrastParameterLambdaEED, double );
-  itkGetMacro( ContrastParameterLambdaCED, double );
-  itkGetMacro( ContrastParameterLambdaHybrid, double );
-  itkGetMacro( ThresholdParameterC, double );
-  itkGetMacro( Sigma, double );
-  itkGetMacro( SigmaOuter, double );
+  itkGetMacro(ContrastParameterLambdaEED, double);
+  itkGetMacro(ContrastParameterLambdaCED, double);
+  itkGetMacro(ContrastParameterLambdaHybrid, double);
+  itkGetMacro(ThresholdParameterC, double);
+  itkGetMacro(Sigma, double);
+  itkGetMacro(SigmaOuter, double);
 
 protected:
-  AnisotropicHybridDiffusionImageFilter( void );
- ~AnisotropicHybridDiffusionImageFilter( void ) {}
+  AnisotropicHybridDiffusionImageFilter(void);
+  ~AnisotropicHybridDiffusionImageFilter(void) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Update diffusion tensor image */
-  void virtual UpdateDiffusionTensorImage( void ) override;
+  void virtual UpdateDiffusionTensorImage(void) override;
 
 private:
-  //purposely not implemented
-  AnisotropicHybridDiffusionImageFilter( const Self& );
-  void operator=( const Self& ); //purposely not implemented
+  // purposely not implemented
+  AnisotropicHybridDiffusionImageFilter(const Self &);
+  void
+  operator=(const Self &); // purposely not implemented
 
-  double    m_ContrastParameterLambdaEED;
-  double    m_ContrastParameterLambdaCED;
-  double    m_ContrastParameterLambdaHybrid;
-  double    m_ThresholdParameterC;
-  double    m_Sigma;
-  double    m_SigmaOuter;
-  double    m_Alpha;
+  double m_ContrastParameterLambdaEED;
+  double m_ContrastParameterLambdaCED;
+  double m_ContrastParameterLambdaHybrid;
+  double m_ThresholdParameterC;
+  double m_Sigma;
+  double m_SigmaOuter;
+  double m_Alpha;
 
 }; // End class AnisotropicHybridDiffusionImageFilter
 
@@ -167,7 +165,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeAnisotropicHybridDiffusionImageFilter.hxx"
+#  include "itktubeAnisotropicHybridDiffusionImageFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeAnisotropicHybridDiffusionImageFilter_h )

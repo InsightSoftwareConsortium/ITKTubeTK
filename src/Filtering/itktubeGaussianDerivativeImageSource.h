@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
-*=========================================================================*/
+ *=========================================================================*/
 #ifndef itktubeGaussianDerivativeImageSource_h
 #define itktubeGaussianDerivativeImageSource_h
 
@@ -44,16 +44,15 @@ namespace tube
  * \ingroup ITKImageSources
  */
 
-template< typename TOutputImage >
-class GaussianDerivativeImageSource :
-    public ParametricImageSource< TOutputImage >
+template <typename TOutputImage>
+class GaussianDerivativeImageSource : public ParametricImageSource<TOutputImage>
 {
 public:
   /** Standard class type alias. */
   using Self = GaussianDerivativeImageSource;
-  using Superclass = ParametricImageSource< TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ParametricImageSource<TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Typedef for the output image type. */
   using OutputImageType = TOutputImage;
@@ -77,11 +76,10 @@ public:
   using DirectionType = typename TOutputImage::DirectionType;
 
   /** Dimensionality of the output image */
-  itkStaticConstMacro( NDimensions, unsigned int,
-    TOutputImage::ImageDimension );
+  itkStaticConstMacro(NDimensions, unsigned int, TOutputImage::ImageDimension);
 
-  using SigmasType = Vector< double, TOutputImage::ImageDimension >;
-  using OrdersType = Vector< int, TOutputImage::ImageDimension >;
+  using SigmasType = Vector<double, TOutputImage::ImageDimension>;
+  using OrdersType = Vector<int, TOutputImage::ImageDimension>;
 
   /** Size type matches that used for images */
   using IndexType = typename TOutputImage::IndexType;
@@ -93,50 +91,57 @@ public:
   using ParametersType = typename Superclass::ParametersType;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( GaussianDerivativeImageSource, ParametricImageSource );
+  itkTypeMacro(GaussianDerivativeImageSource, ParametricImageSource);
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
-  itkSetMacro( Index, IndexType );
-  itkGetConstReferenceMacro( Index, IndexType );
+  itkSetMacro(Index, IndexType);
+  itkGetConstReferenceMacro(Index, IndexType);
 
-  itkSetMacro( Sigmas, SigmasType );
-  itkGetConstReferenceMacro( Sigmas, SigmasType );
+  itkSetMacro(Sigmas, SigmasType);
+  itkGetConstReferenceMacro(Sigmas, SigmasType);
 
-  itkSetMacro( Mean, PointType );
-  itkGetConstReferenceMacro( Mean, PointType );
+  itkSetMacro(Mean, PointType);
+  itkGetConstReferenceMacro(Mean, PointType);
 
-  itkSetMacro( Orders, OrdersType );
-  itkGetConstReferenceMacro( Orders, OrdersType );
+  itkSetMacro(Orders, OrdersType);
+  itkGetConstReferenceMacro(Orders, OrdersType);
 
   /** Set/get the parameters for this source. When this source is
    * templated over an N-dimensional output image type, the first N
    * values in the parameter array are the Sigma parameters in each
    * dimension, the next N values are the Mean parameters in each
    * dimension, and the last value is the Scale. */
-  virtual void SetParameters( const ParametersType & parameters ) override;
-  virtual ParametersType GetParameters() const override;
+  virtual void
+  SetParameters(const ParametersType & parameters) override;
+  virtual ParametersType
+  GetParameters() const override;
 
   /** Get the number of parameters for this image source. When this
    * source is templated over an N-dimensional output image type, the
    * number of parameters is 2*N+1. */
-  virtual unsigned int GetNumberOfParameters() const override;
+  virtual unsigned int
+  GetNumberOfParameters() const override;
 
 protected:
   GaussianDerivativeImageSource();
 
-  void PrintSelf( std::ostream & os, Indent indent ) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  virtual void GenerateOutputInformation() override;
+  virtual void
+  GenerateOutputInformation() override;
 
-  virtual void GenerateData() override;
+  virtual void
+  GenerateData() override;
 
 private:
-  GaussianDerivativeImageSource( const GaussianDerivativeImageSource & );
-  //purposely not implemented
-  void operator=( const GaussianDerivativeImageSource & );
-  //purposely not implemented
+  GaussianDerivativeImageSource(const GaussianDerivativeImageSource &);
+  // purposely not implemented
+  void
+  operator=(const GaussianDerivativeImageSource &);
+  // purposely not implemented
 
   IndexType m_Index;
 
@@ -154,7 +159,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeGaussianDerivativeImageSource.hxx"
+#  include "itktubeGaussianDerivativeImageSource.hxx"
 #endif
 
 #endif

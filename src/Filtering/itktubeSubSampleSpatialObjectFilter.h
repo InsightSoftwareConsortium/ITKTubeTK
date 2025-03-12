@@ -41,51 +41,50 @@ namespace tube
  * the \c Sampling factor.  Non-supported spatial objects are passed to the
  * output unchanged.
  */
-template< unsigned int ObjectDimension=3 >
-class SubSampleSpatialObjectFilter
-  : public SpatialObjectFilter< ObjectDimension >
+template <unsigned int ObjectDimension = 3>
+class SubSampleSpatialObjectFilter : public SpatialObjectFilter<ObjectDimension>
 {
 public:
   /** Standard class type alias. */
   using Self = SubSampleSpatialObjectFilter;
-  using Superclass = SpatialObjectFilter< ObjectDimension >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = SpatialObjectFilter<ObjectDimension>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   using SpatialObjectType = SpatialObject<ObjectDimension>;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro( SubSampleSpatialObjectFilter,
-    SpatialObjectFilter );
+  itkTypeMacro(SubSampleSpatialObjectFilter, SpatialObjectFilter);
 
   /** Method for creation through the object factory. */
-  itkNewMacro( Self );
+  itkNewMacro(Self);
 
   /** Set the sampling factor.  The output points taken every sampling
-  * factor from the input points. */
-  itkSetClampMacro( Sampling, SizeValueType, 1, NumericTraits<
-    SizeValueType >::max() );
-  itkGetConstMacro( Sampling, SizeValueType );
+   * factor from the input points. */
+  itkSetClampMacro(Sampling, SizeValueType, 1, NumericTraits<SizeValueType>::max());
+  itkGetConstMacro(Sampling, SizeValueType);
 
 protected:
-  using TubeSpatialObjectType = TubeSpatialObject< ObjectDimension >;
+  using TubeSpatialObjectType = TubeSpatialObject<ObjectDimension>;
 
-  SubSampleSpatialObjectFilter( void );
-  virtual ~SubSampleSpatialObjectFilter( void );
+  SubSampleSpatialObjectFilter(void);
+  virtual ~SubSampleSpatialObjectFilter(void);
 
-  virtual void GenerateData( void ) override;
+  virtual void
+  GenerateData(void) override;
 
   /** Sub-sample at the at a given level, then sub-sample their
-  * children. */
-  virtual void SubSampleLevel( const SpatialObjectType * input,
-    typename SpatialObjectType::Pointer output, bool graftOutput=false );
+   * children. */
+  virtual void
+  SubSampleLevel(const SpatialObjectType * input, typename SpatialObjectType::Pointer output, bool graftOutput = false);
 
 private:
   // purposely not implemented
-  SubSampleSpatialObjectFilter( const Self & );
+  SubSampleSpatialObjectFilter(const Self &);
 
   // purposely not implemented
-  void operator=( const Self & );
+  void
+  operator=(const Self &);
 
   SizeValueType m_Sampling;
 
@@ -96,7 +95,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeSubSampleSpatialObjectFilter.hxx"
+#  include "itktubeSubSampleSpatialObjectFilter.hxx"
 #endif
 
 #endif // End !defined( __itktubeSubSampleSpatialObjectFilter_h )

@@ -33,9 +33,8 @@ namespace tube
 /**
  * Constructor
  */
-template< class TPixel, unsigned int Dimension >
-ComputeTubeMeasuresFilter< TPixel, Dimension >
-::ComputeTubeMeasuresFilter( void )
+template <class TPixel, unsigned int Dimension>
+ComputeTubeMeasuresFilter<TPixel, Dimension>::ComputeTubeMeasuresFilter(void)
 {
   m_Scale = 0;
   m_Ridgeness = NULL;
@@ -44,44 +43,41 @@ ComputeTubeMeasuresFilter< TPixel, Dimension >
   m_Levelness = NULL;
 }
 
-template< class TPixel, unsigned int Dimension >
+template <class TPixel, unsigned int Dimension>
 void
-ComputeTubeMeasuresFilter< TPixel, Dimension >
-::PrintSelf( std::ostream& os, Indent indent ) const
+ComputeTubeMeasuresFilter<TPixel, Dimension>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  SuperClass::PrintSelf( os, indent );
+  SuperClass::PrintSelf(os, indent);
   os << "Scale: " << m_Scale << std::endl;
 }
 
-template< class TPixel, unsigned int Dimension >
+template <class TPixel, unsigned int Dimension>
 void
-ComputeTubeMeasuresFilter< TPixel, Dimension >
-::GenerateData( void )
+ComputeTubeMeasuresFilter<TPixel, Dimension>::GenerateData(void)
 {
-  itkDebugMacro( << "ComputeTubeMeasuresFilter::Update() called." );
+  itkDebugMacro(<< "ComputeTubeMeasuresFilter::Update() called.");
 
   m_InputImage = this->GetInput();
-  if( m_Scale > 0 )
-    {
-    typename RescaleFilterType::Pointer rescaleFilter
-      = RescaleFilterType::New();
-    rescaleFilter->SetInput( m_InputImage );
-    rescaleFilter->SetOutputMinimum( 0 );
-    rescaleFilter->SetOutputMaximum( 1 );
+  if (m_Scale > 0)
+  {
+    typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
+    rescaleFilter->SetInput(m_InputImage);
+    rescaleFilter->SetOutputMinimum(0);
+    rescaleFilter->SetOutputMaximum(1);
 
     typename RidgeFilterType::Pointer filter;
     filter = RidgeFilterType::New();
-    filter->SetInput( rescaleFilter->GetOutput() );
-    filter->SetScale( m_Scale );
+    filter->SetInput(rescaleFilter->GetOutput());
+    filter->SetScale(m_Scale);
     filter->Update();
 
     m_Ridgeness = filter->GetRidgeness();
     m_Roundness = filter->GetRoundness();
     m_Curvature = filter->GetCurvature();
     m_Levelness = filter->GetLevelness();
-    }
+  }
 
-  itkDebugMacro( << "ComputeTubeMeasuresFilter::Update() finished." );
+  itkDebugMacro(<< "ComputeTubeMeasuresFilter::Update() finished.");
 }
 
 } // End namespace tube

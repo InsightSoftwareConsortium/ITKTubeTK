@@ -32,14 +32,16 @@ limitations under the License.
 
 #include "EnhanceCoherenceUsingDiffusionCLP.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[]);
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "../CLI/tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+template <class TPixel, unsigned int VDimension>
+int
+DoIt(int argc, char * argv[])
 {
   PARSE_ARGS;
 
@@ -48,139 +50,134 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter(
-    "CoherenceEnhancingAnisotropicDiffusion", CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter("CoherenceEnhancingAnisotropicDiffusion", CLPProcessInformation);
   progressReporter.Start();
 
   // Define the types and dimension of the images
   // Use the input image to dictate the type of the image reader/writer,
   // but use double for the filter to avoid rounding off errors in the
   // filter's floating point operations
-  enum { Dimension = 3 };
+  enum
+  {
+    Dimension = 3
+  };
   using ImagePixelType = TPixel;
-  using InputImageType = itk::Image< ImagePixelType, Dimension >;
-  using OutputImageType = itk::Image< ImagePixelType, Dimension >;
+  using InputImageType = itk::Image<ImagePixelType, Dimension>;
+  using OutputImageType = itk::Image<ImagePixelType, Dimension>;
   using FilterPixelType = double;
-  using FilterInputImageType = itk::Image< FilterPixelType, Dimension >;
-  using FilterOutputImageType = itk::Image< FilterPixelType, Dimension >;
+  using FilterInputImageType = itk::Image<FilterPixelType, Dimension>;
+  using FilterOutputImageType = itk::Image<FilterPixelType, Dimension>;
 
   // Read the input volume
-  timeCollector.Start( "Load data" );
-  using ImageReaderType = itk::ImageFileReader< InputImageType  >;
+  timeCollector.Start("Load data");
+  using ImageReaderType = itk::ImageFileReader<InputImageType>;
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
-  reader->SetFileName( inputVolume.c_str() );
+  reader->SetFileName(inputVolume.c_str());
   try
-    {
+  {
     reader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Reading volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
-  timeCollector.Stop( "Load data" );
+  }
+  timeCollector.Stop("Load data");
   double progress = 0.1;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // C-style cast from input image type to type 'double'
-  using CastInputImageFilterType = itk::CastImageFilter< InputImageType, FilterInputImageType >;
-  typename CastInputImageFilterType::Pointer castInputImageFilter =
-    CastInputImageFilterType::New();
-  castInputImageFilter->SetInput( reader->GetOutput() );
+  using CastInputImageFilterType = itk::CastImageFilter<InputImageType, FilterInputImageType>;
+  typename CastInputImageFilterType::Pointer castInputImageFilter = CastInputImageFilterType::New();
+  castInputImageFilter->SetInput(reader->GetOutput());
 
   // Reorient to axial because the anisotropic diffusion tensor function does
   // not handle direction
-  using OrientInputFilterType = itk::OrientImageFilter< FilterInputImageType, FilterInputImageType >;
-  typename OrientInputFilterType::Pointer orientInputFilter
-      = OrientInputFilterType::New();
+  using OrientInputFilterType = itk::OrientImageFilter<FilterInputImageType, FilterInputImageType>;
+  typename OrientInputFilterType::Pointer orientInputFilter = OrientInputFilterType::New();
   orientInputFilter->UseImageDirectionOn();
   orientInputFilter->SetDesiredCoordinateOrientationToAxial();
-  orientInputFilter->SetInput( castInputImageFilter->GetOutput() );
+  orientInputFilter->SetInput(castInputImageFilter->GetOutput());
 
   // Perform the coherence enhancing anisotropic diffusion
-  timeCollector.Start( "Coherence enhancing anisotropic diffusion" );
+  timeCollector.Start("Coherence enhancing anisotropic diffusion");
 
   // Declare the anisotropic diffusion coherence enhancing filter
-  using CoherenceEnhancingFilterType = itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter<
-    FilterInputImageType, FilterOutputImageType>;
+  using CoherenceEnhancingFilterType =
+    itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter<FilterInputImageType, FilterOutputImageType>;
 
   // Create a coherence enhancing filter
-  typename CoherenceEnhancingFilterType::Pointer CoherenceEnhancingFilter =
-    CoherenceEnhancingFilterType::New();
+  typename CoherenceEnhancingFilterType::Pointer CoherenceEnhancingFilter = CoherenceEnhancingFilterType::New();
 
-  CoherenceEnhancingFilter->SetInput( orientInputFilter->GetOutput() );
+  CoherenceEnhancingFilter->SetInput(orientInputFilter->GetOutput());
 
-  //Set/Get CED parameters
-  CoherenceEnhancingFilter->SetSigma( scaleParameter );
-  CoherenceEnhancingFilter->SetAlpha( alpha );
-  CoherenceEnhancingFilter->SetContrastParameterLambdaC(
-    cedContrastParameter );
-  CoherenceEnhancingFilter->SetTimeStep( timeStep );
-  CoherenceEnhancingFilter->SetNumberOfIterations( numberOfIterations );
+  // Set/Get CED parameters
+  CoherenceEnhancingFilter->SetSigma(scaleParameter);
+  CoherenceEnhancingFilter->SetAlpha(alpha);
+  CoherenceEnhancingFilter->SetContrastParameterLambdaC(cedContrastParameter);
+  CoherenceEnhancingFilter->SetTimeStep(timeStep);
+  CoherenceEnhancingFilter->SetNumberOfIterations(numberOfIterations);
 
-  double progressFraction = 0.8;
-  tube::CLIFilterWatcher watcher( CoherenceEnhancingFilter,
-    "Coherence enhancing anisotropic diffusion", CLPProcessInformation,
-    progressFraction, progress, true );
+  double                 progressFraction = 0.8;
+  tube::CLIFilterWatcher watcher(CoherenceEnhancingFilter,
+                                 "Coherence enhancing anisotropic diffusion",
+                                 CLPProcessInformation,
+                                 progressFraction,
+                                 progress,
+                                 true);
 
   try
-    {
+  {
     CoherenceEnhancingFilter->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage(
-      "Coherence enhancing anisotropic diffusion: Exception caught: "
-      + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Coherence enhancing anisotropic diffusion: Exception caught: " +
+                       std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
-  timeCollector.Stop( "Coherence enhancing anisotropic diffusion" );
+  timeCollector.Stop("Coherence enhancing anisotropic diffusion");
   progress = 0.9;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
 
   // C-style cast from double to output image type
-  using CastOutputImageFilterType = itk::CastImageFilter< FilterOutputImageType, OutputImageType >;
-  typename CastOutputImageFilterType::Pointer castOutputImageFilter =
-    CastOutputImageFilterType::New();
-  castOutputImageFilter->SetInput( CoherenceEnhancingFilter->GetOutput() );
+  using CastOutputImageFilterType = itk::CastImageFilter<FilterOutputImageType, OutputImageType>;
+  typename CastOutputImageFilterType::Pointer castOutputImageFilter = CastOutputImageFilterType::New();
+  castOutputImageFilter->SetInput(CoherenceEnhancingFilter->GetOutput());
 
   // Reorient back from axial to whatever direction we had before
-  using OrientOutputFilterType = itk::OrientImageFilter< OutputImageType, OutputImageType >;
-  typename OrientOutputFilterType::Pointer orientOutputFilter
-      = OrientOutputFilterType::New();
+  using OrientOutputFilterType = itk::OrientImageFilter<OutputImageType, OutputImageType>;
+  typename OrientOutputFilterType::Pointer orientOutputFilter = OrientOutputFilterType::New();
   orientOutputFilter->UseImageDirectionOn();
-  orientOutputFilter->SetDesiredCoordinateDirection(
-      reader->GetOutput()->GetDirection() );
-  orientOutputFilter->SetInput( castOutputImageFilter->GetOutput() );
+  orientOutputFilter->SetDesiredCoordinateDirection(reader->GetOutput()->GetDirection());
+  orientOutputFilter->SetInput(castOutputImageFilter->GetOutput());
 
   // Save output data
-  timeCollector.Start( "Save data" );
-  using ImageWriterType = itk::ImageFileWriter< OutputImageType  >;
+  timeCollector.Start("Save data");
+  using ImageWriterType = itk::ImageFileWriter<OutputImageType>;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
-  writer->SetFileName( outputVolume.c_str() );
-  writer->SetUseCompression( true );
-  writer->SetInput( orientOutputFilter->GetOutput() );
+  writer->SetFileName(outputVolume.c_str());
+  writer->SetUseCompression(true);
+  writer->SetInput(orientOutputFilter->GetOutput());
 
   try
-    {
+  {
     writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Writing volume: Exception caught: "
-                        + std::string( err.GetDescription() ) );
+  }
+  catch (itk::ExceptionObject & err)
+  {
+    tube::ErrorMessage("Writing volume: Exception caught: " + std::string(err.GetDescription()));
     timeCollector.Report();
     return EXIT_FAILURE;
-    }
+  }
 
-  timeCollector.Stop( "Save data" );
+  timeCollector.Stop("Save data");
 
   progress = 1.0;
-  progressReporter.Report( progress );
+  progressReporter.Report(progress);
   progressReporter.End();
   timeCollector.Report();
 
@@ -189,11 +186,12 @@ int DoIt( int argc, char * argv[] )
 }
 
 // Main
-int main( int argc, char * argv[] )
+int
+main(int argc, char * argv[])
 {
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputVolume.
-  return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
+  return tube::ParseArgsAndCallDoIt(inputVolume, argc, argv);
 }
