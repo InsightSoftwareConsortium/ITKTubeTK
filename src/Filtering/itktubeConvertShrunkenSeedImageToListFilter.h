@@ -106,7 +106,7 @@ protected:
   PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
   virtual void
-  VerifyPreconditions();
+  VerifyPreconditions() const override;
 
 private:
   /** itkConvertShrunkenSeedImageToListFilter parameters **/

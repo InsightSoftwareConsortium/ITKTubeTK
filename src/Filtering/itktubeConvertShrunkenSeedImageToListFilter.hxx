@@ -147,7 +147,7 @@ ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::PrintSelf(std::ostre
 
 template <class TImage, class TPointsImage>
 void
-ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::VerifyPreconditions()
+ConvertShrunkenSeedImageToListFilter<TImage, TPointsImage>::VerifyPreconditions() const
 {
   this->ProcessObject::VerifyPreconditions();
   if (this->GetInput()->GetLargestPossibleRegion().GetSize() !=
