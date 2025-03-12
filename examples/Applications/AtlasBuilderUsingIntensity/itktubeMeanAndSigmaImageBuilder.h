@@ -58,7 +58,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImageType::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImageType::ImageDimension;
 
   itkNewMacro(Self);
   itkOverrideGetNameOfClassMacro(MeanAndSigmaImageBuilder);
@@ -66,7 +66,7 @@ public:
   using InputImageType = TInputImageType;
   using OutputMeanImageType = TOutputMeanImageType;
   using OutputSigmaImageType = TOutputSigmaImageType;
-  using CountImageType = Image<float, itkGetStaticConstMacro(ImageDimension)>;
+  using CountImageType = Image<float, Self::ImageDimension>;
 
   using InputPixelType = typename InputImageType::PixelType;
   using OutputMeanPixelType = typename OutputMeanImageType::PixelType;
@@ -83,7 +83,7 @@ public:
   using SpacingType = typename InputImageType::SpacingType;
   using PointType = typename InputImageType::PointType;
 
-  using ProcessImageType = Image<float, itkGetStaticConstMacro(ImageDimension)>;
+  using ProcessImageType = Image<float, Self::ImageDimension>;
 
   /**
    * Add an image to the group being summed.

@@ -94,7 +94,7 @@ public:
   typedef typename DeformationFieldType::PixelType   DeformationFieldPixelType;
 
   /** Inherit some enums from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
+  static constexpr unsigned int ImageDimension = Superclass::ImageDimension;
 
   /** Inherit some enums from the superclass. */
   using PixelType = typename Superclass::PixelType;
@@ -111,7 +111,7 @@ public:
   using DefaultInterpolatorType = LinearInterpolateImageFunction<MovingImageType, CoordinateType>;
 
   /** Covariant vector type. */
-  using CovariantVectorType = CovariantVector<double, itkGetStaticConstMacro(ImageDimension)>;
+  using CovariantVectorType = CovariantVector<double, Self::ImageDimension>;
 
   /** Gradient calculator type. */
   using GradientCalculatorType = CentralDifferenceImageFunction<FixedImageType>;

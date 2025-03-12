@@ -40,7 +40,7 @@ public:
   /** Run-time type information ( and related methods ). */
   itkOverrideGetNameOfClassMacro(GaussianDerivativeFilter);
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   using InputImageType = TInputImage;
   using OutputImageType = TOutputImage;

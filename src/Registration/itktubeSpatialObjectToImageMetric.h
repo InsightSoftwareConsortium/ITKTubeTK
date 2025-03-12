@@ -89,7 +89,7 @@ public:
   /** Image dimension enumeration. */
   static constexpr unsigned int ImageDimension = FixedImageType::ImageDimension;
 
-  using ImageMaskObjectType = SpatialObject<itkGetStaticConstMacro(ImageDimension)>;
+  using ImageMaskObjectType = SpatialObject<Self::ImageDimension>;
 
   using SpatialObjectMaskObjectType = SpatialObject<ObjectDimension>;
 

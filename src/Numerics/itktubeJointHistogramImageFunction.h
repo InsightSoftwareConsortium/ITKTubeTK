@@ -65,7 +65,7 @@ public:
   itkNewMacro(Self);
 
   /** Constant for fetching the dimensions of the image. */
-  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
+  static constexpr unsigned int ImageDimension = Superclass::ImageDimension;
 
   /** Get/Set the width of a significant feature. */
   itkGetMacro(FeatureWidth, double);

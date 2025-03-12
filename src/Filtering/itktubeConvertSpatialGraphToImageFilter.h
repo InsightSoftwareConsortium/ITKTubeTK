@@ -50,7 +50,7 @@ public:
 
   itkOverrideGetNameOfClassMacro(ConvertSpatialGraphToImageFilter);
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   using InputImageType = TInputImage;
   using InputPixelType = typename InputImageType::PixelType;

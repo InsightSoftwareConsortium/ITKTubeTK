@@ -57,7 +57,7 @@ public:
 
   using TransformParametersScalesType = typename TransformType::ParametersType;
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
   //
   // Custom Typedefs

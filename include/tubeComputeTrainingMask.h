@@ -59,7 +59,7 @@ public:
   using ImageType = TImage;
   using LabelMapType = TLabelMap;
 
-  itkStaticConstMacro(ImageDimension, unsigned int, ImageType::ImageDimension);
+  static constexpr unsigned int ImageDimension = ImageType::ImageDimension;
 
   using FilterType = typename itk::tube::ComputeTrainingMaskFilter<ImageType, LabelMapType>;
 

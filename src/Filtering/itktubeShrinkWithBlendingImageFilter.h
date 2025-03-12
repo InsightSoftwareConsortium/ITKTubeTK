@@ -90,9 +90,9 @@ public:
   using OutputImageRegionType = typename TOutputImage::RegionType;
   using InputSizeType = typename TInputImage::SizeType;
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
-  itkStaticConstMacro(OutputImageDimension, unsigned int, TOutputImage::ImageDimension);
+  static constexpr unsigned int OutputImageDimension = TOutputImage::ImageDimension;
 
   using PointImagePixelType = Vector<float, ImageDimension>;
   using PointImageType = Image<PointImagePixelType, OutputImageDimension>;

@@ -66,7 +66,7 @@ public:
 
   /**
    * Dimension of the underlying image. */
-  itkStaticConstMacro(ImageDimension, unsigned int, InputImageType::ImageDimension);
+  static constexpr unsigned int ImageDimension = InputImageType::ImageDimension;
 
   /**
    * Point type alias support. */

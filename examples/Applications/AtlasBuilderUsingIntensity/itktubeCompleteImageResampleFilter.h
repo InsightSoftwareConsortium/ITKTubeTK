@@ -71,7 +71,7 @@ public:
   itkOverrideGetNameOfClassMacro(CompleteImageResampleFilter);
 
   /** Number of dimensions. */
-  itkStaticConstMacro(ImageDimension, unsigned int, TOutputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TOutputImage::ImageDimension;
 
   /** ResampleImageFilter type alias */
   using ResampleImageFilterType = ResampleImageFilter<InputImageType, OutputImageType, TInterpolatorPrecisionType>;
@@ -89,7 +89,7 @@ public:
   using InterpolatorPointerType = typename InterpolatorType::Pointer;
 
   /** Image size type alias. */
-  using SizeType = Size<itkGetStaticConstMacro(ImageDimension)>;
+  using SizeType = Size<Self::ImageDimension>;
 
   /** Image index type alias. */
   using IndexType = typename TOutputImage::IndexType;

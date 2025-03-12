@@ -45,14 +45,14 @@ public:
 
   itkNewMacro(Self);
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
   //
   // Typedefs from Superclass
   //
 
   // Overrides the superclass' TransformType typedef
-  using AffineTransformType = AffineTransform<double, itkGetStaticConstMacro(ImageDimension)>;
+  using AffineTransformType = AffineTransform<double, Self::ImageDimension>;
   using AffineTransformPointer = typename AffineTransformType::Pointer;
   using TransformType = AffineTransformType;
 

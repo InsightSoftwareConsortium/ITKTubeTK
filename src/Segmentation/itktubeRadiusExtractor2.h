@@ -65,7 +65,7 @@ public:
   /**
    * Standard for the number of dimension
    */
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   using TubeType = TubeSpatialObject<TInputImage::ImageDimension>;
 

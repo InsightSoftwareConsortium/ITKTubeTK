@@ -80,7 +80,7 @@ public:
   itkOverrideGetNameOfClassMacro(ImageRegionMomentsCalculator);
 
   /** Extract the dimension of the image. */
-  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
   /** Standard scalar type within this class. */
   using ScalarType = double;
@@ -88,17 +88,17 @@ public:
   using PointType = typename TImage::PointType;
 
   /** Standard vector type within this class. */
-  using VectorType = Vector<ScalarType, itkGetStaticConstMacro(ImageDimension)>;
+  using VectorType = Vector<ScalarType, Self::ImageDimension>;
 
   /** Spatial Object type within this class. */
-  using SpatialObjectType = SpatialObject<itkGetStaticConstMacro(ImageDimension)>;
+  using SpatialObjectType = SpatialObject<Self::ImageDimension>;
 
   /** Spatial Object member types used within this class. */
   using SpatialObjectPointer = typename SpatialObjectType::Pointer;
   using SpatialObjectConstPointer = typename SpatialObjectType::ConstPointer;
 
   /** Standard matrix type within this class. */
-  using MatrixType = Matrix<ScalarType, itkGetStaticConstMacro(ImageDimension), itkGetStaticConstMacro(ImageDimension)>;
+  using MatrixType = Matrix<ScalarType, Self::ImageDimension, Self::ImageDimension>;
 
   /** Standard image type within this class. */
   using ImageType = TImage;
@@ -108,7 +108,7 @@ public:
   using ImageConstPointer = typename ImageType::ConstPointer;
 
   /** Affine transform for mapping to and from principal axis */
-  using AffineTransformType = AffineTransform<double, itkGetStaticConstMacro(ImageDimension)>;
+  using AffineTransformType = AffineTransform<double, Self::ImageDimension>;
   typedef typename AffineTransformType::Pointer AffineTransformPointer;
 
   /** Set the input image. */

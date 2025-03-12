@@ -80,8 +80,8 @@ public:
   using TransformPointer = typename TransformType::Pointer;
 
   /** Dimension of parameters. */
-  itkStaticConstMacro(InputSpaceDimension, unsigned int, TransformType::InputSpaceDimension);
-  itkStaticConstMacro(OutputSpaceDimension, unsigned int, TransformType::OutputSpaceDimension);
+  static constexpr unsigned int InputSpaceDimension = TransformType::InputSpaceDimension;
+  static constexpr unsigned int OutputSpaceDimension = TransformType::OutputSpaceDimension;
 
   /** Set the transform to be initialized */
   itkSetObjectMacro(Transform, TransformType);
@@ -120,12 +120,12 @@ public:
   }
 
   /** Determine the image dimension. */
-  itkStaticConstMacro(ImageDimension, unsigned int, FixedImageType::ImageDimension);
+  static constexpr unsigned int ImageDimension = FixedImageType::ImageDimension;
 
   /** Convenience type alias */
   typedef typename TransformType::InputPointType   InputPointType;
   typedef typename TransformType::OutputVectorType OutputVectorType;
-  using LandmarkPointType = Point<double, itkGetStaticConstMacro(ImageDimension)>;
+  using LandmarkPointType = Point<double, Self::ImageDimension>;
   using LandmarkPointContainer = std::vector<LandmarkPointType>;
   typedef typename LandmarkPointContainer::const_iterator PointsContainerConstIterator;
   typedef typename TransformType::ParametersType          ParametersType;

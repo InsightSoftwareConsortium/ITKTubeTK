@@ -66,22 +66,22 @@ public:
   using TangentImagePointer = typename TangentImageType::Pointer;
 
   /** Define the Dimension variable */
-  itkStaticConstMacro(ImageDimension, unsigned int, DensityImageType::ImageDimension);
+  static constexpr unsigned int ImageDimension = DensityImageType::ImageDimension;
 
-  using TubeGroupType = GroupSpatialObject<itkGetStaticConstMacro(ImageDimension)>;
+  using TubeGroupType = GroupSpatialObject<Self::ImageDimension>;
   using TubeGroupPointer = typename TubeGroupType::Pointer;
 
-  using TubeType = TubeSpatialObject<itkGetStaticConstMacro(ImageDimension)>;
+  using TubeType = TubeSpatialObject<Self::ImageDimension>;
 
   using VectorPixelType = typename DensityImageType::OffsetType;
-  using VectorImageType = Image<VectorPixelType, itkGetStaticConstMacro(ImageDimension)>;
+  using VectorImageType = Image<VectorPixelType, Self::ImageDimension>;
   using VectorImagePointer = typename VectorImageType::Pointer;
 
   using SizeType = typename DensityImageType::SizeType;
   using SpacingType = typename DensityImageType::SpacingType;
 
   using TubetoImageFilterType =
-    TubeSpatialObjectToImageFilter<itkGetStaticConstMacro(ImageDimension), DensityImageType>;
+    TubeSpatialObjectToImageFilter<Self::ImageDimension, DensityImageType>;
 
   using DanielssonFilterType = DanielssonDistanceMapImageFilter<DensityImageType, DensityImageType>;
 

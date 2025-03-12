@@ -62,7 +62,7 @@ public:
 
   using SpatialObjectType = SpatialObject<ObjectDimension>;
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
   //
   // Available Registration Methods

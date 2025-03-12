@@ -71,7 +71,7 @@ public:
   using PointType = typename InputImageType::PointType;
 
   /** Number of dimensions. */
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   /** Get/Set the input */
   itkGetConstObjectMacro(Input, InputImageType);

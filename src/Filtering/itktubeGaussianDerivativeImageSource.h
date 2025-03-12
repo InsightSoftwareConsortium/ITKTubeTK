@@ -76,7 +76,7 @@ public:
   using DirectionType = typename TOutputImage::DirectionType;
 
   /** Dimensionality of the output image */
-  itkStaticConstMacro(NDimensions, unsigned int, TOutputImage::ImageDimension);
+  static constexpr unsigned int NDimensions = TOutputImage::ImageDimension;
 
   using SigmasType = Vector<double, TOutputImage::ImageDimension>;
   using OrdersType = Vector<int, TOutputImage::ImageDimension>;

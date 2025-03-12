@@ -70,7 +70,7 @@ public:
   using InputImageType = TInputImage;
 
   /** Standard for the number of dimension */
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   /** Type definition for the input image. */
   using TubeMaskImageType = Image<float, TInputImage::ImageDimension>;

@@ -56,7 +56,7 @@ public:
   using ImageType = TInputImage;
   using LabelMapType = TLabelMap;
 
-  itkStaticConstMacro(InputImageDimension, unsigned int, TInputImage::ImageDimension);
+  static constexpr unsigned int InputImageDimension = TInputImage::ImageDimension;
 
   itkNewMacro(Self);
   const LabelMapType *

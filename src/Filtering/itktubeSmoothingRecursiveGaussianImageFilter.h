@@ -59,10 +59,10 @@ public:
   itkOverrideGetNameOfClassMacro(SmoothingRecursiveGaussianImageFilter);
 
   /** Image dimension. */
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   /** Define the type for the sigma array */
-  using SigmaArrayType = FixedArray<ScalarRealType, itkGetStaticConstMacro(ImageDimension)>;
+  using SigmaArrayType = FixedArray<ScalarRealType, Self::ImageDimension>;
 
   /** Define the image type for internal computations
     RealType is usually 'double' in NumericTraits.

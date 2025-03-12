@@ -67,13 +67,13 @@ public:
   using RealType = typename NumericTraits<PixelType>::RealType;
 
   /** Image dimension. */
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   /** Define the image type for internal computations
       RealType is usually 'double' in NumericTraits.
       Here we prefer float in order to save memory. */
   using InternalRealType = float;
-  using RealImageType = Image<InternalRealType, itkGetStaticConstMacro(ImageDimension)>;
+  using RealImageType = Image<InternalRealType, Self::ImageDimension>;
 
   /**  Output Image Nth Element Adaptor
    *  This adaptor allows to use conventional scalar

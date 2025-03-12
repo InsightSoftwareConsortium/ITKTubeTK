@@ -53,16 +53,16 @@ public:
   //
   // Typedefs from Superclass
   //
-  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
-  using TransformType = AffineTransform<double, itkGetStaticConstMacro(ImageDimension)>;
+  using TransformType = AffineTransform<double, Self::ImageDimension>;
 
   using TransformPointer = typename TransformType::Pointer;
 
   //
   // Local Typedefs
   //
-  using LandmarkPointType = Point<double, itkGetStaticConstMacro(ImageDimension)>;
+  using LandmarkPointType = Point<double, Self::ImageDimension>;
   using LandmarkPointContainer = std::vector<LandmarkPointType>;
 
   //

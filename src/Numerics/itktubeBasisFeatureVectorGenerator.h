@@ -57,7 +57,7 @@ public:
 
   using LabelMapType = TLabelMap;
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
   using IndexType = typename Superclass::IndexType;
 

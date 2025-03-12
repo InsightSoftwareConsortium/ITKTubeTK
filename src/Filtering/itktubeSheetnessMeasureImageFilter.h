@@ -72,11 +72,11 @@ public:
   using OutputPixelType = TPixel;
 
   /** Image dimension = 3. */
-  itkStaticConstMacro(ImageDimension, unsigned int, InputImageType::ImageDimension);
-  itkStaticConstMacro(InputPixelDimension, unsigned int, InputPixelType::Dimension);
+  static constexpr unsigned int ImageDimension = InputImageType::ImageDimension;
+  static constexpr unsigned int InputPixelDimension = InputPixelType::Dimension;
 
-  using EigenValueArrayType = FixedArray<double, itkGetStaticConstMacro(InputPixelDimension)>;
-  using EigenValueImageType = Image<EigenValueArrayType, itkGetStaticConstMacro(ImageDimension)>;
+  using EigenValueArrayType = FixedArray<double, Self::InputPixelDimension>;
+  using EigenValueImageType = Image<EigenValueArrayType, Self::ImageDimension>;
   using EigenAnalysisFilterType = SymmetricEigenAnalysisImageFilter<InputImageType, EigenValueImageType>;
 
   /** Run-time type information ( and related methods ).   */

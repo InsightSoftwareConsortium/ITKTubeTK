@@ -67,7 +67,7 @@ public:
   itkOverrideGetNameOfClassMacro(ConvertImagesToCSVFilter);
 
   /** ImageDimension constants */
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputMask::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputMask::ImageDimension;
 
   itkSetObjectMacro(InputMask, InputMaskType);
   itkGetModifiableObjectMacro(InputMask, InputMaskType);

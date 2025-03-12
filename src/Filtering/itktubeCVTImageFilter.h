@@ -56,13 +56,13 @@ public:
 
   itkOverrideGetNameOfClassMacro(CVTImageFilter);
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   using InputImageType = TInputImage;
   using InputPixelType = typename InputImageType::PixelType;
 
   using IndexType = typename InputImageType::IndexType;
-  using ContinuousIndexType = ContinuousIndex<double, itkGetStaticConstMacro(ImageDimension)>;
+  using ContinuousIndexType = ContinuousIndex<double, Self::ImageDimension>;
 
   using OutputImageType = TOutputImage;
   using OutputPixelType = typename OutputImageType::PixelType;

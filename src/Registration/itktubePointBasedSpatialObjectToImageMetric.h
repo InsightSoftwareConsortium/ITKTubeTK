@@ -59,7 +59,7 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   /**  Dimension of the image and tube.  */
-  itkStaticConstMacro(ImageDimension, unsigned int, TFixedImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TFixedImage::ImageDimension;
 
   using FixedImageType = TFixedImage;
   using MovingSpatialObjectType = SpatialObject<ObjectDimension>;

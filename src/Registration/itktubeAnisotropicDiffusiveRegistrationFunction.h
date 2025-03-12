@@ -91,7 +91,7 @@ public:
   itkOverrideGetNameOfClassMacro(AnisotropicDiffusiveRegistrationFunction);
 
   /** Inherit some parameters from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
+  static constexpr unsigned int ImageDimension = Superclass::ImageDimension;
 
   /** Convenient type alias from the superclass. */
   using FixedImageType = typename Superclass::FixedImageType;

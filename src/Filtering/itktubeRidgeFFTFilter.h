@@ -44,7 +44,7 @@ public:
 
   itkOverrideGetNameOfClassMacro(RidgeFFTFilter);
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   itkSetMacro(Scale, double);
   itkGetMacro(Scale, double);

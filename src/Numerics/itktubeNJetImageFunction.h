@@ -74,7 +74,7 @@ public:
   /**
    * Dimension of the underlying image.
    */
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   using InputImageType = TInputImage;
   using InputImagePointer = typename InputImageType::Pointer;

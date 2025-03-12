@@ -53,7 +53,7 @@ public:
 
   itkNewMacro(Self);
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
   using FeatureValueType = typename Superclass::FeatureValueType;
 

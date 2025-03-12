@@ -49,10 +49,10 @@ public:
   // Typedefs from Superclass
   //
   using ImageType = TImage;
-  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
   // Overrides the superclass' TransformType typedef
-  using BSplineTransformType = BSplineTransform<double, itkGetStaticConstMacro(ImageDimension), 3>;
+  using BSplineTransformType = BSplineTransform<double, Self::ImageDimension, 3>;
 
   using BSplineTransformPointer = typename BSplineTransformType::Pointer;
 

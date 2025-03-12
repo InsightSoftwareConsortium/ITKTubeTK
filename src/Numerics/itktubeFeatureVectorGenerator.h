@@ -55,7 +55,7 @@ public:
 
   using IndexType = typename TImage::IndexType;
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
   using FeatureValueType = float;
   using FeatureVectorType = vnl_vector<FeatureValueType>;

@@ -61,9 +61,9 @@ public:
   //
   // Custom Typedefs
   //
-  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
-  using TransformType = Transform<double, ObjectDimension, itkGetStaticConstMacro(ImageDimension)>;
+  using TransformType = Transform<double, ObjectDimension, Self::ImageDimension>;
 
   using TransformOutputType = DataObjectDecorator<TransformType>;
 
@@ -76,7 +76,7 @@ public:
   using SpatialObjectPointType = typename SpatialObjectType::PointType;
   using PointType = typename ImageType::PointType;
 
-  using ImageMaskObjectType = SpatialObject<itkGetStaticConstMacro(ImageDimension)>;
+  using ImageMaskObjectType = SpatialObject<Self::ImageDimension>;
 
   using SpatialObjectMaskObjectType = SpatialObject<ObjectDimension>;
 

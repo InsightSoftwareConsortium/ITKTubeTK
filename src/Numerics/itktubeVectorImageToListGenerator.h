@@ -107,7 +107,7 @@ public:
   using ListSampleOutputType = DataObjectDecorator<ListSampleType>;
 
   /** the number of components in a measurement vector */
-  itkStaticConstMacro(MeasurementVectorSize, unsigned int, PixelTraitsType::Dimension);
+  static constexpr unsigned int MeasurementVectorSize = PixelTraitsType::Dimension;
 
   /** Standard itk::ProcessObject subclass method. */
   using Superclass::MakeOutput;

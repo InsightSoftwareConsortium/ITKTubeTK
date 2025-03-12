@@ -55,13 +55,13 @@ public:
   // Typedefs from Superclass
   //
 
-  itkStaticConstMacro(ImageDimension, unsigned int, TImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
   // Overrides the superclass' TransformType typedef
   // We must use MatrixOffsetTransformBase since no itk rigid transform is
   //   templated over ImageDimension.
   using RigidTransformType =
-    MatrixOffsetTransformBase<double, itkGetStaticConstMacro(ImageDimension), itkGetStaticConstMacro(ImageDimension)>;
+    MatrixOffsetTransformBase<double, Self::ImageDimension, Self::ImageDimension>;
   using TransformType = RigidTransformType;
 
   //
@@ -70,7 +70,7 @@ public:
   using Rigid2DTransformType = Rigid2DTransform<double>;
   using Rigid3DTransformType = VersorRigid3DTransform<double>;
 
-  using AffineTransformType = AffineTransform<double, itkGetStaticConstMacro(ImageDimension)>;
+  using AffineTransformType = AffineTransform<double, Self::ImageDimension>;
 
   using AffineTransformPointer = typename AffineTransformType::Pointer;
 
