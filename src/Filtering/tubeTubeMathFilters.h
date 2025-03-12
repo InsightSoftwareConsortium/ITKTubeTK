@@ -81,9 +81,9 @@ public:
   void
   ComputeTubeRegions(const ImageType * referenceImage);
 
-  itkGetObjectMacro(TubeRadiusImage, FloatImageType);
-  itkGetObjectMacro(TubePointIdImage, FloatImageType);
-  itkGetObjectMacro(TubeDistanceImage, FloatImageType);
+  itkGetModifiableObjectMacro(TubeRadiusImage, FloatImageType);
+  itkGetModifiableObjectMacro(TubePointIdImage, FloatImageType);
+  itkGetModifiableObjectMacro(TubeDistanceImage, FloatImageType);
 
   void
   SetPointValuesFromTubeRegions(const ImageType *   inputImage,
