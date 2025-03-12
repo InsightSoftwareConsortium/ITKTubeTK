@@ -347,14 +347,14 @@ BSplineImageToImageRegistrationMethod<TImage>::GradientOptimize(MetricType * met
     this->SetFinalMetricValue(reg->GetOptimizer()->GetValue(reg->GetInitialTransformParameters()));
 
     this->SetLastTransformParameters(reg->GetInitialTransformParameters());
-    this->GetTransform()->SetParametersByValue(this->GetInitialTransformParameters());
+    this->GetModifiableTransform()->SetParametersByValue(this->GetInitialTransformParameters());
   }
   else
   {
     this->SetFinalMetricValue(reg->GetOptimizer()->GetValue(reg->GetLastTransformParameters()));
 
     this->SetLastTransformParameters(reg->GetLastTransformParameters());
-    this->GetTransform()->SetParametersByValue(this->GetLastTransformParameters());
+    this->GetModifiableTransform()->SetParametersByValue(this->GetLastTransformParameters());
   }
 
   // if( this->GetReportProgress() )
@@ -615,7 +615,7 @@ BSplineImageToImageRegistrationMethod<TImage>::MultiResolutionOptimize(MetricTyp
       /**/
       this->SetFinalMetricValue(reg->GetFinalMetricValue());
       this->SetLastTransformParameters(reg->GetLastTransformParameters());
-      this->GetTransform()->SetParametersByValue(this->GetLastTransformParameters());
+      this->GetModifiableTransform()->SetParametersByValue(this->GetLastTransformParameters());
       std::cout << "final levelParameters = " << this->GetLastTransformParameters() << std::endl;
     }
 

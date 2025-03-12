@@ -170,8 +170,8 @@ SegmentTubeUsingMinimalPathFilter<Dimension, TInputPixel>::Update(void)
 
   // Update tubes transform
   m_Output->GetObjectToParentTransform()->Scale(scaleVector);
-  m_Output->GetObjectToParentTransform()->SetOffset(offsetVector);
-  m_Output->GetObjectToParentTransform()->SetMatrix(m_SpeedImage->GetDirection());
+  m_Output->GetModifiableObjectToParentTransform()->SetOffset(offsetVector);
+  m_Output->GetModifiableObjectToParentTransform()->SetMatrix(m_SpeedImage->GetDirection());
   m_Output->Update();
   m_CostAssociatedWithExtractedTube = 0.0;
   for (unsigned int i = 0; i < pathFilter->GetNumberOfOutputs(); i++)

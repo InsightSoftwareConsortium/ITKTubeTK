@@ -330,7 +330,7 @@ template <unsigned int ObjectDimension, class TImage>
 typename InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType *
 InitialSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::GetTypedTransform(void)
 {
-  return static_cast<TransformType *>(Superclass::GetTransform());
+  return static_cast<TransformType *>(Superclass::GetModifiableTransform());
 }
 
 template <unsigned int ObjectDimension, class TImage>

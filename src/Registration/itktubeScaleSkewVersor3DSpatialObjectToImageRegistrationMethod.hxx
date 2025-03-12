@@ -87,7 +87,7 @@ void
 ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>::GenerateData(void)
 {
   // Set the center of rotation
-  this->GetTransform()->SetFixedParameters(this->GetInitialTransformFixedParameters());
+  this->GetModifiableTransform()->SetFixedParameters(this->GetInitialTransformFixedParameters());
 
   Superclass::GenerateData();
 }
@@ -96,7 +96,7 @@ template <class TImage>
 typename ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>::TransformType *
 ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod<TImage>::GetTypedTransform(void)
 {
-  return static_cast<TransformType *>(Superclass::GetTransform());
+  return static_cast<TransformType *>(Superclass::GetModifiableTransform());
 }
 
 template <class TImage>

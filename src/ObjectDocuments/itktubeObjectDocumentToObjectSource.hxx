@@ -198,11 +198,11 @@ ObjectDocumentToObjectSource<TObjectDocument, VDimension>::ReadTransform(const s
 
   if (!group->GetNumberOfChildren())
   {
-    return group->GetObjectToParentTransform();
+    return group->GetModifiableObjectToParentTransform();
   }
   else
   {
-    return (*(group->GetChildren()->begin()))->GetObjectToParentTransform();
+    return (*(group->GetChildren()->begin()))->GetModifiableObjectToParentTransform();
   }
 }
 

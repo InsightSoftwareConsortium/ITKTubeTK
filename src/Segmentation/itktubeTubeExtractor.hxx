@@ -140,7 +140,7 @@ template <class TInputImage>
 typename TubeExtractor<TInputImage>::TubeMaskImageType *
 TubeExtractor<TInputImage>::GetTubeMaskImage(void)
 {
-  return this->m_RidgeExtractor->GetTubeMaskImage();
+  return this->m_RidgeExtractor->GetModifiableTubeMaskImage();
 }
 
 

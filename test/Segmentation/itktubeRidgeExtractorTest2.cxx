@@ -283,8 +283,8 @@ itktubeRidgeExtractorTest2(int argc, char * argv[])
   }
   delete tubeList;
 
-  RidgeOpType::TubeMaskImageType::Pointer                  mask = ridgeOp->GetTubeMaskImage();
-  itk::ImageRegionIterator<RidgeOpType::TubeMaskImageType> maskIt(mask, mask->GetLargestPossibleRegion());
+  RidgeOpType::TubeMaskImageType::ConstPointer                  mask = ridgeOp->GetTubeMaskImage();
+  itk::ImageRegionConstIterator<RidgeOpType::TubeMaskImageType> maskIt(mask, mask->GetLargestPossibleRegion());
   while (!maskIt.IsAtEnd())
   {
     if (maskIt.Get() != 0)

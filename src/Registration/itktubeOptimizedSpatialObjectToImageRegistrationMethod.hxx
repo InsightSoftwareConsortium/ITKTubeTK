@@ -172,7 +172,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::Genera
 
   this->Initialize();
 
-  this->GetTransform()->SetParametersByValue(this->GetInitialTransformParameters());
+  this->GetModifiableTransform()->SetParametersByValue(this->GetInitialTransformParameters());
 
   typename MetricType::Pointer metric;
 
@@ -195,7 +195,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::Genera
 
   metric->SetFixedImage(fixedImage);
   metric->SetMovingSpatialObject(movingSpatialObject);
-  metric->SetTransform(this->GetTransform());
+  metric->SetTransform(this->GetModifiableTransform());
 
   metric->SetUseFixedImageMaskObject(this->GetUseFixedImageMaskObject());
   if (this->GetUseFixedImageMaskObject())
@@ -253,7 +253,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::Optimi
 
       if (this->GetObserver())
       {
-        evoOpt->AddObserver(IterationEvent(), this->GetObserver());
+        evoOpt->AddObserver(IterationEvent(), this->GetModifiableObserver());
       }
 
       if (this->GetReportProgress())
@@ -294,14 +294,14 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::Optimi
         if (valid)
         {
           this->SetLastTransformParameters(evoOpt->GetCurrentPosition());
-          this->GetTransform()->SetParametersByValue(m_LastTransformParameters);
+          this->GetModifiableTransform()->SetParametersByValue(m_LastTransformParameters);
           m_FinalMetricValue = metric->GetValue(m_LastTransformParameters);
         }
         else
         {
           std::cerr << "Error: Invalid Evolutionalry final parameters" << std::endl;
           this->SetLastTransformParameters(m_InitialTransformParameters);
-          this->GetTransform()->SetParametersByValue(m_LastTransformParameters);
+          this->GetModifiableTransform()->SetParametersByValue(m_LastTransformParameters);
           m_FinalMetricValue = 0;
         }
       }
@@ -313,7 +313,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::Optimi
     else
     {
       this->SetLastTransformParameters(m_InitialTransformParameters);
-      this->GetTransform()->SetParametersByValue(m_LastTransformParameters);
+      this->GetModifiableTransform()->SetParametersByValue(m_LastTransformParameters);
       m_FinalMetricValue = 0;
     }
 
@@ -347,7 +347,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::Optimi
     }
     if (this->GetObserver())
     {
-      gradOpt->AddObserver(IterationEvent(), this->GetObserver());
+      gradOpt->AddObserver(IterationEvent(), this->GetModifiableObserver());
     }
 
     gradOpt->SetCostFunction(metric);
@@ -377,13 +377,13 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::Optimi
       if (valid)
       {
         this->SetLastTransformParameters(gradOpt->GetCurrentPosition());
-        this->GetTransform()->SetParametersByValue(m_LastTransformParameters);
+        this->GetModifiableTransform()->SetParametersByValue(m_LastTransformParameters);
         m_FinalMetricValue = metric->GetValue(m_LastTransformParameters);
       }
       else
       {
         this->SetLastTransformParameters(m_InitialTransformParameters);
-        this->GetTransform()->SetParametersByValue(m_LastTransformParameters);
+        this->GetModifiableTransform()->SetParametersByValue(m_LastTransformParameters);
         m_FinalMetricValue = 0;
       }
     }
@@ -395,7 +395,7 @@ OptimizedSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::Optimi
   else
   {
     this->SetLastTransformParameters(m_InitialTransformParameters);
-    this->GetTransform()->SetParametersByValue(m_LastTransformParameters);
+    this->GetModifiableTransform()->SetParametersByValue(m_LastTransformParameters);
     m_FinalMetricValue = 0;
   }
 }

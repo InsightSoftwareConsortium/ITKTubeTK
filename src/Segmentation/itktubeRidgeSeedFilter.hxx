@@ -381,7 +381,7 @@ RidgeSeedFilter<TImage, TLabelMap>::Update(void)
   m_PDFSegmenter->SetErodeDilateRadius(0);
   m_PDFSegmenter->SetHoleFillIterations(5);
 
-  m_PDFSegmenter->SetInputLabelMap(m_SeedFeatureGenerator->GetLabelMap());
+  m_PDFSegmenter->SetInputLabelMap(m_SeedFeatureGenerator->GetModifiableLabelMap());
 
   m_RidgeFeatureGenerator->SetUseIntensityOnly(m_UseIntensityOnly);
   m_RidgeFeatureGenerator->SetUseFeatureMath(m_UseFeatureMath);
@@ -424,7 +424,7 @@ template <class TImage, class TLabelMap>
 void
 RidgeSeedFilter<TImage, TLabelMap>::ClassifyImages(void)
 {
-  typename LabelMapType::Pointer tmpLabelMap = m_SeedFeatureGenerator->GetLabelMap();
+  typename LabelMapType::Pointer tmpLabelMap = m_SeedFeatureGenerator->GetModifiableLabelMap();
   m_SeedFeatureGenerator->SetLabelMap(nullptr);
 
   m_PDFSegmenter->ClassifyImages();
@@ -432,7 +432,7 @@ RidgeSeedFilter<TImage, TLabelMap>::ClassifyImages(void)
   std::cout << "Set label map" << std::endl;
   m_SeedFeatureGenerator->SetLabelMap(tmpLabelMap);
 
-  m_LabelMap = m_PDFSegmenter->GetOutputLabelMap();
+  m_LabelMap = m_PDFSegmenter->GetModifiableOutputLabelMap();
 
   std::cout << "Iterate" << std::endl;
   itk::ImageRegionIterator<LabelMapType> resultIter(m_LabelMap, m_LabelMap->GetLargestPossibleRegion());

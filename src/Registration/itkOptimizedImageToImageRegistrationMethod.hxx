@@ -196,7 +196,7 @@ OptimizedImageToImageRegistrationMethod<TImage>::GenerateData(void)
 
   this->Initialize();
 
-  this->GetTransform()->SetParametersByValue(this->GetInitialTransformParameters());
+  this->GetModifiableTransform()->SetParametersByValue(this->GetInitialTransformParameters());
 
   typename MetricType::Pointer metric;
 
@@ -493,11 +493,11 @@ OptimizedImageToImageRegistrationMethod<TImage>::Optimize(MetricType * metric, I
 
     if (reg->GetLastTransformParameters().size() != this->GetTransform()->GetNumberOfParameters())
     {
-      this->GetTransform()->SetParametersByValue(this->GetInitialTransformParameters());
+      this->GetModifiableTransform()->SetParametersByValue(this->GetInitialTransformParameters());
     }
     else
     {
-      this->GetTransform()->SetParametersByValue(reg->GetLastTransformParameters());
+      this->GetModifiableTransform()->SetParametersByValue(reg->GetLastTransformParameters());
     }
 
     m_FinalMetricValue = reg->GetOptimizer()->GetValue(this->GetTransform()->GetParameters());
@@ -511,7 +511,7 @@ OptimizedImageToImageRegistrationMethod<TImage>::Optimize(MetricType * metric, I
   }
   else
   {
-    this->GetTransform()->SetParametersByValue(this->GetInitialTransformParameters());
+    this->GetModifiableTransform()->SetParametersByValue(this->GetInitialTransformParameters());
   }
 
   if (this->GetReportProgress())
@@ -592,13 +592,13 @@ OptimizedImageToImageRegistrationMethod<TImage>::Optimize(MetricType * metric, I
   {
     m_FinalMetricValue = reg->GetOptimizer()->GetValue(reg->GetInitialTransformParameters());
     this->SetLastTransformParameters(reg->GetInitialTransformParameters());
-    this->GetTransform()->SetParametersByValue(this->GetInitialTransformParameters());
+    this->GetModifiableTransform()->SetParametersByValue(this->GetInitialTransformParameters());
   }
   else
   {
     m_FinalMetricValue = reg->GetOptimizer()->GetValue(reg->GetLastTransformParameters());
     this->SetLastTransformParameters(reg->GetLastTransformParameters());
-    this->GetTransform()->SetParametersByValue(this->GetLastTransformParameters());
+    this->GetModifiableTransform()->SetParametersByValue(this->GetLastTransformParameters());
   }
 
   if (this->GetReportProgress())

@@ -374,7 +374,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>::AffineRegND(Ima
   typename Affine3DRegistrationMethodType::Pointer regAff = Affine3DRegistrationMethodType::New();
   if (this->GetObserver())
   {
-    regAff->SetObserver(this->GetObserver());
+    regAff->SetObserver(this->GetModifiableObserver());
   }
   regAff->SetRandomNumberSeed(m_RandomNumberSeed);
   regAff->SetReportProgress(m_ReportProgress);
@@ -480,7 +480,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>::Update(void)
   typename InitialRegistrationMethodType::Pointer regInit = InitialRegistrationMethodType::New();
   if (this->GetObserver())
   {
-    regInit->SetObserver(this->GetObserver());
+    regInit->SetObserver(this->GetModifiableObserver());
   }
   regInit->SetReportProgress(m_ReportProgress);
   regInit->SetMovingSpatialObject(m_CurrentMovingSpatialObject);
@@ -553,7 +553,7 @@ SpatialObjectToImageRegistrationHelper<ObjectDimension, TImage>::Update(void)
     typename RigidRegistrationMethodType::Pointer regRigid = RigidRegistrationMethodType::New();
     if (this->GetObserver())
     {
-      regRigid->SetObserver(this->GetObserver());
+      regRigid->SetObserver(this->GetModifiableObserver());
     }
     regRigid->SetRandomNumberSeed(m_RandomNumberSeed);
     if (!m_UseEvolutionaryOptimization)

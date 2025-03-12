@@ -91,7 +91,7 @@ template <unsigned int ObjectDimension, class TImage>
 typename RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::TransformType *
 RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::GetTypedTransform(void)
 {
-  return dynamic_cast<TransformType *>(Superclass::GetTransform());
+  return dynamic_cast<TransformType *>(Superclass::GetModifiableTransform());
 }
 
 template <unsigned int ObjectDimension, class TImage>
@@ -178,7 +178,7 @@ void
 RigidSpatialObjectToImageRegistrationMethod<ObjectDimension, TImage>::GenerateData(void)
 {
   // Set the center of rotation
-  this->GetTransform()->SetFixedParameters(this->GetInitialTransformFixedParameters());
+  this->GetModifiableTransform()->SetFixedParameters(this->GetInitialTransformFixedParameters());
 
   Superclass::GenerateData();
 }

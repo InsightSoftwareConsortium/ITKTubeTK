@@ -169,7 +169,7 @@ void
 RigidImageToImageRegistrationMethod<TImage>::GenerateData(void)
 {
   // Set the center of rotation
-  this->GetTransform()->SetFixedParameters(this->GetInitialTransformFixedParameters());
+  this->GetModifiableTransform()->SetFixedParameters(this->GetInitialTransformFixedParameters());
 
   Superclass::GenerateData();
 }

@@ -338,9 +338,9 @@ MinimumSpanningTreeVesselConnectivityFilter<ObjectDimension>::RunMinimumSpanning
   TubePointerType inputRootTube = m_TubeIdToObjectMap[rootTubeId];
   TubePointerType rootTube = inputRootTube->Clone();
 
-  rootTube->GetObjectToParentTransform()->SetFixedParameters(
+  rootTube->GetModifiableObjectToParentTransform()->SetFixedParameters(
     inputRootTube->GetObjectToParentTransform()->GetFixedParameters());
-  rootTube->GetObjectToParentTransform()->SetParameters(inputRootTube->GetObjectToParentTransform()->GetParameters());
+  rootTube->GetModifiableObjectToParentTransform()->SetParameters(inputRootTube->GetObjectToParentTransform()->GetParameters());
   rootTube->Update();
 
   rootTube->ComputeTangentsAndNormals();
@@ -382,9 +382,9 @@ MinimumSpanningTreeVesselConnectivityFilter<ObjectDimension>::RunMinimumSpanning
     // get tube object
     TubePointerType curTube = eTop.targetTube->Clone();
 
-    curTube->GetObjectToParentTransform()->SetFixedParameters(
+    curTube->GetModifiableObjectToParentTransform()->SetFixedParameters(
       eTop.targetTube->GetObjectToParentTransform()->GetFixedParameters());
-    curTube->GetObjectToParentTransform()->SetParameters(
+    curTube->GetModifiableObjectToParentTransform()->SetParameters(
       eTop.targetTube->GetObjectToParentTransform()->GetParameters());
     curTube->Update();
 
@@ -442,9 +442,9 @@ MinimumSpanningTreeVesselConnectivityFilter<ObjectDimension>::ComputeTubeConnect
   outputTubeGroup->CopyInformation(inputTubeGroup);
   outputTubeGroup->SetId(inputTubeGroup->GetId());
 
-  outputTubeGroup->GetObjectToParentTransform()->SetFixedParameters(
+  outputTubeGroup->GetModifiableObjectToParentTransform()->SetFixedParameters(
     inputTubeGroup->GetObjectToParentTransform()->GetFixedParameters());
-  outputTubeGroup->GetObjectToParentTransform()->SetParameters(
+  outputTubeGroup->GetModifiableObjectToParentTransform()->SetParameters(
     inputTubeGroup->GetObjectToParentTransform()->GetParameters());
   outputTubeGroup->Update();
 
@@ -541,9 +541,9 @@ MinimumSpanningTreeVesselConnectivityFilter<ObjectDimension>::AddRemainingTubes(
     {
       TubePointerType curTube = pCurSourceTube->Clone();
 
-      curTube->GetObjectToParentTransform()->SetFixedParameters(
+      curTube->GetModifiableObjectToParentTransform()->SetFixedParameters(
         pCurSourceTube->GetObjectToParentTransform()->GetFixedParameters());
-      curTube->GetObjectToParentTransform()->SetParameters(
+      curTube->GetModifiableObjectToParentTransform()->SetParameters(
         pCurSourceTube->GetObjectToParentTransform()->GetParameters());
       curTube->Update();
       curTube->ComputeTangentsAndNormals();
