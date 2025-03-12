@@ -45,9 +45,9 @@ itktubeVotingResampleImageFunctionTest(int argc, char * argv[])
 
   using ImageIndexType = ImageType::IndexType;
   using ImageSizeType = ImageType::SizeType;
-  using CoordRepType = double;
-  using AffineTransformType = itk::AffineTransform<CoordRepType, Dimension>;
-  using InterpolatorType = itk::tube::VotingResampleImageFunction<ImageType, CoordRepType>;
+  using CoordinateType = double;
+  using AffineTransformType = itk::AffineTransform<CoordinateType, Dimension>;
+  using InterpolatorType = itk::tube::VotingResampleImageFunction<ImageType, CoordinateType>;
 
   using ImageReaderType = itk::ImageFileReader<ImageType>;
   using ImageWriterType = itk::ImageFileWriter<ImageType>;

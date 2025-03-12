@@ -104,11 +104,11 @@ public:
   using TimeStepType = typename Superclass::TimeStepType;
 
   /** Interpolator type. */
-  using CoordRepType = double;
-  using InterpolatorType = InterpolateImageFunction<MovingImageType, CoordRepType>;
+  using CoordinateType = double;
+  using InterpolatorType = InterpolateImageFunction<MovingImageType, CoordinateType>;
   using InterpolatorPointer = typename InterpolatorType::Pointer;
   using PointType = typename InterpolatorType::PointType;
-  using DefaultInterpolatorType = LinearInterpolateImageFunction<MovingImageType, CoordRepType>;
+  using DefaultInterpolatorType = LinearInterpolateImageFunction<MovingImageType, CoordinateType>;
 
   /** Covariant vector type. */
   using CovariantVectorType = CovariantVector<double, itkGetStaticConstMacro(ImageDimension)>;
