@@ -61,7 +61,7 @@ public:
   typedef typename TubeSpatialObject::Pointer TubeSpatialObjectPointer;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro(TortuositySpatialObjectFilter, SpatialObjectToSpatialObjectFilter);
+  itkOverrideGetNameOfClassMacro(TortuositySpatialObjectFilter);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);

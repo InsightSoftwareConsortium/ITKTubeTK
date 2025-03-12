@@ -74,7 +74,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(MeanSquareRegistrationFunction, PDEDeformableRegistrationFunction);
+  itkOverrideGetNameOfClassMacro(MeanSquareRegistrationFunction);
 
   /** MovingImage image type. */
   using MovingImageType = typename Superclass::MovingImageType;

@@ -59,7 +59,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(RadiusExtractor2, Object);
+  itkOverrideGetNameOfClassMacro(RadiusExtractor2);
   itkNewMacro(RadiusExtractor2);
 
   /**

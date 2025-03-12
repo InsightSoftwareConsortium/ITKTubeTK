@@ -57,7 +57,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(ComputeTubeMeasuresFilter, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(ComputeTubeMeasuresFilter);
 
   /** Set/Get scale */
   itkSetMacro(Scale, int);

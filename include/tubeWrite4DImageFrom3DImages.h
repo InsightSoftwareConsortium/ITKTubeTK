@@ -54,7 +54,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(Write4DImageFrom3DImages, ProcessObject);
+  itkOverrideGetNameOfClassMacro(Write4DImageFrom3DImages);
 
   /***/
   /***/

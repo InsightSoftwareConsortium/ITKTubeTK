@@ -98,7 +98,7 @@ public:
   using DerivativeType = typename Superclass::DerivativeType;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(PointBasedSpatialObjectToImageMetric, SpatialObjectToImageMetric);
+  itkOverrideGetNameOfClassMacro(PointBasedSpatialObjectToImageMetric);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);

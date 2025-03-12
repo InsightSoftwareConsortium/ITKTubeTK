@@ -56,7 +56,7 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   itkNewMacro(Self);
-  itkTypeMacro(MinimizeImageSizeFilter, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(MinimizeImageSizeFilter);
 
   using InputImageType = TInputImage;
   using InputPixelType = typename InputImageType::PixelType;

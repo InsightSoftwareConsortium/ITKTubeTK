@@ -54,7 +54,7 @@ public:
   using TubeSpatialObjectType = TubeSpatialObject<ObjectDimension>;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro(SubSampleTubeSpatialObjectFilter, SpatialObjectFilter);
+  itkOverrideGetNameOfClassMacro(SubSampleTubeSpatialObjectFilter);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);

@@ -137,7 +137,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(GeneralizedDistanceTransformImageFilter, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(GeneralizedDistanceTransformImageFilter);
 
   /** Types and pointer types for the images and their content. */
   using FunctionImageType = TFunctionImage;

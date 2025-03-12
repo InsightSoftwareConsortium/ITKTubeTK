@@ -41,7 +41,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(BSplineImageToImageRegistrationMethod, OptimizedImageToImageRegistrationMethod);
+  itkOverrideGetNameOfClassMacro(BSplineImageToImageRegistrationMethod);
 
   itkNewMacro(Self);
 

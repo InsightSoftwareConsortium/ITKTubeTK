@@ -73,7 +73,7 @@ public:
   using GroupSpatialObjectType = GroupSpatialObject<TubeSpatialObjectType::ObjectDimension>;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(ExtractTubePointsSpatialObjectFilter, ProcessObject);
+  itkOverrideGetNameOfClassMacro(ExtractTubePointsSpatialObjectFilter);
 
   /** Standard New method. */
   itkNewMacro(Self);

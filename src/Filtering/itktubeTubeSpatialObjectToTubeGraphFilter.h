@@ -63,7 +63,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(TubeSpatialObjectToTubeGraphFilter, Object);
+  itkOverrideGetNameOfClassMacro(TubeSpatialObjectToTubeGraphFilter);
 
   /** Set Number of Centroids */
   itkSetMacro(NumberOfCenteroids, int);

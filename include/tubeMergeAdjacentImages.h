@@ -64,7 +64,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(MergeAdjacentImages, ProcessObject);
+  itkOverrideGetNameOfClassMacro(MergeAdjacentImages);
 
   /** Set input image 1 */
   tubeWrapSetConstObjectMacro(Input1, ImageType, Filter);

@@ -50,7 +50,7 @@ public:
 
   itkNewMacro(Self);
 
-  itkTypeMacro(FFTGaussianDerivativeIFFTFilter, GaussianDerivativeFilter);
+  itkOverrideGetNameOfClassMacro(FFTGaussianDerivativeIFFTFilter);
 
   itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
 

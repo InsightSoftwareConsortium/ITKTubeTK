@@ -51,7 +51,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(RidgeSeedFilter, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(RidgeSeedFilter);
 
   itkNewMacro(Self);
 

@@ -54,7 +54,7 @@ public:
   using SpatialObjectType = SpatialObject<ObjectDimension>;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro(SubSampleSpatialObjectFilter, SpatialObjectFilter);
+  itkOverrideGetNameOfClassMacro(SubSampleSpatialObjectFilter);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);

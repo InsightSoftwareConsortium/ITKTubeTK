@@ -42,7 +42,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(ScaleSkewAngle2DImageToImageRegistrationMethod, OptimizedImageToImageRegistrationMethod);
+  itkOverrideGetNameOfClassMacro(ScaleSkewAngle2DImageToImageRegistrationMethod);
 
   itkNewMacro(Self);
 

@@ -65,7 +65,7 @@ public:
   itkGetMacro(InverseMaximumIntensity, InputPixelType);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(InverseIntensityImageFilter, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(InverseIntensityImageFilter);
 
 protected:
   InverseIntensityImageFilter(void);

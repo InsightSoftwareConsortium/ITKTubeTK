@@ -48,7 +48,7 @@ public:
 
   using SizeType = Size<TDimension>;
 
-  itkTypeMacro(TubeXIO, Object);
+  itkOverrideGetNameOfClassMacro(TubeXIO);
 
   itkNewMacro(TubeXIO);
 

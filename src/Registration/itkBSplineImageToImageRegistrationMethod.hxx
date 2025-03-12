@@ -48,7 +48,7 @@ public:
   using Superclass = Command;
   using Pointer = SmartPointer<Self>;
 
-  itkTypeMacro(BSplineImageRegistrationViewer, Command);
+  itkOverrideGetNameOfClassMacro(BSplineImageRegistrationViewer);
 
   itkNewMacro(BSplineImageRegistrationViewer);
 

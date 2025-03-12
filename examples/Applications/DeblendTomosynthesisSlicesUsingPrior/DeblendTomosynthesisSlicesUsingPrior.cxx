@@ -56,7 +56,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(BlendCostFunction, SingleValuedCostFunction);
+  itkOverrideGetNameOfClassMacro(BlendCostFunction);
 
   itkNewMacro(Self);
 
@@ -257,7 +257,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(BlendScaleCostFunction, SingleValuedCostFunction);
+  itkOverrideGetNameOfClassMacro(BlendScaleCostFunction);
 
   itkNewMacro(Self);
 

@@ -42,7 +42,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(ScaleSkewVersor3DImageToImageRegistrationMethod, OptimizedImageToImageRegistrationMethod);
+  itkOverrideGetNameOfClassMacro(ScaleSkewVersor3DImageToImageRegistrationMethod);
 
   itkNewMacro(Self);
 

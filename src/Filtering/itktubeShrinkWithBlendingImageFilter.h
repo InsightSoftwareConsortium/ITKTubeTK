@@ -74,7 +74,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(ShrinkWithBlendingImageFilter, ShrinkImageFilter);
+  itkOverrideGetNameOfClassMacro(ShrinkWithBlendingImageFilter);
 
   /** Typedef to images */
   using OutputImageType = TOutputImage;

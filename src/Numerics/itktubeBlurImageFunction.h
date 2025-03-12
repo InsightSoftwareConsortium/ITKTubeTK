@@ -49,7 +49,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(BlurImageFunction, ImageFunction);
+  itkOverrideGetNameOfClassMacro(BlurImageFunction);
 
   itkNewMacro(Self);
 

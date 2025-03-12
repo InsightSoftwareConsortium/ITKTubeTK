@@ -38,7 +38,7 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(GaussianDerivativeFilter, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(GaussianDerivativeFilter);
 
   itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
 

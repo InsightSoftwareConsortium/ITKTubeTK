@@ -54,7 +54,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  itkTypeMacro(CVTImageFilter, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(CVTImageFilter);
 
   itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
 

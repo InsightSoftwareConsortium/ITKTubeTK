@@ -51,7 +51,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(CropImage, ProcessObject);
+  itkOverrideGetNameOfClassMacro(CropImage);
 
 
   /** Typedef to images */

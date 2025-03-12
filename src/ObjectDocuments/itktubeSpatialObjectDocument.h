@@ -51,7 +51,7 @@ public:
   using TransformNameListType = Superclass::TransformNameListType;
 
   itkNewMacro(Self);
-  itkTypeMacro(SpatialObjectDocument, ObjectDocument);
+  itkOverrideGetNameOfClassMacro(SpatialObjectDocument);
 
 protected:
   /** Constructor. */

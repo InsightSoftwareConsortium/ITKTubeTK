@@ -59,7 +59,7 @@ public:
   using PointType = itk::Point<double, VDimension>;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro(CropTubesFilter, SpatialObjectToSpatialObjectFilter);
+  itkOverrideGetNameOfClassMacro(CropTubesFilter);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);

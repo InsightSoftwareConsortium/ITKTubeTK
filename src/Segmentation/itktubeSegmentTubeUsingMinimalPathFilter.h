@@ -68,7 +68,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(SegmentTubeUsingMinimalPathFilter, Object);
+  itkOverrideGetNameOfClassMacro(SegmentTubeUsingMinimalPathFilter);
 
   itkSetMacro(SpeedImage, typename InputImageType::Pointer);
   itkGetMacro(SpeedImage, typename InputImageType::Pointer);

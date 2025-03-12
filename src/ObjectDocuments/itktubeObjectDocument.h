@@ -48,7 +48,7 @@ public:
   using TransformNameListType = std::vector<std::string>;
 
   itkNewMacro(Self);
-  itkTypeMacro(ObjectDocument, Document);
+  itkOverrideGetNameOfClassMacro(ObjectDocument);
 
   /** Return the object type. */
   itkGetStringMacro(ObjectType);

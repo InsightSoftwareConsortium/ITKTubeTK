@@ -46,7 +46,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(FeatureVectorGenerator, LightProcessObject);
+  itkOverrideGetNameOfClassMacro(FeatureVectorGenerator);
 
   itkNewMacro(Self);
 

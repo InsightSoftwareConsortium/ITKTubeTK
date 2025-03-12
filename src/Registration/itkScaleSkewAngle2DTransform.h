@@ -63,7 +63,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(ScaleSkewAngle2DTransform, Rigid2DTransform);
+  itkOverrideGetNameOfClassMacro(ScaleSkewAngle2DTransform);
 
   /** Dimension of parameters. */
   itkStaticConstMacro(InputSpaceDimension, unsigned int, 2);

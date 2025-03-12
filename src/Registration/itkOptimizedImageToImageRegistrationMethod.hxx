@@ -62,7 +62,7 @@ public:
   using Superclass = Command;
   using Pointer = SmartPointer<Self>;
 
-  itkTypeMacro(ImageRegistrationViewer, Command);
+  itkOverrideGetNameOfClassMacro(ImageRegistrationViewer);
 
   itkNewMacro(ImageRegistrationViewer);
 

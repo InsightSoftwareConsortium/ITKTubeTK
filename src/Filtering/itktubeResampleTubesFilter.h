@@ -62,7 +62,7 @@ public:
   using BaseTransformListType = std::list<BaseTransformType::Pointer>;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro(ResampleTubesFilter, SpatialObjectFilter);
+  itkOverrideGetNameOfClassMacro(ResampleTubesFilter);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);

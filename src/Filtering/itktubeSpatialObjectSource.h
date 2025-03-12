@@ -56,7 +56,7 @@ public:
   typedef Superclass::DataObjectPointerArraySizeType DataObjectPointerArraySizeType;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(SpatialObjectSource, ProcessObject);
+  itkOverrideGetNameOfClassMacro(SpatialObjectSource);
 
   OutputSpatialObjectType *
   GetOutput(void);

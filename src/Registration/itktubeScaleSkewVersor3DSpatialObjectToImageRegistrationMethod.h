@@ -45,8 +45,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod,
-               OptimizedSpatialObjectToImageRegistrationMethod);
+  itkOverrideGetNameOfClassMacro(ScaleSkewVersor3DSpatialObjectToImageRegistrationMethod);
 
   itkNewMacro(Self);
 

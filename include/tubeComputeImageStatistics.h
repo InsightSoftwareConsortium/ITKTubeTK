@@ -61,7 +61,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(ComputeImageStatistics, ProcessObject);
+  itkOverrideGetNameOfClassMacro(ComputeImageStatistics);
 
   /** Get statistics components */
   tubeWrapGetMacro(CompMean, std::vector<double>, Filter);

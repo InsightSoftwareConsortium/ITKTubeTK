@@ -60,7 +60,7 @@ public:
   using TransformPointer = typename TransformType::Pointer;
 
   itkNewMacro(Self);
-  itkTypeMacro(ObjectDocumentToObjectSource, ProcessObject);
+  itkOverrideGetNameOfClassMacro(ObjectDocumentToObjectSource);
 
   /** Return whether the transforms should be applied. */
   itkGetMacro(ApplyTransforms, bool);

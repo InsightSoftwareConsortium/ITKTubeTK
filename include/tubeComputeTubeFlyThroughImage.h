@@ -61,7 +61,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(ComputeTubeFlyThroughImage, ProcessObject);
+  itkOverrideGetNameOfClassMacro(ComputeTubeFlyThroughImage);
 
   /** Set/Get tube id for which the fly through image is to be generated */
   tubeWrapSetMacro(TubeId, unsigned long, Filter);

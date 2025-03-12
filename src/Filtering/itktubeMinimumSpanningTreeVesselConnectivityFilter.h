@@ -65,7 +65,7 @@ public:
   using TubeIdListType = std::vector<TubeIdType>;
 
   /** Run-time type information ( and related methods ).   */
-  itkTypeMacro(MinimumSpanningTreeVesselConnectivityFilter, SpatialObjectToSpatialObjectFilter);
+  itkOverrideGetNameOfClassMacro(MinimumSpanningTreeVesselConnectivityFilter);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);

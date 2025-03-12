@@ -48,7 +48,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(RidgeFFTFeatureVectorGenerator, FeatureVectorGenerator);
+  itkOverrideGetNameOfClassMacro(RidgeFFTFeatureVectorGenerator);
 
   itkNewMacro(Self);
 

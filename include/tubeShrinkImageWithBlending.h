@@ -50,7 +50,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(ShrinkImageWithBlending, ProcessObject);
+  itkOverrideGetNameOfClassMacro(ShrinkImageWithBlending);
 
 
   /** Typedef to images */

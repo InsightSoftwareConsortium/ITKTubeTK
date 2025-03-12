@@ -73,7 +73,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(AnisotropicSimilarityLandmarkBasedTransformInitializer, Object);
+  itkOverrideGetNameOfClassMacro(AnisotropicSimilarityLandmarkBasedTransformInitializer);
 
   /** Type of the transform to initialize */
   using TransformType = TTransform;

@@ -57,7 +57,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(EnhanceContrastUsingPriorImageFilter, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(EnhanceContrastUsingPriorImageFilter);
 
   /** Some convenient type alias. */
   using ContrastCostFunctionType = itk::tube::ContrastCostFunction<TPixel, VDimension>;

@@ -61,7 +61,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(ConvertTubesToDensityImage, Object);
+  itkOverrideGetNameOfClassMacro(ConvertTubesToDensityImage);
 
   using RadiusImageType = itk::Image<TOutputPixel, Dimension>;
   using RadiusImagePointer = typename RadiusImageType::Pointer;

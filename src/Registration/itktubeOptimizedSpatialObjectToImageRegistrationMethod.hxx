@@ -54,7 +54,7 @@ public:
   using Superclass = Command;
   using Pointer = SmartPointer<Self>;
 
-  itkTypeMacro(SpatialObjectToImageRegistrationViewer, Command);
+  itkOverrideGetNameOfClassMacro(SpatialObjectToImageRegistrationViewer);
 
   itkNewMacro(SpatialObjectToImageRegistrationViewer);
 

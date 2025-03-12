@@ -41,7 +41,7 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(ArthurDentCostFunction, SingleValuedCostFunction);
+  itkOverrideGetNameOfClassMacro(ArthurDentCostFunction);
 
   itkNewMacro(Self);
 

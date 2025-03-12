@@ -62,7 +62,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(ImageMath, ProcessObject);
+  itkOverrideGetNameOfClassMacro(ImageMath);
 
   void
   SetInput(InputImageType * input)

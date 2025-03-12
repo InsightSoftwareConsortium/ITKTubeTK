@@ -72,7 +72,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(TubeSpatialObjectToImageFilter, SpatialObjectToImageFilter);
+  itkOverrideGetNameOfClassMacro(TubeSpatialObjectToImageFilter);
 
   /** Set if the tube should be full inside */
   itkSetMacro(UseRadius, bool);

@@ -48,7 +48,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(ContrastCostFunction, SingleValuedCostFunction);
+  itkOverrideGetNameOfClassMacro(ContrastCostFunction);
 
   using MeasureType = Superclass::MeasureType;
   using ParametersType = Superclass::ParametersType;

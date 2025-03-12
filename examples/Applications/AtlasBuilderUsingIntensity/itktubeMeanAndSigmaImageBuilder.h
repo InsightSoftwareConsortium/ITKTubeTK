@@ -61,7 +61,7 @@ public:
   itkStaticConstMacro(ImageDimension, unsigned int, TInputImageType::ImageDimension);
 
   itkNewMacro(Self);
-  itkTypeMacro(MeanAndSigmaImageBuilder, Object);
+  itkOverrideGetNameOfClassMacro(MeanAndSigmaImageBuilder);
 
   using InputImageType = TInputImageType;
   using OutputMeanImageType = TOutputMeanImageType;

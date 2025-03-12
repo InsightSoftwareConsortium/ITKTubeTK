@@ -59,7 +59,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(ConvertSpatialGraphToImage, ProcessObject);
+  itkOverrideGetNameOfClassMacro(ConvertSpatialGraphToImage);
 
   /** Get Adjacency Matrix Image */
   tubeWrapGetMacro(AdjacencyMatrixImage, OutputImagePointer, Filter);

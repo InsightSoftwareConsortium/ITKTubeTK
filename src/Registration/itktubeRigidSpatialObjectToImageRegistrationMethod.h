@@ -47,7 +47,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(RigidSpatialObjectToImageRegistrationMethod, OptimizedSpatialObjectToImageRegistrationMethod);
+  itkOverrideGetNameOfClassMacro(RigidSpatialObjectToImageRegistrationMethod);
 
   itkNewMacro(Self);
 

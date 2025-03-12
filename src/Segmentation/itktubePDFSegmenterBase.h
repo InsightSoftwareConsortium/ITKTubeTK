@@ -45,7 +45,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(PDFSegmenterBase, ProcessObject);
+  itkOverrideGetNameOfClassMacro(PDFSegmenterBase);
 
   itkNewMacro(Self);
 

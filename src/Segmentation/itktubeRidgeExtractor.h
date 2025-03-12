@@ -62,7 +62,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  itkTypeMacro(RidgeExtractor, Object);
+  itkOverrideGetNameOfClassMacro(RidgeExtractor);
 
   itkNewMacro(RidgeExtractor);
 

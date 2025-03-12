@@ -58,7 +58,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(ResampleImage, ProcessObject);
+  itkOverrideGetNameOfClassMacro(ResampleImage);
 
   /* Set input image */
   tubeWrapSetObjectMacro(Input, ImageType, Filter);

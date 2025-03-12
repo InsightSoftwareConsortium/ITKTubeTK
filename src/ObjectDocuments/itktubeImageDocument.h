@@ -50,7 +50,7 @@ public:
   using TransformNameListType = Superclass::TransformNameListType;
 
   itkNewMacro(Self);
-  itkTypeMacro(ImageDocument, ObjectDocument);
+  itkOverrideGetNameOfClassMacro(ImageDocument);
 
 protected:
   /** Constructor. */

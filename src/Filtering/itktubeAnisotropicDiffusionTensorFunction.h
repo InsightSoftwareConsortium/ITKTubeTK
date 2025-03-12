@@ -62,7 +62,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information ( and related methods ) */
-  itkTypeMacro(AnisotropicDiffusionTensorFunction, FiniteDifferenceFunction);
+  itkOverrideGetNameOfClassMacro(AnisotropicDiffusionTensorFunction);
 
   /** Extract some parameters from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);

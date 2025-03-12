@@ -46,7 +46,7 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro(SpatialObjectToSpatialObjectFilter, SpatialObjectSource);
+  itkOverrideGetNameOfClassMacro(SpatialObjectToSpatialObjectFilter);
 
   using InputSpatialObjectType = TInputSpatialObject;
   using OutputSpatialObjectType = TOutputSpatialObject;

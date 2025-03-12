@@ -60,7 +60,7 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   itkNewMacro(Self);
-  itkTypeMacro(RobustMeanAndSigmaImageBuilder, MeanAndSigmaImageBuilder);
+  itkOverrideGetNameOfClassMacro(RobustMeanAndSigmaImageBuilder);
 
   using InputImageType = TInputImageType;
   using OutputMeanImageType = TOutputMeanImageType;

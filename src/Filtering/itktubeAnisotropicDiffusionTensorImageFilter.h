@@ -60,7 +60,7 @@ public:
   // itkNewMacro( Self );  // Not included since pure virtual
 
   /** Run-time type information ( and related methods ) */
-  itkTypeMacro(AnisotropicDiffusionTensorImageFilter, FiniteDifferenceImageFiler);
+  itkOverrideGetNameOfClassMacro(AnisotropicDiffusionTensorImageFilter);
 
   /** Convenient type alias */
   using InputImageType = typename Superclass::InputImageType;
