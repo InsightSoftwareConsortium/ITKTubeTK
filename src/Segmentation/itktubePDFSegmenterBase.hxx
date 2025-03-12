@@ -429,7 +429,6 @@ PDFSegmenterBase<TImage, TLabelMap>::ApplyPDFs(void)
 
   FeatureVectorType                fv;
   typename LabelMapType::IndexType indx;
-  unsigned int                     ignoredCount = 0;
   while (!itInLabelMap.IsAtEnd())
   {
     int val = itInLabelMap.Get();
@@ -447,7 +446,6 @@ PDFSegmenterBase<TImage, TLabelMap>::ApplyPDFs(void)
     }
     else
     {
-      ++ignoredCount;
       for (unsigned int c = 0; c < numClasses; ++c)
       {
         ++(*(probIt[c]));

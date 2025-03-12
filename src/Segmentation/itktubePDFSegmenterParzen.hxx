@@ -227,7 +227,6 @@ PDFSegmenterParzen<TImage, TLabelMap>::GeneratePDFs(void)
       inImHistogram[c].fill(0);
     }
 
-    unsigned int             totalIn = 0;
     itk::Array<unsigned int> totalInClass(numClasses);
     totalInClass.Fill(0);
     for (unsigned int c = 0; c < numClasses; c++)
@@ -250,7 +249,6 @@ PDFSegmenterParzen<TImage, TLabelMap>::GeneratePDFs(void)
           }
           ++(inImHistogram[c][i][binN]);
         }
-        ++totalIn;
         ++totalInClass[c];
         ++inClassListIt;
       }
@@ -360,7 +358,6 @@ PDFSegmenterParzen<TImage, TLabelMap>::GeneratePDFs(void)
           }
           ++(inImHistogram[c][i][binN]);
         }
-        ++totalIn;
         ++totalInClass[c];
         ++inClassListIt;
       }

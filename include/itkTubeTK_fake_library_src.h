@@ -54,10 +54,11 @@ namespace itk
 namespace tube
 {
 
-class EmptyClass
+int never_call_this_function(int multiplier)
 {
-  int foo;
-};
+  // silly function just to prevent having an empty file compiled.
+  return 1010 * multiplier;
+}
 
 } // namespace tube
 

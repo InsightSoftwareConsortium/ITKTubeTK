@@ -362,7 +362,7 @@ MinimumSpanningTreeVesselConnectivityFilter<ObjectDimension>::RunMinimumSpanning
   rootTube->Update();
 
   // recusrively process all children in increasing order of connection weight
-  int numChildren = 0;
+  itkDebugStatement(numChildren = 0;);
 
   tubeDebugMacro(<< "\nRunning MST on tube " << rootTubeId << ", with out-degree = " << m_TubeGraph[rootTubeId].size()
                  << ", and numPoints = " << rootTube->GetNumberOfPoints());
@@ -422,7 +422,7 @@ MinimumSpanningTreeVesselConnectivityFilter<ObjectDimension>::RunMinimumSpanning
 
     // visit tube
     VisitTube(curTube);
-    ++numChildren;
+    itkDebugStatement(++numChildren;);
   }
 
   tubeDebugMacro(<< "  Number of children = " << numChildren);

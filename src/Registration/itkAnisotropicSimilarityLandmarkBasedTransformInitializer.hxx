@@ -212,7 +212,7 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<TTransform, TFixedImage, 
           fixedCentered.Fill(0.0);
           movingCentered.Fill(0.0);
 
-          int ii = 0;
+          itkDebugStatement(int ii = 0;);
           // Computations are relative to the Center of Rotation.
           while (movingItr != m_MovingLandmarks.end())
           {
@@ -230,7 +230,7 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<TTransform, TFixedImage, 
               }
             }
 
-            ++ii;
+            itkDebugStatement(++ii;);
             itkDebugMacro(<< "f_" << ii << " = " << fixedCentered);
             itkDebugMacro(<< "m_" << ii << " = " << movingCentered);
             ++movingItr;
@@ -526,7 +526,7 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<TTransform, TFixedImage, 
         fixedCentered.Fill(0.0);
         movingCentered.Fill(0.0);
 
-        int ii = 0;
+        itkDebugStatement(int ii = 0;);
         // Computations are relative to the Center of Rotation.
         while (movingItr != m_MovingLandmarks.end())
         {
@@ -544,7 +544,7 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<TTransform, TFixedImage, 
             }
           }
 
-          ++ii;
+          itkDebugStatement(++ii;);
           itkDebugMacro(<< "f_" << ii << " = " << fixedCentered);
           itkDebugMacro(<< "m_" << ii << " = " << movingCentered);
           ++movingItr;
@@ -695,7 +695,7 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<TTransform, TFixedImage, 
         fixedCentered.Fill(0.0);
         movingCentered.Fill(0.0);
 
-        int    ii = 0;
+        itkDebugStatement(int ii = 0;);
         double s_dot = 0;
         double s_cross = 0;
         // Computations are relative to the Center of Rotation.
@@ -709,7 +709,7 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<TTransform, TFixedImage, 
           s_dot += (movingCentered[0] * fixedCentered[0]) + (movingCentered[1] * fixedCentered[1]);
           s_cross += (movingCentered[1] * fixedCentered[0]) - (movingCentered[0] * fixedCentered[1]);
 
-          ++ii;
+          itkDebugStatement(++ii;);
           itkDebugMacro(<< "f_" << ii << " = " << fixedCentered);
           itkDebugMacro(<< "m_" << ii << " = " << movingCentered);
           ++movingItr;

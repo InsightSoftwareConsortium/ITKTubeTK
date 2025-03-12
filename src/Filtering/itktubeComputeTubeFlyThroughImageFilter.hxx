@@ -237,8 +237,7 @@ ComputeTubeFlyThroughImageFilter<TPixel, Dimension>::GenerateData(void)
   typename InterpolatorType::Pointer pInterpolator = InterpolatorType::New();
   pInterpolator->SetInputImage(m_InputImage);
 
-  unsigned int  ptInd = 0;
-  unsigned long tubePixelCount = 0;
+  unsigned int ptInd = 0;
 
   for (itPts = tubePointList.begin(); itPts != tubePointList.end(); itPts++, ptInd++)
   {
@@ -329,8 +328,6 @@ ComputeTubeFlyThroughImageFilter<TPixel, Dimension>::GenerateData(void)
         {
           itMask.Set(1.0);
         }
-
-        tubePixelCount++;
       }
       else
       {

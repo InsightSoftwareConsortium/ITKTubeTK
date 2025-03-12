@@ -105,7 +105,7 @@ protected:
   void
   PrintSelf(std::ostream & os, itk::Indent indent) const override;
 
-  void
+  virtual void
   VerifyPreconditions();
 
 private:

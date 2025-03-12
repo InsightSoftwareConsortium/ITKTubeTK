@@ -421,7 +421,6 @@ RadiusExtractor3<TInputImage>::GenerateKernelProfile(void)
         PointType point;
         m_InputImage->TransformIndexToPhysicalPoint(xIndex, point);
 
-        unsigned int pntCount = 0;
         pntIter = m_KernelTube->GetPoints().begin();
 
         double                                        pntTangentDistance = 0;
@@ -452,7 +451,6 @@ RadiusExtractor3<TInputImage>::GenerateKernelProfile(void)
             minTangentPnt = pntIter;
           }
           ++pntIter;
-          ++pntCount;
         }
         if (minTangentPnt != m_KernelTube->GetPoints().end())
         {

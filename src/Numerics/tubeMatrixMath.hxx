@@ -84,10 +84,10 @@ ComputeCrossVector(vnl_vector<T> v1, vnl_vector<T> v2)
 
 template <class ScalarT>
 void
-ComputeNormalsFromTangents(const itk::Vector<ScalarT, 2> &          prevT,
-                           const itk::CovariantVector<ScalarT, 2> & prevN1,
-                           const itk::Vector<ScalarT, 2> &          t,
-                           itk::CovariantVector<ScalarT, 2> &       n1)
+ComputeNormalsFromTangents([[maybe_unused]] const itk::Vector<ScalarT, 2> & prevT,
+                           const itk::CovariantVector<ScalarT, 2> &         prevN1,
+                           const itk::Vector<ScalarT, 2> &                  t,
+                           itk::CovariantVector<ScalarT, 2> &               n1)
 {
   double l = 0;
   for (unsigned int i = 0; i < 2; i++)
