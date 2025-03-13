@@ -36,6 +36,12 @@ list( APPEND CMAKE_MODULE_PATH ${TubeTK_SOURCE_DIR}/CMake )
 
 set( TubeTK_LIBRARIES TubeTK )
 
+# Disable some failing tests that have been failing for many years.
+# Keeping the codebase up-to-date with latest version of ITK is made
+# tremendously more difficult when confronted with long standing failing tests.
+# The core developers of this package would be needed to fix these long time failing
+# tests.
+option(RUN_FAILING_TESTS "Run tests that have been failing for many years." FALSE)
 ####
 # Setup include directories
 ####

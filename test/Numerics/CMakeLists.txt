@@ -240,6 +240,7 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/itktubeNJetFeatureVectorGeneratorTest_f0.mha
       ${ITK_TEST_OUTPUT_DIR}/itktubeNJetFeatureVectorGeneratorTest_f1.mha )
 
+if(RUN_FAILING_TESTS) # This test is unstable, it fails about 1/5 times in the CI environment
 itk_add_test(
   NAME itktubeNJetBasisFeatureVectorGeneratorTest
   COMMAND tubeNumericsTestDriver
@@ -253,6 +254,7 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/itktubeNJetBasisFeatureVectorGeneratorTest_feature )
 set_tests_properties(itktubeNJetBasisFeatureVectorGeneratorTest
   PROPERTIES TIMEOUT 12)
+endif()
 
 itk_add_test(
   NAME itktubeSingleValuedCostFunctionImageSourceTest

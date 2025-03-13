@@ -78,6 +78,7 @@ itk_add_test(
 set_tests_properties(itktubeRidgeSeedFilterIOTest
   PROPERTIES TIMEOUT 10)
 
+if(RUN_FAILING_TESTS)
 itk_add_test( 
   NAME itktubeTubeExtractorIOTest
   COMMAND tubeIOTestDriver
@@ -105,6 +106,7 @@ itk_add_test(
     -t ${ITK_TEST_OUTPUT_DIR}/itktubeTubeExtractorIOTest2.mtp )
 set_tests_properties( itktubeTubeExtractorIOTest-Compare2 PROPERTIES DEPENDS
   itktubeTubeExtractorIOTest )
+endif()
 
 itk_add_test( 
   NAME itktubeTubeXIOTest

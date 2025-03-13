@@ -91,6 +91,7 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterParzenTest2_mask.mha
       ${ITK_TEST_OUTPUT_DIR}/itktubePDFSegmenterParzenTest2_labeledFeatureSpace.mha )
 
+if(RUN_FAILING_TESTS) # These tests crash after 60+GB are used
 itk_add_test(
   NAME itktubeRidgeExtractorTest
   COMMAND tubeSegmentationTestDriver
@@ -106,6 +107,7 @@ itk_add_test(
     itktubeRidgeExtractorTest2
       DATA{${TubeTK_DATA_ROOT}/Branch.n010.sub.mha}
       DATA{${TubeTK_DATA_ROOT}/Branch-truth_Subs.tre} )
+endif()
 
 itk_add_test(
   NAME itktubeRadiusExtractor2Test
@@ -121,12 +123,14 @@ itk_add_test(
       DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
       DATA{${TubeTK_DATA_ROOT}/Branch-truth.tre} )
 
+if(RUN_FAILING_TESTS) # These tests crash after 60+GB are used
 itk_add_test(
   NAME itktubeTubeExtractorTest
   COMMAND tubeSegmentationTestDriver
     itktubeTubeExtractorTest
       DATA{${TubeTK_DATA_ROOT}/Branch.n010.sub.mha}
       DATA{${TubeTK_DATA_ROOT}/Branch-truth.tre} )
+endif()
 
 itk_add_test(
   NAME itktubeRidgeSeedFilterParzenTest

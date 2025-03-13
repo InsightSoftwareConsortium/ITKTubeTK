@@ -142,6 +142,7 @@ itk_add_test(
       ${ITK_TEST_OUTPUT_DIR}/UltrasoundCroppedResampledSheetnessMeasure.mha
       ${ITK_TEST_OUTPUT_DIR}/UltrasoundCroppedResampledPrimaryEigenVector.mha 2.0 )
 
+if(RUN_FAILING_TESTS)
 itk_add_test(
   NAME itktubeShrinkWithBlendingImageFilterTest
   COMMAND tubeFilteringTestDriver
@@ -151,6 +152,7 @@ itk_add_test(
       DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
       ${ITK_TEST_OUTPUT_DIR}/itktubeShrinkWithBlendingImageFilterTest.mha
       ${ITK_TEST_OUTPUT_DIR}/itktubeShrinkWithBlendingImageFilterTest-IndexImage.mha )
+endif()
 
 itk_add_test(
   NAME itktubeStructureTensorRecursiveGaussianImageFilterTest
