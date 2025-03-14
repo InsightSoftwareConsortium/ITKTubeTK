@@ -169,7 +169,7 @@ MetaClassPDF::PrintInfo(void) const
   if (!m_ObjectPDFWeight.empty())
   {
     std::cout << m_ObjectPDFWeight[0];
-    for (int i = 1; i < m_ObjectPDFWeight.size(); i++)
+    for (unsigned long i = 1; i < m_ObjectPDFWeight.size(); i++)
     {
       std::cout << ", " << m_ObjectPDFWeight[i];
     }
