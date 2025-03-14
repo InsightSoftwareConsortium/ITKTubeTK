@@ -142,7 +142,7 @@ protected:
   PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Update diffusion tensor image */
-  void virtual UpdateDiffusionTensorImage(void) override;
+  void UpdateDiffusionTensorImage(void) override;
 
 private:
   // purposely not implemented

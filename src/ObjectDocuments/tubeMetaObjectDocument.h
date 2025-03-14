@@ -55,7 +55,7 @@ public:
   MetaObjectDocument(void);
 
   /** Destructor. */
-  virtual ~MetaObjectDocument(void);
+  ~MetaObjectDocument(void) override;
 
   /** Return the name of this class. */
   tubeTypeMacro(MetaObjectDocument);
@@ -79,7 +79,7 @@ public:
   AddObjectDocument(ObjectDocumentType::Pointer objectDocument);
 
   /** Clear all the information. */
-  virtual void
+  void
   Clear(void) override;
 
 protected:
@@ -90,7 +90,7 @@ protected:
   tubeSetMacro(NumberOfObjectDocuments, int);
 
   /** Read the fields. */
-  virtual bool
+  bool
   ReadFields(void) override;
 
   /** Initialize the read fields for objects. */
@@ -102,19 +102,19 @@ protected:
   SetupObjectWriteFields(unsigned int index);
 
   /** Initialize the read fields. */
-  virtual void
+  void
   SetupReadFields(void) override;
 
   /** Initialize the write fields. */
-  virtual void
+  void
   SetupWriteFields(void) override;
 
   /** Write the fields. */
-  virtual bool
+  bool
   WriteFields(void) override;
 
   /** Print information about this object. */
-  virtual void
+  void
   PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:

@@ -85,16 +85,16 @@ public:
                double       _binSizeZ,
                float *      _elementData = NULL);
 
-  ~MetaClassPDF(void);
+  ~MetaClassPDF(void) override;
 
-  virtual void
-  PrintInfo(void) const;
+  void
+  PrintInfo(void) const override;
 
-  virtual void
-  CopyInfo(const MetaObject * _pdf);
+  void
+  CopyInfo(const MetaObject * _pdf) override;
 
-  virtual void
-  Clear(void);
+  void
+  Clear(void) override;
 
   virtual bool
   InitializeEssential(unsigned int             _nFeatures,
@@ -185,8 +185,8 @@ public:
   virtual bool
   CanRead(const char * _headerName = NULL) const;
 
-  virtual bool
-  Read(const char * _headerName = NULL);
+  bool
+  Read(const char * _headerName = NULL) override;
 
   virtual bool
   CanReadStream(METAIO_STREAM::ifstream * _stream) const;
@@ -194,21 +194,21 @@ public:
   virtual bool
   ReadStream(METAIO_STREAM::ifstream * _stream);
 
-  virtual bool
-  Write(const char * _headerName = NULL);
+  bool
+  Write(const char * _headerName = NULL) override;
 
   virtual bool
   WriteStream(METAIO_STREAM::ofstream * _stream);
 
 protected:
-  virtual void
-  M_SetupReadFields(void);
+  void
+  M_SetupReadFields(void) override;
 
-  virtual void
-  M_SetupWriteFields(void);
+  void
+  M_SetupWriteFields(void) override;
 
-  virtual bool
-  M_Read(void);
+  bool
+  M_Read(void) override;
 
   VectorIntType    m_ObjectId;
   VectorDoubleType m_ObjectPDFWeight;

@@ -55,7 +55,7 @@ public:
   GoldenMeanOptimizer1D(ValueFunctionType::Pointer funcVal);
 
   /** Destructor. */
-  ~GoldenMeanOptimizer1D(void);
+  ~GoldenMeanOptimizer1D(void) override;
 
   void
   Use(ValueFunctionType::Pointer funcVal);

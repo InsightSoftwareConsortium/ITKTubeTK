@@ -56,7 +56,7 @@ public:
   BrentOptimizer1D(ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv);
 
   /** Destructor. */
-  ~BrentOptimizer1D(void);
+  ~BrentOptimizer1D(void) override;
 
   tubeGetMacro(Epsilon, double);
 

@@ -63,7 +63,7 @@ public:
               Optimizer1D::Pointer            optimizer1D);
 
   /** Destructor. */
-  virtual ~OptimizerND(void);
+  ~OptimizerND(void) override;
 
   tubeGetMacro(MaxIterations, unsigned int);
 

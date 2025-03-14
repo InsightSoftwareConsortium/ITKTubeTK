@@ -84,7 +84,7 @@ public:
            Optimizer1D::Pointer       optimizer1D);
 
   /** Destructor. */
-  virtual ~SplineND(void);
+  ~SplineND(void) override;
 
   /** Returns the characteristics of spline evaluations near data bounds
    *   ( xMin and xMax ). If true, values beyond edges ( xMin and xMax ) are

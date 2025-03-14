@@ -57,7 +57,7 @@ protected:
   ImageDocument(void) { this->SetObjectType("Image"); }
 
   /** Destructor. */
-  virtual ~ImageDocument(void) {}
+  ~ImageDocument(void) override {}
 
 private:
   // Copy constructor not implemented.

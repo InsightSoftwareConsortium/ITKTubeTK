@@ -89,13 +89,13 @@ protected:
   ObjectDocument(void) { this->SetObjectType("Object"); }
 
   /** Destructor. */
-  virtual ~ObjectDocument(void) {}
+  ~ObjectDocument(void) override {}
 
   /** Set the object type. */
   itkSetMacro(ObjectType, std::string);
 
   /** Print information about the object. */
-  virtual void
+  void
   PrintSelf(std::ostream & os, Indent indent) const override
   {
     Superclass::PrintSelf(os, indent);

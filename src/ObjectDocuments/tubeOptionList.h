@@ -90,7 +90,7 @@ public:
   OptionList(void);
 
   /** Destructor. */
-  virtual ~OptionList(void);
+  ~OptionList(void) override;
 
   /** Return the name of this class. */
   tubeTypeMacro(OptionList);
@@ -166,7 +166,7 @@ protected:
   GetOptionMap(void);
 
   /** Print information about this object. */
-  virtual void
+  void
   PrintSelf(std::ostream & os, Indent indent) const override;
 
 private:

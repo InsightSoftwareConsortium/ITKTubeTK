@@ -58,7 +58,7 @@ protected:
   BlobSpatialObjectDocument(void) { this->SetObjectType("Blob"); }
 
   /** Destructor. */
-  virtual ~BlobSpatialObjectDocument(void) {}
+  ~BlobSpatialObjectDocument(void) override {}
 
 private:
   // Copy constructor not implemented.

@@ -77,17 +77,17 @@ public:
               const ValueListType &  _outputWhitenMeans,
               const ValueListType &  _outputWhitenStdDevs);
 
-  ~MetaNJetLDA(void);
+  ~MetaNJetLDA(void) override;
 
-  virtual void
-  PrintInfo(void) const;
+  void
+  PrintInfo(void) const override;
 
   using MetaLDA::CopyInfo;
   virtual void
   CopyInfo(const MetaNJetLDA & _lda);
 
-  virtual void
-  Clear(void);
+  void
+  Clear(void) override;
 
   bool
   InitializeEssential(const NJetScalesType & _zeroScales,
@@ -128,36 +128,36 @@ public:
   const NJetScalesType &
   GetRidgeScales(void) const;
 
-  virtual bool
-  CanRead(const char * headerName = NULL) const;
+  bool
+  CanRead(const char * headerName = NULL) const override;
 
-  virtual bool
-  Read(const char * headerName = NULL);
+  bool
+  Read(const char * headerName = NULL) override;
 
-  virtual bool
-  CanReadStream(METAIO_STREAM::ifstream * stream) const;
+  bool
+  CanReadStream(METAIO_STREAM::ifstream * stream) const override;
 
-  virtual bool
-  ReadStream(METAIO_STREAM::ifstream * stream);
+  bool
+  ReadStream(METAIO_STREAM::ifstream * stream) override;
 
-  virtual bool
-  Write(const char * headerName = NULL);
+  bool
+  Write(const char * headerName = NULL) override;
 
-  virtual bool
-  WriteStream(METAIO_STREAM::ofstream * stream);
+  bool
+  WriteStream(METAIO_STREAM::ofstream * stream) override;
 
 protected:
   void
   M_Destroy(void);
 
   void
-  M_SetupReadFields(void);
+  M_SetupReadFields(void) override;
 
   void
-  M_SetupWriteFields(void);
+  M_SetupWriteFields(void) override;
 
   bool
-  M_Read(void);
+  M_Read(void) override;
 
   NJetScalesType m_ZeroScales;
   NJetScalesType m_FirstScales;

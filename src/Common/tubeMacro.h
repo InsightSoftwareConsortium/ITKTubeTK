@@ -114,7 +114,7 @@ limitations under the License.
 
 /** Return the name of a class. */
 #define tubeTypeMacro(classname) \
-  virtual const char * GetNameOfClass(void) const override { return #classname; }
+  const char * GetNameOfClass(void) const override { return #classname; }
 
 /** Return the name of a class. */
 #define tubeTypeMacroNoOverride(classname) \

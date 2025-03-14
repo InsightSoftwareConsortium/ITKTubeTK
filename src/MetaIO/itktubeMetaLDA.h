@@ -72,17 +72,17 @@ public:
           const ValueListType & _outputWhitenMeans,
           const ValueListType & _outputWhitenStdDevs);
 
-  ~MetaLDA(void);
+  ~MetaLDA(void) override;
 
-  virtual void
-  PrintInfo(void) const;
+  void
+  PrintInfo(void) const override;
 
   using MetaForm::CopyInfo;
   virtual void
   CopyInfo(const MetaLDA & lda);
 
-  virtual void
-  Clear(void);
+  void
+  Clear(void) override;
 
   bool
   InitializeEssential(unsigned int          _numberOfPCABasisToUseAsFeatures,
@@ -157,13 +157,13 @@ protected:
   M_Destroy(void);
 
   void
-  M_SetupReadFields(void);
+  M_SetupReadFields(void) override;
 
   void
-  M_SetupWriteFields(void);
+  M_SetupWriteFields(void) override;
 
   bool
-  M_Read(void);
+  M_Read(void) override;
 
   unsigned int m_NumberOfPCABasisToUseAsFeatures;
 

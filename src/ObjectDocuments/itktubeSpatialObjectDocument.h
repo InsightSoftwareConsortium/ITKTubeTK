@@ -58,7 +58,7 @@ protected:
   SpatialObjectDocument(void) { this->SetObjectType("SpatialObject"); }
 
   /** Destructor. */
-  virtual ~SpatialObjectDocument(void) {}
+  ~SpatialObjectDocument(void) override {}
 
 private:
   // Copy constructor not implemented.

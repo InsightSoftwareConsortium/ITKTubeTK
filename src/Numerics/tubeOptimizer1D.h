@@ -69,7 +69,7 @@ public:
   Optimizer1D(ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv);
 
   /** Destructor. */
-  virtual ~Optimizer1D(void);
+  ~Optimizer1D(void) override;
 
   tubeGetMacro(MaxIterations, unsigned int);
 

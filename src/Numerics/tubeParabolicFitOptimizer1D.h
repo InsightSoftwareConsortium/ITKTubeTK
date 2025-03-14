@@ -55,7 +55,7 @@ public:
   ParabolicFitOptimizer1D(ValueFunctionType::Pointer funcVal);
 
   /** Destructor. */
-  ~ParabolicFitOptimizer1D(void);
+  ~ParabolicFitOptimizer1D(void) override;
 
   void
   Use(ValueFunctionType::Pointer funcVal);

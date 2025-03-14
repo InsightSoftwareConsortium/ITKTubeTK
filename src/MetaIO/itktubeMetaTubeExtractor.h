@@ -64,10 +64,10 @@ public:
 
   MetaTubeExtractor(const MetaTubeExtractor & _metaTubeExtractor);
 
-  ~MetaTubeExtractor(void);
+  ~MetaTubeExtractor(void) override;
 
-  virtual void
-  PrintInfo(void) const;
+  void
+  PrintInfo(void) const override;
 
   void
   SetGeneralProperties(double _dataMin, double _dataMax, const VectorType & _tubeColor);
@@ -153,8 +153,8 @@ public:
   virtual void
   CopyInfo(const MetaTubeExtractor & _tubeExtractor);
 
-  virtual void
-  Clear(void);
+  void
+  Clear(void) override;
 
   bool
   InitializeEssential(void);
@@ -180,13 +180,13 @@ protected:
   M_Destroy(void);
 
   void
-  M_SetupReadFields(void);
+  M_SetupReadFields(void) override;
 
   void
-  M_SetupWriteFields(void);
+  M_SetupWriteFields(void) override;
 
   bool
-  M_Read(void);
+  M_Read(void) override;
 
   double     m_DataMin;
   double     m_DataMax;

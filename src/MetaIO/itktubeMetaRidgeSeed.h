@@ -77,17 +77,17 @@ public:
                 const ValueListType &       _outputWhitenStdDevs,
                 const std::string &         _pdfFileName);
 
-  ~MetaRidgeSeed(void);
+  ~MetaRidgeSeed(void) override;
 
-  virtual void
-  PrintInfo(void) const;
+  void
+  PrintInfo(void) const override;
 
   using MetaLDA::CopyInfo;
   virtual void
   CopyInfo(const MetaRidgeSeed & _lda);
 
-  virtual void
-  Clear(void);
+  void
+  Clear(void) override;
 
   bool
   InitializeEssential(const RidgeSeedScalesType & _ridgeScales,
@@ -146,36 +146,36 @@ public:
   bool
   GetSkeletonize(void) const;
 
-  virtual bool
-  CanRead(const char * _headerName = NULL) const;
+  bool
+  CanRead(const char * _headerName = NULL) const override;
 
-  virtual bool
-  Read(const char * _headerName = NULL);
+  bool
+  Read(const char * _headerName = NULL) override;
 
-  virtual bool
-  CanReadStream(METAIO_STREAM::ifstream * _stream) const;
+  bool
+  CanReadStream(METAIO_STREAM::ifstream * _stream) const override;
 
-  virtual bool
-  ReadStream(METAIO_STREAM::ifstream * _stream);
+  bool
+  ReadStream(METAIO_STREAM::ifstream * _stream) override;
 
-  virtual bool
-  Write(const char * _headName = NULL);
+  bool
+  Write(const char * _headName = NULL) override;
 
-  virtual bool
-  WriteStream(METAIO_STREAM::ofstream * _stream);
+  bool
+  WriteStream(METAIO_STREAM::ofstream * _stream) override;
 
 protected:
   void
   M_Destroy(void);
 
   void
-  M_SetupReadFields(void);
+  M_SetupReadFields(void) override;
 
   void
-  M_SetupWriteFields(void);
+  M_SetupWriteFields(void) override;
 
   bool
-  M_Read(void);
+  M_Read(void) override;
 
   bool m_UseIntensityOnly;
   bool m_UseFeatureMath;

@@ -56,7 +56,7 @@ public:
   SplineApproximation1D(ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D);
 
   /** Destructor. */
-  virtual ~SplineApproximation1D(void);
+  ~SplineApproximation1D(void) override;
 
   double
   DataValue(const VectorType & y, double x) override;
