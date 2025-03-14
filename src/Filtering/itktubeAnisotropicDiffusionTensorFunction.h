@@ -92,8 +92,7 @@ public:
   using ScalarDerivativeImageRegionType = ImageRegionIterator<ScalarDerivativeImageType>;
 
   /** Tensor derivative type alias. */
-  using TensorDerivativeType =
-    itk::Matrix<ScalarValueType, Self::ImageDimension, Self::ImageDimension>;
+  using TensorDerivativeType = itk::Matrix<ScalarValueType, Self::ImageDimension, Self::ImageDimension>;
   using TensorDerivativeImageType = itk::Image<TensorDerivativeType, 3>;
   using TensorDerivativeImageRegionType = ImageRegionIterator<TensorDerivativeImageType>;
 

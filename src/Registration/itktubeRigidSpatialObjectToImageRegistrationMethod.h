@@ -60,8 +60,7 @@ public:
   // Overrides the superclass' TransformType typedef
   // We must use MatrixOffsetTransformBase since no itk rigid transform is
   //   templated over ImageDimension.
-  using RigidTransformType =
-    MatrixOffsetTransformBase<double, Self::ImageDimension, Self::ImageDimension>;
+  using RigidTransformType = MatrixOffsetTransformBase<double, Self::ImageDimension, Self::ImageDimension>;
   using TransformType = RigidTransformType;
 
   //

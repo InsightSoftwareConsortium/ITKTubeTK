@@ -59,8 +59,7 @@ public:
   //
   static constexpr unsigned int ImageDimension = TImage::ImageDimension;
 
-  using TransformType =
-    Transform<double, Self::ImageDimension, Self::ImageDimension>;
+  using TransformType = Transform<double, Self::ImageDimension, Self::ImageDimension>;
 
   using TransformOutputType = DataObjectDecorator<TransformType>;
 

@@ -340,7 +340,8 @@ MinimumSpanningTreeVesselConnectivityFilter<ObjectDimension>::RunMinimumSpanning
 
   rootTube->GetModifiableObjectToParentTransform()->SetFixedParameters(
     inputRootTube->GetObjectToParentTransform()->GetFixedParameters());
-  rootTube->GetModifiableObjectToParentTransform()->SetParameters(inputRootTube->GetObjectToParentTransform()->GetParameters());
+  rootTube->GetModifiableObjectToParentTransform()->SetParameters(
+    inputRootTube->GetObjectToParentTransform()->GetParameters());
   rootTube->Update();
 
   rootTube->ComputeTangentsAndNormals();

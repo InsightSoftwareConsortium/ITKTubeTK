@@ -80,8 +80,7 @@ public:
   using SizeType = typename DensityImageType::SizeType;
   using SpacingType = typename DensityImageType::SpacingType;
 
-  using TubetoImageFilterType =
-    TubeSpatialObjectToImageFilter<Self::ImageDimension, DensityImageType>;
+  using TubetoImageFilterType = TubeSpatialObjectToImageFilter<Self::ImageDimension, DensityImageType>;
 
   using DanielssonFilterType = DanielssonDistanceMapImageFilter<DensityImageType, DensityImageType>;
 
