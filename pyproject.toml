@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "itk-tubetk"
-version = "1.4.1"
+version = "1.4.2"
 description = "An open-source toolkit, led by Kitware, Inc., for the segmentation, registration, and analysis of tubes (e.g., blood vessels) in images."
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -40,7 +40,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Medical Science Apps.",
     "Topic :: Software Development :: Libraries",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "itk == 5.4.*",
     "numpy",
@@ -66,7 +66,7 @@ doc = [
 # The versions of CMake to allow. If CMake is not present on the system or does
 # not pass this specifier, it will be downloaded via PyPI if possible. An empty
 # string will disable this check.
-cmake.version = ">=3.16.3"
+cmake.version = ">=3.22.1"
 
 # A list of args to pass to CMake when configuring the project. Setting this in
 # config or envvar will override toml. See also ``cmake.define``.
