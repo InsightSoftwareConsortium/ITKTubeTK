@@ -11,6 +11,8 @@ jobs:
   python-build-workflow:
     uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@v5.4.6
     with:
+      itk-wheel-tag: 'v5.4.5'
+      itk-python-package-tag: 'v5.4.5'
       itk-module-deps: 'InsightSoftwareConsortium/ITKMinimalPathExtraction@a93af5398906630cd3096fd49375216483c37ff2'
     secrets:
       pypi_password: ${{ secrets.pypi_password }}
